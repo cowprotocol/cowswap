@@ -20,7 +20,7 @@ export function useFetchTwapPartOrders(
   ordersInfo: TwapOrderInfo[]
 ): TwapPartOrders | null {
   const ordersToVerifyParams = useMemo(() => {
-    return ordersInfo.map((info) => info.safeData.params)
+    return ordersInfo.map((info) => info.safeData.conditionalOrderParams)
   }, [ordersInfo])
 
   const ordersTradeableData = useTwapOrdersTradeableMulticall(safeAddress, composableCowContract, ordersToVerifyParams)
@@ -74,7 +74,7 @@ async function getTwapPartOrderItem(
     sellAmount: partOrder.sellAmount.toString(),
     buyAmount: partOrder.buyAmount.toString(),
     feeAmount: partOrder.feeAmount.toString(),
-    kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
+    kind: 'sell', // Twap order is always sell
     partiallyFillable: partOrder.partiallyFillable,
   } as Order
 

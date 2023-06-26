@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
@@ -9,14 +8,15 @@ import { useNavigate } from 'react-router-dom'
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import NetworkSelector from 'legacy/components/Header/NetworkSelector'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -24,21 +24,23 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 
+import { Routes } from 'common/constants/routes'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  Wrapper,
-  Title,
-  LogoImage,
-  HeaderModWrapper,
-  UniIcon,
   AccountElement,
   BalanceText,
+  CustomLogoImg,
   HeaderControls,
   HeaderElement,
+  HeaderModWrapper,
   HeaderRow,
+  LogoImage,
+  Title,
+  UniIcon,
+  Wrapper,
 } from './styled'
 
 // Assets
@@ -50,6 +52,8 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 export default function Header() {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
+  const isInjectedWidgetMode = isInjectedWidget()
+  const injectedWidgetParams = useInjectedWidgetParams()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
@@ -70,8 +74,10 @@ export default function Header() {
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
 
+  const menuItems = useMenuItems()
+
   const navigate = useNavigate()
-  const handleBalanceButtonClick = () => navigate('/account')
+
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
@@ -121,26 +127,36 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
-            <UniIcon>
-              <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                <SVG src={cowSwapLogo(darkMode)} />
-              </LogoImage>
-            </UniIcon>
-          </Title>
-          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          {!injectedWidgetParams.hideLogo && (
+            <Title href={isInjectedWidgetMode ? undefined : Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+              <UniIcon>
+                <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                  {injectedWidgetParams.logoUrl ? (
+                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
+                  ) : (
+                    <SVG src={cowSwapLogo(darkMode)} />
+                  )}
+                </LogoImage>
+              </UniIcon>
+            </Title>
+          )}
+          {!isInjectedWidgetMode && (
+            <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          )}
         </HeaderRow>
 
         <HeaderControls>
-          <NetworkSelector />
+          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            <CowBalanceButton
-              onClick={handleBalanceButtonClick}
-              account={account}
-              chainId={chainId}
-              isUpToSmall={isUpToSmall}
-            />
+            {!isInjectedWidgetMode && (
+              <CowBalanceButton
+                onClick={() => navigate('/account')}
+                account={account}
+                chainId={chainId}
+                isUpToSmall={isUpToSmall}
+              />
+            )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && chainId && (
@@ -153,7 +169,9 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+        {isUpToLarge && !isInjectedWidgetMode && (
+          <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />
+        )}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>

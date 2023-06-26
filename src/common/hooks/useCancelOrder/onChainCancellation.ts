@@ -12,10 +12,17 @@ import { CoWSwapEthFlow } from 'abis/types/ethflow'
 const CANCELLATION_GAS_LIMIT_DEFAULT = BigNumber.from(150000)
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
+export type CancelledOrderInfo = {
+  txHash: string
+  orderId: string
+  sellTokenAddress: string
+  sellTokenSymbol?: string
+}
+
 export interface OnChainCancellation {
   estimatedGas: BigNumber
 
-  sendTransaction(): Promise<string>
+  sendTransaction(processCancelledOrder: (cancelledOrderInfo: CancelledOrderInfo) => void): Promise<void>
 }
 
 export async function getEthFlowCancellation(
@@ -45,10 +52,17 @@ export async function getEthFlowCancellation(
 
   return {
     estimatedGas,
-    sendTransaction: () => {
+    sendTransaction: (processCancelledOrder) => {
       return ethFlowContract
         .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
-        .then((res) => res.hash)
+        .then((res) => {
+          processCancelledOrder({
+            txHash: res.hash,
+            orderId: order.id,
+            sellTokenAddress: order.inputToken.address,
+            sellTokenSymbol: order.inputToken.symbol,
+          })
+        })
     },
   }
 }
@@ -67,10 +81,15 @@ export async function getOnChainCancellation(contract: GPv2Settlement, order: Or
 
   return {
     estimatedGas,
-    sendTransaction: () => {
-      return contract
-        .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
-        .then((res) => res.hash)
+    sendTransaction: (processCancelledOrder) => {
+      return contract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) }).then((res) => {
+        processCancelledOrder({
+          txHash: res.hash,
+          orderId: order.id,
+          sellTokenAddress: order.inputToken.address,
+          sellTokenSymbol: order.inputToken.symbol,
+        })
+      })
     },
   }
 }

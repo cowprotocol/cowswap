@@ -77,6 +77,15 @@ This will start a server on the `http://localhost:5000/`
 yarn run cosmos
 ```
 
+## Build/test UI Library
+
+CoW Swap has a library of reusable components.
+
+```bash
+yarn ui:build
+yarn ui:test
+```
+
 ## Configuring the environment
 
 The app has some default configuration, but it's highly encouraged to define your own.

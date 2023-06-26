@@ -8,6 +8,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
+import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
@@ -16,15 +17,19 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
+import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
+import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
@@ -39,6 +44,9 @@ export function TwapFormWidget() {
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+
+  const localFormValidation = useTwapFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const composableCowContract = useComposableCowContract()
@@ -51,6 +59,7 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
+  const fallbackHandlerIsNotSet = localFormValidation === TwapFormState.NEED_FALLBACK_HANDLER
   const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
@@ -58,13 +67,20 @@ export function TwapFormWidget() {
     updateState?.({ outputCurrencyAmount: null })
   }, [updateState, numberOfPartsValue, rawInputCurrencyAmount])
 
+  // Reset warnings flags once on start
+  useEffect(() => {
+    updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       <QuoteObserverUpdater />
+      <FallbackHandlerVerificationUpdater />
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
-      <TwapConfirmModal />
+      <TwapConfirmModal fallbackHandlerIsNotSet={fallbackHandlerIsNotSet} />
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
@@ -109,7 +125,8 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <ActionButtons />
+      <TwapFormWarnings localFormValidation={localFormValidation} />
+      <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />
     </>
   )
 }

@@ -5,7 +5,8 @@ import ms from 'ms.macro'
 import { ComposableCoW } from 'abis/types'
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 
-import { fetchTwapOrdersFromSafe, TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
+import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
+import { TwapOrdersSafeData } from '../types'
 
 const PENDING_TWAP_UPDATE_INTERVAL = ms`10s`
 

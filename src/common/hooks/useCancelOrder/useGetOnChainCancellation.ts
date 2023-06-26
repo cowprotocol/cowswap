@@ -11,6 +11,7 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
   const ethFlowContract = useEthFlowContract()
@@ -19,13 +20,13 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
 
   return useCallback(
     (order: Order) => {
-      const composableCowId = order.composableCowInfo?.id
+      const isComposableCowOrder = getIsComposableCowParentOrder(order)
 
-      if (composableCowId) {
-        return cancelTwapOrder(composableCowId)
+      if (isComposableCowOrder) {
+        return cancelTwapOrder(order)
       }
 
-      const isEthFlowOrder = getIsEthFlowOrder(order)
+      const isEthFlowOrder = getIsEthFlowOrder(order.inputToken.address)
 
       if (isEthFlowOrder) {
         return getEthFlowCancellation(ethFlowContract!, order)

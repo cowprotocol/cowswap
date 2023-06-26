@@ -8,7 +8,7 @@ import Loader from 'legacy/components/Loader'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
@@ -43,7 +43,7 @@ function createRedirectExternal(url: string) {
   }
 }
 
-type LazyRouteProps = { route: RoutesEnum; element: ReactNode; key?: number }
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps) {
   return <Route key={key} path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />

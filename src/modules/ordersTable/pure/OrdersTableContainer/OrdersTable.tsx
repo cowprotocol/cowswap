@@ -25,11 +25,11 @@ import {
 import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
+import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
-import { ordersTableFeatures } from 'constants/featureFlags'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

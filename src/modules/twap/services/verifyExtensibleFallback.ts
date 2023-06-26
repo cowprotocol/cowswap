@@ -16,9 +16,8 @@ export enum ExtensibleFallbackVerification {
 export async function verifyExtensibleFallback(
   context: ExtensibleFallbackContext
 ): Promise<ExtensibleFallbackVerification> {
-  const { chainId, safeAppsSdk, settlementContract } = context
+  const { chainId, safeAddress, settlementContract } = context
   const composableCowContractAddress = COMPOSABLE_COW_ADDRESS[chainId]
-  const { safeAddress } = await safeAppsSdk.safe.getInfo()
   const domainSeparator = await settlementContract.callStatic.domainSeparator()
 
   const signatureVerifierContract = await getSignatureVerifierContract(context)

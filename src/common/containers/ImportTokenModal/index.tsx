@@ -6,12 +6,16 @@ import { Token } from '@uniswap/sdk-core'
 import TokenWarningModal from 'legacy/components/TokenWarningModal'
 import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
+import useDebounce from 'legacy/hooks/useDebounce'
 import { Field } from 'legacy/state/swap/actions'
+import { useAddUserToken } from 'legacy/state/user/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
+
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 export interface ImportTokenModalProps {
   chainId: number
@@ -21,6 +25,8 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
   const { chainId } = props
 
   const { state } = useTradeState()
+  const addToken = useAddUserToken()
+
   const loadedInputCurrency = useSearchInactiveTokenLists(
     state?.inputCurrencyId || undefined,
     1,
@@ -38,14 +44,15 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
 
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency, loadedOutputCurrency]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loadedInputCurrency?.address, loadedOutputCurrency?.address]
   )
 
   // dismiss warning if all imported tokens are in active lists
   const tokensByAddress = useAtomValue(tokensByAddressAtom)
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
   // example: https://cowswap.dev.gnosisdev.com/#/swap?chain=mainnet&inputCurrency=0xe0b7927c4af23765cb51314a0e0521a9645f0e2a&outputCurrency=0x539F3615C1dBAfa0D008d87504667458acBd16Fa
-  const importTokensNotInDefault = useMemo(() => {
+  const _importTokensNotInDefault = useMemo(() => {
     // We should return an empty array until the defaultTokens are loaded
     // Otherwise WETH will be in urlLoadedTokens but defaultTokens will be empty
     // Fix for https://github.com/cowprotocol/cowswap/issues/534
@@ -77,6 +84,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
         })
     )
   }, [chainId, tokensByAddress, tokensBySymbol, urlLoadedTokens])
+  const importTokensNotInDefault = useDebounce(_importTokensNotInDefault, 200)
 
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
 
@@ -108,6 +116,15 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
       setDismissTokenWarning(false)
     }
   }, [importTokensLength])
+
+  // Automatically import unknown tokens in Widget mode
+  useEffect(() => {
+    if (isInjectedWidget()) {
+      importTokensNotInDefault.forEach(addToken)
+    }
+  }, [addToken, importTokensNotInDefault])
+
+  if (isInjectedWidget()) return null
 
   return (
     <TokenWarningModal

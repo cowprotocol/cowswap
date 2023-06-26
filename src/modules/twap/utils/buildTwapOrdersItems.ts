@@ -6,9 +6,8 @@ import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { TwapToDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
-import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
-import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
+import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult, TwapOrdersSafeData } from '../types'
 
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,
@@ -28,13 +27,15 @@ function getTwapOrderItem(
   safeAddress: string,
   safeData: TwapOrdersSafeData,
   id: string,
-  authorized: boolean,
+  authorized: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderItem {
-  const { params, submissionDate, isExecuted } = safeData
+  const { conditionalOrderParams, safeTxParams } = safeData
+  const { isExecuted, submissionDate } = safeTxParams
 
-  const order = parseTwapOrderStruct(params.staticInput)
-  const status = getTwapOrderStatus(order, isExecuted, authorized, discreteOrder)
+  const executionDate = new Date(safeTxParams.executionDate)
+  const order = parseTwapOrderStruct(conditionalOrderParams.staticInput)
+  const status = getTwapOrderStatus(order, isExecuted, executionDate, authorized, discreteOrder)
 
   return {
     order,
@@ -43,5 +44,6 @@ function getTwapOrderItem(
     safeAddress,
     id,
     submissionDate,
+    safeTxParams,
   }
 }

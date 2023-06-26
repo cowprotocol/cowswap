@@ -6,7 +6,7 @@ import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'
@@ -15,6 +15,7 @@ import { coinbaseWalletConnection } from './coinbase'
 import { fortmaticConnection } from './formatic'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
 import { injectedConnection } from './injected'
+import { injectedWidgetConnection } from './injectedWidget'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 import { ledgerConnection, LedgerOption } from './ledger'
 import { networkConnection } from './network'
@@ -41,6 +42,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   trustWalletConnection,
   ledgerConnection,
   keystoneConnection,
+  injectedWidgetConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -54,6 +56,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
     case trustWalletConnection.connector:
+    case injectedWidgetConnection.connector:
     case ledgerConnection.connector:
     case keystoneConnection.connector:
     case walletConnectConnectionV2.connector:
@@ -100,6 +103,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return ledgerConnection
       case ConnectionType.KEYSTONE:
         return keystoneConnection
+      case ConnectionType.INJECTED_WIDGET:
+        return injectedWidgetConnection
     }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended", "../.eslintrc.json"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["cypress/**", "cypress-custom/**"],
+      "rules": {
+        "jest/valid-expect": 0,
+        "testing-library/await-async-utils": 0
+      }
+    }
+  ]
+}

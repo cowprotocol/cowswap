@@ -10,9 +10,9 @@ import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ZERO_FRACTION } from 'legacy/constants'
 
+import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculateOrderExecutionStatus, ExecuteIndicator } from 'common/pure/OrderExecutionStatusList'
 import { SymbolElement, TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
-import { HIGH_FEE_WARNING_PERCENTAGE } from 'constants/common'
 
 import * as styledEl from './styled'
 

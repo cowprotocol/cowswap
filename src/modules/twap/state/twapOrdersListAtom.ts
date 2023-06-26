@@ -9,17 +9,25 @@ import { deepEqual } from 'utils/deepEqual'
 
 import { TwapOrderItem } from '../types'
 import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
+import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v3', {})
+export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v4', {})
 
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
   const currentState = get(twapOrdersListAtom)
+  const newState = updateTwapOrdersList(currentState, nextState)
 
-  if (!deepEqual(currentState, nextState)) {
-    set(twapOrdersListAtom, nextState)
+  if (!deepEqual(currentState, newState)) {
+    set(twapOrdersListAtom, newState)
   }
+})
+
+export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem) => {
+  const currentState = get(twapOrdersListAtom)
+
+  set(twapOrdersListAtom, { ...currentState, [order.id]: order })
 })
 
 export const emulatedTwapOrdersAtom = atom((get) => {

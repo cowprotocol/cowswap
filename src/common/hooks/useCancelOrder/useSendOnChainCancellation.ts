@@ -7,6 +7,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { useWalletInfo } from 'modules/wallet'
 
+import { CancelledOrderInfo } from './onChainCancellation'
 import { useGetOnChainCancellation } from './useGetOnChainCancellation'
 
 export function useSendOnChainCancellation() {
@@ -16,29 +17,33 @@ export function useSendOnChainCancellation() {
   const addTransaction = useTransactionAdder()
   const getOnChainCancellation = useGetOnChainCancellation()
 
-  return useCallback(
-    async (order: Order) => {
-      if (!chainId) {
-        return
-      }
+  const processCancelledOrder = useCallback(
+    ({ txHash, orderId, sellTokenAddress, sellTokenSymbol }: CancelledOrderInfo) => {
+      if (!chainId) return
 
-      const isEthFlowOrder = getIsEthFlowOrder(order)
-      const { sendTransaction } = await getOnChainCancellation(order)
+      const isEthFlowOrder = getIsEthFlowOrder(sellTokenAddress)
 
-      const hash = await sendTransaction()
-
-      cancelPendingOrder({ id: order.id, chainId })
-      setOrderCancellationHash({ chainId, id: order.id, hash })
+      cancelPendingOrder({ id: orderId, chainId })
+      setOrderCancellationHash({ chainId, id: orderId, hash: txHash })
 
       if (isEthFlowOrder) {
-        addTransaction({ hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
+        addTransaction({ hash: txHash, ethFlow: { orderId, subType: 'cancellation' } })
       } else {
         addTransaction({
-          hash,
-          onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
+          hash: txHash,
+          onChainCancellation: { orderId, sellTokenSymbol: sellTokenSymbol || '' },
         })
       }
     },
-    [addTransaction, getOnChainCancellation, cancelPendingOrder, chainId, setOrderCancellationHash]
+    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction]
+  )
+
+  return useCallback(
+    async (order: Order) => {
+      const { sendTransaction } = await getOnChainCancellation(order)
+
+      await sendTransaction(processCancelledOrder)
+    },
+    [processCancelledOrder, getOnChainCancellation]
   )
 }

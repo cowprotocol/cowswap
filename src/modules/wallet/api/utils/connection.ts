@@ -30,6 +30,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ledger'
     case ConnectionType.KEYSTONE:
       return 'Keystone'
+    case ConnectionType.INJECTED_WIDGET:
+      return 'CowSwap widget'
   }
 }
 

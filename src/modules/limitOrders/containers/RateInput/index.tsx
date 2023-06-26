@@ -16,10 +16,10 @@ import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/li
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useWalletInfo } from 'modules/wallet'
 
+import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-import { ordersTableFeatures } from 'constants/featureFlags'
 import { formatInputAmount } from 'utils/amountFormat'
 import { getAddress } from 'utils/getAddress'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
