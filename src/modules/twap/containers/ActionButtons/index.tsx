@@ -1,26 +1,28 @@
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
+import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null
   primaryFormValidation: TradeFormValidation | null
-  walletIsNotConnected: boolean
 }
 
-export function ActionButtons({
-  localFormValidation,
-  primaryFormValidation,
-  walletIsNotConnected,
-}: ActionButtonsProps) {
+export function ActionButtons({ localFormValidation, primaryFormValidation }: ActionButtonsProps) {
+  const { isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const tradeConfirmActions = useTradeConfirmActions()
+  const { walletIsNotConnected, showPriceImpactWarning } = useTwapWarningsContext()
 
   const confirmTrade = tradeConfirmActions.onOpen
+
+  const areWarningsAccepted = showPriceImpactWarning ? isPriceImpactAccepted : true
 
   const primaryActionContext = {
     confirmTrade,
@@ -43,7 +45,7 @@ export function ActionButtons({
       context={tradeFormButtonContext}
       // TODO: bind isExpertMode to settings
       isExpertMode={false}
-      isDisabled={false}
+      isDisabled={!areWarningsAccepted}
     />
   )
 }

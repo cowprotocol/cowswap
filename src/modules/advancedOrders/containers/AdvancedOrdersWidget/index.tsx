@@ -9,7 +9,7 @@ import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
@@ -34,6 +34,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { inputPartAmount } = useAtomValue(partsStateAtom)
+  const priceImpact = useTradePriceImpact()
 
   useSetTradeQuoteParams(inputPartAmount)
 
@@ -67,11 +68,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
     compactView: false,
     showRecipient: false,
     isTradePriceUpdating,
-    priceImpact: {
-      priceImpact: undefined,
-      error: undefined,
-      loading: false,
-    },
+    priceImpact,
   }
 
   return (
