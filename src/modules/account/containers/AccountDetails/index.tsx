@@ -45,6 +45,7 @@ import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
 import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
 import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
 import {
   NetworkCard,
@@ -201,10 +202,9 @@ export function AccountDetails({
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const walletConnectSuffix =
-      getWeb3ReactConnection(connector) === walletConnectConnection && walletDetails?.walletName
-        ? ' (via WalletConnect)'
-        : ''
+    const connectionType = getWeb3ReactConnection(connector)
+    const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
+    const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
     return (
       <WalletName>
