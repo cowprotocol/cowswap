@@ -35,7 +35,7 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
     position: fixed;
     top: 0;
     z-index: 90;
-    height: auto;
+    height: 100%;
     display: ${show ? 'flex' : 'none'};
   `};
 
