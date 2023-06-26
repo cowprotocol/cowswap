@@ -19,6 +19,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
+import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 export interface TradeWidgetActions {
@@ -104,6 +105,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       {!disableQuotePolling && <TradeQuoteUpdater />}
       <TradeWidgetModals />
       <WrapNativeModal />
+      <PriceImpactUpdater />
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
