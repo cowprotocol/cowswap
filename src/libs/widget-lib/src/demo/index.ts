@@ -29,6 +29,10 @@ function init(provider?: EthereumProvider) {
       height: 640,
       container: document.getElementById('widgetContainer') as HTMLElement,
       provider,
+      metaData: {
+        appKey: 'CowSwapWidgetDemoApp',
+        url: 'https://swap.cow.fi/assets/injected-widget/',
+      },
     },
     { urlParams, appParams }
   )
