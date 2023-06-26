@@ -29,7 +29,7 @@ export function useConfirmPriceImpactWithoutFee() {
   const [isConfirmed, setIsConfirmed] = useState(false)
   const triggerConfirmation = useConfirmationRequest({ onEnable: () => setIsConfirmed(true) })
   const confirmPriceImpactWithoutFee = useCallback(
-    async (priceImpactWithoutFee: Percent) => {
+    async (priceImpactWithoutFee: Percent | undefined) => {
       if (
         !!priceImpactWithoutFee &&
         (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) ||

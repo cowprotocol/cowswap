@@ -25,11 +25,6 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Unsupported Safe
     </ButtonPrimary>
   ),
-  [TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP]: ({ confirmTrade }: PrimaryActionButtonContext) => (
-    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={confirmTrade}>
-      Review TWAP order
-    </ButtonPrimary>
-  ),
   [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Sell amount too small

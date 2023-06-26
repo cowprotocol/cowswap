@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Percent } from '@uniswap/sdk-core'
 
 import { QuoteError } from 'legacy/state/price/actions'
@@ -39,5 +41,7 @@ export default function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: P
 
   const priceImpact = fiatPriceImpact || fallbackPriceImpact
 
-  return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
+  return useMemo(() => {
+    return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
+  }, [priceImpact, fiatPriceImpact, error, loading])
 }

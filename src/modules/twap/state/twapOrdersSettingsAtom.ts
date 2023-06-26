@@ -20,6 +20,7 @@ export interface TwapOrdersSettingsState extends TwapOrdersDeadline {
   readonly numberOfPartsValue: number
   readonly slippageValue: number | null
   readonly isFallbackHandlerSetupAccepted: boolean
+  readonly isPriceImpactAccepted: boolean
 }
 
 export const defaultCustomDeadline: TwapOrdersDeadline['customDeadline'] = {
@@ -36,6 +37,7 @@ export const defaultTwapOrdersSettings: TwapOrdersSettingsState = {
   // null = auto
   slippageValue: null,
   isFallbackHandlerSetupAccepted: false,
+  isPriceImpactAccepted: false,
 }
 
 export const twapOrdersSettingsAtom = atomWithStorage<TwapOrdersSettingsState>(
