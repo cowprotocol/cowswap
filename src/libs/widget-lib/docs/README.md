@@ -71,7 +71,7 @@ const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),
   width: 600,
   height: 640,
-  provider: window.ethereu // <-------
+  provider: window.ethereum // <-------
 }
 
 cowSwapWidget(params, {})
