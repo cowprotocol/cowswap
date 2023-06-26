@@ -279,6 +279,7 @@
     "vite": "^4.3.4",
     "vite-plugin-dts": "~1.7.1",
     "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-singlefile": "^0.13.5",
     "vite-tsconfig-paths": "^4.0.2",
     "vitest": "^0.31.0",
     "webpack-bundle-analyzer": "^4.7.0"

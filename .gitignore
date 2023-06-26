@@ -24,6 +24,7 @@ cypress.env.json
 /build
 /dts
 /public/cosmos
+/public/widget-demo
 /dist
 
 # misc

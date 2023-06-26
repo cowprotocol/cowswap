@@ -6,7 +6,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
-    const entryPoint = './src/demo/index.html'
+    const entryPoint = '../widget-demo/src/index.html'
 
     return {
       server: {

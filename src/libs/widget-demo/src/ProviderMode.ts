@@ -1,4 +1,4 @@
-import { EthereumProvider } from '../types'
+import { EthereumProvider } from '@cowprotocol/widget-lib'
 
 export function ProviderMode(init: (ethereum?: EthereumProvider) => void) {
   const injectedProvider = (window as any)['ethereum'] as EthereumProvider

@@ -1,4 +1,4 @@
-import { UpdateWidgetCallback } from '../cowSwapWidget'
+import { UpdateWidgetCallback } from '@cowprotocol/widget-lib'
 
 // eslint-disable-next-line max-lines-per-function
 export function Settings(updateWidget: UpdateWidgetCallback) {

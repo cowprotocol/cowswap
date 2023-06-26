@@ -1,7 +1,12 @@
+import {
+  cowSwapWidget,
+  CowSwapWidgetAppParams,
+  CowSwapWidgetUrlParams,
+  EthereumProvider,
+} from '@cowprotocol/widget-lib'
+
 import { ProviderMode } from './ProviderMode'
 import { Settings } from './Settings'
-
-import { cowSwapWidget, CowSwapWidgetAppParams, CowSwapWidgetUrlParams, EthereumProvider } from '../index'
 
 const urlParams: CowSwapWidgetUrlParams = {
   env: 'local',
