@@ -1,22 +1,24 @@
-import { useAtomValue } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 
-import { limitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useTradeNavigate } from './useTradeNavigate'
+import { useTradeState } from './useTradeState'
+
+import { getDefaultTradeRawState } from '../types/TradeRawState'
+
 /**
- * Since the selling of ETH is not supported in limit orders
+ * Since the selling of ETH is not supported in limit and advanced orders
  * We automatically replace it by WETH
  */
 export function useDisableNativeTokenSelling() {
   const { chainId } = useWalletInfo()
-  const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersRawStateAtom)
-  const limitOrdersNavigate = useTradeNavigate()
+  const { state } = useTradeState()
+  const { inputCurrencyId, outputCurrencyId } = state || {}
+  const navigate = useTradeNavigate()
 
   useEffect(() => {
     const nativeToken = chainId ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : null
@@ -33,10 +35,10 @@ export function useDisableNativeTokenSelling() {
     const defaultInputCurrencyId = getDefaultTradeRawState(chainId).inputCurrencyId
 
     if (isInputNative && outputCurrencyId && !isOutputWrappedNative) {
-      limitOrdersNavigate(chainId, {
+      navigate(chainId, {
         inputCurrencyId: isInputNative ? defaultInputCurrencyId : inputCurrencyId,
         outputCurrencyId,
       })
     }
-  }, [chainId, inputCurrencyId, outputCurrencyId, limitOrdersNavigate])
+  }, [chainId, inputCurrencyId, outputCurrencyId, navigate])
 }
