@@ -222,6 +222,7 @@ jobs:
         id: cypress-run
         uses: cypress-io/github-action@v5.0.5
         with:
+          install: false
           start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
