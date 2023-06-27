@@ -23,6 +23,7 @@
     "serve": "nx exec -- serve build -l 3000",
     "serve:ci": "nx exec -- serve website -l 3000",
     "cypress": "nx exec -- cypress open",
+    "cypress:run": "nx exec -- cypress run",
     "contracts:add:export": "nx exec -- node ./scripts/contracts_add_export.js",
     "contracts:compile:abi": "nx exec -- typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'",
     "contracts:compile:abi-ethflow": "nx exec -- typechain --target ethers-v5 --out-dir src/abis/types/ethflow \"./node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\"",
