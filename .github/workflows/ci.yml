@@ -173,11 +173,11 @@ jobs:
     name: Cypress
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up node
         uses: actions/setup-node@v3
@@ -185,20 +185,36 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: yarn
 
-      # Install deps only
-      - name: Cypress install dependencies
-        id: cypress-deps
-        uses: cypress-io/github-action@v5.0.5
-        # Do not consider failure a failure. Well, sort of.
-        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
-        continue-on-error: true
+      # Load everything that's cached
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v3
         with:
-          runTests: false
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
 
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v3
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
+      # Install everything that might be missing 🤷
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        env:
+          # Do not install cypress binary
+          CYPRESS_INSTALL_BINARY: 0
+
+      # Cypress binary was not installed on previous step
       - name: Install Cypress binary
         id: cypress-bin
-        # Only run if previous step failed
-        if: steps.cypress-deps.outcome == 'failure'
         run: npx cypress install
 
       # Actually run tests, building repo
@@ -206,10 +222,6 @@ jobs:
         id: cypress-run
         uses: cypress-io/github-action@v5.0.5
         with:
-          # Uncomment to test the production release. Right now, it doens't work the automatic "connection"
-          #   very likely it's related to Web3StatusMod!
-          #   when un-commenting this, we need to uncomment also the "Download website" I added in this PR and prevent cypres from buildig the project again
-          # start: yarn serve:ci
           start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
