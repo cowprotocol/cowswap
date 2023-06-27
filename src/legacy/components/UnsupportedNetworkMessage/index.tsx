@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'
-import { SUPPORTED_CHAIN_IDS } from 'legacy/utils/supportedChainId'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
 export const Styled = styled.span`
   max-width: 450px;
@@ -15,7 +15,7 @@ export default function UnsupportedNetworkMessage() {
     <Styled>
       <Trans>
         Please connect your wallet to one of our supported networks:{' '}
-        {SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label)
+        {ALL_SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label)
           .filter(Boolean)
           .join(', ')}
       </Trans>

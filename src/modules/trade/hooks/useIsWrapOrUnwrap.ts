@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWalletInfo } from 'modules/wallet'
@@ -15,8 +14,6 @@ export function useIsWrapOrUnwrap(): boolean {
   const { inputCurrencyId, outputCurrencyId } = state || {}
 
   return useMemo(() => {
-    if (!chainId || !supportedChainId(chainId)) return false
-
     if (!inputCurrencyId || !outputCurrencyId) return false
 
     const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]

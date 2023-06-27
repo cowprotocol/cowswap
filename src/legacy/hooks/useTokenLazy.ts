@@ -9,7 +9,6 @@ import { Erc20 } from 'legacy/abis/types'
 import { getBytes32TokenContract, getTokenContract } from 'legacy/hooks/useContract'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { retry } from 'legacy/utils/retry'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -147,9 +146,8 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
  */
 export function useTokenLazy() {
   const { provider } = useWeb3React()
-  const { account, chainId: _chainId } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const addUserToken = useAddUserToken()
-  const chainId = supportedChainId(_chainId)
 
   return useCallback(
     async (address: string): Promise<Token | null> => {

@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useWeb3React } from '@web3-react/core'
 
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
+import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { updateVersion } from 'legacy/state/global/actions'
@@ -11,7 +11,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { acceptListUpdate } from 'legacy/state/lists/actions'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { useActiveListUrls } from 'legacy/state/lists/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -19,10 +18,7 @@ import useInterval from 'lib/hooks/useInterval'
 
 export default function Updater(): null {
   const { provider } = useWeb3React()
-  const { chainId: connectedChainId } = useWalletInfo()
-  // chainId returns number or undefined we need to map against supported chains
-  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
-
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const isWindowVisible = useIsWindowVisible()
 

@@ -13,7 +13,7 @@ import styled from 'styled-components/macro'
 import { css } from 'styled-components/macro'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'
-import { CHAIN_IDS_TO_NAMES } from 'legacy/constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS, CHAIN_IDS_TO_NAMES } from 'legacy/constants/chains'
 import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import useParsedQueryString from 'legacy/hooks/useParsedQueryString'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
@@ -24,7 +24,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { ExternalLink, MEDIA_WIDTHS } from 'legacy/theme'
 import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 import { replaceURLParam } from 'legacy/utils/routes'
-import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTradeTypeInfo } from 'modules/trade'
 import { useWalletInfo } from 'modules/wallet'
@@ -288,11 +287,9 @@ function Row({
             </ExternalLink>
           )}
 
-          {supportedChainId(chainId) && (
-            <ExternalLink href={getExplorerBaseUrl(chainId)}>
-              <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
-            </ExternalLink>
-          )}
+          <ExternalLink href={getExplorerBaseUrl(chainId)}>
+            <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
+          </ExternalLink>
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
@@ -318,7 +315,7 @@ export const getChainNameFromId = (id: string | number) => {
   return CHAIN_IDS_TO_NAMES[id as SupportedChainId] || ''
 }
 
-export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = SUPPORTED_CHAIN_IDS
+export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = ALL_SUPPORTED_CHAIN_IDS
 
 export default function NetworkSelector() {
   const dispatch = useAppDispatch()
@@ -335,7 +332,8 @@ export default function NetworkSelector() {
   const location = useLocation()
   const tradeTypeInfo = useTradeTypeInfo()
   const isSmartContractWallet = useIsSmartContractWallet() // mod
-  const isUnsupportedNetwork = !supportedChainId(chainId)
+  // See ChainIdValidator
+  const isUnsupportedNetwork = false
 
   const isTallyWallet = getIsTallyWallet(provider?.provider)
 
@@ -449,7 +447,7 @@ export default function NetworkSelector() {
     return null
   }
 
-  const isChainSupported = supportedChainId(chainId)
+  const isChainSupported = !isUnsupportedNetwork
 
   return (
     <SelectorWrapper
@@ -458,7 +456,7 @@ export default function NetworkSelector() {
       onMouseLeave={!isUpToMedium ? closeModal : undefined}
       onClick={isUpToMedium ? toggleModal : undefined}
     >
-      <SelectorControls supportedChain={!!isChainSupported}>
+      <SelectorControls supportedChain={isChainSupported}>
         {isChainSupported ? (
           <>
             <SelectorLogo src={info?.logoUrl} />

@@ -12,7 +12,6 @@ import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
@@ -54,8 +53,7 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 }
 
 export default function Header() {
-  const { account, chainId: connectedChainId } = useWalletInfo()
-  const chainId = supportedChainId(connectedChainId)
+  const { account, chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
@@ -65,7 +63,7 @@ export default function Header() {
   const disconnectWallet = useDisconnectWallet()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
+  const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAnalytics(!darkMode)

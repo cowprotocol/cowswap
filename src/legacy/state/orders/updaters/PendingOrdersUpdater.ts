@@ -26,7 +26,6 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/u
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -251,8 +250,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useUpdateAtom(removeOrdersToCancelAtom)
 
   const pending = useCombinedPendingOrders({ chainId })

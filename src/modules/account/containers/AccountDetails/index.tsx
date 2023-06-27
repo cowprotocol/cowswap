@@ -15,7 +15,6 @@ import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
 import { getExplorerLabel, shortenAddress } from 'legacy/utils'
 import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
@@ -179,10 +178,9 @@ export function AccountDetails({
   toggleWalletModal,
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
-  const { account, chainId: connectedChainId } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
   const connection = getWeb3ReactConnection(connector)
-  const chainId = supportedChainId(connectedChainId)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
 

@@ -21,7 +21,6 @@ import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens
 import { CloseIcon } from 'legacy/theme'
 import { isAddress } from 'legacy/utils'
 import { isTruthy } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useWalletInfo } from 'modules/wallet'
@@ -67,8 +66,6 @@ export default function TokensOverview() {
   const prevChainId = usePrevious(chainId)
   const prevSelectedView = usePrevious(selectedView)
   const prevAccount = usePrevious(account)
-
-  const isChainSupported = supportedChainId(chainId)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -118,8 +115,6 @@ export default function TokensOverview() {
           <CardsSpinner size="42px" />
         </CardsLoader>
       )
-    } else if (!isChainSupported) {
-      return <Trans>Unsupported network</Trans>
     }
 
     return (
@@ -133,18 +128,7 @@ export default function TokensOverview() {
         tokensData={tokensData}
       />
     )
-  }, [
-    balances,
-    debouncedQuery,
-    favouriteTokens,
-    formattedTokens,
-    isChainSupported,
-    page,
-    prevQuery,
-    provider,
-    query,
-    selectedView,
-  ])
+  }, [balances, debouncedQuery, favouriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
@@ -169,58 +153,56 @@ export default function TokensOverview() {
 
   return (
     <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
-      {isChainSupported && (
-        <AccountHeading>
-          <LeftSection>
-            <MenuWrapper ref={node as any}>
-              <MenuButton onClick={toggleMenu}>
-                <Trans>{PageView[selectedView].label}</Trans>
-                <StyledChevronDown size={14} />
-              </MenuButton>
+      <AccountHeading>
+        <LeftSection>
+          <MenuWrapper ref={node as any}>
+            <MenuButton onClick={toggleMenu}>
+              <Trans>{PageView[selectedView].label}</Trans>
+              <StyledChevronDown size={14} />
+            </MenuButton>
 
-              {isMenuOpen ? (
-                <Menu>
-                  {Object.entries(PageView).map(([key, value]) => (
-                    <MenuItem
-                      key={key}
-                      active={selectedView === key}
-                      onClick={() => handleMenuClick(key as PageViewKeys)}
-                    >
-                      <span>{value.label}</span>
-                      {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              ) : null}
-            </MenuWrapper>
-          </LeftSection>
+            {isMenuOpen ? (
+              <Menu>
+                {Object.entries(PageView).map(([key, value]) => (
+                  <MenuItem
+                    key={key}
+                    active={selectedView === key}
+                    onClick={() => handleMenuClick(key as PageViewKeys)}
+                  >
+                    <span>{value.label}</span>
+                    {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                  </MenuItem>
+                ))}
+              </Menu>
+            ) : null}
+          </MenuWrapper>
+        </LeftSection>
 
-          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-            <RemoveTokens onClick={handleRestoreTokens}>
-              <span>
-                (<Trans>Reset favourites</Trans>)
-              </span>
-            </RemoveTokens>
+        {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+          <RemoveTokens onClick={handleRestoreTokens}>
+            <span>
+              (<Trans>Reset favourites</Trans>)
+            </span>
+          </RemoveTokens>
+        )}
+
+        <SearchInputFormatter>
+          <TokenSearchInput
+            type="text"
+            id="token-search-input"
+            placeholder={t`Search by name, symbol or address`}
+            autoComplete="off"
+            value={query}
+            onChange={handleSearch}
+          />
+
+          {!!query.length && (
+            <ClearSearchInput>
+              <CloseIcon size={24} onClick={handleSearchClear} />
+            </ClearSearchInput>
           )}
-
-          <SearchInputFormatter>
-            <TokenSearchInput
-              type="text"
-              id="token-search-input"
-              placeholder={t`Search by name, symbol or address`}
-              autoComplete="off"
-              value={query}
-              onChange={handleSearch}
-            />
-
-            {!!query.length && (
-              <ClearSearchInput>
-                <CloseIcon size={24} onClick={handleSearchClear} />
-              </ClearSearchInput>
-            )}
-          </SearchInputFormatter>
-        </AccountHeading>
-      )}
+        </SearchInputFormatter>
+      </AccountHeading>
       <Overview>
         <PageTitle title="Tokens Overview" />
 
