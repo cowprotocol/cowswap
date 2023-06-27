@@ -9,11 +9,13 @@ const AUTH_THRESHOLD = ms`1m`
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  executionDate: Date,
+  executionDateStr: string | null,
   auth: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderStatus {
-  if (isTwapOrderExpired(order)) return TwapOrderStatus.Expired
+  const executionDate = executionDateStr ? new Date(executionDateStr) : null
+
+  if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
 
@@ -24,8 +26,11 @@ export function getTwapOrderStatus(
   return TwapOrderStatus.Scheduled
 }
 
-export function isTwapOrderExpired(order: TWAPOrderStruct): boolean {
-  const { t0: startTime, n: numOfParts, t: timeInterval } = order
+export function isTwapOrderExpired(order: TWAPOrderStruct, executionDate: Date | null): boolean {
+  if (!executionDate) return false
+
+  const startTime = Math.ceil(executionDate.getTime() / 1000)
+  const { n: numOfParts, t: timeInterval } = order
   const endTime = startTime + timeInterval * numOfParts
   const nowTimestamp = Math.ceil(Date.now() / 1000)
 
@@ -36,7 +41,9 @@ export function isTwapOrderExpired(order: TWAPOrderStruct): boolean {
  * ComposableCow.singleOrders returns false by default
  * To avoid false-positive values, we should not check authorized flag within first minute after execution time
  */
-function shouldCheckAuth(executionDate: Date): boolean {
+function shouldCheckAuth(executionDate: Date | null): boolean {
+  if (!executionDate) return false
+
   const executionTimestamp = executionDate.getTime()
   const nowTimestamp = Date.now()
 

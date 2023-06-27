@@ -19,7 +19,7 @@ export type OrderWithComposableCowInfo = {
 
 export type SafeTransactionParams = {
   submissionDate: string
-  executionDate: string
+  executionDate: string | null
   isExecuted: boolean
   nonce: number
   confirmationsRequired: number
