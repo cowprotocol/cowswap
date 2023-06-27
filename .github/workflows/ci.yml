@@ -185,6 +185,25 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: yarn
 
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v3
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
       # Install deps only
       - name: Cypress install dependencies
         id: cypress-deps
