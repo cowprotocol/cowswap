@@ -7,9 +7,10 @@ import { Identify, identify, init, track } from '@amplitude/analytics-browser'
  * member of the organization on Amplitude to view details.
  */
 export function initializeAnalytics(isDevEnvironment = process.env.NODE_ENV === 'development') {
-  if (isDevEnvironment) return
-
   const API_KEY = process.env.REACT_APP_AMPLITUDE_KEY
+
+  if (isDevEnvironment || !API_KEY) return
+
   if (typeof API_KEY === 'undefined') {
     throw new Error(`REACT_APP_AMPLITUDE_KEY must be a defined environment variable`)
   }
