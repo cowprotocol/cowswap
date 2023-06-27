@@ -1,8 +1,6 @@
 import { useAtomValue } from 'jotai'
 import React from 'react'
 
-import { isSupportedChain } from 'legacy/utils/supportedChainId'
-
 import { useWalletInfo } from 'modules/wallet'
 
 import { GpModal } from 'common/pure/Modal'
@@ -25,7 +23,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
 
-  if (!isSupportedChain(chainId)) return null
+  if (!chainId) return null
 
   return (
     <GpModal isOpen={isOpen} onDismiss={onDismiss}>
