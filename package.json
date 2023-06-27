@@ -38,8 +38,8 @@
     "postinstall": "yarn contracts:compile && yarn i18n:compile && yarn patch-package",
     "prepare": "husky install",
     "prepublishOnly": "yarn widgets:build",
+    "cosmos": "nx exec -- yarn cosmos:run ",
     "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
-    "cosmos:run": "nx exec -- yarn _cosmos:run ",
     "cosmos:export": "nx exec -- cross-env NODE_ENV=development cosmos-export",
     "widgets:build": "nx exec -- rollup --config --failAfterWarnings --configPlugin typescript2",
     "sitemap": "nx exec -- node src/sitemap",
@@ -48,7 +48,7 @@
     "_contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "_i18n:compile": "yarn i18n:extract && lingui compile",
     "_i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
-    "_cosmos:run": "yarn cosmos:clear && cosmos"
+    "cosmos:run": "yarn cosmos:clear && cosmos"
   },
   "browser": {
     "crypto": false
