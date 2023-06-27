@@ -26,12 +26,13 @@ export const orderDeadlines: OrderDeadline[] = [
 ]
 
 export const TWAP_ORDER_STRUCT =
-  'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span)'
+  'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'
 
+const twapHandlerAddress = '0x910d00a310f7Dc5B29FE73458F47f519be547D3d'
 export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
-  1: 'TODO',
-  100: 'TODO',
-  5: '0xa12d770028d7072b80baeb6a1df962374fd13d9a',
+  1: twapHandlerAddress,
+  100: twapHandlerAddress,
+  5: twapHandlerAddress,
 }
 
 export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Scheduled]

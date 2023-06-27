@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -76,9 +75,7 @@ export function useCreateTwapOrder() {
         orderClass: 'TWAP',
       }
 
-      const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
-      const twapOrderWithStartTime = { ...twapOrder, startTime }
-      const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
+      const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
       const orderId = getConditionalOrderId(paramsStruct)
 
       tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
@@ -88,7 +85,7 @@ export function useCreateTwapOrder() {
         const fallbackSetupTxs = fallbackHandlerIsNotSet
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
-        const createOrderTxs = createTwapOrderTxs(twapOrderWithStartTime, paramsStruct, twapOrderCreationContext)
+        const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
         const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
 
         addTwapOrderToList({
