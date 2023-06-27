@@ -1,6 +1,6 @@
 describe('Search', () => {
   beforeEach(() => {
-    cy.visit('/#/swap')
+    cy.visit('/')
   })
 
   it('should be able to find a token by its name', () => {
