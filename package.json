@@ -44,11 +44,11 @@
     "widgets:build": "nx exec -- rollup --config --failAfterWarnings --configPlugin typescript2",
     "sitemap": "nx exec -- node src/sitemap",
     "writeVersion": "nx exec -- node src/writeVersion",
+    "cosmos:run": "yarn cosmos:clear && cosmos",
     "_start:service-worker": "yarn build && yarn serve",
     "_contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "_i18n:compile": "yarn i18n:extract && lingui compile",
-    "_i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
-    "cosmos:run": "yarn cosmos:clear && cosmos"
+    "_i18n:pseudo": "lingui extract --locale pseudo && lingui compile"
   },
   "browser": {
     "crypto": false
