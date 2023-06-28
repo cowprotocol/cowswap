@@ -17,10 +17,12 @@ interface LedgerConstructorArgs {
 }
 
 interface LedgerOptions {
-  chainId?: number
   bridge?: string
-  infuraId?: string
-  rpc?: { [chainId: number]: string }
+  rpcMap?: { [chainId: number]: string }
+  walletConnectVersion?: number
+  projectId?: string
+  chains?: number[]
+  optionalChains?: number[]
 }
 
 function parseChainId(chainId: number | string) {
@@ -83,9 +85,11 @@ export class Ledger extends Connector {
 
     await connectKit.checkSupport({
       providerType: 'Ethereum' as SupportedProviders,
-      chainId: this.options.chainId,
-      infuraId: this.options.infuraId,
-      rpc: this.options.rpc,
+      walletConnectVersion: this.options.walletConnectVersion,
+      projectId: this.options.projectId,
+      rpcMap: this.options.rpcMap,
+      chains: this.options.chains,
+      optionalChains: this.options.optionalChains,
     })
   }
 

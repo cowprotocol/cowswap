@@ -13,7 +13,7 @@ import {
   getIsTrustWallet,
   getIsZengoWallet,
 } from 'modules/wallet/api/utils/connection'
-import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
+import { WC_DISABLED_TEXT, WC_DEFAULT_PROJECT_ID } from 'modules/wallet/constants'
 
 import { TryActivation, onError } from '.'
 
@@ -22,7 +22,6 @@ import { AsyncConnector } from './asyncConnector'
 import { Web3ReactConnection } from '../types'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
-const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
 const TOOLTIP_TEXT =
   'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'
 

@@ -8,16 +8,21 @@ import { ConnectionType } from 'modules/wallet'
 import { default as LedgerImage } from 'modules/wallet/api/assets/ledger.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
+import { WC_DEFAULT_PROJECT_ID } from 'modules/wallet/constants'
 
 import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
+
+const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 
 const BASE_PROPS = {
   color: '#4196FC',
   icon: LedgerImage,
   id: 'ledger',
 }
+
+const [mainnet, ...optionalChains] = Object.keys(RPC_URLS).map(Number)
 
 const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
@@ -29,7 +34,11 @@ const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
               return new m.Ledger({
                 actions,
                 options: {
-                  rpc: RPC_URLS,
+                  walletConnectVersion: 2,
+                  rpcMap: RPC_URLS,
+                  projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
+                  chains: [mainnet],
+                  optionalChains,
                 },
                 kit,
               })
