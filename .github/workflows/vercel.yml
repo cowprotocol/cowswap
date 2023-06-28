@@ -43,6 +43,11 @@ jobs:
           REACT_APP_LAUNCH_DARKLY_KEY=${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
+      # Open tmate ssh connection on failure for debugging
+      # Uncomment when needed and push upstream
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3        
+
       - name: Get the version
         id: get_version
         run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
