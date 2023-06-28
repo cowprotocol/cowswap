@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
@@ -17,9 +19,16 @@ import {
 } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 import { TryActivation, onError } from '.'
 
 import { Web3ReactConnection } from '../types'
+
+const WC_SUNSET_LINK =
+  'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'
+const WC_SUNSET_TEXT =
+  'The WalletConnect v1.0 protocol has been shut down on June 28, 2023 at 2pm (UTC). Click to read more.'
 
 export const walletConnectOption = {
   color: '#4196FC',
@@ -46,6 +55,7 @@ export const walletConnectConnection: Web3ReactConnection = {
 
 export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
   const { walletName } = useWalletMetaData()
+  const { walletConnectV1Deprecated: isDeprecated } = useFeatureFlags()
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
   const isActive =
@@ -54,15 +64,26 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: TryActiv
     !getIsAmbireWallet(walletName) &&
     !getIsAlphaWallet(walletName) &&
     !getIsTrustWallet(null, walletName)
-  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+
+  const tooltipText = useMemo(() => {
+    if (isDeprecated) {
+      return WC_SUNSET_TEXT
+    }
+
+    return !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+  }, [isActive, isWalletConnect, isDeprecated])
+
+  const link = isDeprecated ? WC_SUNSET_LINK : null
 
   return (
     <ConnectWalletOption
       {...walletConnectOption}
       isActive={isActive}
+      isDeprecated={isDeprecated}
       tooltipText={tooltipText}
       clickable={!isWalletConnect}
-      onClick={() => tryActivation(walletConnectConnection.connector)}
+      link={link}
+      onClick={() => (!isDeprecated ? tryActivation(walletConnectConnection.connector) : null)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT)}
     />
   )
