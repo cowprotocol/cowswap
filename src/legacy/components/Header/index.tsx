@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
@@ -9,7 +8,8 @@ import { useNavigate } from 'react-router-dom'
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import NetworkSelector from 'legacy/components/Header/NetworkSelector'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
@@ -22,23 +22,26 @@ import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { useWalletInfo, Web3Status } from 'modules/wallet'
+import { useDisconnectWallet, useWalletInfo, Web3Status } from 'modules/wallet'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { Routes } from 'constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  Wrapper,
-  Title,
-  LogoImage,
-  HeaderModWrapper,
-  UniIcon,
   AccountElement,
   BalanceText,
   HeaderControls,
   HeaderElement,
+  HeaderModWrapper,
   HeaderRow,
+  LogoImage,
+  Title,
+  UniIcon,
+  Wrapper,
 } from './styled'
 
 // Assets
@@ -50,6 +53,11 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 export default function Header() {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
+
+  const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
+  const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnectV2 = useIsActiveWallet(walletConnectConnectionV2)
+  const disconnectWallet = useDisconnectWallet()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
@@ -116,6 +124,16 @@ export default function Header() {
   useEffect(() => {
     isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
+
+  // Disconnect wallet if its wallet-connect v1 and v1 flag is disabled
+  useEffect(() => {
+    if (
+      (walletConnectV1Enabled === false && isWalletConnectV1) ||
+      (walletConnectV2Enabled === false && isWalletConnectV2)
+    ) {
+      disconnectWallet()
+    }
+  }, [walletConnectV1Enabled, isWalletConnectV1, disconnectWallet, walletConnectV2Enabled, isWalletConnectV2])
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>

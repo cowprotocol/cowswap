@@ -11,6 +11,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.INJECTED]: undefined,
     [ConnectionType.FORTMATIC]: undefined,
     [ConnectionType.WALLET_CONNECT]: undefined,
+    [ConnectionType.WALLET_CONNECT_V2]: undefined,
     [ConnectionType.COINBASE_WALLET]: undefined,
     [ConnectionType.NETWORK]: undefined,
     [ConnectionType.GNOSIS_SAFE]: undefined,

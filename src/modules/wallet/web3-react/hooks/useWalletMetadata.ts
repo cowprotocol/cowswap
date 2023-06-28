@@ -51,7 +51,9 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
     return defaultOutput
   }
 
-  const meta = provider.connector.peerMeta
+  const v1MetaData = provider?.connector?.peerMeta
+  const v2MetaData = provider?.signer?.session?.peer?.metadata
+  const meta = v1MetaData || v2MetaData
 
   if (meta) {
     return {
@@ -73,7 +75,7 @@ export function useWalletMetaData(): WalletMetaData {
       return METADATA_DISCONNECTED
     }
 
-    if (connectionType === ConnectionType.WALLET_CONNECT) {
+    if (connectionType === ConnectionType.WALLET_CONNECT || connectionType === ConnectionType.WALLET_CONNECT_V2) {
       const wc = provider?.provider
 
       if ((wc as any)?.isWalletConnect) {
