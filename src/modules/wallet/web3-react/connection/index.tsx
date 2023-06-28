@@ -163,7 +163,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      {walletConnectionOption}
+      <FeatureGuard featureFlag="walletConnectV1Enabled">{walletConnectionOption}</FeatureGuard>
       <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
