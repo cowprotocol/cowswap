@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
@@ -17,9 +19,14 @@ import {
 } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 import { TryActivation, onError } from '.'
 
 import { Web3ReactConnection } from '../types'
+
+const WC_SUNSET_LINK =
+  'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'
 
 export const walletConnectOption = {
   color: '#4196FC',
@@ -46,6 +53,7 @@ export const walletConnectConnection: Web3ReactConnection = {
 
 export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
   const { walletName } = useWalletMetaData()
+  const { walletConnectV1Enabled } = useFeatureFlags()
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
   const isActive =
@@ -54,14 +62,25 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: TryActiv
     !getIsAmbireWallet(walletName) &&
     !getIsAlphaWallet(walletName) &&
     !getIsTrustWallet(null, walletName)
-  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+
+  const tooltipText = useMemo(() => {
+    if (!walletConnectV1Enabled) {
+      return 'The WalletConnect v1.0 protocol has been shut down on June 28, 2023 at 2pm (UTC). Click to read more.'
+    }
+
+    return !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+  }, [isActive, isWalletConnect, walletConnectV1Enabled])
+
+  const link = !walletConnectV1Enabled ? WC_SUNSET_LINK : null
 
   return (
     <ConnectWalletOption
       {...walletConnectOption}
       isActive={isActive}
+      isDisabled={!walletConnectV1Enabled}
       tooltipText={tooltipText}
       clickable={!isWalletConnect}
+      link={link}
       onClick={() => tryActivation(walletConnectConnection.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT)}
     />
