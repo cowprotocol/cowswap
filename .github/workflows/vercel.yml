@@ -75,8 +75,8 @@ jobs:
 
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3        
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3        
 
       - name: Get the version
         id: get_version
