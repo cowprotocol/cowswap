@@ -11,7 +11,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "yarn i18n:compile && craco build"
+        "command": "yarn i18n:compile && craco build && yarn writeVersion"
       }
     },
     "e2e": {
