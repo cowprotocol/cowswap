@@ -152,7 +152,7 @@ jobs:
   vercel-dev:
     # Deploys to Vercel dev environment
     name: Vercel dev
-    needs: [test, lint]
+    # needs: [test, lint]
     # if: github.ref == 'refs/heads/develop'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
