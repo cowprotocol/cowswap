@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
 import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
-import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
+import { isMobile } from 'legacy/utils/userAgent'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
@@ -10,22 +10,25 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'
-import { CoinbaseWalletOption } from './coinbase'
-import { coinbaseWalletConnection } from './coinbase'
+import { coinbaseWalletConnection, CoinbaseWalletOption } from './coinbase'
 import { fortmaticConnection } from './formatic'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
-import { injectedConnection } from './injected'
+import {
+  injectedConnection,
+  InjectedOption,
+  InstallMetaMaskOption,
+  MetaMaskOption,
+  OpenMetaMaskMobileOption,
+} from './injected'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 import { ledgerConnection, LedgerOption } from './ledger'
 import { networkConnection } from './network'
 import { gnosisSafeConnection } from './safe'
-import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
+import { tallyWalletConnection } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
-import { WalletConnectOption } from './walletConnect'
-import { walletConnectConnection } from './walletConnect'
-import { WalletConnectV2Option, walletConnectConnectionV2 } from './walletConnectV2'
-import { ZengoOption } from './zengo'
+import { walletConnectConnection, WalletConnectOption } from './walletConnect'
+import { walletConnectConnectionV2, WalletConnectV2Option } from './walletConnectV2'
 
+// import { ZengoOption } from './zengo'
 import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
 
@@ -144,7 +147,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     (!isInjectedMobileBrowser && <WalletConnectV2Option tryActivation={tryActivation} />) ?? null
 
   // Wallet-connect based
-  const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
+  // const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption tryActivation={tryActivation} />) ?? null
@@ -162,7 +165,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
-      {zengoOption}
+      {/*{zengoOption}*/}
       {ambireOption}
       {alphaOption}
       {/* {tallyOption} */}
