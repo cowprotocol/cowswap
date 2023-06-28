@@ -9,15 +9,14 @@ import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import NetworkSelector from 'legacy/components/Header/NetworkSelector'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
+import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -27,23 +26,22 @@ import { useDisconnectWallet, useWalletInfo, Web3Status } from 'modules/wallet'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
-import { Routes } from 'constants/routes'
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+import { Routes } from 'constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  Wrapper,
-  Title,
-  LogoImage,
-  HeaderModWrapper,
-  UniIcon,
   AccountElement,
   BalanceText,
   HeaderControls,
   HeaderElement,
+  HeaderModWrapper,
   HeaderRow,
+  LogoImage,
+  Title,
+  UniIcon,
+  Wrapper,
 } from './styled'
 
 // Assets

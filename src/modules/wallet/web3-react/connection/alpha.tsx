@@ -1,13 +1,12 @@
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { useWalletMetaData } from 'modules/wallet'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as AlphaImage } from 'modules/wallet/api/assets/alpha.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName, getIsAlphaWallet } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 
 import { TryActivation } from '.'
 

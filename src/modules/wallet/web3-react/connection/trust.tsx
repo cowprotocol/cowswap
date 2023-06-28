@@ -3,15 +3,14 @@ import { Connector } from '@web3-react/types'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { useWalletMetaData } from 'modules/wallet'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as TrustImage } from 'modules/wallet/api/assets/trust.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName, getIsTrustWallet } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 import { InjectedWallet } from 'modules/wallet/web3-react/connectors/Injected'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 
 import { walletConnectConnection } from './walletConnect'
 import { walletConnectConnectionV2 } from './walletConnectV2'
