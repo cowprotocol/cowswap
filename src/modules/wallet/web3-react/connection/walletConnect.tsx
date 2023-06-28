@@ -43,6 +43,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
       options: {
         rpc: RPC_URLS,
         qrcode: true,
+        bridge: 'https://safe-walletconnect.safe.global',
       },
       onError,
     })
