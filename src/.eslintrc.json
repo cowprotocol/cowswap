@@ -1,6 +1,6 @@
 {
   "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended", "../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "libs"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["cypress/**", "cypress-custom/**"],
