@@ -4,7 +4,7 @@
   "sourceRoot": "src/libs/abis/src",
   "projectType": "library",
   "targets": {
-    "abi": {
+    "abis": {
       "executor": "nx:noop",
       "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy"]
     },

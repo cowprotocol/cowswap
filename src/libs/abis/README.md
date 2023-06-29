@@ -19,5 +19,5 @@ These generated types are commited into the project, and are not generated autom
 Geterate types:
 
 ```bash
-nx abi abis
+nx abis abis
 ```
