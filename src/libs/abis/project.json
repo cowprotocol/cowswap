@@ -10,7 +10,7 @@
     },
     "abi": {
       "executor": "nx:noop",
-      "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy", "abi:univ3"]
+      "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy"]
     },
     "abi:ethflow": {
       "executor": "nx:run-commands",
@@ -34,12 +34,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/univ3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\""
-      }
-    },
-    "abis:export": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node ./src/libs/abis/scripts/abis-export.js"
       }
     },
     "build": {
