@@ -13,6 +13,7 @@ const TWAP_STRUCT_ABI = [
   { name: 'n', type: 'uint256' },
   { name: 't', type: 'uint256' },
   { name: 'span', type: 'uint256' },
+  { name: 'appData', type: 'bytes32' },
 ] as ParamType[]
 
 export function parseTwapOrderStruct(staticInput: string): TWAPOrderStruct {
@@ -28,5 +29,6 @@ export function parseTwapOrderStruct(staticInput: string): TWAPOrderStruct {
     n: (rawData['n'] as BigNumber).toNumber(),
     t: (rawData['t'] as BigNumber).toNumber(),
     span: (rawData['span'] as BigNumber).toNumber(),
+    appData: rawData['appData'],
   }
 }

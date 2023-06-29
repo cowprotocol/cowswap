@@ -8,14 +8,19 @@ export function createTwapOrderTxs(
   paramsStruct: ConditionalOrderParams,
   context: TwapOrderCreationContext
 ): MetaTransactionData[] {
-  const { composableCowContract, needsApproval, erc20Contract, spender } = context
+  const { composableCowContract, needsApproval, erc20Contract, spender, currentBlockFactoryAddress } = context
 
   const sellTokenAddress = order.sellAmount.currency.address
   const sellAmountAtoms = order.sellAmount.quotient.toString()
 
   const createOrderTx = {
     to: composableCowContract.address,
-    data: composableCowContract.interface.encodeFunctionData('create', [paramsStruct, true]),
+    data: composableCowContract.interface.encodeFunctionData('createWithContext', [
+      paramsStruct,
+      currentBlockFactoryAddress,
+      '0x',
+      true,
+    ]),
     value: '0',
     operation: 0,
   }

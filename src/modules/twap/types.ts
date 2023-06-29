@@ -12,6 +12,7 @@ export interface TWAPOrder {
   startTime: number
   timeInterval: number
   span: number
+  appData: string
 }
 
 export interface TWAPOrderStruct {
@@ -27,6 +28,7 @@ export interface TWAPOrderStruct {
   // timeInterval
   t: number
   span: number
+  appData: string
 }
 
 export enum TwapOrderStatus {
