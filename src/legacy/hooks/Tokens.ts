@@ -7,7 +7,6 @@ import { Currency, Token } from '@uniswap/sdk-core'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
-import { isL2ChainId } from 'legacy/utils/chains'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
@@ -76,7 +75,7 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
 
   // checks the default L2 lists to see if `bridgeInfo` has an L1 address value that is unsupported
   const l2InferredBlockedTokens: typeof unsupportedTokens = useMemo(() => {
-    if (!chainId || !isL2ChainId(chainId)) {
+    if (!chainId) {
       return {}
     }
 

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
@@ -25,7 +24,6 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWalletInfo } from 'modules/wallet'
@@ -53,7 +51,7 @@ const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
   const { provider, connector } = useWeb3React()
-  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()
@@ -72,7 +70,7 @@ export default function Profile() {
   const vCowToken = V_COW[chainId]
   // Cow balance
   const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || supportedChainId(chainId)
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || chainId
       ? CurrencyAmount.fromRawAmount(cowToken, 0)
       : null
 

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
-import NetworkSelector from 'legacy/components/Header/NetworkSelector'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
