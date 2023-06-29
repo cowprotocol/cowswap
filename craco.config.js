@@ -67,6 +67,7 @@ module.exports = {
       '@cowprotocol/widget-lib': path.resolve(__dirname, 'src/libs/widget-lib/src/index.ts'),
       '@cowprotocol/widget-react': path.resolve(__dirname, 'src/libs/widget-react/src/index.ts'),
       '@cowprotocol/abis': path.resolve(__dirname, 'src/libs/abis/src/index.ts'),
+      '@cowprotocol/cowswap-react': path.resolve(__dirname, 'src/libs/cowswap-react/src/index.ts'),
     },
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
