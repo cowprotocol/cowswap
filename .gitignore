@@ -1,14 +1,14 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # generated contract types
-/src/lib/locales/**/*.js
-/src/lib/locales/**/en-US.po
-/src/lib/locales/**/pseudo.po
-/src/locales/**/*.js
-/src/locales/**/*.ts
-/src/locales/**/*.json
-/src/locales/**/en-US.po
-/src/locales/**/pseudo.po
+/src/libs/cowswap-react/src/lib/locales/**/*.js
+/src/libs/cowswap-react/src/lib/locales/**/en-US.po
+/src/libs/cowswap-react/src/lib/locales/**/pseudo.po
+/src/libs/cowswap-react/src/locales/**/*.js
+/src/libs/cowswap-react/src/locales/**/*.ts
+/src/libs/cowswap-react/src/locales/**/*.json
+/src/libs/cowswap-react/src/locales/**/en-US.po
+/src/libs/cowswap-react/src/locales/**/pseudo.po
 
 # dependencies
 node_modules

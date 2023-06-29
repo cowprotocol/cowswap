@@ -16,7 +16,7 @@ import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurre
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
-import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
+import { TokenAddressMap, useUnsupportedTokenList } from '../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {

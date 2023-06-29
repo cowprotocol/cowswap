@@ -1,8 +1,8 @@
 const linguiConfig = {
   catalogs: [
     {
-      path: '<rootDir>/src/locales/{locale}',
-      include: ['<rootDir>/src'],
+      path: '<rootDir>/src/libs/cowswap-react/src/locales/{locale}',
+      include: ['<rootDir>/libs/cowswa[-react/src'],
     },
   ],
   compileNamespace: 'cjs',

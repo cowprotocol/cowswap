@@ -1,4 +1,4 @@
-import { DEFAULT_LIST_OF_LISTS } from './../constants/lists'
+import { DEFAULT_LIST_OF_LISTS } from '../constants/lists'
 
 const DEFAULT_LIST_PRIORITIES = DEFAULT_LIST_OF_LISTS.reduce<{ [listUrl: string]: number }>((memo, listUrl, index) => {
   memo[listUrl] = index + 1
