@@ -2,242 +2,232 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type {
-  ArgentWalletDetector,
-  ArgentWalletDetectorInterface,
-} from "../ArgentWalletDetector";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { ArgentWalletDetector, ArgentWalletDetectorInterface } from '../ArgentWalletDetector'
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32[]",
-        name: "_codes",
-        type: "bytes32[]",
+        internalType: 'bytes32[]',
+        name: '_codes',
+        type: 'bytes32[]',
       },
       {
-        internalType: "address[]",
-        name: "_implementations",
-        type: "address[]",
+        internalType: 'address[]',
+        name: '_implementations',
+        type: 'address[]',
       },
     ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "bytes32",
-        name: "code",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 'code',
+        type: 'bytes32',
       },
     ],
-    name: "CodeAdded",
-    type: "event",
+    name: 'CodeAdded',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "address",
-        name: "implementation",
-        type: "address",
+        internalType: 'address',
+        name: 'implementation',
+        type: 'address',
       },
     ],
-    name: "ImplementationAdded",
-    type: "event",
+    name: 'ImplementationAdded',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "address",
-        name: "_newOwner",
-        type: "address",
+        internalType: 'address',
+        name: '_newOwner',
+        type: 'address',
       },
     ],
-    name: "OwnerChanged",
-    type: "event",
+    name: 'OwnerChanged',
+    type: 'event',
   },
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
       },
     ],
-    name: "acceptedCodes",
+    name: 'acceptedCodes',
     outputs: [
       {
-        internalType: "bool",
-        name: "exists",
-        type: "bool",
+        internalType: 'bool',
+        name: 'exists',
+        type: 'bool',
       },
       {
-        internalType: "uint128",
-        name: "index",
-        type: "uint128",
+        internalType: 'uint128',
+        name: 'index',
+        type: 'uint128',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
+        internalType: 'address',
+        name: '',
+        type: 'address',
       },
     ],
-    name: "acceptedImplementations",
+    name: 'acceptedImplementations',
     outputs: [
       {
-        internalType: "bool",
-        name: "exists",
-        type: "bool",
+        internalType: 'bool',
+        name: 'exists',
+        type: 'bool',
       },
       {
-        internalType: "uint128",
-        name: "index",
-        type: "uint128",
+        internalType: 'uint128',
+        name: 'index',
+        type: 'uint128',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "_code",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: '_code',
+        type: 'bytes32',
       },
     ],
-    name: "addCode",
+    name: 'addCode',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_argentWallet",
-        type: "address",
+        internalType: 'address',
+        name: '_argentWallet',
+        type: 'address',
       },
     ],
-    name: "addCodeAndImplementationFromWallet",
+    name: 'addCodeAndImplementationFromWallet',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_impl",
-        type: "address",
+        internalType: 'address',
+        name: '_impl',
+        type: 'address',
       },
     ],
-    name: "addImplementation",
+    name: 'addImplementation',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_newOwner",
-        type: "address",
+        internalType: 'address',
+        name: '_newOwner',
+        type: 'address',
       },
     ],
-    name: "changeOwner",
+    name: 'changeOwner',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [],
-    name: "getCodes",
+    name: 'getCodes',
     outputs: [
       {
-        internalType: "bytes32[]",
-        name: "",
-        type: "bytes32[]",
+        internalType: 'bytes32[]',
+        name: '',
+        type: 'bytes32[]',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [],
-    name: "getImplementations",
+    name: 'getImplementations',
     outputs: [
       {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_wallet",
-        type: "address",
+        internalType: 'address',
+        name: '_wallet',
+        type: 'address',
       },
     ],
-    name: "isArgentWallet",
+    name: 'isArgentWallet',
     outputs: [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [],
-    name: "owner",
+    name: 'owner',
     outputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
+        internalType: 'address',
+        name: '',
+        type: 'address',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class ArgentWalletDetector__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): ArgentWalletDetectorInterface {
-    return new utils.Interface(_abi) as ArgentWalletDetectorInterface;
+    return new utils.Interface(_abi) as ArgentWalletDetectorInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ArgentWalletDetector {
-    return new Contract(
-      address,
-      _abi,
-      signerOrProvider
-    ) as ArgentWalletDetector;
+  static connect(address: string, signerOrProvider: Signer | Provider): ArgentWalletDetector {
+    return new Contract(address, _abi, signerOrProvider) as ArgentWalletDetector
   }
 }

@@ -12,46 +12,40 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "./common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common'
 
 export declare namespace IConditionalOrder {
   export type ConditionalOrderParamsStruct = {
-    handler: PromiseOrValue<string>;
-    salt: PromiseOrValue<BytesLike>;
-    staticInput: PromiseOrValue<BytesLike>;
-  };
+    handler: PromiseOrValue<string>
+    salt: PromiseOrValue<BytesLike>
+    staticInput: PromiseOrValue<BytesLike>
+  }
 
   export type ConditionalOrderParamsStructOutput = [string, string, string] & {
-    handler: string;
-    salt: string;
-    staticInput: string;
-  };
+    handler: string
+    salt: string
+    staticInput: string
+  }
 }
 
 export declare namespace GPv2Order {
   export type DataStruct = {
-    sellToken: PromiseOrValue<string>;
-    buyToken: PromiseOrValue<string>;
-    receiver: PromiseOrValue<string>;
-    sellAmount: PromiseOrValue<BigNumberish>;
-    buyAmount: PromiseOrValue<BigNumberish>;
-    validTo: PromiseOrValue<BigNumberish>;
-    appData: PromiseOrValue<BytesLike>;
-    feeAmount: PromiseOrValue<BigNumberish>;
-    kind: PromiseOrValue<BytesLike>;
-    partiallyFillable: PromiseOrValue<boolean>;
-    sellTokenBalance: PromiseOrValue<BytesLike>;
-    buyTokenBalance: PromiseOrValue<BytesLike>;
-  };
+    sellToken: PromiseOrValue<string>
+    buyToken: PromiseOrValue<string>
+    receiver: PromiseOrValue<string>
+    sellAmount: PromiseOrValue<BigNumberish>
+    buyAmount: PromiseOrValue<BigNumberish>
+    validTo: PromiseOrValue<BigNumberish>
+    appData: PromiseOrValue<BytesLike>
+    feeAmount: PromiseOrValue<BigNumberish>
+    kind: PromiseOrValue<BytesLike>
+    partiallyFillable: PromiseOrValue<boolean>
+    sellTokenBalance: PromiseOrValue<BytesLike>
+    buyTokenBalance: PromiseOrValue<BytesLike>
+  }
 
   export type DataStructOutput = [
     string,
@@ -67,106 +61,86 @@ export declare namespace GPv2Order {
     string,
     string
   ] & {
-    sellToken: string;
-    buyToken: string;
-    receiver: string;
-    sellAmount: BigNumber;
-    buyAmount: BigNumber;
-    validTo: number;
-    appData: string;
-    feeAmount: BigNumber;
-    kind: string;
-    partiallyFillable: boolean;
-    sellTokenBalance: string;
-    buyTokenBalance: string;
-  };
+    sellToken: string
+    buyToken: string
+    receiver: string
+    sellAmount: BigNumber
+    buyAmount: BigNumber
+    validTo: number
+    appData: string
+    feeAmount: BigNumber
+    kind: string
+    partiallyFillable: boolean
+    sellTokenBalance: string
+    buyTokenBalance: string
+  }
 }
 
 export interface ComposableCoWInterface extends utils.Interface {
   functions: {
-    "createWithContext((address,bytes32,bytes),address,bytes,bool)": FunctionFragment;
-    "singleOrders(address,bytes32)": FunctionFragment;
-    "getTradeableOrderWithSignature(address,(address,bytes32,bytes),bytes,bytes32[])": FunctionFragment;
-    "remove(bytes32)": FunctionFragment;
-  };
+    'createWithContext((address,bytes32,bytes),address,bytes,bool)': FunctionFragment
+    'singleOrders(address,bytes32)': FunctionFragment
+    'getTradeableOrderWithSignature(address,(address,bytes32,bytes),bytes,bytes32[])': FunctionFragment
+    'remove(bytes32)': FunctionFragment
+  }
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "createWithContext"
-      | "singleOrders"
-      | "getTradeableOrderWithSignature"
-      | "remove"
-  ): FunctionFragment;
+    nameOrSignatureOrTopic: 'createWithContext' | 'singleOrders' | 'getTradeableOrderWithSignature' | 'remove'
+  ): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "createWithContext",
+    functionFragment: 'createWithContext',
     values: [
       IConditionalOrder.ConditionalOrderParamsStruct,
       PromiseOrValue<string>,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<boolean>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "singleOrders",
+    functionFragment: 'singleOrders',
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "getTradeableOrderWithSignature",
+    functionFragment: 'getTradeableOrderWithSignature',
     values: [
       PromiseOrValue<string>,
       IConditionalOrder.ConditionalOrderParamsStruct,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>[]
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "remove",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'remove', values: [PromiseOrValue<BytesLike>]): string
 
-  decodeFunctionResult(
-    functionFragment: "createWithContext",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "singleOrders",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getTradeableOrderWithSignature",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "remove", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'createWithContext', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'singleOrders', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'getTradeableOrderWithSignature', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'remove', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface ComposableCoW extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: ComposableCoWInterface;
+  interface: ComposableCoWInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     createWithContext(
@@ -175,13 +149,13 @@ export interface ComposableCoW extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       dispatch: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     singleOrders(
       safe: PromiseOrValue<string>,
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[boolean]>
 
     getTradeableOrderWithSignature(
       owner: PromiseOrValue<string>,
@@ -191,16 +165,16 @@ export interface ComposableCoW extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [GPv2Order.DataStructOutput, string] & {
-        order: GPv2Order.DataStructOutput;
-        signature: string;
+        order: GPv2Order.DataStructOutput
+        signature: string
       }
-    >;
+    >
 
     remove(
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   createWithContext(
     params: IConditionalOrder.ConditionalOrderParamsStruct,
@@ -208,13 +182,13 @@ export interface ComposableCoW extends BaseContract {
     data: PromiseOrValue<BytesLike>,
     dispatch: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   singleOrders(
     safe: PromiseOrValue<string>,
     singleOrderHash: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<boolean>
 
   getTradeableOrderWithSignature(
     owner: PromiseOrValue<string>,
@@ -224,15 +198,15 @@ export interface ComposableCoW extends BaseContract {
     overrides?: CallOverrides
   ): Promise<
     [GPv2Order.DataStructOutput, string] & {
-      order: GPv2Order.DataStructOutput;
-      signature: string;
+      order: GPv2Order.DataStructOutput
+      signature: string
     }
-  >;
+  >
 
   remove(
     singleOrderHash: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
     createWithContext(
@@ -241,13 +215,13 @@ export interface ComposableCoW extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       dispatch: PromiseOrValue<boolean>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     singleOrders(
       safe: PromiseOrValue<string>,
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<boolean>
 
     getTradeableOrderWithSignature(
       owner: PromiseOrValue<string>,
@@ -257,18 +231,15 @@ export interface ComposableCoW extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [GPv2Order.DataStructOutput, string] & {
-        order: GPv2Order.DataStructOutput;
-        signature: string;
+        order: GPv2Order.DataStructOutput
+        signature: string
       }
-    >;
+    >
 
-    remove(
-      singleOrderHash: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+    remove(singleOrderHash: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<void>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     createWithContext(
@@ -277,13 +248,13 @@ export interface ComposableCoW extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       dispatch: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     singleOrders(
       safe: PromiseOrValue<string>,
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     getTradeableOrderWithSignature(
       owner: PromiseOrValue<string>,
@@ -291,13 +262,13 @@ export interface ComposableCoW extends BaseContract {
       offchainInput: PromiseOrValue<BytesLike>,
       proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     remove(
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     createWithContext(
@@ -306,13 +277,13 @@ export interface ComposableCoW extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       dispatch: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     singleOrders(
       safe: PromiseOrValue<string>,
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     getTradeableOrderWithSignature(
       owner: PromiseOrValue<string>,
@@ -320,11 +291,11 @@ export interface ComposableCoW extends BaseContract {
       offchainInput: PromiseOrValue<BytesLike>,
       proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     remove(
       singleOrderHash: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
