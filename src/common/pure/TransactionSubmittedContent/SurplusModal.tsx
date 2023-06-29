@@ -32,7 +32,7 @@ export function SurplusModal(props: SurplusModalProps) {
       <span>--nice image here--</span>
       <span>Great! {surplusMsg}</span>
       <strong>
-        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />!
       </strong>
       {showFiatValue && <FiatAmount amount={surplusFiatValue} accurate={false} />}
       {/* TODO: add twitter button with styles */}
