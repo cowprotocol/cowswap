@@ -27,7 +27,7 @@ export function NetworksList(props: NetworksListProps) {
         const isActive = targetChainId === currentChainId
 
         const rowContent = (
-          <styledEl.FlyoutRow onClick={() => onSelectChain(targetChainId)} active={isActive}>
+          <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel>{label}</styledEl.NetworkLabel>
             {isActive && <styledEl.FlyoutRowActiveIndicator active />}
@@ -39,7 +39,7 @@ export function NetworksList(props: NetworksListProps) {
         }
 
         return (
-          <styledEl.ActiveRowWrapper>
+          <styledEl.ActiveRowWrapper key={targetChainId}>
             {rowContent}
             <styledEl.ActiveRowLinkList>
               {bridge && (

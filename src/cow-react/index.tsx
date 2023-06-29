@@ -48,22 +48,22 @@ root.render(
         <HashRouter>
           <LanguageProvider>
             <Web3Provider>
-              <ChainIdValidator>
-                <BlockNumberProvider>
-                  <WithLDProvider>
-                    <Updaters />
-                    <ThemeProvider>
-                      <ThemedGlobalStyle />
+              <ThemeProvider>
+                <ThemedGlobalStyle />
+                <ChainIdValidator>
+                  <BlockNumberProvider>
+                    <WithLDProvider>
+                      <Updaters />
                       <FeatureGuard featureFlag="cowFortuneEnabled">
                         <FortuneWidget />
                       </FeatureGuard>
                       <Popups />
                       <AppziButton />
                       <App />
-                    </ThemeProvider>
-                  </WithLDProvider>
-                </BlockNumberProvider>
-              </ChainIdValidator>
+                    </WithLDProvider>
+                  </BlockNumberProvider>
+                </ChainIdValidator>
+              </ThemeProvider>
             </Web3Provider>
           </LanguageProvider>
         </HashRouter>

@@ -5,7 +5,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'
-import { replaceURLParam } from 'legacy/utils/routes'
 
 import { useTradeTypeInfo } from 'modules/trade'
 
@@ -32,4 +31,10 @@ export function useLegacySetChainIdToUrl() {
     },
     [tradeTypeInfo, navigate, location]
   )
+}
+
+const replaceURLParam = (search: string, param: string, newValue: string) => {
+  const searchParams = new URLSearchParams(search)
+  searchParams.set(param, newValue)
+  return searchParams.toString()
 }

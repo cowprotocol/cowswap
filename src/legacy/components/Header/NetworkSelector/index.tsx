@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useRef } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
 import { transparentize, darken } from 'polished'
 import { ChevronDown } from 'react-feather'
-import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'
@@ -20,9 +19,6 @@ import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
-import { useLegacySetChainIdToUrl } from '../../../../common/hooks/useLegacySetChainIdToUrl'
 
 const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text1};
@@ -133,9 +129,7 @@ const StyledChevronDown = styled(ChevronDown)`
 
 export function NetworkSelector() {
   const { provider } = useWeb3React()
-  const { chainId, account } = useWalletInfo()
-  const { search } = useLocation()
-  const urlChainId = useMemo(() => getCurrentChainIdFromUrl(), [search])
+  const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const openModal = useOpenModal(ApplicationModal.NETWORK_SELECTOR)
@@ -144,37 +138,9 @@ export function NetworkSelector() {
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTallyWallet = getIsTallyWallet(provider?.provider)
 
-  const setChainIdToUrl = useLegacySetChainIdToUrl()
-
   const info = getChainInfo(chainId)
 
-  const { onSelectChain, isSwitching } = useOnSelectNetwork()
-
-  useEffect(() => {
-    if (isSwitching.current) {
-      // if wallet switching is in progress, avoid triggering it again
-      return
-    }
-    if (account && chainId && chainId !== urlChainId) {
-      // if wallet is connected and chainId already set, keep the url param in sync
-      setChainIdToUrl(chainId)
-    } else if (urlChainId && chainId && urlChainId !== chainId) {
-      // if chain and url chainId are both set and differ, try to update chainid
-      onSelectChain(urlChainId, true).catch(() => {
-        // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
-        // but the request fails, revert the URL back to current chainId
-        setChainIdToUrl(chainId)
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, chainId, setChainIdToUrl, onSelectChain, urlChainId])
-
-  // set chain parameter on initial load if not there
-  useEffect(() => {
-    if (chainId && !urlChainId) {
-      setChainIdToUrl(chainId)
-    }
-  }, [chainId, setChainIdToUrl, urlChainId])
+  const onSelectChain = useOnSelectNetwork()
 
   // Mod: Detect viewport changes and set isUpToMedium
   const isUpToMedium = useMediaQuery(upToMedium)

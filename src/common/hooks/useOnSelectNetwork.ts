@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useMemo, useRef } from 'react'
+import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -13,23 +13,16 @@ import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
 
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
-export function useOnSelectNetwork(): {
-  onSelectChain(chainId: SupportedChainId, skipClose?: boolean): Promise<void>
-  isSwitching: MutableRefObject<boolean>
-} {
+export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const { connector } = useWeb3React()
   const dispatch = useAppDispatch()
   const addPopup = useAddPopup()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
 
-  const isSwitching = useRef(false)
-
-  const onSelectChain = useCallback(
+  return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       if (!connector) return
-
-      isSwitching.current = true
 
       const connectionType = getWeb3ReactConnection(connector).type
 
@@ -48,11 +41,7 @@ export function useOnSelectNetwork(): {
       if (!skipClose) {
         closeModal()
       }
-
-      isSwitching.current = false
     },
-    [connector, dispatch, setChainIdToUrl, addPopup, closeModal]
+    [connector, dispatch, addPopup, closeModal, setChainIdToUrl]
   )
-
-  return useMemo(() => ({ onSelectChain, isSwitching }), [onSelectChain, isSwitching])
 }
