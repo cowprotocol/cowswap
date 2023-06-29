@@ -5,8 +5,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo TODO fix",
-        "command-to-fix": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
+        "command": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
       }
     },
     "build": {
@@ -20,7 +19,9 @@
       "options": {
         "command": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'"
       },
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
@@ -32,7 +33,9 @@
     },
     "test:nx": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectName}"
+      ],
       "options": {
         "jestConfig": "jest.config.app.ts",
         "passWithNoTests": true
