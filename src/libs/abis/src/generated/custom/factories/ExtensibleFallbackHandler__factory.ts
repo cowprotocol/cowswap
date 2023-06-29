@@ -2,175 +2,165 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type {
-  ExtensibleFallbackHandler,
-  ExtensibleFallbackHandlerInterface,
-} from "../ExtensibleFallbackHandler";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { ExtensibleFallbackHandler, ExtensibleFallbackHandlerInterface } from '../ExtensibleFallbackHandler'
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_defaultFallbackHandler",
-        type: "address",
+        internalType: 'address',
+        name: '_defaultFallbackHandler',
+        type: 'address',
       },
     ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "contract Safe",
-        name: "safe",
-        type: "address",
+        internalType: 'contract Safe',
+        name: 'safe',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "bytes4",
-        name: "selector",
-        type: "bytes4",
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
       },
       {
         indexed: false,
-        internalType: "contract IFallbackMethod",
-        name: "handler",
-        type: "address",
+        internalType: 'contract IFallbackMethod',
+        name: 'handler',
+        type: 'address',
       },
     ],
-    name: "AddedSafeMethod",
-    type: "event",
+    name: 'AddedSafeMethod',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "contract Safe",
-        name: "safe",
-        type: "address",
+        internalType: 'contract Safe',
+        name: 'safe',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "oldHandler",
-        type: "address",
+        internalType: 'address',
+        name: 'oldHandler',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "newHandler",
-        type: "address",
+        internalType: 'address',
+        name: 'newHandler',
+        type: 'address',
       },
     ],
-    name: "ChangedDefaultFallbackHandler",
-    type: "event",
+    name: 'ChangedDefaultFallbackHandler',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "contract Safe",
-        name: "safe",
-        type: "address",
+        internalType: 'contract Safe',
+        name: 'safe',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "bytes4",
-        name: "selector",
-        type: "bytes4",
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
       },
       {
         indexed: false,
-        internalType: "contract IFallbackMethod",
-        name: "oldHandler",
-        type: "address",
+        internalType: 'contract IFallbackMethod',
+        name: 'oldHandler',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "contract IFallbackMethod",
-        name: "newHandler",
-        type: "address",
+        internalType: 'contract IFallbackMethod',
+        name: 'newHandler',
+        type: 'address',
       },
     ],
-    name: "ChangedSafeMethod",
-    type: "event",
+    name: 'ChangedSafeMethod',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "contract Safe",
-        name: "safe",
-        type: "address",
+        internalType: 'contract Safe',
+        name: 'safe',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "bytes4",
-        name: "selector",
-        type: "bytes4",
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
       },
     ],
-    name: "RemovedSafeMethod",
-    type: "event",
+    name: 'RemovedSafeMethod',
+    type: 'event',
   },
   {
-    stateMutability: "nonpayable",
-    type: "fallback",
+    stateMutability: 'nonpayable',
+    type: 'fallback',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "newHandler",
-        type: "address",
+        internalType: 'address',
+        name: 'newHandler',
+        type: 'address',
       },
     ],
-    name: "setDefaultFallbackHandler",
+    name: 'setDefaultFallbackHandler',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "bytes4",
-        name: "selector",
-        type: "bytes4",
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
       },
       {
-        internalType: "contract IFallbackMethod",
-        name: "newHandler",
-        type: "address",
+        internalType: 'contract IFallbackMethod',
+        name: 'newHandler',
+        type: 'address',
       },
     ],
-    name: "setSafeMethod",
+    name: 'setSafeMethod',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class ExtensibleFallbackHandler__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): ExtensibleFallbackHandlerInterface {
-    return new utils.Interface(_abi) as ExtensibleFallbackHandlerInterface;
+    return new utils.Interface(_abi) as ExtensibleFallbackHandlerInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ExtensibleFallbackHandler {
-    return new Contract(
-      address,
-      _abi,
-      signerOrProvider
-    ) as ExtensibleFallbackHandler;
+  static connect(address: string, signerOrProvider: Signer | Provider): ExtensibleFallbackHandler {
+    return new Contract(address, _abi, signerOrProvider) as ExtensibleFallbackHandler
   }
 }

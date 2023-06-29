@@ -11,178 +11,148 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "./common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common'
 
 export interface SignatureVerifierMuxerInterface extends utils.Interface {
   functions: {
-    "setDomainVerifier(bytes32,address)": FunctionFragment;
-    "setFallbackHandler(address)": FunctionFragment;
-    "domainVerifiers(address,bytes32)": FunctionFragment;
-  };
+    'setDomainVerifier(bytes32,address)': FunctionFragment
+    'setFallbackHandler(address)': FunctionFragment
+    'domainVerifiers(address,bytes32)': FunctionFragment
+  }
 
-  getFunction(
-    nameOrSignatureOrTopic:
-      | "setDomainVerifier"
-      | "setFallbackHandler"
-      | "domainVerifiers"
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'setDomainVerifier' | 'setFallbackHandler' | 'domainVerifiers'): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "setDomainVerifier",
+    functionFragment: 'setDomainVerifier',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'setFallbackHandler', values: [PromiseOrValue<string>]): string
   encodeFunctionData(
-    functionFragment: "setFallbackHandler",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "domainVerifiers",
+    functionFragment: 'domainVerifiers',
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
-  ): string;
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "setDomainVerifier",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setFallbackHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "domainVerifiers",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'setDomainVerifier', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'setFallbackHandler', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'domainVerifiers', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface SignatureVerifierMuxer extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: SignatureVerifierMuxerInterface;
+  interface: SignatureVerifierMuxerInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     setDomainVerifier(
       domainSeparator: PromiseOrValue<BytesLike>,
       newVerifier: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     setFallbackHandler(
       handler: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     domainVerifiers(
       safe: PromiseOrValue<string>,
       domainSeparator: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[string]>;
-  };
+    ): Promise<[string]>
+  }
 
   setDomainVerifier(
     domainSeparator: PromiseOrValue<BytesLike>,
     newVerifier: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   setFallbackHandler(
     handler: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   domainVerifiers(
     safe: PromiseOrValue<string>,
     domainSeparator: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<string>
 
   callStatic: {
     setDomainVerifier(
       domainSeparator: PromiseOrValue<BytesLike>,
       newVerifier: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
-    setFallbackHandler(
-      handler: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setFallbackHandler(handler: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>
 
     domainVerifiers(
       safe: PromiseOrValue<string>,
       domainSeparator: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<string>;
-  };
+    ): Promise<string>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     setDomainVerifier(
       domainSeparator: PromiseOrValue<BytesLike>,
       newVerifier: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     setFallbackHandler(
       handler: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     domainVerifiers(
       safe: PromiseOrValue<string>,
       domainSeparator: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     setDomainVerifier(
       domainSeparator: PromiseOrValue<BytesLike>,
       newVerifier: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     setFallbackHandler(
       handler: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     domainVerifiers(
       safe: PromiseOrValue<string>,
       domainSeparator: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
