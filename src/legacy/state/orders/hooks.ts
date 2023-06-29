@@ -196,6 +196,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.cancelled,
       ...state.creating,
       ...state.failed,
+      ...state.scheduled,
     }
   }, [state])
 }

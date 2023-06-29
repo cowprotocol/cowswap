@@ -52,6 +52,7 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.CANCELLED]: 'Cancelled',
   [OrderStatus.CREATING]: 'Creating',
   [OrderStatus.FAILED]: 'Failed',
+  [OrderStatus.SCHEDULED]: 'Scheduled',
 }
 
 const TIME_AGO_UPDATE_INTERVAL = 3000

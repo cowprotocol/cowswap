@@ -54,6 +54,7 @@ export type OrderLists = {
   cancelled: PartialOrdersMap
   creating: PartialOrdersMap
   failed: PartialOrdersMap
+  scheduled: PartialOrdersMap
 }
 
 export interface OrdersStateNetwork extends OrderLists {
@@ -70,7 +71,14 @@ export interface PrefillStateRequired {
 
 export type EthFlowOrderTypes = 'creating' | 'failed'
 export type PreSignOrderTypes = 'presignaturePending'
-export type OrderTypeKeys = 'pending' | PreSignOrderTypes | 'expired' | 'fulfilled' | 'cancelled' | EthFlowOrderTypes
+export type OrderTypeKeys =
+  | 'pending'
+  | PreSignOrderTypes
+  | 'expired'
+  | 'fulfilled'
+  | 'cancelled'
+  | EthFlowOrderTypes
+  | 'scheduled'
 
 export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'pending',
@@ -80,6 +88,7 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'cancelled',
   'creating',
   'failed',
+  'scheduled',
 ]
 export const ORDERS_LIST: OrderLists = {
   pending: {},
@@ -89,6 +98,7 @@ export const ORDERS_LIST: OrderLists = {
   cancelled: {},
   creating: {},
   failed: {},
+  scheduled: {},
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -248,6 +258,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.PENDING, id) ||
           popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id) ||
           popOrder(state, chainId, OrderStatus.CREATING, id) ||
+          popOrder(state, chainId, OrderStatus.SCHEDULED, id) ||
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
