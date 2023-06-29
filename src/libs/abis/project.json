@@ -1,0 +1,66 @@
+{
+  "name": "abis",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "src/libs/abis/src",
+  "projectType": "library",
+  "targets": {
+    "postinstall": {
+      "executor": "nx:noop",
+      "dependsOn": ["abi"]
+    },
+    "abi": {
+      "executor": "nx:noop",
+      "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy", "abi:univ3"]
+    },
+    "abi:ethflow": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/ethflow \"./src/libs/abis/node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\""
+      }
+    },
+    "abi:custom": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/custom './src/libs/abis/src/abis/**/*.json'"
+      }
+    },
+    "abis-legacy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/legacy './src/libs/abis/src/abis-legacy/**/*.json'"
+      }
+    },
+    "abi:univ3": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/univ3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\""
+      }
+    },
+    "abis:export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ./src/libs/abis/scripts/abis-export.js"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/abis"
+      },
+      "dependsOn": ["abi"]
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs abis {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["src/libs/abis/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

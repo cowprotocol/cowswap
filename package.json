@@ -23,19 +23,13 @@
     "serve": "nx exec -- serve build -l 3000",
     "serve:ci": "nx exec -- serve website -l 3000",
     "cypress": "nx exec -- cypress open",
-    "contracts:add:export": "nx exec -- node ./scripts/contracts_add_export.js",
-    "contracts:compile:abi": "nx exec -- typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'",
-    "contracts:compile:abi-ethflow": "nx exec -- typechain --target ethers-v5 --out-dir src/abis/types/ethflow \"./node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\"",
-    "contracts:compile:abi-uniswap": "nx exec -- typechain --target ethers-v5 --out-dir src/legacy/abis/types \"./src/legacy/abis/**/*.json\"",
-    "contracts:compile:v3": "nx exec -- typechain --target ethers-v5 --out-dir src/legacy/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
-    "contracts:compile": "nx exec -- yarn _contracts:compile ",
     "prei18n:extract": "touch src/locales/en-US.po",
     "optimize-bundle": "nx exec -- node ./scripts/fix-ethereumjs-bundle.js",
     "patch-package": "nx exec -- patch-package",
     "i18n:extract": "nx exec -- cross-env NODE_ENV=development lingui extract --locale en-US",
     "i18n:compile": "nx exec -- yarn _i18n:compile ",
     "i18n:pseudo": "nx exec -- yarn _i18n:pseudo ",
-    "postinstall": "yarn contracts:compile && yarn i18n:compile && yarn patch-package",
+    "postinstall": "node ./scripts/postinstall.js && yarn i18n:compile && yarn patch-package",
     "prepare": "husky install",
     "prepublishOnly": "yarn widgets:build",
     "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
@@ -45,7 +39,6 @@
     "sitemap": "nx exec -- node src/sitemap",
     "writeVersion": "nx exec -- node src/writeVersion",
     "_start:service-worker": "yarn build && yarn serve",
-    "_contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "_i18n:compile": "yarn i18n:extract && lingui compile",
     "_i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
     "_cosmos:run": "yarn cosmos:clear && cosmos"
@@ -78,7 +71,6 @@
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cow-sdk": "^2.0.4",
-    "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethvault/iframe-provider": "^0.1.10",
@@ -304,31 +296,6 @@
       "optimize-bundle": {
         "outputs": [
           "{projectRoot}/../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json"
-        ]
-      },
-      "contracts:add:export": {
-        "outputs": [
-          "{projectRoot}/src/abis/types/index.ts"
-        ]
-      },
-      "contracts:compile:abi": {
-        "outputs": [
-          "{projectRoot}/src/abis/types"
-        ]
-      },
-      "contracts:compile:abi-ethflow": {
-        "outputs": [
-          "{projectRoot}/src/abis/types/ethflow"
-        ]
-      },
-      "contracts:compile:abi-uniswap": {
-        "outputs": [
-          "{projectRoot}/src/legacy/abis/types"
-        ]
-      },
-      "contracts:compile:v3": {
-        "outputs": [
-          "{projectRoot}/src/legacy/types/v3"
         ]
       },
       "i18n:extract": {

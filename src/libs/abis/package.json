@@ -1,0 +1,8 @@
+{
+  "name": "@cowprotocol/cowswap-abis",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts"
+  }
+}

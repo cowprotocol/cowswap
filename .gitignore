@@ -14,7 +14,7 @@
 /src/locales/**/pseudo.po
 
 # dependencies
-/node_modules
+node_modules
 
 # testing
 /coverage

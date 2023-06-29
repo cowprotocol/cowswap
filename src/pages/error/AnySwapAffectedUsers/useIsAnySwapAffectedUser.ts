@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import ERC20_ABI from 'legacy/abis/erc20.json'
-import { Erc20Interface } from 'legacy/abis/types/Erc20'
 import { ZERO_ADDRESS } from 'legacy/constants/misc'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
@@ -20,7 +19,7 @@ const WBNB_ADDRESS = '0x418d75f65a02b3d53b2418fb8e1fe493759c7605'
 
 const AFFECTED_TOKENS = [WETH_ADDRESS, PERI_ADDRESS, MATIC_ADDRESS, WBNB_ADDRESS] // relevant tokens for the check
 
-const ERC20_INTERFACE = new Interface(ERC20_ABI) as Erc20Interface
+const ERC20_INTERFACE = new Interface(Erc20Abi) as Erc20Interface
 const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 
 // Uncomment to test logic: 0xC92...522 is mainnet VaultRelayer address. Use it with one account that has given some WETH allowance to it

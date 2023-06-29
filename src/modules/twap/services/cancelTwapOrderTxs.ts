@@ -1,7 +1,6 @@
+import { ComposableCoW, GPv2Settlement } from '@cowprotocol/abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-
-import { ComposableCoW, GPv2Settlement } from 'abis/types'
 
 export interface CancelTwapOrderContext {
   composableCowContract: ComposableCoW

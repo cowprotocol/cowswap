@@ -1,3 +1,4 @@
+import { Weth } from '@cowprotocol/abis'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -6,7 +7,6 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { Weth } from 'legacy/abis/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { GpEther as ETHER } from 'legacy/constants/tokens'
 import { useWETHContract } from 'legacy/hooks/useContract'
