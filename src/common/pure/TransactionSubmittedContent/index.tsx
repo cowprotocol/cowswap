@@ -21,6 +21,7 @@ import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
+import { SurplusModal } from './SurplusModal'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
@@ -58,6 +59,7 @@ export function TransactionSubmittedContent({
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order } = activityDerivedState || {}
+  const showSurplus = activityState === 'filled'
 
   if (!supportedChainId(chainId)) {
     return null
@@ -69,26 +71,32 @@ export function TransactionSubmittedContent({
         <styledEl.Header>
           <styledEl.CloseIconWrapper onClick={onDismiss} />
         </styledEl.Header>
-        <Text fontWeight={600} fontSize={28}>
-          {getTitleStatus(activityDerivedState)}
-        </Text>
-        <DisplayLink id={hash} chainId={chainId} />
-        <EthFlowStepper order={order} />
-        {/*TODO: refactor OrderProgressBar to make it pure*/}
-        {activityDerivedState && showProgressBar && (
-          <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
-        )}
-        <styledEl.ButtonGroup>
-          {/*TODO: refactor AddToMetamask to make it pure*/}
-          <AddToMetamask shortLabel currency={currencyToAdd} />
+        {showSurplus ? (
+          <SurplusModal order={order} />
+        ) : (
+          <>
+            <Text fontWeight={600} fontSize={28}>
+              {getTitleStatus(activityDerivedState)}
+            </Text>
+            <DisplayLink id={hash} chainId={chainId} />
+            <EthFlowStepper order={order} />
+            {/*TODO: refactor OrderProgressBar to make it pure*/}
+            {activityDerivedState && showProgressBar && (
+              <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
+            )}
+            <styledEl.ButtonGroup>
+              {/*TODO: refactor AddToMetamask to make it pure*/}
+              <AddToMetamask shortLabel currency={currencyToAdd} />
 
-          <styledEl.ButtonCustom>
-            <Link to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
-              <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
-              Play the CoW Runner Game!
-            </Link>
-          </styledEl.ButtonCustom>
-        </styledEl.ButtonGroup>
+              <styledEl.ButtonCustom>
+                <Link to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
+                  <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
+                  Play the CoW Runner Game!
+                </Link>
+              </styledEl.ButtonCustom>
+            </styledEl.ButtonGroup>
+          </>
+        )}
       </styledEl.Section>
     </styledEl.Wrapper>
   )
