@@ -15,6 +15,7 @@ import { TwapOrderInfo } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
+import { isTwapOrderJustMined } from '../utils/isTwapOrderJustMined'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
 export function TwapOrdersUpdater(props: {
@@ -53,6 +54,8 @@ export function TwapOrdersUpdater(props: {
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingOrCancelledOrders = useMemo(() => {
     return allOrdersInfo.filter((info) => {
+      if (isTwapOrderJustMined(info.safeData.safeTxParams.executionDate)) return false
+
       const existingOrder = twapOrdersList[info.id]
 
       if (existingOrder) {
