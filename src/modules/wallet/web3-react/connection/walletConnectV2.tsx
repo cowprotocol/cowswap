@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { initializeConnector } from '@web3-react/core'
 
 import { RPC_URLS } from 'legacy/constants/networks'
@@ -17,8 +15,6 @@ import {
 } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
-
 import { TryActivation, onError } from '.'
 
 import { AsyncConnector } from './asyncConnector'
@@ -27,7 +23,8 @@ import { Web3ReactConnection } from '../types'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
-const TOOLTIP_TEXT = 'Under development and unsupported by most wallets'
+const TOOLTIP_TEXT =
+  'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'
 
 export const walletConnectV2Option = {
   color: '#4196FC',
@@ -67,7 +64,6 @@ export const walletConnectConnectionV2: Web3ReactConnection = {
 
 export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryActivation }) {
   const { walletName } = useWalletMetaData()
-  const { walletConnectV1Enabled } = useFeatureFlags()
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
   const isActive =
@@ -77,13 +73,7 @@ export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryAct
     !getIsAlphaWallet(walletName) &&
     !getIsTrustWallet(null, walletName)
 
-  const tooltipText = useMemo(() => {
-    if (walletConnectV1Enabled) {
-      return TOOLTIP_TEXT
-    }
-
-    return !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
-  }, [isActive, isWalletConnect, walletConnectV1Enabled])
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : TOOLTIP_TEXT
 
   return (
     <ConnectWalletOption
