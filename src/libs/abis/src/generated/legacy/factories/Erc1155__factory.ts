@@ -2,66 +2,69 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
-import type { Erc1155, Erc1155Interface } from '../Erc1155'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type { Erc1155, Erc1155Interface } from "../Erc1155";
 
 const _abi = [
   {
     constant: true,
     inputs: [
       {
-        internalType: 'address',
-        name: '_owner',
-        type: 'address',
+        internalType: "address",
+        name: "_owner",
+        type: "address",
       },
       {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_id",
+        type: "uint256",
       },
     ],
-    name: 'balanceOf',
+    name: "balanceOf",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     constant: true,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_id",
+        type: "uint256",
       },
     ],
-    name: 'uri',
+    name: "uri",
     outputs: [
       {
-        internalType: 'string',
-        name: '',
-        type: 'string',
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
-] as const
+] as const;
 
 export class Erc1155__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): Erc1155Interface {
-    return new utils.Interface(_abi) as Erc1155Interface
+    return new utils.Interface(_abi) as Erc1155Interface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): Erc1155 {
-    return new Contract(address, _abi, signerOrProvider) as Erc1155
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): Erc1155 {
+    return new Contract(address, _abi, signerOrProvider) as Erc1155;
   }
 }

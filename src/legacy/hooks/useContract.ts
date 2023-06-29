@@ -23,6 +23,7 @@ import {
   VCow,
   CoWSwapEthFlow,
   vCowAbi,
+  UniswapInterfaceMulticall,
 } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Contract } from '@ethersproject/contracts'
@@ -37,7 +38,6 @@ import {
 } from 'legacy/constants'
 import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'legacy/constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { UniswapInterfaceMulticall } from 'legacy/types/v3'
 import { getContract } from 'legacy/utils'
 import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 

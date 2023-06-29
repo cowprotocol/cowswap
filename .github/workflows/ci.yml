@@ -53,8 +53,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
-            src/abis/types
             src/state/data
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
@@ -88,7 +86,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
             src/abis/types
             src/state/data
             src/locales
@@ -131,8 +128,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
-            src/abis/types
             src/state/data
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
