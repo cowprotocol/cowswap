@@ -30,12 +30,6 @@
         "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/legacy './src/libs/abis/src/abis-legacy/**/*.json'"
       }
     },
-    "abi:univ3": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/univ3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\""
-      }
-    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
