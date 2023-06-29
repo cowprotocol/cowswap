@@ -18,10 +18,16 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
   CREATING = 'creating',
   FAILED = 'failed',
+  SCHEDULED = 'scheduled',
 }
 
 // Common states groups
-export const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const PENDING_STATES = [
+  OrderStatus.PENDING,
+  OrderStatus.PRESIGNATURE_PENDING,
+  OrderStatus.CREATING,
+  OrderStatus.SCHEDULED,
+]
 export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
 export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
 

@@ -1,13 +1,15 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { OrderWithComposableCowInfo } from 'common/types'
 import { deepEqual } from 'utils/deepEqual'
 
-import { TwapOrderItem } from '../types'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
@@ -30,6 +32,14 @@ export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem
   set(twapOrdersListAtom, { ...currentState, [order.id]: order })
 })
 
+const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
+  [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
+  [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
+  [TwapOrderStatus.Pending]: OrderStatus.PENDING,
+  [TwapOrderStatus.Scheduled]: OrderStatus.SCHEDULED,
+  [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
+}
+
 export const emulatedTwapOrdersAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
   const tokens = get(tokensByAddressAtom)
@@ -45,6 +55,7 @@ export const emulatedTwapOrdersAtom = atom((get) => {
         order: emulateTwapAsOrder(tokens, order),
         composableCowInfo: {
           id: order.id,
+          status: statusesMap[order.status],
         },
       }
     })
