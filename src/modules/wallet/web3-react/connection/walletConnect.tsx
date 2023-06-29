@@ -6,22 +6,21 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { useWalletMetaData } from 'modules/wallet'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import {
   getConnectionName,
-  getIsZengoWallet,
-  getIsAmbireWallet,
   getIsAlphaWallet,
+  getIsAmbireWallet,
   getIsTrustWallet,
+  getIsZengoWallet,
 } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
-import { TryActivation, onError } from '.'
+import { onError, TryActivation } from '.'
 
 import { Web3ReactConnection } from '../types'
 
@@ -43,6 +42,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
       options: {
         rpc: RPC_URLS,
         qrcode: true,
+        bridge: 'https://safe-walletconnect.safe.global',
       },
       onError,
     })

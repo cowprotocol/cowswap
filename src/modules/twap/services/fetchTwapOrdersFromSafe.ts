@@ -7,8 +7,8 @@ import { ComposableCoW } from 'abis/types'
 
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
-// ComposableCoW.create method
-const CREATE_COMPOSABLE_ORDER_SELECTOR = '6bfae1ca'
+// ComposableCoW.createWithContext method
+const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
 
 export async function fetchTwapOrdersFromSafe(
   safeAddress: string,
@@ -61,7 +61,7 @@ function parseConditionalOrderParams(
   callData: string
 ): ConditionalOrderParams | null {
   try {
-    const _result = composableCowContract.interface.decodeFunctionData('create', callData)
+    const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
     const { params } = _result as any as { params: ConditionalOrderParams }
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }

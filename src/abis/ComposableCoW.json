@@ -24,12 +24,22 @@
         "type": "tuple"
       },
       {
+        "internalType": "contract IValueFactory",
+        "name": "factory",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
         "internalType": "bool",
         "name": "dispatch",
         "type": "bool"
       }
     ],
-    "name": "create",
+    "name": "createWithContext",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -41,7 +51,7 @@
     ],
     "name": "singleOrders",
     "outputs": [{ "name": "", "type": "bool" }],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {

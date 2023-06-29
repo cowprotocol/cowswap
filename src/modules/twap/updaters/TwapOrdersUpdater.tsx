@@ -3,6 +3,8 @@ import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { isTruthy } from 'legacy/utils/misc'
+
 import { ComposableCoW } from 'abis/types'
 
 import { TWAP_PENDING_STATUSES } from '../const'
@@ -32,17 +34,23 @@ export function TwapOrdersUpdater(props: {
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
-    return ordersSafeData.map((data) => {
-      const id = getConditionalOrderId(data.conditionalOrderParams)
-      const order = parseTwapOrderStruct(data.conditionalOrderParams.staticInput)
+    return ordersSafeData
+      .map((data) => {
+        try {
+          const id = getConditionalOrderId(data.conditionalOrderParams)
+          const order = parseTwapOrderStruct(data.conditionalOrderParams.staticInput)
 
-      return {
-        id,
-        orderStruct: order,
-        safeData: data,
-        isExpired: isTwapOrderExpired(order),
-      }
-    })
+          return {
+            id,
+            orderStruct: order,
+            safeData: data,
+            isExpired: isTwapOrderExpired(order),
+          }
+        } catch (e) {
+          return null
+        }
+      })
+      .filter(isTruthy)
   }, [ordersSafeData])
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
