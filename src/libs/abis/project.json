@@ -4,10 +4,6 @@
   "sourceRoot": "src/libs/abis/src",
   "projectType": "library",
   "targets": {
-    "postinstall": {
-      "executor": "nx:noop",
-      "dependsOn": ["abi"]
-    },
     "abi": {
       "executor": "nx:noop",
       "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy"]
@@ -35,8 +31,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/abis"
-      },
-      "dependsOn": ["abi"]
+      }
     },
     "publish": {
       "command": "node tools/scripts/publish.mjs abis {args.ver} {args.tag}",
