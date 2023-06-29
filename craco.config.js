@@ -62,6 +62,8 @@ module.exports = {
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
       '@cowprotocol/ui': path.resolve(__dirname, 'src/libs/ui/src/index.ts'),
       '@cowprotocol/ui-utils': path.resolve(__dirname, 'src/libs/ui-utils/src/index.ts'),
+      '@cowprotocol/widget-lib': path.resolve(__dirname, 'src/libs/widget-lib/src/index.ts'),
+      '@cowprotocol/widget-react': path.resolve(__dirname, 'src/libs/widget-react/src/index.ts'),
     },
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
