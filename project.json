@@ -19,9 +19,7 @@
       "options": {
         "command": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'"
       },
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
@@ -33,9 +31,7 @@
     },
     "test:nx": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectName}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
       "options": {
         "jestConfig": "jest.config.app.ts",
         "passWithNoTests": true

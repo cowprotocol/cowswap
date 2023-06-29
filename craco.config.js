@@ -4,7 +4,6 @@ const { pathsToModuleNameMapper } = require('ts-jest')
 const webpack = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-
 const path = require('path')
 
 const { version } = require('./package.json')
