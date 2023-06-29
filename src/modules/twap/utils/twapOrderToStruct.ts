@@ -11,5 +11,6 @@ export function twapOrderToStruct(order: TWAPOrder): TWAPOrderStruct {
     n: order.numOfParts,
     t: order.timeInterval,
     span: order.span,
+    appData: order.appData,
   }
 }

@@ -4,9 +4,11 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { COW } from 'legacy/constants/tokens'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
+import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
+import { getAppDataHash } from 'modules/appData'
+
 import { createTwapOrderTxs } from './createTwapOrderTxs'
 
-import { COMPOSABLE_COW_ADDRESS } from '../../advancedOrders'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
@@ -21,6 +23,7 @@ const order: TWAPOrder = {
   startTime: 1684764716,
   timeInterval: 600,
   span: 0,
+  appData: getAppDataHash(),
 }
 
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'
@@ -44,6 +47,7 @@ describe('Create TWAP order', () => {
       } as any,
       needsApproval: false,
       spender: '0xB4FBF271143F4FBf7B91A5ded31805e42b222222',
+      currentBlockFactoryAddress: CURRENT_BLOCK_FACTORY_ADDRESS[chainId],
       erc20Contract: { interface: { encodeFunctionData: approveFn } } as any,
     }
   })
