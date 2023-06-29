@@ -159,6 +159,19 @@ jobs:
     with:
       env_name: dev
 
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    needs: [test, lint]
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [barn, staging] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
+
   vercel-prod:
     # Deploys to Vercel prod environment
     name: Vercel prod
