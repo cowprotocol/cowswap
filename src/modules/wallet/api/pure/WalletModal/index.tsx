@@ -9,12 +9,10 @@ import { ThemedText } from 'legacy/theme'
 import { StyledInternalLink } from 'legacy/theme/components'
 
 import { PendingView } from 'modules/wallet/api/pure/PendingView'
-import { ZengoBanner } from 'modules/wallet/api/pure/ZengoBanner'
 import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
 
 import { Routes } from 'common/constants/routes'
-import { GpModal } from 'common/pure/Modal'
-import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
+import { CloseIcon, ContentWrapper, GpModal, HeaderRow, HoverText } from 'common/pure/Modal'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
@@ -44,12 +42,12 @@ export function WalletModal(props: WalletModalProps) {
     tryActivation,
     tryConnection,
     pendingConnector,
-    account,
+    // account,
   } = props
 
   const isPending = view === 'pending'
-  const isOptions = view === 'options'
-  const showZengoBanner = !account && !window.ethereum && isOptions
+  // const isOptions = view === 'options'
+  // const showZengoBanner = !account && !window.ethereum && isOptions
 
   return (
     <GpModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
@@ -75,7 +73,7 @@ export function WalletModal(props: WalletModalProps) {
                   <ConnectWalletOptions tryActivation={tryActivation} />
                 </OptionGrid>
               )}
-              {showZengoBanner && <ZengoBanner />}
+              {/*{showZengoBanner && <ZengoBanner />}*/}
               {!pendingError && (
                 <LightCard>
                   <AutoRow style={{ flexWrap: 'nowrap' }}>
