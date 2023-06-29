@@ -1,7 +1,6 @@
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { useWalletMetaData } from 'modules/wallet'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as AmbireImage } from 'modules/wallet/api/assets/ambire.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName, getIsAmbireWallet } from 'modules/wallet/api/utils/connection'

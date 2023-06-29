@@ -31,9 +31,9 @@ const OptionCardLeft = styled.div`
   height: 100%;
 `
 
-export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean }>`
+export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
   margin-top: 0;
-  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+  opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
   background-color: ${({ theme, active }) => (active ? theme.bg2 : theme.grey1)};
   color: ${({ theme, active }) => (active ? theme.white : theme.text1)};
 
@@ -78,7 +78,7 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 400;
   white-space: nowrap;
 `
@@ -113,6 +113,7 @@ export interface ConnectWalletOptionProps {
   isActive?: boolean
   id: string
   tooltipText?: string | null
+  isDeprecated?: boolean
 }
 
 export function ConnectWalletOption({
@@ -125,6 +126,7 @@ export function ConnectWalletOption({
   subheader = null,
   icon,
   isActive = false,
+  isDeprecated = false,
   id,
   tooltipText,
 }: ConnectWalletOptionProps) {
@@ -135,6 +137,7 @@ export function ConnectWalletOption({
       clickable={clickable && !isActive}
       active={isActive}
       data-testid="wallet-modal-option"
+      isDeprecated={isDeprecated}
     >
       <OptionCardLeft>
         <IconWrapper size={size}>

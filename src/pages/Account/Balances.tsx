@@ -25,6 +25,7 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWalletInfo } from 'modules/wallet'
@@ -71,7 +72,9 @@ export default function Profile() {
   const vCowToken = V_COW[chainId]
   // Cow balance
   const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || supportedChainId(chainId)
+      ? CurrencyAmount.fromRawAmount(cowToken, 0)
+      : null
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
