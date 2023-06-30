@@ -421,25 +421,29 @@ export function OrdersTable({
           )}
 
           <Rows>
-            {ordersPage.map((order) => (
-              <OrderRow
-                key={order.id}
-                isRowSelectable={isRowSelectable}
-                isRowSelected={!!selectedOrdersMap[order.id]}
-                isOpenOrdersTab={isOpenOrdersTab}
-                order={order}
-                spotPrice={getSpotPrice({
-                  chainId: chainId as SupportedChainId,
-                  sellTokenAddress: order.inputToken.address,
-                  buyTokenAddress: order.outputToken.address,
-                })}
-                prices={pendingOrdersPrices[order.id]}
-                orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
-                isRateInverted={isRateInverted}
-                orderActions={orderActions}
-                onClick={() => orderActions.selectReceiptOrder(order)}
-              />
-            ))}
+            {ordersPage.map((order) => {
+              const spotPrice = getSpotPrice({
+                chainId: chainId as SupportedChainId,
+                sellTokenAddress: order.inputToken.address,
+                buyTokenAddress: order.outputToken.address,
+              })
+
+              return (
+                <OrderRow
+                  key={order.id}
+                  isRowSelectable={isRowSelectable}
+                  isRowSelected={!!selectedOrdersMap[order.id]}
+                  isOpenOrdersTab={isOpenOrdersTab}
+                  order={order}
+                  spotPrice={spotPrice}
+                  prices={pendingOrdersPrices[order.id]}
+                  orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                  isRateInverted={isRateInverted}
+                  orderActions={orderActions}
+                  onClick={() => orderActions.selectReceiptOrder(order)}
+                />
+              )
+            })}
           </Rows>
         </TableInner>
       </TableBox>

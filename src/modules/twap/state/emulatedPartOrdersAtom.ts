@@ -9,6 +9,8 @@ import { OrderWithComposableCowInfo } from 'common/types'
 import { twapOrdersAtom } from './twapOrdersListAtom'
 import { twapPartOrdersListAtom } from './twapPartOrdersAtom'
 
+import { TwapOrderItem, TwapOrderStatus } from '../types'
+
 export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) => {
   const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
@@ -16,7 +18,7 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
   return twapParticleOrders.map<OrderWithComposableCowInfo>((order) => {
     const parent = twapOrders[order.twapOrderId]
 
-    const creationDate = new Date((order.order.validTo - parent.order.t) * 1000)
+    const creationDate = new Date(1 + (order.order.validTo - parent.order.t) * 1000)
 
     return {
       order: {
@@ -39,8 +41,15 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
       },
       composableCowInfo: {
         parentId: order.twapOrderId,
-        status: OrderStatusInApp.SCHEDULED,
+        status: getPartOrderStatus(parent),
       },
     }
   })
 })
+
+function getPartOrderStatus(parent: TwapOrderItem): OrderStatusInApp {
+  if (parent.status === TwapOrderStatus.Expired) return OrderStatusInApp.EXPIRED
+  if (parent.status === TwapOrderStatus.Cancelled) return OrderStatusInApp.CANCELLED
+
+  return OrderStatusInApp.SCHEDULED
+}
