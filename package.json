@@ -13,6 +13,7 @@
     "e2e": "nx run-many -t e2e",
     "start:ssl": "nx exec -- HTTPS=true yarn start",
     "start:service-worker": "nx exec -- yarn _start:service-worker ",
+    "lint": "nx exec -- yarn run eslint ./",
     "lint:fix": "nx exec -- yarn run eslint --fix ./",
     "mock": "nx exec -- REACT_APP_MOCK=true yarn start",
     "build:analyze": "nx exec -- cross-env REACT_APP_ANALYZE_BUNDLE=true yarn build",

@@ -136,9 +136,10 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           eslint: true
-          eslint_args: "-c .eslintrc.json ."
+          eslint_args: "."
           auto_fix: ${{ github.event_name == 'pull_request' }}
           prettier: true
+
 
       - name: Run eslint
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login != github.repository_owner }}

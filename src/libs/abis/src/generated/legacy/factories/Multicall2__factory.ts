@@ -2,9 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
-import type { Multicall2, Multicall2Interface } from '../Multicall2'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type { Multicall2, Multicall2Interface } from "../Multicall2";
 
 const _abi = [
   {
@@ -12,320 +12,323 @@ const _abi = [
       {
         components: [
           {
-            internalType: 'address',
-            name: 'target',
-            type: 'address',
+            internalType: "address",
+            name: "target",
+            type: "address",
           },
           {
-            internalType: 'bytes',
-            name: 'callData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Call[]',
-        name: 'calls',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Call[]",
+        name: "calls",
+        type: "tuple[]",
       },
     ],
-    name: 'aggregate',
+    name: "aggregate",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'blockNumber',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
       },
       {
-        internalType: 'bytes[]',
-        name: 'returnData',
-        type: 'bytes[]',
+        internalType: "bytes[]",
+        name: "returnData",
+        type: "bytes[]",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
         components: [
           {
-            internalType: 'address',
-            name: 'target',
-            type: 'address',
+            internalType: "address",
+            name: "target",
+            type: "address",
           },
           {
-            internalType: 'bytes',
-            name: 'callData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Call[]',
-        name: 'calls',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Call[]",
+        name: "calls",
+        type: "tuple[]",
       },
     ],
-    name: 'blockAndAggregate',
+    name: "blockAndAggregate",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'blockNumber',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
       },
       {
-        internalType: 'bytes32',
-        name: 'blockHash',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "blockHash",
+        type: "bytes32",
       },
       {
         components: [
           {
-            internalType: 'bool',
-            name: 'success',
-            type: 'bool',
+            internalType: "bool",
+            name: "success",
+            type: "bool",
           },
           {
-            internalType: 'bytes',
-            name: 'returnData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "returnData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Result[]',
-        name: 'returnData',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Result[]",
+        name: "returnData",
+        type: "tuple[]",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'blockNumber',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
       },
     ],
-    name: 'getBlockHash',
+    name: "getBlockHash",
     outputs: [
       {
-        internalType: 'bytes32',
-        name: 'blockHash',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "blockHash",
+        type: "bytes32",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getBlockNumber',
+    name: "getBlockNumber",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'blockNumber',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getCurrentBlockCoinbase',
+    name: "getCurrentBlockCoinbase",
     outputs: [
       {
-        internalType: 'address',
-        name: 'coinbase',
-        type: 'address',
+        internalType: "address",
+        name: "coinbase",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getCurrentBlockDifficulty',
+    name: "getCurrentBlockDifficulty",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'difficulty',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "difficulty",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getCurrentBlockGasLimit',
+    name: "getCurrentBlockGasLimit",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'gaslimit',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "gaslimit",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getCurrentBlockTimestamp',
+    name: "getCurrentBlockTimestamp",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'timestamp',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'addr',
-        type: 'address',
+        internalType: "address",
+        name: "addr",
+        type: "address",
       },
     ],
-    name: 'getEthBalance',
+    name: "getEthBalance",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'balance',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'getLastBlockHash',
+    name: "getLastBlockHash",
     outputs: [
       {
-        internalType: 'bytes32',
-        name: 'blockHash',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "blockHash",
+        type: "bytes32",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bool',
-        name: 'requireSuccess',
-        type: 'bool',
+        internalType: "bool",
+        name: "requireSuccess",
+        type: "bool",
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'target',
-            type: 'address',
+            internalType: "address",
+            name: "target",
+            type: "address",
           },
           {
-            internalType: 'bytes',
-            name: 'callData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Call[]',
-        name: 'calls',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Call[]",
+        name: "calls",
+        type: "tuple[]",
       },
     ],
-    name: 'tryAggregate',
+    name: "tryAggregate",
     outputs: [
       {
         components: [
           {
-            internalType: 'bool',
-            name: 'success',
-            type: 'bool',
+            internalType: "bool",
+            name: "success",
+            type: "bool",
           },
           {
-            internalType: 'bytes',
-            name: 'returnData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "returnData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Result[]',
-        name: 'returnData',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Result[]",
+        name: "returnData",
+        type: "tuple[]",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bool',
-        name: 'requireSuccess',
-        type: 'bool',
+        internalType: "bool",
+        name: "requireSuccess",
+        type: "bool",
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'target',
-            type: 'address',
+            internalType: "address",
+            name: "target",
+            type: "address",
           },
           {
-            internalType: 'bytes',
-            name: 'callData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Call[]',
-        name: 'calls',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Call[]",
+        name: "calls",
+        type: "tuple[]",
       },
     ],
-    name: 'tryBlockAndAggregate',
+    name: "tryBlockAndAggregate",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'blockNumber',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
       },
       {
-        internalType: 'bytes32',
-        name: 'blockHash',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "blockHash",
+        type: "bytes32",
       },
       {
         components: [
           {
-            internalType: 'bool',
-            name: 'success',
-            type: 'bool',
+            internalType: "bool",
+            name: "success",
+            type: "bool",
           },
           {
-            internalType: 'bytes',
-            name: 'returnData',
-            type: 'bytes',
+            internalType: "bytes",
+            name: "returnData",
+            type: "bytes",
           },
         ],
-        internalType: 'struct Multicall2.Result[]',
-        name: 'returnData',
-        type: 'tuple[]',
+        internalType: "struct Multicall2.Result[]",
+        name: "returnData",
+        type: "tuple[]",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-] as const
+] as const;
 
 export class Multicall2__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): Multicall2Interface {
-    return new utils.Interface(_abi) as Multicall2Interface
+    return new utils.Interface(_abi) as Multicall2Interface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): Multicall2 {
-    return new Contract(address, _abi, signerOrProvider) as Multicall2
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): Multicall2 {
+    return new Contract(address, _abi, signerOrProvider) as Multicall2;
   }
 }
