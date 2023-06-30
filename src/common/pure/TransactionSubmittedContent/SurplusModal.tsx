@@ -70,8 +70,11 @@ export const Wrapper = styled.div`
       height: var(--size);
       object-fit: contain;
       margin: 0 10px 0 0;
-      fill: ${({ theme }) => theme.success};
       padding: 6px;
+
+      > path {
+        fill: ${({ theme }) => theme.success};
+      }
     }
   }
 
@@ -125,7 +128,7 @@ export const Wrapper = styled.div`
 
 const StyledExternalLink = styled(ExternalLink)`
   border-radius: 24px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg2};
   color: ${({ theme }) => theme.text1};
   display: flex;
   padding: 1rem 2rem;
