@@ -24,13 +24,13 @@
     "serve": "nx exec -- serve build -l 3000",
     "serve:ci": "nx exec -- serve website -l 3000",
     "cypress": "nx exec -- cypress open",
-    "prei18n:extract": "touch src/locales/en-US.po",
     "optimize-bundle": "nx exec -- node ./scripts/fix-ethereumjs-bundle.js",
     "patch-package": "nx exec -- patch-package",
-    "i18n:extract": "nx exec -- cross-env NODE_ENV=development lingui extract --locale en-US",
-    "i18n:compile": "nx exec -- yarn _i18n:compile ",
-    "i18n:pseudo": "nx exec -- yarn _i18n:pseudo ",
-    "postinstall": "yarn i18n:compile && yarn patch-package",
+    "i18n": "nx exec -- yarn i18n:compile",
+    "i18n:compile": "yarn i18n:extract && lingui compile",
+    "i18n:extract": "cross-env NODE_ENV=development lingui extract --locale en-US",
+    "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
+    "postinstall": "yarn i18n && yarn patch-package",
     "prepare": "husky install",
     "prepublishOnly": "yarn widgets:build",
     "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
@@ -40,8 +40,6 @@
     "sitemap": "nx exec -- node src/sitemap",
     "writeVersion": "nx exec -- node src/writeVersion",
     "_start:service-worker": "yarn build && yarn serve",
-    "_i18n:compile": "yarn i18n:extract && lingui compile",
-    "_i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
     "_cosmos:run": "yarn cosmos:clear && cosmos"
   },
   "browser": {
@@ -305,7 +303,7 @@
           "{projectRoot}/src/locales"
         ]
       },
-      "i18n:compile": {
+      "i18n": {
         "outputs": [
           "{projectRoot}/src/locales"
         ]

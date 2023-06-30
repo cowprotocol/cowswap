@@ -86,7 +86,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/abis/types
             src/state/data
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
@@ -129,6 +128,7 @@ jobs:
         with:
           path: |
             src/state/data
+            src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run linters

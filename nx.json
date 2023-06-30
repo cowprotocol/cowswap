@@ -34,7 +34,7 @@
           "contracts:compile",
           "optimize-bundle",
           "i18n:extract",
-          "i18n:compile",
+          "i18n",
           "i18n:pseudo",
           "cosmos:export",
           "sitemap",
