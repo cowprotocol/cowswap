@@ -21,7 +21,7 @@ const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'
 
 function getTwitterText(surplusAmount: string, surplusToken: string) {
-  const surplus = `${surplusAmount} ${surplusToken}`; 
+  const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
     `Hey, I just ${SELL_SURPLUS_WORD} ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
   )
@@ -37,7 +37,7 @@ export const Wrapper = styled.div`
   position: relative;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     left: -16px;
     top: -60px;
@@ -166,24 +166,31 @@ export function SurplusModal(props: SurplusModalProps) {
 
   return (
     <Wrapper>
-      <h2><SVG src={CheckSingular} title="check" /> Swap completed</h2>
-      <span><img src={SurplusCow} alt="surplus cow" /></span>
+      <h2>
+        <SVG src={CheckSingular} title="check" /> Swap completed
+      </h2>
+      <span>
+        <img src={SurplusCow} alt="surplus cow" />
+      </span>
       <h3>Great! {surplusMsg}</h3>
       <strong>
-        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} /><span>!</span>
+        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+        <span>!</span>
       </strong>
       {showFiatValue && <FiatAmount amount={surplusFiatValue} accurate={false} />}
       {/* TODO: add share data */}
-      {surplusAmount && surplusToken && <StyledExternalLink onClickOptional={onTweetShare}
-        href={`https://twitter.com/intent/tweet?text=${
-          getTwitterText(surplusAmount.toSignificant(), surplusToken.symbol || 'Unknown token')
-        }`}
-      >
-        <SVG src={twitterImage} description="Twitter" />
-        <span>
-          Share this win!
-        </span>
-      </StyledExternalLink>}
+      {surplusAmount && surplusToken && (
+        <StyledExternalLink
+          onClickOptional={onTweetShare}
+          href={`https://twitter.com/intent/tweet?text=${getTwitterText(
+            surplusAmount.toSignificant(),
+            surplusToken.symbol || 'Unknown token'
+          )}`}
+        >
+          <SVG src={twitterImage} description="Twitter" />
+          <span>Share this win!</span>
+        </StyledExternalLink>
+      )}
       <p>
         CoW Swap is the only token exchange that gets you extra tokens.{' '}
         <ExternalLink href={'https://cow.fi'}>Learn how ↗</ExternalLink>
