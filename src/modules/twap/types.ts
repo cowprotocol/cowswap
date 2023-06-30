@@ -37,11 +37,18 @@ export enum TwapOrderStatus {
   Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
   Expired = 'Expired',
+  Fulfilled = 'Fulfilled',
 }
 
 export interface TwapOrdersSafeData {
   conditionalOrderParams: ConditionalOrderParams
   safeTxParams: SafeTransactionParams
+}
+
+export interface TwapOrderExecutionInfo {
+  executedSellAmount: string
+  executedBuyAmount: string
+  executedFeeAmount: string
 }
 
 export interface TwapOrderItem {
@@ -52,6 +59,7 @@ export interface TwapOrderItem {
   safeAddress: string
   id: string
   safeTxParams?: SafeTransactionParams
+  executionInfo: TwapOrderExecutionInfo
 }
 
 export interface ConditionalOrderParams {

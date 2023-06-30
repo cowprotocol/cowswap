@@ -1,5 +1,5 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -11,7 +11,8 @@ import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
-import { twapOrdersListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
+import { twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderInfo } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
@@ -27,7 +28,7 @@ export function TwapOrdersUpdater(props: {
   const { safeAddress, chainId, composableCowContract } = props
 
   const twapDiscreteOrders = useTwapDiscreteOrders()
-  const twapOrdersList = useAtomValue(twapOrdersListAtom)
+  const twapOrdersList = useAtomValue(twapOrdersAtom)
   const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
@@ -52,6 +53,12 @@ export function TwapOrdersUpdater(props: {
       .filter(isTruthy)
   }, [ordersSafeData])
 
+  const ordersIds = useMemo(() => allOrdersInfo.map((item) => item.id), [allOrdersInfo])
+
+  const _twapOrderExecutions = useTwapOrdersExecutions(ordersIds)
+  const twapOrderExecutions = useRef(_twapOrderExecutions)
+  twapOrderExecutions.current = _twapOrderExecutions
+
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingOrCancelledOrders = useMemo(() => {
     return allOrdersInfo.filter((info) => {
@@ -73,7 +80,14 @@ export function TwapOrdersUpdater(props: {
   useEffect(() => {
     if (!ordersAuthResult || !twapDiscreteOrders) return
 
-    const items = buildTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
+    const items = buildTwapOrdersItems(
+      chainId,
+      safeAddress,
+      allOrdersInfo,
+      ordersAuthResult,
+      twapDiscreteOrders,
+      twapOrderExecutions.current
+    )
     updateTwapOrders(items)
   }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, updateTwapOrders])
 

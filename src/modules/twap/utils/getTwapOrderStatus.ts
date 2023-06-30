@@ -2,7 +2,7 @@ import ms from 'ms.macro'
 
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 const AUTH_THRESHOLD = ms`1m`
 
@@ -11,9 +11,13 @@ export function getTwapOrderStatus(
   isExecuted: boolean,
   executionDateStr: string | null,
   auth: boolean | undefined,
-  discreteOrder: Order | undefined
+  discreteOrder: Order | undefined,
+  executionInfo: TwapOrderExecutionInfo
 ): TwapOrderStatus {
   const executionDate = executionDateStr ? new Date(executionDateStr) : null
+  const isFulfilled = executionInfo.executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
+
+  if (isFulfilled) return TwapOrderStatus.Fulfilled
 
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
