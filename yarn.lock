@@ -2312,6 +2312,10 @@
     exponential-backoff "^3.1.1"
     limiter "^2.1.0"
 
+"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
+  version "1.0.0"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/2ded2e64f3ee2f543999b312c75c771480b8b636"
+
 "@craco/craco@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-7.0.0.tgz#4e9243e53fba6ed4d2bc08aa65aae9d1b63541ed"

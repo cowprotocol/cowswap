@@ -2,6 +2,3 @@
 # yarn lockfile v1
 
 
-"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
-  version "1.0.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/2ded2e64f3ee2f543999b312c75c771480b8b636"
