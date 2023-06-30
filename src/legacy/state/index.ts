@@ -59,7 +59,7 @@ const store = configureStore({
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 
-// this instantiate the app / reducers in several places using the default chainId
+// this instantiates the app / reducers in several places using the default chainId
 store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
 
 // TODO: this is new, should we enable it?
