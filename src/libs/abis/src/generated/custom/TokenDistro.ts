@@ -11,49 +11,62 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers'
-import type { FunctionFragment, Result } from '@ethersproject/abi'
-import type { Listener, Provider } from '@ethersproject/providers'
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common'
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
+} from "./common";
 
 export interface TokenDistroInterface extends utils.Interface {
   functions: {
-    'balances(address)': FunctionFragment
-    'claim()': FunctionFragment
-  }
+    "balances(address)": FunctionFragment;
+    "claim()": FunctionFragment;
+  };
 
-  getFunction(nameOrSignatureOrTopic: 'balances' | 'claim'): FunctionFragment
+  getFunction(nameOrSignatureOrTopic: "balances" | "claim"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'balances', values: [PromiseOrValue<string>]): string
-  encodeFunctionData(functionFragment: 'claim', values?: undefined): string
+  encodeFunctionData(
+    functionFragment: "balances",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "claim", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: 'balances', data: BytesLike): Result
-  decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: "balances", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
 
-  events: {}
+  events: {};
 }
 
 export interface TokenDistro extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this
-  attach(addressOrName: string): this
-  deployed(): Promise<this>
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-  interface: TokenDistroInterface
+  interface: TokenDistroInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>
+  ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
-  listeners(eventName?: string): Array<Listener>
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
-  removeAllListeners(eventName?: string): this
-  off: OnEvent<this>
-  on: OnEvent<this>
-  once: OnEvent<this>
-  removeListener: OnEvent<this>
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
   functions: {
     balances(
@@ -61,20 +74,26 @@ export interface TokenDistro extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        allocatedTokens: BigNumber
-        claimed: BigNumber
+        allocatedTokens: BigNumber;
+        claimed: BigNumber;
       }
-    >
+    >;
 
-    claim(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>
-  }
+    claim(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
   balances(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber] & { allocatedTokens: BigNumber; claimed: BigNumber }>
+  ): Promise<
+    [BigNumber, BigNumber] & { allocatedTokens: BigNumber; claimed: BigNumber }
+  >;
 
-  claim(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>
+  claim(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     balances(
@@ -82,25 +101,35 @@ export interface TokenDistro extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        allocatedTokens: BigNumber
-        claimed: BigNumber
+        allocatedTokens: BigNumber;
+        claimed: BigNumber;
       }
-    >
+    >;
 
-    claim(overrides?: CallOverrides): Promise<void>
-  }
+    claim(overrides?: CallOverrides): Promise<void>;
+  };
 
-  filters: {}
+  filters: {};
 
   estimateGas: {
-    balances(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
+    balances(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    claim(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<BigNumber>
-  }
+    claim(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+  };
 
   populateTransaction: {
-    balances(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>
+    balances(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    claim(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<PopulatedTransaction>
-  }
+    claim(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+  };
 }

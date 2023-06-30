@@ -2,9 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
-import type { GPv2Settlement, GPv2SettlementInterface } from '../GPv2Settlement'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type {
+  GPv2Settlement,
+  GPv2SettlementInterface,
+} from "../GPv2Settlement";
 
 const _abi = [
   {
@@ -12,101 +15,104 @@ const _abi = [
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
+        internalType: "address",
+        name: "owner",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'contract IERC20',
-        name: 'sellToken',
-        type: 'address',
+        internalType: "contract IERC20",
+        name: "sellToken",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'contract IERC20',
-        name: 'buyToken',
-        type: 'address',
+        internalType: "contract IERC20",
+        name: "buyToken",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'sellAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "sellAmount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'buyAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'feeAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "feeAmount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'bytes',
-        name: 'orderUid',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "orderUid",
+        type: "bytes",
       },
     ],
-    name: 'Trade',
-    type: 'event',
+    name: "Trade",
+    type: "event",
   },
   {
     inputs: [
       {
-        internalType: 'bytes',
-        name: 'orderUid',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "orderUid",
+        type: "bytes",
       },
       {
-        internalType: 'bool',
-        name: 'signed',
-        type: 'bool',
+        internalType: "bool",
+        name: "signed",
+        type: "bool",
       },
     ],
-    name: 'setPreSignature',
+    name: "setPreSignature",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bytes',
-        name: 'orderUid',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "orderUid",
+        type: "bytes",
       },
     ],
-    name: 'invalidateOrder',
+    name: "invalidateOrder",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'domainSeparator',
+    name: "domainSeparator",
     outputs: [
       {
-        name: '',
-        type: 'bytes32',
+        name: "",
+        type: "bytes32",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-] as const
+] as const;
 
 export class GPv2Settlement__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): GPv2SettlementInterface {
-    return new utils.Interface(_abi) as GPv2SettlementInterface
+    return new utils.Interface(_abi) as GPv2SettlementInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): GPv2Settlement {
-    return new Contract(address, _abi, signerOrProvider) as GPv2Settlement
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): GPv2Settlement {
+    return new Contract(address, _abi, signerOrProvider) as GPv2Settlement;
   }
 }
