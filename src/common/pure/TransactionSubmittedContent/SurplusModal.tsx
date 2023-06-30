@@ -20,10 +20,11 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'
 
-function getTwitterText(surplusAmount: string, surplusToken: string) {
-  const surplus = `${surplusAmount} ${surplusToken}`
+function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
+  const actionWord = orderKind === OrderKind.SELL ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD;
+  const surplus = `${surplusAmount} ${surplusToken}`;
   return encodeURIComponent(
-    `Hey, I just ${SELL_SURPLUS_WORD} ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+    `Hey, I just ${actionWord} ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
   )
 }
 
@@ -185,10 +186,9 @@ export function SurplusModal(props: SurplusModalProps) {
       {surplusAmount && surplusToken && (
         <StyledExternalLink
           onClickOptional={onTweetShare}
-          href={`https://twitter.com/intent/tweet?text=${getTwitterText(
-            surplusAmount.toSignificant(),
-            surplusToken.symbol || 'Unknown token'
-          )}`}
+          href={`https://twitter.com/intent/tweet?text=${
+            getTwitterText(surplusAmount.toSignificant(), surplusToken.symbol || 'Unknown token', order.kind)
+        }`}
         >
           <SVG src={twitterImage} description="Twitter" />
           <span>Share this win!</span>
