@@ -128,7 +128,7 @@ export const Wrapper = styled.div`
 const StyledExternalLink = styled(ExternalLink)`
   border-radius: 24px;
   background: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.white};
   display: flex;
   padding: 1rem 2rem;
   width: fit-content;
