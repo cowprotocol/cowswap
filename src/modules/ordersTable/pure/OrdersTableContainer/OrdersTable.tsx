@@ -31,6 +31,7 @@ import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -217,6 +218,14 @@ export function OrdersTable({
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
+  const composableCowOrders = orders
+    .filter((order) => getIsComposableCowParentOrder(order))
+    .reduce<{ [key: string]: ParsedOrder }>((acc, val) => {
+      const parentId = val.composableCowInfo!.id!
+      acc[parentId] = val
+      return acc
+    }, {})
+
   const partsOrders = orders
     .filter((order) => getIsComposableCowChildOrder(order))
     .reduce<{ [key: string]: ParsedOrder[] }>((acc, val) => {
@@ -227,14 +236,23 @@ export function OrdersTable({
     }, {})
 
   const ordersPage = orders
-    .filter((order) => !getIsComposableCowChildOrder(order))
     .sort(ordersSorter)
     .map((order) => {
       if (!order.composableCowInfo) return order
 
-      const parentId = order.composableCowInfo.id!
+      const isPartOrder = getIsComposableCowChildOrder(order)
 
-      return [order, ...(partsOrders[parentId] || []).reverse()]
+      if (isPartOrder) {
+        const parentId = order.composableCowInfo.parentId!
+
+        // In case when part order is on "history" page and its parent on "open"
+        // We shouldn't consider this order for grouping
+        return composableCowOrders[parentId] ? [] : order
+      }
+
+      const composableOrderId = order.composableCowInfo.id!
+
+      return [order, ...(partsOrders[composableOrderId] || []).reverse()]
     })
     .flat()
     .slice(step - ORDERS_TABLE_PAGE_SIZE, step)
