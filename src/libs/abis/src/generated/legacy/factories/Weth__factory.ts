@@ -2,296 +2,296 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { Weth, WethInterface } from "../Weth";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { Weth, WethInterface } from '../Weth'
 
 const _abi = [
   {
     constant: true,
     inputs: [],
-    name: "name",
+    name: 'name',
     outputs: [
       {
-        name: "",
-        type: "string",
+        name: '',
+        type: 'string',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
-        name: "guy",
-        type: "address",
+        name: 'guy',
+        type: 'address',
       },
       {
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "approve",
+    name: 'approve',
     outputs: [
       {
-        name: "",
-        type: "bool",
+        name: '',
+        type: 'bool',
       },
     ],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     constant: true,
     inputs: [],
-    name: "totalSupply",
+    name: 'totalSupply',
     outputs: [
       {
-        name: "",
-        type: "uint256",
+        name: '',
+        type: 'uint256',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
-        name: "src",
-        type: "address",
+        name: 'src',
+        type: 'address',
       },
       {
-        name: "dst",
-        type: "address",
+        name: 'dst',
+        type: 'address',
       },
       {
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "transferFrom",
+    name: 'transferFrom',
     outputs: [
       {
-        name: "",
-        type: "bool",
+        name: '',
+        type: 'bool',
       },
     ],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "withdraw",
+    name: 'withdraw',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     constant: true,
     inputs: [],
-    name: "decimals",
+    name: 'decimals',
     outputs: [
       {
-        name: "",
-        type: "uint8",
+        name: '',
+        type: 'uint8',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: true,
     inputs: [
       {
-        name: "",
-        type: "address",
+        name: '',
+        type: 'address',
       },
     ],
-    name: "balanceOf",
+    name: 'balanceOf',
     outputs: [
       {
-        name: "",
-        type: "uint256",
+        name: '',
+        type: 'uint256',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: true,
     inputs: [],
-    name: "symbol",
+    name: 'symbol',
     outputs: [
       {
-        name: "",
-        type: "string",
+        name: '',
+        type: 'string',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
-        name: "dst",
-        type: "address",
+        name: 'dst',
+        type: 'address',
       },
       {
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "transfer",
+    name: 'transfer',
     outputs: [
       {
-        name: "",
-        type: "bool",
+        name: '',
+        type: 'bool',
       },
     ],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [],
-    name: "deposit",
+    name: 'deposit',
     outputs: [],
     payable: true,
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     constant: true,
     inputs: [
       {
-        name: "",
-        type: "address",
+        name: '',
+        type: 'address',
       },
       {
-        name: "",
-        type: "address",
+        name: '',
+        type: 'address',
       },
     ],
-    name: "allowance",
+    name: 'allowance',
     outputs: [
       {
-        name: "",
-        type: "uint256",
+        name: '',
+        type: 'uint256',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     payable: true,
-    stateMutability: "payable",
-    type: "fallback",
+    stateMutability: 'payable',
+    type: 'fallback',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        name: "src",
-        type: "address",
+        name: 'src',
+        type: 'address',
       },
       {
         indexed: true,
-        name: "guy",
-        type: "address",
+        name: 'guy',
+        type: 'address',
       },
       {
         indexed: false,
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "Approval",
-    type: "event",
+    name: 'Approval',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        name: "src",
-        type: "address",
+        name: 'src',
+        type: 'address',
       },
       {
         indexed: true,
-        name: "dst",
-        type: "address",
+        name: 'dst',
+        type: 'address',
       },
       {
         indexed: false,
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "Transfer",
-    type: "event",
+    name: 'Transfer',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        name: "dst",
-        type: "address",
+        name: 'dst',
+        type: 'address',
       },
       {
         indexed: false,
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "Deposit",
-    type: "event",
+    name: 'Deposit',
+    type: 'event',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        name: "src",
-        type: "address",
+        name: 'src',
+        type: 'address',
       },
       {
         indexed: false,
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "Withdrawal",
-    type: "event",
+    name: 'Withdrawal',
+    type: 'event',
   },
-] as const;
+] as const
 
 export class Weth__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): WethInterface {
-    return new utils.Interface(_abi) as WethInterface;
+    return new utils.Interface(_abi) as WethInterface
   }
   static connect(address: string, signerOrProvider: Signer | Provider): Weth {
-    return new Contract(address, _abi, signerOrProvider) as Weth;
+    return new Contract(address, _abi, signerOrProvider) as Weth
   }
 }
