@@ -8,10 +8,8 @@ import { useFallbackHandlerVerification } from './useFallbackHandlerVerification
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
 import { partsStateAtom } from '../state/partsStateAtom'
 import { twapOrderAtom, twapTimeIntervalAtom } from '../state/twapOrderAtom'
-import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function useTwapFormState(): TwapFormState | null {
-  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const { chainId } = useWalletInfo()
 
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -24,12 +22,11 @@ export function useTwapFormState(): TwapFormState | null {
   return useMemo(() => {
     return getTwapFormState({
       isSafeApp,
-      isFallbackHandlerSetupAccepted,
       verification,
       twapOrder,
       sellAmountPartFiat,
       chainId,
       partTime,
     })
-  }, [isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
+  }, [isSafeApp, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
 }

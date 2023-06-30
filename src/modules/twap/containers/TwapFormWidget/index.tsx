@@ -17,11 +17,10 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
-import { useFallbackHandlerVerification } from '../../hooks/useFallbackHandlerVerification'
+import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
@@ -42,7 +41,7 @@ export function TwapFormWidget() {
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
-  const fallbackHandlerVerification = useFallbackHandlerVerification()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
@@ -62,7 +61,6 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
-  const fallbackHandlerIsNotSet = fallbackHandlerVerification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
   const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
@@ -84,7 +82,7 @@ export function TwapFormWidget() {
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
-      <TwapConfirmModal fallbackHandlerIsNotSet={fallbackHandlerIsNotSet} />
+      <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
