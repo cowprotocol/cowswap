@@ -44,7 +44,7 @@ const reducers = {
   cowToken,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'gas', 'affiliate', 'profile', 'swap']
 
 const store = configureStore({
   reducer: reducers,

@@ -6,6 +6,8 @@ import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { ComposableCowInfo } from 'common/types'
+
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
 import { getOrderFilledAmount } from './getOrderFilledAmount'
 import { getOrderSurplus } from './getOrderSurplus'
@@ -43,6 +45,7 @@ export interface ParsedOrder {
   partiallyFillable: boolean
   creationTime: Date
   expirationTime: Date
+  composableCowInfo?: ComposableCowInfo
 
   executionData: ParsedOrderExecutionData
 }
@@ -100,6 +103,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     class: order.class,
     status: order.status,
     partiallyFillable: order.partiallyFillable,
+    composableCowInfo: order.composableCowInfo,
     creationTime,
     expirationTime,
     executionData,
