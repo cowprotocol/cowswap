@@ -34,6 +34,7 @@ export const Wrapper = styled.div`
   justify-content: flex-start;
   border-radius: var(--borderRadius);
   position: relative;
+  width: 100%;
 
   &::before {
     content: '';
