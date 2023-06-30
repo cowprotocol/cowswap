@@ -10,7 +10,6 @@ import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
   isSafeApp: boolean
-  isFallbackHandlerSetupAccepted: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
