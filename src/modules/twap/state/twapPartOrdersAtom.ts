@@ -15,7 +15,7 @@ export interface TwapPartOrderItem {
 }
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 
-export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v2', {})
+export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v3', {})
 
 export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)

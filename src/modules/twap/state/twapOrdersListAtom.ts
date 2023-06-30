@@ -10,7 +10,7 @@ import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v4', {})
+export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v5', {})
 
 export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
