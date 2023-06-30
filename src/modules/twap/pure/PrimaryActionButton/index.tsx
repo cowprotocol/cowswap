@@ -20,11 +20,6 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Unsupported wallet
     </ButtonPrimary>
   ),
-  [TwapFormState.NEED_FALLBACK_HANDLER]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Unsupported Safe
-    </ButtonPrimary>
-  ),
   [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Sell amount too small
