@@ -234,7 +234,7 @@ export function OrdersTable({
 
       const parentId = order.composableCowInfo.id!
 
-      return [...(partsOrders[parentId] || []), order]
+      return [order, ...(partsOrders[parentId] || []).reverse()]
     })
     .flat()
     .slice(step - ORDERS_TABLE_PAGE_SIZE, step)
