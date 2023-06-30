@@ -2,10 +2,11 @@ import React, { ReactNode } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'legacy/state/application/atoms'
 
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useWalletInfo } from 'modules/wallet'
 
 import { GpModal } from 'common/pure/Modal'
@@ -44,6 +45,8 @@ export function TransactionConfirmationModal({
 
   if (!chainId) return null
 
+  const width = getWidth(hash, activityDerivedState)
+
   const _onDismiss =
     !attemptingTxn && hash
       ? () => {
@@ -53,7 +56,7 @@ export function TransactionConfirmationModal({
       : onDismiss
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={hash ? 850 : 470}>
+    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
       {attemptingTxn ? (
         <LegacyConfirmationPendingContent
           chainId={chainId}
@@ -70,8 +73,18 @@ export function TransactionConfirmationModal({
           currencyToAdd={currencyToAdd}
         />
       ) : (
-        content && content()
+        content?.()
       )}
     </GpModal>
   )
+}
+
+function getWidth(hash: string | undefined, activityDerivedState: ActivityDerivedState | null): number {
+  if (activityDerivedState && getActivityState(activityDerivedState) === 'filled') {
+    return 400
+  }
+  if (hash) {
+    return 850
+  }
+  return 470
 }
