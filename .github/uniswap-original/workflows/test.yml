@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: yarn prepare
+      - run: yarn install
       - run: yarn test
 
   cypress-build:
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: yarn prepare
+      - run: yarn install
 
       - run: yarn build
       - uses: actions/upload-artifact@v2
