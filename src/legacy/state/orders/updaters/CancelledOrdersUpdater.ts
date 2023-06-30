@@ -117,7 +117,7 @@ export function CancelledOrdersUpdater(): null {
         // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
       }
     },
-    [fulfillOrdersBatch]
+    [addOrderToSurplusQueue, fulfillOrdersBatch]
   )
 
   useEffect(() => {
