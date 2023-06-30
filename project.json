@@ -5,8 +5,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo TODO fix",
-        "command-to-fix": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
+        "command": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
       }
     },
     "build": {
