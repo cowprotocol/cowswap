@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -13,9 +14,6 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
-import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
-import { MerkleDrop, TokenDistro } from 'abis/types'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { fetchClaim } from './claimData'
@@ -23,8 +21,8 @@ import { fetchClaim } from './claimData'
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
 
-const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MERKLE_DROP_ABI, true)
-const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
+const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
+const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useWalletInfo()

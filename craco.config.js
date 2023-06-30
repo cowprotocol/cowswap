@@ -1,11 +1,13 @@
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const CracoWorkboxPlugin = require('craco-workbox')
+const { pathsToModuleNameMapper } = require('ts-jest')
 const webpack = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const path = require('path')
 
 const { version } = require('./package.json')
+const { compilerOptions } = require('./tsconfig.base.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
 
@@ -64,6 +66,7 @@ module.exports = {
       '@cowprotocol/ui-utils': path.resolve(__dirname, 'src/libs/ui-utils/src/index.ts'),
       '@cowprotocol/widget-lib': path.resolve(__dirname, 'src/libs/widget-lib/src/index.ts'),
       '@cowprotocol/widget-react': path.resolve(__dirname, 'src/libs/widget-react/src/index.ts'),
+      '@cowprotocol/abis': path.resolve(__dirname, 'src/libs/abis/src/index.ts'),
     },
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
@@ -102,5 +105,11 @@ module.exports = {
     }
 
     return config
+  },
+  jest: {
+    configure: {
+      preset: 'ts-jest',
+      moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/src/' }),
+    },
   },
 }

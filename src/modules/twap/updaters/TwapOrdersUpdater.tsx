@@ -1,11 +1,10 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
+import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { isTruthy } from 'legacy/utils/misc'
-
-import { ComposableCoW } from 'abis/types'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'

@@ -1,7 +1,7 @@
+import { Erc20 } from '@cowprotocol/abis'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
-import { Erc20 } from 'legacy/abis/types/Erc20'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'

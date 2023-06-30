@@ -1,4 +1,4 @@
-import { GPv2Settlement } from 'abis/types'
+import { GPv2Settlement } from '@cowprotocol/abis'
 
 export type BuildPresignTxParams = {
   orderId: string
