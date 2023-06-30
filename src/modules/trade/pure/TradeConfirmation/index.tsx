@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 
@@ -11,6 +11,8 @@ import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
 import * as styledEl from './styled'
+
+import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
   onConfirm(): void
@@ -37,6 +39,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     children,
   } = props
 
+  const inputAmount = inputCurrencyInfo.amount?.toExact()
+  const outputAmount = outputCurrencyInfo.amount?.toExact()
+
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
+
+  const isButtonDisabled = isConfirmDisabled || isPriceChanged
+
   return (
     <styledEl.WidgetWrapper>
       <styledEl.Header>
@@ -60,10 +69,37 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
           priceImpactParams={priceImpact}
         />
         {children}
-        <ButtonPrimary onClick={onConfirm} disabled={isConfirmDisabled} buttonSize={ButtonSize.BIG}>
+        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+        <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
   )
+}
+
+function useIsPriceChanged(inputAmount: string | undefined, outputAmount: string | undefined) {
+  const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>()
+
+  const [isPriceChanged, setIsPriceChanged] = useState(false)
+
+  const resetPriceChanged = useCallback(() => {
+    initialAmounts.current = { inputAmount, outputAmount }
+    setIsPriceChanged(false)
+  }, [inputAmount, outputAmount])
+
+  useEffect(() => {
+    resetPriceChanged()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!initialAmounts.current) return
+
+    if (inputAmount !== initialAmounts.current.inputAmount || outputAmount !== initialAmounts.current.outputAmount) {
+      setIsPriceChanged(true)
+    }
+  }, [inputAmount, outputAmount])
+
+  return { isPriceChanged, resetPriceChanged }
 }
