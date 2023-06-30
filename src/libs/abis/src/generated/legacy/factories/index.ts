@@ -11,6 +11,4 @@ export { Erc1155__factory } from "./Erc1155__factory";
 export { Erc20__factory } from "./Erc20__factory";
 export { Erc20_bytes32__factory } from "./Erc20_bytes32__factory";
 export { Erc721__factory } from "./Erc721__factory";
-export { Multicall__factory } from "./Multicall__factory";
-export { Multicall2__factory } from "./Multicall2__factory";
 export { Weth__factory } from "./Weth__factory";
