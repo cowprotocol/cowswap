@@ -30,6 +30,7 @@ import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderEx
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -215,7 +216,29 @@ export function OrdersTable({
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
-  const ordersPage = orders.slice(step - ORDERS_TABLE_PAGE_SIZE, step).sort(ordersSorter)
+
+  const partsOrders = orders
+    .filter((order) => getIsComposableCowChildOrder(order))
+    .reduce<{ [key: string]: ParsedOrder[] }>((acc, val) => {
+      const parentId = val.composableCowInfo!.parentId!
+      acc[parentId] = acc[parentId] || []
+      acc[parentId].push(val)
+      return acc
+    }, {})
+
+  const ordersPage = orders
+    .filter((order) => !getIsComposableCowChildOrder(order))
+    .sort(ordersSorter)
+    .map((order) => {
+      if (!order.composableCowInfo) return order
+
+      const parentId = order.composableCowInfo.id!
+
+      return [...(partsOrders[parentId] || []), order]
+    })
+    .flat()
+    .slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+
   const onScroll = useCallback(() => {
     // Emit event to close OrderContextMenu
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
