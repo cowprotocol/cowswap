@@ -93,6 +93,13 @@ jobs:
       - name: Unit Test
         run: yarn test
 
+        # Open tmate ssh connection on failure for debugging
+      # Uncomment when needed and push upstream
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+
+
       # - name: Coveralls
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
