@@ -6,11 +6,11 @@ import { OrderStatus as OrderStatusInApp } from 'legacy/state/orders/actions'
 
 import { OrderWithComposableCowInfo } from 'common/types'
 
-import { twapOrdersListAtom } from './twapOrdersListAtom'
+import { twapOrdersAtom } from './twapOrdersListAtom'
 import { twapPartOrdersListAtom } from './twapPartOrdersAtom'
 
 export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) => {
-  const twapOrders = get(twapOrdersListAtom)
+  const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
 
   return twapParticleOrders.map<OrderWithComposableCowInfo>((order) => {

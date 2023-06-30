@@ -16,13 +16,11 @@ import { TwapOrderItem } from '../types'
 
 export function PartOrdersUpdater() {
   const { chainId, account } = useWalletInfo()
-  const twapOrdersList = useAtomValue(twapOrdersListAtom)
+  const twapOrders = useAtomValue(twapOrdersListAtom)
   const updateTwapPartOrders = useUpdateAtom(twapPartOrdersAtom)
 
   useEffect(() => {
     if (!chainId || !account) return
-
-    const twapOrders = Object.values(twapOrdersList)
 
     const ordersParts$ = twapOrders.map((twapOrder) => {
       return generateTwapOrderParts(twapOrder, account.toLowerCase(), chainId)
@@ -38,7 +36,7 @@ export function PartOrdersUpdater() {
 
       updateTwapPartOrders(ordersMap)
     })
-  }, [chainId, account, twapOrdersList, updateTwapPartOrders])
+  }, [chainId, account, twapOrders, updateTwapPartOrders])
 
   return null
 }
