@@ -146,7 +146,7 @@ export function SurplusCard() {
         </div>
         <div>
           {/* TODO: add correct link */}
-          <ExternalLink href={'https://swap.cow.fi'}>Learn about surplus on CoW Swap ↗</ExternalLink>
+          <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>Learn about surplus on CoW Swap ↗</ExternalLink>
         </div>
       </InfoCard>
     </Wrapper>
