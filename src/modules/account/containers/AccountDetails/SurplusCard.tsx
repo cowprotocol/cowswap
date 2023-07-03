@@ -65,19 +65,28 @@ export function SurplusCard() {
 
     ${InfoCard} > div > span {
       display: flex;
+      flex-flow: column wrap;
       align-items: center;
       justify-content: center;
     }
 
     ${InfoCard} > div > span > i,
-    ${InfoCard} > div > a {
+    ${InfoCard} > div > a,
+    ${InfoCard} > div > span > p {
+      display: flex;
       font-size: 13px;
       font-style: normal;
       font-weight: 500;
       line-height: 1.1;
       width: 100%;
       text-align: center;
+      justify-content: center;
+      align-items: center;
       color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    }
+
+    ${InfoCard} > div > span > p {
+      color: ${({ theme }) => theme.text1};
     }
 
     ${InfoCard} > div > span > b {
@@ -117,17 +126,17 @@ export function SurplusCard() {
       <InfoCard>
         <div>
           <span>
-            <i>Your total surplus</i> <QuestionHelper text={'TODO: insert tooltip'} />
+            <i>Your total surplus <QuestionHelper text={'TODO: insert tooltip'} /></i>
           </span>
           <span>
             {isLoading
-              ? 'Loading...'
+              ? <p>Loading...</p>
               : surplusAmount && (
                   <b>
                     +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
                   </b>
                 )}
-            {!surplusAmount && 'No surplus for the given time period'}
+            {!surplusAmount && <p>No surplus for the given time period</p>}
           </span>
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
         </div>
