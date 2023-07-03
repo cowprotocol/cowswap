@@ -8,6 +8,7 @@ import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -37,6 +38,7 @@ interface TradeWidgetParams {
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
+  isExpertMode: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
@@ -78,6 +80,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     recipient,
     disableQuotePolling = false,
     canSellAllNative = false,
+    isExpertMode,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -106,6 +109,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeWidgetModals />
       <WrapNativeModal />
       <PriceImpactUpdater />
+      <TradeFormValidationUpdater isExpertMode={isExpertMode} />
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>

@@ -217,6 +217,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const params = {
     disableNonToken: false,
     compactView: false,
+    isExpertMode,
     recipient,
     showRecipient,
     isTradePriceUpdating,

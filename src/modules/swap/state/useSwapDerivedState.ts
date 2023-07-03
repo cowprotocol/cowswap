@@ -15,14 +15,15 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount } = useDerivedSwapInfo()
+  const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
 
+  const isSellTrade = independentField === Field.INPUT
   const inputCurrency = currencies.INPUT || null
   const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
-  const inputCurrencyAmount = v2Trade?.inputAmount || null
-  const outputCurrencyAmount = v2Trade?.outputAmount || null
+  const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmount) || null
+  const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmount) || null
 
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
@@ -41,7 +42,7 @@ export function useFillSwapDerivedState() {
       inputCurrencyFiatAmount,
       outputCurrencyFiatAmount,
       recipient,
-      orderKind: independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
+      orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

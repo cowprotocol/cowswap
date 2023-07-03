@@ -248,6 +248,7 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     canSellAllNative,
+    isExpertMode,
   }
 
   return (
