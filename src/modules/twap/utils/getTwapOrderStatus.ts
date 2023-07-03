@@ -9,12 +9,11 @@ const AUTH_THRESHOLD = ms`1m`
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  executionDateStr: string | null,
+  executionDate: Date | null,
   auth: boolean | undefined,
   discreteOrder: Order | undefined,
   executionInfo: TwapOrderExecutionInfo
 ): TwapOrderStatus {
-  const executionDate = executionDateStr ? new Date(executionDateStr) : null
   const isFulfilled = executionInfo.executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled

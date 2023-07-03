@@ -10,6 +10,7 @@ import {
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
@@ -18,6 +19,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()
+  useDisableNativeTokenSelling()
 
   const {
     inputCurrency,

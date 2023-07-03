@@ -22,8 +22,10 @@ export function PartOrdersUpdater() {
   useEffect(() => {
     if (!chainId || !account) return
 
+    const accountLowerCase = account.toLowerCase()
+
     const ordersParts$ = twapOrders.map((twapOrder) => {
-      return generateTwapOrderParts(twapOrder, account.toLowerCase(), chainId)
+      return generateTwapOrderParts(twapOrder, accountLowerCase, chainId)
     })
 
     Promise.all(ordersParts$).then((ordersParts) => {
