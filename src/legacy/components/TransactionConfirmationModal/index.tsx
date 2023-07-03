@@ -81,7 +81,7 @@ export function TransactionConfirmationModal({
 
 function getWidth(hash: string | undefined, activityDerivedState: ActivityDerivedState | null): number {
   if (activityDerivedState && getActivityState(activityDerivedState) === 'filled') {
-    return 400
+    return 470
   }
   if (hash) {
     return 850
