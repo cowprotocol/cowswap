@@ -27,26 +27,10 @@ import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/e
 
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
-function getProfileUrl(): Partial<Record<ChainId, string>> {
-  if (isLocal || isDev || isPr || isBarn) {
-    return {
-      [ChainId.MAINNET]:
-        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/affiliate/api',
-    }
-  }
-
-  // Production, staging, ens, ...
-  return {
-    [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
-  }
-}
-
-const PROFILE_API_BASE_URL = getProfileUrl()
-
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-  'X-AppId': getAppDataHash(),
 }
+
 const API_NAME = 'CoW Protocol'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
@@ -59,35 +43,6 @@ export interface UnsupportedToken {
     address: string
     dateAdded: number
   }
-}
-
-function _getProfileApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = PROFILE_API_BASE_URL[chainId]
-
-  if (!baseUrl) {
-    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
-  } else {
-    return baseUrl + '/v1'
-  }
-}
-
-function _fetchProfile(
-  chainId: ChainId,
-  url: string,
-  method: 'GET' | 'POST' | 'DELETE',
-  data?: any
-): Promise<Response> {
-  const baseUrl = _getProfileApiBaseUrl(chainId)
-
-  return fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS,
-    method,
-    body: data !== undefined ? JSON.stringify(data) : data,
-  })
-}
-
-function _getProfile(chainId: ChainId, url: string): Promise<Response> {
-  return _fetchProfile(chainId, url, 'GET')
 }
 
 // ETH-FLOW orders require different quote params
@@ -172,33 +127,6 @@ export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[
 
 export async function getNativePrice(chainId: ChainId, currencyAddress: string): Promise<NativePriceResponse> {
   return orderBookApi.getNativePrice(currencyAddress, { chainId })
-}
-
-export type ProfileData = {
-  totalTrades: number
-  totalReferrals: number
-  tradeVolumeUsd: number
-  referralVolumeUsd: number
-  lastUpdated: string
-}
-
-export async function getProfileData(chainId: ChainId, address: string): Promise<ProfileData | null> {
-  console.log(`[api:${API_NAME}] Get profile data for`, chainId, address)
-  if (chainId !== ChainId.MAINNET) {
-    console.info('Profile data is only available for mainnet')
-    return null
-  }
-
-  const response = await _getProfile(chainId, `/profile/${address}`)
-
-  // TODO: Update the error handler when the openAPI profile spec is defined
-  if (!response.ok) {
-    const errorResponse = await response.json()
-    console.log(errorResponse)
-    throw new Error(errorResponse?.description)
-  } else {
-    return response.json()
-  }
 }
 
 const NETWORK_TO_API_PREFIX = {
