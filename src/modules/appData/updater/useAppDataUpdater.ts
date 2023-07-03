@@ -2,19 +2,19 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { UtmParams } from 'modules/utm'
 
 import { APP_DATA_HASH } from '../constants'
 import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
+import { AppDataOrderClass } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 
 export type UseAppDataParams = {
-  chainId?: SupportedChainId
+  chainId: SupportedChainId
   slippageBips: string
-  orderClass: OrderClass
+  orderClass: AppDataOrderClass
   utm: UtmParams | undefined
 }
 
@@ -29,7 +29,7 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
   const appCode = useAppCode()
 
   useEffect(() => {
-    if (!chainId || !appCode) {
+    if (!appCode) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
       return

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { AppDataUpdater } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -24,7 +25,11 @@ import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import {
+  twapOrderSlippageAtom,
+  twapOrdersSettingsAtom,
+  updateTwapOrdersSettingsAtom,
+} from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -43,6 +48,7 @@ export function TwapFormWidget() {
   const { updateState } = useTradeState()
   const fallbackHandlerVerification = useFallbackHandlerVerification()
 
+  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
@@ -77,6 +83,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
       {shouldLoadTwapOrders && (
