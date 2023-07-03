@@ -2,6 +2,9 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
+import { twapWalletCompatibility } from 'legacy/components/analytics'
+import usePrevious from 'legacy/hooks/usePrevious'
+
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -9,6 +12,7 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
@@ -35,6 +39,8 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
+  const prevAccount = usePrevious(account)
+
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
 
@@ -74,6 +80,18 @@ export function TwapFormWidget() {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (account && account !== prevAccount) {
+      if (localFormValidation === TwapFormState.NOT_SAFE) {
+        twapWalletCompatibility('non-compatible')
+      } else if (fallbackHandlerIsNotSet) {
+        twapWalletCompatibility('safe-that-could-be-converted')
+      } else {
+        twapWalletCompatibility('compatible')
+      }
+    }
+  }, [account, fallbackHandlerIsNotSet, localFormValidation, prevAccount])
 
   return (
     <>
