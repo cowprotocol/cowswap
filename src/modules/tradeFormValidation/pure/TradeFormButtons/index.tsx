@@ -20,7 +20,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps) {
   const { validation, context, isExpertMode, isDisabled, doTradeText, confirmText } = props
 
   // When there are no validation errors
-  if (!validation) {
+  if (validation === null) {
     return (
       <TradeFormBlankButton
         id="do-trade-button"

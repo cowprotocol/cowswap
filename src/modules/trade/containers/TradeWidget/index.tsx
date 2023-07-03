@@ -20,6 +20,7 @@ import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
+import { WrapFlowActionButton } from '../WrapFlowActionButton'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 export interface TradeWidgetActions {
@@ -61,7 +62,6 @@ export interface TradeWidgetProps {
 
 export const TradeWidgetContainer = styledEl.Container
 
-// TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
@@ -148,7 +148,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                 <CurrencyInputPanel
                   id="output-currency-input"
                   disableNonToken={disableNonToken}
-                  inputDisabled={isEoaEthFlow || disableOutput}
+                  inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
                   inputTooltip={
                     isEoaEthFlow
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
@@ -160,7 +160,9 @@ export function TradeWidget(props: TradeWidgetProps) {
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}
                   allowsOffchainSigning={allowsOffchainSigning}
-                  currencyInfo={outputCurrencyInfo}
+                  currencyInfo={
+                    isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
+                  }
                   priceImpactParams={priceImpact}
                   topLabel={outputCurrencyInfo.label}
                 />
@@ -169,7 +171,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                 <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
-              {bottomContent}
+              {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
             </>
           )}
         </styledEl.ContainerBox>
