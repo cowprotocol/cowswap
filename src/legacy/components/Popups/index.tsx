@@ -1,3 +1,5 @@
+import { MouseEvent, useCallback, useRef } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { transparentize } from 'polished'
@@ -5,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { PopupItem } from 'legacy/components/Popups/PopupItem'
-import { useActivePopups } from 'legacy/state/application/hooks'
+import { useActivePopups, useRemovePopup } from 'legacy/state/application/hooks'
 import { useURLWarningVisible } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
@@ -75,12 +77,22 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
 export function Popups() {
   // get all popups
   const activePopups = useActivePopups()
-
+  const removePopup = useRemovePopup()
   const urlWarningActive = useURLWarningVisible()
+  const mobileBackgroundEl = useRef<HTMLDivElement>(null)
 
   // need extra padding if network is not L1 Ethereum
   const { chainId } = useWalletInfo()
   const isNotOnMainnet = Boolean(chainId && chainId !== SupportedChainId.MAINNET)
+
+  const closeAllPopups = useCallback(
+    (event: MouseEvent) => {
+      if (event.target !== mobileBackgroundEl.current) return
+
+      activePopups.forEach((popup) => removePopup(popup.key))
+    },
+    [activePopups, removePopup]
+  )
 
   return (
     <>
@@ -90,7 +102,7 @@ export function Popups() {
         ))}
       </FixedPopupColumn>
       <MobilePopupWrapper show={activePopups?.length > 0}>
-        <MobilePopupInner>
+        <MobilePopupInner ref={mobileBackgroundEl} onClick={closeAllPopups}>
           {activePopups // reverse so new items up front
             .slice(0)
             .reverse()
