@@ -134,7 +134,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
                   maxBalance={maxBalance}
-                  topLabel={inputCurrencyInfo.label}
+                  topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 />
               </div>
               {!isWrapOrUnwrap && middleContent}
@@ -168,7 +168,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                     isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
                   }
                   priceImpactParams={priceImpact}
-                  topLabel={outputCurrencyInfo.label}
+                  topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 />
               </div>
               {showRecipient && (
