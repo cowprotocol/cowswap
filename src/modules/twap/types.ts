@@ -64,7 +64,6 @@ export interface TwapOrderInfo {
   id: string
   orderStruct: TWAPOrderStruct
   safeData: TwapOrdersSafeData
-  isExpired: boolean
 }
 
 export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }

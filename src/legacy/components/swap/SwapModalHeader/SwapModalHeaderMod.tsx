@@ -4,15 +4,14 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
-import { AlertTriangle, ArrowDown } from 'react-feather'
+import { ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
-import { AuxInformationContainer, SwapShowAcceptChanges, TruncatedText } from 'legacy/components/swap/styleds'
+import { AuxInformationContainer, TruncatedText } from 'legacy/components/swap/styleds'
 import { WarningProps } from 'legacy/components/SwapWarnings'
 import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
@@ -21,6 +20,8 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { ThemedText } from 'legacy/theme'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
+
+import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
@@ -206,24 +207,7 @@ export default function SwapModalHeader({
       )}
       <StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
       <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
-      {showAcceptChanges ? (
-        <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
-          <RowBetween>
-            <RowFixed>
-              <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <ThemedText.Main color={theme.text1}>
-                <Trans>Price Updated</Trans>
-              </ThemedText.Main>
-            </RowFixed>
-            <ButtonPrimary
-              style={{ padding: '.5rem', width: 'fit-content', fontSize: '0.825rem', borderRadius: '12px' }}
-              onClick={onAcceptChanges}
-            >
-              <Trans>Accept</Trans>
-            </ButtonPrimary>
-          </RowBetween>
-        </SwapShowAcceptChanges>
-      ) : null}
+      {showAcceptChanges && <PriceUpdatedBanner onClick={onAcceptChanges} />}
       <AutoColumn
         justify="flex-start"
         gap="sm"

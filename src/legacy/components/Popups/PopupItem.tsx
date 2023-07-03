@@ -8,7 +8,7 @@ import { WarningPopup } from 'legacy/components/Popups/WarningPopup'
 import { useRemovePopup } from 'legacy/state/application/hooks'
 import { PopupContent } from 'legacy/state/application/reducer'
 
-import { AnimatedFader, PopupItemWrapper, PopupWrapper, StyledClose } from './styled'
+import { AnimatedFader, PopupWrapper, StyledClose } from './styled'
 import { TransactionPopup } from './TransactionPopup'
 
 export function PopupItem({
@@ -68,12 +68,10 @@ export function PopupItem({
   })
 
   return (
-    <PopupItemWrapper>
-      <PopupWrapper css={content.styles}>
-        <StyledClose stroke={isUnsupportedNetwork ? theme.black : theme.text2} onClick={removeThisPopup} />
-        {popupContent}
-        {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
-      </PopupWrapper>
-    </PopupItemWrapper>
+    <PopupWrapper css={content.styles}>
+      <StyledClose stroke={isUnsupportedNetwork ? theme.black : theme.text2} onClick={removeThisPopup} />
+      {popupContent}
+      {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
+    </PopupWrapper>
   )
 }

@@ -57,6 +57,7 @@ const Wrapper = styled.span<{ color: string }>`
     width: var(--size);
     height: var(--size);
     object-fit: contain;
+    stroke: none !important;
   }
 
   > svg > path {
