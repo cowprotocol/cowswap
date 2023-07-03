@@ -9,12 +9,10 @@ const AUTH_THRESHOLD = ms`1m`
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  executionDateStr: string | null,
+  executionDate: Date | null,
   auth: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderStatus {
-  const executionDate = executionDateStr ? new Date(executionDateStr) : null
-
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
