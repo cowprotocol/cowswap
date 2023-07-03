@@ -33,7 +33,7 @@ export function SurplusCard() {
       gap: 0;
       background: ${({ theme }) => theme.gradient2};
       border-radius: 16px;
-      padding: 26px;
+      padding: 20px 26px 26px;
       min-height: 210px;
       width: 100%:
       max-width: 100%;
@@ -86,7 +86,7 @@ export function SurplusCard() {
     }
 
     ${InfoCard} > div > small {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 500;
       line-height: 1.1;
       color: ${({ theme }) => transparentize(0.5, theme.text1)};
