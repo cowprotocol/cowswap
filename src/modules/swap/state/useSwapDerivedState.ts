@@ -7,6 +7,8 @@ import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
 export function useSwapDerivedState(): SwapDerivedState {
@@ -22,41 +24,29 @@ export function useFillSwapDerivedState() {
   const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
-  const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmount) || null
-  const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmount) || null
+  const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee) || null
+  const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee) || null
 
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
   const updateDerivedState = useUpdateAtom(swapDerivedStateAtom)
 
-  useEffect(() => {
-    updateDerivedState({
-      inputCurrency,
-      outputCurrency,
-      inputCurrencyAmount,
-      outputCurrencyAmount,
-      slippageAdjustedSellAmount,
-      inputCurrencyBalance,
-      outputCurrencyBalance,
-      inputCurrencyFiatAmount,
-      outputCurrencyFiatAmount,
-      recipient,
-      orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
+  const state = useSafeMemoObject({
     inputCurrency,
     outputCurrency,
-    inputCurrencyAmount?.quotient,
-    outputCurrencyAmount?.quotient,
-    slippageAdjustedSellAmount?.quotient,
-    inputCurrencyBalance?.quotient,
-    outputCurrencyBalance?.quotient,
-    inputCurrencyFiatAmount?.quotient,
-    outputCurrencyFiatAmount?.quotient,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    slippageAdjustedSellAmount,
+    inputCurrencyBalance,
+    outputCurrencyBalance,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
     recipient,
-    independentField,
-    updateDerivedState,
-  ])
+    orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
+  })
+
+  useEffect(() => {
+    updateDerivedState(state)
+  }, [state, updateDerivedState])
 }

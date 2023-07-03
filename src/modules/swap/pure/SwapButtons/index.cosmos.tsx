@@ -21,8 +21,6 @@ const swapButtonsContext: SwapButtonsContext = {
   wrappedToken: WETH_GOERLI,
   handleSwap: () => void 0,
   inputAmount: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
-  wrapUnwrapAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, 10000000),
-  wrapInputError: undefined,
   onWrapOrUnwrap: null,
   onEthFlow: () => void 0,
   openSwapConfirm: () => void 0,
