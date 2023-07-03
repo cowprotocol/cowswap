@@ -2,6 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { modifySafeHandlerAnalytics } from 'legacy/components/analytics/events/twapEvents'
+
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
@@ -33,6 +35,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
+      modifySafeHandlerAnalytics(isFallbackHandlerSetupAccepted)
       updateTwapOrdersSettings({ isFallbackHandlerSetupAccepted })
     },
     [updateTwapOrdersSettings]

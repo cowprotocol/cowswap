@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { twapWalletCompatibility } from 'legacy/components/analytics'
+import { twapWalletCompatibilityAnalytics } from 'legacy/components/analytics/events/twapEvents'
 import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
@@ -84,11 +84,11 @@ export function TwapFormWidget() {
   useEffect(() => {
     if (account && account !== prevAccount) {
       if (localFormValidation === TwapFormState.NOT_SAFE) {
-        twapWalletCompatibility('non-compatible')
+        twapWalletCompatibilityAnalytics('non-compatible')
       } else if (fallbackHandlerIsNotSet) {
-        twapWalletCompatibility('safe-that-could-be-converted')
+        twapWalletCompatibilityAnalytics('safe-that-could-be-converted')
       } else {
-        twapWalletCompatibility('compatible')
+        twapWalletCompatibilityAnalytics('compatible')
       }
     }
   }, [account, fallbackHandlerIsNotSet, localFormValidation, prevAccount])

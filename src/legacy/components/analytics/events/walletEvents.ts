@@ -17,11 +17,3 @@ export function addTokenToMetamaskAnalytics(action: AddTokenActions, symbol: str
     label: symbol,
   })
 }
-
-type TwapWalletCompatibility = 'non-compatible' | 'compatible' | 'safe-that-could-be-converted'
-export function twapWalletCompatibility(action: TwapWalletCompatibility) {
-  sendEvent({
-    category: Category.WALLET,
-    action: `TWAP wallet compatibility ${action}`,
-  })
-}

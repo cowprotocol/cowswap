@@ -16,6 +16,7 @@ export enum Category {
   EXTERNAL_LINK = 'External Link',
   INIT = 'Init',
   SERVICE_WORKER = 'Service worker',
+  TWAP = 'TWAP',
 }
 
 export interface EventParams {
