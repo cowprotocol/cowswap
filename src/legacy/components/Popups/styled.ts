@@ -18,32 +18,10 @@ export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<D
   background-color: ${({ theme }) => theme.bg1};
   position: relative;
   border-radius: 10px;
-  padding: 20px;
-  padding-right: 35px;
+  padding: 20px 35px 20px 20px;
   overflow: hidden;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    min-width: 290px;
-    &:not(:last-of-type) {
-      margin-right: 20px;
-    }
-  `}
-
-  ${({ css }) => css && css}
-`
-
-export const PopupItemWrapper = styled.div`
-  ${(props) => props.className} {
-    border: 2px solid ${({ theme }) => theme.black};
-    box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
-  }
-
-  ${PopupWrapper} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      margin: 0 0 16px;
-      min-width: 100%;
-    `}
-  }
+  border: 2px solid ${({ theme }) => theme.black};
+  box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
 
   ${Fader} {
     background-color: ${({ theme }) => theme.disabled};
@@ -54,6 +32,18 @@ export const PopupItemWrapper = styled.div`
     text-decoration: underline;
     color: ${({ theme }) => theme.textLink};
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-width: 290px;
+    margin: 0 0 16px;
+    min-width: 100%;
+
+    &:not(:last-of-type) {
+      margin-right: 20px;
+    }
+  `}
+
+  ${({ css }) => css && css}
 `
 
 export const StyledClose = styled(X)`
