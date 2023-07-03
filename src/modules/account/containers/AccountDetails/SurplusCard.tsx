@@ -126,16 +126,20 @@ export function SurplusCard() {
       <InfoCard>
         <div>
           <span>
-            <i>Your total surplus <QuestionHelper text={'TODO: insert tooltip'} /></i>
+            <i>
+              Your total surplus <QuestionHelper text={'TODO: insert tooltip'} />
+            </i>
           </span>
           <span>
-            {isLoading
-              ? <p>Loading...</p>
-              : surplusAmount && (
-                  <b>
-                    +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-                  </b>
-                )}
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              surplusAmount && (
+                <b>
+                  +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+                </b>
+              )
+            )}
             {!surplusAmount && <p>No surplus for the given time period</p>}
           </span>
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
