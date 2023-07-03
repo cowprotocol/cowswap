@@ -1,10 +1,6 @@
-import ms from 'ms.macro'
-
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
-
-const AUTH_THRESHOLD = ms`1m`
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
@@ -22,7 +18,7 @@ export function getTwapOrderStatus(
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
 
-  if (shouldCheckAuth(executionDate) && auth === false) return TwapOrderStatus.Cancelled
+  if (auth === false) return TwapOrderStatus.Cancelled
 
   if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
 
@@ -38,17 +34,4 @@ export function isTwapOrderExpired(order: TWAPOrderStruct, executionDate: Date |
   const nowTimestamp = Math.ceil(Date.now() / 1000)
 
   return nowTimestamp > endTime
-}
-
-/**
- * ComposableCow.singleOrders returns false by default
- * To avoid false-positive values, we should not check authorized flag within first minute after execution time
- */
-function shouldCheckAuth(executionDate: Date | null): boolean {
-  if (!executionDate) return false
-
-  const executionTimestamp = executionDate.getTime()
-  const nowTimestamp = Date.now()
-
-  return nowTimestamp > executionTimestamp + AUTH_THRESHOLD
 }
