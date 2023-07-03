@@ -17,13 +17,21 @@ export function SurplusCard() {
   const surplusUsdAmount = useHigherUSDValue(surplusAmount)
 
   const Wrapper = styled.div`
-    margin: 0 auto 10px;
+    margin: 0 auto 24px;
     width: 100%;
     display: grid;
     align-items: center;
     justify-content: center;
-    grid-template-columns: repeat(2, 50%);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    box-sizing: border-box;
+    padding: 0 24px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
+      flex-flow: column wrap;
+      padding: 0 16px;
+    `}
 
     ${InfoCard} {
       display: flex;
@@ -35,8 +43,9 @@ export function SurplusCard() {
       border-radius: 16px;
       padding: 20px 26px 26px;
       min-height: 210px;
-      width: 100%:
+      width: 100%;
       max-width: 100%;
+      margin: 0;
     }
 
     ${InfoCard} > div {
