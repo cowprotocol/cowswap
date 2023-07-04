@@ -30,8 +30,8 @@ export function SurplusModalSetup() {
           <styledEl.Header>
             <styledEl.CloseIconWrapper onClick={onDismiss} />
           </styledEl.Header>
+          <SurplusModal order={order} />
         </styledEl.Section>
-        <SurplusModal order={order} />
       </styledEl.Wrapper>
     </CowModal>
   )
