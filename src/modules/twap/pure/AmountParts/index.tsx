@@ -1,9 +1,14 @@
+import React, { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
+import { renderTooltip } from 'legacy/components/Tooltip'
+
+import { LabelTooltipItems } from 'modules/twap'
 
 import * as styledEl from './styled'
 
@@ -13,7 +18,7 @@ interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   label: JSX.Element
-  tooltip: JSX.Element
+  tooltip: ReactNode
 }
 
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
@@ -32,21 +37,30 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function AmountParts({ partsState }: { partsState: PartsState }) {
+export function AmountParts({ partsState, labels }: { partsState: PartsState; labels: LabelTooltipItems }) {
   const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
+  const { sellAmount, buyAmount } = labels
 
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
-        label={<Trans>Sell amount per part (1/{numberOfPartsValue})</Trans>}
-        tooltip={<Trans>TODO: Add buy tooltip text</Trans>}
+        label={
+          <>
+            {labels.sellAmount.label} (1/{numberOfPartsValue})
+          </>
+        }
+        tooltip={renderTooltip(sellAmount.tooltip)}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
-        label={<Trans>Buy amount per part (1/{numberOfPartsValue})</Trans>}
-        tooltip={<Trans>TODO: Add sell tooltip text</Trans>}
+        label={
+          <>
+            {buyAmount.label} (1/{numberOfPartsValue})
+          </>
+        }
+        tooltip={renderTooltip(buyAmount.tooltip)}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
       />
