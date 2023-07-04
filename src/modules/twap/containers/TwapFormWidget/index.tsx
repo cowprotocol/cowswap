@@ -146,7 +146,11 @@ export function TwapFormWidget() {
       </styledEl.DeadlineRow>
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />
+      <ActionButtons
+        fallbackHandlerIsNotSet={fallbackHandlerIsNotSet}
+        localFormValidation={localFormValidation}
+        primaryFormValidation={primaryFormValidation}
+      />
     </>
   )
 }

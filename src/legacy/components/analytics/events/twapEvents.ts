@@ -15,3 +15,15 @@ export function modifySafeHandlerAnalytics(action: boolean) {
     action: `Modify safe handler checkbox ${action ? 'enabled' : 'disabled'}`,
   })
 }
+
+type TwapConversionType = 'initiated' | 'posted' | 'signed' | 'rejected'
+export function twapConversionAnalytics(action: TwapConversionType, fallbackHandlerIsNotSet: boolean) {
+  if (!fallbackHandlerIsNotSet) {
+    return
+  }
+
+  sendEvent({
+    category: Category.TWAP,
+    action: `TWAP with conversion: ${action}`,
+  })
+}
