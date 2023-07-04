@@ -83,7 +83,7 @@ export function Modal({
   )
 }
 
-export const GpModal = styled(Modal)<{
+export const CowModal = styled(Modal)<{
   maxWidth?: number | string
   backgroundColor?: string
   border?: string

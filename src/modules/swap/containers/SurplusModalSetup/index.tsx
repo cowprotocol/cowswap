@@ -4,7 +4,7 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import * as styledEl from 'common/pure/TransactionSubmittedContent/styled'
 import { SurplusModal } from 'common/pure/TransactionSubmittedContent/SurplusModal'
 
@@ -24,7 +24,7 @@ export function SurplusModalSetup() {
   const isOpen = !!orderId
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
+    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
       <styledEl.Wrapper>
         <styledEl.Section>
           <styledEl.Header>
@@ -33,6 +33,6 @@ export function SurplusModalSetup() {
         </styledEl.Section>
         <SurplusModal order={order} />
       </styledEl.Wrapper>
-    </GpModal>
+    </CowModal>
   )
 }

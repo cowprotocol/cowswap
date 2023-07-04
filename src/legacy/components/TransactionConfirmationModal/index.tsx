@@ -10,7 +10,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { setIsConfirmationModalOpenAtom } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
@@ -67,7 +67,7 @@ export function TransactionConfirmationModal({
   const width = getWidth(hash, activityDerivedState)
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
+    <CowModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
       {attemptingTxn ? (
         <LegacyConfirmationPendingContent
           chainId={chainId}
@@ -86,7 +86,7 @@ export function TransactionConfirmationModal({
       ) : (
         content?.()
       )}
-    </GpModal>
+    </CowModal>
   )
 }
 
