@@ -1,20 +1,6 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-export const TradeWidgetFieldBox = styled.div`
-  background: ${({ theme }) => theme.grey1};
-  border-radius: 16px;
-  min-height: 58px;
-  font-size: 18px;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-flow: row wrap;
-  flex: 1;
-  gap: 3px;
-`
-
 export const TradeWidgetFieldLabel = styled.span`
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
   display: flex;
@@ -37,4 +23,31 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
   }};
   font-size: 12px;
   margin-top: 5px;
+`
+
+export const TradeWidgetFieldBox = styled.div<{inputType?: string}>`
+  background: ${({ theme, inputType }) => inputType === 'priceProtection' ? 'transparent' : theme.grey1};
+  border: 1px solid ${({ theme, inputType }) => inputType === 'priceProtection' ? theme.grey1 : 0};
+  border-radius: 16px;
+  min-height: 58px;
+  font-size: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: row wrap;
+  flex: 1;
+  gap: 3px;
+
+    ${Content} {
+      > em {
+
+      }
+      > span {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        background: ${({ theme, inputType }) => inputType === 'priceProtection' ? theme.grey1 : 'transparent'};
+      }
+    }
 `

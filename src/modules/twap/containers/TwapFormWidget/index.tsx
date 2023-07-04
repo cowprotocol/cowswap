@@ -92,8 +92,19 @@ export function TwapFormWidget() {
           <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
         </styledEl.Row>
       )}
-
-      <styledEl.Row>
+        <TradeNumberInput
+          value={slippageValue}
+          onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
+          decimalsPlaces={2}
+          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
+          max={50}
+          label={LABELS_TOOLTIPS.slippage.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+          inputType="priceProtection"
+          limitPrice={'1484.45 USDC'}
+          suffix="%"
+        />
+        <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
           onUserInput={(value: number | null) =>
@@ -103,16 +114,6 @@ export function TwapFormWidget() {
           max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
-        />
-        <TradeNumberInput
-          value={slippageValue}
-          onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
-          decimalsPlaces={2}
-          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-          max={50}
-          label={LABELS_TOOLTIPS.slippage.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-          suffix="%"
         />
       </styledEl.Row>
 

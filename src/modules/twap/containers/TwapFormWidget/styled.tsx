@@ -31,3 +31,10 @@ export const StyledRateInfo = styled(RateInfo)`
   display: grid;
   grid-template-columns: max-content auto;
 `
+
+export const StyledPriceProtection = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  width: 100%;
+`

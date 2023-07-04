@@ -15,14 +15,15 @@ export interface TradeWidgetFieldProps {
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
   error?: TradeWidgetFieldError
   className?: string
+  inputType?: string
 }
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
-  const { className, children, label, tooltip, error } = props
+  const { className, children, label, tooltip, error, inputType } = props
   const tooltipElement = renderTooltip(tooltip, props)
 
   return (
-    <TradeWidgetFieldBox className={className}>
+    <TradeWidgetFieldBox className={className} inputType={inputType}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
         {tooltip && <QuestionHelper text={tooltipElement} />}
