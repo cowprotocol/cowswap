@@ -2,22 +2,23 @@ import {
   EcdsaSigningScheme,
   OrderClass,
   OrderKind,
-  OrderSigningUtils,
-  SigningScheme,
-  SupportedChainId as ChainId,
   UnsignedOrder,
+  SigningScheme,
+  OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { orderBookApi } from 'cowSdk'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS, RADIX_DECIMAL } from 'legacy/constants'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils/index'
 
-import { OrderID } from 'api/gnosisProtocol'
+import { getTrades, OrderID } from 'api/gnosisProtocol'
+import { getProfileData } from 'api/gnosisProtocol/api'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
@@ -271,4 +272,10 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
   )
 
   cancelPendingOrder({ chainId, id: orderId })
+}
+
+export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
+  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
+
+  return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
 }
