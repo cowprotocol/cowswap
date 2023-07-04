@@ -1,31 +1,39 @@
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
-import { TradeFormButtons, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
-import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
-import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
+import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
-export function ActionButtons() {
-  const setFallbackHandler = useSetupFallbackHandler()
+interface ActionButtonsProps {
+  localFormValidation: TwapFormState | null
+  primaryFormValidation: TradeFormValidation | null
+}
+
+export function ActionButtons({ localFormValidation, primaryFormValidation }: ActionButtonsProps) {
+  const { isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const tradeConfirmActions = useTradeConfirmActions()
-  const localFormValidation = useTwapFormState()
-  const primaryFormValidation = useGetTradeFormValidation()
-
-  const primaryActionContext = {
-    setFallbackHandler,
-    openConfirmModal: tradeConfirmActions.onOpen,
-  }
+  const { walletIsNotConnected, showPriceImpactWarning } = useTwapWarningsContext()
 
   const confirmTrade = tradeConfirmActions.onOpen
+
+  const areWarningsAccepted = showPriceImpactWarning ? isPriceImpactAccepted : true
+
+  const primaryActionContext = {
+    confirmTrade,
+  }
 
   const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', { doTrade: confirmTrade, confirmTrade })
 
   if (!tradeFormButtonContext) return null
 
-  if (!primaryFormValidation && localFormValidation) {
+  // Show local form validation errors only when wallet is connected
+  if (localFormValidation && !walletIsNotConnected) {
     return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
   }
 
@@ -37,7 +45,7 @@ export function ActionButtons() {
       context={tradeFormButtonContext}
       // TODO: bind isExpertMode to settings
       isExpertMode={false}
-      isDisabled={false}
+      isDisabled={!areWarningsAccepted}
     />
   )
 }

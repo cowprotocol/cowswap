@@ -7,9 +7,8 @@ import { getSignatureVerifierContract } from './getSignatureVerifierContract'
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackContext): Promise<MetaTransactionData[]> {
-  const { chainId, safeAppsSdk, settlementContract } = context
+  const { chainId, safeAddress, settlementContract } = context
 
-  const { safeAddress } = await safeAppsSdk.safe.getInfo()
   const domainSeparator = await settlementContract.callStatic.domainSeparator()
 
   const signatureVerifierContract = await getSignatureVerifierContract(context)

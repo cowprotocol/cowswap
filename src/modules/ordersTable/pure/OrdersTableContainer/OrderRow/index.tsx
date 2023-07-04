@@ -176,14 +176,14 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
-    <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+    <TableRow data-id={order.id} isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
         <TableRowCheckboxWrapper>
           <TableRowCheckbox
             type="checkbox"
             checked={isRowSelected}
-            disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+            disabled={getIsEthFlowOrder(order.inputToken.address) || !isOrderCancellable(order)}
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
           <CheckboxCheckmark />

@@ -1,5 +1,4 @@
-import ArgentWalletContractABI from 'legacy/abis/argent-wallet-contract.json'
-import { ArgentWalletContract } from 'legacy/abis/types'
+import { ArgentWalletContract, ArgentWalletContractAbi } from '@cowprotocol/abis'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -11,7 +10,7 @@ export function useArgentWalletContract(): ArgentWalletContract | null {
   const isArgentWallet = useIsArgentWallet()
   return useContract(
     isArgentWallet ? account ?? undefined : undefined,
-    ArgentWalletContractABI,
+    ArgentWalletContractAbi,
     true
   ) as ArgentWalletContract
 }

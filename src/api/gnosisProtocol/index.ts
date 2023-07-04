@@ -14,8 +14,8 @@ export const {
   getProfileData,
   getQuote = realApi.getQuote,
   getOrder = realApi.getOrder,
-  getOrders = realApi.getOrders,
   getNativePrice = realApi.getNativePrice,
   getTrades = realApi.getTrades,
+  getOrders = realApi.getOrders,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

@@ -1,12 +1,14 @@
 import { atom } from 'jotai'
 
-import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
+import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { getAppDataHash } from 'modules/appData'
+import { appDataInfoAtom } from 'modules/appData/state/atoms'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
-import { walletInfoAtom } from '../../wallet/api/state'
-import { DEFAULT_TWAP_SLIPPAGE } from '../const'
+import { twapOrderSlippage, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
+
 import { TWAPOrder } from '../types'
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
 
@@ -18,18 +20,15 @@ export const twapTimeIntervalAtom = atom<number>((get) => {
 })
 
 export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
+  const appDataInfo = get(appDataInfoAtom)
   const { account } = get(walletInfoAtom)
-  const { numberOfPartsValue, slippageValue } = get(twapOrdersSettingsAtom)
+  const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
   const { inputCurrencyAmount, outputCurrencyAmount, recipient } = get(advancedOrdersDerivedStateAtom)
+  const slippage = get(twapOrderSlippage)
 
   if (!inputCurrencyAmount || !outputCurrencyAmount || !account) return null
 
-  const slippage =
-    slippageValue != null
-      ? // Multiplying on 100 to allow decimals values (e.g 0.05)
-        new Percent(slippageValue * 100, 10000)
-      : DEFAULT_TWAP_SLIPPAGE
   const slippageAmount = outputCurrencyAmount.multiply(slippage)
   const buyAmountWithSlippage = outputCurrencyAmount.subtract(slippageAmount)
 
@@ -38,8 +37,9 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
     buyAmount: buyAmountWithSlippage as CurrencyAmount<Token>,
     receiver: recipient || account, // TODO: check case with ENS name
     numOfParts: numberOfPartsValue,
-    startTime: 0, // Will be set just before an order creation
+    startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,
     span: 0,
+    appData: appDataInfo?.hash || getAppDataHash(),
   }
 })

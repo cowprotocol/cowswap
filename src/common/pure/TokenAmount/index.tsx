@@ -4,8 +4,8 @@ import { FractionLike, Nullish } from 'types'
 
 import { LONG_PRECISION } from 'legacy/constants'
 
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'common/constants/featureFlags'
 import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { FeatureFlag } from 'utils/featureFlags'
 import { FractionUtils } from 'utils/fractionUtils'

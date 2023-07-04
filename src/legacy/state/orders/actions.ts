@@ -8,6 +8,8 @@ import { createAction } from '@reduxjs/toolkit'
 
 import { SerializedToken } from 'legacy/state/user/types'
 
+import { ComposableCowInfo } from 'common/types'
+
 export enum OrderStatus {
   PENDING = 'pending',
   PRESIGNATURE_PENDING = 'presignaturePending',
@@ -75,6 +77,11 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
    * The order data is local to the device where the order was initiated
    */
   isHidden?: boolean
+
+  /**
+   * ComposableCoW-specific info
+   */
+  composableCowInfo?: ComposableCowInfo
 }
 
 /**

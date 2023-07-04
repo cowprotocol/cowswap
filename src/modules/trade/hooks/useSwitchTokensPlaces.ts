@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { switchTokensAnalytics } from 'legacy/components/analytics'
+
 import { useWalletInfo } from 'modules/wallet'
 
 import { FractionUtils } from 'utils/fractionUtils'
@@ -27,6 +29,7 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
     if (!inputCurrencyId || !outputCurrencyId || !updateState) return
 
     if (!isWrapOrUnwrap) {
+      switchTokensAnalytics()
       updateState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,

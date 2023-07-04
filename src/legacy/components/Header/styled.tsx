@@ -493,6 +493,10 @@ export const UniIcon = styled.div`
   }
 `
 
+export const CustomLogoImg = styled.img`
+  height: 100%;
+`
+
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
   border-radius: 21px;

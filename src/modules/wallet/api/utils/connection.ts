@@ -8,6 +8,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Coinbase Wallet'
     case ConnectionType.WALLET_CONNECT:
       return 'WalletConnect'
+    case ConnectionType.WALLET_CONNECT_V2:
+      return 'WalletConnect v2'
     case ConnectionType.FORTMATIC:
       return 'Fortmatic'
     case ConnectionType.NETWORK:
@@ -28,6 +30,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ledger'
     case ConnectionType.KEYSTONE:
       return 'Keystone'
+    case ConnectionType.INJECTED_WIDGET:
+      return 'CowSwap widget'
   }
 }
 

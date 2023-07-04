@@ -14,14 +14,14 @@ export function currencySelectAnalytics(field: Field, label: string | undefined)
 
 export function setMaxSellTokensAnalytics() {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: 'Set Maximun Sell Tokens',
   })
 }
 
 function _changeSwapAmountAnalytics(field: Field, value: number) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: `Change ${field} field amount`,
     value,
   })
@@ -33,14 +33,14 @@ export const changeSwapAmountAnalytics = debounce(([field, value]: [Field, numbe
 
 export function switchTokensAnalytics() {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: 'Switch INPUT/OUTPUT tokens',
   })
 }
 
 export function initialPriceLoadAnalytics() {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: 'Initial Price estimation',
   })
 }

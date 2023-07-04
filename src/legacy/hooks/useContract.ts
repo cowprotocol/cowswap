@@ -1,22 +1,36 @@
 import { useMemo } from 'react'
 
+import {
+  ArgentWalletDetector,
+  EnsPublicResolver,
+  EnsRegistrar,
+  Erc20,
+  Erc721,
+  Erc1155,
+  Weth,
+  CoWSwapEthFlowJson,
+  ArgentWalletDetectorAbi,
+  Eip2612Abi,
+  EnsPublicResolverAbi,
+  EnsAbi,
+  Erc20Abi,
+  Erc20Bytes32Abi,
+  Erc721Abi,
+  Erc1155Abi,
+  WethAbi,
+  GPv2Settlement,
+  GPv2SettlementAbi,
+  VCow,
+  CoWSwapEthFlow,
+  vCowAbi,
+  UniswapInterfaceMulticall,
+} from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import { useWeb3React } from '@web3-react/core'
 
-import ARGENT_WALLET_DETECTOR_ABI from 'legacy/abis/argent-wallet-detector.json'
-import EIP_2612 from 'legacy/abis/eip_2612.json'
-import ENS_PUBLIC_RESOLVER_ABI from 'legacy/abis/ens-public-resolver.json'
-import ENS_ABI from 'legacy/abis/ens-registrar.json'
-import ERC1155_ABI from 'legacy/abis/erc1155.json'
-import ERC20_ABI from 'legacy/abis/erc20.json'
-import ERC20_BYTES32_ABI from 'legacy/abis/erc20_bytes32.json'
-import ERC721_ABI from 'legacy/abis/erc721.json'
-import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'legacy/abis/types'
-import WETH_ABI from 'legacy/abis/weth.json'
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
@@ -24,16 +38,10 @@ import {
 } from 'legacy/constants'
 import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'legacy/constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { UniswapInterfaceMulticall } from 'legacy/types/v3'
 import { getContract } from 'legacy/utils'
 import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 
 import { useWalletInfo } from 'modules/wallet'
-
-import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
-import { GPv2Settlement, VCow } from 'abis/types'
-import { CoWSwapEthFlow } from 'abis/types/ethflow'
-import V_COW_ABI from 'abis/vCow.json'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 
@@ -62,44 +70,44 @@ export function useContract<T extends Contract = Contract>(
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
-  return useContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible)
+  return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean) {
   const { chainId } = useWalletInfo()
   return useContract<Weth>(
     chainId ? WRAPPED_NATIVE_CURRENCY[chainId]?.address : undefined,
-    WETH_ABI,
+    WethAbi,
     withSignerIfPossible
   )
 }
 
 export function useERC721Contract(nftAddress?: string) {
-  return useContract<Erc721>(nftAddress, ERC721_ABI, false)
+  return useContract<Erc721>(nftAddress, Erc721Abi, false)
 }
 
 export function useERC1155Contract(nftAddress?: string) {
-  return useContract<Erc1155>(nftAddress, ERC1155_ABI, false)
+  return useContract<Erc1155>(nftAddress, Erc1155Abi, false)
 }
 
 export function useArgentWalletDetectorContract() {
-  return useContract<ArgentWalletDetector>(ARGENT_WALLET_DETECTOR_ADDRESS, ARGENT_WALLET_DETECTOR_ABI, false)
+  return useContract<ArgentWalletDetector>(ARGENT_WALLET_DETECTOR_ADDRESS, ArgentWalletDetectorAbi, false)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
-  return useContract<EnsRegistrar>(ENS_REGISTRAR_ADDRESSES, ENS_ABI, withSignerIfPossible)
+  return useContract<EnsRegistrar>(ENS_REGISTRAR_ADDRESSES, EnsAbi, withSignerIfPossible)
 }
 
 export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean) {
-  return useContract<EnsPublicResolver>(address, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
+  return useContract<EnsPublicResolver>(address, EnsPublicResolverAbi, withSignerIfPossible)
 }
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
+  return useContract(tokenAddress, Erc20Bytes32Abi, withSignerIfPossible)
 }
 
 export function useEIP2612Contract(tokenAddress?: string): Contract | null {
-  return useContract(tokenAddress, EIP_2612, false)
+  return useContract(tokenAddress, Eip2612Abi, false)
 }
 
 export function useInterfaceMulticall() {
@@ -122,14 +130,14 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useWalletInfo()
   return useContract<GPv2Settlement>(
     chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
-    GPv2_SETTLEMENT_ABI,
+    GPv2SettlementAbi,
     true
   )
 }
 
 export function useVCowContract() {
   const { chainId } = useWalletInfo()
-  return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, V_COW_ABI, true)
+  return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, vCowAbi, true)
 }
 
 /**
@@ -166,7 +174,7 @@ export function getTokenContract(
   account?: string,
   chainId?: SupportedChainId
 ): Erc20 | null {
-  return _getContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible, provider, account, chainId)
+  return _getContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible, provider, account, chainId)
 }
 
 /**
@@ -179,5 +187,5 @@ export function getBytes32TokenContract(
   account?: string,
   chainId?: SupportedChainId
 ): Contract | null {
-  return _getContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible, provider, account, chainId)
+  return _getContract(tokenAddress, Erc20Bytes32Abi, withSignerIfPossible, provider, account, chainId)
 }

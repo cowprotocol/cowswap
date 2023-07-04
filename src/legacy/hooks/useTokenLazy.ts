@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
+import { Erc20 } from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { Erc20 } from 'legacy/abis/types'
 import { getBytes32TokenContract, getTokenContract } from 'legacy/hooks/useContract'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { retry } from 'legacy/utils/retry'

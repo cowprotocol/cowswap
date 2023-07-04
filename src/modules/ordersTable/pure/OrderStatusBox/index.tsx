@@ -16,10 +16,10 @@ const Wrapper = styled.div<{
 }>`
   --height: 28px;
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
-    cancelling
-      ? theme.text1
-      : status === OrderStatus.CANCELLED
+    status === OrderStatus.CANCELLED
       ? theme.danger
+      : cancelling
+      ? theme.text1
       : status === OrderStatus.FULFILLED || partiallyFilled
       ? theme.success
       : status === OrderStatus.PENDING // OPEN order
@@ -60,6 +60,32 @@ const Wrapper = styled.div<{
   }
 `
 
+function getOrderStatusTitle(order: ParsedOrder): string {
+  // Cancelled status takes precedence
+  if (order.status === OrderStatus.CANCELLED) {
+    return orderStatusTitleMap[order.status]
+  }
+
+  // Cancelling is not a real order status
+  if (order.isCancelling) {
+    return 'Cancelling...'
+  }
+
+  // We consider the order fully filled for display purposes even if not 100% filled
+  // For this reason we use the flag to override the order status
+  if (order.executionData.fullyFilled) {
+    return orderStatusTitleMap[OrderStatus.FULFILLED]
+  }
+
+  // Partially filled is also not a real status
+  if (order.executionData.partiallyFilled) {
+    return 'Partially Filled'
+  }
+
+  // Finally, map order status to their display version
+  return orderStatusTitleMap[order.status]
+}
+
 export type OrderStatusBoxProps = {
   order: ParsedOrder
   widthAuto?: boolean
@@ -79,22 +105,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: Order
       onClick={onClick}
     >
       {/* Status overrides for special cases */}
-      {
-        // Cancelling is not a real order status
-        order.isCancelling
-          ? 'Cancelling...'
-          : // Cancelled status takes precedence
-          order.status === OrderStatus.CANCELLED
-          ? orderStatusTitleMap[order.status]
-          : // We consider the order fully filled for display purposes even if not 100% filled
-          // For this reason we use the flag to override the order status
-          order.executionData.fullyFilled
-          ? orderStatusTitleMap[OrderStatus.FULFILLED]
-          : // Partially filled is also not a real status
-          order.executionData.partiallyFilled
-          ? 'Partially Filled'
-          : orderStatusTitleMap[order.status] // Finally, map order status to their display version
-      }
+      {getOrderStatusTitle(order)}
     </Wrapper>
   )
 }

@@ -8,6 +8,7 @@ import {
   COW,
   DAI,
   ETH2X_FLI,
+  EURE_GNOSIS_CHAIN,
   FEI,
   FRAX,
   FXS,
@@ -92,11 +93,11 @@ export const COMMON_BASES: ChainCurrencyList = {
   ],
   [SupportedChainId.GNOSIS_CHAIN]: [
     USDC_GNOSIS_CHAIN,
-    WBTC_GNOSIS_CHAIN,
     COW[SupportedChainId.GNOSIS_CHAIN],
-    WBTC_GNOSIS_CHAIN,
-    WETH_GNOSIS_CHAIN,
+    EURE_GNOSIS_CHAIN,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
+    WETH_GNOSIS_CHAIN,
+    WBTC_GNOSIS_CHAIN,
   ],
 }
 

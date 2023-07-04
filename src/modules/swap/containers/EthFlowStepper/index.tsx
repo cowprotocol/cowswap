@@ -1,5 +1,3 @@
-import { Token } from '@uniswap/sdk-core'
-
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -34,7 +32,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
 
   const state = mapOrderToEthFlowStepperState(order, creationTx, cancellationTx)
 
-  const isEthFlowOrder = getIsEthFlowOrder(order)
+  const isEthFlowOrder = getIsEthFlowOrder(order?.inputToken.address || '')
 
   if (!order || !state || !isEthFlowOrder) {
     return null
@@ -119,6 +117,6 @@ function didRefundFail(order: Order): boolean | undefined {
 }
 
 // TODO: move this somewhere else?
-export function getIsEthFlowOrder(order: { inputToken: Token } | undefined): boolean {
-  return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
+export function getIsEthFlowOrder(inputTokenAddress: string): boolean {
+  return inputTokenAddress === NATIVE_CURRENCY_BUY_ADDRESS
 }

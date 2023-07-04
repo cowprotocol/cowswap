@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { Field } from 'legacy/state/swap/actions'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
@@ -33,6 +34,8 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
       if (!currency) return
 
       const value = tryParseCurrencyAmount(typedValue, currency) || null
+
+      changeSwapAmountAnalytics(field, Number(typedValue))
 
       updateCurrencyAmount({
         activeRate,

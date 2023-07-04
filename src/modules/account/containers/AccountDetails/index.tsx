@@ -9,18 +9,19 @@ import { Trans } from '@lingui/macro'
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
-import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import {
+  ActivityDescriptors,
+  groupActivitiesByDay,
+  useMultipleActivityDescriptors,
+} from 'legacy/hooks/useRecentActivity'
 import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink } from 'legacy/utils'
-import { getExplorerLabel, shortenAddress } from 'legacy/utils'
+import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
 import { getExplorerAddressLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
-import { ConnectionType, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { useDisconnectWallet } from 'modules/wallet'
+import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
 import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
@@ -45,25 +46,27 @@ import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
 import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
 import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
 import {
-  NetworkCard,
-  Wrapper,
-  InfoCard,
-  AccountGroupingRow,
-  NoActivityMessage,
-  LowerSection,
-  WalletActions,
-  WalletSecondaryActions,
-  WalletNameAddress,
-  WalletWrapper,
-  WalletName,
-  WalletAction,
   AccountControl,
+  AccountGroupingRow,
   AddressLink,
   IconWrapper,
+  InfoCard,
+  LowerSection,
+  NetworkCard,
+  NoActivityMessage,
   TransactionListWrapper,
+  WalletAction,
+  WalletActions,
+  WalletName,
+  WalletNameAddress,
+  WalletSecondaryActions,
+  WalletWrapper,
+  Wrapper,
 } from './styled'
+import { SurplusCard } from './SurplusCard'
 
 import { CreationDateText } from '../Transaction/styled'
 
@@ -201,10 +204,9 @@ export function AccountDetails({
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const walletConnectSuffix =
-      getWeb3ReactConnection(connector) === walletConnectConnection && walletDetails?.walletName
-        ? ' (via WalletConnect)'
-        : ''
+    const connectionType = getWeb3ReactConnection(connector)
+    const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
+    const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
     return (
       <WalletName>
@@ -273,6 +275,8 @@ export function AccountDetails({
           </AccountControl>
         </AccountGroupingRow>
       </InfoCard>
+
+      <SurplusCard />
 
       {activityTotalCount ? (
         <LowerSection>

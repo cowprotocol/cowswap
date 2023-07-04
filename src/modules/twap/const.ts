@@ -1,7 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
+
+import { USDC } from 'legacy/constants/tokens'
+
+import { TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
@@ -22,10 +26,21 @@ export const orderDeadlines: OrderDeadline[] = [
 ]
 
 export const TWAP_ORDER_STRUCT =
-  'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span)'
+  'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'
 
+const twapHandlerAddress = '0x910d00a310f7Dc5B29FE73458F47f519be547D3d'
 export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
-  1: 'TODO',
-  100: 'TODO',
-  5: '0xa12d770028d7072b80baeb6a1df962374fd13d9a',
+  1: twapHandlerAddress,
+  100: twapHandlerAddress,
+  5: twapHandlerAddress,
 }
+
+export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Scheduled]
+
+export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 5_000e6), // 5k
+  [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6), // 100
+  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 5e6), // 5
+}
+
+export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds

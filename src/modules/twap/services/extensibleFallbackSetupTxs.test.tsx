@@ -9,7 +9,7 @@ describe('extensibleFallbackSetupTxs - service to generate transactions for Exte
   it('Should create a bundle of two transactions: setFallbackHandler and setDomainVerifier', async () => {
     const context: ExtensibleFallbackContext = {
       chainId: SupportedChainId.GOERLI,
-      safeAppsSdk: { safe: { getInfo: () => ({ safeAddress: '0xA12D770028d7072b80BAEb6A1df962cccfd1dddd' }) } } as any,
+      safeAddress: '0xA12D770028d7072b80BAEb6A1df962cccfd1dddd',
       settlementContract: {
         callStatic: { domainSeparator: () => '0xa5b986c2f5845d520bcb903639360b147735589732066cea24a3a59678025c94' },
       } as any,
