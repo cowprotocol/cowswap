@@ -26,14 +26,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
-  if (isWrapUnwrap) {
-    if (inputAmountIsNotSet) {
-      return TradeFormValidation.WrapUnwrapAmountNotSet
-    }
-
-    return TradeFormValidation.WrapUnwrapFlow
-  }
-
   if (tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
   }
@@ -52,6 +44,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (!inputCurrency || !outputCurrency) {
     return TradeFormValidation.CurrencyNotSet
+  }
+
+  if (isWrapUnwrap) {
+    if (inputAmountIsNotSet) {
+      return TradeFormValidation.WrapUnwrapAmountNotSet
+    }
+
+    return TradeFormValidation.WrapUnwrapFlow
   }
 
   if (inputAmountIsNotSet) {
