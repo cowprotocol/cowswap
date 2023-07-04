@@ -215,7 +215,7 @@ export type TotalSurplusData = {
 export async function getSurplusData(chainId: ChainId, address: string): Promise<TotalSurplusData> {
   console.log(`[api:${API_NAME}] Get surplus data for`, chainId, address)
 
-  const baseUrl = `https://barn.api.cow.fi/${NETWORK_TO_API_PREFIX[chainId]}/api`
+  const baseUrl = `${getBaseUrl()}${NETWORK_TO_API_PREFIX[chainId]}/api`
   const url = `/v1/users/${address}/total_surplus`
 
   const response = await fetch(baseUrl + url, {
@@ -223,4 +223,14 @@ export async function getSurplusData(chainId: ChainId, address: string): Promise
   })
 
   return response.json()
+}
+
+// TODO: this is temporary until the surplus data is moved to the SDK
+function getBaseUrl(): string {
+  if (isLocal || isDev || isPr || isBarn) {
+    return 'https://barn.api.cow.fi/'
+  }
+
+  // Production, staging, ens, ...
+  return 'https://api.cow.fi/'
 }

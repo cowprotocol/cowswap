@@ -4,12 +4,15 @@ import styled from 'styled-components/macro'
 export const TradeWidgetFieldBox = styled.div`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
-  padding: 0.5rem 1rem;
+  min-height: 58px;
+  font-size: 18px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-flow: row wrap;
   flex: 1;
+  gap: 3px;
 `
 
 export const TradeWidgetFieldLabel = styled.span`
@@ -23,6 +26,7 @@ export const TradeWidgetFieldLabel = styled.span`
 export const Content = styled.div`
   display: flex;
   align-items: center;
+  font-weight: 500;
 `
 
 export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
