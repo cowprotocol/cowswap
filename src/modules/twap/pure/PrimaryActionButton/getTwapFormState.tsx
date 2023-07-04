@@ -10,7 +10,6 @@ import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
   isSafeApp: boolean
-  isFallbackHandlerSetupAccepted: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
@@ -21,26 +20,16 @@ export interface TwapFormStateParams {
 export enum TwapFormState {
   LOADING_SAFE_INFO = 'LOADING_SAFE_INFO',
   NOT_SAFE = 'NOT_SAFE',
-  NEED_FALLBACK_HANDLER = 'NEED_FALLBACK_HANDLER',
   SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
   PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { twapOrder, isSafeApp, isFallbackHandlerSetupAccepted, verification, sellAmountPartFiat, chainId, partTime } =
-    props
+  const { isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
 
   if (!isSafeApp) return TwapFormState.NOT_SAFE
 
   if (verification === null) return TwapFormState.LOADING_SAFE_INFO
-
-  if (
-    twapOrder &&
-    verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER &&
-    !isFallbackHandlerSetupAccepted
-  ) {
-    return TwapFormState.NEED_FALLBACK_HANDLER
-  }
 
   if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL

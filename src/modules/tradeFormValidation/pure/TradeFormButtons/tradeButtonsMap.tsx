@@ -19,7 +19,7 @@ interface ButtonErrorConfig {
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext): JSX.Element | null
+  (context: TradeFormButtonContext, isDisabled?: boolean): JSX.Element | null
 }
 
 const CompatibilityIssuesWarningWrapper = styled.div`
@@ -113,35 +113,35 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ExpertApproveAndSwap]: (context) => {
+  [TradeFormValidation.ExpertApproveAndSwap]: (context, isDisabled = false) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormBlankButton onClick={context.doTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.doTrade}>
         <Trans>
           Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
         </Trans>
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwap]: (context) => {
+  [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormBlankButton onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
         <Trans>
           Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
         </Trans>
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context) => {
+  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
     const amountToApprove = context.derivedState.slippageAdjustedSellAmount
 
     if (!amountToApprove) return null
 
     return (
-      <TradeApproveButton amountToApprove={amountToApprove}>
+      <TradeApproveButton isDisabled={isDisabled} amountToApprove={amountToApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>
