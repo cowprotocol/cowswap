@@ -4,8 +4,6 @@ import { useEffect, useMemo } from 'react'
 import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { isTruthy } from 'legacy/utils/misc'
-
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
@@ -50,19 +48,19 @@ export function TwapOrdersUpdater(props: {
 }
 
 function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
-  return ordersSafeData
-    .map<TwapOrderInfo | null>((data) => {
-      try {
-        return {
-          id: getConditionalOrderId(data.conditionalOrderParams),
-          orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput),
-          safeData: data,
-        }
-      } catch (e) {
-        return null
+  return ordersSafeData.reduce<TwapOrderInfo[]>((acc, data) => {
+    try {
+      const info = {
+        id: getConditionalOrderId(data.conditionalOrderParams),
+        orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput),
+        safeData: data,
       }
-    })
-    .filter(isTruthy)
+
+      acc.push(info)
+    } catch (e) {}
+
+    return acc
+  }, [])
 }
 
 function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem | undefined): boolean {
