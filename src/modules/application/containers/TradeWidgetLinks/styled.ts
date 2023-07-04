@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components/macro'
 export const Badge = styled.div`
   background: transparent;
   color: ${({ theme }) => transparentize(0.4, theme.text1)};
-  border:0;
+  border: 0;
   cursor: pointer;
   border-radius: 16px;
   font-size: 9px;
@@ -70,5 +70,4 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
         margin: 0 0 0 3px;
       }
     `}
-`;
-
+`

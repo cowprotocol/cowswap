@@ -12,9 +12,9 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 import * as styledEl from './styled'
 
 const menuItems = [
-  { route: Routes.SWAP, label: "Swap", isFeatureGuarded: false },
-  { route: Routes.LIMIT_ORDER, label: "Limit", isFeatureGuarded: false },
-  { route: Routes.ADVANCED_ORDERS, label: "Advanced", isFeatureGuarded: true }
+  { route: Routes.SWAP, label: 'Swap', isFeatureGuarded: false },
+  { route: Routes.LIMIT_ORDER, label: 'Limit', isFeatureGuarded: false },
+  { route: Routes.ADVANCED_ORDERS, label: 'Advanced', isFeatureGuarded: true },
 ]
 
 export function TradeWidgetLinks() {
@@ -29,26 +29,28 @@ export function TradeWidgetLinks() {
 
   return (
     <styledEl.Wrapper>
-      {menuItems.map((item) => (
-        item.isFeatureGuarded ?
+      {menuItems.map((item) =>
+        item.isFeatureGuarded ? (
           <FeatureGuard featureFlag="advancedOrdersEnabled">
             <MenuItem item={item} isActive={isActiveRoute(item.route)} context={tradeContext} />
-          </FeatureGuard> :
+          </FeatureGuard>
+        ) : (
           <MenuItem item={item} isActive={isActiveRoute(item.route)} context={tradeContext} />
-      ))}
+        )
+      )}
     </styledEl.Wrapper>
   )
 }
 
-const MenuItem = ({ item, isActive, context }: { item: any, isActive: boolean, context: any }) => (
+const MenuItem = ({ item, isActive, context }: { item: any; isActive: boolean; context: any }) => (
   <styledEl.MenuItem isActive={isActive}>
     <styledEl.Link to={parameterizeTradeRoute(context, item.route)}>
       <Trans>{item.label}</Trans>
-      {item.isFeatureGuarded &&
+      {item.isFeatureGuarded && (
         <styledEl.Badge>
           <Trans>Beta</Trans>
         </styledEl.Badge>
-      }
+      )}
     </styledEl.Link>
   </styledEl.MenuItem>
 )
