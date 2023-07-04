@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -41,7 +41,9 @@ export function TotalSurplusUpdater(): null {
     fetcher
   )
 
-  setTotalSurplus({ surplusAmount, isLoading, error, refetch })
+  useEffect(() => {
+    setTotalSurplus({ surplusAmount, isLoading, error, refetch })
+  }, [error, isLoading, refetch, setTotalSurplus, surplusAmount])
 
   return null
 }
