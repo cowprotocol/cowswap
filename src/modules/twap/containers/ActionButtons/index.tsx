@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import React from 'react'
 
 import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
@@ -6,10 +6,10 @@ import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
+import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null
@@ -22,16 +22,15 @@ export function ActionButtons({
   primaryFormValidation,
   fallbackHandlerIsNotSet,
 }: ActionButtonsProps) {
-  const { isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const tradeConfirmActions = useTradeConfirmActions()
-  const { walletIsNotConnected, showPriceImpactWarning } = useTwapWarningsContext()
+  const { walletIsNotConnected } = useTwapWarningsContext()
 
   const confirmTrade = () => {
     tradeConfirmActions.onOpen()
     twapConversionAnalytics('initiated', fallbackHandlerIsNotSet)
   }
 
-  const areWarningsAccepted = showPriceImpactWarning ? isPriceImpactAccepted : true
+  const areWarningsAccepted = useAreWarningsAccepted()
 
   const primaryActionContext = {
     confirmTrade,
