@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
 import { transparentize, darken } from 'polished'
-import { ChevronDown } from 'react-feather'
+import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'
@@ -16,6 +16,7 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 import { useWalletInfo } from 'modules/wallet'
 import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
@@ -79,7 +80,7 @@ const SelectorLabel = styled.div`
     margin-right: 8px;
   }
 `
-const SelectorControls = styled.div`
+const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
   color: ${({ theme }) => theme.text1};
   display: flex;
@@ -106,6 +107,14 @@ const SelectorControls = styled.div`
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
+
+  ${({ isChainIdUnsupported, theme }) =>
+    isChainIdUnsupported &&
+    `
+      color: ${theme.danger}!important;
+      background: ${transparentize(0.85, theme.danger)}!important;
+      border: 2px solid ${transparentize(0.5, theme.danger)}!important;
+    `}
 `
 const SelectorLogo = styled.img<{ interactive?: boolean }>`
   width: 24px;
@@ -126,6 +135,27 @@ const SelectorWrapper = styled.div`
 const StyledChevronDown = styled(ChevronDown)`
   width: 12px;
 `
+const NetworkIcon = styled(AlertTriangle)`
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  width: 16px;
+  height: 16px;
+`
+const NetworkAlertLabel = styled.div`
+  flex: 1 1 auto;
+  display: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 0.5rem 0 0.4rem;
+  font-size: 1rem;
+  width: fit-content;
+  font-weight: 500;
+
+  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    display: block;
+  }
+`
 
 export function NetworkSelector() {
   const { provider } = useWeb3React()
@@ -137,6 +167,7 @@ export function NetworkSelector() {
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTallyWallet = getIsTallyWallet(provider?.provider)
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const info = getChainInfo(chainId)
 
@@ -156,10 +187,20 @@ export function NetworkSelector() {
       onMouseLeave={!isUpToMedium ? closeModal : undefined}
       onClick={isUpToMedium ? toggleModal : undefined}
     >
-      <SelectorControls>
-        <SelectorLogo src={info?.logoUrl} />
-        <SelectorLabel>{info?.label}</SelectorLabel>
-        <StyledChevronDown />
+      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+        {!isChainIdUnsupported ? (
+          <>
+            <SelectorLogo src={info?.logoUrl} />
+            <SelectorLabel>{info?.label}</SelectorLabel>
+            <StyledChevronDown />
+          </>
+        ) : (
+          <>
+            <NetworkIcon />
+            <NetworkAlertLabel>Switch Network</NetworkAlertLabel>
+            <StyledChevronDown />
+          </>
+        )}
       </SelectorControls>
       {isOpen && (
         <FlyoutMenu>
@@ -167,7 +208,7 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={chainId} onSelectChain={onSelectChain} />
+            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

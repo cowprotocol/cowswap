@@ -8,7 +8,6 @@ import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
@@ -186,8 +185,8 @@ export function AccountDetails({
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
 
-  const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
-  const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
+  const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
+  const explorerLabel = account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
@@ -219,6 +218,8 @@ export function AccountDetails({
     toggleWalletModal()
   }
 
+  const networkLabel = NETWORK_LABELS[chainId]
+
   return (
     <Wrapper>
       <InfoCard>
@@ -236,10 +237,7 @@ export function AccountDetails({
 
             <WalletActions>
               {' '}
-              {chainId && NETWORK_LABELS[chainId] && (
-                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
-              )}{' '}
-              {formatConnectorName()}
+              {networkLabel && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>} {formatConnectorName()}
             </WalletActions>
           </AccountControl>
         </AccountGroupingRow>
@@ -260,7 +258,7 @@ export function AccountDetails({
                 </>
               )}
 
-              {chainId && account && (
+              {account && (
                 <AddressLink
                   hasENS={!!ENSName}
                   isENS={!!ENSName}
@@ -300,7 +298,7 @@ export function AccountDetails({
       ) : (
         <LowerSection>
           <NoActivityMessage>
-            {chainId ? <span>Your activity will appear here...</span> : <UnsupporthedNetworkMessage />}
+            <span>Your activity will appear here...</span>
           </NoActivityMessage>
         </LowerSection>
       )}

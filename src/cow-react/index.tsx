@@ -28,7 +28,7 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
-import { ChainIdValidator } from '../common/containers/ChainIdValidator'
+import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -50,19 +50,18 @@ root.render(
             <Web3Provider>
               <ThemeProvider>
                 <ThemedGlobalStyle />
-                <ChainIdValidator>
-                  <BlockNumberProvider>
-                    <WithLDProvider>
-                      <Updaters />
-                      <FeatureGuard featureFlag="cowFortuneEnabled">
-                        <FortuneWidget />
-                      </FeatureGuard>
-                      <Popups />
-                      <AppziButton />
-                      <App />
-                    </WithLDProvider>
-                  </BlockNumberProvider>
-                </ChainIdValidator>
+                <WalletUnsupportedNetworkBanner />
+                <BlockNumberProvider>
+                  <WithLDProvider>
+                    <Updaters />
+                    <FeatureGuard featureFlag="cowFortuneEnabled">
+                      <FortuneWidget />
+                    </FeatureGuard>
+                    <Popups />
+                    <AppziButton />
+                    <App />
+                  </WithLDProvider>
+                </BlockNumberProvider>
               </ThemeProvider>
             </Web3Provider>
           </LanguageProvider>

@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect } from 'react'
 import { useSpring } from '@react-spring/web'
 import { ThemeContext } from 'styled-components/macro'
 
-import FailedNetworkSwitchPopup from 'legacy/components/Popups/FailedNetworkSwitchPopup'
+import { FailedNetworkSwitchPopup } from 'legacy/components/Popups/FailedNetworkSwitchPopup'
 import { WarningPopup } from 'legacy/components/Popups/WarningPopup'
 import { useRemovePopup } from 'legacy/state/application/hooks'
 import { PopupContent } from 'legacy/state/application/reducer'
@@ -36,9 +36,7 @@ export function PopupItem({
 
   const theme = useContext(ThemeContext)
 
-  // mod
   const isTxn = 'txn' in content
-  const isUnsupportedNetwork = 'unsupportedNetwork' in content
   const isMetaTxn = 'metatxn' in content
   const isWarningTxn = 'warning' in content
 
@@ -53,8 +51,6 @@ export function PopupItem({
       metatxn: { id, success, summary },
     } = content
     popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
-  } else if (isUnsupportedNetwork) {
-    popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} isUnsupportedNetwork />
   } else if ('failedSwitchNetwork' in content) {
     popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
   } else if (isWarningTxn) {
@@ -69,7 +65,7 @@ export function PopupItem({
 
   return (
     <PopupWrapper css={content.styles}>
-      <StyledClose stroke={isUnsupportedNetwork ? theme.black : theme.text2} onClick={removeThisPopup} />
+      <StyledClose stroke={theme.text2} onClick={removeThisPopup} />
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </PopupWrapper>

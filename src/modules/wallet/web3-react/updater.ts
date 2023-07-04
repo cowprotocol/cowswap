@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
 
 import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
@@ -11,6 +10,7 @@ import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
 
 import { getSafeInfo } from 'api/gnosisSafe'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
@@ -26,15 +26,15 @@ function _checkIsSupportedWallet(walletName?: string): boolean {
 
 function _useWalletInfo(): WalletInfo {
   const { account, chainId, isActive: active } = useWeb3React()
-  const isChainIdSupported = !!chainId && chainId in SupportedChainId
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   return useMemo(
     () => ({
-      chainId: isChainIdSupported ? chainId : getCurrentChainIdFromUrl(),
+      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account,
     }),
-    [chainId, active, account, isChainIdSupported]
+    [chainId, active, account, isChainIdUnsupported]
   )
 }
 

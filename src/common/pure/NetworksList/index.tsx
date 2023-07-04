@@ -10,7 +10,7 @@ import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 import * as styledEl from './styled'
 
 export interface NetworksListProps {
-  currentChainId: SupportedChainId
+  currentChainId: SupportedChainId | null
 
   onSelectChain(targetChainId: SupportedChainId): void
 }
@@ -61,7 +61,7 @@ export function NetworksList(props: NetworksListProps) {
                 </ExternalLink>
               )}
 
-              <ExternalLink href={getExplorerBaseUrl(currentChainId)}>
+              <ExternalLink href={getExplorerBaseUrl(targetChainId)}>
                 <Trans>CoW Protocol Explorer</Trans>
                 <styledEl.LinkOutCircle />
               </ExternalLink>
