@@ -17,7 +17,7 @@ import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
-import { LABELS_TOOLTIPS } from './tooltips'
+import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
 import { useFallbackHandlerVerification } from '../../hooks/useFallbackHandlerVerification'
@@ -35,12 +35,7 @@ import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-export type { LabelTooltipObject, LabelTooltipItems } from './tooltips'
-
-const AMOUNTPARTS_LABELS = {
-  sellAmount: LABELS_TOOLTIPS.sellAmount,
-  buyAmount: LABELS_TOOLTIPS.buyAmount,
-}
+export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
@@ -123,7 +118,7 @@ export function TwapFormWidget() {
         />
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} labels={AMOUNTPARTS_LABELS} />
+      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
       <styledEl.Row>
         <DeadlineSelector

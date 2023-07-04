@@ -6,7 +6,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
-import { LabelTooltipObject } from 'modules/twap'
+import { LabelTooltip } from 'modules/twap'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
@@ -14,8 +14,8 @@ import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
   deadline: TwapOrdersDeadline
-  label: LabelTooltipObject['label']
-  tooltip: LabelTooltipObject['tooltip']
+  label: LabelTooltip['label']
+  tooltip: LabelTooltip['tooltip']
   setDeadline(value: TwapOrdersDeadline): void
 }
 

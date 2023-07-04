@@ -1,12 +1,12 @@
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
-export interface LabelTooltipObject {
+export interface LabelTooltip {
   label: string
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
 }
 
 export interface LabelTooltipItems {
-  [key: string]: LabelTooltipObject
+  [key: string]: LabelTooltip
 }
 
 export const LABELS_TOOLTIPS: LabelTooltipItems = {
@@ -69,4 +69,9 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     label: 'Start time',
     tooltip: 'The order will start when it is validated and executed in your Safe.',
   },
+}
+
+export const AMOUNT_PARTS_LABELS = {
+  sellAmount: LABELS_TOOLTIPS.sellAmount,
+  buyAmount: LABELS_TOOLTIPS.buyAmount,
 }
