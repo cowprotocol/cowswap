@@ -77,7 +77,7 @@ const SelectorLabel = styled.div`
 
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     display: block;
-    margin-right: 8px;
+    margin-right: 4px;
   }
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
@@ -133,7 +133,7 @@ const SelectorWrapper = styled.div`
   }
 `
 const StyledChevronDown = styled(ChevronDown)`
-  width: 12px;
+  width: 16px;
 `
 const NetworkIcon = styled(AlertTriangle)`
   margin-left: 0.25rem;
