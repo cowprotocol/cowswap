@@ -1,32 +1,16 @@
-import { atom, useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
-import { Nullish } from 'types'
 
 import { useWalletInfo } from 'modules/wallet'
 
 import { getSurplusData } from 'api/gnosisProtocol/api'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export type TotalSurplusState = {
-  surplusAmount: Nullish<CurrencyAmount<Currency>>
-  isLoading: boolean
-  error: string
-  refetch: (() => void) | null
-}
-
-const totalSurplusAtom = atom<TotalSurplusState>({
-  surplusAmount: null,
-  isLoading: false,
-  error: '',
-  refetch: null,
-})
-
-const totalSurplusRefetchAtom = atom((get) => get(totalSurplusAtom).refetch)
+import { totalSurplusAtom } from './atoms'
 
 export function TotalSurplusUpdater(): null {
   const { chainId, account } = useWalletInfo()
@@ -60,12 +44,4 @@ export function TotalSurplusUpdater(): null {
   setTotalSurplus({ surplusAmount, isLoading, error, refetch })
 
   return null
-}
-
-export function useTotalSurplus(): TotalSurplusState {
-  return useAtomValue(totalSurplusAtom)
-}
-
-export function useTriggerTotalSurplusUpdateCallback(): (() => void) | null {
-  return useAtomValue(totalSurplusRefetchAtom)
 }
