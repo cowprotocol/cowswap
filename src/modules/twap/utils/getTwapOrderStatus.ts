@@ -24,10 +24,10 @@ export function getTwapOrderStatus(
   return TwapOrderStatus.Scheduled
 }
 
-export function isTwapOrderExpired(order: TWAPOrderStruct, executionDate: Date | null): boolean {
-  if (!executionDate) return false
+export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {
+  if (!startDate) return false
 
-  const startTime = Math.ceil(executionDate.getTime() / 1000)
+  const startTime = Math.ceil(startDate.getTime() / 1000)
   const { n: numOfParts, t: timeInterval } = order
   const endTime = startTime + timeInterval * numOfParts
   const nowTimestamp = Math.ceil(Date.now() / 1000)

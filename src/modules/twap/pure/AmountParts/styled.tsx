@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
@@ -8,7 +10,7 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div`
   display: flex;
-  grid-gap: 10px;
+  grid-gap: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -19,15 +21,24 @@ export const Wrapper = styled.div`
 export const Part = styled(TradeWidgetFieldBox)`
   background-color: transparent;
   border: 1px solid ${({ theme }) => theme.grey1};
+  align-content: flex-start;
 `
 
 export const Label = styled(TradeWidgetFieldLabel)`
-  font-size: 12px;
+  ${QuestionWrapper} {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 `
+
 export const Amount = styled(TokenAmount)`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  padding: 7px 0;
+  padding: 2px 0;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
