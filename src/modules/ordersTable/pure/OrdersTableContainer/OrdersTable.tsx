@@ -218,22 +218,22 @@ export function OrdersTable({
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
-  const composableCowOrders = orders
-    .filter((order) => getIsComposableCowParentOrder(order))
-    .reduce<{ [key: string]: ParsedOrder }>((acc, val) => {
-      const parentId = val.composableCowInfo!.id!
-      acc[parentId] = val
-      return acc
-    }, {})
+  const composableCowOrders = orders.reduce<{ [key: string]: ParsedOrder }>((acc, order) => {
+    if (!getIsComposableCowParentOrder(order)) return acc
 
-  const partsOrders = orders
-    .filter((order) => getIsComposableCowChildOrder(order))
-    .reduce<{ [key: string]: ParsedOrder[] }>((acc, val) => {
-      const parentId = val.composableCowInfo!.parentId!
-      acc[parentId] = acc[parentId] || []
-      acc[parentId].push(val)
-      return acc
-    }, {})
+    const parentId = order.composableCowInfo!.id!
+    acc[parentId] = order
+    return acc
+  }, {})
+
+  const partsOrders = orders.reduce<{ [key: string]: ParsedOrder[] }>((acc, order) => {
+    if (!getIsComposableCowChildOrder(order)) return acc
+
+    const parentId = order.composableCowInfo!.parentId!
+    acc[parentId] = acc[parentId] || []
+    acc[parentId].push(order)
+    return acc
+  }, {})
 
   const ordersPage = orders
     .sort(ordersSorter)
