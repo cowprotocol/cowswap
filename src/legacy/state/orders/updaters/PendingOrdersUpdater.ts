@@ -226,7 +226,11 @@ async function _updateOrders({
       chainId,
     })
     // add to surplus queue
-    fulfilledOrders.forEach(({ id }) => addOrderToSurplusQueue(id))
+    fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
+      if (!apiAdditionalInfo || apiAdditionalInfo.class === OrderClass.MARKET) {
+        addOrderToSurplusQueue(id)
+      }
+    })
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)
