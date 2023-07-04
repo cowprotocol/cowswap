@@ -18,12 +18,19 @@ export function useTwapOrdersExecutions(ids: string[]): TwapOrdersExecutionMap {
 
   const allOrders = useOrders({ chainId })
 
+  const childrenIdSets = useMemo(() => {
+    return Object.keys(twapPartOrders).reduce<{ [id: string]: Set<string> }>((acc, val) => {
+      acc[val] = new Set<string>((twapPartOrders[val] || []).map((item) => item.uid))
+      return acc
+    }, {})
+  }, [twapPartOrders])
+
   return useMemo(() => {
     return ids.reduce<TwapOrdersExecutionMap>((acc, id) => {
-      const childrenIds = (twapPartOrders[id] || []).map((item) => item.uid)
+      const childrenIds = childrenIdSets[id]
 
-      if (childrenIds.length > 0) {
-        const children = allOrders.filter((order) => childrenIds.includes(order.id))
+      if (childrenIds?.size > 0) {
+        const children = allOrders.filter((order) => childrenIds.has(order.id))
 
         const executedBuyAmount = sumChildrenAmount(children, 'executedBuyAmount').toString()
         const executedSellAmount = sumChildrenAmount(children, 'executedSellAmount').toString()
@@ -38,7 +45,7 @@ export function useTwapOrdersExecutions(ids: string[]): TwapOrdersExecutionMap {
 
       return acc
     }, {})
-  }, [ids, twapPartOrders, allOrders])
+  }, [ids, childrenIdSets, allOrders])
 }
 
 function sumChildrenAmount(children: Order[], key: keyof OrderInfoApi): BigInt {

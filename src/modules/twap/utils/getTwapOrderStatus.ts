@@ -1,5 +1,7 @@
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
+import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
+
 import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
@@ -10,7 +12,7 @@ export function getTwapOrderStatus(
   discreteOrder: Order | undefined,
   executionInfo: TwapOrderExecutionInfo
 ): TwapOrderStatus {
-  const isFulfilled = executionInfo.executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
+  const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
 
