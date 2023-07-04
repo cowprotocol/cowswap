@@ -59,14 +59,10 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
   return (
     <TradeWidgetField {...props}>
       <>
-        <em>
-        {inputType === 'priceProtection' && limitPrice && (
-          <>{limitPrice}</>
-        )}
-        </em>
+        <em>{inputType === 'priceProtection' && limitPrice && <>{limitPrice}</>}</em>
         <span>
-        <NumericalInput placeholder={placeholder} value={displayedValue} onUserInput={onChange} />
-        {suffix && <Suffix>{suffix}</Suffix>}
+          <NumericalInput placeholder={placeholder} value={displayedValue} onUserInput={onChange} />
+          {suffix && <Suffix>{suffix}</Suffix>}
         </span>
       </>
     </TradeWidgetField>

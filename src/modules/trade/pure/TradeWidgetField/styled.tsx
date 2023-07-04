@@ -25,9 +25,9 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
   margin-top: 5px;
 `
 
-export const TradeWidgetFieldBox = styled.div<{inputType?: string}>`
-  background: ${({ theme, inputType }) => inputType === 'priceProtection' ? 'transparent' : theme.grey1};
-  border: 1px solid ${({ theme, inputType }) => inputType === 'priceProtection' ? theme.grey1 : 0};
+export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
+  background: ${({ theme, inputType }) => (inputType === 'priceProtection' ? 'transparent' : theme.grey1)};
+  border: 1px solid ${({ theme, inputType }) => (inputType === 'priceProtection' ? theme.grey1 : 0)};
   border-radius: 16px;
   min-height: 58px;
   font-size: 18px;
@@ -39,15 +39,14 @@ export const TradeWidgetFieldBox = styled.div<{inputType?: string}>`
   flex: 1;
   gap: 3px;
 
-    ${Content} {
-      > em {
-
-      }
-      > span {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        background: ${({ theme, inputType }) => inputType === 'priceProtection' ? theme.grey1 : 'transparent'};
-      }
+  ${Content} {
+    > em {
     }
+    > span {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background: ${({ theme, inputType }) => (inputType === 'priceProtection' ? theme.grey1 : 'transparent')};
+    }
+  }
 `
