@@ -1,9 +1,6 @@
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { ExternalLink } from 'legacy/theme'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSurplusAmount } from 'api/gnosisProtocol/hooks'
 import { FiatAmount } from 'common/pure/FiatAmount'
@@ -16,10 +13,6 @@ export function SurplusCard() {
   const { surplusAmount, isLoading } = useSurplusAmount()
 
   const surplusUsdAmount = useHigherUSDValue(surplusAmount)
-
-  const { chainId } = useWalletInfo()
-
-  if (!supportedChainId(chainId)) return null
 
   return (
     <InfoCard>

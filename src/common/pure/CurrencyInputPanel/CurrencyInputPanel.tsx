@@ -18,7 +18,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'
@@ -72,9 +71,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     isRateLoading,
   } = props
 
-  const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
-  const disabled = props.disabled || !isSupportedNetwork
+  const disabled = !!props.disabled
   const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
