@@ -67,7 +67,7 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
       }
 
       ${Link} > ${Badge} {
-
+        margin: 0 0 0 3px;
       }
     `}
 `;

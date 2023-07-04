@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
 
@@ -8,6 +10,12 @@ import { Routes, RoutesValues } from 'common/constants/routes'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import * as styledEl from './styled'
+
+const menuItems = [
+  { route: Routes.SWAP, label: "Swap", isFeatureGuarded: false },
+  { route: Routes.LIMIT_ORDER, label: "Limit", isFeatureGuarded: false },
+  { route: Routes.ADVANCED_ORDERS, label: "Advanced", isFeatureGuarded: true }
+]
 
 export function TradeWidgetLinks() {
   const tradeContext = useTradeRouteContext()
@@ -21,28 +29,26 @@ export function TradeWidgetLinks() {
 
   return (
     <styledEl.Wrapper>
-      <styledEl.MenuItem isActive={isActiveRoute(Routes.SWAP)}>
-        <styledEl.Link to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}>
-          <Trans>Swap</Trans>
-        </styledEl.Link>
-      </styledEl.MenuItem>
-
-      <styledEl.MenuItem isActive={isActiveRoute(Routes.LIMIT_ORDER)}>
-        <styledEl.Link to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}>
-          <Trans>Limit</Trans>
-        </styledEl.Link>
-      </styledEl.MenuItem>
-
-      <FeatureGuard featureFlag="advancedOrdersEnabled">
-        <styledEl.MenuItem isActive={isActiveRoute(Routes.ADVANCED_ORDERS)}>
-          <styledEl.Link to={parameterizeTradeRoute(tradeContext, Routes.ADVANCED_ORDERS)}>
-            <Trans>Advanced</Trans>
-            <styledEl.Badge>
-              <Trans>Beta</Trans>
-            </styledEl.Badge>
-          </styledEl.Link>
-        </styledEl.MenuItem>
-      </FeatureGuard>
+      {menuItems.map((item) => (
+        item.isFeatureGuarded ?
+          <FeatureGuard featureFlag="advancedOrdersEnabled">
+            <MenuItem item={item} isActive={isActiveRoute(item.route)} context={tradeContext} />
+          </FeatureGuard> :
+          <MenuItem item={item} isActive={isActiveRoute(item.route)} context={tradeContext} />
+      ))}
     </styledEl.Wrapper>
   )
 }
+
+const MenuItem = ({ item, isActive, context }: { item: any, isActive: boolean, context: any }) => (
+  <styledEl.MenuItem isActive={isActive}>
+    <styledEl.Link to={parameterizeTradeRoute(context, item.route)}>
+      <Trans>{item.label}</Trans>
+      {item.isFeatureGuarded &&
+        <styledEl.Badge>
+          <Trans>Beta</Trans>
+        </styledEl.Badge>
+      }
+    </styledEl.Link>
+  </styledEl.MenuItem>
+)
