@@ -35,8 +35,10 @@ const StyledMenuButton = styled(MenuButton)`
   font-size: 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-flow: row wrap;
   cursor: pointer;
+  width: 100%;
+  justify-content: space-between;
   color: ${({ theme }) => theme.text1};
 `
 
