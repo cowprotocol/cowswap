@@ -32,6 +32,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
 import { timeSinceInSeconds } from 'utils/time'
 
 /**
@@ -143,6 +144,7 @@ interface UpdateOrdersParams {
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   addOrderToSurplusQueue: (orderId: string) => void
+  triggerTotalSurplusUpdate: (() => void) | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeInfo: GetSafeInfo
 }
@@ -158,6 +160,7 @@ async function _updateOrders({
   cancelOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
+  triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeInfo,
 }: UpdateOrdersParams): Promise<void> {
@@ -231,6 +234,8 @@ async function _updateOrders({
         addOrderToSurplusQueue(id)
       }
     })
+    // trigger total surplus update
+    triggerTotalSurplusUpdate?.()
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)
@@ -278,6 +283,7 @@ export function PendingOrdersUpdater(): null {
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
 
@@ -310,6 +316,7 @@ export function PendingOrdersUpdater(): null {
           cancelOrdersBatch,
           presignOrders,
           addOrderToSurplusQueue,
+          triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
           getSafeInfo,
         }).finally(() => {
@@ -325,6 +332,7 @@ export function PendingOrdersUpdater(): null {
       cancelOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
+      triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeInfo,
     ]
