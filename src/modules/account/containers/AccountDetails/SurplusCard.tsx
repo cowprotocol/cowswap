@@ -22,7 +22,7 @@ export function SurplusCard() {
     display: grid;
     align-items: center;
     justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 24px;
     box-sizing: border-box;
     padding: 0 24px;
