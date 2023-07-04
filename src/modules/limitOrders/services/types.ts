@@ -1,14 +1,12 @@
+import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
-import { Erc20 } from 'legacy/abis/types'
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
-
-import { GPv2Settlement } from 'abis/types'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders

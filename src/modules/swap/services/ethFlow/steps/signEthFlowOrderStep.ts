@@ -1,3 +1,4 @@
+import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { NativeCurrency } from '@uniswap/sdk-core'
@@ -8,8 +9,6 @@ import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy
 
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
-
-import { CoWSwapEthFlow } from 'abis/types/ethflow'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency

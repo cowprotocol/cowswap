@@ -1,4 +1,4 @@
-# CoW Swap widget-lib
+# CoW Swap Widget Library
 
 ## Use it
 
@@ -60,7 +60,3 @@ nx build widget-lib
 # Publish to NPM
 nx publish widget-lib --ver 0.0.7 --tag latest
 ```
-
-## Running unit tests
-
-Run `nx test widget-lib` to execute the unit tests via [Jest](https://jestjs.io).

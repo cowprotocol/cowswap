@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { ComposableCoW } from '@cowprotocol/abis'
 import type { Order } from '@cowprotocol/contracts'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useAsyncMemo } from 'use-async-memo'
 
-import { ComposableCoW } from 'abis/types'
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from './useTwapOrdersTradeableMulticall'

@@ -53,8 +53,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
-            src/abis/types
             src/state/data
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
@@ -88,14 +86,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
-            src/abis/types
             src/state/data
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Unit Test
         run: yarn test
+
 
       # - name: Coveralls
       #   uses: coverallsapp/github-action@v1.1.2
@@ -131,9 +128,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            src/types/v3
-            src/abis/types
             src/state/data
+            src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run linters
@@ -144,6 +140,7 @@ jobs:
           eslint_args: "-c .eslintrc.json ."
           auto_fix: ${{ github.event_name == 'pull_request' }}
           prettier: true
+
 
       - name: Run eslint
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login != github.repository_owner }}

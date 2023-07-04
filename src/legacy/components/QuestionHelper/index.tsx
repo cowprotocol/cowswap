@@ -1,7 +1,10 @@
+import { ReactNode } from 'react'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import QuestionImage from 'legacy/assets/svg/question.svg'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
@@ -25,6 +28,12 @@ export const QuestionWrapper = styled.div`
   }
 `
 
-export default function QuestionHelper(props: Omit<QuestionHelperProps, 'QuestionMark'>) {
-  return <QuestionHelperMod {...props} QuestionMark={QuestionMark} />
+interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'QuestionMark'> {
+  text: ReactNode
+}
+
+export default function QuestionHelper({ text, ...props }: EnhancedQuestionHelperProps) {
+  const tooltip = renderTooltip(text, props)
+
+  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />
 }

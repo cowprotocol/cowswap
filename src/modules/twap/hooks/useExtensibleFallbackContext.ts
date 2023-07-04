@@ -1,3 +1,4 @@
+import { GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
@@ -5,8 +6,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
 import { useWalletInfo } from 'modules/wallet'
-
-import { GPv2Settlement } from 'abis/types'
 
 export interface ExtensibleFallbackContext {
   safeAddress: string

@@ -1,8 +1,7 @@
+import type { Erc20Interface } from '@cowprotocol/abis'
 import { Interface } from '@ethersproject/abi'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { toHex } from '@uniswap/v3-sdk'
-
-import { Erc20Interface } from 'legacy/abis/types/Erc20'
 
 const ERC20_INTERFACE = new Interface([
   {

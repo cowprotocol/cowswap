@@ -1,6 +1,7 @@
 {
   "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended"],
   "plugins": ["unused-imports"],
+  "ignorePatterns": ["node_modules/", "dist/", "build", "coverage", "./", "cypress/", "src/libs/abis/src/generated"],
   "rules": {
     "no-restricted-imports": [
       "error",
