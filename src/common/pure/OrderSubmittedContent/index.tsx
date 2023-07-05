@@ -4,8 +4,8 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
-import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
+import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
@@ -31,20 +31,28 @@ const ActionButton = styled(ButtonPrimary)`
 export interface OrderSubmittedContentProps {
   onDismiss(): void
   chainId: SupportedChainId
+  isSafeWallet: boolean
+  account: string
   hash: string
 }
 
-export function OrderSubmittedContent({ chainId, hash, onDismiss }: OrderSubmittedContentProps) {
+export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
+  const tx = {
+    hash,
+    hashType: isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    safeTransaction: {
+      safeTxHash: hash,
+      safe: account,
+    },
+  }
+
   return (
     <Wrapper>
       <AnimatedConfirmation />
       <Caption>
         <Trans>Order Submitted</Trans>
       </Caption>
-      {/*TODO: unify and fix explorer link. Refs: ExplorerLink, DisplayLink, EnhancedTransactionLink*/}
-      <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
-        <Trans>View on Explorer ↗</Trans>
-      </ExternalLink>
+      <EnhancedTransactionLink chainId={chainId} tx={tx} />
       <ActionButton onClick={onDismiss}>
         <Trans>Close</Trans>
       </ActionButton>
