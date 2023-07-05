@@ -102,7 +102,6 @@ export function TwapFormWidget() {
             updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
           }
           min={DEFAULT_NUM_OF_PARTS}
-          max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />

@@ -15,7 +15,7 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
 }
 
 export function TradeNumberInput(props: TradeNumberInputProps) {
-  const { value, suffix, onUserInput, placeholder = '0', decimalsPlaces = 0, min, max = 0 } = props
+  const { value, suffix, onUserInput, placeholder = '0', decimalsPlaces = 0, min, max = 100_000 } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
 
@@ -27,7 +27,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
       const adjustedValue = quotient + filteredDecimals
       const parsedValue = adjustedValue ? parseFloat(adjustedValue) : null
 
-      if (parsedValue && parsedValue > max) {
+      if (parsedValue && max !== 0 && parsedValue > max) {
         setDisplayedValue(max.toString())
         onUserInput(max)
         return
