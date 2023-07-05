@@ -1,23 +1,24 @@
 import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export const Badge = styled.div`
-  background: ${({ theme }) => theme.grey1};
+  background: transparent;
   color: ${({ theme }) => transparentize(0.4, theme.text1)};
-  border: none;
+  border: 0;
   cursor: pointer;
   border-radius: 16px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: inherit;
   text-transform: uppercase;
-  padding: 4px 6px;
+  padding: 0;
   letter-spacing: 0.2px;
   font-weight: 600;
   transition: color 0.15s ease-in-out;
+  margin: -8px 0 0 0;
 `
 
-export const Link = styled(NavLink)<{ isActive?: boolean }>`
+export const Link = styled(NavLink)`
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -27,31 +28,46 @@ export const Link = styled(NavLink)<{ isActive?: boolean }>`
   line-height: 1;
   transition: color 0.15s ease-in-out;
 
-  &.active {
-    font-weight: 600;
-  }
-
   &:hover,
-  &.active,
-  &.active + div,
-  &:hover > ${Badge}, &.active > ${Badge} {
+  &:hover > ${Badge} {
     color: ${({ theme }) => theme.text1};
   }
 `
 
 export const Wrapper = styled.div`
+  background: transparent;
+  border-radius: 16px;
+  padding: 0;
   display: flex;
   flex-flow: row wrap;
-  gap: 10px;
+  gap: 0;
 
   ${Link} {
     text-decoration: none;
   }
 `
 
-export const MenuItem = styled.div`
+export const MenuItem = styled.div<{ isActive?: boolean }>`
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
+  border-radius: 16px;
+  padding: 5px 10px;
+  background: transparent;
+  transition: background 0.2 ease-in-out;
+
+  ${({ isActive, theme }) =>
+    isActive &&
+    css`
+      background: ${theme.grey1};
+
+      ${Link} {
+        color: ${theme.text1};
+      }
+
+      ${Link} > ${Badge} {
+        margin: 0 0 0 3px;
+      }
+    `}
 `
