@@ -12,11 +12,13 @@ const Wrapper = styled.div`
   justify-content: space-between;
   font-size: 16px;
   font-weight: 600;
+  width: 100%;
 `
 
 const StyledBanner = styled(InlineBanner)`
   > span {
     width: 100%;
+    display: flex;
   }
 `
 
@@ -31,6 +33,7 @@ const AcceptButton = styled.button`
   outline: none;
   padding: 10px 20px;
   border-radius: 8px;
+  margin: 0 0 0 auto;
 
   &:hover {
     background-color: ${({ theme }) => transparentize(0.2, theme.bg2)};
