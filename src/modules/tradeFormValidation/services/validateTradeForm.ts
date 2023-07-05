@@ -26,7 +26,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
-  if (tradeQuote.error) {
+  if (!isWrapUnwrap && tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
   }
 

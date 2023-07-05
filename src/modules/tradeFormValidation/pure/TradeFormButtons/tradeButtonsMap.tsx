@@ -44,7 +44,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const isNativeIn = !!context.derivedState.inputCurrency?.isNative
 
     return (
-      <TradeFormBlankButton onClick={context.wrapNativeFlow}>
+      <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
         <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
       </TradeFormBlankButton>
     )
