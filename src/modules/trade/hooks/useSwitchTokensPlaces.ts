@@ -13,6 +13,8 @@ import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 
+const EMPTY_CURRENCY_ID = '_'
+
 // TODO: when implementing this for SWAP remmeber this logic related to ETH flow
 // https://github.com/cowprotocol/cowswap/blob/628c62596d65e0761ccf70677a55bec9a0a36411/src/legacy/state/swap/reducer.ts#L143
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
@@ -26,7 +28,7 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
   const updateState = tradeState?.updateState
 
   return useCallback(() => {
-    if (!inputCurrencyId || !outputCurrencyId || !updateState) return
+    if (!updateState) return
 
     if (!isWrapOrUnwrap) {
       switchTokensAnalytics()
@@ -39,7 +41,10 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
       })
     }
 
-    tradeNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
+    tradeNavigate(chainId, {
+      inputCurrencyId: outputCurrencyId || EMPTY_CURRENCY_ID,
+      outputCurrencyId: inputCurrencyId || EMPTY_CURRENCY_ID,
+    })
   }, [
     updateState,
     isWrapOrUnwrap,

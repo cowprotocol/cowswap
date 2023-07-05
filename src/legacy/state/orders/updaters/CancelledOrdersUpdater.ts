@@ -10,6 +10,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/u
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
+import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
 /**
@@ -31,6 +32,7 @@ export function CancelledOrdersUpdater(): null {
   const chainId = supportedChainId(_chainId)
 
   const cancelled = useCancelledOrders({ chainId })
+  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
@@ -102,17 +104,20 @@ export function CancelledOrdersUpdater(): null {
         )
 
         // Bach state update fulfilled orders, if any
-        fulfilled.length > 0 &&
+        if (fulfilled.length) {
+          const ordersData = fulfilled as OrderFulfillmentData[]
           fulfillOrdersBatch({
-            ordersData: fulfilled as OrderFulfillmentData[],
+            ordersData,
             chainId,
           })
+          ordersData.forEach(({ id }) => addOrderToSurplusQueue(id))
+        }
       } finally {
         isUpdating.current = false
         // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
       }
     },
-    [fulfillOrdersBatch]
+    [addOrderToSurplusQueue, fulfillOrdersBatch]
   )
 
   useEffect(() => {
