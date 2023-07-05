@@ -42,8 +42,7 @@ export function FallbackHandlerWarning({
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
       />
       <span>
-        Modify Safe's fallback handler
-        <br /> when placing order
+        Modify Safe's fallback handler when placing order
       </span>
     </WarningCheckbox>
   )
@@ -61,9 +60,7 @@ export function FallbackHandlerWarning({
       <div>
         <InlineBannerWithCheckbox type="alert">
           <strong>Unsupported Safe detected</strong>
-          <br />
-          Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
-          TWAP orders when placing your order.{' '}
+          <p>Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for TWAP orders when placing your order.</p>
           {/*<HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>*/}
           {/*TODO: set a proper link*/}
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>

@@ -39,15 +39,33 @@ const Wrapper = styled.span<{ color: string }>`
   display: flex;
   align-items: center;
   background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
-  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.15, color))};
+  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
   gap: 10px;
-  border-radius: 10px;
+  border-radius: 16px;
   margin: auto;
-  padding: 16px 12px;
+  padding: 16px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
   width: 100%;
+
+  > span {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    grid-template-columns: 120px auto;
+  }
+
+  > span > p {
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+  }
+
+  > span > strong {
+    display: block;
+  }
 
   > svg {
     --size: 32px;

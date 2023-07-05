@@ -55,12 +55,21 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
   flex: 1;
   gap: 3px;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 0;
+  `};
+
   ${TradeWidgetFieldLabel} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' ? '10px 16px' : 'initial')};
+    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 16px')};
   }
 
   ${Content} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' ? '10px 88px 10px 16px' : 'initial')};
+    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 88px 10px 16px')};
+
+    ${({ theme, inputType }) => theme.mediaWidth.upToSmall`
+      width: ${inputType === 'priceProtection' && '100%'};
+      border-top: ${inputType === 'priceProtection' && `1px solid ${theme.grey1}`};
+    `};
 
     > em {
       font-style: normal;
@@ -82,6 +91,10 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
           width: 76px;
           border-radius: 0 15px 15px 0;
           padding: 0 16px 0 0;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            border-radius: 0 0 15px 0;
+          `};
 
           > ${NumericalInput} {
             font-size: 20px;
