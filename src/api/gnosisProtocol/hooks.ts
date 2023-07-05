@@ -2,10 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
-import { Nullish } from 'types'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
@@ -17,9 +15,8 @@ import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/tw
 import { useWalletInfo } from 'modules/wallet'
 
 import { OrderWithComposableCowInfo } from 'common/types'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { getOrders, getSurplusData } from './api'
+import { getOrders } from './api'
 
 /**
  * TODO: refactor this hook
@@ -113,35 +110,4 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
 
     return orderWithComposableCowInfo
   }, [twapParticleOrders, prodOrders])
-}
-
-export type UseSurplusAmountResult = {
-  surplusAmount: Nullish<CurrencyAmount<Currency>>
-  isLoading: boolean
-  error: string
-}
-
-export function useSurplusAmount(): UseSurplusAmountResult {
-  const { chainId, account } = useWalletInfo()
-  const nativeCurrency = useNativeCurrency()
-
-  const {
-    data: surplusAmount,
-    isLoading,
-    error,
-  } = useSWR<CurrencyAmount<Currency> | null>(['totalSurplus', chainId, account], async () => {
-    if (!chainId || !account) {
-      return null
-    }
-
-    const surplusData = await getSurplusData(chainId, account)
-
-    if (!surplusData?.totalSurplus) {
-      return null
-    }
-
-    return CurrencyAmount.fromRawAmount(nativeCurrency, surplusData.totalSurplus)
-  })
-
-  return { surplusAmount, isLoading, error }
 }

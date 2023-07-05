@@ -7,6 +7,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
 import { LabelTooltip } from 'modules/twap'
+import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
@@ -64,7 +65,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   const activeLabel = useMemo(() => {
     if (isCustomDeadline) {
-      return `${customDeadline.hours}h ${customDeadline.minutes}m`
+      return deadlinePartsDisplay(customDeadlineToSeconds(customDeadline))
     }
 
     return items.find((item) => item.value === deadline)?.label || ''

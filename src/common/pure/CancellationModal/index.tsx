@@ -5,7 +5,7 @@ import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionC
 import { shortenOrderId } from 'legacy/utils'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
-import { GpModal as Modal } from 'common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
