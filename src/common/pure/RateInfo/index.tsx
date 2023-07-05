@@ -28,7 +28,7 @@ export interface RateInfoParams {
 
 export interface RateInfoProps {
   className?: string
-  label?: string
+  label?: React.ReactNode | string
   stylized?: boolean
   noLabel?: boolean
   prependSymbol?: boolean

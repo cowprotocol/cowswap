@@ -3,7 +3,9 @@ import styled from 'styled-components/macro'
 import Input from 'legacy/components/NumericalInput'
 
 export const Suffix = styled.span`
-  margin-left: 5px;
+  margin: 0 0 0 3px;
+  opacity: 0.7;
+  font-weight: 600;
 `
 export const NumericalInput = styled(Input)<{ color?: string }>`
   color: ${({ theme, color }) => {

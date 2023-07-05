@@ -1,7 +1,24 @@
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import ShieldImage from 'legacy/assets/cow-swap/protection.svg'
+
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
+const IconImage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    opacity: 0.5;
+    fill: ${({ theme }) => theme.text1};
+    margin: 0 3px 0 0;
+  }
+`
+
 export interface LabelTooltip {
-  label: string
+  label: React.ReactNode | string
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
 }
 
@@ -42,7 +59,7 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     ),
   },
   slippage: {
-    label: '🛡 Price protection',
+    label: <><IconImage><SVG src={ShieldImage} width="16" height="16" title="Price protection"/></IconImage> Price protection</>,
     tooltip: (
       <>
         Your TWAP order won't execute and is protected if the market price dips more than your set slippage tolerance.
