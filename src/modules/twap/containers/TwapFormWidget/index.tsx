@@ -101,7 +101,7 @@ export function TwapFormWidget() {
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
         inputType="priceProtection"
-        limitPrice={'1484.45 USDC'}
+        limitPrice={'1484.45 USDC'} // TODO: add real dynamic limit price
         suffix="%"
       />
       <styledEl.Row>
