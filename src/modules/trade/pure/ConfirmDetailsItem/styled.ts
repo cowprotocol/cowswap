@@ -7,8 +7,9 @@ export const Wrapper = styled.div`
   align-items: center;
 
   > svg:first-child {
-    margin-right: 5px;
+    margin: 0 4px 0 0;
     color: ${({ theme }) => theme.text1};
+    opacity: 0.5;
   }
 `
 

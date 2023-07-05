@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Wrapper = styled.div`
-  padding: 1rem 0;
+  padding: 10px;
 `
 
 export const StyledRateInfo = styled(RateInfo)`
