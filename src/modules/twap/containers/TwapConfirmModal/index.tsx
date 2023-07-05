@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradePriceImpact, TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
@@ -86,6 +86,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
+            additionalProps={{ priceLabel: 'Price (incl. fee)' }}
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
