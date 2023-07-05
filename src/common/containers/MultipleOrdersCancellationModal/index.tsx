@@ -12,7 +12,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
-import { GpModal as Modal } from 'common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 interface Props {

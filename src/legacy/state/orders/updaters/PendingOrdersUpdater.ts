@@ -1,8 +1,7 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
+import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
@@ -16,9 +15,9 @@ import {
   UpdatePresignGnosisSafeTxCallback,
   useAddOrUpdateOrders,
   useCancelOrdersBatch,
+  useCombinedPendingOrders,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
-  useCombinedPendingOrders,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
@@ -28,10 +27,12 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/app
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
+import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
 import { timeSinceInSeconds } from 'utils/time'
 
 /**
@@ -142,6 +143,8 @@ interface UpdateOrdersParams {
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
+  addOrderToSurplusQueue: (orderId: string) => void
+  triggerTotalSurplusUpdate: (() => void) | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeInfo: GetSafeInfo
 }
@@ -156,6 +159,8 @@ async function _updateOrders({
   expireOrdersBatch,
   cancelOrdersBatch,
   presignOrders,
+  addOrderToSurplusQueue,
+  triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeInfo,
 }: UpdateOrdersParams): Promise<void> {
@@ -217,10 +222,20 @@ async function _updateOrders({
   }
 
   if (fulfilled.length > 0) {
+    const fulfilledOrders = fulfilled as OrderFulfillmentData[]
+    // update redux state
     fulfillOrdersBatch({
-      ordersData: fulfilled as OrderFulfillmentData[],
+      ordersData: fulfilledOrders,
       chainId,
     })
+    // add to surplus queue
+    fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
+      if (!apiAdditionalInfo || apiAdditionalInfo.class === OrderClass.MARKET) {
+        addOrderToSurplusQueue(id)
+      }
+    })
+    // trigger total surplus update
+    triggerTotalSurplusUpdate?.()
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)
@@ -267,6 +282,8 @@ export function PendingOrdersUpdater(): null {
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const presignOrders = usePresignOrders()
+  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
 
@@ -298,6 +315,8 @@ export function PendingOrdersUpdater(): null {
           expireOrdersBatch,
           cancelOrdersBatch,
           presignOrders,
+          addOrderToSurplusQueue,
+          triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
           getSafeInfo,
         }).finally(() => {
@@ -312,6 +331,8 @@ export function PendingOrdersUpdater(): null {
       expireOrdersBatch,
       cancelOrdersBatch,
       presignOrders,
+      addOrderToSurplusQueue,
+      triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeInfo,
     ]

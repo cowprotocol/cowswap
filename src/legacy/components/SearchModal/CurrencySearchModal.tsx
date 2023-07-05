@@ -11,7 +11,7 @@ import Manage from 'legacy/components/SearchModal/Manage'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-import { GpModal as Modal } from 'common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 
 import useLast from '../../hooks/useLast'
 

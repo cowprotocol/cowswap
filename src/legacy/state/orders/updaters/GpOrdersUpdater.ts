@@ -65,7 +65,7 @@ function _transformGpOrderToStoreOrder(
   const outputToken = _getTokenFromMapping(buyToken, chainId, allTokens)
 
   const apiStatus = classifyOrder(order)
-  const status = statusMapping[apiStatus]
+  const status = composableCowInfo?.status || statusMapping[apiStatus]
 
   if (!status) {
     console.warn(`GpOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
