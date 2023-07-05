@@ -7,7 +7,7 @@ import { CloseIcon } from 'legacy/theme'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -84,7 +84,7 @@ export function ReceiptModal({
   const safeTxParams = twapOrder?.safeTxParams
 
   return (
-    <GpModal onDismiss={onDismiss} isOpen={isOpen}>
+    <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
           <styledEl.Title>Order Receipt</styledEl.Title>
@@ -194,6 +194,6 @@ export function ReceiptModal({
           </styledEl.FieldsWrapper>
         </styledEl.Body>
       </styledEl.Wrapper>
-    </GpModal>
+    </CowModal>
   )
 }

@@ -5,7 +5,7 @@ import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
@@ -28,7 +28,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   if (!isSupportedChain(chainId)) return null
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss}>
+    <CowModal isOpen={isOpen} onDismiss={onDismiss}>
       {(() => {
         if (error) {
           return <TransactionErrorContent message={error} onDismiss={onDismiss} />
@@ -45,6 +45,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
         return children
       })()}
-    </GpModal>
+    </CowModal>
   )
 }
