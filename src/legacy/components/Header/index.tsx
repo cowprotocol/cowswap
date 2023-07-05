@@ -28,6 +28,7 @@ import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/
 
 import { Routes } from 'common/constants/routes'
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
@@ -46,8 +47,6 @@ import {
   Wrapper,
 } from './styled'
 
-// Assets
-
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
@@ -61,6 +60,7 @@ export default function Header() {
   const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
   const isWalletConnectV2 = useIsActiveWallet(walletConnectConnectionV2)
   const disconnectWallet = useDisconnectWallet()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
@@ -166,7 +166,7 @@ export default function Header() {
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isInjectedWidgetMode && (
+            {!isInjectedWidgetMode && !isChainIdUnsupported && (
               <CowBalanceButton
                 onClick={() => navigate('/account')}
                 account={account}
@@ -176,7 +176,7 @@ export default function Header() {
             )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && userEthBalance && chainId && (
+              {account && !isChainIdUnsupported && userEthBalance && chainId && (
                 <BalanceText>
                   <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
                 </BalanceText>

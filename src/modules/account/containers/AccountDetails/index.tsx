@@ -46,6 +46,9 @@ import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trus
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
+import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import {
   AccountControl,
   AccountGroupingRow,
@@ -56,6 +59,7 @@ import {
   NetworkCard,
   NoActivityMessage,
   TransactionListWrapper,
+  UnsupportedWalletBox,
   WalletAction,
   WalletActions,
   WalletName,
@@ -184,6 +188,7 @@ export function AccountDetails({
   const connection = getWeb3ReactConnection(connector)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, account, 'address') : undefined
@@ -237,7 +242,10 @@ export function AccountDetails({
 
             <WalletActions>
               {' '}
-              {networkLabel && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>} {formatConnectorName()}
+              {networkLabel && !isChainIdUnsupported && (
+                <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>
+              )}{' '}
+              {formatConnectorName()}
             </WalletActions>
           </AccountControl>
         </AccountGroupingRow>
@@ -258,7 +266,7 @@ export function AccountDetails({
                 </>
               )}
 
-              {account && (
+              {account && !isChainIdUnsupported && (
                 <AddressLink
                   hasENS={!!ENSName}
                   isENS={!!ENSName}
@@ -272,35 +280,41 @@ export function AccountDetails({
         </AccountGroupingRow>
       </InfoCard>
 
-      <SurplusCard />
-
-      {activityTotalCount ? (
-        <LowerSection>
-          <span>
-            {' '}
-            <h5>
-              Recent Activity <span>{`(${activityTotalCount})`}</span>
-            </h5>
-            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
-          </span>
-
-          <div>
-            {activitiesGroupedByDate.map(({ date, activities }) => (
-              <Fragment key={date.getTime()}>
-                {/* TODO: style me! */}
-                <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
-                {renderActivities(activities)}
-              </Fragment>
-            ))}
-            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
-          </div>
-        </LowerSection>
+      {isChainIdUnsupported ? (
+        <UnsupportedWalletBox>{UNSUPPORTED_WALLET_TEXT}</UnsupportedWalletBox>
       ) : (
-        <LowerSection>
-          <NoActivityMessage>
-            <span>Your activity will appear here...</span>
-          </NoActivityMessage>
-        </LowerSection>
+        <>
+          <SurplusCard />
+
+          {activityTotalCount ? (
+            <LowerSection>
+              <span>
+                {' '}
+                <h5>
+                  Recent Activity <span>{`(${activityTotalCount})`}</span>
+                </h5>
+                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+              </span>
+
+              <div>
+                {activitiesGroupedByDate.map(({ date, activities }) => (
+                  <Fragment key={date.getTime()}>
+                    {/* TODO: style me! */}
+                    <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                    {renderActivities(activities)}
+                  </Fragment>
+                ))}
+                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+              </div>
+            </LowerSection>
+          ) : (
+            <LowerSection>
+              <NoActivityMessage>
+                <span>Your activity will appear here...</span>
+              </NoActivityMessage>
+            </LowerSection>
+          )}
+        </>
       )}
     </Wrapper>
   )

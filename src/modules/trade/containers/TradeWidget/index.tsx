@@ -11,6 +11,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
@@ -83,6 +84,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { chainId } = useWalletInfo()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
@@ -91,6 +93,16 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+
+  const currencyInputCommonProps = {
+    isChainIdUnsupported,
+    disableNonToken,
+    chainId,
+    areCurrenciesLoading: currenciesLoadingInProgress,
+    onCurrencySelection,
+    onUserInput,
+    allowsOffchainSigning,
+  }
 
   /**
    * Reset recipient value only once at App start
@@ -121,16 +133,11 @@ export function TradeWidget(props: TradeWidgetProps) {
               <div>
                 <CurrencyInputPanel
                   id="input-currency-input"
-                  disableNonToken={disableNonToken}
-                  chainId={chainId}
-                  areCurrenciesLoading={currenciesLoadingInProgress}
-                  onCurrencySelection={onCurrencySelection}
-                  onUserInput={onUserInput}
-                  allowsOffchainSigning={allowsOffchainSigning}
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
                   maxBalance={maxBalance}
                   topLabel={inputCurrencyInfo.label}
+                  {...currencyInputCommonProps}
                 />
               </div>
               {!isWrapOrUnwrap && middleContent}
@@ -139,7 +146,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   isCollapsed={compactView}
                   hasSeparatorLine={!compactView}
                   border={!compactView}
-                  onSwitchTokens={throttledOnSwitchTokens}
+                  onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
                 />
@@ -147,22 +154,17 @@ export function TradeWidget(props: TradeWidgetProps) {
               <div>
                 <CurrencyInputPanel
                   id="output-currency-input"
-                  disableNonToken={disableNonToken}
                   inputDisabled={isEoaEthFlow || disableOutput}
                   inputTooltip={
                     isEoaEthFlow
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                       : undefined
                   }
-                  chainId={chainId}
-                  areCurrenciesLoading={currenciesLoadingInProgress}
                   isRateLoading={isRateLoading}
-                  onCurrencySelection={onCurrencySelection}
-                  onUserInput={onUserInput}
-                  allowsOffchainSigning={allowsOffchainSigning}
                   currencyInfo={outputCurrencyInfo}
                   priceImpactParams={priceImpact}
                   topLabel={outputCurrencyInfo.label}
+                  {...currencyInputCommonProps}
                 />
               </div>
               {showRecipient && (

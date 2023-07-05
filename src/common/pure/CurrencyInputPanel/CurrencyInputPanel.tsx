@@ -30,6 +30,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
+  isChainIdUnsupported: boolean
   disabled?: boolean
   inputDisabled?: boolean
   inputTooltip?: string
@@ -61,6 +62,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
+    isChainIdUnsupported,
     subsidyAndBalance = {
       subsidy: {
         tier: 0,
@@ -72,7 +74,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
-  const disabled = !!props.disabled
+  const disabled = !!props.disabled || isChainIdUnsupported
   const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
@@ -116,7 +118,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const numericalInput = (
     <styledEl.NumericalInput
       className="token-amount-input"
-      value={typedValue}
+      value={isChainIdUnsupported ? '' : typedValue}
       disabled={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
