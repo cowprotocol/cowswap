@@ -117,8 +117,6 @@ export function TwapFormWidget() {
         />
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
-
       <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
@@ -135,6 +133,8 @@ export function TwapFormWidget() {
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>
+
+      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />
