@@ -40,14 +40,14 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
   margin-top: 5px;
 `
 
-export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
-  background: ${({ theme, inputType }) => (inputType === 'priceProtection' ? 'transparent' : theme.grey1)};
-  border: 1px solid ${({ theme, inputType }) => (inputType === 'priceProtection' ? theme.grey1 : 0)};
+export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
+  background: ${({ theme, hasPrefix }) => (hasPrefix ? 'transparent' : theme.grey1)};
+  border: 1px solid ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 0)};
   border-radius: 16px;
   min-height: 45px;
   font-size: 18px;
   padding: 10px 16px;
-  padding: ${({ inputType }) => (inputType === 'priceProtection' ? '0' : '10px 16px')};
+  padding: ${({ hasPrefix }) => (hasPrefix ? '0' : '10px 16px')};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,11 +56,11 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
   gap: 3px;
 
   ${TradeWidgetFieldLabel} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' ? '10px 16px' : 'initial')};
+    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 16px' : 'initial')};
   }
 
   ${Content} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' ? '10px 88px 10px 16px' : 'initial')};
+    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 88px 10px 16px' : 'initial')};
 
     > em {
       font-style: normal;
@@ -70,10 +70,10 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      background: ${({ theme, inputType }) => (inputType === 'priceProtection' ? theme.grey1 : 'transparent')};
+      background: ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 'transparent')};
 
-      ${({ inputType }) =>
-        inputType === 'priceProtection' &&
+      ${({ hasPrefix }) =>
+        hasPrefix &&
         css`
           position: absolute;
           top: -1px;
