@@ -371,6 +371,10 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
     return undefined
   }
 
+  if (order.composableCowInfo?.isVirtualPart) {
+    return undefined
+  }
+
   if (order.status === OrderStatus.SCHEDULED) {
     return undefined
   }

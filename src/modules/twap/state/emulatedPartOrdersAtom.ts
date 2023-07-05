@@ -37,9 +37,10 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
         executedSellAmountBeforeFees: '0',
         executedBuyAmount: '0',
         executedFeeAmount: '0',
-        invalidated: false,
+        invalidated: parent.status === TwapOrderStatus.Cancelled,
       },
       composableCowInfo: {
+        isVirtualPart: true,
         parentId: order.twapOrderId,
         status: getPartOrderStatus(parent),
       },

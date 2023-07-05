@@ -12,6 +12,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 export type ComposableCowInfo = {
   id?: string
   parentId?: string
+  isVirtualPart?: boolean
   status: OrderStatus
 }
 
