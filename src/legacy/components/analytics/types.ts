@@ -17,6 +17,7 @@ export enum Category {
   INIT = 'Init',
   SERVICE_WORKER = 'Service worker',
   TWAP = 'TWAP',
+  COW_FORTUNE = 'CoWFortune',
 }
 
 export interface EventParams {
