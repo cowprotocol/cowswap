@@ -40,7 +40,7 @@ const Wrapper = styled.span<{ color: string }>`
   align-items: center;
   background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
   color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
-  gap: 10px;
+  gap: 24px 10px;
   border-radius: 16px;
   margin: auto;
   padding: 16px;
@@ -53,21 +53,14 @@ const Wrapper = styled.span<{ color: string }>`
     display: grid;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    grid-template-columns: 120px auto;
+    gap: 0 10px;
+    grid-template-areas: "a b c" "d d d";
+    grid-template-columns: minmax(max-content, 42px) minmax(min-content, 110px) minmax(min-content, 1fr);
+    width: 100%;
+    grid-auto-flow: dense;
   }
 
-  > span > p {
-    line-height: 1.4;
-    margin: 0;
-    padding: 0;
-  }
-
-  > span > strong {
-    display: block;
-  }
-
-  > svg {
+  > span > svg {
     --size: 32px;
     display: block;
     min-width: var(--size);
@@ -76,10 +69,23 @@ const Wrapper = styled.span<{ color: string }>`
     height: var(--size);
     object-fit: contain;
     stroke: none !important;
+    grid-area: a;
   }
 
-  > svg > path {
+  > span > svg > path {
     fill: ${({ color }) => color};
+  }
+
+  > span > strong {
+    display: block;
+    grid-area: b;
+  }
+
+  > span > p {
+    line-height: 1.4;
+    margin: 0 0 16px;
+    padding: 0;
+    grid-area: c;
   }
 `
 
@@ -97,8 +103,7 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
 
   return (
     <Wrapper className={className} color={color}>
-      {!hideIcon && <SVG src={config.icon} description={type} />}
-      <span>{children}</span>
+      <span>{!hideIcon && <SVG src={config.icon} description={type} />} {children}</span>
     </Wrapper>
   )
 }
