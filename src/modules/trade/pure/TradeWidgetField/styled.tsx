@@ -72,19 +72,20 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
       justify-content: flex-end;
       background: ${({ theme, inputType }) => (inputType === 'priceProtection' ? theme.grey1 : 'transparent')};
 
-      ${({ inputType }) => inputType === 'priceProtection' && css`
-        position: absolute;
-        top: -1px;
-        right: 0;
-        height: calc(100% + 2px);
-        width: 76px;
-        border-radius: 0 15px 15px 0;
-        padding: 0 16px 0 0;
+      ${({ inputType }) =>
+        inputType === 'priceProtection' &&
+        css`
+          position: absolute;
+          top: -1px;
+          right: 0;
+          height: calc(100% + 2px);
+          width: 76px;
+          border-radius: 0 15px 15px 0;
+          padding: 0 16px 0 0;
 
-        > ${NumericalInput} {
-          font-size: 20px;
-        }
-      `
-      }
+          > ${NumericalInput} {
+            font-size: 20px;
+          }
+        `}
   }
 `

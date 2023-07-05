@@ -59,7 +59,14 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     ),
   },
   slippage: {
-    label: <><IconImage><SVG src={ShieldImage} width="16" height="16" title="Price protection"/></IconImage> Price protection</>,
+    label: (
+      <>
+        <IconImage>
+          <SVG src={ShieldImage} width="16" height="16" title="Price protection" />
+        </IconImage>{' '}
+        Price protection
+      </>
+    ),
     tooltip: (
       <>
         Your TWAP order won't execute and is protected if the market price dips more than your set slippage tolerance.
