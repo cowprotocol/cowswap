@@ -64,7 +64,7 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
   }
 
   ${Content} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 88px 10px 16px')};
+    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 98px 10px 16px')};
 
     ${({ theme, inputType }) => theme.mediaWidth.upToSmall`
       width: ${inputType === 'priceProtection' && '100%'};
@@ -88,7 +88,7 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
           top: -1px;
           right: 0;
           height: calc(100% + 2px);
-          width: 76px;
+          width: 86px;
           border-radius: 0 15px 15px 0;
           padding: 0 16px 0 0;
 
