@@ -21,7 +21,7 @@ const CheckboxWrapper = styled.div`
 const WarningCheckboxWrapper = styled(CheckboxWrapper)`
   width: 100%;
   margin: 0 auto;
-  border: 1px solid; 
+  border: 1px solid;
   border-radius: 16px;
   padding: 20px;
   font-weight: 500;
@@ -46,8 +46,7 @@ const WarningCheckbox = styled.label`
   }
 `
 
-const InlineBannerWithCheckbox = styled(InlineBanner)`
-`
+const InlineBannerWithCheckbox = styled(InlineBanner)``
 
 interface FallbackHandlerWarningProps {
   isFallbackHandlerSetupAccepted: boolean
@@ -65,9 +64,7 @@ export function FallbackHandlerWarning({
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
       />
-      <span>
-        Modify Safe's fallback handler when placing order
-      </span>
+      <span>Modify Safe's fallback handler when placing order</span>
     </WarningCheckbox>
   )
 
@@ -84,7 +81,10 @@ export function FallbackHandlerWarning({
       <Wrapper>
         <InlineBannerWithCheckbox type="alert">
           <strong>Unsupported Safe detected</strong>
-          <p>Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for TWAP orders when placing your order.</p>
+          <p>
+            Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
+            TWAP orders when placing your order.
+          </p>
           {/*<HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>*/}
           {/*TODO: set a proper link*/}
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>

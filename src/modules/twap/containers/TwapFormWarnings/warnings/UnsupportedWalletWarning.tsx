@@ -19,7 +19,11 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
   return (
     <InlineBanner type="alert">
       <strong>Unsupported wallet detected</strong>
-      <p>TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! {/*Need setup? <HashLink to="/faq/limit-order#how-do-fees-work">Click here</HashLink>.*/}Future updates may extend wallet support!</p>
+      <p>
+        TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it!{' '}
+        {/*Need setup? <HashLink to="/faq/limit-order#how-do-fees-work">Click here</HashLink>.*/}Future updates may
+        extend wallet support!
+      </p>
       {/*TODO: set a proper link*/}
     </InlineBanner>
   )

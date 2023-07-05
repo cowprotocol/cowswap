@@ -60,11 +60,11 @@ export const TradeWidgetFieldBox = styled.div<{ inputType?: string }>`
   `};
 
   ${TradeWidgetFieldLabel} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 16px')};
+    padding: ${({ inputType }) => inputType === 'priceProtection' && '10px 16px'};
   }
 
   ${Content} {
-    padding: ${({ inputType }) => (inputType === 'priceProtection' && '10px 98px 10px 16px')};
+    padding: ${({ inputType }) => inputType === 'priceProtection' && '10px 98px 10px 16px'};
 
     ${({ theme, inputType }) => theme.mediaWidth.upToSmall`
       width: ${inputType === 'priceProtection' && '100%'};

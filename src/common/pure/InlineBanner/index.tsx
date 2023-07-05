@@ -54,7 +54,7 @@ const Wrapper = styled.span<{ color: string }>`
     align-items: center;
     justify-content: center;
     gap: 0 10px;
-    grid-template-areas: "a b c" "d d d";
+    grid-template-areas: 'a b c' 'd d d';
     grid-template-columns: minmax(max-content, 42px) minmax(min-content, 110px) minmax(min-content, 1fr);
     width: 100%;
     grid-auto-flow: dense;
@@ -113,7 +113,9 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
 
   return (
     <Wrapper className={className} color={color}>
-      <span>{!hideIcon && <SVG src={config.icon} description={type} />} {children}</span>
+      <span>
+        {!hideIcon && <SVG src={config.icon} description={type} />} {children}
+      </span>
     </Wrapper>
   )
 }

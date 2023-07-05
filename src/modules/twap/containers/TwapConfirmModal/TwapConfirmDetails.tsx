@@ -8,7 +8,6 @@ import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAm
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
-
 const Wrapper = styled.div`
   padding: 10px;
   font-size: 13px;
