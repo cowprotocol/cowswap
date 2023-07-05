@@ -36,6 +36,26 @@ const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
   [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
 }
 
+const unsupportedTokenButton = (context: TradeFormButtonContext) => {
+  const { derivedState, isSupportedWallet } = context
+  const { inputCurrency, outputCurrency } = derivedState
+
+  return inputCurrency && outputCurrency ? (
+    <>
+      <TradeFormBlankButton disabled={true}>
+        <Trans>Unsupported token</Trans>
+      </TradeFormBlankButton>
+      <CompatibilityIssuesWarningWrapper>
+        <CompatibilityIssuesWarning
+          currencyIn={inputCurrency}
+          currencyOut={outputCurrency}
+          isSupportedWallet={isSupportedWallet}
+        />
+      </CompatibilityIssuesWarningWrapper>
+    </>
+  ) : null
+}
+
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
   [TradeFormValidation.WrapUnwrapAmountNotSet]: {
     text: 'Enter an amount',
@@ -59,27 +79,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: 'Enter a valid recipient',
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
-    const { derivedState, isSupportedWallet } = context
-    const { inputCurrency, outputCurrency } = derivedState
-
-    return inputCurrency && outputCurrency ? (
-      <>
-        <TradeFormBlankButton disabled={true}>
-          <Trans>Unsupported token</Trans>
-        </TradeFormBlankButton>
-        <CompatibilityIssuesWarningWrapper>
-          <CompatibilityIssuesWarning
-            currencyIn={inputCurrency}
-            currencyOut={outputCurrency}
-            isSupportedWallet={isSupportedWallet}
-          />
-        </CompatibilityIssuesWarningWrapper>
-      </>
-    ) : null
+    return unsupportedTokenButton(context)
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
     const { quote } = context
     const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
+
+    if (quote.error?.type === GpQuoteErrorCodes.UnsupportedToken) {
+      return unsupportedTokenButton(context)
+    }
 
     return (
       <TradeFormBlankButton disabled={true}>

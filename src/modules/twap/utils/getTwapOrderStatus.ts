@@ -1,21 +1,18 @@
-import ms from 'ms.macro'
-
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
-const AUTH_THRESHOLD = ms`1m`
+import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  executionDateStr: string | null,
+  executionDate: Date | null,
   auth: boolean | undefined,
   discreteOrder: Order | undefined,
   executionInfo: TwapOrderExecutionInfo
 ): TwapOrderStatus {
-  const executionDate = executionDateStr ? new Date(executionDateStr) : null
-  const isFulfilled = executionInfo.executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
+  const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
 
@@ -23,33 +20,20 @@ export function getTwapOrderStatus(
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
 
-  if (shouldCheckAuth(executionDate) && auth === false) return TwapOrderStatus.Cancelled
+  if (auth === false) return TwapOrderStatus.Cancelled
 
   if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
 
   return TwapOrderStatus.Scheduled
 }
 
-export function isTwapOrderExpired(order: TWAPOrderStruct, executionDate: Date | null): boolean {
-  if (!executionDate) return false
+export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {
+  if (!startDate) return false
 
-  const startTime = Math.ceil(executionDate.getTime() / 1000)
+  const startTime = Math.ceil(startDate.getTime() / 1000)
   const { n: numOfParts, t: timeInterval } = order
   const endTime = startTime + timeInterval * numOfParts
   const nowTimestamp = Math.ceil(Date.now() / 1000)
 
   return nowTimestamp > endTime
-}
-
-/**
- * ComposableCow.singleOrders returns false by default
- * To avoid false-positive values, we should not check authorized flag within first minute after execution time
- */
-function shouldCheckAuth(executionDate: Date | null): boolean {
-  if (!executionDate) return false
-
-  const executionTimestamp = executionDate.getTime()
-  const nowTimestamp = Date.now()
-
-  return nowTimestamp > executionTimestamp + AUTH_THRESHOLD
 }
