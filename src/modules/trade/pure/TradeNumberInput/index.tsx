@@ -19,7 +19,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
 
-  const onChange = useCallback(
+  const validateInput = useCallback(
     (newValue: string) => {
       const hasDot = newValue.includes('.')
       const [quotient, decimals] = (newValue || '').split('.')
@@ -50,14 +50,19 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   // Initial setup of value
   useEffect(() => {
-    onChange(value ? value.toString() : '')
+    validateInput(value ? value.toString() : '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <TradeWidgetField {...props}>
       <>
-        <NumericalInput placeholder={placeholder} value={displayedValue} onUserInput={onChange} />
+        <NumericalInput
+          placeholder={placeholder}
+          value={displayedValue}
+          onBlur={(e) => validateInput(e.target.value)}
+          onUserInput={(value) => setDisplayedValue(value)}
+        />
         {suffix && <Suffix>{suffix}</Suffix>}
       </>
     </TradeWidgetField>
