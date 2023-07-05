@@ -58,6 +58,12 @@ const Wrapper = styled.span<{ color: string }>`
     grid-template-columns: minmax(max-content, 42px) minmax(min-content, 110px) minmax(min-content, 1fr);
     width: 100%;
     grid-auto-flow: dense;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
+      flex-flow: column wrap;
+      gap: 10px;
+    `};
   }
 
   > span > svg {
@@ -86,6 +92,10 @@ const Wrapper = styled.span<{ color: string }>`
     margin: 0 0 16px;
     padding: 0;
     grid-area: c;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+    `};
   }
 `
 
