@@ -11,6 +11,7 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 const Wrapper = styled.div`
   padding: 10px;
+  font-size: 13px;
 
   > b {
     display: block;

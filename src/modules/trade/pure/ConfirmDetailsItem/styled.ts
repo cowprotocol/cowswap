@@ -20,5 +20,12 @@ export const Row = styled(StyledRowBetween)`
 `
 
 export const Content = styled.div`
-  margin-left: auto;
+  margin: 0 0 0 auto;
+  font-weight: 500;
+  font-size: 13px;
+
+  i {
+    font-style: normal;
+    opacity: 0.7;
+  }
 `

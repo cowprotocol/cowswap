@@ -4,12 +4,12 @@ import { RateInfo } from 'common/pure/RateInfo'
 
 export const Wrapper = styled.div`
   padding: 10px;
+  font-size: 13px;
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  font-size: 13px;
-  font-weight: 500;
   margin: 0 auto;
+  font-size: 13px;
 `
 
 export const ItemWithArrow = styled.div`
