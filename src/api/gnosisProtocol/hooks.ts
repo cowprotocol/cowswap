@@ -111,4 +111,3 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
     return orderWithComposableCowInfo
   }, [twapParticleOrders, prodOrders])
 }
-
