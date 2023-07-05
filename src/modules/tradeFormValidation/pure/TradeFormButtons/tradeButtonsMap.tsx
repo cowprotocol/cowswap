@@ -37,9 +37,6 @@ const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
-  [TradeFormValidation.WrapUnwrapAmountNotSet]: {
-    text: 'Enter an amount',
-  },
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
     const isNativeIn = !!context.derivedState.inputCurrency?.isNative
 
