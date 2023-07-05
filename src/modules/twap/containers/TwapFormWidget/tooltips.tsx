@@ -18,7 +18,7 @@ const IconImage = styled.div`
 `
 
 export interface LabelTooltip {
-  label: React.ReactNode | string
+  label: React.ReactNode
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
 }
 
