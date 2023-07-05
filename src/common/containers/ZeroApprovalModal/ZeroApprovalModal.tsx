@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useWalletDetails, useWalletDisplayedAddress } from 'modules/wallet'
 
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 
 import { useWalletStatusIcon } from '../../hooks/useWalletStatusIcon'
@@ -36,7 +36,7 @@ export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalPro
   const symbol = currency?.symbol?.toUpperCase() ?? 'Unknown Currency' // This should never happen.
 
   return (
-    <GpModal isOpen={shouldShow} onDismiss={handleDismiss}>
+    <CowModal isOpen={shouldShow} onDismiss={handleDismiss}>
       <ConfirmationPendingContent
         onDismiss={handleDismiss}
         statusIcon={statusIcon}
@@ -51,6 +51,6 @@ export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalPro
         walletAddress={walletAddress}
         operationLabel="token approval"
       />
-    </GpModal>
+    </CowModal>
   )
 }
