@@ -54,8 +54,8 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     ),
   },
   price: {
-    label: 'Current market price',
-    tooltip: 'This is the current market price',
+    label: 'Price (incl. fee)',
+    tooltip: 'This is the current market price, including the fee.',
   },
   sellAmount: {
     label: 'Sell per part',
