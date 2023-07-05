@@ -11,19 +11,19 @@ export const Container = styled.div`
 export const ContainerBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  gap: 6px;
+  gap: 8px;
   background: ${({ theme }) => theme.bg1};
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  padding: 10px;
+  padding: 8px;
 `
 
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 4px 10px 8px;
+  padding: 4px 4px 4px 8px;
   margin: 0;
   font-weight: 500;
   font-size: 16px;

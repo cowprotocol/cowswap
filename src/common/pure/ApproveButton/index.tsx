@@ -20,15 +20,16 @@ export interface ApproveButtonProps {
   currency: Currency | undefined | null
   state: ApprovalState
   onClick: () => void
+  isDisabled?: boolean
 }
 
 export function ApproveButton(props: ApproveButtonProps) {
-  const { currency, state, onClick } = props
+  const { currency, state, onClick, isDisabled } = props
 
   const theme = useContext(ThemeContext)
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
-  const disabled = state !== ApprovalState.NOT_APPROVED
+  const disabled = isDisabled || state !== ApprovalState.NOT_APPROVED
 
   const content = useMemo(() => {
     if (isConfirmed) {
