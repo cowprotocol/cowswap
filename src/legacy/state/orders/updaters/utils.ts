@@ -71,6 +71,10 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
   if (getIsComposableCowParentOrder(orderFromStore)) {
     return null
   }
+  // Skip ComposableCow part orders
+  if (orderFromStore.composableCowInfo?.status) {
+    return null
+  }
   // Get order from API
   let orderFromApi: EnrichedOrder | null = null
   try {

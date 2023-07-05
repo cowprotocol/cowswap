@@ -19,7 +19,7 @@ interface ButtonErrorConfig {
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext): JSX.Element | null
+  (context: TradeFormButtonContext, isDisabled?: boolean): JSX.Element | null
 }
 
 const CompatibilityIssuesWarningWrapper = styled.div`
@@ -34,6 +34,26 @@ const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
   [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
   [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
+}
+
+const unsupportedTokenButton = (context: TradeFormButtonContext) => {
+  const { derivedState, isSupportedWallet } = context
+  const { inputCurrency, outputCurrency } = derivedState
+
+  return inputCurrency && outputCurrency ? (
+    <>
+      <TradeFormBlankButton disabled={true}>
+        <Trans>Unsupported token</Trans>
+      </TradeFormBlankButton>
+      <CompatibilityIssuesWarningWrapper>
+        <CompatibilityIssuesWarning
+          currencyIn={inputCurrency}
+          currencyOut={outputCurrency}
+          isSupportedWallet={isSupportedWallet}
+        />
+      </CompatibilityIssuesWarningWrapper>
+    </>
+  ) : null
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
@@ -59,27 +79,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: 'Enter a valid recipient',
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
-    const { derivedState, isSupportedWallet } = context
-    const { inputCurrency, outputCurrency } = derivedState
-
-    return inputCurrency && outputCurrency ? (
-      <>
-        <TradeFormBlankButton disabled={true}>
-          <Trans>Unsupported token</Trans>
-        </TradeFormBlankButton>
-        <CompatibilityIssuesWarningWrapper>
-          <CompatibilityIssuesWarning
-            currencyIn={inputCurrency}
-            currencyOut={outputCurrency}
-            isSupportedWallet={isSupportedWallet}
-          />
-        </CompatibilityIssuesWarningWrapper>
-      </>
-    ) : null
+    return unsupportedTokenButton(context)
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
     const { quote } = context
     const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
+
+    if (quote.error?.type === GpQuoteErrorCodes.UnsupportedToken) {
+      return unsupportedTokenButton(context)
+    }
 
     return (
       <TradeFormBlankButton disabled={true}>
@@ -113,35 +121,35 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ExpertApproveAndSwap]: (context) => {
+  [TradeFormValidation.ExpertApproveAndSwap]: (context, isDisabled = false) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormBlankButton onClick={context.doTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.doTrade}>
         <Trans>
           Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
         </Trans>
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwap]: (context) => {
+  [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormBlankButton onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
         <Trans>
           Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
         </Trans>
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context) => {
+  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
     const amountToApprove = context.derivedState.slippageAdjustedSellAmount
 
     if (!amountToApprove) return null
 
     return (
-      <TradeApproveButton amountToApprove={amountToApprove}>
+      <TradeApproveButton isDisabled={isDisabled} amountToApprove={amountToApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>

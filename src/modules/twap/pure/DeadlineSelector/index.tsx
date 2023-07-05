@@ -2,7 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
+import { renderTooltip } from 'legacy/components/Tooltip'
+
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
+import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
+import { LabelTooltip } from 'modules/twap'
+import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
@@ -10,20 +15,31 @@ import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
   deadline: TwapOrdersDeadline
+  label: LabelTooltip['label']
+  tooltip: LabelTooltip['tooltip']
   setDeadline(value: TwapOrdersDeadline): void
 }
 
 const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VALUE' }
 
 const StyledTradeSelect = styled(TradeSelect)`
-  font-size: 14px;
   font-weight: 500;
+
+  ${Content} {
+    width: 100%;
+  }
+
+  ${Content} > div {
+    width: 100%;
+  }
 `
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const {
     items,
     deadline: { deadline, customDeadline, isCustomDeadline },
+    label,
+    tooltip,
     setDeadline,
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
@@ -49,7 +65,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   const activeLabel = useMemo(() => {
     if (isCustomDeadline) {
-      return `${customDeadline.hours}h ${customDeadline.minutes}m`
+      return deadlinePartsDisplay(customDeadlineToSeconds(customDeadline))
     }
 
     return items.find((item) => item.value === deadline)?.label || ''
@@ -58,8 +74,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   return (
     <>
       <StyledTradeSelect
-        label="Total time"
-        hint="TODO: Some hint"
+        label={label}
+        tooltip={renderTooltip(tooltip)}
         items={itemsWithCustom}
         activeLabel={activeLabel}
         onSelect={onSelect}

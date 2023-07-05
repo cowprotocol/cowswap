@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import Modal from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { ConfirmedButton } from '../ConfirmedButton'
 
