@@ -1,80 +1,14 @@
 import React from 'react'
 
-import { DialogContent, DialogOverlay } from '@reach/dialog'
-import { animated, useSpringValue, useTransition } from '@react-spring/web'
+import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
-import { transparentize } from 'polished'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { isMobile } from 'legacy/utils/userAgent'
 
-const AnimatedDialogOverlay = animated(DialogOverlay)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
-  &[data-reach-dialog-overlay] {
-    z-index: 2;
-    background-color: transparent;
-    overflow: hidden;
+import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: ${({ theme }) => theme.modalBG};
-  }
-`
-
-const AnimatedDialogContent = animated(DialogContent)
-// destructure to not pass custom props to Dialog DOM element
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs({
-  'aria-label': 'dialog',
-})`
-  overflow-y: auto;
-
-  &[data-reach-dialog-content] {
-    margin: 0 0 2rem 0;
-    background-color: ${({ theme }) => theme.bg0};
-    border: 1px solid ${({ theme }) => theme.bg1};
-    box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
-    padding: 0px;
-    width: 50vw;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
-
-    max-width: 420px;
-    ${({ maxHeight }) =>
-      maxHeight &&
-      css`
-        max-height: ${maxHeight}vh;
-      `}
-    ${({ minHeight }) =>
-      minHeight &&
-      css`
-        min-height: ${minHeight}vh;
-      `}
-    display: flex;
-    border-radius: 20px;
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      width: 65vw;
-      margin: 0;
-    `}
-    ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
-      width:  85vw;
-      ${
-        mobile &&
-        css`
-          width: 100vw;
-          border-radius: 20px;
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-        `
-      }
-    `}
-  }
-`
+export * from './styled'
 
 interface ModalProps {
   isOpen: boolean
@@ -86,7 +20,7 @@ interface ModalProps {
   children?: React.ReactNode
 }
 
-export default function Modal({
+export function Modal({
   isOpen,
   onDismiss,
   minHeight = false,
@@ -148,3 +82,62 @@ export default function Modal({
     </>
   )
 }
+
+export const CowModal = styled(Modal)<{
+  maxWidth?: number | string
+  backgroundColor?: string
+  border?: string
+  padding?: string
+}>`
+  > [data-reach-dialog-content] {
+    color: ${({ theme }) => theme.text1};
+    width: 100%;
+    max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
+    border: ${({ border = 'inherit' }) => `${border}`};
+    z-index: 100;
+    padding: ${({ padding = '0px' }) => `${padding}`};
+    margin: auto;
+    transition: max-width 0.4s ease;
+    background-color: ${({ theme }) => theme.bg1};
+    overflow: hidden;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      max-height: 100vh;
+      max-width: 100%;
+      height: 100%;
+      width: 100vw;
+      border-radius: 0;
+    `}
+
+    ${HeaderRow} {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 16px;
+        background: ${({ theme }) => theme.bg1};
+        z-index: 20;
+      `}
+    }
+
+    ${CloseIcon} {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        z-index: 21;
+        position: fixed;
+      `}
+    }
+
+    ${HoverText} {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        white-space: nowrap;
+      `}
+    }
+
+    ${ContentWrapper} {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 62px auto 0;
+      `}
+    }
+  }
+`

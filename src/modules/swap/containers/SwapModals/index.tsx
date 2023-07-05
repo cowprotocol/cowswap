@@ -5,6 +5,8 @@ import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
+import { SurplusModalSetup } from '../SurplusModalSetup'
+
 export interface SwapModalsProps {
   showNativeWrapModal: boolean
   showCowSubsidyModal: boolean
@@ -23,6 +25,7 @@ export const SwapModals = React.memo(function (props: SwapModalsProps) {
       {/*<CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} /> */}
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+      {!showNativeWrapModal && <SurplusModalSetup />}
     </>
   )
 }, genericPropsChecker)

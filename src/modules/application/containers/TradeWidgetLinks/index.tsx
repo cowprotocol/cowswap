@@ -1,52 +1,74 @@
+import React from 'react'
+
 import { Trans } from '@lingui/macro'
+import { matchPath, useLocation } from 'react-router-dom'
 
 import { clickAdvancedOrdersTabAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes } from 'common/constants/routes'
+import { Routes, RoutesValues } from 'common/constants/routes'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import * as styledEl from './styled'
 
+interface MenuItemConfig {
+  route: RoutesValues
+  label: string
+  featureGuard?: string
+  onClick?: () => void
+}
+
+const menuItems: MenuItemConfig[] = [
+  { route: Routes.SWAP, label: 'Swap' },
+  { route: Routes.LIMIT_ORDER, label: 'Limit' },
+  {
+    route: Routes.ADVANCED_ORDERS,
+    label: 'Advanced',
+    featureGuard: 'advancedOrdersEnabled',
+    onClick: clickAdvancedOrdersTabAnalytics,
+  },
+]
+
 export function TradeWidgetLinks() {
   const tradeContext = useTradeRouteContext()
+  const location = useLocation()
 
   return (
     <styledEl.Wrapper>
-      <styledEl.MenuItem>
-        <styledEl.Link
-          className={({ isActive }) => (isActive ? 'active' : undefined)}
-          to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}
-        >
-          <Trans>Swap</Trans>
-        </styledEl.Link>
-      </styledEl.MenuItem>
+      {menuItems.map((item) => {
+        const routePath = parameterizeTradeRoute(tradeContext, item.route)
+        const isActive = !!matchPath(location.pathname, routePath)
+        const onClick = item.onClick || (() => {})
 
-      <styledEl.MenuItem>
-        <styledEl.Link
-          className={({ isActive }) => (isActive ? 'active' : undefined)}
-          to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}
-        >
-          <Trans>Limit</Trans>
-        </styledEl.Link>
-      </styledEl.MenuItem>
+        const menuItem = <MenuItem onClick={onClick} routePath={routePath} item={item} isActive={isActive} />
 
-      <FeatureGuard featureFlag="advancedOrdersEnabled">
-        <styledEl.MenuItem>
-          <styledEl.Link
-            onClick={clickAdvancedOrdersTabAnalytics}
-            className={({ isActive }) => (isActive ? 'active' : undefined)}
-            to={parameterizeTradeRoute(tradeContext, Routes.ADVANCED_ORDERS)}
-          >
-            <Trans>Advanced</Trans>
-            <styledEl.Badge>
-              <Trans>Beta</Trans>
-            </styledEl.Badge>
-          </styledEl.Link>
-        </styledEl.MenuItem>
-      </FeatureGuard>
+        return item.featureGuard ? <FeatureGuard featureFlag={item.featureGuard}>{menuItem}</FeatureGuard> : menuItem
+      })}
     </styledEl.Wrapper>
   )
 }
+
+const MenuItem = ({
+  routePath,
+  item,
+  isActive,
+  onClick,
+}: {
+  routePath: string
+  item: MenuItemConfig
+  isActive: boolean
+  onClick: () => void
+}) => (
+  <styledEl.MenuItem onClick={onClick} isActive={isActive}>
+    <styledEl.Link to={routePath}>
+      <Trans>{item.label}</Trans>
+      {item.featureGuard && (
+        <styledEl.Badge>
+          <Trans>Beta</Trans>
+        </styledEl.Badge>
+      )}
+    </styledEl.Link>
+  </styledEl.MenuItem>
+)

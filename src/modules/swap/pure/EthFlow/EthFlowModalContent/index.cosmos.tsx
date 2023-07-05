@@ -19,7 +19,7 @@ import {
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 
 const ALL_STATES = Object.values(EthFlowState)
 
@@ -110,11 +110,11 @@ function Custom() {
   return (
     <>
       {opened ? (
-        <GpModal isOpen onDismiss={onDismiss}>
+        <CowModal isOpen onDismiss={onDismiss}>
           <Wrapper>
             <EthFlowModalContent {...modalProps} />
           </Wrapper>
-        </GpModal>
+        </CowModal>
       ) : (
         <button onClick={openModal}>Open ETH Flow</button>
       )}

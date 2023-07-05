@@ -1,5 +1,4 @@
-import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Token } from '@uniswap/sdk-core'
@@ -103,6 +102,7 @@ export type OrderInfoApi = Pick<
   | 'invalidated'
   | 'ethflowData'
   | 'onchainOrderData'
+  | 'class'
 >
 
 /**

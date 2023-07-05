@@ -5,15 +5,15 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { useSurplusAmount } from 'api/gnosisProtocol/hooks'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { useTotalSurplus } from 'common/state/totalSurplusState'
 
 import { InfoCard } from './styled'
 
 export function SurplusCard() {
-  const { surplusAmount, isLoading } = useSurplusAmount()
+  const { surplusAmount, isLoading } = useTotalSurplus()
 
   const surplusUsdAmount = useHigherUSDValue(surplusAmount)
 

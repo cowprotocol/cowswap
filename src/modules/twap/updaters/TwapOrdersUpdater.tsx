@@ -8,11 +8,9 @@ import { isTruthy } from 'legacy/utils/misc'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
-import { useFetchTwapPartOrders } from '../hooks/useFetchTwapPartOrders'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { twapOrdersListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { updateTwapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderInfo } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
@@ -29,7 +27,6 @@ export function TwapOrdersUpdater(props: {
   const twapDiscreteOrders = useTwapDiscreteOrders()
   const twapOrdersList = useAtomValue(twapOrdersListAtom)
   const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
-  const updateTwapPartOrders = useUpdateAtom(updateTwapPartOrdersAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
@@ -38,12 +35,13 @@ export function TwapOrdersUpdater(props: {
         try {
           const id = getConditionalOrderId(data.conditionalOrderParams)
           const order = parseTwapOrderStruct(data.conditionalOrderParams.staticInput)
+          const { executionDate } = data.safeTxParams
 
           return {
             id,
             orderStruct: order,
             safeData: data,
-            isExpired: isTwapOrderExpired(order),
+            isExpired: isTwapOrderExpired(order, executionDate ? new Date(executionDate) : null),
           }
         } catch (e) {
           return null
@@ -65,7 +63,6 @@ export function TwapOrdersUpdater(props: {
     })
   }, [allOrdersInfo, twapOrdersList])
 
-  const partOrders = useFetchTwapPartOrders(safeAddress, chainId, composableCowContract, pendingOrCancelledOrders)
   // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingOrCancelledOrders)
 
@@ -73,15 +70,8 @@ export function TwapOrdersUpdater(props: {
     if (!ordersAuthResult || !twapDiscreteOrders) return
 
     const items = buildTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
-
     updateTwapOrders(items)
   }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, updateTwapOrders])
-
-  useEffect(() => {
-    if (!partOrders) return
-
-    updateTwapPartOrders(partOrders)
-  }, [partOrders, updateTwapPartOrders])
 
   return null
 }

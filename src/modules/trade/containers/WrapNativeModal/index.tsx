@@ -5,7 +5,7 @@ import { useWalletDisplayedAddress } from 'modules/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
@@ -49,7 +49,7 @@ export function WrapNativeModal() {
   const operationLabel = isNativeIn ? 'wrapping' : 'unwrapping'
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={handleDismiss}>
+    <CowModal isOpen={isOpen} onDismiss={handleDismiss}>
       <ConfirmationPendingContent
         onDismiss={handleDismiss}
         statusIcon={statusIcon}
@@ -59,6 +59,6 @@ export function WrapNativeModal() {
         walletAddress={walletAddress}
         operationLabel={operationLabel}
       />
-    </GpModal>
+    </CowModal>
   )
 }
