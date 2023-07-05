@@ -2,6 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
+import { renderTooltip } from 'legacy/components/Tooltip'
+
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -15,22 +17,25 @@ import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
+import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
-import { useFallbackHandlerVerification } from '../../hooks/useFallbackHandlerVerification'
+import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
+import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 import { TwapFormWarnings } from '../TwapFormWarnings'
+
+export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
@@ -41,7 +46,7 @@ export function TwapFormWidget() {
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
-  const fallbackHandlerVerification = useFallbackHandlerVerification()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
@@ -61,7 +66,6 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
-  const fallbackHandlerIsNotSet = fallbackHandlerVerification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
   const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
@@ -79,14 +83,15 @@ export function TwapFormWidget() {
     <>
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
+      <PartOrdersUpdater />
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
-      <TwapConfirmModal fallbackHandlerIsNotSet={fallbackHandlerIsNotSet} />
+      <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label="Current market price" rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
         </styledEl.Row>
       )}
 
@@ -98,8 +103,8 @@ export function TwapFormWidget() {
           }
           min={defaultNumOfParts}
           max={100}
-          label="No. of parts"
-          hint="Todo: No of parts hint"
+          label={LABELS_TOOLTIPS.numberOfParts.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
         <TradeNumberInput
           value={slippageValue}
@@ -107,25 +112,30 @@ export function TwapFormWidget() {
           decimalsPlaces={2}
           placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
-          label="Slippage"
-          hint="Todo: Slippage hint"
+          label={LABELS_TOOLTIPS.slippage.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
           suffix="%"
         />
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} />
+      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
-      <styledEl.DeadlineRow>
+      <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
           items={orderDeadlines}
           setDeadline={(value) => updateSettingsState(value)}
+          label={LABELS_TOOLTIPS.totalDuration.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {
+            parts: numberOfPartsValue,
+            partDuration: timeInterval,
+          })}
         />
 
-        <TradeTextBox label="Part every" hint="TODO: part every tooltip">
+        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} tooltip={LABELS_TOOLTIPS.partDuration.tooltip}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
-      </styledEl.DeadlineRow>
+      </styledEl.Row>
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />

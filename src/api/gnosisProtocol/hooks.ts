@@ -115,12 +115,6 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
   }, [twapParticleOrders, prodOrders])
 }
 
-export function useHasOrders(account?: string | null): boolean | undefined {
-  const gpOrders = useGpOrders(account)
-
-  return (gpOrders?.length || 0) > 0
-}
-
 export type UseSurplusAmountResult = {
   surplusAmount: Nullish<CurrencyAmount<Currency>>
   isLoading: boolean

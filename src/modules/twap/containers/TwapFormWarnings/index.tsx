@@ -12,10 +12,9 @@ import {
   UnsupportedWalletWarning,
 } from './warnings'
 
-import { useFallbackHandlerVerification } from '../../hooks/useFallbackHandlerVerification'
+import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface TwapFormWarningsProps {
@@ -27,7 +26,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
   const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
   const { chainId } = useWalletInfo()
-  const fallbackHandlerVerification = useFallbackHandlerVerification()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isSafeViaWc = useIsSafeViaWc()
   const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
 
@@ -68,7 +67,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
           return <SmallPartTimeWarning />
         }
 
-        if (canTrade && fallbackHandlerVerification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {
+        if (canTrade && isFallbackHandlerRequired) {
           return (
             <FallbackHandlerWarning
               isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}

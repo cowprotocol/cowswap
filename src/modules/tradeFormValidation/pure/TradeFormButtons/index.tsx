@@ -35,7 +35,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps) {
   const buttonFactory = tradeButtonsMap[validation]
 
   if (typeof buttonFactory === 'function') {
-    return buttonFactory(context)
+    return buttonFactory(context, isDisabled)
   }
 
   return (

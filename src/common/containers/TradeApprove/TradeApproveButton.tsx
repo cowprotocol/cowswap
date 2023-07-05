@@ -12,10 +12,11 @@ import { useTradeApproveState } from './useTradeApproveState'
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
   children?: React.ReactNode
+  isDisabled?: boolean
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps) {
-  const { amountToApprove, children } = props
+  const { amountToApprove, children, isDisabled } = props
 
   const currency = amountToApprove.currency
 
@@ -33,7 +34,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   return (
     <>
-      <ApproveButton currency={currency} onClick={handleApprove} state={approvalState} />
+      <ApproveButton isDisabled={isDisabled} currency={currency} onClick={handleApprove} state={approvalState} />
 
       {children}
     </>

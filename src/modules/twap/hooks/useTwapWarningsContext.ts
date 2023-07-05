@@ -16,7 +16,7 @@ export function useTwapWarningsContext(): TwapWarningsContext {
   return useMemo(() => {
     // TODO: bind to settings
     const expertMode = false
-    const canTrade = !primaryFormValidation
+    const canTrade = !primaryFormValidation || primaryFormValidation >= TradeFormValidation.ExpertApproveAndSwap
     const showPriceImpactWarning = canTrade && !expertMode && !!priceImpact.error
     const walletIsNotConnected = primaryFormValidation === TradeFormValidation.WalletNotConnected
 
