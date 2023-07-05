@@ -12,7 +12,7 @@ import { PendingView } from 'modules/wallet/api/pure/PendingView'
 import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
 
 import { Routes } from 'common/constants/routes'
-import { CloseIcon, ContentWrapper, GpModal, HeaderRow, HoverText } from 'common/pure/Modal'
+import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'common/pure/Modal'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
@@ -50,7 +50,7 @@ export function WalletModal(props: WalletModalProps) {
   // const showZengoBanner = !account && !window.ethereum && isOptions
 
   return (
-    <GpModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
+    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
       <Wrapper>
         <UpperSection>
           <CloseIcon onClick={toggleModal}>
@@ -87,7 +87,7 @@ export function WalletModal(props: WalletModalProps) {
           </ContentWrapper>
         </UpperSection>
       </Wrapper>
-    </GpModal>
+    </CowModal>
   )
 }
 

@@ -20,12 +20,6 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'
 
-function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = orderKind === OrderKind.SELL ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
-  const surplus = `${surplusAmount} ${surplusToken}`
-  return encodeURIComponent(`Hey, I just ${actionWord} ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`)
-}
-
 export const Wrapper = styled.div`
   --borderRadius: 16px;
   display: flex;
@@ -200,5 +194,13 @@ export function SurplusModal(props: SurplusModalProps) {
         <ExternalLink href={'https://cow.fi'}>Learn how ↗</ExternalLink>
       </p>
     </Wrapper>
+  )
+}
+
+function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
+  const actionWord = orderKind === OrderKind.SELL ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
+  const surplus = `${surplusAmount} ${surplusToken}`
+  return encodeURIComponent(
+    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
   )
 }

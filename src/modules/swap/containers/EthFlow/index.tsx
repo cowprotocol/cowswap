@@ -17,7 +17,7 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
@@ -102,8 +102,8 @@ function EthFlow({
 
 export function EthFlowModal(props: EthFlowProps) {
   return (
-    <GpModal isOpen onDismiss={props.onDismiss}>
+    <CowModal isOpen onDismiss={props.onDismiss}>
       <EthFlow {...props} />
-    </GpModal>
+    </CowModal>
   )
 }
