@@ -97,7 +97,11 @@ export function TwapFormWidget() {
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo
+            label={LABELS_TOOLTIPS.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+          />
         </styledEl.Row>
       )}
       <TradeNumberInput
