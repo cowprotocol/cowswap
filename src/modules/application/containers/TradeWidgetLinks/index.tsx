@@ -1,5 +1,7 @@
 import { Trans } from '@lingui/macro'
 
+import { clickAdvancedOrdersTabAnalytics } from 'legacy/components/analytics/events/twapEvents'
+
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -34,6 +36,7 @@ export function TradeWidgetLinks() {
       <FeatureGuard featureFlag="advancedOrdersEnabled">
         <styledEl.MenuItem>
           <styledEl.Link
+            onClick={clickAdvancedOrdersTabAnalytics}
             className={({ isActive }) => (isActive ? 'active' : undefined)}
             to={parameterizeTradeRoute(tradeContext, Routes.ADVANCED_ORDERS)}
           >

@@ -27,3 +27,10 @@ export function twapConversionAnalytics(action: TwapConversionType, fallbackHand
     action: `TWAP with conversion: ${action}`,
   })
 }
+
+export function clickAdvancedOrdersTabAnalytics() {
+  sendEvent({
+    category: Category.TWAP,
+    action: 'Click Advanced Orders Tab',
+  })
+}
