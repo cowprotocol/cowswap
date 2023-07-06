@@ -16,6 +16,7 @@ import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
+import { TwapFormWarnings } from '../TwapFormWarnings'
 
 interface TwapConfirmModalProps {
   fallbackHandlerIsNotSet: boolean
@@ -96,6 +97,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             totalDuration={totalDuration}
           />
           {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}
+          <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
         </>
       </TradeConfirmation>
     </TradeConfirmModal>
