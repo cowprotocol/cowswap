@@ -9,10 +9,11 @@ export function twapWalletCompatibilityAnalytics(action: TwapWalletCompatibility
   })
 }
 
-export function modifySafeHandlerAnalytics(action: boolean) {
+type ModifySafeHandlerAction = 'enabled' | 'disabled'
+export function modifySafeHandlerAnalytics(action: ModifySafeHandlerAction) {
   sendEvent({
     category: Category.TWAP,
-    action: `Modify safe handler checkbox ${action ? 'enabled' : 'disabled'}`,
+    action: `Modify safe handler checkbox ${action}`,
   })
 }
 

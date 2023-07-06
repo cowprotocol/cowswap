@@ -34,7 +34,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
-      modifySafeHandlerAnalytics(isFallbackHandlerSetupAccepted)
+      modifySafeHandlerAnalytics(isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled')
       updateTwapOrdersSettings({ isFallbackHandlerSetupAccepted })
     },
     [updateTwapOrdersSettings]
