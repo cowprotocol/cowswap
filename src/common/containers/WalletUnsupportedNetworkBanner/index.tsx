@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
   display: flex;
   background: ${({ theme }) => theme.alert};
-  z-index: 1;
+  z-index: 3;
   width: 360px;
   align-items: center;
   gap: 15px;

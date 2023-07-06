@@ -25,6 +25,8 @@ import { isTruthy } from 'legacy/utils/misc'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import {
   Menu,
   MenuButton,
@@ -82,6 +84,8 @@ export default function TokensOverview() {
   const prevQuery = usePrevious(debouncedQuery)
 
   const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
   const handleRestoreTokens = useCallback(() => {
     removeAllFavouriteTokens()
     setPage(1)
@@ -153,60 +157,62 @@ export default function TokensOverview() {
 
   return (
     <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
-      <AccountHeading>
-        <LeftSection>
-          <MenuWrapper ref={node as any}>
-            <MenuButton onClick={toggleMenu}>
-              <Trans>{PageView[selectedView].label}</Trans>
-              <StyledChevronDown size={14} />
-            </MenuButton>
+      {!isProviderNetworkUnsupported && (
+        <AccountHeading>
+          <LeftSection>
+            <MenuWrapper ref={node as any}>
+              <MenuButton onClick={toggleMenu}>
+                <Trans>{PageView[selectedView].label}</Trans>
+                <StyledChevronDown size={14} />
+              </MenuButton>
 
-            {isMenuOpen ? (
-              <Menu>
-                {Object.entries(PageView).map(([key, value]) => (
-                  <MenuItem
-                    key={key}
-                    active={selectedView === key}
-                    onClick={() => handleMenuClick(key as PageViewKeys)}
-                  >
-                    <span>{value.label}</span>
-                    {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                  </MenuItem>
-                ))}
-              </Menu>
-            ) : null}
-          </MenuWrapper>
-        </LeftSection>
+              {isMenuOpen ? (
+                <Menu>
+                  {Object.entries(PageView).map(([key, value]) => (
+                    <MenuItem
+                      key={key}
+                      active={selectedView === key}
+                      onClick={() => handleMenuClick(key as PageViewKeys)}
+                    >
+                      <span>{value.label}</span>
+                      {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              ) : null}
+            </MenuWrapper>
+          </LeftSection>
 
-        {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-          <RemoveTokens onClick={handleRestoreTokens}>
-            <span>
-              (<Trans>Reset favourites</Trans>)
-            </span>
-          </RemoveTokens>
-        )}
-
-        <SearchInputFormatter>
-          <TokenSearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t`Search by name, symbol or address`}
-            autoComplete="off"
-            value={query}
-            onChange={handleSearch}
-          />
-
-          {!!query.length && (
-            <ClearSearchInput>
-              <CloseIcon size={24} onClick={handleSearchClear} />
-            </ClearSearchInput>
+          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+            <RemoveTokens onClick={handleRestoreTokens}>
+              <span>
+                (<Trans>Reset favourites</Trans>)
+              </span>
+            </RemoveTokens>
           )}
-        </SearchInputFormatter>
-      </AccountHeading>
+
+          <SearchInputFormatter>
+            <TokenSearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t`Search by name, symbol or address`}
+              autoComplete="off"
+              value={query}
+              onChange={handleSearch}
+            />
+
+            {!!query.length && (
+              <ClearSearchInput>
+                <CloseIcon size={24} onClick={handleSearchClear} />
+              </ClearSearchInput>
+            )}
+          </SearchInputFormatter>
+        </AccountHeading>
+      )}
       <Overview>
         <PageTitle title="Tokens Overview" />
 
-        {renderTableContent()}
+        {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
       </Overview>
     </Trace>
   )
