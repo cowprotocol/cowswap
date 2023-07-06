@@ -7,7 +7,6 @@ import {
   twapWalletCompatibilityAnalytics,
 } from 'legacy/components/analytics/events/twapEvents'
 import { renderTooltip } from 'legacy/components/Tooltip'
-import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
@@ -26,7 +25,11 @@ import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
-import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import {
+  useFallbackHandlerVerification,
+  useIsFallbackHandlerCompatible,
+  useIsFallbackHandlerRequired,
+} from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -46,7 +49,6 @@ export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
-  const prevAccount = usePrevious(account)
 
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
@@ -55,6 +57,8 @@ export function TwapFormWidget() {
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+  const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
+  const verification = useFallbackHandlerVerification()
 
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
@@ -89,16 +93,16 @@ export function TwapFormWidget() {
   }, [])
 
   useEffect(() => {
-    if (account && account !== prevAccount) {
+    if (account && verification) {
       if (localFormValidation === TwapFormState.NOT_SAFE) {
         twapWalletCompatibilityAnalytics('non-compatible')
       } else if (isFallbackHandlerRequired) {
         twapWalletCompatibilityAnalytics('safe-that-could-be-converted')
-      } else {
+      } else if (isFallbackHandlerCompatible) {
         twapWalletCompatibilityAnalytics('compatible')
       }
     }
-  }, [account, isFallbackHandlerRequired, localFormValidation, prevAccount])
+  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
 
   return (
     <>
