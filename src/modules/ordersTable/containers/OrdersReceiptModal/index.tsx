@@ -2,8 +2,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
 import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
@@ -20,9 +18,8 @@ export type OrdersReceiptModalProps = {
 export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   // TODO: can we get selected order from URL by id?
   const order = useSelectedOrder()
-  const { chainId: _chainId } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
-  const chainId = supportedChainId(_chainId)
   const twapOrderById = useTwapOrderById(order?.id)
   const twapOrderByChildId = useTwapOrderByChildId(order?.id)
   const twapOrder = twapOrderById || twapOrderByChildId

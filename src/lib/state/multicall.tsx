@@ -1,10 +1,9 @@
 import { createMulticall /*, ListenerOptions */ } from '@uniswap/redux-multicall'
+import { useWeb3React } from '@web3-react/core'
 
 import { combineReducers, createStore } from 'redux'
 
 import { useInterfaceMulticall } from 'legacy/hooks/useContract'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
@@ -15,7 +14,7 @@ export const store = createStore(reducer)
 export default multicall
 
 export function MulticallUpdater() {
-  const { chainId } = useWalletInfo()
+  const { chainId } = useWeb3React()
   const latestBlockNumber = useBlockNumber()
   const contract = useInterfaceMulticall()
 

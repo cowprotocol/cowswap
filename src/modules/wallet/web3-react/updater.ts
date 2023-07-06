@@ -10,7 +10,9 @@ import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
 
 import { getSafeInfo } from 'api/gnosisSafe'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 
@@ -19,24 +21,20 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {
-  if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
-    // Unsupported wallet
-    return false
-  }
-
-  return true
+  return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
 function _useWalletInfo(): WalletInfo {
   const { account, chainId, isActive: active } = useWeb3React()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   return useMemo(
     () => ({
-      chainId,
+      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account,
     }),
-    [chainId, active, account]
+    [chainId, active, account, isChainIdUnsupported]
   )
 }
 

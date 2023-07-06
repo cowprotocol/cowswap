@@ -8,7 +8,6 @@ import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { sdk } from 'legacy/utils/blocknative'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -63,8 +62,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 
 export default function CancelReplaceTxUpdater(): null {
   const { provider } = useWeb3React()
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)

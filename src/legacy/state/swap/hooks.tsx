@@ -26,6 +26,7 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatSymbol } from 'utils/format'
@@ -73,7 +74,15 @@ export function validatedRecipient(recipient: any): string | null {
 }
 
 export function useSwapState(): AppState['swap'] {
-  return useAppSelector((state) => state.swap)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
+  const state = useAppSelector((state) => state.swap)
+
+  return useMemo(() => {
+    return isProviderNetworkUnsupported
+      ? { ...state, [Field.INPUT]: { currencyId: undefined }, [Field.OUTPUT]: { currencyId: undefined } }
+      : state
+  }, [isProviderNetworkUnsupported, state])
 }
 
 export type Currencies = { [field in Field]?: Currency | null }

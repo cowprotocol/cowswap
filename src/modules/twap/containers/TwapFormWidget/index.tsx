@@ -2,6 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
+import {
+  openAdvancedOrdersTabAnalytics,
+  twapWalletCompatibilityAnalytics,
+} from 'legacy/components/analytics/events/twapEvents'
 import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
@@ -12,6 +16,7 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
@@ -21,7 +26,11 @@ import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
-import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import {
+  useFallbackHandlerVerification,
+  useIsFallbackHandlerCompatible,
+  useIsFallbackHandlerRequired,
+} from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -45,6 +54,7 @@ export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
+
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
 
@@ -52,6 +62,8 @@ export function TwapFormWidget() {
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+  const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
+  const verification = useFallbackHandlerVerification()
 
   const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
@@ -82,8 +94,21 @@ export function TwapFormWidget() {
   // Reset warnings flags once on start
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
+    openAdvancedOrdersTabAnalytics()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (account && verification) {
+      if (localFormValidation === TwapFormState.NOT_SAFE) {
+        twapWalletCompatibilityAnalytics('non-compatible')
+      } else if (isFallbackHandlerRequired) {
+        twapWalletCompatibilityAnalytics('safe-that-could-be-converted')
+      } else if (isFallbackHandlerCompatible) {
+        twapWalletCompatibilityAnalytics('compatible')
+      }
+    }
+  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
 
   return (
     <>
@@ -144,7 +169,11 @@ export function TwapFormWidget() {
       </styledEl.Row>
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />
+      <ActionButtons
+        fallbackHandlerIsNotSet={isFallbackHandlerRequired}
+        localFormValidation={localFormValidation}
+        primaryFormValidation={primaryFormValidation}
+      />
     </>
   )
 }

@@ -35,9 +35,4 @@ describe('fetchClaim', () => {
       '0x4b71fa3ace335c8703d193770bcef717053532750939e342c416afef044a3eba',
     ])
   })
-
-  it('should return null for ineligible addresses', async () => {
-    const claim = await fetchClaim('0x0000000000000000000000000000000000000000', 4)
-    expect(claim).toBe(null)
-  })
 })

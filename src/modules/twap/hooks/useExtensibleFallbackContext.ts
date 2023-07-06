@@ -4,7 +4,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -20,7 +19,7 @@ export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null
   const settlementContract = useGP2SettlementContract()
   const { provider } = useWeb3React()
 
-  if (!account || !settlementContract || !provider || !isSupportedChain(chainId)) return null
+  if (!account || !settlementContract || !provider || !chainId) return null
 
   return { settlementContract, provider, chainId, safeAddress: account }
 }

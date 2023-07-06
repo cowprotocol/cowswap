@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
@@ -12,13 +14,21 @@ import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null
   primaryFormValidation: TradeFormValidation | null
+  fallbackHandlerIsNotSet: boolean
 }
 
-export function ActionButtons({ localFormValidation, primaryFormValidation }: ActionButtonsProps) {
+export function ActionButtons({
+  localFormValidation,
+  primaryFormValidation,
+  fallbackHandlerIsNotSet,
+}: ActionButtonsProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const { walletIsNotConnected } = useTwapWarningsContext()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  const confirmTrade = () => {
+    tradeConfirmActions.onOpen()
+    twapConversionAnalytics('initiated', fallbackHandlerIsNotSet)
+  }
 
   const areWarningsAccepted = useAreWarningsAccepted()
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +13,6 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { onlyResolvesLast } from 'legacy/utils/async'
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, QuoteResult } from 'legacy/utils/price'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
@@ -53,7 +51,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     setLoading,
     validTo,
   } = params
-  const { chainId: preChain } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { account } = useWalletInfo()
   const isEthFlow = useIsEoaEthFlow()
   const strategy = useGetGpPriceStrategy()
@@ -61,7 +59,6 @@ export function useCalculateQuote(params: GetQuoteParams) {
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
 
   useEffect(() => {
-    const chainId = supportedChainId(preChain)
     // bail out early - amount here is undefined if usd price impact is valid
     if (!sellToken || !buyToken || !amount || !validTo) return
 
@@ -77,7 +74,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
       toDecimals,
       // TODO: check
       userAddress: account || ZERO_ADDRESS,
-      chainId: chainId || SupportedChainId.MAINNET,
+      chainId,
       validTo,
       isEthFlow,
     }
@@ -121,7 +118,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
   }, [
     amount,
     account,
-    preChain,
+    chainId,
     buyToken,
     sellToken,
     toDecimals,

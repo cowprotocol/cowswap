@@ -8,7 +8,6 @@ import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
@@ -28,8 +27,7 @@ import { useWalletInfo } from 'modules/wallet'
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId, account } = useWalletInfo()
 
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()

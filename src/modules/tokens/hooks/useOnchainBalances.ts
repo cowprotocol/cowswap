@@ -97,7 +97,7 @@ function useOnchainErc20Amounts(
 
   // Return amounts
   return useMemo(() => {
-    if (!account || validatedTokens.length === 0) {
+    if (!account || validatedTokens.length === 0 || balancesCallState.length === 0) {
       return { isLoading, amounts: {} }
     }
 

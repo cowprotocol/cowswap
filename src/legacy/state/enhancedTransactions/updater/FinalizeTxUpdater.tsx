@@ -19,7 +19,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 // import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { cancelOrdersBatch, invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useWalletInfo } from 'modules/wallet'
@@ -258,8 +257,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 
 export default function Updater(): null {
   const { provider } = useWeb3React()
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId, account } = useWalletInfo()
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 

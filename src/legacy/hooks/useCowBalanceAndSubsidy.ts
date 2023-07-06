@@ -7,7 +7,6 @@ import { BigNumber } from 'bignumber.js'
 import { COW_SUBSIDY_DATA } from 'legacy/components/CowSubsidyModal/constants'
 import { getDiscountFromBalance } from 'legacy/components/CowSubsidyModal/utils'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
-import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -26,7 +25,7 @@ export default function useCowBalanceAndSubsidy(): BalanceAndSubsidy {
   const { chainId } = useWalletInfo()
 
   return useMemo(() => {
-    if (!isSupportedChain(chainId) || !balance || balance?.equalTo('0')) return ZERO_BALANCE_SUBSIDY
+    if (!chainId || !balance || balance?.equalTo('0')) return ZERO_BALANCE_SUBSIDY
 
     const balanceBn = new BigNumber(balance.quotient.toString())
 

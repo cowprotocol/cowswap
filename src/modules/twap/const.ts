@@ -16,13 +16,10 @@ export const DEFAULT_NUM_OF_PARTS = 2
 export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
 
 export const ORDER_DEADLINES: OrderDeadline[] = [
-  { label: '5 Minutes', value: ms`5m` },
-  { label: '30 Minutes', value: ms`30m` },
   DEFAULT_ORDER_DEADLINE,
-  { label: '1 Day', value: ms`1d` },
-  { label: '3 Days', value: ms`3d` },
-  { label: '7 Days', value: ms`7d` },
-  { label: '1 Month', value: ms`30d` },
+  { label: '6 Hours', value: ms`6 hour` },
+  { label: '12 Hours', value: ms`12 hour` },
+  { label: '24 Hours', value: ms`1d` },
 ]
 
 export const TWAP_ORDER_STRUCT =

@@ -14,7 +14,6 @@ import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
-import Blocklist from 'legacy/components/Blocklist'
 import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
 import store from 'legacy/state'
@@ -28,6 +27,8 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
+
+import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -47,22 +48,21 @@ root.render(
         <HashRouter>
           <LanguageProvider>
             <Web3Provider>
-              <Blocklist>
+              <ThemeProvider>
+                <ThemedGlobalStyle />
+                <WalletUnsupportedNetworkBanner />
                 <BlockNumberProvider>
                   <WithLDProvider>
                     <Updaters />
-                    <ThemeProvider>
-                      <ThemedGlobalStyle />
-                      <FeatureGuard featureFlag="cowFortuneEnabled">
-                        <FortuneWidget />
-                      </FeatureGuard>
-                      <Popups />
-                      <AppziButton />
-                      <App />
-                    </ThemeProvider>
+                    <FeatureGuard featureFlag="cowFortuneEnabled">
+                      <FortuneWidget />
+                    </FeatureGuard>
+                    <Popups />
+                    <AppziButton />
+                    <App />
                   </WithLDProvider>
                 </BlockNumberProvider>
-              </Blocklist>
+              </ThemeProvider>
             </Web3Provider>
           </LanguageProvider>
         </HashRouter>
