@@ -29,6 +29,7 @@ import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWalletInfo } from 'modules/wallet'
 import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
@@ -54,6 +55,7 @@ export default function Profile() {
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
   const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
@@ -213,7 +215,7 @@ export default function Profile() {
       <TransactionConfirmationModal />
       <ErrorModal />
 
-      {isCardsLoading ? (
+      {isCardsLoading && !isProviderNetworkUnsupported ? (
         <Card>
           <CardsLoader>
             <CardsSpinner size="42px" />
@@ -271,7 +273,9 @@ export default function Profile() {
               <span>
                 <i>Available COW balance</i>
                 <b>
-                  <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                  {!isProviderNetworkUnsupported && (
+                    <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                  )}
                 </b>
               </span>
             </BalanceDisplay>
@@ -283,7 +287,7 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+              {isMetaMask && !isProviderNetworkUnsupported && <AddToMetamask shortLabel currency={currencyCOW} />}
 
               {!isMetaMask && (
                 <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
