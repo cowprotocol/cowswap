@@ -140,7 +140,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   hasSeparatorLine={!compactView}
                   border={!compactView}
                   onSwitchTokens={throttledOnSwitchTokens}
-                  withRecipient={showRecipient}
+                  withRecipient={!isWrapOrUnwrap && showRecipient}
                   isLoading={isTradePriceUpdating}
                 />
               </styledEl.CurrencySeparatorBox>
@@ -165,7 +165,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   topLabel={outputCurrencyInfo.label}
                 />
               </div>
-              {showRecipient && (
+              {!isWrapOrUnwrap && showRecipient && (
                 <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
