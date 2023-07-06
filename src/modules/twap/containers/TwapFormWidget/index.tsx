@@ -27,7 +27,7 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapOrderAtom, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
@@ -43,7 +43,7 @@ export function TwapFormWidget() {
   const isSafeApp = useIsSafeApp()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
-  const twapOrder = useAtomValue(twapOrderAtom)
+  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
@@ -62,7 +62,7 @@ export function TwapFormWidget() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
-  const limitPrice = usePrice(inputCurrencyAmount, twapOrder?.buyAmount)
+  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
 
   const deadlineState = {
     deadline,
