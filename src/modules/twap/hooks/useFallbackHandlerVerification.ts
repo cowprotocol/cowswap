@@ -16,5 +16,5 @@ export function useIsFallbackHandlerRequired(): boolean {
 export function useIsFallbackHandlerCompatible(): boolean {
   const verification = useFallbackHandlerVerification()
 
-  return verification !== null && verification !== ExtensibleFallbackVerification.HAS_EXTENSIBLE_FALLBACK
+  return verification !== null && verification === ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
 }
