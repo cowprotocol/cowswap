@@ -228,7 +228,7 @@ export function getEstimatedExecutionPrice(
   order: Order,
   fillPrice: Price<Currency, Currency>,
   fee: string
-): Price<Currency, Currency> {
+): Price<Currency, Currency> | null {
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
   // Always use original amounts for building the limit price, as this will never change
@@ -238,6 +238,11 @@ export function getEstimatedExecutionPrice(
 
   if (order.class === OrderClass.MARKET) {
     return limitPrice
+  }
+
+  // Parent TWAP order, ignore
+  if (order?.composableCowInfo?.id) {
+    return null
   }
 
   // Check what's left to sell, discounting the surplus, if any
