@@ -21,11 +21,18 @@ type Props = {
   minReceiveAmount: Nullish<CurrencyAmount<Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
+  additionalProps?: AdditionalProps
+}
+
+type AdditionalProps = {
+  priceLabel?: string | undefined
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
-  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage } = props
+  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage, additionalProps } = props
   const { inputCurrencyAmount } = rateInfoParams
+
+  const priceLabel = additionalProps?.priceLabel || 'Price'
 
   const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
 
@@ -36,7 +43,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     <styledEl.Wrapper>
       {/* Price */}
       <styledEl.StyledRateInfo
-        label="Price"
+        label={priceLabel}
         stylized={true}
         rateInfoParams={rateInfoParams}
         isInvertedState={isInvertedState}
@@ -53,7 +60,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
         tooltip="TODO: Min received tooltip"
-        label="Min received (incl. fee)"
+        label="Min received (incl. fee/slippage)"
       />
     </styledEl.Wrapper>
   )
