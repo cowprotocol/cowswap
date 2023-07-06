@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
-import React from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
 import { CowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
@@ -19,11 +18,12 @@ export interface TradeConfirmModalProps {
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { children } = props
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
 
-  if (!chainId) return null
+  if (!account) return null
 
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss}>
@@ -38,7 +38,15 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
         // TODO: use <TransactionSubmittedContent/> for Swap
         if (transactionHash) {
-          return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
+          return (
+            <OrderSubmittedContent
+              chainId={chainId}
+              account={account}
+              isSafeWallet={isSafeWallet}
+              onDismiss={onDismiss}
+              hash={transactionHash}
+            />
+          )
         }
 
         return children

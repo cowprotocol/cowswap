@@ -32,8 +32,6 @@ export interface SwapButtonsContext {
   wrappedToken: Token
   handleSwap: HandleSwapCallback
   inputAmount: CurrencyAmount<Currency> | undefined
-  wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
-  wrapInputError: string | undefined
   onWrapOrUnwrap: WrapUnwrapCallback | null
   onEthFlow: () => void
   openSwapConfirm: () => void
@@ -55,21 +53,6 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
         <Trans>Wallet Unsupported</Trans>
       </Text>
     </ButtonError>
-  ),
-  [SwapButtonState.WrapError]: (props: SwapButtonsContext) => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      {props.wrapInputError}
-    </ButtonPrimary>
-  ),
-  [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
-      <Trans>Wrap</Trans>
-    </ButtonPrimary>
-  ),
-  [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
-      <Trans>Unwrap</Trans>
-    </ButtonPrimary>
   ),
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>

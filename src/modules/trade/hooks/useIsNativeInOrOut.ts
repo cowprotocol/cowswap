@@ -1,20 +1,10 @@
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-
 import { useWalletInfo } from 'modules/wallet'
 
-import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
+import { getIsNativeToken } from 'utils/getIsNativeToken'
 
 import { useTradeState } from './useTradeState'
-
-function getIsNativeToken(chainId: SupportedChainId, tokenId: string): boolean {
-  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
-
-  return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
-}
 
 export function useIsNativeIn(): boolean {
   const { chainId } = useWalletInfo()

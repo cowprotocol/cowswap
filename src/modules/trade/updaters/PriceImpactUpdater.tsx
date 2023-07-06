@@ -1,7 +1,7 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
+import { usePriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useTradePriceImpactParams } from '../hooks/useTradePriceImpactParams'
 import { priceImpactAtom } from '../state/priceImpactAtom'
