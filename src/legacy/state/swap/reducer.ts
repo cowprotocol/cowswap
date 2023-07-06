@@ -16,6 +16,9 @@ import {
 } from 'legacy/state/swap/actions'
 import { queryParametersToSwapState } from 'legacy/state/swap/hooks'
 
+import { getIsNativeToken } from 'utils/getIsNativeToken'
+import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
+
 export interface SwapState {
   // Mod: added chainId
   chainId: number | null
@@ -143,10 +146,16 @@ export default createReducer<SwapState>(initialState, (builder) =>
 function getEthFlowOverridesOnSwitch(state: SwapState): Pick<SwapState, 'independentField' | 'typedValue'> {
   const chainId: ChainId = state.chainId || ChainId.MAINNET
 
-  const isNativeOut =
-    state[Field.OUTPUT].currencyId?.toUpperCase() === NATIVE_CURRENCY_BUY_TOKEN[chainId].symbol?.toUpperCase()
-  const isWrappedIn =
-    state[Field.INPUT].currencyId?.toUpperCase() === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
+  const inputCurrencyId = state[Field.INPUT].currencyId?.toUpperCase()
+  const outputCurrencyId = state[Field.OUTPUT].currencyId?.toUpperCase()
+
+  const isNativeOut = getIsNativeToken(chainId, outputCurrencyId || '')
+  const isWrapUnwrap = getIsWrapOrUnwrap(chainId, inputCurrencyId, outputCurrencyId)
+  const isWrappedIn = inputCurrencyId === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
+
+  if (isWrapUnwrap) {
+    return state
+  }
 
   const formerIndependentField = state.independentField
 

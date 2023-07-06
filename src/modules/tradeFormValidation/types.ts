@@ -5,7 +5,6 @@ import { TradeQuoteState } from 'modules/tradeQuote'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
-  WrapUnwrapAmountNotSet,
   WrapUnwrapFlow,
 
   // Quote errors

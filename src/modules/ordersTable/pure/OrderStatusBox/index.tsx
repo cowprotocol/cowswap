@@ -18,10 +18,10 @@ const Wrapper = styled.div<{
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
     status === OrderStatus.CANCELLED
       ? theme.danger
-      : cancelling
-      ? theme.text1
       : status === OrderStatus.FULFILLED || partiallyFilled
       ? theme.success
+      : cancelling
+      ? theme.text1
       : status === OrderStatus.PENDING // OPEN order
       ? theme.text3
       : status === OrderStatus.EXPIRED
@@ -66,15 +66,15 @@ function getOrderStatusTitle(order: ParsedOrder): string {
     return orderStatusTitleMap[order.status]
   }
 
-  // Cancelling is not a real order status
-  if (order.isCancelling) {
-    return 'Cancelling...'
-  }
-
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled) {
     return orderStatusTitleMap[OrderStatus.FULFILLED]
+  }
+
+  // Cancelling is not a real order status
+  if (order.isCancelling) {
+    return 'Cancelling...'
   }
 
   // Partially filled is also not a real status

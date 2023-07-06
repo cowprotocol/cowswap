@@ -10,6 +10,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { AppDataUpdater } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -24,7 +25,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -35,7 +36,11 @@ import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import {
+  twapOrderSlippageAtom,
+  twapOrdersSettingsAtom,
+  updateTwapOrdersSettingsAtom,
+} from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
@@ -60,6 +65,7 @@ export function TwapFormWidget() {
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
 
+  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
@@ -106,6 +112,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
       <PartOrdersUpdater />
@@ -124,10 +131,9 @@ export function TwapFormWidget() {
         <TradeNumberInput
           value={numberOfPartsValue}
           onUserInput={(value: number | null) =>
-            updateSettingsState({ numberOfPartsValue: value || defaultNumOfParts })
+            updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
           }
-          min={defaultNumOfParts}
-          max={100}
+          min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
@@ -148,7 +154,7 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
-          items={orderDeadlines}
+          items={ORDER_DEADLINES}
           setDeadline={(value) => updateSettingsState(value)}
           label={LABELS_TOOLTIPS.totalDuration.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {

@@ -1,4 +1,4 @@
-import { LatestAppDataDocVersion } from '@cowprotocol/app-data'
+import { LatestAppDataDocVersion, createOrderClassMetadata } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type AppDataInfo = {
@@ -26,3 +26,5 @@ export type UploadAppDataParams = AppDataKeyParams & {
 }
 export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>
 export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams
+
+export type AppDataOrderClass = Parameters<typeof createOrderClassMetadata>[0]['orderClass']

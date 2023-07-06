@@ -4,6 +4,8 @@ import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk
 
 import { isTruthy } from 'legacy/utils/misc'
 
+import { SafeTransactionParams } from 'common/types'
+
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.createWithContext method
@@ -31,20 +33,11 @@ export async function fetchTwapOrdersFromSafe(
 
       if (!conditionalOrderParams) return null
 
-      const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } =
-        result
+      const safeTxParams = getSafeTransactionParams(result)
 
       return {
         conditionalOrderParams,
-        safeTxParams: {
-          isExecuted,
-          submissionDate,
-          executionDate,
-          confirmationsRequired,
-          confirmations: confirmations?.length || 0,
-          safeTxHash,
-          nonce,
-        },
+        safeTxParams,
       }
     })
     .filter(isTruthy)
@@ -66,5 +59,19 @@ function parseConditionalOrderParams(
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
   } catch (e) {
     return null
+  }
+}
+
+function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
+  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
+
+  return {
+    isExecuted,
+    submissionDate,
+    executionDate,
+    confirmationsRequired,
+    confirmations: confirmations?.length || 0,
+    safeTxHash,
+    nonce,
   }
 }
