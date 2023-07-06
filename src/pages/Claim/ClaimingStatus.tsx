@@ -152,11 +152,11 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
           </p>
         </AttemptFooter>
       )}
-      {isSubmitted && chainId && lastClaimTx?.hash && <EnhancedTransactionLink tx={lastClaimTx} />}
+      {isSubmitted && chainId && lastClaimTx?.hash && <EnhancedTransactionLink chainId={chainId} tx={lastClaimTx} />}
 
       {isFailure && (
         <>
-          {chainId && lastClaimTx?.hash && <EnhancedTransactionLink tx={lastClaimTx} />}
+          {chainId && lastClaimTx?.hash && <EnhancedTransactionLink chainId={chainId} tx={lastClaimTx} />}
           <AttemptFooter>
             <p>The claim transaction failed. Please check the network parameters and try again.</p>
           </AttemptFooter>

@@ -11,14 +11,14 @@ export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export type OrderDeadline = { label: string; value: number }
 
-export const defaultNumOfParts = 1
+export const DEFAULT_NUM_OF_PARTS = 2
 
-export const defaultOrderDeadline: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
+export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
 
-export const orderDeadlines: OrderDeadline[] = [
+export const ORDER_DEADLINES: OrderDeadline[] = [
   { label: '5 Minutes', value: ms`5m` },
   { label: '30 Minutes', value: ms`30m` },
-  defaultOrderDeadline,
+  DEFAULT_ORDER_DEADLINE,
   { label: '1 Day', value: ms`1d` },
   { label: '3 Days', value: ms`3d` },
   { label: '7 Days', value: ms`7d` },

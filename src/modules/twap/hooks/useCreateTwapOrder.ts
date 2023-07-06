@@ -7,6 +7,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -35,10 +36,12 @@ export function useCreateTwapOrder() {
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
+  const appDataInfo = useAppData()
   const safeAppsSdk = useSafeAppsSdk()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
+  const uploadAppData = useUploadAppData()
   const tradeConfirmActions = useTradeConfirmActions()
 
   const { priceImpact } = useTradePriceImpact()
@@ -53,6 +56,7 @@ export function useCreateTwapOrder() {
         !twapOrderCreationContext ||
         !extensibleFallbackContext ||
         !safeAppsSdk ||
+        !appDataInfo ||
         !twapOrder
       )
         return
@@ -99,6 +103,7 @@ export function useCreateTwapOrder() {
           executionInfo: DEFAULT_TWAP_EXECUTION_INFO,
         })
 
+        uploadAppData({ chainId, orderId, appData: appDataInfo })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
       } catch (error) {
@@ -119,6 +124,8 @@ export function useCreateTwapOrder() {
       safeAppsSdk,
       confirmPriceImpactWithoutFee,
       priceImpact,
+      uploadAppData,
+      appDataInfo,
     ]
   )
 }

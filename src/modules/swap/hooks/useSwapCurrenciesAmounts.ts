@@ -1,25 +1,31 @@
+import { useMemo } from 'react'
+
 import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
-import { WrapType } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/swap/actions'
 import { useSwapState } from 'legacy/state/swap/hooks'
 import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 
-export function useSwapCurrenciesAmounts(wrapType: WrapType): ParsedAmounts {
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+
+export function useSwapCurrenciesAmounts(): ParsedAmounts {
   const { independentField } = useSwapState()
   const { v2Trade: trade, parsedAmount } = useDerivedSwapInfo()
 
   const isInputIndependent = independentField === Field.INPUT
-  const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
+  const inputAmountWithoutFee = trade?.inputAmountWithoutFee
+  const outputAmountWithoutFee = trade?.outputAmountWithoutFee
 
-  if (isWrapUnwrapMode) {
+  const context = useSafeMemoObject({
+    parsedAmount,
+    inputAmountWithoutFee,
+    outputAmountWithoutFee,
+  })
+
+  return useMemo(() => {
+    const { parsedAmount, inputAmountWithoutFee, outputAmountWithoutFee } = context
     return {
-      [Field.INPUT]: parsedAmount,
-      [Field.OUTPUT]: parsedAmount,
+      [Field.INPUT]: isInputIndependent ? parsedAmount : inputAmountWithoutFee,
+      [Field.OUTPUT]: isInputIndependent ? outputAmountWithoutFee : parsedAmount,
     }
-  }
-
-  return {
-    [Field.INPUT]: isInputIndependent ? parsedAmount : trade?.inputAmountWithoutFee,
-    [Field.OUTPUT]: isInputIndependent ? trade?.outputAmountWithoutFee : parsedAmount,
-  }
+  }, [isInputIndependent, context])
 }
