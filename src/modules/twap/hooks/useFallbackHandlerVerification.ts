@@ -7,6 +7,8 @@ export function useFallbackHandlerVerification() {
   return useAtomValue(fallbackHandlerVerificationAtom)
 }
 
-export function useIsFallbackHandlerRequired() {
-  return useFallbackHandlerVerification() !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
+export function useIsFallbackHandlerRequired(): boolean {
+  const verification = useFallbackHandlerVerification()
+
+  return verification !== null && verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
 }
