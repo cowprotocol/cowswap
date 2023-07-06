@@ -1,12 +1,17 @@
-import { ExplorerLink } from 'legacy/components/ExplorerLink'
-import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useGnosisSafeInfo, useWalletInfo } from 'modules/wallet'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 interface Props {
-  tx: EnhancedTransactionDetails
+  chainId: SupportedChainId
+  tx: {
+    hash: string
+    hashType: HashType
+    safeTransaction?: { safe: string; safeTxHash: string }
+  }
 }
 
 /**
@@ -14,16 +19,12 @@ interface Props {
  * @param props
  */
 export function EnhancedTransactionLink(props: Props) {
-  const { tx } = props
-  const { chainId } = useWalletInfo()
-  const gnosisSafeInfo = useGnosisSafeInfo()
+  const { tx, chainId } = props
 
   if (tx.hashType === HashType.GNOSIS_SAFE_TX) {
     const safeTx = tx.safeTransaction
 
-    if (!chainId || !safeTx || !gnosisSafeInfo) {
-      return null
-    }
+    if (!safeTx) return null
 
     return <SafeWalletLink chainId={chainId} safeTransaction={safeTx} />
   } else {
