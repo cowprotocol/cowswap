@@ -11,7 +11,7 @@ import { isTruthy } from 'legacy/utils/misc'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
-import { emulatedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
+import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 

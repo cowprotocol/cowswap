@@ -5,7 +5,7 @@ import ms from 'ms.macro'
 
 import { USDC } from 'legacy/constants/tokens'
 
-import { TwapOrderStatus } from './types'
+import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
@@ -44,3 +44,9 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
+
+export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
+  executedSellAmount: '0',
+  executedBuyAmount: '0',
+  executedFeeAmount: '0',
+}

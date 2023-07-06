@@ -19,6 +19,7 @@ import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { useSafeAppsSdk } from '../../wallet/web3-react/hooks/useSafeAppsSdk'
+import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
 import { twapOrderAtom } from '../state/twapOrderAtom'
@@ -99,6 +100,7 @@ export function useCreateTwapOrder() {
           safeAddress: account,
           submissionDate: new Date().toISOString(),
           id: orderId,
+          executionInfo: DEFAULT_TWAP_EXECUTION_INFO,
         })
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
