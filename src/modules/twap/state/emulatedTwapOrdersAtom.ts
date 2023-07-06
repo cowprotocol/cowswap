@@ -19,6 +19,7 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Scheduled]: OrderStatus.SCHEDULED,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
+  [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
 }
 
 export const emulatedTwapOrdersAtom = atom((get) => {

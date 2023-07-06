@@ -9,6 +9,7 @@ import { OrderWithComposableCowInfo } from 'common/types'
 import { twapOrdersAtom } from './twapOrdersListAtom'
 import { twapPartOrdersListAtom } from './twapPartOrdersAtom'
 
+import { TWAP_CANCELLED_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) => {
@@ -37,7 +38,7 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
         executedSellAmountBeforeFees: '0',
         executedBuyAmount: '0',
         executedFeeAmount: '0',
-        invalidated: parent.status === TwapOrderStatus.Cancelled,
+        invalidated: TWAP_CANCELLED_STATUSES.includes(parent.status),
       },
       composableCowInfo: {
         isVirtualPart: true,

@@ -36,6 +36,7 @@ export enum TwapOrderStatus {
   Pending = 'Pending',
   Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
+  Cancelling = 'Cancelling',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
 }

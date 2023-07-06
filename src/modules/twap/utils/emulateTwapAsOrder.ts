@@ -2,11 +2,13 @@ import { EnrichedOrder, OrderClass, OrderKind, SigningScheme, OrderStatus } from
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
+import { TWAP_CANCELLED_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,
   [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
+  [TwapOrderStatus.Cancelling]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
@@ -48,6 +50,6 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
     executedFeeAmount,
-    invalidated: status === TwapOrderStatus.Cancelled,
+    invalidated: TWAP_CANCELLED_STATUSES.includes(status),
   }
 }

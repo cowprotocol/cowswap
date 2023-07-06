@@ -10,7 +10,7 @@ import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
 import { twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData } from '../types'
+import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData, TwapOrderStatus } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
@@ -28,6 +28,9 @@ export function TwapOrdersUpdater(props: {
   const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
+  const twapOrdersListRef = useRef(twapOrdersList)
+  twapOrdersListRef.current = twapOrdersList
+
   const allOrdersInfo = useMemo(() => parseOrdersSafeData(ordersSafeData), [ordersSafeData])
 
   const ordersIds = useMemo(() => allOrdersInfo.map((item) => item.id), [allOrdersInfo])
@@ -37,12 +40,12 @@ export function TwapOrdersUpdater(props: {
   twapOrderExecutions.current = _twapOrderExecutions
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
-  const pendingOrCancelledOrders = useMemo(() => {
-    return allOrdersInfo.filter((info) => shouldCheckOrderAuth(info, twapOrdersList[info.id]))
-  }, [allOrdersInfo, twapOrdersList])
+  const pendingTwapOrders = useMemo(() => {
+    return allOrdersInfo.filter((info) => shouldCheckOrderAuth(info, twapOrdersListRef.current[info.id]))
+  }, [allOrdersInfo])
 
   // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
-  const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingOrCancelledOrders)
+  const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingTwapOrders)
 
   useEffect(() => {
     if (!ordersAuthResult || !twapDiscreteOrders) return
@@ -55,6 +58,7 @@ export function TwapOrdersUpdater(props: {
       twapDiscreteOrders,
       twapOrderExecutions.current
     )
+
     updateTwapOrders(items)
   }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, updateTwapOrders])
 
@@ -91,6 +95,8 @@ function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem 
 
   // Skip NOT pending orders
   if (existingOrder) {
+    if (existingOrder.status === TwapOrderStatus.Cancelling) return true
+
     return TWAP_PENDING_STATUSES.includes(existingOrder.status)
   }
 
