@@ -6,6 +6,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { AppDataUpdater } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -26,7 +27,11 @@ import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import {
+  twapOrderSlippageAtom,
+  twapOrdersSettingsAtom,
+  updateTwapOrdersSettingsAtom,
+} from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
@@ -48,6 +53,7 @@ export function TwapFormWidget() {
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
+  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
@@ -81,6 +87,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
       <PartOrdersUpdater />
