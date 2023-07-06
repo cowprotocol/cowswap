@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { renderTooltip } from 'legacy/components/Tooltip'
 
@@ -14,7 +14,9 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
+import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
@@ -25,7 +27,7 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
@@ -41,6 +43,7 @@ export function TwapFormWidget() {
   const isSafeApp = useIsSafeApp()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
@@ -58,6 +61,8 @@ export function TwapFormWidget() {
   const composableCowContract = useComposableCowContract()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
+
+  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
 
   const deadlineState = {
     deadline,
@@ -78,6 +83,9 @@ export function TwapFormWidget() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const isInvertedState = useState(false)
+  const [isInverted] = isInvertedState
+
   return (
     <>
       <QuoteObserverUpdater />
@@ -89,7 +97,11 @@ export function TwapFormWidget() {
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo
+            label={LABELS_TOOLTIPS.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+          />
         </styledEl.Row>
       )}
       <TradeNumberInput
@@ -100,8 +112,15 @@ export function TwapFormWidget() {
         max={50}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-        inputType="priceProtection"
-        limitPrice={'1484.45 USDC'} // TODO: add real dynamic limit price
+        prefixComponent={
+          <em>
+            {limitPrice ? (
+              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+            ) : (
+              '0'
+            )}
+          </em>
+        }
         suffix="%"
       />
       <styledEl.Row>

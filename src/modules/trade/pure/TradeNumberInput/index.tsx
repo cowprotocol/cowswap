@@ -12,12 +12,11 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   min?: number
   max?: number
   placeholder?: string
-  inputType?: string
-  limitPrice?: string
+  prefixComponent?: React.ReactElement
 }
 
 export function TradeNumberInput(props: TradeNumberInputProps) {
-  const { value, suffix, onUserInput, placeholder, decimalsPlaces = 0, min, max = 0, inputType, limitPrice } = props
+  const { value, suffix, onUserInput, placeholder, decimalsPlaces = 0, min, max = 0, prefixComponent } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
 
@@ -57,9 +56,9 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
   }, [])
 
   return (
-    <TradeWidgetField {...props}>
+    <TradeWidgetField {...props} hasPrefix={!!prefixComponent}>
       <>
-        <em>{inputType === 'priceProtection' && limitPrice && <>{limitPrice}</>}</em>
+        {prefixComponent}
         <span>
           <NumericalInput placeholder={placeholder} value={displayedValue} onUserInput={onChange} />
           {suffix && <Suffix>{suffix}</Suffix>}
