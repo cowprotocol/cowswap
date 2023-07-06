@@ -20,15 +20,18 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { wrapNativeStateAtom } from '../state/wrapNativeStateAtom'
 
-export function useWrapNativeFlow() {
-  const setWrapNativeState = useUpdateAtom(wrapNativeStateAtom)
+export function useWrapNativeFlow(): WrapUnwrapCallback {
   const derivedTradeState = useDerivedTradeState()
   const wrapCallback = useWrapNativeCallback(derivedTradeState.state?.inputCurrencyAmount)
 
-  return useCallback(() => {
-    setWrapNativeState({ isOpen: true })
-    wrapCallback?.()
-  }, [setWrapNativeState, wrapCallback])
+  return useCallback(
+    (params?: WrapUnwrapCallbackParams) => {
+      if (!wrapCallback) return Promise.resolve(null)
+
+      return wrapCallback(params)
+    },
+    [wrapCallback]
+  )
 }
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {

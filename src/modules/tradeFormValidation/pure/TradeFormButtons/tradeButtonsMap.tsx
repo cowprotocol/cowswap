@@ -57,14 +57,11 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
-  [TradeFormValidation.WrapUnwrapAmountNotSet]: {
-    text: 'Enter an amount',
-  },
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
     const isNativeIn = !!context.derivedState.inputCurrency?.isNative
 
     return (
-      <TradeFormBlankButton onClick={context.wrapNativeFlow}>
+      <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
         <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
       </TradeFormBlankButton>
     )
