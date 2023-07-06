@@ -7,7 +7,7 @@ import { getAppDataHash } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { twapOrderSlippage, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
+import { twapOrderSlippageAtom, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { TWAPOrder } from '../types'
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
@@ -25,7 +25,7 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
   const { inputCurrencyAmount, outputCurrencyAmount, recipient } = get(advancedOrdersDerivedStateAtom)
-  const slippage = get(twapOrderSlippage)
+  const slippage = get(twapOrderSlippageAtom)
 
   if (!inputCurrencyAmount || !outputCurrencyAmount || !account) return null
 

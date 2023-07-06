@@ -14,7 +14,7 @@ import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
-import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
+import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface TwapConfirmModalProps {
   fallbackHandlerIsNotSet: boolean
@@ -31,7 +31,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
-  const slippage = useAtomValue(twapOrderSlippage)
+  const slippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
 

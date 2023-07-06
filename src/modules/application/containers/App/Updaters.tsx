@@ -16,7 +16,7 @@ import FeesUpdater from 'legacy/state/price/updater'
 import SentryUpdater from 'legacy/state/sentry/updater'
 import UserUpdater from 'legacy/state/user/updater'
 
-import { AppDataUpdater, UploadToIpfsUpdater } from 'modules/appData'
+import { UploadToIpfsUpdater } from 'modules/appData'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
@@ -47,7 +47,6 @@ export function Updaters() {
       <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
-      <AppDataUpdater />
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
