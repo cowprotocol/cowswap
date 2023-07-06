@@ -11,7 +11,6 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -188,8 +187,7 @@ function _filterOrders(
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
-  const { account, chainId: _chainId } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { account, chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()

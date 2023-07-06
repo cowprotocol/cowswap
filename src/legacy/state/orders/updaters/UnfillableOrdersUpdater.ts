@@ -25,7 +25,6 @@ import {
 } from 'legacy/state/orders/utils'
 import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from 'modules/wallet'
@@ -88,8 +87,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 

@@ -10,8 +10,6 @@ import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/Trad
 import { useWalletInfo } from 'modules/wallet'
 import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
 
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
@@ -35,9 +33,7 @@ export function useSetupTradeState(): void {
   const urlChainId = tradeStateFromUrl.chainId
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
-  const chainIdIsNotSupported = !isSupportedChainId(urlChainId)
-  const currentChainId =
-    !urlChainId || chainIdIsNotSupported ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
+  const currentChainId = !urlChainId ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
 
   /**
    * On URL parameter changes
@@ -103,12 +99,10 @@ export function useSetupTradeState(): void {
       return
     }
 
-    if (chainIdIsNotSupported || sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
+    if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
       tradeNavigate(currentChainId, defaultState)
 
-      if (chainIdIsNotSupported) {
-        console.debug('[TRADE STATE]', 'Url contains invalid chainId, resetting')
-      } else if (sameTokens) {
+      if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
@@ -166,7 +160,6 @@ export function useSetupTradeState(): void {
   useEffect(() => {
     if (providerChainId === urlChainId) return
     if (!providerChainId || providerChainId === prevProviderChainId) return
-    if (!isSupportedChainId(providerChainId)) return
 
     if (rememberedUrlState) {
       setRememberedUrlState(null)

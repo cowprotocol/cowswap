@@ -5,9 +5,6 @@ import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
 
@@ -83,12 +80,7 @@ interface CowBalanceButtonProps {
 }
 
 export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
-  const { chainId } = useWalletInfo()
   const { balance, isLoading } = useCombinedBalance()
-
-  if (!supportedChainId(chainId)) {
-    return null
-  }
 
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>

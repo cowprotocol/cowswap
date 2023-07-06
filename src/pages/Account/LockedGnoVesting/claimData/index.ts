@@ -1,7 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-
 import gnosisChainIndex from './gnosisChain.json'
 import goerliIndex from './goerli.json'
 import mainnetIndex from './mainnet.json'
@@ -28,10 +26,6 @@ const DISTRO_REPO_BRANCH_NAME = 'main'
 
 export const fetchClaim = async (address: string, chainId: SupportedChainId): Promise<Claim | null> => {
   const lowerCaseAddress = address.toLowerCase()
-
-  if (!supportedChainId(chainId)) {
-    return null
-  }
 
   const indexFile = indexFiles[chainId]
   const chainName = chainNames[chainId]

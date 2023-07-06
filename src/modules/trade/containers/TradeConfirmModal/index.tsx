@@ -1,7 +1,4 @@
 import { useAtomValue } from 'jotai'
-import React from 'react'
-
-import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
 import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
@@ -26,7 +23,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
 
-  if (!isSupportedChain(chainId) || !account) return null
+  if (!account) return null
 
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss}>

@@ -2,16 +2,15 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useUpdateAtom } from 'legacy/state/application/atoms'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
@@ -113,8 +112,7 @@ function useUpdatePending(props: UseUpdatePendingProps) {
  * Queries the spot price for given markets at every SPOT_PRICE_CHECK_POLL_INTERVAL
  */
 export function SpotPricesUpdater(): null {
-  const { chainId: _chainId } = useWeb3React()
-  const chainId = supportedChainId(_chainId)
+  const { chainId } = useWalletInfo()
 
   const isWindowVisible = useIsWindowVisible()
   const updateSpotPrices = useUpdateAtom(updateSpotPricesAtom)

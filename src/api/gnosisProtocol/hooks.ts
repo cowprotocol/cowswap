@@ -8,7 +8,6 @@ import useSWR from 'swr'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
 import { isTruthy } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
@@ -34,8 +33,7 @@ type TwapPartOrdersMap = { [twapOrderHash: string]: TwapPartOrderItem }
  * For PROD environment we do only one: prod. It depends on isBarnBackendEnv
  */
 export function useGpOrders(account?: string | null, refreshInterval?: number): OrderWithComposableCowInfo[] {
-  const { chainId: _chainId } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const { chainId } = useWalletInfo()
   const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
   const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
 

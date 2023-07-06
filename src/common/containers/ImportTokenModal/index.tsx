@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import TokenWarningModal from 'legacy/components/TokenWarningModal'
@@ -9,7 +10,6 @@ import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
 import useDebounce from 'legacy/hooks/useDebounce'
 import { Field } from 'legacy/state/swap/actions'
 import { useAddUserToken } from 'legacy/state/user/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
@@ -18,7 +18,7 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 export interface ImportTokenModalProps {
-  chainId: number
+  chainId: SupportedChainId
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
@@ -69,16 +69,13 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
         })
         .filter((token: Token) => {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL
-          const supported = supportedChainId(chainId)
-          if (!supported) return true
-
           const isTokenInShorthands = Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
-            const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
+            const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][chainId]
             return shorthandTokenAddress && shorthandTokenAddress.toLowerCase() === token.address.toLowerCase()
           })
 
           const isTokenInWrapped =
-            WRAPPED_NATIVE_CURRENCY[supported].address.toLowerCase() === token.address.toLowerCase()
+            WRAPPED_NATIVE_CURRENCY[chainId].address.toLowerCase() === token.address.toLowerCase()
 
           return !isTokenInShorthands && !isTokenInWrapped
         })

@@ -7,12 +7,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
-import NetworkSelector from 'legacy/components/Header/NetworkSelector'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
@@ -29,6 +28,7 @@ import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/
 
 import { Routes } from 'common/constants/routes'
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
@@ -47,15 +47,12 @@ import {
   Wrapper,
 } from './styled'
 
-// Assets
-
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
 
 export default function Header() {
-  const { account, chainId: connectedChainId } = useWalletInfo()
-  const chainId = supportedChainId(connectedChainId)
+  const { account, chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
@@ -63,9 +60,10 @@ export default function Header() {
   const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
   const isWalletConnectV2 = useIsActiveWallet(walletConnectConnectionV2)
   const disconnectWallet = useDisconnectWallet()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
+  const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAnalytics(!darkMode)
@@ -168,7 +166,7 @@ export default function Header() {
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isInjectedWidgetMode && (
+            {!isInjectedWidgetMode && !isChainIdUnsupported && (
               <CowBalanceButton
                 onClick={() => navigate('/account')}
                 account={account}
@@ -178,7 +176,7 @@ export default function Header() {
             )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && userEthBalance && chainId && (
+              {account && !isChainIdUnsupported && userEthBalance && chainId && (
                 <BalanceText>
                   <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
                 </BalanceText>
