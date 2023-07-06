@@ -28,9 +28,9 @@ export function twapConversionAnalytics(action: TwapConversionType, fallbackHand
   })
 }
 
-export function clickAdvancedOrdersTabAnalytics() {
+export function openAdvancedOrdersTabAnalytics() {
   sendEvent({
     category: Category.TWAP,
-    action: 'Click Advanced Orders Tab',
+    action: 'Open Advanced Orders Tab',
   })
 }

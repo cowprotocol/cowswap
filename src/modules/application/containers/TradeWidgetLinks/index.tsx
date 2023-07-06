@@ -1,9 +1,5 @@
-import React from 'react'
-
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
-
-import { clickAdvancedOrdersTabAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
@@ -27,7 +23,6 @@ const menuItems: MenuItemConfig[] = [
     route: Routes.ADVANCED_ORDERS,
     label: 'Advanced',
     featureGuard: 'advancedOrdersEnabled',
-    onClick: clickAdvancedOrdersTabAnalytics,
   },
 ]
 
@@ -40,9 +35,8 @@ export function TradeWidgetLinks() {
       {menuItems.map((item) => {
         const routePath = parameterizeTradeRoute(tradeContext, item.route)
         const isActive = !!matchPath(location.pathname, routePath)
-        const onClick = item.onClick || (() => {})
 
-        const menuItem = <MenuItem onClick={onClick} routePath={routePath} item={item} isActive={isActive} />
+        const menuItem = <MenuItem routePath={routePath} item={item} isActive={isActive} />
 
         return item.featureGuard ? <FeatureGuard featureFlag={item.featureGuard}>{menuItem}</FeatureGuard> : menuItem
       })}
@@ -50,18 +44,8 @@ export function TradeWidgetLinks() {
   )
 }
 
-const MenuItem = ({
-  routePath,
-  item,
-  isActive,
-  onClick,
-}: {
-  routePath: string
-  item: MenuItemConfig
-  isActive: boolean
-  onClick: () => void
-}) => (
-  <styledEl.MenuItem onClick={onClick} isActive={isActive}>
+const MenuItem = ({ routePath, item, isActive }: { routePath: string; item: MenuItemConfig; isActive: boolean }) => (
+  <styledEl.MenuItem isActive={isActive}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {item.featureGuard && (

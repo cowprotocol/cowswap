@@ -2,7 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { twapWalletCompatibilityAnalytics } from 'legacy/components/analytics/events/twapEvents'
+import {
+  openAdvancedOrdersTabAnalytics,
+  twapWalletCompatibilityAnalytics,
+} from 'legacy/components/analytics/events/twapEvents'
 import { renderTooltip } from 'legacy/components/Tooltip'
 import usePrevious from 'legacy/hooks/usePrevious'
 
@@ -81,6 +84,7 @@ export function TwapFormWidget() {
   // Reset warnings flags once on start
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
+    openAdvancedOrdersTabAnalytics()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
