@@ -20,16 +20,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     account,
   } = context
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, outputCurrencyAmount, recipient } =
-    derivedTradeState
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
 
   const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
-  const outputAmountIsNotSet = isFractionFalsy(outputCurrencyAmount)
 
   if (isWrapUnwrap) {
-    if (inputAmountIsNotSet || outputAmountIsNotSet) {
+    if (inputAmountIsNotSet) {
       return TradeFormValidation.WrapUnwrapAmountNotSet
     }
 

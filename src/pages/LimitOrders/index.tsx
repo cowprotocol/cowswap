@@ -7,16 +7,13 @@ import {
   InitialPriceUpdater,
   ExecutionPriceUpdater,
   limitOrdersRawStateAtom,
-  limitOrdersSettingsAtom,
   LIMIT_ORDER_SLIPPAGE,
 } from 'modules/limitOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 
 export default function LimitOrderPage() {
   const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
-  const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
   return (
     <>
@@ -24,8 +21,6 @@ export default function LimitOrderPage() {
       <QuoteObserverUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
-      <TradeFormValidationUpdater isExpertMode={expertMode} />
-
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />

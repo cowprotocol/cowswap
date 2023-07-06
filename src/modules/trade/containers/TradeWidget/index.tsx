@@ -8,6 +8,7 @@ import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -20,6 +21,7 @@ import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
+import { WrapFlowActionButton } from '../WrapFlowActionButton'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 export interface TradeWidgetActions {
@@ -36,6 +38,7 @@ interface TradeWidgetParams {
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
+  isExpertMode: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
@@ -61,7 +64,6 @@ export interface TradeWidgetProps {
 
 export const TradeWidgetContainer = styledEl.Container
 
-// TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
@@ -78,6 +80,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     recipient,
     disableQuotePolling = false,
     canSellAllNative = false,
+    isExpertMode,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -106,6 +109,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeWidgetModals />
       <WrapNativeModal />
       <PriceImpactUpdater />
+      <TradeFormValidationUpdater isExpertMode={isExpertMode} />
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
@@ -130,7 +134,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
                   maxBalance={maxBalance}
-                  topLabel={inputCurrencyInfo.label}
+                  topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 />
               </div>
               {!isWrapOrUnwrap && middleContent}
@@ -148,7 +152,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                 <CurrencyInputPanel
                   id="output-currency-input"
                   disableNonToken={disableNonToken}
-                  inputDisabled={isEoaEthFlow || disableOutput}
+                  inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
                   inputTooltip={
                     isEoaEthFlow
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
@@ -160,16 +164,18 @@ export function TradeWidget(props: TradeWidgetProps) {
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}
                   allowsOffchainSigning={allowsOffchainSigning}
-                  currencyInfo={outputCurrencyInfo}
+                  currencyInfo={
+                    isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
+                  }
                   priceImpactParams={priceImpact}
-                  topLabel={outputCurrencyInfo.label}
+                  topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 />
               </div>
               {showRecipient && (
                 <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
-              {bottomContent}
+              {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
             </>
           )}
         </styledEl.ContainerBox>
