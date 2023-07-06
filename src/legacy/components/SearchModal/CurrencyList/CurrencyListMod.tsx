@@ -298,7 +298,6 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
-  const { chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
@@ -397,7 +396,6 @@ export default function CurrencyList({
       BalanceComponent,
       TokenTagsComponent,
       allTokens,
-      chainId,
     ]
   )
 
