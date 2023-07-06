@@ -117,7 +117,7 @@ export function TwapFormWidget() {
             {limitPrice ? (
               <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
             ) : (
-              '-'
+              '0'
             )}
           </em>
         }
