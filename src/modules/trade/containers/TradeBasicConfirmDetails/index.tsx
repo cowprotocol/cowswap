@@ -60,7 +60,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
         tooltip="TODO: Min received tooltip"
-        label="Min received (incl. fee)"
+        label="Min received (incl. fee/slippage)"
       />
     </styledEl.Wrapper>
   )
