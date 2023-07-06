@@ -56,6 +56,7 @@ export interface TwapOrderItem {
   order: TWAPOrderStruct
   status: TwapOrderStatus
   chainId: SupportedChainId
+  executedDate?: string
   submissionDate: string
   safeAddress: string
   id: string

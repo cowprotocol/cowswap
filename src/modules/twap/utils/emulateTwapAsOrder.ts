@@ -24,7 +24,7 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
 
   const sellAmount = sellAmountValue.toString()
 
-  const creationTime = new Date(item.submissionDate)
+  const creationTime = new Date(item.executedDate || item.submissionDate)
   const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
   const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo
 

@@ -280,6 +280,7 @@ export default createReducer(initialState, (builder) =>
           ? {
               ...orderObj.order,
               validTo,
+              creationTime: newOrder.creationTime,
               composableCowInfo: newOrder.composableCowInfo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               // Don't reset isCancelling status for ComposableCow orders
