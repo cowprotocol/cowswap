@@ -6,6 +6,8 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -83,8 +85,9 @@ export function useCreateTwapOrder() {
       const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
       const orderId = getConditionalOrderId(paramsStruct)
 
-      tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
       tradeConfirmActions.onSign(pendingTrade)
+      tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
+      twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
       try {
         const fallbackSetupTxs = fallbackHandlerIsNotSet
@@ -106,9 +109,11 @@ export function useCreateTwapOrder() {
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
+        twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
       } catch (error) {
         tradeConfirmActions.onError(error.message || error)
         tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
+        twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
       }
     },
     [
