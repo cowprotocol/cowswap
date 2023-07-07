@@ -19,7 +19,7 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
   return twapParticleOrders.map<OrderWithComposableCowInfo>((order) => {
     const parent = twapOrders[order.twapOrderId]
 
-    const creationDate = new Date(1 + (order.order.validTo - parent.order.t) * 1000)
+    const creationDate = new Date((order.order.validTo - parent.order.t) * 1000)
 
     return {
       order: {

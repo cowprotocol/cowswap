@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
+import { CONFIRMED_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { orderStatusTitleMap } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow'
 
@@ -20,14 +20,14 @@ const Wrapper = styled.div<{
       ? theme.success
       : status === OrderStatus.CANCELLED
       ? theme.danger
-      : cancelling
-      ? theme.text1
-      : status === OrderStatus.PENDING // OPEN order
-      ? theme.text3
       : status === OrderStatus.EXPIRED
       ? theme.warning
       : status === OrderStatus.FAILED
       ? theme.danger
+      : cancelling
+      ? theme.text1
+      : status === OrderStatus.PENDING // OPEN order
+      ? theme.text3
       : // Remaining statuses should use the same
         // OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING
         theme.text1};
@@ -67,8 +67,7 @@ function getOrderStatusTitle(order: ParsedOrder): string {
     return orderStatusTitleMap[OrderStatus.FULFILLED]
   }
 
-  // Cancelled status takes precedence
-  if (order.status === OrderStatus.CANCELLED) {
+  if (CONFIRMED_STATES.includes(order.status)) {
     return orderStatusTitleMap[order.status]
   }
 

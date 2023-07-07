@@ -146,6 +146,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
+    stateForChain.scheduled[id] ||
     stateForChain.failed[id]
   )
 }
@@ -159,6 +160,7 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
   delete stateForChain.creating[id]
   delete stateForChain.failed[id]
+  delete stateForChain.scheduled[id]
 }
 
 function addOrderToState(
@@ -404,8 +406,18 @@ export default createReducer(initialState, (builder) =>
 
           if (getIsComposableCowParentOrder(orderObject.order)) {
             const ordersMap = state[chainId]
+            const allOrdersMap = {
+              ...ordersMap.pending,
+              ...ordersMap.presignaturePending,
+              ...ordersMap.fulfilled,
+              ...ordersMap.expired,
+              ...ordersMap.cancelled,
+              ...ordersMap.creating,
+              ...ordersMap.failed,
+              ...ordersMap.scheduled,
+            }
 
-            const children = [...Object.values(ordersMap.pending), ...Object.values(ordersMap.scheduled)].filter(
+            const children = Object.values(allOrdersMap).filter(
               (item) => item?.order.composableCowInfo?.parentId === id
             )
 
