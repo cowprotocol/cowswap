@@ -20,9 +20,17 @@ export const Row = styled(StyledRowBetween)`
 `
 
 export const Content = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   margin: 0 0 0 auto;
   font-weight: 500;
   font-size: 13px;
+
+  > span {
+    display: block;
+    text-align: right;
+  }
 
   i {
     font-style: normal;

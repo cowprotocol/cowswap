@@ -17,8 +17,7 @@ const Wrapper = styled.div`
 
 const StyledBanner = styled(InlineBanner)`
   > span {
-    width: 100%;
-    display: flex;
+    flex-flow: row nowrap;
   }
 `
 
