@@ -89,12 +89,13 @@ const Wrapper = styled.span<{ color: string }>`
 
   > span > p {
     line-height: 1.4;
-    margin: 0 0 16px;
+    margin: 0;
     padding: 0;
     grid-area: c;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       text-align: center;
+      margin: 0 0 5px;
     `};
   }
 `

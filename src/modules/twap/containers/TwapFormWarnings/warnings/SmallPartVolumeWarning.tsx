@@ -15,7 +15,7 @@ export function SmallPartVolumeWarning({ chainId }: SmallPartVolumeWarningBanner
   return (
     <InlineBanner>
       <>
-        <strong>Minimum sell size:</strong>
+        <strong>Minimum sell size</strong>
         <p>
           The sell amount per part of your TWAP order should be at least{' '}
           <b>
