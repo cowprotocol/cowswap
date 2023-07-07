@@ -1,5 +1,6 @@
 // Util functions that only pertain to/deal with operator API related stuff
 import BigNumber from 'bignumber.js'
+import JSBI from 'jsbi'
 
 import { ZERO_BIG_NUMBER } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
@@ -145,7 +146,7 @@ export function getOrderSurplus(order: Order): Surplus {
   // `executedSellAmount` already has `executedFeeAmount` discounted
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
 
-  if (!executedBuyAmount || !executedSellAmount) {
+  if (JSBI.EQ(executedBuyAmount, 0) || JSBI.EQ(executedSellAmount, 0)) {
     return ZERO_SURPLUS
   }
 
