@@ -2,26 +2,29 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+import store from 'legacy/state'
+import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
 import { getCowSoundSend } from 'legacy/utils/sound'
+import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { useWalletInfo } from 'modules/wallet'
+import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
-import { useSafeAppsSdk } from '../../wallet/web3-react/hooks/useSafeAppsSdk'
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
@@ -109,7 +112,17 @@ export function useCreateTwapOrder() {
 
         addTwapOrderToList(orderItem)
 
+        const summary = getOrderSubmitSummary({
+          recipient: twapOrder.receiver,
+          kind: OrderKind.SELL,
+          recipientAddressOrName: null,
+          account,
+          inputAmount: twapOrder.sellAmount,
+          outputAmount: twapOrder.buyAmount,
+          feeAmount: undefined,
+        })
         getCowSoundSend().play()
+        dispatchPresignedOrderPosted(store, orderId, summary, OrderClass.LIMIT)
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         tradeConfirmActions.onSuccess(safeTxHash)
