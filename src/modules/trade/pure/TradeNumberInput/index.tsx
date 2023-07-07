@@ -16,7 +16,16 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
 }
 
 export function TradeNumberInput(props: TradeNumberInputProps) {
-  const { value, suffix, onUserInput, placeholder = '0', decimalsPlaces = 0, min, max = 100_000, prefixComponent } = props
+  const {
+    value,
+    suffix,
+    onUserInput,
+    placeholder = '0',
+    decimalsPlaces = 0,
+    min,
+    max = 100_000,
+    prefixComponent,
+  } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
 
