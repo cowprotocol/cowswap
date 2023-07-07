@@ -46,6 +46,7 @@ describe('Create TWAP order', () => {
         address: COMPOSABLE_COW_ADDRESS[chainId],
       } as any,
       needsApproval: false,
+      needsZeroApproval: false,
       spender: '0xB4FBF271143F4FBf7B91A5ded31805e42b222222',
       currentBlockFactoryAddress: CURRENT_BLOCK_FACTORY_ADDRESS[chainId],
       erc20Contract: { interface: { encodeFunctionData: approveFn } } as any,
@@ -74,6 +75,21 @@ describe('Create TWAP order', () => {
     expect(approveFn.mock.calls[0]).toMatchSnapshot()
 
     expect(result.length).toBe(2)
+    expect(result).toMatchSnapshot()
+  })
+
+  it('When sell token is NOT approved AND token needs zero approval, then should generate 2 approvals and creation transactions', () => {
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
+    const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: true, needsZeroApproval: true })
+
+    expect(createCowFn).toHaveBeenCalledTimes(1)
+    expect(createCowFn.mock.calls[0]).toMatchSnapshot()
+
+    expect(approveFn).toHaveBeenCalledTimes(2)
+    expect(approveFn.mock.calls[0]).toMatchSnapshot()
+    expect(approveFn.mock.calls[1]).toMatchSnapshot()
+
+    expect(result.length).toBe(3)
     expect(result).toMatchSnapshot()
   })
 })
