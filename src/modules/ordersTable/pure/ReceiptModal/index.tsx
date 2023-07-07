@@ -79,6 +79,8 @@ export function ReceiptModal({
     return null
   }
 
+  const isTwapParentOrder = !!twapOrder && !isTwapPartOrder
+
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
@@ -170,7 +172,7 @@ export function ReceiptModal({
             </styledEl.Field>
 
             {/*TODO: add a link to explorer when it will support TWAP orders*/}
-            {!twapOrder && (
+            {!isTwapParentOrder && (
               <styledEl.Field>
                 {order.executionData.activityId && (
                   <>
