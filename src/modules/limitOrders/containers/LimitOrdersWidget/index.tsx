@@ -36,13 +36,12 @@ import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { id: 1, content: 'Set any limit price and time horizon' },
-  { id: 2, content: 'FREE order placement and cancellation' },
-  { id: 3, content: 'Place multiple orders using the same balance' },
-  { id: 4, content: 'Always receive 100% of your order surplus' },
-  { id: 5, content: 'Protection from MEV by default' },
+  { content: 'Set any limit price and time horizon' },
+  { content: 'FREE order placement and cancellation' },
+  { content: 'Place multiple orders using the same balance' },
+  { content: 'Always receive 100% of your order surplus' },
+  { content: 'Protection from MEV by default' },
   {
-    id: 6,
     content: (
       <span>
         NOW with&nbsp;<b>partial fills</b>&nbsp;support!

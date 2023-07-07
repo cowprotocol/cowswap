@@ -7,7 +7,6 @@ import { ExternalLink } from 'legacy/theme'
 import * as styledEl from './styled'
 
 export type BulletListItem = {
-  id: number
   content: string | React.ReactNode
   isNew?: boolean
 }
@@ -40,8 +39,8 @@ export function UnlockWidgetScreen({
 
       {items && (
         <styledEl.List>
-          {items.map(({ id, isNew, content }) => (
-            <li key={id} data-is-new={isNew || null}>
+          {items.map(({ isNew, content }, index) => (
+            <li key={index} data-is-new={isNew || null}>
               <span>
                 <SVG src={iconCompleted} />
               </span>{' '}
