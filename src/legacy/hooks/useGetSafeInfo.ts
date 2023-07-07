@@ -6,7 +6,6 @@ import { useWeb3React } from '@web3-react/core'
 import { RetryResult } from 'types'
 
 import { retry, RetryOptions } from 'legacy/utils/retry'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -25,10 +24,6 @@ export function useGetSafeInfo(): GetSafeInfo {
       return retry(() => {
         if (!provider) {
           throw new Error('There is no provider to get Gnosis safe info')
-        }
-
-        if (chainId === undefined || !supportedChainId(chainId)) {
-          throw new Error('Unsupported chainId: ' + chainId)
         }
 
         return getSafeTransaction(chainId, hash, provider)

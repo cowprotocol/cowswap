@@ -26,7 +26,7 @@ export interface PriceImpact {
  * Warning!
  * The hook cannot be used more the once in the same page
  */
-export default function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
+export function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
   const fiatPriceImpact = useFiatValuePriceImpact(parsedAmounts)
   const {
     impact: fallbackPriceImpact,

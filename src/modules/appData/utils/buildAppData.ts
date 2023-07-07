@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 
@@ -7,11 +6,13 @@ import { environmentName } from 'legacy/utils/environments'
 
 import { UtmParams } from 'modules/utm'
 
+import { AppDataOrderClass } from '../types'
+
 export type BuildAppDataParams = {
   appCode: string
   chainId: SupportedChainId
   slippageBips: string
-  orderClass: OrderClass
+  orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
 }

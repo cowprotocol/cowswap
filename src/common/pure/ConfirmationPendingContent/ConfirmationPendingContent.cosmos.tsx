@@ -2,11 +2,11 @@ import { Identicon } from 'modules/wallet'
 
 import { ConfirmationPendingContent } from './ConfirmationPendingContent'
 
-import { GpModal } from '../Modal'
+import { CowModal } from '../Modal'
 
 const Fixtures = {
   default: (
-    <GpModal onDismiss={console.log} isOpen={true}>
+    <CowModal onDismiss={console.log} isOpen={true}>
       <ConfirmationPendingContent
         onDismiss={() => alert('dismiss')}
         statusIcon={<Identicon size={56} />}
@@ -20,7 +20,7 @@ const Fixtures = {
         walletAddress="walletAddress"
         operationLabel="token approval"
       />
-    </GpModal>
+    </CowModal>
   ),
 }
 

@@ -94,6 +94,13 @@ export const AccountControl = styled.div`
   }
 `
 
+export const UnsupportedWalletBox = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 60px;
+`
+
 export const WalletSecondaryActions = styled.div``
 
 export const WalletNameAddress = styled.div`
@@ -104,15 +111,16 @@ export const WalletNameAddress = styled.div`
 `
 
 export const Wrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
+  display: block;
   width: 100%;
   color: ${({ theme }) => theme.text1};
   padding: 0;
   height: 100%;
+  margin: 0 24px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 12px 0 0;
+    margin: 0 16px;
   `};
 
   ${WalletName},
@@ -241,17 +249,24 @@ export const UpperSection = styled.div`
 
 export const InfoCard = styled.div`
   width: 100%;
+  height: fit-content;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  margin: 0 24px 24px;
   border-radius: 16px;
   padding: 24px;
   background: ${({ theme }) => theme.grey1};
 
+  &:not(:first-child) {
+    margin: 24px 0;
+  }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px 24px;
-    margin: 0 16px 16px;
+
+    &:not(:first-child) {
+      margin: 16px 0;
+    }
   `};
 `
 
@@ -300,11 +315,6 @@ export const LowerSection = styled.div`
   width: 100%;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 0 24px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 16px;
-  `};
 
   > span {
     display: flex;

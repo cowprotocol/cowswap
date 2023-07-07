@@ -1,11 +1,8 @@
 import { useAtomValue } from 'jotai'
-import React from 'react'
 
-import { isSupportedChain } from 'legacy/utils/supportedChainId'
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
@@ -21,14 +18,15 @@ export interface TradeConfirmModalProps {
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { children } = props
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
 
-  if (!isSupportedChain(chainId)) return null
+  if (!account) return null
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss}>
+    <CowModal isOpen={isOpen} onDismiss={onDismiss}>
       {(() => {
         if (error) {
           return <TransactionErrorContent message={error} onDismiss={onDismiss} />
@@ -40,11 +38,19 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
         // TODO: use <TransactionSubmittedContent/> for Swap
         if (transactionHash) {
-          return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
+          return (
+            <OrderSubmittedContent
+              chainId={chainId}
+              account={account}
+              isSafeWallet={isSafeWallet}
+              onDismiss={onDismiss}
+              hash={transactionHash}
+            />
+          )
         }
 
         return children
       })()}
-    </GpModal>
+    </CowModal>
   )
 }

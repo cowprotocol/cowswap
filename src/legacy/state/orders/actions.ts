@@ -1,5 +1,4 @@
-import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Token } from '@uniswap/sdk-core'
@@ -18,12 +17,18 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
   CREATING = 'creating',
   FAILED = 'failed',
+  SCHEDULED = 'scheduled',
 }
 
 // Common states groups
-export const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const PENDING_STATES = [
+  OrderStatus.PENDING,
+  OrderStatus.PRESIGNATURE_PENDING,
+  OrderStatus.CREATING,
+  OrderStatus.SCHEDULED,
+]
 export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
-export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING, OrderStatus.SCHEDULED]
 
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
@@ -103,6 +108,7 @@ export type OrderInfoApi = Pick<
   | 'invalidated'
   | 'ethflowData'
   | 'onchainOrderData'
+  | 'class'
 >
 
 /**

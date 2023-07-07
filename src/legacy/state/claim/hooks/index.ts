@@ -30,7 +30,6 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
 import { isAddress } from 'legacy/utils'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -927,19 +926,18 @@ type UseUserEnhancedClaimDataResult = {
  */
 export function useUserEnhancedClaimData(account: Account): UseUserEnhancedClaimDataResult {
   const { available, claimed, isLoading } = useClassifiedUserClaims(account)
-  const { chainId: preCheckChainId } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const native = useNativeTokenPrice()
   const gno = useGnoPrice()
   const usdc = useStablecoinPrice()
 
   const claims = useMemo(() => {
-    const chainId = supportedChainId(preCheckChainId)
     if (!chainId || !native || !gno || !usdc) return []
 
     const sorted = available.sort(_sortTypes)
 
     return sorted.map((claim) => _enhanceClaimData(claim, chainId, { native, gno, usdc }))
-  }, [available, gno, native, preCheckChainId, usdc])
+  }, [available, gno, native, chainId, usdc])
 
   const isClaimed = useMemo(() => {
     return Boolean(!available.length && claimed.length)

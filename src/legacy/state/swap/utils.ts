@@ -2,18 +2,18 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import TradeGp from './TradeGp'
 
 export function isWrappingTrade(
   sellCurrency: Currency | null | undefined,
   buyCurrency: Currency | null | undefined,
-  _chainId?: SupportedChainId
+  chainId?: SupportedChainId
 ): boolean {
-  const chainId = supportedChainId(_chainId)
   if (!chainId) return false
-  const wethByChain = WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET]
+
+  const wethByChain = WRAPPED_NATIVE_CURRENCY[chainId]
+
   return Boolean(
     (sellCurrency?.isNative && buyCurrency?.wrapped.equals(wethByChain)) ||
       (buyCurrency?.isNative && sellCurrency?.wrapped.equals(wethByChain))

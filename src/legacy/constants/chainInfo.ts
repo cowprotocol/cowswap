@@ -3,7 +3,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import GnosisChainLogo from 'legacy/assets/cow-swap/network-gnosis-chain-logo.svg'
 import GoerliLogo from 'legacy/assets/cow-swap/network-goerli-logo.svg'
 import EthereumLogo from 'legacy/assets/cow-swap/network-mainnet-logo.svg'
-import { SupportedL1ChainId, SupportedL2ChainId } from 'legacy/constants/chains'
 
 export enum NetworkType {
   L1,
@@ -19,7 +18,9 @@ interface BaseChainInfo {
   readonly infoLink: string
   readonly logoUrl: string
   readonly label: string
+  readonly name: string
   readonly helpCenterUrl?: string
+  readonly explorerTitle: string
   readonly nativeCurrency: {
     name: string // e.g. 'Goerli ETH',
     symbol: string // e.g. 'gorETH',
@@ -32,14 +33,7 @@ export interface L1ChainInfo extends BaseChainInfo {
   readonly defaultListUrl?: string
 }
 
-export interface L2ChainInfo extends BaseChainInfo {
-  readonly networkType: NetworkType.L2
-  readonly bridge: string
-  readonly statusPage?: string
-  readonly defaultListUrl: string
-}
-
-export type ChainInfoMap = { readonly [chainId in SupportedL2ChainId]: L1ChainInfo | L2ChainInfo }
+export type ChainInfoMap = { readonly [chainId in SupportedChainId]: L1ChainInfo }
 
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
@@ -48,6 +42,8 @@ export const CHAIN_INFO: ChainInfoMap = {
     explorer: 'https://etherscan.io/',
     infoLink: 'https://cow.fi/',
     label: 'Ethereum',
+    name: 'mainnet',
+    explorerTitle: 'Etherscan',
     logoUrl: EthereumLogo,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   },
@@ -57,6 +53,8 @@ export const CHAIN_INFO: ChainInfoMap = {
     explorer: 'https://goerli.etherscan.io/',
     infoLink: 'https://cow.fi/',
     label: 'Görli',
+    name: 'goerli',
+    explorerTitle: 'Etherscan',
     logoUrl: GoerliLogo,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
   },
@@ -67,34 +65,13 @@ export const CHAIN_INFO: ChainInfoMap = {
     explorer: 'https://gnosisscan.io/',
     infoLink: 'https://www.gnosischain.com/',
     label: 'Gnosis Chain',
+    name: 'gnosis_chain',
+    explorerTitle: 'Gnosisscan',
     logoUrl: GnosisChainLogo,
     nativeCurrency: { name: 'xDai', symbol: 'XDAI', decimals: 18 },
   },
 }
 
-export function getChainInfo(chainId: SupportedL1ChainId): L1ChainInfo
-export function getChainInfo(chainId: SupportedL2ChainId): L2ChainInfo
-export function getChainInfo(chainId: SupportedChainId): L1ChainInfo | L2ChainInfo
-export function getChainInfo(
-  chainId: SupportedChainId | SupportedL1ChainId | SupportedL2ChainId | number | undefined
-): L1ChainInfo | L2ChainInfo | undefined
-
-/**
- * Overloaded method for returning ChainInfo given a chainID
- * Return type varies depending on input type:
- * number | undefined -> returns chaininfo | undefined
- * SupportedChainId -> returns L1ChainInfo | L2ChainInfo
- * SupportedL1ChainId -> returns L1ChainInfo
- * SupportedL2ChainId -> returns L2ChainInfo
- */
-export function getChainInfo(chainId: any): any {
-  if (chainId) {
-    return CHAIN_INFO[chainId] ?? undefined
-  }
-  return undefined
-}
-
-export const MAINNET_INFO = CHAIN_INFO[SupportedChainId.MAINNET]
-export function getChainInfoOrDefault(chainId: number | undefined) {
-  return getChainInfo(chainId) ?? MAINNET_INFO
+export function getChainInfo(chainId: SupportedChainId): L1ChainInfo {
+  return CHAIN_INFO[chainId]
 }

@@ -6,12 +6,10 @@ import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { Nullish } from 'types'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { USDC } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 import { useGetGpUsdcPrice } from 'legacy/utils/price'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useWalletInfo } from 'modules/wallet'
@@ -36,15 +34,14 @@ export default function useCowUsdPrice(currency?: Currency) {
   const [bestUsdPrice, setBestUsdPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  const chainId = currency?.chainId
+  const chainId = currency?.chainId as SupportedChainId
   const { account } = useWalletInfo()
   const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
 
-  const supportedChain = supportedChainId(chainId)
-  const baseAmount = supportedChain ? STABLECOIN_AMOUNT_OUT[supportedChain] : undefined
+  const baseAmount = chainId ? STABLECOIN_AMOUNT_OUT[chainId] : undefined
   const stablecoin = baseAmount?.currency
   const baseAmountRaw = baseAmount?.quotient.toString()
 
@@ -52,7 +49,7 @@ export default function useCowUsdPrice(currency?: Currency) {
   // build quote params
   // null when no chain or base amount or if sell token = stablecoin
   const quoteParams = useMemo(() => {
-    if (!stablecoin || isStablecoin || !supportedChain || !sellTokenAddress || !sellTokenDecimals || !baseAmountRaw)
+    if (!stablecoin || isStablecoin || !chainId || !sellTokenAddress || !sellTokenDecimals || !baseAmountRaw)
       return null
 
     return {
@@ -60,14 +57,14 @@ export default function useCowUsdPrice(currency?: Currency) {
       sellToken: sellTokenAddress,
       kind: OrderKind.BUY,
       amount: baseAmountRaw,
-      chainId: supportedChain,
+      chainId,
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
       validTo: getUsdQuoteValidTo(),
       isEthFlow: false,
     }
-  }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
+  }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, chainId])
 
   // get SWR cached usd price
   const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
@@ -151,7 +148,7 @@ export function useUSDCValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) 
 
 export function useCoingeckoUsdPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -165,10 +162,9 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   // use wrapped address equivalent if native (DONT USE "ETH" or "XDAI")
   const tokenAddress = currency?.wrapped.address
 
-  const chainIdSupported = supportedChainId(chainId)
   // get SWR cached coingecko usd price
   const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
-    chainId: chainIdSupported,
+    chainId,
     tokenAddress,
     isNative,
   })
@@ -177,7 +173,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
     // build baseAmount here as to not mess with deps array
     const baseAmount = tryParseCurrencyAmount('1', currencyRef.current)
 
-    if (!chainIdSupported || !priceResponse || !baseAmount) return
+    if (!priceResponse || !baseAmount) return
 
     try {
       if (errorResponse) throw errorResponse
@@ -191,7 +187,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       // we need to parse all USD returned amounts
       // and convert to the same currencyRef.current for both sides (SDK math invariant)
       // in our case we stick to the USDC paradigm
-      const quoteAmount = tryParseCurrencyAmount(apiUsdPrice.toString(), USDC[chainIdSupported])
+      const quoteAmount = tryParseCurrencyAmount(apiUsdPrice.toString(), USDC[chainId])
       // parse failure is unlikely - type safe
       if (!quoteAmount) return
       // create a new Price object
@@ -222,7 +218,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       })
     }
     // don't depend on Currency (deep nested object)
-  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse, isNative])
+  }, [chainId, blockNumber, tokenAddress, priceResponse, errorResponse, isNative])
 
   return { price, error }
 }

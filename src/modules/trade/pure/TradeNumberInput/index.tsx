@@ -16,11 +16,11 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
 }
 
 export function TradeNumberInput(props: TradeNumberInputProps) {
-  const { value, suffix, onUserInput, placeholder, decimalsPlaces = 0, min, max = 0, prefixComponent } = props
+  const { value, suffix, onUserInput, placeholder = '0', decimalsPlaces = 0, min, max = 100_000, prefixComponent } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
 
-  const onChange = useCallback(
+  const validateInput = useCallback(
     (newValue: string) => {
       const hasDot = newValue.includes('.')
       const [quotient, decimals] = (newValue || '').split('.')
@@ -28,15 +28,15 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
       const adjustedValue = quotient + filteredDecimals
       const parsedValue = adjustedValue ? parseFloat(adjustedValue) : null
 
-      if (parsedValue && parsedValue > max) {
+      if (parsedValue && max !== 0 && parsedValue > max) {
         setDisplayedValue(max.toString())
         onUserInput(max)
         return
       }
 
-      if (parsedValue && min && parsedValue < min) {
-        setDisplayedValue(min?.toString() || '')
-        onUserInput(min || null)
+      if (min && (!parsedValue || parsedValue < min)) {
+        setDisplayedValue(min.toString())
+        onUserInput(min)
         return
       }
 
@@ -51,7 +51,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   // Initial setup of value
   useEffect(() => {
-    onChange(value ? value.toString() : '')
+    validateInput(value ? value.toString() : '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -60,7 +60,12 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
       <>
         {prefixComponent}
         <span>
-          <NumericalInput placeholder={placeholder} value={displayedValue} onUserInput={onChange} />
+          <NumericalInput
+            placeholder={placeholder}
+            value={displayedValue}
+            onBlur={(e) => validateInput(e.target.value)}
+            onUserInput={(value) => setDisplayedValue(value)}
+          />
           {suffix && <Suffix>{suffix}</Suffix>}
         </span>
       </>

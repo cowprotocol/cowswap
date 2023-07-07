@@ -4,24 +4,27 @@ import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
-// TODO: add FULFILLED status
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,
   [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
+  [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
 export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
-  const { safeAddress, id, status } = item
-  const { sellToken, buyToken, partSellAmount, minPartLimit, n, t } = item.order
+  const { safeAddress, id, status, executionInfo } = item
+  const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData } = item.order
   const numOfParts = BigInt(n)
-  const sellAmount = BigInt(partSellAmount) * numOfParts
+  const sellAmountValue = BigInt(partSellAmount) * numOfParts
   const buyAmount = BigInt(minPartLimit) * numOfParts
+
+  const sellAmount = sellAmountValue.toString()
 
   const creationTime = new Date(item.submissionDate)
   const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
+  const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo
 
   return {
     signingScheme: SigningScheme.EIP1271,
@@ -30,22 +33,21 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
     buyToken,
     validTo: Math.ceil(expirationTime.getTime() / 1000),
     uid: id,
-    sellAmount: sellAmount.toString(),
+    sellAmount,
     buyAmount: buyAmount.toString(),
     kind: OrderKind.SELL,
     partiallyFillable: true,
     creationDate: creationTime.toISOString(),
     class: OrderClass.LIMIT,
     owner: safeAddress,
-    // TODO: fulfill data
     signature: '',
-    appData: '',
-    totalFee: '0',
+    appData,
     feeAmount: '0',
-    executedSellAmount: '0',
-    executedSellAmountBeforeFees: '0',
-    executedBuyAmount: '0',
-    executedFeeAmount: '0',
+    totalFee: executedFeeAmount,
+    executedSellAmount,
+    executedSellAmountBeforeFees: executedSellAmount,
+    executedBuyAmount,
+    executedFeeAmount,
     invalidated: status === TwapOrderStatus.Cancelled,
   }
 }

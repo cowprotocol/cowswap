@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'
@@ -15,7 +14,7 @@ import {
   limitDateString,
 } from 'modules/limitOrders/pure/DeadlineSelector/utils'
 
-import { GpModal as Modal } from 'common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'

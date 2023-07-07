@@ -20,23 +20,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     account,
   } = context
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, outputCurrencyAmount, recipient } =
-    derivedTradeState
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
 
   const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
-  const outputAmountIsNotSet = isFractionFalsy(outputCurrencyAmount)
 
-  if (isWrapUnwrap) {
-    if (inputAmountIsNotSet || outputAmountIsNotSet) {
-      return TradeFormValidation.WrapUnwrapAmountNotSet
-    }
-
-    return TradeFormValidation.WrapUnwrapFlow
-  }
-
-  if (tradeQuote.error) {
+  if (!isWrapUnwrap && tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
   }
 
@@ -60,16 +50,18 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.InputAmountNotSet
   }
 
-  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
-    return TradeFormValidation.RecipientInvalid
-  }
+  if (!isWrapUnwrap) {
+    if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+      return TradeFormValidation.RecipientInvalid
+    }
 
-  if (isSwapUnsupported) {
-    return TradeFormValidation.CurrencyNotSupported
-  }
+    if (isSwapUnsupported) {
+      return TradeFormValidation.CurrencyNotSupported
+    }
 
-  if (!tradeQuote.response) {
-    return TradeFormValidation.QuoteLoading
+    if (!tradeQuote.response) {
+      return TradeFormValidation.QuoteLoading
+    }
   }
 
   if (!inputCurrencyBalance) {
@@ -78,6 +70,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
     return TradeFormValidation.BalanceInsufficient
+  }
+
+  if (isWrapUnwrap) {
+    return TradeFormValidation.WrapUnwrapFlow
   }
 
   if (approvalRequired) {

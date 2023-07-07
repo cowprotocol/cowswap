@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,7 +12,6 @@ import { useVCowContract } from 'legacy/hooks/useContract'
 import { AppState } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWalletInfo } from 'modules/wallet'
@@ -190,7 +188,7 @@ export function useCombinedBalance() {
 
     const isLoading = !!(account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance))
 
-    const cow = COW[supportedChainId(chainId) || SupportedChainId.MAINNET]
+    const cow = COW[chainId]
 
     if (account) {
       if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)

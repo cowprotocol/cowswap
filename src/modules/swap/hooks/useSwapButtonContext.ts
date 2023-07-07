@@ -1,16 +1,12 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
-
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useWrapCallback, useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
-import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
@@ -20,6 +16,7 @@ import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -29,7 +26,6 @@ import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApp
 import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
 import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { formatSymbol } from 'utils/format'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 
@@ -78,10 +74,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
   const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : inputAmount
-  const wrapType = useWrapType()
-  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
-  const wrapCallback = useWrapCallback(wrapUnwrapAmount)
+  const wrapCallback = useWrapNativeFlow()
   const approvalState = useTradeApproveState(slippageAdjustedSellAmount || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
@@ -107,8 +101,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
     wrappedToken,
-    wrapType,
-    wrapInputError,
     quoteError: quote?.error,
     inputError: swapInputError,
     approvalState,
@@ -126,8 +118,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     chainId,
     wrappedToken,
     handleSwap,
-    wrapInputError,
-    wrapUnwrapAmount,
     hasEnoughWrappedBalanceForSwap,
     onWrapOrUnwrap: wrapCallback,
     onEthFlow() {
@@ -140,25 +130,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapInputError,
     onCurrencySelection,
   }
-}
-
-// TODO: get rid of it. The validation should be handled by modules/tradeFormValidation
-function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmount<Currency>): string | undefined {
-  const { chainId, account } = useWalletInfo()
-  const { currencies } = useDerivedSwapInfo()
-  const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const balance = useCurrencyBalance(account ?? undefined, currencies.INPUT)
-
-  const symbol = wrapType === WrapType.WRAP ? native : wrapped
-  // Check if user has enough balance for wrap/unwrap
-  const sufficientBalance = !!(inputAmount && balance && !balance.lessThan(inputAmount))
-  const isZero = balance && !inputAmount
-
-  if (isZero) {
-    return t`Enter an amount`
-  }
-
-  return !sufficientBalance ? t`Insufficient ${formatSymbol(symbol)} balance` : undefined
 }
 
 function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {

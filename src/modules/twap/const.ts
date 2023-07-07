@@ -5,24 +5,21 @@ import ms from 'ms.macro'
 
 import { USDC } from 'legacy/constants/tokens'
 
-import { TwapOrderStatus } from './types'
+import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export type OrderDeadline = { label: string; value: number }
 
-export const defaultNumOfParts = 1
+export const DEFAULT_NUM_OF_PARTS = 2
 
-export const defaultOrderDeadline: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
+export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
 
-export const orderDeadlines: OrderDeadline[] = [
-  { label: '5 Minutes', value: ms`5m` },
-  { label: '30 Minutes', value: ms`30m` },
-  defaultOrderDeadline,
-  { label: '1 Day', value: ms`1d` },
-  { label: '3 Days', value: ms`3d` },
-  { label: '7 Days', value: ms`7d` },
-  { label: '1 Month', value: ms`30d` },
+export const ORDER_DEADLINES: OrderDeadline[] = [
+  DEFAULT_ORDER_DEADLINE,
+  { label: '6 Hours', value: ms`6 hour` },
+  { label: '12 Hours', value: ms`12 hour` },
+  { label: '24 Hours', value: ms`1d` },
 ]
 
 export const TWAP_ORDER_STRUCT =
@@ -44,3 +41,9 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
+
+export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
+  executedSellAmount: '0',
+  executedBuyAmount: '0',
+  executedFeeAmount: '0',
+}
