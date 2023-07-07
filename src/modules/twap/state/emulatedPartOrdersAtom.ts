@@ -26,7 +26,7 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
         ...order.order,
         creationDate: creationDate.toISOString(),
         class: OrderClass.LIMIT,
-        status: OrderStatus.OPEN,
+        status: getOrderStatus(parent),
         owner: parent.safeAddress.toLowerCase(),
         uid: order.uid,
         signingScheme: SigningScheme.EIP1271,
@@ -48,6 +48,14 @@ export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) =
     }
   })
 })
+
+function getOrderStatus(parent: TwapOrderItem): OrderStatus {
+  if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
+  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
+  if (parent.status === TwapOrderStatus.Cancelled) return OrderStatus.CANCELLED
+
+  return OrderStatus.OPEN
+}
 
 function getPartOrderStatus(parent: TwapOrderItem): OrderStatusInApp {
   if (parent.status === TwapOrderStatus.Expired) return OrderStatusInApp.EXPIRED

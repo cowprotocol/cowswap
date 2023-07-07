@@ -36,7 +36,7 @@ export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStat
 
 export const TWAP_CANCELLED_STATUSES = [TwapOrderStatus.Cancelling, TwapOrderStatus.Cancelled]
 
-export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
+export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
 
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 5_000e6), // 5k
