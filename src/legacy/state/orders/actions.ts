@@ -175,6 +175,7 @@ export interface UpdatePresignGnosisSafeTxParams {
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
+export type DeleteOrdersParams = BatchOrdersUpdateParams
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
 
@@ -197,6 +198,8 @@ export const setOrderCancellationHash = createAction<SetOrderCancellationHashPar
 export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
 
 export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/cancelOrdersBatch')
+
+export const deleteOrders = createAction<DeleteOrdersParams>('order/deleteOrders')
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 

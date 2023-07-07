@@ -4,12 +4,14 @@ import { useEffect, useMemo, useRef } from 'react'
 import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useGnosisSafeInfo } from 'modules/wallet'
+
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
-import { twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { deleteTwapOrdersFromListAtom, twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData, TwapOrderStatus } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
@@ -26,7 +28,10 @@ export function TwapOrdersUpdater(props: {
   const twapDiscreteOrders = useTwapDiscreteOrders()
   const twapOrdersList = useAtomValue(twapOrdersAtom)
   const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
+  const deleteTwapOrders = useUpdateAtom(deleteTwapOrdersFromListAtom)
+  const safeInfo = useGnosisSafeInfo()
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
+  const safeNonce = safeInfo?.nonce
 
   const twapOrdersListRef = useRef(twapOrdersList)
   twapOrdersListRef.current = twapOrdersList
@@ -47,6 +52,22 @@ export function TwapOrdersUpdater(props: {
   // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingTwapOrders)
 
+  /**
+   * Since, a transaction proposal might be rejected in Safe
+   * We should remove this TWAP order creation transactions from store
+   */
+  const ordersToDelete = useMemo(() => {
+    if (!safeNonce) return []
+
+    return allOrdersInfo
+      .filter((data) => {
+        const { nonce, isExecuted } = data.safeData.safeTxParams
+
+        return !isExecuted && nonce < safeNonce
+      })
+      .map((item) => item.id)
+  }, [safeNonce, allOrdersInfo])
+
   useEffect(() => {
     if (!ordersAuthResult || !twapDiscreteOrders) return
 
@@ -59,8 +80,22 @@ export function TwapOrdersUpdater(props: {
       twapOrderExecutions.current
     )
 
+    ordersToDelete.forEach((id) => {
+      delete items[id]
+    })
+
     updateTwapOrders(items)
-  }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, updateTwapOrders])
+    deleteTwapOrders(ordersToDelete)
+  }, [
+    chainId,
+    safeAddress,
+    allOrdersInfo,
+    ordersAuthResult,
+    twapDiscreteOrders,
+    updateTwapOrders,
+    ordersToDelete,
+    deleteTwapOrders,
+  ])
 
   return null
 }

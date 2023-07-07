@@ -12,6 +12,7 @@ import {
   cancelOrdersBatch,
   clearOrders,
   CREATING_STATES,
+  deleteOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
   invalidateOrdersBatch,
@@ -468,6 +469,15 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.isRefunded = true
           orderObject.order.refundHash = refundHash
         }
+      })
+    })
+    .addCase(deleteOrders, (state, action) => {
+      prefillState(state, action)
+
+      const { chainId, ids } = action.payload
+
+      ids.forEach((id) => {
+        deleteOrderById(state, chainId, id)
       })
     })
 )
