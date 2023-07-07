@@ -22,7 +22,7 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: JSX.Element | string
-  buttonText?: JSX.Element
+  buttonText?: React.ReactNode
   children?: JSX.Element
 }
 
