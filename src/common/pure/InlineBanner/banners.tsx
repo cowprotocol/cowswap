@@ -50,13 +50,13 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
 
   return (
     <InlineBanner type="information">
-      <>
-        Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
-        Only available in the{' '}
-        <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
-          CoW Swap Safe App↗
-        </ExternalLink>
-      </>
+        <strong>Safe web app</strong>
+        <p>Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
+          Only available in the{' '}
+          <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
+            CoW Swap Safe App↗
+          </ExternalLink>
+        </p>
     </InlineBanner>
   )
 }
@@ -69,7 +69,6 @@ export type SmallVolumeWarningBannerProps = {
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
     <InlineBanner>
-      <>
         <strong>Small orders are unlikely to be executed</strong>
         <p>For this order, network fees would be{' '}
         <b>
@@ -81,7 +80,6 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
         {/*<br />*/}
         {/* TODO: add link to somewhere */}
         {/*<a href="/">Learn more ↗</a>*/}
-      </>
     </InlineBanner>
   )
 }

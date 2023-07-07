@@ -25,7 +25,6 @@ const WarningCheckboxWrapper = styled(CheckboxWrapper)`
   border-radius: 16px;
   padding: 20px;
   font-weight: 500;
-  grid-area: d;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -38,6 +38,7 @@ const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
 const Wrapper = styled.span<{ color: string }>`
   display: flex;
   align-items: center;
+  justify-content: center;
   background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
   color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
   gap: 24px 10px;
@@ -50,20 +51,12 @@ const Wrapper = styled.span<{ color: string }>`
   width: 100%;
 
   > span {
-    display: grid;
-    align-items: center;
+    display: flex;
     justify-content: center;
-    gap: 0 10px;
-    grid-template-areas: 'a b c' 'd d d';
-    grid-template-columns: minmax(max-content, 42px) minmax(min-content, 110px) minmax(min-content, 1fr);
+    align-items: center;
+    flex-flow: column wrap;
+    gap: 16px;
     width: 100%;
-    grid-auto-flow: dense;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: flex;
-      flex-flow: column wrap;
-      gap: 10px;
-    `};
   }
 
   > span > svg {
@@ -75,28 +68,33 @@ const Wrapper = styled.span<{ color: string }>`
     height: var(--size);
     object-fit: contain;
     stroke: none !important;
-    grid-area: a;
   }
 
   > span > svg > path {
     fill: ${({ color }) => color};
   }
 
+  > span {
+    display: flex; 
+    flex-flow: row wrap;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+      gap: 16px;
+    `};
+  }
+
   > span > strong {
-    display: block;
-    grid-area: b;
+    display: flex;
+    align-items: center;
   }
 
   > span > p {
     line-height: 1.4;
-    margin: 0;
+    margin: auto;
     padding: 0;
-    grid-area: c;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      text-align: center;
-      margin: 0 0 5px;
-    `};
+    width: 100%;
+    text-align: center;
   }
 `
 
@@ -115,7 +113,8 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
   return (
     <Wrapper className={className} color={color}>
       <span>
-        {!hideIcon && <SVG src={config.icon} description={type} />} {children}
+        {!hideIcon && <SVG src={config.icon} description={type} />} 
+        {children}
       </span>
     </Wrapper>
   )

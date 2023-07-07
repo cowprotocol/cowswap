@@ -20,11 +20,9 @@ const Fixtures = {
   information: (
     <DemoContainer>
       <InlineBanner type="information">
-        <>
           <strong>Token approval bundling</strong>
           <p>For your convenience, token approval and order placement will be bundled into
           a single transaction, streamlining your experience!</p>
-        </>
       </InlineBanner>
     </DemoContainer>
   ),
@@ -45,11 +43,9 @@ const Fixtures = {
   smallVolumeWarning: (
     <DemoContainer>
       <InlineBanner>
-        <>
           <strong>Small orders are unlikely to be executed</strong>
           <p>For this order, network fees would be <b>1.00% (2500 COW)</b> of
           your sell amount! Therefore, your order is unlikely to execute.</p>
-        </>
       </InlineBanner>
     </DemoContainer>
   ),
