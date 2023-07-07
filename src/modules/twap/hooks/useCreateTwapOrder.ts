@@ -7,6 +7,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+import { getCowSoundSend } from 'legacy/utils/sound'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
@@ -26,7 +27,7 @@ import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
 import { twapOrderAtom } from '../state/twapOrderAtom'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderStatus } from '../types'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
@@ -96,7 +97,7 @@ export function useCreateTwapOrder() {
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
         const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
 
-        addTwapOrderToList({
+        const orderItem: TwapOrderItem = {
           order: twapOrderToStruct(twapOrder),
           status: TwapOrderStatus.WaitSigning,
           chainId,
@@ -104,7 +105,11 @@ export function useCreateTwapOrder() {
           submissionDate: new Date().toISOString(),
           id: orderId,
           executionInfo: DEFAULT_TWAP_EXECUTION_INFO,
-        })
+        }
+
+        addTwapOrderToList(orderItem)
+
+        getCowSoundSend().play()
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         tradeConfirmActions.onSuccess(safeTxHash)

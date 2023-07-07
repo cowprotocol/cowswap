@@ -1,7 +1,5 @@
 import { EnrichedOrder, OrderClass, OrderKind, SigningScheme, OrderStatus } from '@cowprotocol/cow-sdk'
 
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-
 import { TWAP_CANCELLED_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
@@ -15,7 +13,7 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
-export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
+export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
   const { safeAddress, id, status, executionInfo } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData } = item.order
   const numOfParts = BigInt(n)
