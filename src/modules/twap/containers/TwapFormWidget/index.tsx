@@ -27,7 +27,7 @@ import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_NUM_OF_PARTS, defaultNumOfParts, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -163,7 +163,7 @@ export function TwapFormWidget() {
           onUserInput={(value: number | null) =>
             updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
           }
-          min={defaultNumOfParts}
+          min={DEFAULT_NUM_OF_PARTS}
           max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}

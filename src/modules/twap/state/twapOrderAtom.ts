@@ -29,7 +29,7 @@ export const twapSlippageAdjustedBuyAmount = atom<CurrencyAmount<Token> | null>(
 
   if (!outputCurrencyAmount) return null
 
-  const slippage = get(twapOrderSlippage)
+  const slippage = get(twapOrderSlippageAtom)
 
   const slippageAmount = outputCurrencyAmount.multiply(slippage)
   return outputCurrencyAmount.subtract(slippageAmount) as CurrencyAmount<Token>
