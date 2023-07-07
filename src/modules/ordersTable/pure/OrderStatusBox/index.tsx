@@ -16,7 +16,7 @@ const Wrapper = styled.div<{
 }>`
   --height: 28px;
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
-    status === OrderStatus.FULFILLED || (partiallyFilled && status !== OrderStatus.CANCELLED)
+    status === OrderStatus.FULFILLED || (partiallyFilled && !CONFIRMED_STATES.includes(status))
       ? theme.success
       : status === OrderStatus.CANCELLED
       ? theme.danger
