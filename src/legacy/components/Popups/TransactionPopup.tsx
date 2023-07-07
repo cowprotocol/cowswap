@@ -4,13 +4,11 @@ import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
 
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
-
-import { HashType } from '../../state/enhancedTransactions/reducer'
-import { EnhancedTransactionLink } from '../EnhancedTransactionLink'
+import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -25,21 +23,9 @@ export function TransactionPopup({
   success?: boolean
   summary?: string | JSX.Element
 }) {
-  const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const { chainId } = useWalletInfo()
 
   const theme = useContext(ThemeContext)
-
-  if (!account) return null
-
-  const tx = {
-    hash,
-    hashType: isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
-    safeTransaction: {
-      safeTxHash: hash,
-      safe: account,
-    },
-  }
 
   return (
     <RowNoFlex>
@@ -54,7 +40,7 @@ export function TransactionPopup({
         ) : (
           summary
         )}
-        {chainId && <EnhancedTransactionLink chainId={chainId} tx={tx} />}
+        {chainId && <ExplorerLink id={hash} />}
       </AutoColumn>
     </RowNoFlex>
   )
