@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import ms from 'ms.macro'
+
 import { useGnosisSafeInfo } from 'modules/wallet'
 
 import { TWAP_PENDING_STATUSES } from '../const'
@@ -116,6 +118,8 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
   }, [])
 }
 
+const AUTH_TIME_THRESHOLD = ms`1m`
+
 function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem | undefined): boolean {
   const { isExecuted, confirmations, executionDate: _executionDate } = info.safeData.safeTxParams
   const executionDate = _executionDate ? new Date(_executionDate) : null
@@ -127,6 +131,15 @@ function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem 
 
   // Skip not mined orders
   if (!isTxMined) return false
+
+  /**
+   * Sometimes, there can be a gap between Safe and Infura node.
+   * Safe tells us, that tx is mined, but smart-contract call via Infura says that tx is not mined yet
+   * To avoid falsy triggers, we additionally wait 1min after tx mining
+   */
+  if (!executionDate || Date.now() - executionDate.getTime() < AUTH_TIME_THRESHOLD) {
+    return false
+  }
 
   // Skip NOT pending orders
   if (existingOrder) {
