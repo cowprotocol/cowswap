@@ -21,9 +21,10 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
+  isConfirmationModal?: boolean
 }
 
-export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps) {
+export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
   const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
@@ -49,7 +50,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
 
   return (
     <>
-      {showPriceImpactWarning && (
+      {!isConfirmationModal && showPriceImpactWarning && (
         <NoImpactWarning
           withoutAccepting={false}
           isAccepted={isPriceImpactAccepted}
@@ -70,7 +71,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
           return <SmallPartTimeWarning />
         }
 
-        if (canTrade && isFallbackHandlerRequired) {
+        if (!isConfirmationModal && canTrade && isFallbackHandlerRequired) {
           return (
             <FallbackHandlerWarning
               isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}

@@ -2,8 +2,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'
@@ -105,7 +104,7 @@ export function UnfillableOrdersUpdater(): null {
       order: Order,
       fee: FeeInformation | null,
       marketPrice: Price<Currency, Currency>,
-      estimatedExecutionPrice: Price<Currency, Currency>
+      estimatedExecutionPrice: Price<Currency, Currency> | null
     ) => {
       if (!fee?.amount) return
 
