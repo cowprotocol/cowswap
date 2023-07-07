@@ -79,6 +79,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
+        buttonText={'Place TWAP order'}
       >
         <>
           <TradeBasicConfirmDetails
