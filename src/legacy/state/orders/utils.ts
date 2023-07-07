@@ -13,6 +13,7 @@ import { serializeToken } from 'legacy/state/user/hooks'
 
 import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
 
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 
 export type OrderTransitionStatus =
@@ -241,7 +242,7 @@ export function getEstimatedExecutionPrice(
   }
 
   // Parent TWAP order, ignore
-  if (order?.composableCowInfo?.id) {
+  if (getIsComposableCowParentOrder(order)) {
     return null
   }
 
