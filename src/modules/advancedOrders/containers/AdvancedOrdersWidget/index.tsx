@@ -31,6 +31,7 @@ const UNLOCK_SCREEN = {
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
   buttonText: 'Unlock TWAP orders (BETA)',
+  // TODO: add actual link before deploy to PROD
   buttonLink: 'http://google.com',
 }
 
