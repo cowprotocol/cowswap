@@ -62,6 +62,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   ),
 }
 
+const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
+
 // TODO: add cosmos fixture for this component
 export function ReceiptModal({
   isOpen,
@@ -79,7 +81,7 @@ export function ReceiptModal({
     return null
   }
 
-  const isTwapParentOrder = !!twapOrder && !isTwapPartOrder
+  const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
@@ -172,7 +174,7 @@ export function ReceiptModal({
             </styledEl.Field>
 
             {/*TODO: add a link to explorer when it will support TWAP orders*/}
-            {!isTwapParentOrder && (
+            {(!twapOrder || twapPartOrderExists) && (
               <styledEl.Field>
                 {order.executionData.activityId && (
                   <>
