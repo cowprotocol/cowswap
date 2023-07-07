@@ -4,6 +4,8 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
 import { OrderID } from 'api/gnosisProtocol'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 import {
   addOrUpdateOrders,
@@ -11,6 +13,7 @@ import {
   cancelOrdersBatch,
   clearOrders,
   CREATING_STATES,
+  deleteOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
   invalidateOrdersBatch,
@@ -145,6 +148,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
+    stateForChain.scheduled[id] ||
     stateForChain.failed[id]
   )
 }
@@ -158,6 +162,7 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
   delete stateForChain.creating[id]
   delete stateForChain.failed[id]
+  delete stateForChain.scheduled[id]
 }
 
 function addOrderToState(
@@ -185,6 +190,17 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
 
 function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: SerializedOrder): number {
   return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
+}
+
+function cancelOrderInState(state: Required<OrdersState>, chainId: ChainId, orderObject: OrderObject) {
+  const id = orderObject.id
+
+  deleteOrderById(state, chainId, id)
+
+  orderObject.order.status = OrderStatus.CANCELLED
+  orderObject.order.isCancelling = false
+
+  addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
 }
 
 const initialState: OrdersState = {}
@@ -262,18 +278,22 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
-        const isComposableCowOrder = !!newOrder?.composableCowInfo
+        const isComposableParentOrder = getIsComposableCowParentOrder(newOrder)
+        const isComposableChildOrder = getIsComposableCowChildOrder(newOrder)
+
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
+              ...(isComposableChildOrder ? newOrder : {}),
               validTo,
+              creationTime: newOrder.creationTime,
               composableCowInfo: newOrder.composableCowInfo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               // Don't reset isCancelling status for ComposableCow orders
               // Because currently we don't have a backend for it
               // And this status is stored only on Frontend
-              isCancelling: isComposableCowOrder ? !!orderObj.order.isCancelling : newOrder.isCancelling,
+              isCancelling: isComposableParentOrder ? !!orderObj.order.isCancelling : newOrder.isCancelling,
               class: newOrder.class,
               openSince: newOrder.openSince || orderObj.order.openSince,
               status,
@@ -387,12 +407,31 @@ export default createReducer(initialState, (builder) =>
         const orderObject = getOrderById(state, chainId, id)
 
         if (orderObject) {
-          deleteOrderById(state, chainId, id)
+          cancelOrderInState(state, chainId, orderObject)
 
-          orderObject.order.status = OrderStatus.CANCELLED
-          orderObject.order.isCancelling = false
+          if (getIsComposableCowParentOrder(orderObject.order)) {
+            const ordersMap = state[chainId]
+            const allOrdersMap = {
+              ...ordersMap.pending,
+              ...ordersMap.presignaturePending,
+              ...ordersMap.fulfilled,
+              ...ordersMap.expired,
+              ...ordersMap.cancelled,
+              ...ordersMap.creating,
+              ...ordersMap.failed,
+              ...ordersMap.scheduled,
+            }
 
-          addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
+            const children = Object.values(allOrdersMap).filter(
+              (item) => item?.order.composableCowInfo?.parentId === id
+            )
+
+            children.forEach((child) => {
+              if (!child) return
+
+              cancelOrderInState(state, chainId, child)
+            })
+          }
         }
       })
     })
@@ -434,6 +473,15 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.isRefunded = true
           orderObject.order.refundHash = refundHash
         }
+      })
+    })
+    .addCase(deleteOrders, (state, action) => {
+      prefillState(state, action)
+
+      const { chainId, ids } = action.payload
+
+      ids.forEach((id) => {
+        deleteOrderById(state, chainId, id)
       })
     })
 )

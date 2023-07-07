@@ -1,11 +1,14 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import store from 'legacy/state'
+import { deleteOrders } from 'legacy/state/orders/actions'
+
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { deepEqual } from 'utils/deepEqual'
 
-import { TwapOrderItem } from '../types'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
@@ -39,4 +42,23 @@ export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem
   const currentState = get(twapOrdersAtom)
 
   set(twapOrdersAtom, { ...currentState, [order.id]: order })
+})
+
+export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[]) => {
+  const { chainId } = get(walletInfoAtom)
+  const currentState = get(twapOrdersAtom)
+
+  ids.forEach((id) => {
+    delete currentState[id]
+  })
+
+  store.dispatch(deleteOrders({ chainId, ids }))
+
+  set(twapOrdersAtom, currentState)
+})
+
+export const cancelTwapOrderAtom = atom(null, (get, set, orderId: string) => {
+  const currentState = get(twapOrdersAtom)
+
+  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status: TwapOrderStatus.Cancelling } })
 })

@@ -1,19 +1,19 @@
 import { EnrichedOrder, OrderClass, OrderKind, SigningScheme, OrderStatus } from '@cowprotocol/cow-sdk'
 
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-
+import { TWAP_CANCELLED_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,
   [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
+  [TwapOrderStatus.Cancelling]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
-export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
+export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
   const { safeAddress, id, status, executionInfo } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData } = item.order
   const numOfParts = BigInt(n)
@@ -22,7 +22,7 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
 
   const sellAmount = sellAmountValue.toString()
 
-  const creationTime = new Date(item.submissionDate)
+  const creationTime = new Date(item.executedDate || item.submissionDate)
   const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
   const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo
 
@@ -48,6 +48,6 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
     executedFeeAmount,
-    invalidated: status === TwapOrderStatus.Cancelled,
+    invalidated: TWAP_CANCELLED_STATUSES.includes(status),
   }
 }

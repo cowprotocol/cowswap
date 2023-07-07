@@ -16,6 +16,9 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
 import { OrderWithComposableCowInfo } from 'common/types'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+
+type OrderWithComposableCowInfoMap = { [id: string]: OrderWithComposableCowInfo }
 
 function _getTokenFromMapping(
   address: string,
@@ -43,7 +46,8 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 function _transformGpOrderToStoreOrder(
   { order, composableCowInfo }: OrderWithComposableCowInfo,
   chainId: ChainId,
-  allTokens: { [address: string]: Token | null }
+  allTokens: { [address: string]: Token | null },
+  ordersMap: OrderWithComposableCowInfoMap
 ): Order | undefined {
   const {
     uid: id,
@@ -57,6 +61,9 @@ function _transformGpOrderToStoreOrder(
   } = order
   // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
   const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
+
+  const isComposableCowChildOrder = getIsComposableCowChildOrder({ composableCowInfo })
+  const parentOrder = isComposableCowChildOrder ? ordersMap[composableCowInfo!.parentId!] : null
 
   const isEthFlow = Boolean(ethflowData)
 
@@ -79,6 +86,8 @@ function _transformGpOrderToStoreOrder(
     return
   }
 
+  const isCancelling = (apiStatus === 'pending' && order.invalidated) || parentOrder?.order.invalidated
+
   const storeOrder: Order = {
     ...order,
     // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
@@ -91,7 +100,7 @@ function _transformGpOrderToStoreOrder(
     status,
     receiver: receiver || '',
     apiAdditionalInfo: order,
-    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+    isCancelling,
     // EthFlow related
     owner: onchainOrderData?.sender || owner,
     validTo: ethflowData?.userValidTo || order.validTo,
@@ -166,8 +175,14 @@ function _filterOrders(
   tokens: Record<string, Token | null>,
   chainId: ChainId
 ): Order[] {
+  const ordersMap = orders.reduce<OrderWithComposableCowInfoMap>((acc, val) => {
+    acc[val.order.uid] = val
+
+    return acc
+  }, {})
+
   return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
+    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens, ordersMap)
     if (storeOrder) {
       acc.push(storeOrder)
     }

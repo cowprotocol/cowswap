@@ -11,7 +11,7 @@ import Loader from 'legacy/components/Loader'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ZERO_FRACTION } from 'legacy/constants'
 import useTimeAgo from 'legacy/hooks/useTimeAgo'
-import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 import { getEtherscanLink } from 'legacy/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -144,9 +144,8 @@ export function OrderRow({
 
   const withWarning =
     (!hasEnoughBalance || !hasEnoughAllowance) &&
-    // don't show the warning for closed orders
-    status !== OrderStatus.SCHEDULED &&
-    PENDING_STATES.includes(status)
+    // show the warning only for pending orders
+    status === OrderStatus.PENDING
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
@@ -368,6 +367,10 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
   const { activityId } = order.executionData
 
   if (getIsComposableCowParentOrder(order)) {
+    return undefined
+  }
+
+  if (order.composableCowInfo?.isVirtualPart) {
     return undefined
   }
 

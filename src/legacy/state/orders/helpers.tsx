@@ -107,7 +107,7 @@ export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed } = orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed, scheduled } = orders
 
   return (
     pending?.[id] ||
@@ -116,6 +116,7 @@ export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id
     expired?.[id] ||
     cancelled?.[id] ||
     creating?.[id] ||
+    scheduled?.[id] ||
     failed?.[id]
   )
 }
