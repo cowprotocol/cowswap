@@ -4,6 +4,7 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
 import { OrderID } from 'api/gnosisProtocol'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 import {
@@ -278,10 +279,13 @@ export default createReducer(initialState, (builder) =>
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
         const isComposableParentOrder = getIsComposableCowParentOrder(newOrder)
+        const isComposableChildOrder = getIsComposableCowChildOrder(newOrder)
+
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
+              ...(isComposableChildOrder ? newOrder : {}),
               validTo,
               creationTime: newOrder.creationTime,
               composableCowInfo: newOrder.composableCowInfo,

@@ -1,3 +1,5 @@
+import { deepEqual } from 'utils/deepEqual'
+
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapOrderStatus } from '../types'
@@ -15,6 +17,10 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
 
     if (currentOrder) {
       if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) {
+        if (!deepEqual(currentOrder.executionInfo, newOrder.executionInfo)) {
+          acc[orderId] = { ...currentOrder, executionInfo: newOrder.executionInfo }
+        }
+
         return acc
       }
 
