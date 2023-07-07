@@ -11,10 +11,12 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
+import { TwapFormWarnings } from '../TwapFormWarnings'
 
 interface TwapConfirmModalProps {
   fallbackHandlerIsNotSet: boolean
@@ -34,14 +36,14 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   const slippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
+  const localFormValidation = useTwapFormState()
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
   const isInvertedState = useState(false)
 
-  // TODO: add conditions based on warnings
-  const isConfirmDisabled = false
+  const isConfirmDisabled = !!localFormValidation
 
   const priceImpact = useTradePriceImpact()
 
@@ -95,6 +97,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             totalDuration={totalDuration}
           />
           {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}
+          <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
         </>
       </TradeConfirmation>
     </TradeConfirmModal>
