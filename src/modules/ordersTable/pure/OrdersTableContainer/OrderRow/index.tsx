@@ -253,7 +253,7 @@ export function OrderRow({
       {isOpenOrdersTab && (
         <styledEl.PriceElement hasBackground onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices ? (
+          {prices && estimatedExecutionPrice ? (
             <styledEl.ExecuteCellWrapper>
               <EstimatedExecutionPrice
                 amount={executionPriceInverted}
@@ -268,7 +268,7 @@ export function OrderRow({
                 isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>
-          ) : prices === null || isOrderCreating ? (
+          ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
