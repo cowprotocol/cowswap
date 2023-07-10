@@ -57,7 +57,7 @@ export function useInitializeUtm(): void {
     () => {
       const searchParams = new URLSearchParams(search)
       const utm = getUtmParams(searchParams)
-      if (utm.utmCampaign || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmSource) {
+      if (utm.utmSource || utm.utmMedium || utm.utmCampaign || utm.utmContent || utm.utmTerm) {
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
       }
