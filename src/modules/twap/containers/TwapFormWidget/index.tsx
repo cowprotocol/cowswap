@@ -141,7 +141,7 @@ export function TwapFormWidget() {
           value={slippageValue}
           onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
           decimalsPlaces={2}
-          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
+          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(0)}
           max={50}
           label={LABELS_TOOLTIPS.slippage.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
