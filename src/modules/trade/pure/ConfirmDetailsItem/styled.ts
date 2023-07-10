@@ -21,6 +21,7 @@ export const Row = styled(StyledRowBetween)`
 
 export const Content = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   margin: 0 0 0 auto;
@@ -30,10 +31,13 @@ export const Content = styled.div`
   > span {
     display: block;
     text-align: right;
+    word-break: break-all;
   }
 
   i {
     font-style: normal;
     opacity: 0.7;
+    word-break: break-all;
+    text-align: right;
   }
 `
