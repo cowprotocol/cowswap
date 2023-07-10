@@ -54,8 +54,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   )
 
   const shouldZeroApprove = useShouldZeroApprove(twapOrder?.sellAmount)
-  const showZeroApprovalWarning = shouldZeroApprove && outputCurrencyAmount !== null
-  const showApprovalBundlingBanner = primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
+  const showZeroApprovalWarning = !isConfirmationModal && shouldZeroApprove && outputCurrencyAmount !== null
+  const showApprovalBundlingBanner =
+    !isConfirmationModal && primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
   const showFallbackHandlerWarning = !isConfirmationModal && canTrade && isFallbackHandlerRequired
 
   const setIsPriceImpactAccepted = useCallback(() => {
@@ -67,6 +68,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   return (
     <>
+      {showZeroApprovalWarning && <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />}
+      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
+
       {!isConfirmationModal && showPriceImpactWarning && (
         <NoImpactWarning
           withoutAccepting={false}
@@ -74,8 +78,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           acceptCallback={() => setIsPriceImpactAccepted()}
         />
       )}
-      {showZeroApprovalWarning && <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />}
-      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
 
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
