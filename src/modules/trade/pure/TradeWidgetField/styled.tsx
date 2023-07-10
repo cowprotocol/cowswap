@@ -82,6 +82,10 @@ ${({ hasPrefix }) =>
   ${Content} {
     padding: 0;
     flex: 0 1 auto;
+
+    ${NumericalInput} {
+      max-width: 200px;
+    };
     
     ${({ hasPrefix }) =>
       hasPrefix &&
