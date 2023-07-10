@@ -1,5 +1,4 @@
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'
@@ -52,11 +51,9 @@ export function createTwapOrderTxs(
 
   if (!needsZeroApproval) return txs
 
-  const zeroAmount = CurrencyAmount.fromRawAmount(sellAmount.currency, 0).toFixed(0)
-
   const zeroApproveTx = {
     to: sellAmount.currency.address,
-    data: erc20Contract.interface.encodeFunctionData('approve', [spender, zeroAmount]),
+    data: erc20Contract.interface.encodeFunctionData('approve', [spender, '0']),
     value: '0',
     operation: 0,
   }
