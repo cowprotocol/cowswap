@@ -56,6 +56,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const shouldZeroApprove = useShouldZeroApprove(twapOrder?.sellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrencyAmount !== null
   const showApprovalBundlingBanner = primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
+  const showFallbackHandlerWarning = !isConfirmationModal && canTrade && isFallbackHandlerRequired
 
   const setIsPriceImpactAccepted = useCallback(() => {
     updateTwapOrdersSettings({ isPriceImpactAccepted: !isPriceImpactAccepted })
@@ -89,7 +90,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <SmallPartTimeWarning />
         }
 
-        if (!isConfirmationModal && canTrade && isFallbackHandlerRequired) {
+        if (showFallbackHandlerWarning) {
           return (
             <FallbackHandlerWarning
               isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
