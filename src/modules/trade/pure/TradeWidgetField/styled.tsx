@@ -68,6 +68,11 @@ ${({ hasPrefix }) =>
   css`
     display: grid;
     grid-template-columns: max-content auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
+      flex-flow: column wrap;
+    `};
   `}
 
   ${TradeWidgetFieldLabel} {
@@ -90,6 +95,11 @@ ${({ hasPrefix }) =>
         display: flex;
         padding: 0;
         height: var(--minHeight);
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          border-top: 1px solid ${theme.grey1};
+          width: 100%;
+        `};
       `}
 
     > em {
@@ -118,7 +128,8 @@ ${({ hasPrefix }) =>
           width: 180px;
 
           ${({ theme }) => theme.mediaWidth.upToSmall`
-            border-radius: 0 15px 15px 0;
+            border-radius: 0 0 15px 0;
+            width: 136px;
           `};
 
           > ${NumericalInput} {
