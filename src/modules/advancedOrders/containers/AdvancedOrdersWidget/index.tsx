@@ -32,7 +32,7 @@ const UNLOCK_SCREEN = {
   orderType: 'TWAP',
   buttonText: 'Unlock TWAP orders (BETA)',
   // TODO: add actual link before deploy to PROD
-  buttonLink: 'http://google.com',
+  buttonLink: '',
 }
 
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
@@ -87,7 +87,6 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
     bottomContent: children,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
-        showLink={false}
         items={TWAP_BULLET_LIST_CONTENT}
         buttonLink={UNLOCK_SCREEN.buttonLink}
         title={UNLOCK_SCREEN.title}

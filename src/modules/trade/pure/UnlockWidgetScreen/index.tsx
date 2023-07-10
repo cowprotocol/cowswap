@@ -16,10 +16,9 @@ type UnlockWidgetProps = {
   handleUnlock: () => void
   title: string
   subtitle: string
-  buttonLink: string
+  buttonLink?: string
   orderType: string
   buttonText: string
-  showLink?: boolean
 }
 
 export function UnlockWidgetScreen({
@@ -30,7 +29,6 @@ export function UnlockWidgetScreen({
   items,
   title,
   subtitle,
-  showLink = true,
 }: UnlockWidgetProps) {
   return (
     <styledEl.Container>
@@ -53,7 +51,7 @@ export function UnlockWidgetScreen({
       )}
 
       <styledEl.ControlSection>
-        {showLink && (
+        {buttonLink && (
           <span>
             Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
           </span>
