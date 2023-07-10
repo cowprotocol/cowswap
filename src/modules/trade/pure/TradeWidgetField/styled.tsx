@@ -82,10 +82,6 @@ ${({ hasPrefix }) =>
   ${Content} {
     padding: 0;
     flex: 0 1 auto;
-
-    ${NumericalInput} {
-      max-width: 200px;
-    }
     
     ${({ hasPrefix }) =>
       hasPrefix &&
@@ -125,7 +121,6 @@ ${({ hasPrefix }) =>
           flex: 0 1 auto;
           border-radius: 0 15px 15px 0;
           align-items: center;
-          width: 144px;
 
           ${({ theme }) => theme.mediaWidth.upToSmall`
             border-radius: 0 0 15px 0;
@@ -133,8 +128,8 @@ ${({ hasPrefix }) =>
           `};
 
           > ${NumericalInput} {
-            font-size: 20px;
-            width: 100%;
+            font-size: 18px;
+            width: 62px;
           }
         `}
   }
