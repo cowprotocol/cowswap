@@ -378,5 +378,5 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
     return undefined
   }
 
-  return chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
+  return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
 }

@@ -88,7 +88,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
         <RowBetween key={token.address} width="100%">
           <RowFixed>
             <CurrencyLogo currency={token} size={'20px'} />
-            <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
+            <ExternalLink href={getExplorerLink(chainId, 'address', token.address)}>
               <ThemedText.Main ml={'10px'} fontWeight={600}>
                 <TokenSymbol token={token} /> {/* MOD */}
               </ThemedText.Main>
@@ -96,7 +96,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
           </RowFixed>
           <RowFixed>
             <TrashIcon onClick={() => removeToken(chainId, token.address)} />
-            <ExternalLinkIcon href={getExplorerLink(chainId, token.address, 'address')} />
+            <ExternalLinkIcon href={getExplorerLink(chainId, 'address', token.address)} />
           </RowFixed>
         </RowBetween>
       ))

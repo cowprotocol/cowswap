@@ -191,7 +191,7 @@ export function AccountDetails({
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
-  const explorerLabel = account ? getExplorerLabel(chainId, account, 'address') : undefined
+  const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
 
   const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
@@ -270,7 +270,7 @@ export function AccountDetails({
                 <AddressLink
                   hasENS={!!ENSName}
                   isENS={!!ENSName}
-                  href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
+                  href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
                 >
                   {explorerLabel} ↗
                 </AddressLink>

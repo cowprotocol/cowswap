@@ -1,27 +1,82 @@
+import { PropsWithChildren } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { ExternalLink } from 'legacy/theme'
-import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'legacy/utils'
+import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
+import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import { useWalletInfo } from 'modules/wallet'
 
-interface Props {
-  id: string
-  type?: BlockExplorerLinkType
+interface PropsBase extends PropsWithChildren {
+  // type?: BlockExplorerLinkType
   label?: string
   className?: string
+  defaultChain?: SupportedChainId
 }
+
+interface PropsWithId extends PropsBase {
+  type: 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
+  id: string
+}
+
+interface PropsWithoutId extends PropsBase {
+  type: 'cow-explorer-home'
+}
+
+export type Props = PropsWithId | PropsWithoutId
 
 /**
  * Creates a link to the relevant explorer: Etherscan, GP Explorer or Blockscout
  * @param props
  */
 export function ExplorerLink(props: Props) {
-  const { id, label, type = 'transaction', className } = props
-  const { chainId } = useWalletInfo()
+  const { chainId: _chainId } = useWalletInfo()
+  const chainId = _chainId || props.defaultChain
 
-  const linkLabel = label || getExplorerLabel(chainId, id, type)
+  if (!chainId) {
+    return null
+  }
+
+  const url = getUrl(chainId, props)
+  const { className } = props
+
+  const linkContent = getContent(chainId, props)
   return (
-    <ExternalLink className={className} href={getEtherscanLink(chainId, id, type)}>
-      {linkLabel} <span style={{ fontSize: '0.8em' }}>↗</span>
+    <ExternalLink className={className} href={url}>
+      {linkContent}
     </ExternalLink>
+  )
+}
+
+function getUrl(chainId: SupportedChainId, props: Props) {
+  const { type } = props
+
+  if (type === 'cow-explorer-home') {
+    return getExplorerBaseUrl(chainId)
+  }
+
+  // return
+  return getEtherscanLink(chainId, type, props.id)
+}
+
+function getLabel(chainId: SupportedChainId, props: Props) {
+  const { label, type } = props
+
+  const id = type !== 'cow-explorer-home' ? props.id : undefined
+
+  return label || getExplorerLabel(chainId, type, id)
+}
+function getContent(chainId: SupportedChainId, props: Props) {
+  if (props.children) {
+    return props.children
+  }
+
+  const linkLabel = getLabel(chainId, props)
+
+  return (
+    <>
+      {linkLabel} <span style={{ fontSize: '0.8em' }}>↗</span>
+    </>
   )
 }
