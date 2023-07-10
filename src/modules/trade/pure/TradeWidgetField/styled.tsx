@@ -125,7 +125,7 @@ ${({ hasPrefix }) =>
           flex: 0 1 auto;
           border-radius: 0 15px 15px 0;
           align-items: center;
-          width: 180px;
+          width: 144px;
 
           ${({ theme }) => theme.mediaWidth.upToSmall`
             border-radius: 0 0 15px 0;
