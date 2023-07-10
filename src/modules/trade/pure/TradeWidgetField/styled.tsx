@@ -13,6 +13,7 @@ export const TradeWidgetFieldLabel = styled.span`
   font-weight: 500;
   padding: 0;
   flex: 0 1 auto;
+  flex: 1;
 
   ${QuestionWrapper} {
     opacity: 0.5;
@@ -56,6 +57,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   flex-flow: row wrap;
   flex: 1;
   gap: 3px;
+  width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0;
@@ -74,6 +76,11 @@ ${({ hasPrefix }) =>
 
   ${Content} {
     padding: 0;
+    flex: 0 1 auto;
+
+    ${NumericalInput} {
+      max-width: 200px;
+    }
     
     ${({ hasPrefix }) =>
       hasPrefix &&
@@ -82,7 +89,7 @@ ${({ hasPrefix }) =>
         justify-content: center;
         display: flex;
         padding: 0;
-        height: 43px;
+        height: var(--minHeight);
       `
     }
 
