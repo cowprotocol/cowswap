@@ -8,6 +8,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard, SurplusCardWrapper } from './styled'
 
@@ -15,6 +16,7 @@ export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 
   const surplusUsdAmount = useHigherUSDValue(surplusAmount)
+  const nativeSymbol = useNativeCurrency()?.symbol || 'ETH'
 
   // TODO: Remove these 2 lines once merged in DEVELOP (this change was cherry-picked from it, and it still needs these two lines because it doesn't have sasha refactor for supportedChainId)
   const { chainId } = useWalletInfo()
@@ -27,7 +29,10 @@ export function SurplusCard() {
         <div>
           <span>
             <i>
-              Your total surplus <QuestionHelper text={'TODO: insert tooltip'} />
+              Your total surplus{' '}
+              <QuestionHelper
+                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since March 2023`}
+              />
             </i>
           </span>
           <span>
@@ -45,7 +50,6 @@ export function SurplusCard() {
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
         </div>
         <div>
-          {/* TODO: add correct link */}
           <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
             Learn about surplus on CoW Swap ↗
           </ExternalLink>
