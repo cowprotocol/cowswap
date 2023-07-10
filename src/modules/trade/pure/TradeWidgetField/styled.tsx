@@ -64,11 +64,11 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   `};
 
 ${({ hasPrefix }) =>
-        hasPrefix &&
-        css`
-          display: grid;
-          grid-template-columns: max-content auto;
-        `}
+  hasPrefix &&
+  css`
+    display: grid;
+    grid-template-columns: max-content auto;
+  `}
 
   ${TradeWidgetFieldLabel} {
     padding: ${({ hasPrefix }) => (hasPrefix ? '10px 16px' : 'initial')};
@@ -90,8 +90,7 @@ ${({ hasPrefix }) =>
         display: flex;
         padding: 0;
         height: var(--minHeight);
-      `
-    }
+      `}
 
     > em {
       font-style: normal;

@@ -7,7 +7,9 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
     return (
       <InlineBanner type="information">
         <strong>Use Safe web app</strong>
-        <p>Use the Safe web app for advanced trading. <br />Only available in the{' '}
+        <p>
+          Use the Safe web app for advanced trading. <br />
+          Only available in the{' '}
           <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
             CoW Swap Safe App↗
           </ExternalLink>
