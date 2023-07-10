@@ -72,9 +72,8 @@ export default function Profile() {
   const vCowToken = V_COW[chainId]
   // Cow balance
   const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || supportedChainId(chainId)
-      ? CurrencyAmount.fromRawAmount(cowToken, 0)
-      : null
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) ||
+    (supportedChainId(chainId) ? CurrencyAmount.fromRawAmount(cowToken, 0) : null)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
