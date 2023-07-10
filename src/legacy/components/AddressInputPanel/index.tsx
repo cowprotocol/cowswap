@@ -115,7 +115,7 @@ export function AddressInputPanel({
                 {label ?? <Trans>Recipient</Trans>}
               </ThemedText.Black>
               {address && chainId && (
-                <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
+                <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>
                 </ExternalLink>
               )}

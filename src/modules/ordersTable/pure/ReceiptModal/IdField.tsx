@@ -11,7 +11,7 @@ export type Props = {
 }
 
 export function IdField({ id, chainId }: Props) {
-  const activityUrl = getEtherscanLink(chainId, id, 'transaction')
+  const activityUrl = getEtherscanLink(chainId, 'transaction', id)
 
   return (
     <styledEl.Value>

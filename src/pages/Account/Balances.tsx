@@ -256,7 +256,7 @@ export default function Profile() {
               </ConvertWrapper>
 
               <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', V_COW_CONTRACT_ADDRESS[chainId])}>
                   View contract ↗
                 </ExtLink>
                 <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
@@ -279,7 +279,7 @@ export default function Profile() {
             <CardActions>
               <ExtLink
                 title="View contract"
-                href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}
+                href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId])}
               >
                 View contract ↗
               </ExtLink>
