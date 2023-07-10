@@ -149,7 +149,7 @@ export function OrderRow({
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
+  const activityUrl = chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
 
   const [isInverted, setIsInverted] = useState(() => {
     // On mount, apply smart quote selection

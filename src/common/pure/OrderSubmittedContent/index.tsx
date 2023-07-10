@@ -42,7 +42,7 @@ export function OrderSubmittedContent({ chainId, hash, onDismiss }: OrderSubmitt
         <Trans>Order Submitted</Trans>
       </Caption>
       {/*TODO: unify and fix explorer link. Refs: ExplorerLink, DisplayLink, EnhancedTransactionLink*/}
-      <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
+      <ExternalLink href={getExplorerLink(chainId, 'transaction', hash)}>
         <Trans>View on Explorer ↗</Trans>
       </ExternalLink>
       <ActionButton onClick={onDismiss}>

@@ -72,9 +72,8 @@ export default function Profile() {
   const vCowToken = V_COW[chainId]
   // Cow balance
   const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || supportedChainId(chainId)
-      ? CurrencyAmount.fromRawAmount(cowToken, 0)
-      : null
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) ||
+    (supportedChainId(chainId) ? CurrencyAmount.fromRawAmount(cowToken, 0) : null)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
@@ -257,7 +256,7 @@ export default function Profile() {
               </ConvertWrapper>
 
               <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', V_COW_CONTRACT_ADDRESS[chainId])}>
                   View contract ↗
                 </ExtLink>
                 <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
@@ -280,7 +279,7 @@ export default function Profile() {
             <CardActions>
               <ExtLink
                 title="View contract"
-                href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}
+                href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId])}
               >
                 View contract ↗
               </ExtLink>

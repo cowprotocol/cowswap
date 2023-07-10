@@ -15,7 +15,7 @@ import pkg from '../../../../package.json'
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]
   if (!contractAddress) return '-'
-  return getEtherscanLink(chainId, contractAddress, 'address')
+  return getEtherscanLink(chainId, 'address', contractAddress)
 }
 
 const VERSIONS: Record<

@@ -199,7 +199,7 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+        <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
           <TableButton>
             <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
           </TableButton>
