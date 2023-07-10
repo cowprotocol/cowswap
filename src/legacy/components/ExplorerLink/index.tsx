@@ -13,6 +13,7 @@ interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType
   label?: string
   className?: string
+  defaultChain?: SupportedChainId
 }
 
 interface PropsWithId extends PropsBase {
@@ -32,7 +33,7 @@ export type Props = PropsWithId | PropsWithoutId
  */
 export function ExplorerLink(props: Props) {
   const { chainId: _chainId } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
+  const chainId = supportedChainId(_chainId) || props.defaultChain
 
   if (!chainId) {
     return null

@@ -1,3 +1,5 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { Globe } from 'react-feather'
 
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
@@ -27,7 +29,7 @@ export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
 
 function ExplorerMenuLink() {
   return (
-    <ExplorerLink type="cow-explorer-home">
+    <ExplorerLink type="cow-explorer-home" defaultChain={SupportedChainId.MAINNET}>
       <Globe /> CoW Explorer
     </ExplorerLink>
   )
