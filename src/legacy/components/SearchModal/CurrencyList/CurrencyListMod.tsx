@@ -30,7 +30,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
 import { MenuItem } from './index' // mod
 
@@ -299,7 +298,6 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
-  const { chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
@@ -345,7 +343,7 @@ export default function CurrencyList({
       const otherSelected = Boolean(currency && otherCurrency && otherCurrency.equals(currency))
       const handleSelect = () => currency && onCurrencySelect(currency)
 
-      const token = isSupportedChainId(chainId) ? currency?.wrapped : undefined
+      const token = currency?.wrapped
 
       const showImport = index > currencies.length
 
@@ -398,7 +396,6 @@ export default function CurrencyList({
       BalanceComponent,
       TokenTagsComponent,
       allTokens,
-      chainId,
     ]
   )
 

@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
-import { defaultNumOfParts } from '../const'
+import { DEFAULT_NUM_OF_PARTS } from '../const'
 
 export interface PartsState {
   numberOfPartsValue: number | null
@@ -20,7 +20,7 @@ export const partsStateAtom = atom<PartsState>((get) => {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount, outputCurrencyFiatAmount } =
     get(advancedOrdersDerivedStateAtom)
 
-  const divider = numberOfPartsValue || defaultNumOfParts
+  const divider = numberOfPartsValue || DEFAULT_NUM_OF_PARTS
 
   return {
     numberOfPartsValue,

@@ -1,33 +1,50 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
+import {
+  openAdvancedOrdersTabAnalytics,
+  twapWalletCompatibilityAnalytics,
+} from 'legacy/components/analytics/events/twapEvents'
 import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { AppDataUpdater } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
+import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
-import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
+import {
+  useFallbackHandlerVerification,
+  useIsFallbackHandlerCompatible,
+  useIsFallbackHandlerRequired,
+} from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import {
+  twapOrderSlippageAtom,
+  twapOrdersSettingsAtom,
+  updateTwapOrdersSettingsAtom,
+} from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
+import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
@@ -39,14 +56,19 @@ export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
+
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+  const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
+  const verification = useFallbackHandlerVerification()
 
+  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
@@ -58,6 +80,8 @@ export function TwapFormWidget() {
   const composableCowContract = useComposableCowContract()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
+
+  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
 
   const deadlineState = {
     deadline,
@@ -75,13 +99,31 @@ export function TwapFormWidget() {
   // Reset warnings flags once on start
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
+    openAdvancedOrdersTabAnalytics()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (account && verification) {
+      if (localFormValidation === TwapFormState.NOT_SAFE) {
+        twapWalletCompatibilityAnalytics('non-compatible')
+      } else if (isFallbackHandlerRequired) {
+        twapWalletCompatibilityAnalytics('safe-that-could-be-converted')
+      } else if (isFallbackHandlerCompatible) {
+        twapWalletCompatibilityAnalytics('compatible')
+      }
+    }
+  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
+
+  const isInvertedState = useState(false)
+  const [isInverted] = isInvertedState
+
   return (
     <>
+      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
+      <PartOrdersUpdater />
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
@@ -89,7 +131,11 @@ export function TwapFormWidget() {
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo
+            label={LABELS_TOOLTIPS.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+          />
         </styledEl.Row>
       )}
       <TradeNumberInput
@@ -100,18 +146,24 @@ export function TwapFormWidget() {
         max={50}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-        inputType="priceProtection"
-        limitPrice={'1484.45 USDC'} // TODO: add real dynamic limit price
+        prefixComponent={
+          <em>
+            {limitPrice ? (
+              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+            ) : (
+              '0'
+            )}
+          </em>
+        }
         suffix="%"
       />
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
           onUserInput={(value: number | null) =>
-            updateSettingsState({ numberOfPartsValue: value || defaultNumOfParts })
+            updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
           }
-          min={defaultNumOfParts}
-          max={100}
+          min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
@@ -120,7 +172,7 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
-          items={orderDeadlines}
+          items={ORDER_DEADLINES}
           setDeadline={(value) => updateSettingsState(value)}
           label={LABELS_TOOLTIPS.totalDuration.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {
@@ -137,7 +189,11 @@ export function TwapFormWidget() {
       <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      <ActionButtons localFormValidation={localFormValidation} primaryFormValidation={primaryFormValidation} />
+      <ActionButtons
+        fallbackHandlerIsNotSet={isFallbackHandlerRequired}
+        localFormValidation={localFormValidation}
+        primaryFormValidation={primaryFormValidation}
+      />
     </>
   )
 }

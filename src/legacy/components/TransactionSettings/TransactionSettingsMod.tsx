@@ -21,7 +21,6 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from 'legacy/constants'
-import { L2_CHAIN_IDS } from 'legacy/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
@@ -228,7 +227,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     }
   }
 
-  const showCustomDeadlineRow = Boolean(chainId && !L2_CHAIN_IDS.includes(chainId))
+  const showCustomDeadlineRow = Boolean(chainId)
 
   return (
     <AutoColumn gap="md">

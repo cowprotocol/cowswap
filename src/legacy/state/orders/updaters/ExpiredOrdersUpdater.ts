@@ -6,16 +6,13 @@ import { EXPIRED_ORDERS_PENDING_TIME } from 'legacy/constants'
 import { SetIsOrderRefundedBatch } from 'legacy/state/orders/actions'
 import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'legacy/state/orders/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder } from 'api/gnosisProtocol'
 
 export function ExpiredOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
-
+  const { chainId, account } = useWalletInfo()
   const expired = useExpiredOrders({ chainId })
 
   // Ref, so we don't rerun useEffect

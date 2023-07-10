@@ -41,6 +41,7 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       storage: 'none',
       storeGac: false,
       clientId: storedClientId ?? undefined,
+      cookieFlags: 'SameSite=None; Secure',
     },
   })
   googleAnalytics.setDimension(

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Text } from 'rebass'
 
@@ -9,14 +9,14 @@ import { ExternalLink } from 'legacy/components/Link'
 import Row from 'legacy/components/Row'
 import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
 import {
-  LegacyConfirmationModalContent,
   ConfirmationModalContentProps,
+  LegacyConfirmationModalContent,
 } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { GpModal } from 'common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'
@@ -70,7 +70,7 @@ export default function CowSubsidyModal({
 
   // TODO: use TradeConfirmModal
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
+    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
       <LegacyConfirmationModalContent
         {...restProps}
         title="CoWmunity fees discount"
@@ -80,6 +80,6 @@ export default function CowSubsidyModal({
         topContent={TopContent}
         bottomContent={BottomContent}
       />
-    </GpModal>
+    </CowModal>
   )
 }

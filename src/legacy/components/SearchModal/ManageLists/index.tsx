@@ -8,9 +8,8 @@ import CardUni from 'legacy/components/Card'
 import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { TextDot } from 'legacy/components/SearchModal/styleds'
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
+import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -91,8 +90,7 @@ export const ManageLists = (props: {
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }) => {
-  const { chainId: connectedChainId } = useWalletInfo()
-  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  const { chainId } = useWalletInfo()
 
   const listRowProps = {
     acceptListUpdate: (url: string) => acceptListUpdate({ url, chainId }),

@@ -11,15 +11,18 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeConfirmActions } from 'modules/trade'
 import {
+  TradeFormBlankButton,
   TradeFormButtons,
   useGetTradeFormValidation,
   useTradeFormButtonContext,
-  TradeFormBlankButton,
 } from 'modules/tradeFormValidation'
 
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+
+const DO_TRADE_TEXT = 'Place limit order'
+const CONFIRM_TEXT = 'Review limit order'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -39,7 +42,9 @@ export function TradeButtons(props: TradeButtonsProps) {
   const confirmTrade = tradeConfirmActions.onOpen
   const isExpertMode = settingsState.expertMode
 
-  const tradeFormButtonContext = useTradeFormButtonContext('Limit order', { doTrade: handleTrade, confirmTrade })
+  const defaultText = isExpertMode ? DO_TRADE_TEXT : CONFIRM_TEXT
+
+  const tradeFormButtonContext = useTradeFormButtonContext(defaultText, { doTrade: handleTrade, confirmTrade })
 
   if (!tradeFormButtonContext) return null
 
@@ -58,8 +63,8 @@ export function TradeButtons(props: TradeButtonsProps) {
 
   return (
     <TradeFormButtons
-      doTradeText="Place limit order"
-      confirmText="Review limit order"
+      doTradeText={DO_TRADE_TEXT}
+      confirmText={CONFIRM_TEXT}
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
       isExpertMode={isExpertMode}

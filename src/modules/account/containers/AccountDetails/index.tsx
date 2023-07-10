@@ -8,7 +8,6 @@ import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
@@ -17,7 +16,6 @@ import {
 import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
 import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
@@ -48,6 +46,9 @@ import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trus
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
+import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import {
   AccountControl,
   AccountGroupingRow,
@@ -58,6 +59,7 @@ import {
   NetworkCard,
   NoActivityMessage,
   TransactionListWrapper,
+  UnsupportedWalletBox,
   WalletAction,
   WalletActions,
   WalletName,
@@ -181,15 +183,15 @@ export function AccountDetails({
   toggleWalletModal,
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
-  const { account, chainId: connectedChainId } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
   const connection = getWeb3ReactConnection(connector)
-  const chainId = supportedChainId(connectedChainId)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
-  const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
-  const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
+  const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
+  const explorerLabel = account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
@@ -221,6 +223,8 @@ export function AccountDetails({
     toggleWalletModal()
   }
 
+  const networkLabel = NETWORK_LABELS[chainId]
+
   return (
     <Wrapper>
       <InfoCard>
@@ -238,8 +242,8 @@ export function AccountDetails({
 
             <WalletActions>
               {' '}
-              {chainId && NETWORK_LABELS[chainId] && (
-                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
+              {networkLabel && !isChainIdUnsupported && (
+                <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>
               )}{' '}
               {formatConnectorName()}
             </WalletActions>
@@ -262,7 +266,7 @@ export function AccountDetails({
                 </>
               )}
 
-              {chainId && account && (
+              {account && !isChainIdUnsupported && (
                 <AddressLink
                   hasENS={!!ENSName}
                   isENS={!!ENSName}
@@ -276,35 +280,41 @@ export function AccountDetails({
         </AccountGroupingRow>
       </InfoCard>
 
-      <SurplusCard />
-
-      {activityTotalCount ? (
-        <LowerSection>
-          <span>
-            {' '}
-            <h5>
-              Recent Activity <span>{`(${activityTotalCount})`}</span>
-            </h5>
-            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
-          </span>
-
-          <div>
-            {activitiesGroupedByDate.map(({ date, activities }) => (
-              <Fragment key={date.getTime()}>
-                {/* TODO: style me! */}
-                <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
-                {renderActivities(activities)}
-              </Fragment>
-            ))}
-            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
-          </div>
-        </LowerSection>
+      {isChainIdUnsupported ? (
+        <UnsupportedWalletBox>{UNSUPPORTED_WALLET_TEXT}</UnsupportedWalletBox>
       ) : (
-        <LowerSection>
-          <NoActivityMessage>
-            {chainId ? <span>Your activity will appear here...</span> : <UnsupporthedNetworkMessage />}
-          </NoActivityMessage>
-        </LowerSection>
+        <>
+          <SurplusCard />
+
+          {activityTotalCount ? (
+            <LowerSection>
+              <span>
+                {' '}
+                <h5>
+                  Recent Activity <span>{`(${activityTotalCount})`}</span>
+                </h5>
+                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+              </span>
+
+              <div>
+                {activitiesGroupedByDate.map(({ date, activities }) => (
+                  <Fragment key={date.getTime()}>
+                    {/* TODO: style me! */}
+                    <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                    {renderActivities(activities)}
+                  </Fragment>
+                ))}
+                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+              </div>
+            </LowerSection>
+          ) : (
+            <LowerSection>
+              <NoActivityMessage>
+                <span>Your activity will appear here...</span>
+              </NoActivityMessage>
+            </LowerSection>
+          )}
+        </>
       )}
     </Wrapper>
   )

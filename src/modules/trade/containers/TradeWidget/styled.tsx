@@ -11,22 +11,20 @@ export const Container = styled.div`
 export const ContainerBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  gap: 8px;
+  gap: 10px;
   background: ${({ theme }) => theme.bg1};
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  padding: 8px;
+  padding: 10px;
 `
 
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 4px 4px 8px;
+  padding: 0;
   margin: 0;
-  font-weight: 500;
-  font-size: 16px;
 `
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`

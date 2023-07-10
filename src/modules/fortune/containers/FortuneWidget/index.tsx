@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 
 import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
 import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
-import { sendEvent } from 'legacy/components/analytics'
+import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'legacy/components/analytics/events/cowFortune'
 import Confetti from 'legacy/components/Confetti'
 import { ExternalLink } from 'legacy/theme'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
@@ -52,7 +52,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   `}
 
   &::before {
-    content: "";
+    content: '';
     display: block;
     height: 10px;
     width: 10px;
@@ -73,9 +73,9 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
 
   &::after {
     --size: 90%;
-    content: "";
+    content: '';
     display: block;
-    background: url(${fortuneCookieImage}) no-repeat center 100%/contain;
+    background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
     width: var(--size);
     height: var(--size);
     transition: transform 0.3s ease-in-out;
@@ -87,28 +87,27 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
 
   @keyframes floating {
     0% {
-      transform: scale(1) rotate(10deg)
+      transform: scale(1) rotate(10deg);
     }
     50% {
-      transform: scale(1) rotate(-5deg)
+      transform: scale(1) rotate(-5deg);
     }
     52% {
-      transform: scale(1.2) rotate(-5deg)
+      transform: scale(1.2) rotate(-5deg);
     }
     54% {
-      transform: scale(1) rotate(-5deg)
+      transform: scale(1) rotate(-5deg);
     }
     56% {
-      transform: scale(1.2) rotate(-5deg)
+      transform: scale(1.2) rotate(-5deg);
     }
     58% {
-      transform: scale(1) rotate(-5deg)
+      transform: scale(1) rotate(-5deg);
     }
     100% {
-      transform: scale(1) rotate(10deg)
+      transform: scale(1) rotate(10deg);
     }
   }
-}
 `
 
 const FortuneBanner = styled.div`
@@ -330,6 +329,7 @@ export function FortuneWidget() {
 
   const openFortuneModal = useCallback(() => {
     setIsFortunedShared(false)
+    openFortuneCookieAnalytics()
 
     // Add the 'noScroll' class on body, whenever the fortune modal is opened/closed.
     // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -347,10 +347,7 @@ export function FortuneWidget() {
   const onTweetShare = useCallback(() => {
     setIsFortunesFeatureDisabled(true)
     setIsFortunedShared(true)
-    sendEvent({
-      category: 'CoWFortune',
-      action: 'Share on Twitter',
-    })
+    shareFortuneTwitterAnalytics()
   }, [setIsFortunesFeatureDisabled])
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null

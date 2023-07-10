@@ -5,14 +5,11 @@ import { RPC_URLS } from 'legacy/constants/networks'
 
 import { ConnectionType } from 'modules/wallet'
 
-import { toSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { Web3ReactConnection } from '../types'
 
-// Trying to get chainId from URL (#/100/swap)
-// eslint-disable-next-line no-restricted-globals
-const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)
-const defaultChainId = (urlChainIdMatch && toSupportedChainId(+urlChainIdMatch[1])) || 1
+const defaultChainId = getCurrentChainIdFromUrl()
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
   (actions) => new Network({ actions, urlMap: RPC_URLS, defaultChainId })

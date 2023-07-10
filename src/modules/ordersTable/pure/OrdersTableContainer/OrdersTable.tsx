@@ -30,6 +30,8 @@ import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderEx
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -215,7 +217,46 @@ export function OrdersTable({
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
-  const ordersPage = orders.slice(step - ORDERS_TABLE_PAGE_SIZE, step).sort(ordersSorter)
+
+  const composableCowOrders = orders.reduce<{ [key: string]: ParsedOrder }>((acc, order) => {
+    if (!getIsComposableCowParentOrder(order)) return acc
+
+    const parentId = order.composableCowInfo!.id!
+    acc[parentId] = order
+    return acc
+  }, {})
+
+  const partsOrders = orders.reduce<{ [key: string]: ParsedOrder[] }>((acc, order) => {
+    if (!getIsComposableCowChildOrder(order)) return acc
+
+    const parentId = order.composableCowInfo!.parentId!
+    acc[parentId] = acc[parentId] || []
+    acc[parentId].push(order)
+    return acc
+  }, {})
+
+  const ordersPage = orders
+    .sort(ordersSorter)
+    .map((order) => {
+      if (!order.composableCowInfo) return order
+
+      const isPartOrder = getIsComposableCowChildOrder(order)
+
+      if (isPartOrder) {
+        const parentId = order.composableCowInfo.parentId!
+
+        // In case when part order is on "history" page and its parent on "open"
+        // We shouldn't consider this order for grouping
+        return composableCowOrders[parentId] ? [] : order
+      }
+
+      const composableOrderId = order.composableCowInfo.id!
+
+      return [order, ...(partsOrders[composableOrderId] || []).reverse()]
+    })
+    .flat()
+    .slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+
   const onScroll = useCallback(() => {
     // Emit event to close OrderContextMenu
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
@@ -380,25 +421,29 @@ export function OrdersTable({
           )}
 
           <Rows>
-            {ordersPage.map((order) => (
-              <OrderRow
-                key={order.id}
-                isRowSelectable={isRowSelectable}
-                isRowSelected={!!selectedOrdersMap[order.id]}
-                isOpenOrdersTab={isOpenOrdersTab}
-                order={order}
-                spotPrice={getSpotPrice({
-                  chainId: chainId as SupportedChainId,
-                  sellTokenAddress: order.inputToken.address,
-                  buyTokenAddress: order.outputToken.address,
-                })}
-                prices={pendingOrdersPrices[order.id]}
-                orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
-                isRateInverted={isRateInverted}
-                orderActions={orderActions}
-                onClick={() => orderActions.selectReceiptOrder(order)}
-              />
-            ))}
+            {ordersPage.map((order) => {
+              const spotPrice = getSpotPrice({
+                chainId: chainId as SupportedChainId,
+                sellTokenAddress: order.inputToken.address,
+                buyTokenAddress: order.outputToken.address,
+              })
+
+              return (
+                <OrderRow
+                  key={order.id}
+                  isRowSelectable={isRowSelectable}
+                  isRowSelected={!!selectedOrdersMap[order.id]}
+                  isOpenOrdersTab={isOpenOrdersTab}
+                  order={order}
+                  spotPrice={spotPrice}
+                  prices={pendingOrdersPrices[order.id]}
+                  orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                  isRateInverted={isRateInverted}
+                  orderActions={orderActions}
+                  onClick={() => orderActions.selectReceiptOrder(order)}
+                />
+              )
+            })}
           </Rows>
         </TableInner>
       </TableBox>

@@ -71,6 +71,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
     showRecipient: false,
     isTradePriceUpdating,
     priceImpact,
+    isExpertMode: false, // TODO: bind value
   }
 
   return (

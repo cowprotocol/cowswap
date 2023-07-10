@@ -59,7 +59,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       <TokenSymbol token={inputAmount?.currency.wrapped} length={6} />
       &nbsp;& Limit order)
     </>
-  ) : undefined
+  ) : (
+    'Place limit order'
+  )
 
   return (
     <>

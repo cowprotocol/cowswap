@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser'
 import BlocknativeSdk from 'bnc-sdk'
 
-import { getSupportedChainIds } from 'legacy/utils/supportedChainId'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
 const BLOCKNATIVE_API_KEY = process.env.REACT_APP_BLOCKNATIVE_API_KEY
 
@@ -22,7 +22,7 @@ if (!BLOCKNATIVE_API_KEY) {
 
 export const sdk = !BLOCKNATIVE_API_KEY
   ? {}
-  : getSupportedChainIds().reduce<Record<number, BlocknativeSdk | null>>((acc, networkId) => {
+  : ALL_SUPPORTED_CHAIN_IDS.reduce<Record<number, BlocknativeSdk | null>>((acc, networkId) => {
       const params = {
         apiKey: BLOCKNATIVE_API_KEY,
         networkId,
