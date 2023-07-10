@@ -1,7 +1,7 @@
+import React from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import React from 'react'
 
 import styled from 'styled-components/macro'
 
