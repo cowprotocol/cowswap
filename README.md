@@ -182,6 +182,16 @@ The plan:
 
 `emergency.js` is not cached by browser and loaded before all.
 
+## Wallet Connect
+
+The app uses a Wallet Connect v1 bridge.
+
+You can define your own bridge by setting the following environment variable:
+
+```ini
+REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
+```
+
 ## Documentation
 
 1. [Oveall Architecture](docs/architecture-overview.md)
