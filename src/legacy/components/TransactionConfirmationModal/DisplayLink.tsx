@@ -27,9 +27,9 @@ export function DisplayLink({ id, chainId }: DisplayLinkProps) {
       ? orderCreationHash
       : undefined
   const href = ethFlowHash
-    ? getBlockExplorerUrl(chainId, ethFlowHash, 'transaction')
-    : getEtherscanLink(chainId, id, 'transaction')
-  const label = getExplorerLabel(chainId, ethFlowHash || id, 'transaction')
+    ? getBlockExplorerUrl(chainId, 'transaction', ethFlowHash)
+    : getEtherscanLink(chainId, 'transaction', id)
+  const label = getExplorerLabel(chainId, 'transaction', ethFlowHash || id)
 
   return (
     <ExternalLinkCustom href={href}>

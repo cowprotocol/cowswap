@@ -40,7 +40,7 @@ export default function TransactionPopup({
         ) : (
           summary
         )}
-        {chainId && <ExplorerLink id={hash} />}
+        {chainId && <ExplorerLink id={hash} type="transaction" />}
       </AutoColumn>
     </RowNoFlex>
   )
