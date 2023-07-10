@@ -140,7 +140,7 @@ export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 export const GAS_FEE_ENDPOINTS = {
   [ChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
-  [ChainId.GNOSIS_CHAIN]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
+  [ChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
   [ChainId.GOERLI]: '',
 }
 export const GAS_API_KEYS = {

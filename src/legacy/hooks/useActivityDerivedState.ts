@@ -93,7 +93,7 @@ export function getActivityLinkUrl(params: {
 
     if (transactionHash) {
       // It's an Ethereum transaction: Etherscan link
-      return getEtherscanLink(chainId, transactionHash, 'transaction')
+      return getEtherscanLink(chainId, 'transaction', transactionHash)
     } else if (safeTransaction && safeTransaction) {
       // It's a safe transaction: Gnosis Safe Web link
       const { safe, safeTxHash } = safeTransaction
@@ -102,7 +102,7 @@ export function getActivityLinkUrl(params: {
   } else if (order) {
     if (order.orderCreationHash && (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED)) {
       // It's a EthFlow transaction: Etherscan link
-      return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
+      return getEtherscanLink(chainId, 'transaction', order.orderCreationHash)
     } else {
       // It's an order: GP Explorer link
       return getExplorerOrderLink(chainId, id)

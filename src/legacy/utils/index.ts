@@ -62,7 +62,7 @@ export function formattedFeeAmount(feeAmount: FeeAmount): number {
   return feeAmount / 10000
 }
 
-const GP_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
+const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
 
 const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
   1: 'etherscan.io',
@@ -73,7 +73,13 @@ const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
   100: 'gnosisscan.io',
 }
 
-export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
+export type BlockExplorerLinkType =
+  | 'transaction'
+  | 'token'
+  | 'address'
+  | 'block'
+  | 'token-transfer'
+  | 'cow-explorer-home'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   const url = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]
@@ -101,26 +107,28 @@ function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLink
 }
 
 // Get the right block explorer URL by chainId
-export function getBlockExplorerUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
+export function getBlockExplorerUrl(chainId: ChainId, type: BlockExplorerLinkType, data: string): string {
   return getEtherscanUrl(chainId, data, type)
 }
 
-export function isGpOrder(data: string, type: BlockExplorerLinkType) {
-  return type === 'transaction' && data.length === GP_ORDER_ID_LENGTH
+export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
+  if (!data) return false
+
+  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
 }
 
-export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  if (isGpOrder(data, type)) {
-    // Explorer for GP orders:
-    //    If a transaction has the size of the GP orderId, then it's a meta-tx
+export function getEtherscanLink(chainId: ChainId, type: BlockExplorerLinkType, data: string): string {
+  if (isCowOrder(type, data)) {
+    // Explorer for CoW orders:
+    //    If a transaction has the size of the CoW orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
   } else {
     return getEtherscanUrl(chainId, data, type)
   }
 }
 
-export function getExplorerLabel(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  if (isGpOrder(data, type)) {
+export function getExplorerLabel(chainId: ChainId, type: BlockExplorerLinkType, data?: string): string {
+  if (isCowOrder(type, data) || type === 'cow-explorer-home') {
     return 'View on Explorer'
   } else if (chainId === ChainId.GNOSIS_CHAIN) {
     return 'View on Gnosisscan'

@@ -68,7 +68,7 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
           </ThemedText.DarkGray>
         </AutoColumn>
         {chainId && (
-          <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
+          <ExternalLink href={getExplorerLink(chainId, 'address', token.address)}>
             <AddressText fontSize={12}>{token.address}</AddressText>
           </ExternalLink>
         )}

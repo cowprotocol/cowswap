@@ -203,7 +203,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         </ConvertWrapper>
 
         <CardActions>
-          <ExtLink href={getBlockExplorerUrl(chainId, contractAddress, 'address')}>View contract ↗</ExtLink>
+          <ExtLink href={getBlockExplorerUrl(chainId, 'address', contractAddress)}>View contract ↗</ExtLink>
           <CopyHelper toCopy={contractAddress}>
             <div title="Click to copy contract address">Copy contract</div>
           </CopyHelper>

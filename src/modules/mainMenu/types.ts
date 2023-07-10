@@ -6,7 +6,8 @@ export enum MenuItemKind {
   DROP_DOWN = 'DROP_DOWN',
   EXTERNAL_LINK = 'EXTERNAL_LINK',
   DARK_MODE_BUTTON = 'DARK_MODE_BUTTON',
-  DYNAMIC_LINK = 'DYNAMIC_LINK',
+  PARAMETRIZED_LINK = 'PARAMETRIZED_LINK',
+  CUSTOM_ITEM = 'CUSTOM_ITEM',
 }
 
 export enum MainMenuItemId {
@@ -24,6 +25,7 @@ export enum MainMenuItemId {
   ACCOUNT_TOKENS = 'ACCOUNT_TOKENS',
   MORE_DOCUMENTATION = 'MORE_DOCUMENTATION',
   MORE_ABOUT = 'MORE_ABOUT',
+  MORE_EXPLORER = 'MORE_EXPLORER',
   MORE_STATISTICS = 'MORE_STATISTICS',
   MORE_CONTRACT = 'MORE_CONTRACT',
   MORE_DISCORD = 'MORE_DISCORD',
@@ -40,7 +42,7 @@ export interface BasicMenuLink {
   title: string
   url: string
   icon?: string // If icon uses a regular <img /> tag
-  iconSVG?: string // If icon is a <SVG> inline component
+  iconSVG?: string
 }
 
 export interface InternalLink extends BasicMenuLink {
@@ -50,13 +52,18 @@ export interface InternalLink extends BasicMenuLink {
 export interface ExternalLink extends BasicMenuLink {
   kind: MenuItemKind.EXTERNAL_LINK
 }
-export interface DynamicLink extends BasicMenuLink {
-  kind: MenuItemKind.DYNAMIC_LINK
+export interface ParametrizedLink extends BasicMenuLink {
+  kind: MenuItemKind.PARAMETRIZED_LINK
   url: RoutesValues
 }
 
+export interface CustomItem {
+  kind: MenuItemKind.CUSTOM_ITEM
+  Item: () => React.ReactNode
+}
+
 export type DarkModeLink = { kind: MenuItemKind.DARK_MODE_BUTTON }
-export type MenuLink = InternalLink | ExternalLink | DarkModeLink | DynamicLink
+export type MenuLink = InternalLink | ExternalLink | DarkModeLink | ParametrizedLink | CustomItem
 
 export interface DropDownSubItem {
   sectionTitle?: string
@@ -69,7 +76,7 @@ export interface DropDownItem {
   items: DropDownSubItem[]
 }
 
-export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem | DynamicLink
+export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem | ParametrizedLink | CustomItem
 
 export interface MainMenuContext {
   darkMode: boolean

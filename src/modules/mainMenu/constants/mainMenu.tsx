@@ -1,3 +1,7 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { Globe } from 'react-feather'
+
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
 import IMAGE_COOKIE_POLICY from 'legacy/assets/cow-swap/cookie-policy.svg'
 import IMAGE_DISCORD from 'legacy/assets/cow-swap/discord.svg'
@@ -9,6 +13,7 @@ import IMAGE_PIE from 'legacy/assets/cow-swap/pie.svg'
 import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 
 import { Routes } from 'common/constants/routes'
@@ -17,6 +22,14 @@ import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)
+}
+
+function ExplorerMenuLink() {
+  return (
+    <ExplorerLink type="cow-explorer-home" defaultChain={SupportedChainId.MAINNET}>
+      <Globe /> CoW Explorer
+    </ExplorerLink>
+  )
 }
 
 export const FAQ_MENU: InternalLink[] = [
@@ -40,10 +53,10 @@ export const MAIN_MENU: MenuTreeItem[] = [
     items: [
       {
         links: [
-          { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
+          { id: MainMenuItemId.SWAP, kind: MenuItemKind.PARAMETRIZED_LINK, title: 'Swap', url: Routes.SWAP },
           {
             id: MainMenuItemId.LIMIT_ORDERS,
-            kind: MenuItemKind.DYNAMIC_LINK,
+            kind: MenuItemKind.PARAMETRIZED_LINK,
             title: 'Limit orders',
             url: Routes.LIMIT_ORDER,
           },
@@ -84,6 +97,10 @@ export const MAIN_MENU: MenuTreeItem[] = [
             kind: MenuItemKind.EXTERNAL_LINK,
           },
           { id: MainMenuItemId.MORE_ABOUT, title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
+          {
+            kind: MenuItemKind.CUSTOM_ITEM,
+            Item: ExplorerMenuLink,
+          },
           {
             id: MainMenuItemId.MORE_STATISTICS,
             title: 'Statistics',

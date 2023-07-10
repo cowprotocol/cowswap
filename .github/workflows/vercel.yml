@@ -41,6 +41,7 @@ jobs:
           REACT_APP_GOOGLE_ANALYTICS_ID=${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
           REACT_APP_AMPLITUDE_KEY=${{ secrets.REACT_APP_AMPLITUDE_KEY }}
           REACT_APP_LAUNCH_DARKLY_KEY=${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
+          REACT_APP_WALLET_CONNECT_V1_BRIDGE=${{ secrets.REACT_APP_WALLET_CONNECT_V1_BRIDGE }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version

@@ -25,7 +25,7 @@ export function buildMainMenuTreeItems({ isAdvancedOrdersEnabled }: BuildMainMen
   // Add to the bottom of the list
   ;(tradeMenu as DropDownItem).items[0].links.push({
     id: MainMenuItemId.ADVANCED_ORDERS,
-    kind: MenuItemKind.DYNAMIC_LINK,
+    kind: MenuItemKind.PARAMETRIZED_LINK,
     title: ADVANCED_ORDERS_MENU_TITLE,
     url: Routes.ADVANCED_ORDERS,
   })
