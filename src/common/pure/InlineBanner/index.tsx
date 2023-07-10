@@ -75,7 +75,7 @@ const Wrapper = styled.span<{ color: string }>`
   }
 
   > span {
-    display: flex; 
+    display: flex;
     flex-flow: row wrap;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -113,7 +113,7 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
   return (
     <Wrapper className={className} color={color}>
       <span>
-        {!hideIcon && <SVG src={config.icon} description={type} />} 
+        {!hideIcon && <SVG src={config.icon} description={type} />}
         {children}
       </span>
     </Wrapper>
