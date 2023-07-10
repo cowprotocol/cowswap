@@ -67,13 +67,21 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   font-weight: 500;
   color: ${({ theme }) => theme.text1};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 26px;
-  `}
+  &[disabled] {
+    -webkit-text-fill-color: ${({ theme }) => theme.text1}; // safari fix
+  }
+
+  &[disabled]::selection {
+    background: transparent;
+  }
 
   &::placeholder {
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 26px;
+  `}
 
   ${loadingOpacityMixin}
 `
