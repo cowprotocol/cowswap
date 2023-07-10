@@ -14,13 +14,14 @@ export function SmallPartVolumeWarning({ chainId }: SmallPartVolumeWarningBanner
 
   return (
     <InlineBanner>
-      <>
-        <strong>Minimum sell size:</strong> The sell amount per part of your TWAP order should be at least{' '}
-        <strong>
+      <strong>Minimum sell size</strong>
+      <p>
+        The sell amount per part of your TWAP order should be at least{' '}
+        <b>
           $<TokenAmount amount={amount} hideTokenSymbol />
-        </strong>
+        </b>
         . Decrease the number of parts or increase the total sell amount.
-      </>
+      </p>
     </InlineBanner>
   )
 }

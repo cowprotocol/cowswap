@@ -43,6 +43,7 @@ export const Amount = styled(TokenAmount)`
   overflow: hidden;
   text-overflow: ellipsis;
   display: flex;
+  gap: 5px;
 
   > div:first-child {
     margin-right: 5px;

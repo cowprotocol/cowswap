@@ -17,9 +17,8 @@ export const NumericalInput = styled(Input)<{ color?: string }>`
   align-items: center;
   background: none;
   flex: 1;
-  width: 100%;
+  width: auto;
   height: 100%;
-  max-width: 70px;
   font-size: 22px;
   font-weight: 500;
 

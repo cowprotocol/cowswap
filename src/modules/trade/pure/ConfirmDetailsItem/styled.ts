@@ -7,8 +7,9 @@ export const Wrapper = styled.div`
   align-items: center;
 
   > svg:first-child {
-    margin-right: 5px;
+    margin: 0 4px 0 0;
     color: ${({ theme }) => theme.text1};
+    opacity: 0.5;
   }
 `
 
@@ -19,5 +20,24 @@ export const Row = styled(StyledRowBetween)`
 `
 
 export const Content = styled.div`
-  margin-left: auto;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 0 0 auto;
+  font-weight: 500;
+  font-size: 13px;
+
+  > span {
+    display: block;
+    text-align: right;
+    word-break: break-all;
+  }
+
+  i {
+    font-style: normal;
+    opacity: 0.7;
+    word-break: break-all;
+    text-align: right;
+  }
 `

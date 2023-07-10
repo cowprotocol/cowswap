@@ -1,4 +1,5 @@
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
+import { transparentize } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -17,13 +18,17 @@ const StyledMenuList = styled(MenuList)`
   background: ${({ theme }) => theme.bg1};
   box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
-  padding: 10px 15px;
+  padding: 16px;
   border-radius: 20px;
   outline: none;
   list-style: none;
   position: relative;
   z-index: 2;
   min-width: 120px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+  transition: background 0.1s ease-in-out;
 `
 
 const StyledMenuButton = styled(MenuButton)`
@@ -45,7 +50,15 @@ const StyledMenuButton = styled(MenuButton)`
 const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 10px;
+  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+
+  &:hover {
+    color: ${({ theme }) => theme.text1};
+  }
+
+  &:not(:last-child) {
+    margin: 0 0 10px;
+  }
 `
 
 export function TradeSelect(props: TradeSelectProps) {

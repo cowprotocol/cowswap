@@ -40,6 +40,7 @@ export const ModalFooter = styled.div`
 
 export const ModalContent = styled.div`
   display: flex;
+  flex-flow: row wrap;
   grid-gap: 6px;
 `
 
