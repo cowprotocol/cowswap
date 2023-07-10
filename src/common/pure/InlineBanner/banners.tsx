@@ -50,7 +50,7 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
 
   return (
     <InlineBanner type="information">
-      <strong>Safe web app</strong>
+      <strong>Use Safe web app</strong>
       <p>
         Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
         Only available in the{' '}
