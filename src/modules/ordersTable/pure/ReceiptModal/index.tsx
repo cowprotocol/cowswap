@@ -94,9 +94,11 @@ export function ReceiptModal({
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
             <InlineBanner type="information">
+              <p>
               {isTwapPartOrder
                 ? `Part of a ${twapOrder.order.n}-part TWAP order split`
                 : `TWAP order split into ${twapOrder.order.n} parts`}
+              </p>
             </InlineBanner>
           </styledEl.InfoBannerWrapper>
         )}

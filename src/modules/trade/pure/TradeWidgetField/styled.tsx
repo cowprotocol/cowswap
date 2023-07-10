@@ -64,7 +64,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   }
 
   ${Content} {
-    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 88px 10px 16px' : 'initial')};
+    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 98px 10px 16px' : 'initial')};
 
     > em {
       font-style: normal;
