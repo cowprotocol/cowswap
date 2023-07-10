@@ -12,6 +12,7 @@ export const TradeWidgetFieldLabel = styled.span`
   font-size: 13px;
   font-weight: 500;
   padding: 0;
+  flex: 0 1 auto;
 
   ${QuestionWrapper} {
     opacity: 0.5;
@@ -41,10 +42,11 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
 `
 
 export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
+  --minHeight: 45px;
   background: ${({ theme, hasPrefix }) => (hasPrefix ? 'transparent' : theme.grey1)};
-  border: 1px solid ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 0)};
+  border: 1px solid ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 'transparent')};
   border-radius: 16px;
-  min-height: 45px;
+  min-height: var(--minHeight);
   font-size: 18px;
   padding: 10px 16px;
   padding: ${({ hasPrefix }) => (hasPrefix ? '0' : '10px 16px')};
@@ -59,40 +61,63 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     gap: 0;
   `};
 
+${({ hasPrefix }) =>
+        hasPrefix &&
+        css`
+          display: grid;
+          grid-template-columns: max-content auto;
+        `}
+
   ${TradeWidgetFieldLabel} {
     padding: ${({ hasPrefix }) => (hasPrefix ? '10px 16px' : 'initial')};
   }
 
   ${Content} {
-    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 98px 10px 16px' : 'initial')};
+    padding: 0;
+    
+    ${({ hasPrefix }) =>
+      hasPrefix &&
+      css`
+        flex: 1 1 auto;
+        justify-content: center;
+        display: flex;
+        padding: 0;
+        height: 43px;
+      `
+    }
 
     > em {
       font-style: normal;
-    }
-
-    > span {
+      flex: 1 1 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      padding: 0 12px 0 0;
+    }
+
+    > span {
       background: ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 'transparent')};
 
       ${({ hasPrefix }) =>
         hasPrefix &&
         css`
-          position: absolute;
-          top: -1px;
-          right: 0;
-          height: calc(100% + 2px);
-          width: 86px;
+          margin: auto;
+          height: 100%;
+          display: flex;
+          padding: 0 10px 0 0;
+          flex: 0 1 auto;
           border-radius: 0 15px 15px 0;
-          padding: 0 16px 0 0;
+          align-items: center;
+          width: 180px;
 
           ${({ theme }) => theme.mediaWidth.upToSmall`
-            border-radius: 0 0 15px 0;
+            border-radius: 0 15px 15px 0;
           `};
 
           > ${NumericalInput} {
             font-size: 20px;
+            width: 100%;
           }
         `}
   }
