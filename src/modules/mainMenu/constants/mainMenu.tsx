@@ -1,4 +1,4 @@
-import { Globe as EXPLORER_IMG, Globe } from 'react-feather'
+import { Globe } from 'react-feather'
 
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
 import IMAGE_COOKIE_POLICY from 'legacy/assets/cow-swap/cookie-policy.svg'
@@ -107,12 +107,8 @@ export const MAIN_MENU: MenuTreeItem[] = [
           },
           { id: MainMenuItemId.MORE_ABOUT, title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
           {
-            id: MainMenuItemId.MORE_EXPLORER,
-            title: 'CoW Explorer',
-            url: DOCS_LINK,
-            iconSVG: EXPLORER_IMG.toString(),
-            kind: MenuItemKind.CUSTOM_LINK,
-            LinkComponent: ExplorerMenuLink,
+            kind: MenuItemKind.CUSTOM_ITEM,
+            Item: ExplorerMenuLink,
           },
           {
             id: MainMenuItemId.MORE_STATISTICS,

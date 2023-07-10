@@ -10,7 +10,7 @@ import { ExternalLink as ExternalLinkComponent } from 'legacy/theme/components'
 import {
   DropDownItem,
   ParametrizedLink,
-  CustomLink,
+  CustomItem,
   ExternalLink,
   InternalLink,
   MainMenuContext,
@@ -45,22 +45,22 @@ function MenuImage(props: MenuImageProps) {
 }
 
 interface InternalExternalLinkProps {
-  link: InternalLink | ExternalLink | ParametrizedLink | CustomLink
+  link: InternalLink | ExternalLink | ParametrizedLink | CustomItem
   context: MainMenuContext
 }
 
 function Link({ link, context }: InternalExternalLinkProps) {
+  if (link.kind === MenuItemKind.CUSTOM_ITEM) {
+    const { Item: LinkComponent } = link
+    return <>{LinkComponent()}</>
+  }
+
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
   const isDynamic = kind === MenuItemKind.PARAMETRIZED_LINK
   const { handleMobileMenuOnClick, tradeContext } = context
   const internalUrl = isDynamic ? parameterizeTradeRoute(tradeContext, url as Routes) : url
-
-  if (link.kind === MenuItemKind.CUSTOM_LINK) {
-    const { LinkComponent } = link
-    return <>{LinkComponent()}</>
-  }
 
   if (isExternal) {
     return (
@@ -156,8 +156,8 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
     case MenuItemKind.EXTERNAL_LINK:
       // Render Internal/External links
       return <Link link={menuItem} context={context} />
-    case MenuItemKind.CUSTOM_LINK:
-      return <>{menuItem.LinkComponent}</>
+    case MenuItemKind.CUSTOM_ITEM:
+      return <>{menuItem.Item}</>
     default:
       return null
   }
