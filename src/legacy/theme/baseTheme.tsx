@@ -169,6 +169,10 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     boxShadow3: `0 4px 12px 0 ${transparentize(0.9, colorsTheme.text3)}`,
     gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
+    gradient2: `linear-gradient(250deg, ${transparentize(0.92, colorsTheme.alert)} 10%, ${transparentize(
+      0.92,
+      colorsTheme.success
+    )} 50%, ${transparentize(0.92, colorsTheme.success)} 100%);`,
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
