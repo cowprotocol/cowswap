@@ -47,7 +47,6 @@ export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
         NOW with&nbsp;<b>partial fills</b>&nbsp;support!
       </span>
     ),
-    isNew: true,
   },
 ]
 

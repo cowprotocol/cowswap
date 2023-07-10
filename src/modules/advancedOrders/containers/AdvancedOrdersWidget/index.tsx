@@ -27,12 +27,12 @@ export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
 ]
 
 const UNLOCK_SCREEN = {
-  title: 'Unlock the Power of Advanced Orders:',
+  title: 'Unlock the Power of Advanced Orders',
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
   buttonText: 'Unlock TWAP orders (BETA)',
   // TODO: add actual link before deploy to PROD
-  buttonLink: 'http://google.com',
+  buttonLink: '',
 }
 
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
