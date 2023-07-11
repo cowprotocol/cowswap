@@ -1,6 +1,8 @@
+import { useAtomValue } from 'jotai'
+
 import { Navigate } from 'react-router-dom'
 
-import { AdvancedOrdersWidget } from 'modules/advancedOrders'
+import { AdvancedOrdersWidget, advancedOrdersAtom } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
@@ -13,6 +15,7 @@ import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnab
 export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()
   const tradeContext = useTradeRouteContext()
+  const { isUnlocked } = useAtomValue(advancedOrdersAtom)
 
   if (!isAdvancedOrdersEnabled) {
     // To prevent direct access when the flag is off
@@ -21,8 +24,7 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
-      {/*TODO: add isUnlocked value*/}
-      <styledEl.PageWrapper isUnlocked={true}>
+      <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget>
             {/*TODO: conditionally display a widget for current advanced order type*/}

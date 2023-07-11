@@ -99,7 +99,7 @@ export default function UnsupportedCurrencyFooter({
                         <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
                       </AutoRow>
                       {chainId && (
-                        <ExternalLink href={getEtherscanLink(chainId, token.address, 'address')}>
+                        <ExternalLink href={getEtherscanLink(chainId, 'address', token.address)}>
                           <AddressText>{token.address}</AddressText>
                         </ExternalLink>
                       )}

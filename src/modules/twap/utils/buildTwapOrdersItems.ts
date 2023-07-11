@@ -61,6 +61,7 @@ function getTwapOrderItem(
     safeAddress,
     id,
     submissionDate,
+    executedDate: _executionDate || undefined,
     safeTxParams,
     executionInfo,
   }

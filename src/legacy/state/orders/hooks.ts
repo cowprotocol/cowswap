@@ -149,6 +149,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.presignaturePending[id] ||
       orders?.cancelled[id] ||
       orders?.creating[id] ||
+      orders?.scheduled[id] ||
       orders?.failed[id]
 
     return _deserializeOrder(serialisedOrder)

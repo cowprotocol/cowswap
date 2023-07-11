@@ -9,20 +9,20 @@ export const Container = styled.div`
 
 export const TitleSection = styled.div`
   text-align: center;
-  font-size: 24px;
+  font-size: 20px;
   color: ${({ theme }) => theme.text1};
   margin: 24px auto 42px;
 
   > h3 {
-    font-weight: 700;
+    font-weight: 400;
     font-size: inherit;
     margin: 0 0 4px;
+    color: ${({ theme }) => transparentize(0.2, theme.text1)};
   }
 
-  > span {
-    font-weight: 500;
-    font-size: inherit;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  > strong {
+    font-weight: 800;
+    font-size: 22px;
     margin: 0;
   }
 `

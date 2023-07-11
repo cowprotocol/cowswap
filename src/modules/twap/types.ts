@@ -36,6 +36,7 @@ export enum TwapOrderStatus {
   Pending = 'Pending',
   Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
+  Cancelling = 'Cancelling',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
 }
@@ -55,6 +56,7 @@ export interface TwapOrderItem {
   order: TWAPOrderStruct
   status: TwapOrderStatus
   chainId: SupportedChainId
+  executedDate?: string
   submissionDate: string
   safeAddress: string
   id: string

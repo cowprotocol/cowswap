@@ -43,8 +43,14 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
   EXECUTES_AT:
     'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
-  FILLED:
-    "CoW Swap doesn't currently support partial fills. Your order will either be filled completely or not at all.",
+  FILLED: (
+    <span>
+      How much of the order has been filled.
+      <br />
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
+    </span>
+  ),
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
@@ -62,6 +68,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   ),
 }
 
+const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
+
 // TODO: add cosmos fixture for this component
 export function ReceiptModal({
   isOpen,
@@ -78,6 +86,8 @@ export function ReceiptModal({
   if (!order || !chainId) {
     return null
   }
+
+  const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
@@ -172,7 +182,7 @@ export function ReceiptModal({
             </styledEl.Field>
 
             {/*TODO: add a link to explorer when it will support TWAP orders*/}
-            {!twapOrder && (
+            {(!twapOrder || twapPartOrderExists) && (
               <styledEl.Field>
                 {order.executionData.activityId && (
                   <>

@@ -1,3 +1,5 @@
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
@@ -17,13 +19,22 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
   // This was a presign order created hidden
   // Trigger the popup if order is no longer hidden
   if (!order.isHidden && orderObject) {
-    const popup = setPopupData(OrderTxTypes.METATXN, {
-      summary: orderObject.order.summary,
-      status: 'submitted',
-      id: order.id,
-    })
-    orderAnalytics('Posted', orderObject.order.class, 'Presign')
-
-    store.dispatch(addPopup(popup))
+    dispatchPresignedOrderPosted(store, order.id, orderObject.order.summary, orderObject.order.class)
   }
+}
+
+export function dispatchPresignedOrderPosted(
+  store: MiddlewareAPI<Dispatch>,
+  orderId: string,
+  summary: string,
+  orderClass: OrderClass
+) {
+  const popup = setPopupData(OrderTxTypes.METATXN, {
+    summary,
+    status: 'submitted',
+    id: orderId,
+  })
+  orderAnalytics('Posted', orderClass, 'Presign')
+
+  store.dispatch(addPopup(popup))
 }

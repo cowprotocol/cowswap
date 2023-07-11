@@ -51,18 +51,16 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
   orderCreationHash?: string
 }
 
-function _getSummary(params: PostOrderParams): string {
-  const {
-    kind,
-    account,
-    inputAmount,
-    outputAmount,
-    recipient,
-    recipientAddressOrName,
-    feeAmount,
-    sellToken,
-    buyToken,
-  } = params
+export function getOrderSubmitSummary(
+  params: Pick<
+    PostOrderParams,
+    'kind' | 'account' | 'inputAmount' | 'outputAmount' | 'recipient' | 'recipientAddressOrName' | 'feeAmount'
+  >
+): string {
+  const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
+
+  const sellToken = inputAmount.currency
+  const buyToken = outputAmount.currency
 
   const [inputQuantifier, outputQuantifier] = [
     kind === OrderKind.BUY ? 'at most ' : '',
@@ -117,7 +115,7 @@ export function getOrderParams(params: PostOrderParams): {
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
   // Prepare order
-  const summary = _getSummary(params)
+  const summary = getOrderSubmitSummary(params)
   const receiver = recipient
 
   return {

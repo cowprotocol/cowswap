@@ -72,7 +72,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
     return null
   }
   // Skip ComposableCow part orders
-  if (orderFromStore.composableCowInfo?.status) {
+  if (orderFromStore.composableCowInfo?.isVirtualPart) {
     return null
   }
   // Get order from API
