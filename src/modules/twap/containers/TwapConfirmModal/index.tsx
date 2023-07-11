@@ -94,6 +94,8 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
               minReceivedLabel: 'Min received (incl. fee/slippage)',
               minReceivedTooltip:
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
+              limitPriceLabel: 'Limit price (incl fee/slippage)',
+              limitPriceTooltip: 'The minimum price for this TWAP order, including fee and slippage.',
             }}
           />
           <TwapConfirmDetails

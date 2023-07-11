@@ -28,6 +28,8 @@ type AdditionalProps = {
   priceLabel?: string | undefined
   minReceivedLabel?: string | undefined
   minReceivedTooltip?: string | undefined
+  limitPriceLabel?: string | undefined
+  limitPriceTooltip?: string | undefined
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -57,7 +59,7 @@ export function TradeBasicConfirmDetails(props: Props) {
       <SlippageRow slippage={slippage} />
 
       {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
+      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
