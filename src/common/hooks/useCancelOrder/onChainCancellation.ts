@@ -1,21 +1,26 @@
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ContractTransaction } from '@ethersproject/contracts'
 
 import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 
-import { GPv2Settlement } from 'abis/types'
-import { CoWSwapEthFlow } from 'abis/types/ethflow'
-
+// Fallback If we couldn't estimate gas for on-chain cancellation
+const CANCELLATION_GAS_LIMIT_DEFAULT = BigNumber.from(150000)
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
+
+export type CancelledOrderInfo = {
+  txHash: string
+  orderId: string
+  sellTokenAddress: string
+  sellTokenSymbol?: string
+}
 
 export interface OnChainCancellation {
   estimatedGas: BigNumber
 
-  sendTransaction(): Promise<ContractTransaction>
+  sendTransaction(processCancelledOrder: (cancelledOrderInfo: CancelledOrderInfo) => void): Promise<void>
 }
 
 export async function getEthFlowCancellation(
@@ -35,14 +40,27 @@ export async function getEthFlowCancellation(
   }
 
   const estimatedGas = await ethFlowContract.estimateGas.invalidateOrder(cancelOrderParams).catch((error: Error) => {
-    logTradeFlowError(LOG_LABEL, `Error estimating createOrder gas. Using default ${ETHFLOW_GAS_LIMIT_DEFAULT}`, error)
-    return ETHFLOW_GAS_LIMIT_DEFAULT
+    logTradeFlowError(
+      LOG_LABEL,
+      `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
+      error
+    )
+    return CANCELLATION_GAS_LIMIT_DEFAULT
   })
 
   return {
     estimatedGas,
-    sendTransaction: () => {
-      return ethFlowContract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+    sendTransaction: (processCancelledOrder) => {
+      return ethFlowContract
+        .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+        .then((res) => {
+          processCancelledOrder({
+            txHash: res.hash,
+            orderId: order.id,
+            sellTokenAddress: order.inputToken.address,
+            sellTokenSymbol: order.inputToken.symbol,
+          })
+        })
     },
   }
 }
@@ -51,14 +69,25 @@ export async function getOnChainCancellation(contract: GPv2Settlement, order: Or
   const cancelOrderParams = order.id
 
   const estimatedGas = await contract.estimateGas.invalidateOrder(cancelOrderParams).catch((error: Error) => {
-    logTradeFlowError(LOG_LABEL, `Error estimating createOrder gas. Using default ${ETHFLOW_GAS_LIMIT_DEFAULT}`, error)
-    return ETHFLOW_GAS_LIMIT_DEFAULT
+    logTradeFlowError(
+      LOG_LABEL,
+      `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
+      error
+    )
+    return CANCELLATION_GAS_LIMIT_DEFAULT
   })
 
   return {
     estimatedGas,
-    sendTransaction: () => {
-      return contract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+    sendTransaction: (processCancelledOrder) => {
+      return contract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) }).then((res) => {
+        processCancelledOrder({
+          txHash: res.hash,
+          orderId: order.id,
+          sellTokenAddress: order.inputToken.address,
+          sellTokenSymbol: order.inputToken.symbol,
+        })
+      })
     },
   }
 }

@@ -20,10 +20,10 @@ import { getBlockExplorerUrl } from 'legacy/utils'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { useWalletInfo } from 'modules/wallet'
 
+import { Routes } from 'common/constants/routes'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { Routes } from 'constants/routes'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

@@ -10,6 +10,7 @@ import DarkModeQueryParamReader from 'legacy/theme'
 
 import { useInitializeUtm } from 'modules/utm'
 
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { RoutesApp } from './RoutesApp'
@@ -20,11 +21,14 @@ export function App() {
   useAnalyticsReporter()
   useInitializeUtm()
 
+  const isInjectedWidgetMode = isInjectedWidget()
+
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
       <DarkModeQueryParamReader />
       <ApeModeQueryParamReader />
+
       <styledEl.AppWrapper>
         <URLWarning />
         <styledEl.HeaderWrapper>
@@ -35,9 +39,13 @@ export function App() {
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
-        <styledEl.FooterWrapper>
-          <Footer />
-        </styledEl.FooterWrapper>
+        {isInjectedWidgetMode ? (
+          <styledEl.MarginerBottom></styledEl.MarginerBottom>
+        ) : (
+          <styledEl.FooterWrapper>
+            <Footer />
+          </styledEl.FooterWrapper>
+        )}
       </styledEl.AppWrapper>
     </ErrorBoundary>
   )

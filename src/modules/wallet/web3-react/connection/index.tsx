@@ -19,6 +19,7 @@ import {
   MetaMaskOption,
   OpenMetaMaskMobileOption,
 } from './injected'
+import { injectedWidgetConnection } from './injectedWidget'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 import { ledgerConnection, LedgerOption } from './ledger'
 import { networkConnection } from './network'
@@ -44,6 +45,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   trustWalletConnection,
   ledgerConnection,
   keystoneConnection,
+  injectedWidgetConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -57,6 +59,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
     case trustWalletConnection.connector:
+    case injectedWidgetConnection.connector:
     case ledgerConnection.connector:
     case keystoneConnection.connector:
     case walletConnectConnectionV2.connector:
@@ -103,6 +106,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return ledgerConnection
       case ConnectionType.KEYSTONE:
         return keystoneConnection
+      case ConnectionType.INJECTED_WIDGET:
+        return injectedWidgetConnection
     }
   }
 }

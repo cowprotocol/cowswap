@@ -20,7 +20,7 @@ import {
 } from 'modules/mainMenu/types'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes } from 'constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 // Assets
 
@@ -60,7 +60,7 @@ function Link({ link, context }: InternalExternalLinkProps) {
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
   const isDynamic = kind === MenuItemKind.PARAMETRIZED_LINK
   const { handleMobileMenuOnClick, tradeContext } = context
-  const internalUrl = isDynamic ? parameterizeTradeRoute(tradeContext, url as Routes) : url
+  const internalUrl = isDynamic ? parameterizeTradeRoute(tradeContext, url as RoutesValues) : url
 
   if (isExternal) {
     return (

@@ -1,33 +1,44 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
+import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooShort'
+import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
   isSafeApp: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
+  sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
+  chainId: SupportedChainId | undefined
+  partTime: number | undefined
 }
 
-// TODO: compose with common TradeFormState
 export enum TwapFormState {
-  LOADING,
-  NOT_SAFE,
-  ORDER_NOT_SPECIFIED, // TODO: reveal details
-  NEED_FALLBACK_HANDLER,
-  CAN_CREATE_ORDER,
+  LOADING_SAFE_INFO = 'LOADING_SAFE_INFO',
+  NOT_SAFE = 'NOT_SAFE',
+  SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
+  PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
 }
 
-export function getTwapFormState(props: TwapFormStateParams): TwapFormState {
-  const { isSafeApp, verification, twapOrder } = props
+export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
+  const { isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
 
   if (!isSafeApp) return TwapFormState.NOT_SAFE
 
-  if (verification === null) return TwapFormState.LOADING
+  if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 
-  if (!twapOrder) return TwapFormState.ORDER_NOT_SPECIFIED
-
-  if (verification === ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {
-    return TwapFormState.CAN_CREATE_ORDER
+  if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
+    return TwapFormState.SELL_AMOUNT_TOO_SMALL
   }
 
-  return TwapFormState.NEED_FALLBACK_HANDLER
+  // Not using `twapOrder.timeInterval` because it's not filled until the order is ready
+  if (isPartTimeIntervalTooShort(partTime)) {
+    return TwapFormState.PART_TIME_INTERVAL_TOO_SHORT
+  }
+
+  return null
 }

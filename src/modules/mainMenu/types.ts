@@ -1,6 +1,6 @@
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { Routes } from 'constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 export enum MenuItemKind {
   DROP_DOWN = 'DROP_DOWN',
@@ -54,7 +54,7 @@ export interface ExternalLink extends BasicMenuLink {
 }
 export interface ParametrizedLink extends BasicMenuLink {
   kind: MenuItemKind.PARAMETRIZED_LINK
-  url: Routes
+  url: RoutesValues
 }
 
 export interface CustomItem {

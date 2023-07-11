@@ -3,7 +3,7 @@ import { FractionLike, Nullish } from 'types'
 
 import { LONG_PRECISION } from 'legacy/constants'
 
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'common/constants/featureFlags'
 import { formatFiatAmount } from 'utils/amountFormat'
 import { FeatureFlag } from 'utils/featureFlags'
 import { FractionUtils } from 'utils/fractionUtils'

@@ -1,33 +1,28 @@
 import { useAtomValue } from 'jotai/utils'
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
-import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
-import { useTradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
-import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
-import { useTradeQuote } from 'modules/tradeQuote'
-import { useWalletDetails } from 'modules/wallet'
+import { useTradeConfirmActions } from 'modules/trade'
+import {
+  TradeFormBlankButton,
+  TradeFormButtons,
+  useGetTradeFormValidation,
+  useTradeFormButtonContext,
+} from 'modules/tradeFormValidation'
 
-import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
+import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
-const CompatibilityIssuesWarningWrapper = styled.div`
-  margin-top: -10px;
-`
+const DO_TRADE_TEXT = 'Place limit order'
+const CONFIRM_TEXT = 'Review limit order'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -36,67 +31,44 @@ export interface TradeButtonsProps {
 
 export function TradeButtons(props: TradeButtonsProps) {
   const { tradeContext, priceImpact } = props
-  const inputCurrencyAmount = tradeContext?.postOrderParams.inputAmount
 
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const formState = useLimitOrdersFormState()
-  const tradeState = useLimitOrdersDerivedState()
-  const toggleWalletModal = useToggleWalletModal()
-  const quote = useTradeQuote()
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
-  const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
-  const transactionConfirmState = useAtomValue(transactionConfirmAtom)
-  const closeModals = useCloseModals()
-  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
-  const { isSupportedWallet } = useWalletDetails()
-  const { inputCurrency, outputCurrency } = tradeState
-  const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
   const tradeConfirmActions = useTradeConfirmActions()
 
-  const wrapUnwrapParams: WrapUnwrapParams = {
-    isNativeIn: !!inputCurrencyAmount?.currency.isNative,
-    wrapUnwrapCallback,
-    transactionConfirmState,
-    closeModals,
-    showTransactionConfirmationModal,
+  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
+  const confirmTrade = tradeConfirmActions.onOpen
+  const isExpertMode = settingsState.expertMode
+
+  const defaultText = isExpertMode ? DO_TRADE_TEXT : CONFIRM_TEXT
+
+  const tradeFormButtonContext = useTradeFormButtonContext(defaultText, { doTrade: handleTrade, confirmTrade })
+
+  if (!tradeFormButtonContext) return null
+
+  // Display local form validation errors only when there are no primary errors
+  if (!primaryFormValidation && localFormValidation) {
+    const buttonFactory = limitOrdersTradeButtonsMap[localFormValidation]
+
+    return typeof buttonFactory === 'function' ? (
+      buttonFactory()
+    ) : (
+      <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
+        <Trans>{buttonFactory.text}</Trans>
+      </TradeFormBlankButton>
+    )
   }
 
-  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
-
-  const doTrade = useCallback(() => {
-    if (settingsState.expertMode) {
-      handleTrade()
-    } else {
-      tradeConfirmActions.onOpen()
-    }
-  }, [settingsState.expertMode, handleTrade, tradeConfirmActions])
-
-  const buttonFactory = limitOrdersTradeButtonsMap[formState]
-
-  const isButtonDisabled = (typeof buttonFactory !== 'function' && buttonFactory.disabled) || !warningsAccepted
-  const showWarnings = !!(inputCurrency && outputCurrency && isSwapUnsupported)
-
-  const Button =
-    typeof buttonFactory === 'function' ? (
-      buttonFactory({ tradeState, toggleWalletModal, quote, wrapUnwrapParams, doTrade })
-    ) : (
-      <SwapButton id={buttonFactory.id} onClick={doTrade} disabled={isButtonDisabled}>
-        <Trans>{buttonFactory.text}</Trans>
-      </SwapButton>
-    )
-
   return (
-    <>
-      {Button}
-      {showWarnings && (
-        <CompatibilityIssuesWarningWrapper>
-          <CompatibilityIssuesWarning
-            currencyIn={inputCurrency}
-            currencyOut={outputCurrency}
-            isSupportedWallet={isSupportedWallet}
-          />
-        </CompatibilityIssuesWarningWrapper>
-      )}
-    </>
+    <TradeFormButtons
+      doTradeText={DO_TRADE_TEXT}
+      confirmText={CONFIRM_TEXT}
+      validation={primaryFormValidation}
+      context={tradeFormButtonContext}
+      isExpertMode={isExpertMode}
+      isDisabled={!warningsAccepted}
+    />
   )
 }

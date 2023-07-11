@@ -4,22 +4,20 @@ import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { useDisableNativeTokenSelling } from 'modules/limitOrders/hooks/useDisableNativeTokenSelling'
-import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useSetupTradeState, TradeWidget } from 'modules/trade'
+import { TradeWidget, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
+import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
+import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -78,7 +76,7 @@ export function LimitOrdersWidget() {
     [isWrapOrUnwrap, settingsState.expertMode]
   )
 
-  const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
     () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
     [orderKind, inputCurrencyAmount, outputCurrencyAmount]

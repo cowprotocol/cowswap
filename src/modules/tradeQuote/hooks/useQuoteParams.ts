@@ -17,10 +17,8 @@ export function useQuoteParams() {
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  const amountStr = amount?.quotient.toString()
-
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !amountStr) {
+    if (!inputCurrency || !outputCurrency || !amount) {
       return
     }
 
@@ -32,13 +30,13 @@ export function useQuoteParams() {
     return {
       sellToken,
       buyToken,
-      amount: amountStr,
+      amount,
       chainId,
       receiver: account,
       kind: orderKind,
       toDecimals,
       fromDecimals,
-      isEthFlow: false, // EthFlow is not compatible with limit orders
+      isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, amountStr, account, chainId, orderKind])
+  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
 }

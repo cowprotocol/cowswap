@@ -230,7 +230,7 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
     if (!chainId) return []
 
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
-      const activity = createActivityDescriptor(txs[id], orders[id])
+      const activity = createActivityDescriptor(txs[id], orders?.[id])
       if (activity) {
         acc.push(activity)
       }

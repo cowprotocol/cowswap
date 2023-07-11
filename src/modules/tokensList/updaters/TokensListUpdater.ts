@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 
@@ -14,11 +14,14 @@ export function TokensListUpdater() {
   const updateTokensByAddress = useUpdateAtom(tokensByAddressAtom)
   const updateTokensBySymbol = useUpdateAtom(tokensBySymbolAtom)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const allTokensMemo = useMemo(() => allTokens, [JSON.stringify(allTokens)])
+
   useEffect(() => {
     const tokensByAddressMap: { [address: string]: TokenWithLogo } = {}
     const tokensBySymbolMap: { [address: string]: TokenWithLogo[] } = {}
 
-    allTokens.forEach((token) => {
+    allTokensMemo.forEach((token) => {
       const wrappedToken: TokenWithLogo = new TokenWithLogo(
         token.logoURI,
         token.chainId,
@@ -46,7 +49,7 @@ export function TokensListUpdater() {
 
     updateTokensByAddress(tokensByAddressMap)
     updateTokensBySymbol(tokensBySymbolMap)
-  }, [allTokens, updateTokensByAddress, updateTokensBySymbol])
+  }, [allTokensMemo, updateTokensByAddress, updateTokensBySymbol])
 
   return null
 }

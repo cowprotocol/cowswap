@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
@@ -41,7 +39,7 @@ import {
 } from 'modules/swap/pure/warnings'
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -71,8 +69,7 @@ export function SwapWidget() {
     currenciesIds,
     v2Trade: trade,
   } = useDerivedSwapInfo()
-  const wrapType = useWrapType()
-  const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
+  const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
@@ -85,12 +82,7 @@ export function SwapWidget() {
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
 
-  const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
-  const priceImpactParams = usePriceImpact({
-    abTrade: trade,
-    parsedAmounts,
-    isWrapping: isWrapUnwrapMode,
-  })
+  const priceImpactParams = useTradePriceImpact()
 
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -147,7 +139,6 @@ export function SwapWidget() {
     allowedSlippage,
     handleSwap: swapButtonContext.handleSwap,
     priceImpact: priceImpactParams.priceImpact,
-    dismissNativeWrapModal,
     rateInfoParams,
   }
 
@@ -194,7 +185,7 @@ export function SwapWidget() {
     feeWarningAccepted,
     impactWarningAccepted,
     // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-    hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
+    hideUnknownImpactWarning: !trade || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
@@ -225,13 +216,11 @@ export function SwapWidget() {
     rateInfoParams,
   }
 
-  const showTradeRates = !isWrapUnwrapMode
-
   const slots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
     bottomContent: (
       <>
-        {showTradeRates && <TradeRates {...tradeRatesProps} />}
+        <TradeRates {...tradeRatesProps} />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />
         <SwapWarningsBottom {...swapWarningsBottomProps} />

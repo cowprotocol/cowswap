@@ -12,7 +12,7 @@ const defaultJsonRpcHandler = (method: string) => {
 }
 const context: ExtensibleFallbackContext = {
   chainId: SupportedChainId.GOERLI,
-  safeAppsSdk: { safe: { getInfo: () => ({ safeAddress: '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e' }) } } as any,
+  safeAddress: '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e',
   settlementContract: {
     callStatic: { domainSeparator: () => '0xa5b986c2f5845d520bcb903639360b147735589732066cea24a3a59678025c94' },
   } as any,
@@ -28,7 +28,7 @@ describe('verifyExtensibleFallback', () => {
           // domainVerifiers()
           if (method === 'eth_call' && params?.[0]?.data?.startsWith('0x51cad5ee')) {
             //Composable cow address
-            return Promise.resolve('0x000000000000000000000000a31b99bd44528c7bae9e1f675d810ae13b0e29aa')
+            return Promise.resolve('0x000000000000000000000000F487887DA5a4b4e3eC114FDAd97dc0F785d72738')
           }
 
           return defaultJsonRpcHandler(method)

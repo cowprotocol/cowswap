@@ -16,7 +16,8 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -26,14 +27,16 @@ import { useDisconnectWallet, useWalletInfo, Web3Status } from 'modules/wallet'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { Routes } from 'common/constants/routes'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
   AccountElement,
   BalanceText,
+  CustomLogoImg,
   HeaderControls,
   HeaderElement,
   HeaderModWrapper,
@@ -53,6 +56,8 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 export default function Header() {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
+  const isInjectedWidgetMode = isInjectedWidget()
+  const injectedWidgetParams = useInjectedWidgetParams()
 
   const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
   const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
@@ -78,8 +83,10 @@ export default function Header() {
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
 
+  const menuItems = useMenuItems()
+
   const navigate = useNavigate()
-  const handleBalanceButtonClick = () => navigate('/account')
+
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
@@ -139,26 +146,36 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
-            <UniIcon>
-              <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                <SVG src={cowSwapLogo(darkMode)} />
-              </LogoImage>
-            </UniIcon>
-          </Title>
-          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          {!injectedWidgetParams.hideLogo && (
+            <Title href={isInjectedWidgetMode ? undefined : Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+              <UniIcon>
+                <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                  {injectedWidgetParams.logoUrl ? (
+                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
+                  ) : (
+                    <SVG src={cowSwapLogo(darkMode)} />
+                  )}
+                </LogoImage>
+              </UniIcon>
+            </Title>
+          )}
+          {!isInjectedWidgetMode && (
+            <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          )}
         </HeaderRow>
 
         <HeaderControls>
-          <NetworkSelector />
+          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            <CowBalanceButton
-              onClick={handleBalanceButtonClick}
-              account={account}
-              chainId={chainId}
-              isUpToSmall={isUpToSmall}
-            />
+            {!isInjectedWidgetMode && (
+              <CowBalanceButton
+                onClick={() => navigate('/account')}
+                account={account}
+                chainId={chainId}
+                isUpToSmall={isUpToSmall}
+              />
+            )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && chainId && (
@@ -171,7 +188,9 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+        {isUpToLarge && !isInjectedWidgetMode && (
+          <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />
+        )}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>

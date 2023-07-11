@@ -1,5 +1,4 @@
-import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Token } from '@uniswap/sdk-core'
@@ -7,6 +6,8 @@ import { Token } from '@uniswap/sdk-core'
 import { createAction } from '@reduxjs/toolkit'
 
 import { SerializedToken } from 'legacy/state/user/types'
+
+import { ComposableCowInfo } from 'common/types'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -75,6 +76,11 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
    * The order data is local to the device where the order was initiated
    */
   isHidden?: boolean
+
+  /**
+   * ComposableCoW-specific info
+   */
+  composableCowInfo?: ComposableCowInfo
 }
 
 /**
@@ -96,6 +102,7 @@ export type OrderInfoApi = Pick<
   | 'invalidated'
   | 'ethflowData'
   | 'onchainOrderData'
+  | 'class'
 >
 
 /**

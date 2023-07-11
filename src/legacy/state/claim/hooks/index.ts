@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { VCow } from '@cowprotocol/abis'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -33,7 +34,6 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { VCow as VCowType } from 'abis/types'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { formatTokenAmount } from 'utils/amountFormat'
@@ -277,7 +277,7 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
 }
 
 const FETCH_DEPLOYMENT_TIME_PROMISES: Map<ChainId, Promise<number>> = new Map()
-function fetchDeploymentTimestamp(vCowContract: VCowType, chainId: ChainId): Promise<number> {
+function fetchDeploymentTimestamp(vCowContract: VCow, chainId: ChainId): Promise<number> {
   let deploymentTimePromise = FETCH_DEPLOYMENT_TIME_PROMISES.get(chainId)
 
   if (!deploymentTimePromise) {
@@ -600,7 +600,7 @@ type GetClaimManyArgsParams = {
   nativeTokenPrice: string
 }
 
-type ClaimManyFnArgs = Parameters<VCowType['claimMany']>
+type ClaimManyFnArgs = Parameters<VCow['claimMany']>
 
 type GetClaimManyArgsResult = {
   args: ClaimManyFnArgs | undefined

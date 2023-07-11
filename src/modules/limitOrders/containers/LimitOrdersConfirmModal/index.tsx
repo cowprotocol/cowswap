@@ -13,9 +13,9 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeConfirmModal, useTradeConfirmActions, TradeConfirmation } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
@@ -59,7 +59,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       <TokenSymbol token={inputAmount?.currency.wrapped} length={6} />
       &nbsp;& Limit order)
     </>
-  ) : undefined
+  ) : (
+    'Place limit order'
+  )
 
   return (
     <>

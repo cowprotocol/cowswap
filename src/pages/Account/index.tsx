@@ -9,7 +9,7 @@ import { Loading } from 'legacy/components/FlashingLoading'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Title } from 'modules/application/pure/Page'
 
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import { AccountMenu } from './Menu'
 import { Container, CardsWrapper } from './styled'

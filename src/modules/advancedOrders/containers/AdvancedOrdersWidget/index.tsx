@@ -9,17 +9,17 @@ import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
-import { TwapFormWidget } from 'modules/twap'
+import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { partsStateAtom } from '../../../twap/state/partsStateAtom'
-
-export function AdvancedOrdersWidget() {
+export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()
+  useDisableNativeTokenSelling()
 
   const {
     inputCurrency,
@@ -36,6 +36,7 @@ export function AdvancedOrdersWidget() {
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { inputPartAmount } = useAtomValue(partsStateAtom)
+  const priceImpact = useTradePriceImpact()
 
   useSetTradeQuoteParams(inputPartAmount)
 
@@ -61,12 +62,7 @@ export function AdvancedOrdersWidget() {
   // TODO
   const slots: TradeWidgetSlots = {
     settingsWidget: <div></div>,
-    bottomContent: (
-      <>
-        {/*TODO: conditionally display a widget for current advanced order type*/}
-        <TwapFormWidget />
-      </>
-    ),
+    bottomContent: children,
   }
 
   const params = {
@@ -74,11 +70,7 @@ export function AdvancedOrdersWidget() {
     compactView: false,
     showRecipient: false,
     isTradePriceUpdating,
-    priceImpact: {
-      priceImpact: undefined,
-      error: undefined,
-      loading: false,
-    },
+    priceImpact,
   }
 
   return (

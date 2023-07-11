@@ -133,7 +133,8 @@ export function OrderRow({
   spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
+  const { creationTime, expirationTime, status } = order
+  const { filledPercentDisplay, executedPrice, activityId } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
@@ -146,7 +147,7 @@ export function OrderRow({
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
+  const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
@@ -175,14 +176,14 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
-    <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+    <TableRow data-id={order.id} isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
         <TableRowCheckboxWrapper>
           <TableRowCheckbox
             type="checkbox"
             checked={isRowSelected}
-            disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+            disabled={getIsEthFlowOrder(order.inputToken.address) || !isOrderCancellable(order)}
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
           <CheckboxCheckmark />
@@ -290,8 +291,8 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>{formattedPercentage}%</b>
-        <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
+        <b>{filledPercentDisplay}%</b>
+        <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}

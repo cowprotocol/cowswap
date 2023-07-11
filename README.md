@@ -77,6 +77,15 @@ This will start a server on the `http://localhost:5000/`
 yarn run cosmos
 ```
 
+## Build/test UI Library
+
+CoW Swap has a library of reusable components.
+
+```bash
+yarn ui:build
+yarn ui:test
+```
+
 ## Configuring the environment
 
 The app has some default configuration, but it's highly encouraged to define your own.
@@ -196,3 +205,4 @@ REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
 
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](src/utils/amountFormat/README.md)
+3. [ABIs](src/libs/abis/README.md)

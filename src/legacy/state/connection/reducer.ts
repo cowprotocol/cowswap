@@ -7,22 +7,10 @@ export interface ConnectionState {
 }
 
 export const initialState: ConnectionState = {
-  errorByConnectionType: {
-    [ConnectionType.INJECTED]: undefined,
-    [ConnectionType.FORTMATIC]: undefined,
-    [ConnectionType.WALLET_CONNECT]: undefined,
-    [ConnectionType.WALLET_CONNECT_V2]: undefined,
-    [ConnectionType.COINBASE_WALLET]: undefined,
-    [ConnectionType.NETWORK]: undefined,
-    [ConnectionType.GNOSIS_SAFE]: undefined,
-    [ConnectionType.ZENGO]: undefined,
-    [ConnectionType.AMBIRE]: undefined,
-    [ConnectionType.ALPHA]: undefined,
-    [ConnectionType.TALLY]: undefined,
-    [ConnectionType.TRUST]: undefined,
-    [ConnectionType.LEDGER]: undefined,
-    [ConnectionType.KEYSTONE]: undefined,
-  },
+  errorByConnectionType: Object.keys(ConnectionType).reduce((acc, key) => {
+    acc[key as ConnectionType] = undefined
+    return acc
+  }, {} as Record<ConnectionType, undefined>),
 }
 
 const connectionSlice = createSlice({

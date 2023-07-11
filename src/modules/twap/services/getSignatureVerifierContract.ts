@@ -1,15 +1,12 @@
+import { SignatureVerifierMuxerAbi, SignatureVerifierMuxer } from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
-
-import SignatureVerifierMuxerABI from 'abis/SignatureVerifierMuxer.json'
-import { SignatureVerifierMuxer } from 'abis/types'
 
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export async function getSignatureVerifierContract(
   context: ExtensibleFallbackContext
 ): Promise<SignatureVerifierMuxer> {
-  const { safeAppsSdk, provider } = context
-  const { safeAddress } = await safeAppsSdk.safe.getInfo()
+  const { safeAddress, provider } = context
 
-  return new Contract(safeAddress, SignatureVerifierMuxerABI, provider) as SignatureVerifierMuxer
+  return new Contract(safeAddress, SignatureVerifierMuxerAbi, provider) as SignatureVerifierMuxer
 }

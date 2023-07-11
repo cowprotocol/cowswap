@@ -1,28 +1,32 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useAsyncMemo } from 'use-async-memo'
+import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
-import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
+import { useFallbackHandlerVerification } from './useFallbackHandlerVerification'
 
-import { useIsSafeApp } from '../../wallet'
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
-import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
-import { twapOrderAtom } from '../state/twapOrderAtom'
+import { partsStateAtom } from '../state/partsStateAtom'
+import { twapOrderAtom, twapTimeIntervalAtom } from '../state/twapOrderAtom'
 
-export function useTwapFormState(): TwapFormState {
-  const isSafeApp = useIsSafeApp()
-  const extensibleFallbackContext = useExtensibleFallbackContext()
+export function useTwapFormState(): TwapFormState | null {
+  const { chainId } = useWalletInfo()
 
   const twapOrder = useAtomValue(twapOrderAtom)
+  const { inputFiatAmount: sellAmountPartFiat } = useAtomValue(partsStateAtom)
+  const partTime = useAtomValue(twapTimeIntervalAtom)
 
-  const verification = useAsyncMemo(
-    () => (extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null),
-    [extensibleFallbackContext],
-    null
-  )
+  const verification = useFallbackHandlerVerification()
+  const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
-    return getTwapFormState({ isSafeApp, verification, twapOrder })
-  }, [isSafeApp, verification, twapOrder])
+    return getTwapFormState({
+      isSafeApp,
+      verification,
+      twapOrder,
+      sellAmountPartFiat,
+      chainId,
+      partTime,
+    })
+  }, [isSafeApp, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
 }

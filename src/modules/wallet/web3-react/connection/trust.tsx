@@ -10,7 +10,7 @@ import { getConnectionName, getIsTrustWallet } from 'modules/wallet/api/utils/co
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 import { InjectedWallet } from 'modules/wallet/web3-react/connectors/Injected'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { walletConnectConnection } from './walletConnect'
 import { walletConnectConnectionV2 } from './walletConnectV2'

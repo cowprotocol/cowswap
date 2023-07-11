@@ -4,7 +4,10 @@ import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { CloseIcon } from 'legacy/theme'
 
-import { GpModal } from 'common/pure/Modal'
+import { TwapOrderItem } from 'modules/twap/types'
+
+import { InlineBanner } from 'common/pure/InlineBanner'
+import { CowModal } from 'common/pure/Modal'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -12,6 +15,7 @@ import { CurrencyField } from './CurrencyField'
 import { DateField } from './DateField'
 import { FeeField } from './FeeField'
 import { FieldLabel } from './FieldLabel'
+import { SafeTxFields } from './fields/SafeTxFields'
 import { FilledField } from './FilledField'
 import { IdField } from './IdField'
 import { OrderTypeField } from './OrderTypeField'
@@ -23,6 +27,8 @@ import { SurplusField } from './SurplusField'
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
+  twapOrder: TwapOrderItem | null
+  isTwapPartOrder: boolean
   chainId: SupportedChainId
   onDismiss: () => void
   sellAmount: CurrencyAmount<Token>
@@ -37,8 +43,14 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
   EXECUTES_AT:
     'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
-  FILLED:
-    "CoW Swap doesn't currently support partial fills. Your order will either be filled completely or not at all.",
+  FILLED: (
+    <span>
+      How much of the order has been filled.
+      <br />
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
+    </span>
+  ),
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
@@ -61,6 +73,8 @@ export function ReceiptModal({
   isOpen,
   onDismiss,
   order,
+  twapOrder,
+  isTwapPartOrder,
   chainId,
   buyAmount,
   limitPrice,
@@ -73,14 +87,25 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
+  const safeTxParams = twapOrder?.safeTxParams
 
   return (
-    <GpModal onDismiss={onDismiss} isOpen={isOpen}>
+    <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
           <styledEl.Title>Order Receipt</styledEl.Title>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
+
+        {twapOrder && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner type="information">
+              {isTwapPartOrder
+                ? `Part of a ${twapOrder.order.n}-part TWAP order split`
+                : `TWAP order split into ${twapOrder.order.n} parts`}
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
 
         <styledEl.Body>
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
@@ -114,24 +139,30 @@ export function ReceiptModal({
               )}
             </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-              <FilledField order={order} />
-            </styledEl.Field>
+            {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
+            {/*The condition should be removed once we have the data*/}
+            {(!twapOrder || isTwapPartOrder) && (
+              <>
+                <styledEl.Field>
+                  <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
+                  <FilledField order={order} />
+                </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
-              <SurplusField order={order} />
-            </styledEl.Field>
+                <styledEl.Field>
+                  <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+                  <SurplusField order={order} />
+                </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Fee" tooltip={tooltips.FEE} />
-              <FeeField order={order} />
-            </styledEl.Field>
+                <styledEl.Field>
+                  <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+                  <FeeField order={order} />
+                </styledEl.Field>
+              </>
+            )}
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationTime} />
+              <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -144,17 +175,31 @@ export function ReceiptModal({
               <OrderTypeField order={order} />
             </styledEl.Field>
 
-            <styledEl.Field>
-              {order.activityId && (
-                <>
-                  <FieldLabel label={order.activityTitle} />
-                  <IdField id={order.activityId} chainId={chainId} />
-                </>
-              )}
-            </styledEl.Field>
+            {/*TODO: add a link to explorer when it will support TWAP orders*/}
+            {!twapOrder && (
+              <styledEl.Field>
+                {order.executionData.activityId && (
+                  <>
+                    <FieldLabel label={order.executionData.activityTitle} />
+                    <IdField id={order.executionData.activityId} chainId={chainId} />
+                  </>
+                )}
+              </styledEl.Field>
+            )}
+            {/*TODO: make it more generic. The ReceiptModal should know about TWAP and should display Safe info for any ComposableCow order*/}
+            {twapOrder && safeTxParams && (
+              <SafeTxFields
+                chainId={chainId}
+                safeAddress={twapOrder.safeAddress}
+                safeTxHash={safeTxParams.safeTxHash}
+                nonce={safeTxParams.nonce}
+                confirmations={safeTxParams.confirmations}
+                confirmationsRequired={safeTxParams.confirmationsRequired}
+              />
+            )}
           </styledEl.FieldsWrapper>
         </styledEl.Body>
       </styledEl.Wrapper>
-    </GpModal>
+    </CowModal>
   )
 }

@@ -16,7 +16,7 @@ import { getEtherscanLink } from 'legacy/utils'
 import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import Modal from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);

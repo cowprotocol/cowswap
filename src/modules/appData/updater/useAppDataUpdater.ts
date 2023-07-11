@@ -29,7 +29,7 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
   const appCode = useAppCode()
 
   useEffect(() => {
-    if (!chainId) {
+    if (!chainId || !appCode) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
       return

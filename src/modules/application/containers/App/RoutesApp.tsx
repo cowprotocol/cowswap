@@ -8,7 +8,7 @@ import Loader from 'legacy/components/Loader'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
@@ -36,6 +36,9 @@ const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pag
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
 
+// Misc
+const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ 'pages/KitchenSink'))
+
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
@@ -43,7 +46,7 @@ function createRedirectExternal(url: string) {
   }
 }
 
-type LazyRouteProps = { route: RoutesEnum; element: ReactNode; key?: number }
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps) {
   return <Route key={key} path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
@@ -64,6 +67,7 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
   { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
   { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
+  { route: RoutesEnum.KITCHEN_SINK, element: <KitchenSink /> },
 ]
 
 export function RoutesApp() {

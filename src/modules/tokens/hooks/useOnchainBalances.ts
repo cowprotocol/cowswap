@@ -1,20 +1,19 @@
 import { useMemo } from 'react'
 
+import { Erc20Interface, Erc20Abi } from '@cowprotocol/abis'
 import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import ERC20ABI from 'legacy/abis/erc20.json'
-import { Erc20Interface } from 'legacy/abis/types/Erc20'
 import { isAddress } from 'legacy/utils'
 
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 import { BalancesAndAllowances, BalancesAndAllowancesParams, TokenAmounts, TokenAmountsResult } from '../types'
 
-const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
+const ERC20Interface = new Interface(Erc20Abi) as Erc20Interface
 const DEFAULT_LISTENER_OPTIONS: ListenerOptionsWithGas = { gasRequired: 185_000, blocksPerFetch: 5 }
 
 export interface OnchainAmountsParams {
@@ -29,13 +28,13 @@ export type OnchainAllowancesParams = OnchainAmountsParams & { spender?: string 
 
 export function useOnchainBalances(params: OnchainBalancesParams): TokenAmountsResult {
   const { account } = params
-  const callParams = [account]
+  const callParams = useMemo(() => [account], [account])
   return useOnchainErc20Amounts('balanceOf', callParams, params)
 }
 
 export function useOnchainAllowances(params: OnchainAllowancesParams): TokenAmountsResult {
   const { account, spender } = params
-  const callParams = [account, spender]
+  const callParams = useMemo(() => [account, spender], [account, spender])
   return useOnchainErc20Amounts('allowance', callParams, params)
 }
 

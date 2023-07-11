@@ -1,12 +1,19 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { COW } from 'legacy/constants/tokens'
+import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
+import { getAppDataHash } from 'modules/appData'
+
 import { createTwapOrderTxs } from './createTwapOrderTxs'
 
-import { COW } from '../../../legacy/constants/tokens'
-import { WETH_GOERLI } from '../../../legacy/utils/goerli/constants'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
+import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
+
+const chainId = SupportedChainId.GOERLI
 
 const order: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(COW[SupportedChainId.GOERLI], 100_000_000_000),
@@ -16,6 +23,7 @@ const order: TWAPOrder = {
   startTime: 1684764716,
   timeInterval: 600,
   span: 0,
+  appData: getAppDataHash(),
 }
 
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'
@@ -33,17 +41,20 @@ describe('Create TWAP order', () => {
     approveFn = jest.fn().mockReturnValue(APPROVE_TX_DATA)
 
     context = {
-      chainId: SupportedChainId.GOERLI,
-      safeAppsSdk: null as any,
-      composableCowContract: { interface: { encodeFunctionData: createCowFn } } as any,
+      composableCowContract: {
+        interface: { encodeFunctionData: createCowFn },
+        address: COMPOSABLE_COW_ADDRESS[chainId],
+      } as any,
       needsApproval: false,
       spender: '0xB4FBF271143F4FBf7B91A5ded31805e42b222222',
+      currentBlockFactoryAddress: CURRENT_BLOCK_FACTORY_ADDRESS[chainId],
       erc20Contract: { interface: { encodeFunctionData: approveFn } } as any,
     }
   })
 
   it('When sell token is approved, then should generate only creation transaction', () => {
-    const result = createTwapOrderTxs(order, { ...context, needsApproval: false })
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
+    const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: false })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
     expect(createCowFn.mock.calls[0]).toMatchSnapshot()
@@ -53,7 +64,8 @@ describe('Create TWAP order', () => {
   })
 
   it('When sell token is NOT approved, then should generate approval and creation transactions', () => {
-    const result = createTwapOrderTxs(order, { ...context, needsApproval: true })
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
+    const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: true })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
     expect(createCowFn.mock.calls[0]).toMatchSnapshot()

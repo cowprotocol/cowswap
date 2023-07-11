@@ -1,8 +1,9 @@
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { GnosisSafeLink } from 'modules/account/containers/Transaction/StatusDetails'
 import { useGnosisSafeInfo, useWalletInfo } from 'modules/wallet'
+
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 interface Props {
   tx: EnhancedTransactionDetails
@@ -24,7 +25,7 @@ export function EnhancedTransactionLink(props: Props) {
       return null
     }
 
-    return <GnosisSafeLink chainId={chainId} safeTransaction={safeTx} />
+    return <SafeWalletLink chainId={chainId} safeTransaction={safeTx} />
   } else {
     return <ExplorerLink id={tx.hash} type="transaction" />
   }

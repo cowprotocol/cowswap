@@ -8,7 +8,7 @@ import { ExternalLink, ThemedText } from 'legacy/theme'
 
 import { CopyHelper } from 'modules/account/containers/CopyHelper'
 
-import Modal from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 const ContentWrapper = styled(Column)`
   align-items: center;
