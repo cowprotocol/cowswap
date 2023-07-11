@@ -15,7 +15,7 @@ import { ExternalLink } from 'legacy/theme'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenAmount, SymbolElement } from 'common/pure/TokenAmount'
 
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'
@@ -70,6 +70,10 @@ export const Wrapper = styled.div`
         fill: ${({ theme }) => theme.success};
       }
     }
+  }
+
+  ${SymbolElement} {
+    word-break: break-word;
   }
 
   > span {
