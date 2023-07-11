@@ -179,7 +179,6 @@ export function SurplusModal(props: SurplusModalProps) {
         <span>!</span>
       </strong>
       {showFiatValue && <FiatAmount amount={surplusFiatValue} accurate={false} />}
-      {/* TODO: add share data */}
       {surplusAmount && surplusToken && (
         <StyledExternalLink
           onClickOptional={onTweetShare}
@@ -195,7 +194,9 @@ export function SurplusModal(props: SurplusModalProps) {
       )}
       <p>
         CoW Swap is the only token exchange that gets you extra tokens.{' '}
-        <ExternalLink href={'https://cow.fi'}>Learn how ↗</ExternalLink>
+        <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
+          Learn how ↗
+        </ExternalLink>
       </p>
     </Wrapper>
   )
