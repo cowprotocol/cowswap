@@ -89,7 +89,12 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
-            additionalProps={{ priceLabel: 'Price (incl. fee)' }}
+            additionalProps={{
+              priceLabel: 'Price (incl. fee)',
+              minReceivedLabel: 'Min received (incl. fee/slippage)',
+              minReceivedTooltip:
+                'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
+            }}
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}

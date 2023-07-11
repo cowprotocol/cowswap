@@ -26,6 +26,8 @@ type Props = {
 
 type AdditionalProps = {
   priceLabel?: string | undefined
+  minReceivedLabel?: string | undefined
+  minReceivedTooltip?: string | undefined
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -33,6 +35,8 @@ export function TradeBasicConfirmDetails(props: Props) {
   const { inputCurrencyAmount } = rateInfoParams
 
   const priceLabel = additionalProps?.priceLabel || 'Price'
+  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
+  const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
   const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
 
@@ -59,8 +63,8 @@ export function TradeBasicConfirmDetails(props: Props) {
       <ReviewOrderModalAmountRow
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
-        tooltip="TODO: Min received tooltip"
-        label="Min received (incl. fee/slippage)"
+        tooltip={minReceivedTooltip}
+        label={minReceivedLabel}
       />
     </styledEl.Wrapper>
   )
