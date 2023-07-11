@@ -92,7 +92,7 @@ export const CowModal = styled(Modal)<{
   > [data-reach-dialog-content] {
     color: ${({ theme }) => theme.text1};
     width: 100%;
-    max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
+    max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
     padding: ${({ padding = '0px' }) => `${padding}`};

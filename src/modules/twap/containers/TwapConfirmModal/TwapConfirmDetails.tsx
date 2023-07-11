@@ -15,6 +15,10 @@ const Wrapper = styled.div`
   > b {
     display: block;
     margin: 0 0 3px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 10px;
+    `}
   }
 `
 
