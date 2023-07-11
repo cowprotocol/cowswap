@@ -11,12 +11,13 @@ import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/integration/react'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
-import store from 'legacy/state'
+import store, { persistor } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 import { nodeRemoveChildFix } from 'legacy/utils/node'
 
@@ -44,29 +45,31 @@ root.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Provider store={store}>
-      <AtomProvider>
-        <HashRouter>
-          <LanguageProvider>
-            <Web3Provider>
-              <ThemeProvider>
-                <ThemedGlobalStyle />
-                <WalletUnsupportedNetworkBanner />
-                <BlockNumberProvider>
-                  <WithLDProvider>
-                    <Updaters />
-                    <FeatureGuard featureFlag="cowFortuneEnabled">
-                      <FortuneWidget />
-                    </FeatureGuard>
-                    <Popups />
-                    <AppziButton />
-                    <App />
-                  </WithLDProvider>
-                </BlockNumberProvider>
-              </ThemeProvider>
-            </Web3Provider>
-          </LanguageProvider>
-        </HashRouter>
-      </AtomProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <AtomProvider>
+          <HashRouter>
+            <LanguageProvider>
+              <Web3Provider>
+                <ThemeProvider>
+                  <ThemedGlobalStyle />
+                  <WalletUnsupportedNetworkBanner />
+                  <BlockNumberProvider>
+                    <WithLDProvider>
+                      <Updaters />
+                      <FeatureGuard featureFlag="cowFortuneEnabled">
+                        <FortuneWidget />
+                      </FeatureGuard>
+                      <Popups />
+                      <AppziButton />
+                      <App />
+                    </WithLDProvider>
+                  </BlockNumberProvider>
+                </ThemeProvider>
+              </Web3Provider>
+            </LanguageProvider>
+          </HashRouter>
+        </AtomProvider>
+      </PersistGate>
     </Provider>
   </StrictMode>
 )

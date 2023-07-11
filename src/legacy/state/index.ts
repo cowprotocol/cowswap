@@ -1,5 +1,6 @@
-import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
-import { load, save } from 'redux-localstorage-simple'
+import { combineReducers, configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
+import localforage from 'localforage'
+import { persistStore, persistReducer } from 'redux-persist'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import application from 'legacy/state/application/reducer'
@@ -23,6 +24,11 @@ import multicall from 'lib/state/multicall'
 
 import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
 
+const persistConfig = {
+  key: 'root',
+  storage: localforage,
+}
+
 const UNISWAP_REDUCERS = {
   application,
   user,
@@ -44,20 +50,21 @@ const reducers = {
   cowToken,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
+const rootReducer = combineReducers(reducers)
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const store = configureStore({
-  reducer: reducers,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
-      .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware)
       .concat(priceMiddleware),
-  preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
+
+export const persistor = persistStore(store)
 
 // this instantiates the app / reducers in several places using the default chainId
 store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
