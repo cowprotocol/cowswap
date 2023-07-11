@@ -58,6 +58,6 @@ export const twapOrderSlippageAtom = atom<Percent>((get) => {
 
   return slippageValue != null
     ? // Multiplying on 100 to allow decimals values (e.g 0.05)
-      new Percent(slippageValue * 100, 10000)
+      new Percent(Math.round(slippageValue * 100), 10000)
     : DEFAULT_TWAP_SLIPPAGE
 })
