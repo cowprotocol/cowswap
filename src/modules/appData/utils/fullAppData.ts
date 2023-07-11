@@ -3,7 +3,7 @@ import { environmentName } from 'legacy/utils/environments'
 import { AppDataInfo } from '../types'
 import { toKeccak256 } from '../utils/buildAppData'
 
-const DEFAULT_FULL_APP_DATA = '{"version":"0.1.0","appCode":"CowSwap","metadata":{}}'
+const DEFAULT_FULL_APP_DATA = '{"version":"0.7.0","appCode":"CoW Swap","metadata":{}}'
 
 let appData: AppDataInfo = (() => {
   const fullAppData = _getFullAppData()
