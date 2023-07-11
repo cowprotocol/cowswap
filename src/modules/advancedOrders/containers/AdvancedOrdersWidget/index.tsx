@@ -100,7 +100,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
 
   const params = {
     recipient,
-    compactView: false,
+    compactView: true,
     showRecipient: false,
     isTradePriceUpdating,
     priceImpact,

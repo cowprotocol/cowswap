@@ -19,22 +19,35 @@ export const twapTimeIntervalAtom = atom<number>((get) => {
   return seconds / numberOfPartsValue
 })
 
+/**
+ * Get slippage adjusted buyAmount for TWAP orders
+ *
+ * Calculated independently as we don't need the user to be connected to know how much they would receive
+ */
+export const twapSlippageAdjustedBuyAmount = atom<CurrencyAmount<Token> | null>((get) => {
+  const { outputCurrencyAmount } = get(advancedOrdersDerivedStateAtom)
+
+  if (!outputCurrencyAmount) return null
+
+  const slippage = get(twapOrderSlippageAtom)
+
+  const slippageAmount = outputCurrencyAmount.multiply(slippage)
+  return outputCurrencyAmount.subtract(slippageAmount) as CurrencyAmount<Token>
+})
+
 export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const appDataInfo = get(appDataInfoAtom)
   const { account } = get(walletInfoAtom)
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
-  const { inputCurrencyAmount, outputCurrencyAmount, recipient } = get(advancedOrdersDerivedStateAtom)
-  const slippage = get(twapOrderSlippageAtom)
+  const { inputCurrencyAmount, recipient } = get(advancedOrdersDerivedStateAtom)
+  const buyAmount = get(twapSlippageAdjustedBuyAmount)
 
-  if (!inputCurrencyAmount || !outputCurrencyAmount || !account) return null
-
-  const slippageAmount = outputCurrencyAmount.multiply(slippage)
-  const buyAmountWithSlippage = outputCurrencyAmount.subtract(slippageAmount)
+  if (!inputCurrencyAmount || !buyAmount || !account) return null
 
   return {
     sellAmount: inputCurrencyAmount as CurrencyAmount<Token>,
-    buyAmount: buyAmountWithSlippage as CurrencyAmount<Token>,
+    buyAmount,
     receiver: recipient || account, // TODO: check case with ENS name
     numOfParts: numberOfPartsValue,
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory

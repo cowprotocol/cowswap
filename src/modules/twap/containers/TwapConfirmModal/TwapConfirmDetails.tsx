@@ -1,10 +1,26 @@
 import React from 'react'
 
+import styled from 'styled-components/macro'
+
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+
+const Wrapper = styled.div`
+  padding: 10px;
+  font-size: 13px;
+
+  > b {
+    display: block;
+    margin: 0 0 3px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 10px;
+    `}
+  }
+`
 
 export type TwapConfirmDetailsProps = {
   startTime: number | undefined
@@ -24,8 +40,8 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
 
   return (
-    <div>
-      <span>TWAP order split in {numberOfPartsValue} equal parts</span>
+    <Wrapper>
+      <b>TWAP order split in {numberOfPartsValue} equal parts</b>
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
@@ -58,6 +74,6 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       <ConfirmDetailsItem tooltip="TODO: add tooltip" label="Total duration" withArrow={false}>
         {totalDurationDisplay}
       </ConfirmDetailsItem>
-    </div>
+    </Wrapper>
   )
 })

@@ -36,13 +36,15 @@ export const Label = styled(TradeWidgetFieldLabel)`
 `
 
 export const Amount = styled(TokenAmount)`
+  display: flex;
+  flex-flow: row wrap;
   font-size: 18px;
   font-weight: 500;
   padding: 2px 0;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
+  gap: 5px;
 
   > div:first-child {
     margin-right: 5px;

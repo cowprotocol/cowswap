@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   openAdvancedOrdersTabAnalytics,
@@ -20,7 +20,9 @@ import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapForm
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
+import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
@@ -35,7 +37,7 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import {
   twapOrderSlippageAtom,
   twapOrdersSettingsAtom,
@@ -57,6 +59,7 @@ export function TwapFormWidget() {
 
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
@@ -77,6 +80,8 @@ export function TwapFormWidget() {
   const composableCowContract = useComposableCowContract()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
+
+  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
 
   const deadlineState = {
     deadline,
@@ -110,6 +115,9 @@ export function TwapFormWidget() {
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
 
+  const isInvertedState = useState(false)
+  const [isInverted] = isInvertedState
+
   return (
     <>
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
@@ -123,10 +131,32 @@ export function TwapFormWidget() {
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo
+            label={LABELS_TOOLTIPS.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+          />
         </styledEl.Row>
       )}
-
+      <TradeNumberInput
+        value={slippageValue}
+        onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
+        decimalsPlaces={2}
+        placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
+        max={50}
+        label={LABELS_TOOLTIPS.slippage.label}
+        tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+        prefixComponent={
+          <em>
+            {limitPrice ? (
+              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+            ) : (
+              '0'
+            )}
+          </em>
+        }
+        suffix="%"
+      />
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
@@ -137,19 +167,7 @@ export function TwapFormWidget() {
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
-        <TradeNumberInput
-          value={slippageValue}
-          onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
-          decimalsPlaces={2}
-          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(0)}
-          max={50}
-          label={LABELS_TOOLTIPS.slippage.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-          suffix="%"
-        />
       </styledEl.Row>
-
-      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
       <styledEl.Row>
         <DeadlineSelector
@@ -167,6 +185,8 @@ export function TwapFormWidget() {
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>
+
+      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons

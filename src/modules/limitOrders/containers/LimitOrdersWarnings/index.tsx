@@ -44,6 +44,12 @@ export interface LimitOrdersWarningsProps {
   className?: string
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+`
+
 const StyledNoImpactWarning = styled(NoImpactWarning)`
   margin: 10px auto 0;
 `
@@ -123,7 +129,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   )
 
   return isVisible ? (
-    <div className={className}>
+    <Wrapper className={className}>
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning
@@ -146,6 +152,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
-    </div>
+    </Wrapper>
   ) : null
 }
