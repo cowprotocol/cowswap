@@ -1,5 +1,7 @@
 // Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
 
+import { ProgressBarWrapper, ProgressBar } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -21,7 +23,10 @@ export function FilledField({ order }: Props) {
   return (
     <styledEl.Value>
       <styledEl.InlineWrapper>
-        <styledEl.Progress active={filledPercentDisplay || 0} />
+        <ProgressBarWrapper>
+          <b>{filledPercentDisplay}%</b>
+          <ProgressBar value={filledPercentDisplay || 0}></ProgressBar>
+        </ProgressBarWrapper>
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
