@@ -176,7 +176,6 @@
     "react-window": "^1.8.5",
     "rebass": "^4.0.7",
     "redux": "^4.1.2",
-    "redux-localstorage-simple": "^2.3.1",
     "redux-persist": "^6.0.0",
     "setimmediate": "^1.0.5",
     "simple-sitemap-renderer": "^1.1.0",
