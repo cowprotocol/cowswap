@@ -25,11 +25,11 @@ type Props = {
 }
 
 type AdditionalProps = {
-  priceLabel?: string | undefined
-  minReceivedLabel?: string | undefined
-  minReceivedTooltip?: string | undefined
-  limitPriceLabel?: string | undefined
-  limitPriceTooltip?: string | undefined
+  priceLabel?: React.ReactNode
+  minReceivedLabel?: React.ReactNode
+  minReceivedTooltip?: React.ReactNode
+  limitPriceLabel?: React.ReactNode
+  limitPriceTooltip?: React.ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {

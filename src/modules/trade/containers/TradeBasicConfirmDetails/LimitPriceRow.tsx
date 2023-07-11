@@ -12,8 +12,8 @@ import { RateWrapper } from 'common/pure/RateInfo'
 type Props = {
   price: Nullish<Price<Currency, Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
-  limitPriceLabel?: string
-  limitPriceTooltip?: string
+  limitPriceLabel?: React.ReactNode
+  limitPriceTooltip?: React.ReactNode
 }
 
 export function LimitPriceRow(props: Props) {
