@@ -10,7 +10,7 @@ import { AddOrderCallback } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { UploadAppDataParams, AppDataInfo } from 'modules/appData'
+import { AppDataInfo } from 'modules/appData'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
@@ -31,7 +31,6 @@ export interface BaseFlowContext {
   callbacks: {
     closeModals: () => void
     addOrderCallback: AddOrderCallback
-    uploadAppData: (params: UploadAppDataParams) => void
   }
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext

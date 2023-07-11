@@ -22,4 +22,3 @@ This module depends on the library https://github.com/cowprotocol/app-data
 This module will expose two hooks:
 
 - `useAppData()`: Exposes the app hash and the document associated to it.
-- `useUploadAppData()`: Returns a function which can be invoked when an `appData` should be uploaded. This will be uploaded to IPFS. In case of errors, it will keep re-attempting.

@@ -4,7 +4,7 @@ import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { getOrderParams, PostOrderParams } from 'legacy/utils/trade'
+import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
@@ -38,7 +38,7 @@ export async function calculateUniqueOrderId(
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
 
-  const { order } = getOrderParams(orderParams)
+  const { order } = getSignOrderParams(orderParams)
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
   const domain = await OrderSigningUtils.getDomain(chainId)

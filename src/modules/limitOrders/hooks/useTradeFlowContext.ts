@@ -10,7 +10,7 @@ import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 
-import { useAppData, useUploadAppData } from 'modules/appData'
+import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -30,7 +30,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
-  const uploadAppData = useUploadAppData()
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
@@ -69,7 +68,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
-    uploadAppData,
     appData,
     rateImpact,
     postOrderParams: {
@@ -87,7 +85,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
       partiallyFillable,
-      appDataHash: appData.hash,
+      appData,
       quoteId,
     },
   }
