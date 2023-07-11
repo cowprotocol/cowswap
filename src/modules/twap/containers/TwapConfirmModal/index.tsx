@@ -95,7 +95,12 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
               minReceivedTooltip:
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
               limitPriceLabel: 'Limit price (incl fee/slippage)',
-              limitPriceTooltip: 'The minimum price for this TWAP order, including fee and slippage.',
+              limitPriceTooltip: (
+                <>
+                  If CoW Swap cannot get this price or better after fees and slippage are taken into account, your TWAP
+                  will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+                </>
+              ),
             }}
           />
           <TwapConfirmDetails
