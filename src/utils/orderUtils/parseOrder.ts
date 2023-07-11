@@ -105,3 +105,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executionData,
   }
 }
+
+export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
+  return !!(order as ParsedOrder).executionData
+}
