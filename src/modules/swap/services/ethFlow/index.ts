@@ -22,7 +22,6 @@ export async function ethFlow(
     swapConfirmManager,
     contract,
     callbacks,
-    appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
     checkInFlightOrderIdExists,
