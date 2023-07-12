@@ -6,7 +6,7 @@ import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { OrderWithComposableCowInfo } from 'common/types'
 
-import { twapOrdersListAtom } from './twapOrdersListAtom'
+import { openTwapOrdersAtom } from './twapOrdersListAtom'
 
 import { TwapOrderStatus } from '../types'
 import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
@@ -22,12 +22,12 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
 
 export const emulatedTwapOrdersAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
-  const orders = get(twapOrdersListAtom)
+  const openOrders = get(openTwapOrdersAtom)
   const accountLowerCase = account?.toLowerCase()
 
   if (!accountLowerCase) return []
 
-  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = orders
+  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = openOrders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
       return {
