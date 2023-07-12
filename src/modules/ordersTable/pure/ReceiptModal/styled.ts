@@ -147,38 +147,13 @@ export const Value = styled.div`
   font-weight: 500;
 `
 
-export const Progress = styled.div<{ active: number | string }>`
-  --height: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  height: var(--height);
-  width: 150px;
-
-  &::before {
-    display: inline-block;
-    content: '';
-    height: 100%;
-    width: 100%;
-    border-radius: var(--height);
-    background: ${({ theme, active }) =>
-      `linear-gradient(90deg, ${theme.success} ${active}%, ${theme.bg3} ${active}%)`};
-  }
-
-  &::after {
-    display: inline-block;
-    content: '${({ active }) => `${active}%`}';
-    color: ${({ theme }) => theme.success};
-  }
-`
-
 export const InlineWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
+  width: 100%;
 `
 
 export const Surplus = styled.span`
