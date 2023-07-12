@@ -33,6 +33,7 @@ export interface BaseFlowContext {
     addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
   }
+  sellTokenContract: Erc20 | null
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager

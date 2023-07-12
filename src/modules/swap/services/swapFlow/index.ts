@@ -1,4 +1,6 @@
-import { Percent } from '@uniswap/sdk-core'
+import { MaxUint256, Percent, Token } from '@uniswap/sdk-core'
+
+import { splitSignature } from 'ethers/lib/utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -10,6 +12,8 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
+import { GP_VAULT_RELAYER } from '../../../../legacy/constants'
+import { getAddress } from '../../../../utils/getAddress'
 import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { SwapFlowContext } from '../types'
 
@@ -18,9 +22,71 @@ export async function swapFlow(
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ) {
+  // TODO
+  const isTokenSupportsEIP2612 = true
+
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return
+  }
+
+  let newAppData = null
+
+  if (isTokenSupportsEIP2612) {
+    const sellTokenContract = input.sellTokenContract
+    const inputToken = input.context.trade.inputAmount.currency
+    const nonce = await sellTokenContract?.nonces(input.orderParams.account)
+
+    const permit = {
+      owner: input.orderParams.account,
+      spender: GP_VAULT_RELAYER[input.orderParams.chainId],
+      value: BigInt(input.context.trade.inputAmount.toExact()).toString(16),
+      nonce: nonce ? nonce.toNumber() : 0,
+      deadline: MaxUint256.toString(),
+    }
+    console.log('GGGGGG', input.orderParams.signer.provider)
+    const permitSignature = splitSignature(
+      await (input.orderParams.signer.provider as any)._signTypedData(
+        {
+          name: inputToken.name,
+          version: 1, // TODO
+          chainId: inputToken.chainId,
+          verifyingContract: (inputToken as Token).address,
+        },
+        {
+          Permit: [
+            { name: 'owner', type: 'address' },
+            { name: 'spender', type: 'address' },
+            { name: 'value', type: 'uint256' },
+            { name: 'nonce', type: 'uint256' },
+            { name: 'deadline', type: 'uint256' },
+          ],
+        },
+        permit
+      )
+    )
+
+    const permitParams = [
+      permit.owner,
+      permit.spender,
+      permit.value,
+      permit.deadline,
+      permitSignature.v,
+      permitSignature.r,
+      permitSignature.s,
+    ]
+    const permitHook = {
+      target: getAddress(inputToken),
+      callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
+      gasLimit: 12_000_000,
+    }
+    newAppData = JSON.stringify({
+      backend: {
+        hooks: {
+          pre: [permitHook],
+        },
+      },
+    })
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
@@ -29,7 +95,7 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 3: sign and post order')
-    const { id: orderId, order } = await signAndPostOrder(input.orderParams).finally(() => {
+    const { id: orderId, order } = await signAndPostOrder(input.orderParams, newAppData).finally(() => {
       input.callbacks.closeModals()
     })
 

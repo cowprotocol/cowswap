@@ -197,7 +197,10 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
   }
 }
 
-export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
+export async function signAndPostOrder(
+  params: PostOrderParams,
+  newAppData?: string | null
+): Promise<AddUnserialisedPendingOrderParams> {
   const { chainId, account, signer, allowsOffchainSigning } = params
 
   // Prepare order
@@ -220,6 +223,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   if (!signature) throw new Error('Signature is undefined!')
 
   // Call API
+  // TODO: damn, SDK doesn't know about new appData, but you can call just fetch here
+  if (newAppData) {
+    console.log('Send order with newAppData')
+  }
   const orderId = await orderBookApi.sendOrder(
     {
       ...unsignedOrder,

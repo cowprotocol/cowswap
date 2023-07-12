@@ -2,57 +2,57 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
-import type { Erc721, Erc721Interface } from '../Erc721'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type { Erc721, Erc721Interface } from "../Erc721";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
-    name: 'ownerOf',
+    name: "ownerOf",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
-    name: 'tokenURI',
+    name: "tokenURI",
     outputs: [
       {
-        internalType: 'string',
-        name: '',
-        type: 'string',
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
-] as const
+] as const;
 
 export class Erc721__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): Erc721Interface {
-    return new utils.Interface(_abi) as Erc721Interface
+    return new utils.Interface(_abi) as Erc721Interface;
   }
   static connect(address: string, signerOrProvider: Signer | Provider): Erc721 {
-    return new Contract(address, _abi, signerOrProvider) as Erc721
+    return new Contract(address, _abi, signerOrProvider) as Erc721;
   }
 }
