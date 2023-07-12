@@ -13,6 +13,7 @@ export type ComposableCowInfo = {
   id?: string
   parentId?: string
   isVirtualPart?: boolean
+  isCancelling?: boolean
   status: OrderStatus
 }
 
