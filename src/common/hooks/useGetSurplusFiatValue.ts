@@ -51,7 +51,6 @@ function shouldShowSurplus(
   fiatAmount: Nullish<CurrencyAmount<Currency>>,
   surplusAmount: Nullish<CurrencyAmount<Currency>>
 ): boolean | null {
-  console.log(`bug--shouldShowSurplus`, fiatAmount?.toFixed(2), surplusAmount?.toFixed(6))
   if (fiatAmount) {
     // When there's a fiat amount, use that to decide whether to display the modal
     return Number(fiatAmount.toFixed(3)) > MIN_FIAT_SURPLUS_VALUE_MODAL

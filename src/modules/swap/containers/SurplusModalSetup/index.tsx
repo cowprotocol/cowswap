@@ -25,7 +25,6 @@ export function SurplusModalSetup() {
 
   useEffect(() => {
     // If we should NOT show the surplus, remove the orderId from the queue
-    console.log(`bug--SurplusModalSetup--useeffect`, { showSurplus, orderId })
     if (showSurplus === false && orderId) {
       removeOrderId(orderId)
     }
