@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
@@ -33,7 +34,7 @@ export const emulatedTwapOrdersAtom = atom((get) => {
       const enrichedOrder = emulateTwapAsOrder(order)
       const status = statusesMap[order.status]
 
-      return {
+      const storeOrder: Order = {
         ...enrichedOrder,
         id: enrichedOrder.uid,
         composableCowInfo: {
@@ -49,6 +50,12 @@ export const emulatedTwapOrdersAtom = atom((get) => {
         apiAdditionalInfo: enrichedOrder,
         isCancelling: order.status === TwapOrderStatus.Cancelling,
       }
+
+      const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
+
+      storeOrder.summary = summary || ''
+
+      return storeOrder
     })
 
   return orderWithComposableCowInfo
