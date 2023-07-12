@@ -1,4 +1,5 @@
 import { PIXEL_EVENTS } from './constants'
+import { sendPixel } from './utils'
 
 const events = {
   [PIXEL_EVENTS.INIT]: 'search',
@@ -6,6 +7,6 @@ const events = {
   [PIXEL_EVENTS.POST_TRADE]: 'purchase',
 }
 
-export const sendPavedEvent = (event: PIXEL_EVENTS) => {
+export const sendPavedEvent = sendPixel((event: PIXEL_EVENTS) => {
   window.pvd?.('event', events[event])
-}
+})

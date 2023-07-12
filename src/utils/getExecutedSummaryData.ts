@@ -5,11 +5,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 
-import { ParsedOrder, parseOrder } from './orderUtils/parseOrder'
-
-function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
-  return !!(order as ParsedOrder).executionData
-}
+import { isParsedOrder, ParsedOrder, parseOrder } from './orderUtils/parseOrder'
 
 export function getExecutedSummaryData(order: Order | ParsedOrder) {
   const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
