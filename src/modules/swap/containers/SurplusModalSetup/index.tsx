@@ -1,9 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import * as styledEl from 'common/pure/TransactionSubmittedContent/styled'
 import { SurplusModal } from 'common/pure/TransactionSubmittedContent/SurplusModal'
@@ -16,12 +17,20 @@ export function SurplusModalSetup() {
 
   const { chainId } = useWalletInfo()
   const order = useOrder({ id: orderId, chainId })
+  const { showSurplus } = useGetSurplusData(order)
 
   const onDismiss = useCallback(() => {
     orderId && removeOrderId(orderId)
   }, [orderId, removeOrderId])
 
-  const isOpen = !!orderId
+  useEffect(() => {
+    // If we should NOT show the surplus, remove the orderId from the queue
+    if (showSurplus === false && orderId) {
+      removeOrderId(orderId)
+    }
+  }, [orderId, removeOrderId, showSurplus])
+
+  const isOpen = !!orderId && showSurplus === true
 
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>

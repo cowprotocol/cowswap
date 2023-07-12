@@ -21,10 +21,13 @@ export function useLegacySetChainIdToUrl() {
       // Don't set chainId as query parameter because swap and limit orders have different routing scheme
       if (tradeTypeInfo) return
 
+      const chainInfo = getChainInfo(chainId)
+      if (!chainInfo) return
+
       navigate(
         {
           pathname: location.pathname,
-          search: replaceURLParam(location.search, 'chain', getChainInfo(chainId).name),
+          search: replaceURLParam(location.search, 'chain', chainInfo.name),
         },
         { replace: true }
       )

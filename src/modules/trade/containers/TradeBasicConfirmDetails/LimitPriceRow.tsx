@@ -17,7 +17,7 @@ type Props = {
 }
 
 export function LimitPriceRow(props: Props) {
-  const { price, isInvertedState, limitPriceLabel = 'Limit price', limitPriceTooltip = 'The limit price' } = props
+  const { price, isInvertedState, limitPriceLabel = 'Limit price', limitPriceTooltip = 'Price protection' } = props
   const [isInverted, setIsInverted] = isInvertedState
 
   return (
