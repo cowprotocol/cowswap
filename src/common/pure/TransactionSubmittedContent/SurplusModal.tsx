@@ -150,7 +150,7 @@ export type SurplusModalProps = {
 export function SurplusModal(props: SurplusModalProps) {
   const { order } = props
 
-  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount, showSurplus } = useGetSurplusData(order)
 
   const onTweetShare = useCallback(() => {
     sendEvent({
@@ -159,7 +159,7 @@ export function SurplusModal(props: SurplusModalProps) {
     })
   }, [])
 
-  if (!order) {
+  if (!order || !showSurplus) {
     return null
   }
 

@@ -14,7 +14,6 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
@@ -61,20 +60,11 @@ export function LimitOrdersWidget() {
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const { partialFillsEnabled } = useFeatureFlags()
   const widgetActions = useLimitOrdersWidgetActions()
 
-  const showRecipient = useMemo(
-    () => !isWrapOrUnwrap && settingsState.showRecipient,
-    [settingsState.showRecipient, isWrapOrUnwrap]
-  )
-
-  const isExpertMode = useMemo(
-    () => !isWrapOrUnwrap && settingsState.expertMode,
-    [isWrapOrUnwrap, settingsState.expertMode]
-  )
+  const { showRecipient, expertMode: isExpertMode } = settingsState
 
   const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
@@ -86,7 +76,7 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
+    label: isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: orderKind === OrderKind.SELL,
@@ -96,9 +86,9 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
+    label: isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
-    amount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
+    amount: outputCurrencyAmount,
     isIndependent: orderKind === OrderKind.BUY,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
@@ -110,7 +100,6 @@ export function LimitOrdersWidget() {
     outputCurrencyInfo,
     isUnlocked,
     isRateLoading,
-    isWrapOrUnwrap,
     showRecipient,
     isExpertMode,
     recipient,
@@ -136,7 +125,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     widgetActions,
     partiallyFillableOverride,
     featurePartialFillsEnabled,
-    isWrapOrUnwrap,
     showRecipient,
     isExpertMode,
     recipient,
@@ -151,10 +139,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const outputCurrency = outputCurrencyInfo.currency
 
   const isTradePriceUpdating = useMemo(() => {
-    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
+    if (!inputCurrency || !outputCurrency) return false
 
     return isRateLoading
-  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
+  }, [isRateLoading, inputCurrency, outputCurrency])
 
   const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
@@ -189,11 +177,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     ),
     bottomContent: (
       <>
-        {!isWrapOrUnwrap && (
-          <styledEl.FooterBox>
-            <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
-          </styledEl.FooterBox>
-        )}
+        <styledEl.FooterBox>
+          <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+        </styledEl.FooterBox>
 
         {isExpertMode && (
           <styledEl.FooterBox>
@@ -205,7 +191,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           </styledEl.FooterBox>
         )}
 
-        {!isWrapOrUnwrap && <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />}
+        <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
           <TradeButtons tradeContext={tradeContext} priceImpact={priceImpact} />
@@ -217,6 +203,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const params = {
     disableNonToken: false,
     compactView: false,
+    isExpertMode,
     recipient,
     showRecipient,
     isTradePriceUpdating,

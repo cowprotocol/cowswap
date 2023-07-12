@@ -1,4 +1,5 @@
 import { PIXEL_EVENTS } from './constants'
+import { sendPixel } from './utils'
 
 const events = {
   [PIXEL_EVENTS.INIT]: 'InitiateCheckout',
@@ -6,6 +7,6 @@ const events = {
   [PIXEL_EVENTS.POST_TRADE]: 'Lead',
 }
 
-export const sendFacebookEvent = (event: PIXEL_EVENTS) => {
+export const sendFacebookEvent = sendPixel((event) => {
   window.fbq?.('track', events[event])
-}
+})

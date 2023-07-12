@@ -4,7 +4,7 @@ import { Navigate, useLocation, useParams } from 'react-router-dom'
 
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
-import { SwapWidget } from 'modules/swap/containers/SwapWidget'
+import { SwapWidget, SwapDerivedStateUpdater } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { useWalletInfo } from 'modules/wallet'
@@ -18,7 +18,12 @@ export function SwapPage() {
     return <SwapPageRedirect />
   }
 
-  return <SwapWidget />
+  return (
+    <>
+      <SwapDerivedStateUpdater />
+      <SwapWidget />
+    </>
+  )
 }
 
 function SwapPageRedirect() {

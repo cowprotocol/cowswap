@@ -37,7 +37,6 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -59,7 +58,6 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, S
 export function SwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
-  useFillSwapDerivedState()
 
   const { chainId, account } = useWalletInfo()
   const {
@@ -237,6 +235,7 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     canSellAllNative,
+    isExpertMode,
   }
 
   return (

@@ -32,9 +32,15 @@ export function TradeWidgetLinks() {
       {menuItems.map((item) => {
         const routePath = parameterizeTradeRoute(tradeContext, item.route)
         const isActive = !!matchPath(location.pathname, routePath)
-        const menuItem = <MenuItem routePath={routePath} item={item} isActive={isActive} />
+        const menuItem = <MenuItem key={item.label} routePath={routePath} item={item} isActive={isActive} />
 
-        return item.featureGuard ? <FeatureGuard featureFlag={item.featureGuard}>{menuItem}</FeatureGuard> : menuItem
+        return item.featureGuard ? (
+          <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
+            {menuItem}
+          </FeatureGuard>
+        ) : (
+          menuItem
+        )
       })}
     </styledEl.Wrapper>
   )
