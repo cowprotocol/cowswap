@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -32,9 +32,11 @@ import {
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
+import { MAX_ITEMS_PER_STATUS, ORDER_STATUSES_TO_CLEAR, ORDER_STORAGE_KEY } from './consts'
 import {
   getDefaultNetworkState,
   ORDER_LIST_KEYS,
+  OrderLists,
   OrderObject,
   ORDERS_LIST,
   OrdersState,
@@ -407,4 +409,64 @@ export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
 export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: SetIsOrderRefundedBatch) => dispatch(setIsOrderRefundedBatch(params)), [dispatch])
+}
+
+/**
+ * Hook that "cleans" orders local storage
+ * Related issue https://github.com/cowprotocol/cowswap/issues/2690
+ *
+ * It runs when the parent component is unmounted
+ */
+export const useCleanOrdersStorageOnUnmount = () => {
+  useEffect(() => {
+    return () => {
+      // Get orders state from local storage
+      const ordersCache = localStorage.getItem(ORDER_STORAGE_KEY)
+
+      if (!ordersCache) {
+        return
+      }
+
+      const parsedState = JSON.parse(ordersCache)
+
+      // Iterate by each chain
+      Object.keys(parsedState).forEach((chainId) => {
+        const orderListByChain: OrderLists = parsedState[chainId]
+
+        // Iterate order statuses we want to clean up
+        ORDER_STATUSES_TO_CLEAR.forEach((status) => {
+          const orders = orderListByChain[status]
+
+          // Sort by expiration time
+          const ordersCleaned = Object.values(orders)
+            .sort((a: OrderObject | undefined, b: OrderObject | undefined) => {
+              const validToA = Number(a?.order.validTo)
+              const validToB = Number(b?.order.validTo)
+
+              if (!validToA || !validToB) {
+                return -1
+              }
+
+              const expirationTimeB = Number(new Date(validToB * 1000))
+              const expirationTimeA = Number(new Date(validToA * 1000))
+
+              return expirationTimeB - expirationTimeA
+            })
+            // Take top n orders
+            .slice(0, MAX_ITEMS_PER_STATUS)
+            // Return back to appropriate data structure
+            .reduce<PartialOrdersMap>((acc, element) => {
+              element && (acc[element.id] = element)
+              return acc
+            }, {})
+
+          // Update parts of the state, with the "cleaned" ones
+          parsedState[chainId][status] = ordersCleaned
+        })
+      })
+
+      // Stringify data and save to storage
+      localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(parsedState))
+    }
+  }, [])
 }
