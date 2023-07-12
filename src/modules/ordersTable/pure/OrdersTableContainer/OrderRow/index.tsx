@@ -185,7 +185,7 @@ export function OrderRow({
   return (
     <TableRow
       data-id={order.id}
-      isChildOrder={isChildOrder}
+      isChildOrder={isOpenOrdersTab && isChildOrder}
       isOpenOrdersTab={isOpenOrdersTab}
       isRowSelectable={isRowSelectable}
     >
