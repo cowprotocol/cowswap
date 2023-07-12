@@ -38,22 +38,24 @@ export const LoadingWrapper = styled.div`
     color: ${({ theme }) => theme.text2};
   }
 
-  @keyframes spin{
+  @keyframes spin {
     0% {
       transform: rotateX(0deg) rotateY(0deg);
     }
-    
+
     50% {
       transform: rotateY(180deg);
     }
-    
+
     100% {
       transform: scale(1) rotateX(0deg) rotateY(0deg);
     }
   }
 `
 
-export const Loading = <LoadingWrapper>
-  <SVG src={CowIcon} width={100} height={100} />
-  <span>Loading...</span>
-</LoadingWrapper>
+export const Loading = (
+  <LoadingWrapper>
+    <SVG src={CowIcon} width={100} height={100} />
+    <span>Loading...</span>
+  </LoadingWrapper>
+)
