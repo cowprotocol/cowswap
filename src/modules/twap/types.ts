@@ -34,7 +34,6 @@ export interface TWAPOrderStruct {
 export enum TwapOrderStatus {
   WaitSigning = 'WaitSigning',
   Pending = 'Pending',
-  Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
   Cancelling = 'Cancelling',
   Expired = 'Expired',

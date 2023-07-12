@@ -5,7 +5,6 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,
-  [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
   [TwapOrderStatus.Cancelling]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
