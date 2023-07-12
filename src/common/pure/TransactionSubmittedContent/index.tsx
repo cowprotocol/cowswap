@@ -47,6 +47,7 @@ export interface TransactionSubmittedContentProps {
   chainId: ChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
+  showSurplus?: boolean | null
 }
 
 export function TransactionSubmittedContent({
@@ -55,11 +56,11 @@ export function TransactionSubmittedContent({
   hash,
   currencyToAdd,
   activityDerivedState,
+  showSurplus,
 }: TransactionSubmittedContentProps) {
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order } = activityDerivedState || {}
-  const showSurplus = activityState === 'filled'
 
   if (!supportedChainId(chainId)) {
     return null
@@ -71,9 +72,7 @@ export function TransactionSubmittedContent({
         <styledEl.Header>
           <styledEl.CloseIconWrapper onClick={onDismiss} />
         </styledEl.Header>
-        {showSurplus ? (
-          <SurplusModal order={order} />
-        ) : (
+        {(showSurplus && <SurplusModal order={order} />) || (
           <>
             <Text fontWeight={600} fontSize={28}>
               {getTitleStatus(activityDerivedState)}
