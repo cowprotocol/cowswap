@@ -101,6 +101,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
                   will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
                 </>
               ),
+              slippageLabel: 'Price protection',
             }}
           />
           <TwapConfirmDetails
