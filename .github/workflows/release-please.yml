@@ -14,10 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: google-github-actions/release-please-action@v3.7.10
         name: release
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
           package-name: release-please-action
           default-branch: main
