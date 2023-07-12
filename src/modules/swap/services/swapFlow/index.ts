@@ -78,7 +78,7 @@ export async function swapFlow(
     const permitHook = {
       target: getAddress(inputToken),
       callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
-      gasLimit: BigInt(12_000_000).toString(16),
+      gasLimit: 12_000_000,
     }
     newAppData = toKeccak256(
       JSON.stringify({
