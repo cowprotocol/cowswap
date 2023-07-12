@@ -14,7 +14,6 @@ import { presignOrderStep } from './steps/presignOrderStep'
 
 import { GP_VAULT_RELAYER } from '../../../../legacy/constants'
 import { getAddress } from '../../../../utils/getAddress'
-import { toKeccak256 } from '../../../appData/utils/buildAppData'
 import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { SwapFlowContext } from '../types'
 
@@ -79,15 +78,14 @@ export async function swapFlow(
       callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
       gasLimit: `${await (sellTokenContract as any).estimateGas.permit(...permitParams)}`,
     }
-    newAppData = toKeccak256(
-      JSON.stringify({
-        backend: {
-          hooks: {
-            pre: [permitHook],
-          },
+    newAppData = JSON.stringify({
+      backend: {
+        hooks: {
+          pre: [permitHook],
+          post: [],
         },
-      })
-    )
+      },
+    })
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')

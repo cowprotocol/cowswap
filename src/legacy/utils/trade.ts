@@ -11,6 +11,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { orderBookApi } from 'cowSdk'
+import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -211,6 +212,10 @@ export async function signAndPostOrder(
   const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
   const receiver = unsignedOrder.receiver
 
+  if (newAppData !== null && newAppData !== undefined) {
+    unsignedOrder.appData = keccak256(toUtf8Bytes(newAppData));
+  }
+
   let signingScheme: SigningScheme
   let signature: string | undefined
 
@@ -238,7 +243,8 @@ export async function signAndPostOrder(
       signature,
       quoteId,
       appData: newAppData || appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-    },
+      appDataHash: unsignedOrder.appData,
+    } as any,
     { chainId }
   )
 
