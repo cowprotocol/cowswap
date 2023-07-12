@@ -84,7 +84,12 @@ export const AmountItem = styled.div`
   }
 `
 
-export const CellElement = styled.div<{ clickable?: boolean; doubleRow?: boolean; hasBackground?: boolean }>`
+export const CellElement = styled.div<{
+  clickable?: boolean
+  doubleRow?: boolean
+  hasBackground?: boolean
+  colspan?: number
+}>`
   padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
   font-weight: 500;
@@ -111,6 +116,12 @@ export const CellElement = styled.div<{ clickable?: boolean; doubleRow?: boolean
     > i {
       opacity: 0.6;
     }
+  `}
+
+  ${({ colspan }) =>
+    colspan &&
+    `
+    grid-column: span ${colspan};
   `}
 
   ${RateWrapper} {
@@ -148,8 +159,10 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   font-weight: 500;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
-  :hover {
-    text-decoration: ${({ clickable }) => (clickable ? 'underline' : '')};
+  &:hover {
+    span {
+      text-decoration: ${({ clickable }) => (clickable ? 'underline' : '')};
+    }
   }
 `
 
