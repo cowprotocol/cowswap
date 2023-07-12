@@ -1,0 +1,16 @@
+name: deploy-preprod
+
+on:
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
+
+jobs:
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [ barn, staging ] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
