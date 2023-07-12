@@ -30,6 +30,8 @@ type AdditionalProps = {
   minReceivedTooltip?: React.ReactNode
   limitPriceLabel?: React.ReactNode
   limitPriceTooltip?: React.ReactNode
+  slippageLabel?: React.ReactNode
+  slippageTooltip?: React.ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -56,7 +58,7 @@ export function TradeBasicConfirmDetails(props: Props) {
       />
 
       {/* Slippage */}
-      <SlippageRow slippage={slippage} />
+      <SlippageRow slippage={slippage} {...additionalProps} />
 
       {/* Limit Price */}
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
