@@ -7,6 +7,8 @@ import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
 export function useSwapDerivedState(): SwapDerivedState {
@@ -15,10 +17,8 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount } = useDerivedSwapInfo()
+  const { v2Trade, currencyBalances, slippageAdjustedSellAmount } = useDerivedSwapInfo()
 
-  const inputCurrency = currencies.INPUT || null
-  const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
   const inputCurrencyAmount = v2Trade?.inputAmount || null
@@ -29,33 +29,24 @@ export function useFillSwapDerivedState() {
 
   const updateDerivedState = useUpdateAtom(swapDerivedStateAtom)
 
+  const context = useSafeMemoObject({
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    slippageAdjustedSellAmount,
+    inputCurrencyBalance,
+    outputCurrencyBalance,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+    recipient,
+  })
+
   useEffect(() => {
     updateDerivedState({
-      inputCurrency,
-      outputCurrency,
-      inputCurrencyAmount,
-      outputCurrencyAmount,
-      slippageAdjustedSellAmount,
-      inputCurrencyBalance,
-      outputCurrencyBalance,
-      inputCurrencyFiatAmount,
-      outputCurrencyFiatAmount,
+      ...context,
+      inputCurrency: context.inputCurrencyAmount?.currency || null,
+      outputCurrency: context.outputCurrencyAmount?.currency || null,
       recipient,
       orderKind: independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    inputCurrency,
-    outputCurrency,
-    inputCurrencyAmount?.quotient,
-    outputCurrencyAmount?.quotient,
-    slippageAdjustedSellAmount?.quotient,
-    inputCurrencyBalance?.quotient,
-    outputCurrencyBalance?.quotient,
-    inputCurrencyFiatAmount?.quotient,
-    outputCurrencyFiatAmount?.quotient,
-    recipient,
-    independentField,
-    updateDerivedState,
-  ])
+  }, [context, recipient, independentField, updateDerivedState])
 }
