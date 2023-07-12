@@ -6,10 +6,10 @@ import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActiv
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'legacy/state/application/atoms'
 
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-import { setIsConfirmationModalOpenAtom } from 'modules/swap/state/surplusModal'
+import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
@@ -43,8 +43,11 @@ export function TransactionConfirmationModal({
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
+  const { showSurplus: canShowSurplus } = useGetSurplusData(activityDerivedState?.order)
 
-  const setIsConfirmationModalOpen = useUpdateAtom(setIsConfirmationModalOpenAtom)
+  const showSurplus = canShowSurplus && activityDerivedState && getActivityState(activityDerivedState) === 'filled'
+
+  const setIsConfirmationModalOpen = useSetIsConfirmationModalOpen()
 
   useEffect(() => setIsConfirmationModalOpen(isOpen && !!hash), [hash, isOpen, setIsConfirmationModalOpen])
 
@@ -64,7 +67,7 @@ export function TransactionConfirmationModal({
 
   if (!chainId) return null
 
-  const width = getWidth(hash, activityDerivedState)
+  const width = getWidth(hash, showSurplus)
 
   return (
     <CowModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
@@ -82,6 +85,7 @@ export function TransactionConfirmationModal({
           activityDerivedState={activityDerivedState}
           onDismiss={_onDismiss}
           currencyToAdd={currencyToAdd}
+          showSurplus={showSurplus}
         />
       ) : (
         content?.()
@@ -90,8 +94,8 @@ export function TransactionConfirmationModal({
   )
 }
 
-function getWidth(hash: string | undefined, activityDerivedState: ActivityDerivedState | null): number {
-  if (activityDerivedState && getActivityState(activityDerivedState) === 'filled') {
+function getWidth(hash: string | undefined, showSurplus: boolean | null): number {
+  if (showSurplus) {
     return 470
   }
   if (hash) {
