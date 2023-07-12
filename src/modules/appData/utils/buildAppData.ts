@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
+import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 import { environmentName } from 'legacy/utils/environments'
 
@@ -36,7 +37,12 @@ export async function buildAppData({
     metadataParams: { referrerParams, quoteParams, orderClassParams, utmParams },
   })
 
-  const calculatedAppData = await metadataApiSDK.calculateAppDataHash(doc)
+  const fullAppData = JSON.stringify(doc)
+  const appDataKeccak256 = toKeccak256(fullAppData)
 
-  return { doc, calculatedAppData }
+  return { doc, fullAppData, appDataKeccak256 }
+}
+
+export function toKeccak256(fullAppData: string) {
+  return keccak256(toUtf8Bytes(fullAppData))
 }
