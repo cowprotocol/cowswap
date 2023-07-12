@@ -13,7 +13,7 @@ export type ReviewOrderAmountRowProps = {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount?: Nullish<CurrencyAmount<Currency>>
   tooltip?: ReactNode
-  label: string
+  label: ReactNode
   isAmountAccurate?: boolean
 }
 

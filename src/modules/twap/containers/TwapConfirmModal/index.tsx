@@ -89,7 +89,19 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
-            additionalProps={{ priceLabel: 'Price (incl. fee)' }}
+            additionalProps={{
+              priceLabel: 'Price (incl. fee)',
+              minReceivedLabel: 'Min received (incl. fee/slippage)',
+              minReceivedTooltip:
+                'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
+              limitPriceLabel: 'Limit price (incl fee/slippage)',
+              limitPriceTooltip: (
+                <>
+                  If CoW Swap cannot get this price or better after fees and slippage are taken into account, your TWAP
+                  will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+                </>
+              ),
+            }}
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}

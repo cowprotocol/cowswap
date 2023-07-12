@@ -25,7 +25,11 @@ type Props = {
 }
 
 type AdditionalProps = {
-  priceLabel?: string | undefined
+  priceLabel?: React.ReactNode
+  minReceivedLabel?: React.ReactNode
+  minReceivedTooltip?: React.ReactNode
+  limitPriceLabel?: React.ReactNode
+  limitPriceTooltip?: React.ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -33,6 +37,8 @@ export function TradeBasicConfirmDetails(props: Props) {
   const { inputCurrencyAmount } = rateInfoParams
 
   const priceLabel = additionalProps?.priceLabel || 'Price'
+  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
+  const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
   const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
 
@@ -53,14 +59,14 @@ export function TradeBasicConfirmDetails(props: Props) {
       <SlippageRow slippage={slippage} />
 
       {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
+      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
-        tooltip="TODO: Min received tooltip"
-        label="Min received (incl. fee/slippage)"
+        tooltip={minReceivedTooltip}
+        label={minReceivedLabel}
       />
     </styledEl.Wrapper>
   )
