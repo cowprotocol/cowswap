@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import styled, { ThemeContext, DefaultTheme } from 'styled-components/macro'
+import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import { CONFIRMED_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -71,7 +71,7 @@ function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTheme): {
   }
 
   // Partially filled is also not a real status
-  if (order.executionData.partiallyFilled) {
+  if (order.executionData.partiallyFilled && order.status !== OrderStatus.SCHEDULED) {
     return {
       title: 'Partially Filled',
       color: theme.success,

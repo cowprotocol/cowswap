@@ -1,4 +1,4 @@
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
@@ -22,7 +22,7 @@ export function getTwapOrderStatus(
 
   if (auth === false) return TwapOrderStatus.Cancelled
 
-  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
+  if (discreteOrder && discreteOrder.status === OrderStatus.PENDING) return TwapOrderStatus.Pending
 
   return TwapOrderStatus.Scheduled
 }

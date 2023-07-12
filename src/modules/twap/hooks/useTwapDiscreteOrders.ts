@@ -19,7 +19,8 @@ export function useTwapDiscreteOrders(): TwapToDiscreteOrders | null {
     return partOrders.reduce<TwapToDiscreteOrders>((acc, item) => {
       const order = orders?.[item.uid]
 
-      if (order) {
+      // Take only "real" orders
+      if (order && !order.composableCowInfo?.isVirtualPart) {
         acc[item.twapOrderId] = order
       }
 
