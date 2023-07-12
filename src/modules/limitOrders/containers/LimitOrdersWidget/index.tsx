@@ -14,6 +14,7 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
+import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
@@ -26,7 +27,6 @@ import * as styledEl from './styled'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
@@ -34,6 +34,30 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+
+export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+  { content: 'Set any limit price and time horizon' },
+  { content: 'FREE order placement and cancellation' },
+  { content: 'Place multiple orders using the same balance' },
+  { content: 'Always receive 100% of your order surplus' },
+  { content: 'Protection from MEV by default' },
+  {
+    content: (
+      <span>
+        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
+      </span>
+    ),
+  },
+]
+
+const UNLOCK_SCREEN = {
+  title: 'Want to try out limit orders?',
+  subtitle: 'Get started!',
+  orderType: 'partially fillable',
+  buttonText: 'Get started with limit orders',
+  buttonLink:
+    'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
+}
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -167,7 +191,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const slots = {
     settingsWidget: <SettingsWidget />,
     lockScreen: isUnlocked ? undefined : (
-      <UnlockLimitOrders handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })} />
+      <UnlockWidgetScreen
+        items={LIMIT_BULLET_LIST_CONTENT}
+        buttonLink={UNLOCK_SCREEN.buttonLink}
+        title={UNLOCK_SCREEN.title}
+        subtitle={UNLOCK_SCREEN.subtitle}
+        orderType={UNLOCK_SCREEN.orderType}
+        buttonText={UNLOCK_SCREEN.buttonText}
+        handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
+      />
     ),
     middleContent: (
       <styledEl.RateWrapper>

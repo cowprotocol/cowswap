@@ -57,7 +57,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   width: ${({ width = '100%' }) => width};
   border-radius: 16px;
   border: 0;
-  margin: ${({ margin = '0 auto 12px auto' }) => margin};
+  margin: ${({ margin = '0 auto' }) => margin};
   position: relative;
   z-index: 1;
 

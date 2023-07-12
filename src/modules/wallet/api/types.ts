@@ -22,7 +22,7 @@ export enum ConnectionType {
 export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED, ConnectionType.WALLET_CONNECT]
 
 export interface WalletInfo {
-  chainId?: SupportedChainId
+  chainId: SupportedChainId
   account?: string
   active?: boolean
 }

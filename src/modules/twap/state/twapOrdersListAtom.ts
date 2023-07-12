@@ -1,53 +1,64 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import store from 'legacy/state'
+import { deleteOrders } from 'legacy/state/orders/actions'
+
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { OrderWithComposableCowInfo } from 'common/types'
 import { deepEqual } from 'utils/deepEqual'
 
-import { TwapOrderItem } from '../types'
-import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v4', {})
+export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v5', {})
+
+export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
+  const { account, chainId } = get(walletInfoAtom)
+
+  if (!account || !chainId) return []
+
+  const accountLowerCase = account.toLowerCase()
+
+  const orders = Object.values(get(twapOrdersAtom))
+
+  return orders
+    .flat()
+    .filter((order) => order.safeAddress.toLowerCase() === accountLowerCase && order.chainId === chainId)
+})
 
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
-  const currentState = get(twapOrdersListAtom)
+  const currentState = get(twapOrdersAtom)
   const newState = updateTwapOrdersList(currentState, nextState)
 
   if (!deepEqual(currentState, newState)) {
-    set(twapOrdersListAtom, newState)
+    set(twapOrdersAtom, newState)
   }
 })
 
 export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem) => {
-  const currentState = get(twapOrdersListAtom)
+  const currentState = get(twapOrdersAtom)
 
-  set(twapOrdersListAtom, { ...currentState, [order.id]: order })
+  set(twapOrdersAtom, { ...currentState, [order.id]: order })
 })
 
-export const emulatedTwapOrdersAtom = atom((get) => {
-  const { account, chainId } = get(walletInfoAtom)
-  const tokens = get(tokensByAddressAtom)
-  const orders = Object.values(get(twapOrdersListAtom))
-  const accountLowerCase = account?.toLowerCase()
+export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[]) => {
+  const { chainId } = get(walletInfoAtom)
+  const currentState = get(twapOrdersAtom)
 
-  if (!accountLowerCase) return []
+  ids.forEach((id) => {
+    delete currentState[id]
+  })
 
-  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = orders
-    .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-    .map((order) => {
-      return {
-        order: emulateTwapAsOrder(tokens, order),
-        composableCowInfo: {
-          id: order.id,
-        },
-      }
-    })
+  store.dispatch(deleteOrders({ chainId, ids }))
 
-  return orderWithComposableCowInfo
+  set(twapOrdersAtom, currentState)
+})
+
+export const cancelTwapOrderAtom = atom(null, (get, set, orderId: string) => {
+  const currentState = get(twapOrdersAtom)
+
+  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status: TwapOrderStatus.Cancelling } })
 })

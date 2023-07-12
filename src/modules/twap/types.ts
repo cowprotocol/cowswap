@@ -36,7 +36,9 @@ export enum TwapOrderStatus {
   Pending = 'Pending',
   Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
+  Cancelling = 'Cancelling',
   Expired = 'Expired',
+  Fulfilled = 'Fulfilled',
 }
 
 export interface TwapOrdersSafeData {
@@ -44,14 +46,22 @@ export interface TwapOrdersSafeData {
   safeTxParams: SafeTransactionParams
 }
 
+export interface TwapOrderExecutionInfo {
+  executedSellAmount: string
+  executedBuyAmount: string
+  executedFeeAmount: string
+}
+
 export interface TwapOrderItem {
   order: TWAPOrderStruct
   status: TwapOrderStatus
   chainId: SupportedChainId
+  executedDate?: string
   submissionDate: string
   safeAddress: string
   id: string
   safeTxParams?: SafeTransactionParams
+  executionInfo: TwapOrderExecutionInfo
 }
 
 export interface ConditionalOrderParams {
@@ -64,7 +74,6 @@ export interface TwapOrderInfo {
   id: string
   orderStruct: TWAPOrderStruct
   safeData: TwapOrdersSafeData
-  isExpired: boolean
 }
 
 export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }

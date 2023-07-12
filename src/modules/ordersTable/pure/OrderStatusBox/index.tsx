@@ -1,36 +1,21 @@
-import styled from 'styled-components/macro'
+import { useContext } from 'react'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
+import styled, { ThemeContext, DefaultTheme } from 'styled-components/macro'
+
+import { CONFIRMED_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { orderStatusTitleMap } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 const Wrapper = styled.div<{
-  status: OrderStatus
-  partiallyFilled: boolean
-  cancelling?: boolean
+  color: string
   withWarning?: boolean
   widthAuto?: boolean
   clickable?: boolean
 }>`
   --height: 28px;
-  --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
-    status === OrderStatus.CANCELLED
-      ? theme.danger
-      : cancelling
-      ? theme.text1
-      : status === OrderStatus.FULFILLED || partiallyFilled
-      ? theme.success
-      : status === OrderStatus.PENDING // OPEN order
-      ? theme.text3
-      : status === OrderStatus.EXPIRED
-      ? theme.warning
-      : status === OrderStatus.FAILED
-      ? theme.danger
-      : // Remaining statuses should use the same
-        // OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING
-        theme.text1};
+  --statusColor: ${({ color }) => color};
 
   display: flex;
   align-items: center;
@@ -60,30 +45,44 @@ const Wrapper = styled.div<{
   }
 `
 
-function getOrderStatusTitle(order: ParsedOrder): string {
-  // Cancelled status takes precedence
-  if (order.status === OrderStatus.CANCELLED) {
-    return orderStatusTitleMap[order.status]
+function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTheme): { title: string; color: string } {
+  // We consider the order fully filled for display purposes even if not 100% filled
+  // For this reason we use the flag to override the order status
+  if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {
+    return {
+      title: orderStatusTitleMap[OrderStatus.FULFILLED],
+      color: theme.success,
+    }
+  }
+
+  if (CONFIRMED_STATES.includes(order.status)) {
+    return {
+      title: orderStatusTitleMap[order.status],
+      color: order.status === OrderStatus.EXPIRED ? theme.warning : theme.danger,
+    }
   }
 
   // Cancelling is not a real order status
   if (order.isCancelling) {
-    return 'Cancelling...'
-  }
-
-  // We consider the order fully filled for display purposes even if not 100% filled
-  // For this reason we use the flag to override the order status
-  if (order.executionData.fullyFilled) {
-    return orderStatusTitleMap[OrderStatus.FULFILLED]
+    return {
+      title: 'Cancelling...',
+      color: theme.text1,
+    }
   }
 
   // Partially filled is also not a real status
   if (order.executionData.partiallyFilled) {
-    return 'Partially Filled'
+    return {
+      title: 'Partially Filled',
+      color: theme.success,
+    }
   }
 
   // Finally, map order status to their display version
-  return orderStatusTitleMap[order.status]
+  return {
+    title: orderStatusTitleMap[order.status],
+    color: order.status === OrderStatus.PENDING ? theme.text3 : theme.text1,
+  }
 }
 
 export type OrderStatusBoxProps = {
@@ -94,18 +93,12 @@ export type OrderStatusBoxProps = {
 }
 
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
+  const theme = useContext(ThemeContext)
+  const { title, color } = getOrderStatusTitleAndColor(order, theme)
   return (
-    <Wrapper
-      cancelling={order.isCancelling}
-      partiallyFilled={order.executionData.partiallyFilled}
-      status={order.status}
-      widthAuto={widthAuto}
-      withWarning={withWarning}
-      clickable={!!onClick}
-      onClick={onClick}
-    >
+    <Wrapper color={color} widthAuto={widthAuto} withWarning={withWarning} clickable={!!onClick} onClick={onClick}>
       {/* Status overrides for special cases */}
-      {getOrderStatusTitle(order)}
+      {title}
     </Wrapper>
   )
 }

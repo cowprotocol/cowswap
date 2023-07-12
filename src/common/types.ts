@@ -1,5 +1,7 @@
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 /**
  * https://github.com/rndlabs/composable-cow/blob/main/src/ComposableCoW.sol
  * Information about ComposableCoW conditional orders
@@ -10,6 +12,8 @@ import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 export type ComposableCowInfo = {
   id?: string
   parentId?: string
+  isVirtualPart?: boolean
+  status: OrderStatus
 }
 
 export type OrderWithComposableCowInfo = {

@@ -21,11 +21,24 @@ type Props = {
   minReceiveAmount: Nullish<CurrencyAmount<Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
+  additionalProps?: AdditionalProps
+}
+
+type AdditionalProps = {
+  priceLabel?: React.ReactNode
+  minReceivedLabel?: React.ReactNode
+  minReceivedTooltip?: React.ReactNode
+  limitPriceLabel?: React.ReactNode
+  limitPriceTooltip?: React.ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
-  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage } = props
+  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage, additionalProps } = props
   const { inputCurrencyAmount } = rateInfoParams
+
+  const priceLabel = additionalProps?.priceLabel || 'Price'
+  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
+  const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
   const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
 
@@ -36,7 +49,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     <styledEl.Wrapper>
       {/* Price */}
       <styledEl.StyledRateInfo
-        label="Price"
+        label={priceLabel}
         stylized={true}
         rateInfoParams={rateInfoParams}
         isInvertedState={isInvertedState}
@@ -46,14 +59,14 @@ export function TradeBasicConfirmDetails(props: Props) {
       <SlippageRow slippage={slippage} />
 
       {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
+      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
-        tooltip="TODO: Min received tooltip"
-        label="Min received (incl. fee)"
+        tooltip={minReceivedTooltip}
+        label={minReceivedLabel}
       />
     </styledEl.Wrapper>
   )

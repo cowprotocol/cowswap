@@ -18,7 +18,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'
@@ -31,6 +30,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
+  isChainIdUnsupported: boolean
   disabled?: boolean
   inputDisabled?: boolean
   inputTooltip?: string
@@ -62,6 +62,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
+    isChainIdUnsupported,
     subsidyAndBalance = {
       subsidy: {
         tier: 0,
@@ -72,9 +73,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     isRateLoading,
   } = props
 
-  const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
-  const disabled = props.disabled || !isSupportedNetwork
+  const disabled = !!props.disabled || isChainIdUnsupported
   const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
@@ -118,7 +118,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const numericalInput = (
     <styledEl.NumericalInput
       className="token-amount-input"
-      value={typedValue}
+      value={isChainIdUnsupported ? '' : typedValue}
       disabled={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
@@ -126,7 +126,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
 
   return (
-    <>
+    <styledEl.OuterWrapper>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
@@ -184,6 +184,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         showCurrencyAmount={true}
         disableNonToken={disableNonToken}
       />
-    </>
+    </styledEl.OuterWrapper>
   )
 }

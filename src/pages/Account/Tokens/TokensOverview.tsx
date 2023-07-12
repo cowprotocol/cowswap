@@ -21,10 +21,11 @@ import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens
 import { CloseIcon } from 'legacy/theme'
 import { isAddress } from 'legacy/utils'
 import { isTruthy } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useWalletInfo } from 'modules/wallet'
+
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
   Menu,
@@ -68,8 +69,6 @@ export default function TokensOverview() {
   const prevSelectedView = usePrevious(selectedView)
   const prevAccount = usePrevious(account)
 
-  const isChainSupported = supportedChainId(chainId)
-
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -85,6 +84,8 @@ export default function TokensOverview() {
   const prevQuery = usePrevious(debouncedQuery)
 
   const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
   const handleRestoreTokens = useCallback(() => {
     removeAllFavouriteTokens()
     setPage(1)
@@ -118,8 +119,6 @@ export default function TokensOverview() {
           <CardsSpinner size="42px" />
         </CardsLoader>
       )
-    } else if (!isChainSupported) {
-      return <Trans>Unsupported network</Trans>
     }
 
     return (
@@ -133,18 +132,7 @@ export default function TokensOverview() {
         tokensData={tokensData}
       />
     )
-  }, [
-    balances,
-    debouncedQuery,
-    favouriteTokens,
-    formattedTokens,
-    isChainSupported,
-    page,
-    prevQuery,
-    provider,
-    query,
-    selectedView,
-  ])
+  }, [balances, debouncedQuery, favouriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
@@ -169,7 +157,7 @@ export default function TokensOverview() {
 
   return (
     <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
-      {isChainSupported && (
+      {!isProviderNetworkUnsupported && (
         <AccountHeading>
           <LeftSection>
             <MenuWrapper ref={node as any}>
@@ -224,7 +212,7 @@ export default function TokensOverview() {
       <Overview>
         <PageTitle title="Tokens Overview" />
 
-        {renderTableContent()}
+        {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
       </Overview>
     </Trace>
   )

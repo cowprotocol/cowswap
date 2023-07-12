@@ -28,7 +28,7 @@ export interface RateInfoParams {
 
 export interface RateInfoProps {
   className?: string
-  label?: string
+  label?: React.ReactNode
   stylized?: boolean
   noLabel?: boolean
   prependSymbol?: boolean
@@ -105,6 +105,7 @@ export const RateWrapper = styled.button`
   letter-spacing: -0.1px;
   text-align: right;
   font-weight: 500;
+  width: 100%;
 `
 
 export const FiatRate = styled.span`

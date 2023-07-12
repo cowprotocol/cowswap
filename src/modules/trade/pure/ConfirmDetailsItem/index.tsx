@@ -11,7 +11,7 @@ import { Content, Row, Wrapper } from './styled'
 
 export type ConfirmDetailsItemProps = {
   children: ReactNode
-  label?: string
+  label?: ReactNode
   tooltip?: ReactNode
   withArrow?: boolean
   fiatAmount?: string
@@ -22,7 +22,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
 
   return (
     <Wrapper>
-      {withArrow && <CornerDownRight size={16} />}
+      {withArrow && <CornerDownRight size={14} />}
 
       {label ? (
         <>

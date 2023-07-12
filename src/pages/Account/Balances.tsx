@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
@@ -25,12 +24,12 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWalletInfo } from 'modules/wallet'
 import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
@@ -53,9 +52,10 @@ const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
   const { provider, connector } = useWeb3React()
-  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
   const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
@@ -72,8 +72,7 @@ export default function Profile() {
   const vCowToken = V_COW[chainId]
   // Cow balance
   const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) ||
-    (supportedChainId(chainId) ? CurrencyAmount.fromRawAmount(cowToken, 0) : null)
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
@@ -214,7 +213,7 @@ export default function Profile() {
       <TransactionConfirmationModal />
       <ErrorModal />
 
-      {isCardsLoading ? (
+      {isCardsLoading && !isProviderNetworkUnsupported ? (
         <Card>
           <CardsLoader>
             <CardsSpinner size="42px" />
@@ -272,7 +271,9 @@ export default function Profile() {
               <span>
                 <i>Available COW balance</i>
                 <b>
-                  <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                  {!isProviderNetworkUnsupported && (
+                    <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                  )}
                 </b>
               </span>
             </BalanceDisplay>
@@ -284,7 +285,7 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+              {isMetaMask && !isProviderNetworkUnsupported && <AddToMetamask shortLabel currency={currencyCOW} />}
 
               {!isMetaMask && (
                 <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>

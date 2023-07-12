@@ -8,10 +8,21 @@ export function createTwapOrderTxs(
   paramsStruct: ConditionalOrderParams,
   context: TwapOrderCreationContext
 ): MetaTransactionData[] {
-  const { composableCowContract, needsApproval, erc20Contract, spender, currentBlockFactoryAddress } = context
+  const {
+    composableCowContract,
+    needsApproval,
+    needsZeroApproval,
+    erc20Contract,
+    spender,
+    currentBlockFactoryAddress,
+  } = context
 
-  const sellTokenAddress = order.sellAmount.currency.address
-  const sellAmountAtoms = order.sellAmount.quotient.toString()
+  const { sellAmount } = order
+
+  const sellTokenAddress = sellAmount.currency.address
+  const sellAmountAtoms = sellAmount.quotient.toString()
+
+  const txs: MetaTransactionData[] = []
 
   const createOrderTx = {
     to: composableCowContract.address,
@@ -25,7 +36,9 @@ export function createTwapOrderTxs(
     operation: 0,
   }
 
-  if (!needsApproval) return [createOrderTx]
+  txs.push(createOrderTx)
+
+  if (!needsApproval) return txs
 
   const approveTx = {
     to: sellTokenAddress,
@@ -34,5 +47,18 @@ export function createTwapOrderTxs(
     operation: 0,
   }
 
-  return [approveTx, createOrderTx]
+  txs.unshift(approveTx)
+
+  if (!needsZeroApproval) return txs
+
+  const zeroApproveTx = {
+    to: sellAmount.currency.address,
+    data: erc20Contract.interface.encodeFunctionData('approve', [spender, '0']),
+    value: '0',
+    operation: 0,
+  }
+
+  txs.unshift(zeroApproveTx)
+
+  return txs
 }

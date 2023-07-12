@@ -2,9 +2,11 @@ import { atom } from 'jotai'
 
 import { shortenAddress } from 'legacy/utils'
 
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
+
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
-export const walletInfoAtom = atom<WalletInfo>({})
+export const walletInfoAtom = atom<WalletInfo>({ chainId: getCurrentChainIdFromUrl() })
 
 export const walletDetailsAtom = atom<WalletDetails>({
   // Account details

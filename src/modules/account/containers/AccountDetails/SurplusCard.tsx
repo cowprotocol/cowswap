@@ -1,16 +1,16 @@
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { ExternalLink } from 'legacy/theme'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { InfoCard, SurplusCardWrapper } from './styled'
+import { InfoCard } from './styled'
 
 export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
@@ -19,13 +19,113 @@ export function SurplusCard() {
   const surplusUsdAmount = useHigherUSDValue(showSurplusAmount ? surplusAmount : undefined)
   const nativeSymbol = useNativeCurrency()?.symbol || 'ETH'
 
-  // TODO: Remove these 2 lines once merged in DEVELOP (this change was cherry-picked from it, and it still needs these two lines because it doesn't have sasha refactor for supportedChainId)
-  const { chainId } = useWalletInfo()
-  if (!supportedChainId(chainId)) return null
-  // ------- end of TODO
+  const Wrapper = styled.div`
+    margin: 12px auto 24px;
+    width: 100%;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    box-sizing: border-box;
+    padding: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
+      flex-flow: column wrap;
+      padding: 0;
+    `}
+
+    ${InfoCard} {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      background: ${({ theme }) => theme.gradient2};
+      border-radius: 16px;
+      padding: 20px 26px 26px;
+      min-height: 190px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+    }
+
+    ${InfoCard} > div {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: center;
+      justify-content: center;
+
+      &:first-child {
+        margin: 20px auto 0;
+      }
+
+      &:last-child {
+        margin: auto 0 0;
+      }
+    }
+
+    ${InfoCard} > div > span {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    ${InfoCard} > div > span > i,
+    ${InfoCard} > div > a,
+    ${InfoCard} > div > span > p {
+      display: flex;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.1;
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    }
+
+    ${InfoCard} > div > span > p {
+      color: ${({ theme }) => theme.text1};
+    }
+
+    ${InfoCard} > div > span > b {
+      font-size: 28px;
+      font-weight: bold;
+      color: ${({ theme }) => theme.success};
+      width: 100%;
+      text-align: center;
+      margin: 12px auto 0;
+      word-break: break-all;
+    }
+
+    ${InfoCard} > div > a {
+      margin: 20px auto 0;
+    }
+
+    ${InfoCard} > div > small {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.1;
+      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      margin: 3px auto 0;
+    }
+
+    ${QuestionWrapper} {
+      opacity: 0.5;
+      transition: opacity 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  `
 
   return (
-    <SurplusCardWrapper>
+    <Wrapper>
       <InfoCard>
         <div>
           <span>
@@ -55,6 +155,6 @@ export function SurplusCard() {
           </ExternalLink>
         </div>
       </InfoCard>
-    </SurplusCardWrapper>
+    </Wrapper>
   )
 }

@@ -7,7 +7,7 @@ import { t } from '@lingui/macro'
 import { ParsedQs } from 'qs'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'legacy/components/analytics'
-import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
+import { FEE_SIZE_THRESHOLD } from 'legacy/constants'
 import { useCurrency } from 'legacy/hooks/Tokens'
 import useENS from 'legacy/hooks/useENS'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -17,14 +17,16 @@ import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
 import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
-import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'legacy/state/user/hooks'
+import { useIsExpertMode } from 'legacy/state/user/hooks'
 import { registerOnWindow } from 'legacy/utils/misc'
 
+import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatSymbol } from 'utils/format'
@@ -72,7 +74,15 @@ export function validatedRecipient(recipient: any): string | null {
 }
 
 export function useSwapState(): AppState['swap'] {
-  return useAppSelector((state) => state.swap)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
+  const state = useAppSelector((state) => state.swap)
+
+  return useMemo(() => {
+    return isProviderNetworkUnsupported
+      ? { ...state, [Field.INPUT]: { currencyId: undefined }, [Field.OUTPUT]: { currencyId: undefined } }
+      : state
+  }, [isProviderNetworkUnsupported, state])
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
@@ -321,7 +331,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // TODO: check whether we want to enable auto slippage tolerance
   // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
-  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT) // mod
+  const allowedSlippage = useSwapSlippage()
   const slippageAdjustedSellAmount = v2Trade?.maximumAmountIn(allowedSlippage) || null
 
   const inputError = useMemo(() => {

@@ -15,7 +15,6 @@ import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
 import Toggle from 'legacy/components/Toggle'
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { useListColor } from 'legacy/hooks/useColor'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
 import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
@@ -25,7 +24,6 @@ import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
 import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
 import listVersionLabel from 'legacy/utils/listVersionLabel'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -98,8 +96,7 @@ const ListRow = memo(function ListRow({
   disableList,
 }: ListRowProps & { listUrl: string }) {
   // We default to a chainId if none is available
-  const { chainId: connectedChainId } = useWalletInfo()
-  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  const { chainId } = useWalletInfo()
 
   const listsByUrl = useAppSelector((state) => state.lists[chainId].byUrl)
   const dispatch = useAppDispatch()

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
 
@@ -15,12 +13,17 @@ interface MenuItemConfig {
   route: RoutesValues
   label: string
   featureGuard?: string
+  onClick?: () => void
 }
 
 const menuItems: MenuItemConfig[] = [
   { route: Routes.SWAP, label: 'Swap' },
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
-  { route: Routes.ADVANCED_ORDERS, label: 'Advanced', featureGuard: 'advancedOrdersEnabled' },
+  {
+    route: Routes.ADVANCED_ORDERS,
+    label: 'Advanced',
+    featureGuard: 'advancedOrdersEnabled',
+  },
 ]
 
 export function TradeWidgetLinks() {
@@ -32,6 +35,7 @@ export function TradeWidgetLinks() {
       {menuItems.map((item) => {
         const routePath = parameterizeTradeRoute(tradeContext, item.route)
         const isActive = !!matchPath(location.pathname, routePath)
+
         const menuItem = <MenuItem key={item.label} routePath={routePath} item={item} isActive={isActive} />
 
         return item.featureGuard ? (

@@ -2,28 +2,50 @@ import styled from 'styled-components/macro'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+`
+
 const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   font-weight: bold;
   text-align: left;
-  margin-left: 25px;
 `
 
 const WarningCheckboxWrapper = styled(CheckboxWrapper)`
-  width: 90%;
-  margin: -50px auto 12px;
-  position: relative;
-  top: 70px;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 20px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const WarningCheckbox = styled.label`
   display: flex;
-  gap: 5px;
+  gap: 10px;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  > input {
+    --size: 21px;
+    width: var(--size);
+    height: var(--size);
+  }
 `
 
-const InlineBannerWithCheckbox = styled(InlineBanner)`
-  padding-bottom: 80px;
-`
+const InlineBannerWithCheckbox = styled(InlineBanner)``
 
 interface FallbackHandlerWarningProps {
   isFallbackHandlerSetupAccepted: boolean
@@ -41,34 +63,32 @@ export function FallbackHandlerWarning({
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
       />
-      <span>
-        Modify Safe's fallback handler
-        <br /> when placing order
-      </span>
+      <span>Modify Safe's fallback handler when placing order</span>
     </WarningCheckbox>
   )
 
   if (isFallbackHandlerSetupAccepted) {
     return (
-      <div>
+      <Wrapper>
         <InlineBanner hideIcon={true} type="information">
           <CheckboxWrapper>{fallbackHandlerCheckbox}</CheckboxWrapper>
         </InlineBanner>
-      </div>
+      </Wrapper>
     )
   } else {
     return (
-      <div>
+      <Wrapper>
         <InlineBannerWithCheckbox type="alert">
           <strong>Unsupported Safe detected</strong>
-          <br />
-          Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
-          TWAP orders when placing your order.{' '}
+          <p>
+            Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
+            TWAP orders when placing your order.
+          </p>
           {/*<HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>*/}
           {/*TODO: set a proper link*/}
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>
         </InlineBannerWithCheckbox>
-      </div>
+      </Wrapper>
     )
   }
 }

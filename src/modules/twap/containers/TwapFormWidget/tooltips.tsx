@@ -1,7 +1,24 @@
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import ShieldImage from 'legacy/assets/cow-swap/protection.svg'
+
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
+const IconImage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    opacity: 0.5;
+    fill: ${({ theme }) => theme.text1};
+    margin: 0 3px 0 0;
+  }
+`
+
 export interface LabelTooltip {
-  label: string
+  label: React.ReactNode
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
 }
 
@@ -42,20 +59,23 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     ),
   },
   slippage: {
-    label: 'Slippage',
+    label: (
+      <>
+        <IconImage>
+          <SVG src={ShieldImage} width="16" height="16" title="Price protection" />
+        </IconImage>{' '}
+        Price protection
+      </>
+    ),
     tooltip: (
       <>
-        This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time,
-        your slippage should take into account possible price fluctuations over that time.
-        <br />
-        <br />
-        If your slippage is too low, you risk some parts of your order failing to execute.
+        Your TWAP order won't execute and is protected if the market price dips more than your set slippage tolerance.
       </>
     ),
   },
   price: {
-    label: 'Current market price',
-    tooltip: 'This is the current market price',
+    label: 'Price (incl. fee)',
+    tooltip: 'This is the current market price, including the fee.',
   },
   sellAmount: {
     label: 'Sell per part',

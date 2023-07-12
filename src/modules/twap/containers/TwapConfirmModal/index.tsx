@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradePriceImpact, TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
@@ -11,10 +11,12 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
-import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
+import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
+import { TwapFormWarnings } from '../TwapFormWarnings'
 
 interface TwapConfirmModalProps {
   fallbackHandlerIsNotSet: boolean
@@ -31,17 +33,17 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
-  const slippage = useAtomValue(twapOrderSlippage)
+  const slippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
+  const localFormValidation = useTwapFormState()
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
   const isInvertedState = useState(false)
 
-  // TODO: add conditions based on warnings
-  const isConfirmDisabled = false
+  const isConfirmDisabled = !!localFormValidation
 
   const priceImpact = useTradePriceImpact()
 
@@ -87,6 +89,19 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
+            additionalProps={{
+              priceLabel: 'Price (incl. fee)',
+              minReceivedLabel: 'Min received (incl. fee/slippage)',
+              minReceivedTooltip:
+                'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
+              limitPriceLabel: 'Limit price (incl fee/slippage)',
+              limitPriceTooltip: (
+                <>
+                  If CoW Swap cannot get this price or better after fees and slippage are taken into account, your TWAP
+                  will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+                </>
+              ),
+            }}
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
@@ -95,6 +110,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             totalDuration={totalDuration}
           />
           {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}
+          <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

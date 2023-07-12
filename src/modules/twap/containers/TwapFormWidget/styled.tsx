@@ -6,7 +6,8 @@ import { RateInfo } from 'common/pure/RateInfo'
 
 export const Row = styled.div`
   display: flex;
-  grid-gap: 10px;
+  gap: 10px;
+  width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -30,4 +31,11 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+`
+
+export const StyledPriceProtection = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  width: 100%;
 `

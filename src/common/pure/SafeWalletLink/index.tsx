@@ -20,5 +20,5 @@ export function SafeWalletLink(props: {
     return null
   }
 
-  return <ExternalLink href={safeUrl}>View Safe ↗</ExternalLink>
+  return <ExternalLink href={safeUrl}>View on Safe ↗</ExternalLink>
 }

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -11,17 +11,17 @@ import Loader from 'legacy/components/Loader'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ZERO_FRACTION } from 'legacy/constants'
 import useTimeAgo from 'legacy/hooks/useTimeAgo'
-import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 import { getEtherscanLink } from 'legacy/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/EstimatedExecutionPrice'
 import { OrderContextMenu } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/OrderContextMenu'
 import {
+  CheckboxCheckmark,
   TableRow,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
-  CheckboxCheckmark,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
 import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
@@ -42,6 +42,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
+import { getIsComposableCowParentOrder } from '../../../../../utils/orderUtils/getIsComposableCowParentOrder'
 import { OrderParams } from '../utils/getOrderParams'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -52,6 +53,7 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.CANCELLED]: 'Cancelled',
   [OrderStatus.CREATING]: 'Creating',
   [OrderStatus.FAILED]: 'Failed',
+  [OrderStatus.SCHEDULED]: 'Scheduled',
 }
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
@@ -134,7 +136,7 @@ export function OrderRow({
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
-  const { filledPercentDisplay, executedPrice, activityId } = order.executionData
+  const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
@@ -142,15 +144,15 @@ export function OrderRow({
 
   const withWarning =
     (!hasEnoughBalance || !hasEnoughAllowance) &&
-    // don't show the warning for closed orders
-    PENDING_STATES.includes(status)
+    // show the warning only for pending orders
+    status === OrderStatus.PENDING
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const activityUrl = chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
+  const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
 
   const [isInverted, setIsInverted] = useState(() => {
     // On mount, apply smart quote selection
@@ -250,7 +252,7 @@ export function OrderRow({
       {isOpenOrdersTab && (
         <styledEl.PriceElement hasBackground onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices ? (
+          {prices && estimatedExecutionPrice ? (
             <styledEl.ExecuteCellWrapper>
               <EstimatedExecutionPrice
                 amount={executionPriceInverted}
@@ -265,7 +267,7 @@ export function OrderRow({
                 isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>
-          ) : prices === null || isOrderCreating ? (
+          ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
@@ -359,4 +361,22 @@ function useFeeAmountDifference(
     () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
     [feeAmount, inputCurrencyAmount]
   )
+}
+
+function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string | undefined {
+  const { activityId } = order.executionData
+
+  if (getIsComposableCowParentOrder(order)) {
+    return undefined
+  }
+
+  if (order.composableCowInfo?.isVirtualPart) {
+    return undefined
+  }
+
+  if (order.status === OrderStatus.SCHEDULED) {
+    return undefined
+  }
+
+  return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
 }

@@ -5,7 +5,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from 'legacy/theme'
 import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
 import { getExplorerBaseUrl } from 'legacy/utils/explorer'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -33,7 +32,7 @@ export type Props = PropsWithId | PropsWithoutId
  */
 export function ExplorerLink(props: Props) {
   const { chainId: _chainId } = useWalletInfo()
-  const chainId = supportedChainId(_chainId) || props.defaultChain
+  const chainId = _chainId || props.defaultChain
 
   if (!chainId) {
     return null

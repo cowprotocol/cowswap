@@ -5,7 +5,7 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { Milliseconds } from 'types'
 
-import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, defaultOrderDeadline } from '../const'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_ORDER_DEADLINE, DEFAULT_TWAP_SLIPPAGE } from '../const'
 
 export interface TwapOrdersDeadline {
   readonly isCustomDeadline: boolean
@@ -31,9 +31,9 @@ export const defaultCustomDeadline: TwapOrdersDeadline['customDeadline'] = {
 export const defaultTwapOrdersSettings: TwapOrdersSettingsState = {
   // deadline
   isCustomDeadline: false,
-  deadline: defaultOrderDeadline.value,
+  deadline: DEFAULT_ORDER_DEADLINE.value,
   customDeadline: defaultCustomDeadline,
-  numberOfPartsValue: defaultNumOfParts,
+  numberOfPartsValue: DEFAULT_NUM_OF_PARTS,
   // null = auto
   slippageValue: null,
   isFallbackHandlerSetupAccepted: false,
@@ -53,11 +53,11 @@ export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Par
   })
 })
 
-export const twapOrderSlippage = atom<Percent>((get) => {
+export const twapOrderSlippageAtom = atom<Percent>((get) => {
   const { slippageValue } = get(twapOrdersSettingsAtom)
 
   return slippageValue != null
     ? // Multiplying on 100 to allow decimals values (e.g 0.05)
-      new Percent(slippageValue * 100, 10000)
+      new Percent(Math.round(slippageValue * 100), 10000)
     : DEFAULT_TWAP_SLIPPAGE
 })

@@ -8,10 +8,11 @@ export function SmallPartTimeWarning() {
 
   return (
     <InlineBanner>
-      <>
-        <strong>Minimum part time:</strong> A minimum of <strong>{time}</strong> between parts is required. Decrease the
-        number of parts or increase the total duration.
-      </>
+      <strong>Insufficient time between parts</strong>
+      <p>
+        A minimum of <strong>{time}</strong> between parts is required. Decrease the number of parts or increase the
+        total duration.
+      </p>
     </InlineBanner>
   )
 }

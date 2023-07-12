@@ -12,7 +12,6 @@ import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
@@ -62,7 +61,7 @@ export function TransactionSubmittedContent({
   const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order } = activityDerivedState || {}
 
-  if (!supportedChainId(chainId)) {
+  if (!chainId) {
     return null
   }
 
