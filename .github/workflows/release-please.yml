@@ -12,9 +12,25 @@ name: release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: google-github-actions/release-please-action@v3
+        name: release
         with:
           release-type: node
           package-name: release-please-action
           default-branch: main
+
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    needs: [ release-please ]
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [ barn, staging ] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
