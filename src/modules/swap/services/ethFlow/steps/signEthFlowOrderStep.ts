@@ -5,7 +5,7 @@ import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
+import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
@@ -37,7 +37,7 @@ export async function signEthFlowOrderStep(
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
   const etherValue = orderParams.sellAmountBeforeFee
-  const { order, quoteId, summary } = getOrderParams(orderParams)
+  const { order, quoteId, summary } = getSignOrderParams(orderParams)
 
   if (!quoteId) {
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')

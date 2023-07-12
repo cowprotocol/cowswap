@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
-import { getAppDataHash } from 'modules/appData'
+import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
@@ -53,6 +53,6 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,
     span: 0,
-    appData: appDataInfo?.hash || getAppDataHash(),
+    appData: appDataInfo?.appDataKeccak256 || getAppData().appDataKeccak256,
   }
 })

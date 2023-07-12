@@ -7,6 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { COW, GNO } from 'legacy/constants/tokens'
 
+import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 
@@ -33,11 +34,10 @@ const tradeContext: TradeFlowContext = {
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
     partiallyFillable: true,
-    appDataHash: '0xabc',
+    appData: getAppData(),
   },
   rateImpact: 0,
   appData: {} as any,
-  uploadAppData: () => void 0,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
