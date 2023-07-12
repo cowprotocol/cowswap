@@ -215,4 +215,4 @@ export const MIN_FIAT_SURPLUS_VALUE = 0.01
 export const MIN_FIAT_SURPLUS_VALUE_MODAL = 1
 
 // Min surplus value in units for displaying the surplus modal when FIAT value is not available
-export const MIN_SURPLUS_UNITS = 0.1
+export const MIN_SURPLUS_UNITS = 0.01
