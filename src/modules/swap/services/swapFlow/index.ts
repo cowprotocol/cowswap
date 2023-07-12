@@ -44,12 +44,11 @@ export async function swapFlow(
       nonce: nonce ? nonce.toNumber() : 0,
       deadline: MaxUint256.toString(),
     }
-    console.log('GGGGGG', input.orderParams.signer.provider)
     const permitSignature = splitSignature(
-      await (input.orderParams.signer.provider as any)._signTypedData(
+      await (input.orderParams.signer.provider as any).getSigner()._signTypedData(
         {
           name: inputToken.name,
-          version: 1, // TODO
+          version: BigInt(1).toString(16), // TODO
           chainId: inputToken.chainId,
           verifyingContract: (inputToken as Token).address,
         },
@@ -78,7 +77,7 @@ export async function swapFlow(
     const permitHook = {
       target: getAddress(inputToken),
       callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
-      gasLimit: 12_000_000,
+      gasLimit: BigInt(12_000_000).toString(16),
     }
     newAppData = JSON.stringify({
       backend: {
