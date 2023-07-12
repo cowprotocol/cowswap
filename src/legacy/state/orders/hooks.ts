@@ -173,7 +173,7 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
   }, [JSON.stringify(ordersState), chainId])
 }
 
-export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
+export const useOrders = (chainId: SupportedChainId): Order[] => {
   const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {

@@ -10,7 +10,6 @@ import { isBarnBackendEnv } from 'legacy/utils/environments'
 import { isTruthy } from 'legacy/utils/misc'
 
 import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
-import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -34,8 +33,7 @@ type TwapPartOrdersMap = { [twapOrderHash: string]: TwapPartOrderItem }
  */
 export function useGpOrders(account?: string | null, refreshInterval?: number): OrderWithComposableCowInfo[] {
   const { chainId } = useWalletInfo()
-  const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
+  const twapPartOrders = useAtomValue(twapPartOrdersListAtom)
 
   const requestParams = useMemo(() => {
     return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
@@ -70,12 +68,12 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   }, [currentEnvOrders, loadedProdOrders])
 
   const twapPartOrdersMap: TwapPartOrdersMap = useMemo(() => {
-    return twapParticleOrders.reduce<TwapPartOrdersMap>((acc, val) => {
+    return twapPartOrders.reduce<TwapPartOrdersMap>((acc, val) => {
       acc[val.uid] = val
 
       return acc
     }, {})
-  }, [twapParticleOrders])
+  }, [twapPartOrders])
 
   const twapChildOrders = useTwapChildOrders(prodOrders, twapPartOrdersMap)
 
@@ -86,8 +84,8 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   }, [currentEnvOrders, twapPartOrdersMap])
 
   return useMemo(() => {
-    return [...regularOrders, ...emulatedTwapOrders, ...twapChildOrders]
-  }, [regularOrders, emulatedTwapOrders, twapChildOrders])
+    return [...regularOrders, ...twapChildOrders]
+  }, [regularOrders, twapChildOrders])
 }
 
 // Take only orders are connected to TWAP orders

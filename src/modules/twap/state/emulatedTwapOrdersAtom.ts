@@ -1,10 +1,9 @@
 import { atom } from 'jotai'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
-
-import { OrderWithComposableCowInfo } from 'common/types'
 
 import { openTwapOrdersAtom } from './twapOrdersListAtom'
 
@@ -23,19 +22,32 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
 export const emulatedTwapOrdersAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
   const openOrders = get(openTwapOrdersAtom)
+  const tokensByAddress = get(tokensByAddressAtom)
   const accountLowerCase = account?.toLowerCase()
 
   if (!accountLowerCase) return []
 
-  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = openOrders
+  const orderWithComposableCowInfo: Order[] = openOrders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
+      const enrichedOrder = emulateTwapAsOrder(order)
+      const status = statusesMap[order.status]
+
       return {
-        order: emulateTwapAsOrder(order),
+        ...enrichedOrder,
+        id: enrichedOrder.uid,
         composableCowInfo: {
           id: order.id,
-          status: statusesMap[order.status],
+          status,
         },
+        sellAmountBeforeFee: enrichedOrder.sellAmount,
+        inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
+        outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+        creationTime: enrichedOrder.creationDate,
+        summary: '',
+        status,
+        apiAdditionalInfo: enrichedOrder,
+        isCancelling: order.status === TwapOrderStatus.Cancelling,
       }
     })
 

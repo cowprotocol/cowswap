@@ -50,7 +50,7 @@ enum TxReceiptStatus {
 export default function useRecentActivity() {
   const { chainId, account } = useWalletInfo()
   const allTransactions = useAllTransactions()
-  const allNonEmptyOrders = useOrders({ chainId })
+  const allNonEmptyOrders = useOrders(chainId)
 
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
     if (!chainId || !account) {
