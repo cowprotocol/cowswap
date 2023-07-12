@@ -36,10 +36,30 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
   const surplusFiatValue = useCoingeckoUsdValue(surplusAmount)
   const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
 
+  const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)
+
   return {
     surplusFiatValue,
     showFiatValue,
     surplusToken,
     surplusAmount,
+    showSurplus,
   }
+}
+
+function shouldShowSurplus(
+  fiatAmount: Nullish<CurrencyAmount<Currency>>,
+  surplusAmount: Nullish<CurrencyAmount<Currency>>
+): boolean | null {
+  console.log(`bug--shouldShowSurplus`, fiatAmount?.toFixed(2), surplusAmount?.toFixed(6))
+  if (fiatAmount) {
+    // When there's a fiat amount, use that to decide whether to display the modal
+    return Number(fiatAmount.toFixed(3)) > MIN_FIAT_SURPLUS_VALUE_MODAL
+  } else if (surplusAmount) {
+    // If no fiat value, check whether surplus units are > MIN_SURPLUS_UNITS
+    return Number(surplusAmount.toFixed(3)) > MIN_SURPLUS_UNITS
+  }
+
+  // Otherwise, we don't know whether surplus should, return `null` to indicate that
+  return null
 }
