@@ -34,3 +34,4 @@ jobs:
         env_name: [ barn, staging ] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
+
