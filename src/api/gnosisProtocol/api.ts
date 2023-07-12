@@ -152,7 +152,18 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
 }
 
 export async function getOrder(chainId: ChainId, orderId: string, env?: CowEnv): Promise<EnrichedOrder | null> {
-  return orderBookApi.getOrder(orderId, { chainId, env })
+  const contextOverride = {
+    chainId,
+    // To avoid passing `undefined` and unintentionally setting the `env` to `barn`
+    // we check if the `env` is `undefined` and if it is we don't include it in the contextOverride
+    ...(env
+      ? {
+          env,
+        }
+      : undefined),
+  }
+
+  return orderBookApi.getOrder(orderId, contextOverride)
 }
 
 export async function getOrders(
