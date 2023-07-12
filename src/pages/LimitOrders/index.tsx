@@ -22,7 +22,6 @@ export default function LimitOrderPage() {
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
       <TradeFormValidationUpdater isExpertMode={expertMode} />
-
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />

@@ -19,7 +19,6 @@ export interface LimitOrdersProps {
 
   isUnlocked: boolean
   isRateLoading: boolean
-  isWrapOrUnwrap: boolean
   showRecipient: boolean
   isExpertMode: boolean
 
@@ -41,7 +40,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkCurrencyInfo(a.outputCurrencyInfo, b.outputCurrencyInfo) &&
     a.isUnlocked === b.isUnlocked &&
     a.isRateLoading === b.isRateLoading &&
-    a.isWrapOrUnwrap === b.isWrapOrUnwrap &&
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
     a.widgetActions === b.widgetActions &&

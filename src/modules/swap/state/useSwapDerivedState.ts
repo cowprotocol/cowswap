@@ -17,19 +17,24 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, slippageAdjustedSellAmount } = useDerivedSwapInfo()
+  const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
 
+  const isSellTrade = independentField === Field.INPUT
+  const inputCurrency = currencies.INPUT || null
+  const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
-  const inputCurrencyAmount = v2Trade?.inputAmount || null
-  const outputCurrencyAmount = v2Trade?.outputAmount || null
+  const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee) || null
+  const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee) || null
 
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
   const updateDerivedState = useUpdateAtom(swapDerivedStateAtom)
 
-  const context = useSafeMemoObject({
+  const state = useSafeMemoObject({
+    inputCurrency,
+    outputCurrency,
     inputCurrencyAmount,
     outputCurrencyAmount,
     slippageAdjustedSellAmount,
@@ -38,15 +43,10 @@ export function useFillSwapDerivedState() {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
   })
 
   useEffect(() => {
-    updateDerivedState({
-      ...context,
-      inputCurrency: context.inputCurrencyAmount?.currency || null,
-      outputCurrency: context.outputCurrencyAmount?.currency || null,
-      recipient,
-      orderKind: independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
-    })
-  }, [context, recipient, independentField, updateDerivedState])
+    updateDerivedState(state)
+  }, [state, updateDerivedState])
 }
