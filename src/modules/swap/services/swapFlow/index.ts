@@ -41,15 +41,14 @@ export async function swapFlow(
     const permit = {
       owner: input.orderParams.account,
       spender: GP_VAULT_RELAYER[input.orderParams.chainId],
-      value: BigInt(input.context.trade.inputAmount.toExact()).toString(16),
-      nonce: nonce ? nonce.toNumber() : 0,
+      value: MaxUint256.toString(),
+      nonce: nonce ? nonce.toString() : "0",
       deadline: MaxUint256.toString(),
     }
     const permitSignature = splitSignature(
       await (input.orderParams.signer.provider as any).getSigner()._signTypedData(
         {
           name: inputToken.name,
-          version: BigInt(1).toString(16), // TODO
           chainId: inputToken.chainId,
           verifyingContract: (inputToken as Token).address,
         },
@@ -78,7 +77,7 @@ export async function swapFlow(
     const permitHook = {
       target: getAddress(inputToken),
       callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
-      gasLimit: 12_000_000,
+      gasLimit: `${await (sellTokenContract as any).estimateGas.permit(...permitParams)}`,
     }
     newAppData = toKeccak256(
       JSON.stringify({
