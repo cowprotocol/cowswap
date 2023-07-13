@@ -1,4 +1,5 @@
 import { PIXEL_EVENTS } from './constants'
+import { sendPixel } from './utils'
 
 const events = {
   [PIXEL_EVENTS.INIT]: 'page_view',
@@ -6,7 +7,7 @@ const events = {
   [PIXEL_EVENTS.POST_TRADE]: 'purchase',
 }
 
-export const sendMicrosoftEvent = (event: PIXEL_EVENTS) => {
+export const sendMicrosoftEvent = sendPixel((event) => {
   window.uetq = window.uetq || []
   window.uetq.push('event', events[event], {})
-}
+})
