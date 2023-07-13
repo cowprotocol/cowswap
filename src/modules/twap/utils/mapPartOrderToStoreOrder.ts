@@ -5,6 +5,7 @@ import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
+import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
 
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
@@ -25,6 +26,7 @@ export function mapPartOrderToStoreOrder(
     id: enrichedOrder.uid,
     composableCowInfo: {
       isVirtualPart,
+      isTheLastPart: getIsLastPartOrder(item, parent),
       parentId: parent.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,

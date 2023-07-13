@@ -43,7 +43,9 @@ export function SettledPartOrdersUpdater() {
       const parent = twapOrders[item?.twapOrderId]
 
       if (parent) {
-        acc.push(mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress))
+        const storeOrder = mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+
+        acc.push(storeOrder)
       }
 
       return acc

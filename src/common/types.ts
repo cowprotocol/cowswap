@@ -9,6 +9,7 @@ export type ComposableCowInfo = {
   id?: string
   parentId?: string
   isVirtualPart?: boolean
+  isTheLastPart?: boolean
 }
 
 export type SafeTransactionParams = {
