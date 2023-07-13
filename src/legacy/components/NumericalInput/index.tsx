@@ -67,6 +67,9 @@ export const Input = React.memo(function InnerInput({
     <StyledInput
       {...rest}
       value={prependSymbol && value ? prependSymbol + value : value}
+      onFocus={(e) => {
+        e.target.select()
+      }}
       onChange={(event) => {
         if (prependSymbol) {
           const value = event.target.value
