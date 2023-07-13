@@ -74,6 +74,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
             value={displayedValue}
             onBlur={(e) => validateInput(e.target.value)}
             onUserInput={(value) => setDisplayedValue(value)}
+            type="number"
           />
           {suffix && <Suffix>{suffix}</Suffix>}
         </span>
