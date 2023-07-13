@@ -213,7 +213,7 @@ export async function signAndPostOrder(
   const receiver = unsignedOrder.receiver
 
   if (newAppData !== null && newAppData !== undefined) {
-    unsignedOrder.appData = keccak256(toUtf8Bytes(newAppData));
+    unsignedOrder.appData = keccak256(toUtf8Bytes(newAppData))
   }
 
   let signingScheme: SigningScheme

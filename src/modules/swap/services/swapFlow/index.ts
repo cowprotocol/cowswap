@@ -41,7 +41,7 @@ export async function swapFlow(
       owner: input.orderParams.account,
       spender: GP_VAULT_RELAYER[input.orderParams.chainId],
       value: MaxUint256.toString(),
-      nonce: nonce ? nonce.toString() : "0",
+      nonce: nonce ? nonce.toString() : '0',
       deadline: MaxUint256.toString(),
     }
     const permitSignature = splitSignature(

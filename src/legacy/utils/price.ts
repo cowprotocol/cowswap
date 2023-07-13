@@ -21,6 +21,26 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
  * TODO: consider name // check with backend when logic returns best quote, not first
  */
 export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuoteParams }): Promise<QuoteResult> {
+  // TODO
+  const isTokenSupportsEIP2612 = true
+
+  if (isTokenSupportsEIP2612) {
+    // TODO - we need to actually have some hook for fee estimates here. I also
+    // don't know where the right place to put this is...
+    (quoteParams as any).appData = JSON.stringify({
+      backend: {
+        hooks: {
+          pre: [{
+            target: '0x0000000000000000000000000000000000000000',
+            callData: '0x',
+            gasLimit: '100000',
+          }],
+          post: [],
+        },
+      },
+    })
+  }
+
   const { kind } = quoteParams
   const { quote, expiration: expirationDate, id: quoteId } = await getQuote(quoteParams)
 
