@@ -13,11 +13,11 @@ export function getTwapOrderStatus(
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
 
+  if (auth === false) return TwapOrderStatus.Cancelled
+
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
-
-  if (auth === false) return TwapOrderStatus.Cancelled
 
   return TwapOrderStatus.Pending
 }
