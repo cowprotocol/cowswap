@@ -54,10 +54,10 @@ export const markPartOrdersAsCreatedAtom = atom(null, (get, set, update: { [pare
 
   const newState = parentsIds.reduce<TwapPartOrders>(
     (acc, parentId) => {
-      const settledIds = update[parentId]
+      const createdOrdersIds = update[parentId]
 
       acc[parentId] = (currentState[parentId] || []).map((item) => {
-        if (settledIds.includes(item.uid)) {
+        if (createdOrdersIds.includes(item.uid)) {
           return { ...item, isCreatedInOrderBook: true }
         }
 
