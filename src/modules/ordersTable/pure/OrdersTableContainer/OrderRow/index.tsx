@@ -37,6 +37,7 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getAddress } from 'utils/getAddress'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
+import { getComposableCowParentId } from 'utils/orderUtils/getComposableCowParentId'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
@@ -112,6 +113,8 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
+  collapsedOrder: { [key: string]: boolean } | null | undefined;
+  onToggle: (order: ParsedOrder) => void;
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
@@ -125,6 +128,8 @@ export interface OrderRowProps {
 
 export function OrderRow({
   order,
+  collapsedOrder,
+  onToggle,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
@@ -181,13 +186,34 @@ export function OrderRow({
   const isChildOrder = getIsComposableCowChildOrder(order)
   const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
   const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
+  
+  const handleOnClickToggle = () => {
+    onToggle(order); // Pass the whole order, not just the ID
+  };
 
+  const isParentOrderCollapsed = (): boolean => {
+    if (collapsedOrder && collapsedOrder[order.id]) {
+      return true;
+    }
+  
+  const parentOrderId = getComposableCowParentId(order);
+    if (parentOrderId !== undefined && collapsedOrder && collapsedOrder[parentOrderId]) { // Check for undefined here
+      return true;
+    }
+  
+    return false;
+  };
+  
+  const shouldHideRow = isChildOrder && isParentOrderCollapsed()
+  console.log("shouldHideRow", shouldHideRow, order)
+  
   return (
     <TableRow
       data-id={order.id}
       isChildOrder={isOpenOrdersTab && isChildOrder}
       isOpenOrdersTab={isOpenOrdersTab}
       isRowSelectable={isRowSelectable}
+      isRowHidden={shouldHideRow}
     >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
@@ -201,13 +227,17 @@ export function OrderRow({
           <CheckboxCheckmark />
         </TableRowCheckboxWrapper>
       )}
+
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell clickable onClick={onClick}>
-        <styledEl.CurrencyLogoPair>
+      <styledEl.CurrencyCell>
+        {/* Expand/Collapse TWAP order button */}
+        {isComposableCowParentOrder && <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()} />}
+
+        <styledEl.CurrencyLogoPair clickable onClick={onClick}>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
         </styledEl.CurrencyLogoPair>
-        <styledEl.CurrencyAmountWrapper>
+        <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />
         </styledEl.CurrencyAmountWrapper>
@@ -302,36 +332,38 @@ export function OrderRow({
       )} */}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow clickable onClick={onClick} colspan={isStatusBoxHidden ? 2 : 0}>
+      <styledEl.CellElement doubleRow clickable onClick={onClick}>
         <b>{filledPercentDisplay}%</b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}
-      {!isStatusBoxHidden && (
-        <styledEl.CellElement>
-          <styledEl.StatusBox>
-            <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
-            {withWarning && (
-              <styledEl.WarningIndicator>
-                <MouseoverTooltipContent
-                  wrap={false}
-                  bgColor={theme.alert}
-                  content={
-                    <styledEl.WarningContent>
-                      {!hasEnoughBalance && BalanceWarning(order.inputToken.symbol || '')}
-                      {!hasEnoughAllowance && AllowanceWarning(order.inputToken.symbol || '')}
-                    </styledEl.WarningContent>
-                  }
-                  placement="bottom"
-                >
-                  <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-                </MouseoverTooltipContent>
-              </styledEl.WarningIndicator>
-            )}
-          </styledEl.StatusBox>
-        </styledEl.CellElement>
-      )}
+      <styledEl.CellElement>
+        <styledEl.StatusBox>
+          {!isStatusBoxHidden && (
+            <>
+              <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
+              {withWarning && (
+                <styledEl.WarningIndicator>
+                  <MouseoverTooltipContent
+                    wrap={false}
+                    bgColor={theme.alert}
+                    content={
+                      <styledEl.WarningContent>
+                        {!hasEnoughBalance && BalanceWarning(order.inputToken.symbol || '')}
+                        {!hasEnoughAllowance && AllowanceWarning(order.inputToken.symbol || '')}
+                      </styledEl.WarningContent>
+                    }
+                    placement="bottom"
+                  >
+                    <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+                  </MouseoverTooltipContent>
+                </styledEl.WarningIndicator>
+              )}
+            </>
+          )}
+        </styledEl.StatusBox>
+      </styledEl.CellElement>
 
       {/* Action content menu */}
       <styledEl.CellElement>

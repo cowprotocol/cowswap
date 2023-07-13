@@ -88,7 +88,6 @@ export const CellElement = styled.div<{
   clickable?: boolean
   doubleRow?: boolean
   hasBackground?: boolean
-  colspan?: number
 }>`
   padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
@@ -118,12 +117,6 @@ export const CellElement = styled.div<{
     }
   `}
 
-  ${({ colspan }) =>
-    colspan &&
-    `
-    grid-column: span ${colspan};
-  `}
-
   ${RateWrapper} {
     font-weight: 500;
     font-size: 12px;
@@ -136,8 +129,9 @@ export const PriceElement = styled(CellElement)`
   cursor: pointer;
 `
 
-export const CurrencyLogoPair = styled.div`
+export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
   display: flex;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
 
   > img,
   > svg {
@@ -166,8 +160,9 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   }
 `
 
-export const CurrencyAmountWrapper = styled.div`
+export const CurrencyAmountWrapper = styled.div<{ clickable?: boolean }>`
   display: flex;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
   flex-flow: column wrap;
   gap: 2px;
 `
@@ -223,4 +218,45 @@ export const ExecuteInformationTooltip = styled.div`
   flex-flow: row wrap;
   padding: 0;
   margin: 0;
+`
+
+export const ToggleExpandButton = styled.button<{ isCollapsed?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0 6px 0 0;
+  cursor: pointer;
+  outline: none;
+  color: ${({ theme }) => theme.text1};
+  transition: color 0.2s ease-out;
+  position: relative;
+  height: 100%;
+  transition: all 0.3s;
+  width: 17px;
+  height: 17px;
+  line-height: 1;
+  background: transparent;
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  border-radius: 6px;
+  user-select: none;
+
+  &::before,
+  &::after {
+    content: "";
+    transform: rotate(0);
+    top: 7px;
+    inset-inline-end: 3px;
+    inset-inline-start: 3px;
+    height: 1px;
+    position: absolute;
+    background: currentcolor;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &::after {
+    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(90deg)' : 'rotate(0deg)')};
+  }
 `
