@@ -1,6 +1,6 @@
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 
-import { Trans, t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -132,6 +132,7 @@ export function AddressInputPanel({
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
               value={value}
+              onFocus={(e) => e.target.select()}
             />
           </AutoColumn>
         </InputContainer>
