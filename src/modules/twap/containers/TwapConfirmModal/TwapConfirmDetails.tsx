@@ -1,9 +1,16 @@
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
+import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
+
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { shortenAddress } from 'legacy/utils'
 
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
+import { twapOrderAtom } from 'modules/twap/state/twapOrderAtom'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -38,6 +45,11 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
+
+  const twapOrder = useAtomValue(twapOrderAtom)
+  const { account } = useAtomValue(walletInfoAtom)
+  const { address: ensRecipientAddress } = useENSAddress(twapOrder?.receiver)
+  const recipientAddressOrName = twapOrder?.receiver || ensRecipientAddress
 
   return (
     <Wrapper>
@@ -86,6 +98,21 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       >
         {totalDurationDisplay}
       </ConfirmDetailsItem>
+
+      {/* Recipient */}
+      {recipientAddressOrName && twapOrder?.receiver !== account && (
+        <ConfirmDetailsItem
+          withArrow={false}
+          label="Recipient"
+          tooltip="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
+        >
+          <div>
+            <span title={recipientAddressOrName}>
+              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
+            </span>
+          </div>
+        </ConfirmDetailsItem>
+      )}
     </Wrapper>
   )
 })

@@ -8,6 +8,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+import useENSAddress from 'legacy/hooks/useENSAddress'
 import store from 'legacy/state'
 import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
 import { getCowSoundSend } from 'legacy/utils/sound'
@@ -46,6 +47,8 @@ export function useCreateTwapOrder() {
   const safeAppsSdk = useSafeAppsSdk()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
+
+  const { address: ensRecipientAddress } = useENSAddress(twapOrder?.receiver)
 
   const uploadAppData = useUploadAppData()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -115,7 +118,7 @@ export function useCreateTwapOrder() {
         const summary = getOrderSubmitSummary({
           recipient: twapOrder.receiver,
           kind: OrderKind.SELL,
-          recipientAddressOrName: null,
+          recipientAddressOrName: ensRecipientAddress || twapOrder.receiver || account,
           account,
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
@@ -139,16 +142,17 @@ export function useCreateTwapOrder() {
       account,
       inputCurrencyAmount,
       outputCurrencyAmount,
-      twapOrder,
-      tradeConfirmActions,
       twapOrderCreationContext,
       extensibleFallbackContext,
-      addTwapOrderToList,
       safeAppsSdk,
+      appDataInfo,
+      twapOrder,
       confirmPriceImpactWithoutFee,
       priceImpact,
+      tradeConfirmActions,
+      addTwapOrderToList,
+      ensRecipientAddress,
       uploadAppData,
-      appDataInfo,
     ]
   )
 }
