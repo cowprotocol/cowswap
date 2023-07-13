@@ -4,7 +4,6 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
 import { OrderID } from 'api/gnosisProtocol'
-import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 import {
@@ -278,22 +277,21 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
-        const isComposableParentOrder = getIsComposableCowParentOrder(newOrder)
-        const isComposableChildOrder = getIsComposableCowChildOrder(newOrder)
+
+        // Skip overriding orders, because they get updates from ProdOrdersUpdater
+        if (orderObj?.order.composableCowInfo?.isVirtualPart === false && !newOrder.composableCowInfo) {
+          return
+        }
 
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
-              ...(isComposableChildOrder ? newOrder : {}),
               validTo,
               creationTime: newOrder.creationTime,
               composableCowInfo: newOrder.composableCowInfo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
-              // Don't reset isCancelling status for ComposableCow orders
-              // Because currently we don't have a backend for it
-              // And this status is stored only on Frontend
-              isCancelling: isComposableParentOrder ? !!orderObj.order.isCancelling : newOrder.isCancelling,
+              isCancelling: newOrder.isCancelling,
               class: newOrder.class,
               openSince: newOrder.openSince || orderObj.order.openSince,
               status,

@@ -39,7 +39,6 @@ export const emulatedTwapOrdersAtom = atom((get) => {
         id: enrichedOrder.uid,
         composableCowInfo: {
           id: order.id,
-          status,
         },
         sellAmountBeforeFee: enrichedOrder.sellAmount,
         inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],

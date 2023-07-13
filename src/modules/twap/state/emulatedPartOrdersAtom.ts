@@ -1,66 +1,27 @@
 import { atom } from 'jotai'
 
-import { OrderClass, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
+import { Order } from 'legacy/state/orders/actions'
 
-import { OrderStatus as OrderStatusInApp } from 'legacy/state/orders/actions'
-
-import { OrderWithComposableCowInfo } from 'common/types'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 
 import { twapOrdersAtom } from './twapOrdersListAtom'
 import { twapPartOrdersListAtom } from './twapPartOrdersAtom'
 
-import { TwapOrderItem, TwapOrderStatus } from '../types'
+import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
+import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
-export const emulatedPartOrdersAtom = atom<OrderWithComposableCowInfo[]>((get) => {
+export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
+  const tokensByAddress = get(tokensByAddressAtom)
 
-  return twapParticleOrders.map<OrderWithComposableCowInfo>((order) => {
-    const parent = twapOrders[order.twapOrderId]
+  return twapParticleOrders
+    .filter((item) => !item.isSettledInOrderBook)
+    .map<Order>((item) => {
+      const isVirtualPart = true
+      const parent = twapOrders[item.twapOrderId]
+      const enrichedOrder = emulatePartAsOrder(item, parent)
 
-    const creationDate = new Date((order.order.validTo - parent.order.t) * 1000)
-    const isCancelling = parent.status === TwapOrderStatus.Cancelling
-
-    return {
-      order: {
-        ...order.order,
-        creationDate: creationDate.toISOString(),
-        class: OrderClass.LIMIT,
-        status: getOrderStatus(parent),
-        owner: parent.safeAddress.toLowerCase(),
-        uid: order.uid,
-        signingScheme: SigningScheme.EIP1271,
-        signature: '',
-        appData: parent.order.appData,
-        totalFee: '0',
-        feeAmount: '0',
-        executedSellAmount: '0',
-        executedSellAmountBeforeFees: '0',
-        executedBuyAmount: '0',
-        executedFeeAmount: '0',
-        invalidated: isCancelling,
-      },
-      composableCowInfo: {
-        isVirtualPart: true,
-        isCancelling,
-        parentId: order.twapOrderId,
-        status: getPartOrderStatus(parent),
-      },
-    }
-  })
+      return mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+    })
 })
-
-function getOrderStatus(parent: TwapOrderItem): OrderStatus {
-  if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
-  if (parent.status === TwapOrderStatus.Cancelled) return OrderStatus.CANCELLED
-
-  return OrderStatus.OPEN
-}
-
-function getPartOrderStatus(parent: TwapOrderItem): OrderStatusInApp {
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatusInApp.EXPIRED
-  if (parent.status === TwapOrderStatus.Cancelled) return OrderStatusInApp.CANCELLED
-
-  return OrderStatusInApp.SCHEDULED
-}

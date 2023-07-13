@@ -1,4 +1,5 @@
 export * from './containers/TwapFormWidget'
 export * from './hooks/useTwapOrderById'
+export * from './hooks/useEmulatedOrders'
 export * from './hooks/useTwapOrderByChildId'
 export * from './state/emulatedTwapOrdersAtom'

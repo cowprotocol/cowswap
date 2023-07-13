@@ -1,0 +1,71 @@
+import { useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
+import { useEffect, useMemo } from 'react'
+
+import { Order } from 'legacy/state/orders/actions'
+import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
+
+import { useSWRProdOrders } from 'modules/orders/hooks/useSWRProdOrders'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useWalletInfo } from 'modules/wallet'
+
+import { twapOrdersAtom } from '../state/twapOrdersListAtom'
+import { markPartOrdersAsSettledAtom, TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+
+const isVirtualPart = false
+
+export function SettledPartOrdersUpdater() {
+  const { chainId } = useWalletInfo()
+  const prodOrders = useSWRProdOrders()
+  const tokensByAddress = useAtomValue(tokensByAddressAtom)
+  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
+  const twapOrders = useAtomValue(twapOrdersAtom)
+  const markPartOrdersAsSettled = useUpdateAtom(markPartOrdersAsSettledAtom)
+  const addOrUpdateOrders = useAddOrUpdateOrders()
+
+  const twapPartOrdersMap = useMemo(() => {
+    return twapPartOrdersList.reduce<{ [id: string]: TwapPartOrderItem }>((acc, val) => {
+      acc[val.uid] = val
+      return acc
+    }, {})
+  }, [twapPartOrdersList])
+
+  // Take only orders related to TWAP from prod API response
+  const partOrdersFromProd = useMemo(() => {
+    return prodOrders
+      .filter((enrichedOrder) => {
+        const item = twapPartOrdersMap[enrichedOrder.uid]
+        const parent = twapOrders[item?.twapOrderId]
+
+        return !!parent
+      })
+      .map<Order>((enrichedOrder) => {
+        const item = twapPartOrdersMap[enrichedOrder.uid]
+        const parent = twapOrders[item.twapOrderId]
+
+        return mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+      })
+  }, [prodOrders, twapPartOrdersMap, tokensByAddress, twapOrders])
+
+  useEffect(() => {
+    if (!partOrdersFromProd.length) return
+
+    const settledOrders = partOrdersFromProd.reduce<{ [parentId: string]: string[] }>((acc, val) => {
+      const parentId = val.composableCowInfo?.parentId
+
+      if (parentId) {
+        acc[parentId] = acc[parentId] || []
+
+        acc[parentId].push(val.id)
+      }
+
+      return acc
+    }, {})
+
+    markPartOrdersAsSettled(settledOrders)
+    addOrUpdateOrders({ orders: partOrdersFromProd, chainId })
+  }, [chainId, partOrdersFromProd, addOrUpdateOrders, markPartOrdersAsSettled])
+
+  return null
+}

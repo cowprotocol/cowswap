@@ -59,7 +59,12 @@ export function OrdersTableWidget({ additionalOrders }: OrdersTableWidgetProps) 
   const allOrders = useMemo(() => {
     if (!additionalOrders) return commonOrders
 
-    return commonOrders.concat(additionalOrders)
+    const additionalOrdersIds = additionalOrders.reduce<{ [id: string]: boolean }>((acc, val) => {
+      acc[val.id] = true
+      return acc
+    }, {})
+
+    return commonOrders.filter((order) => !additionalOrdersIds[order.id]).concat(additionalOrders)
   }, [commonOrders, additionalOrders])
   const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()

@@ -1,8 +1,10 @@
+import { getCowSoundSuccess } from 'legacy/utils/sound'
+
 import { deepEqual } from 'utils/deepEqual'
 
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
-import { TwapOrderStatus } from '../types'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 /**
  *
@@ -16,6 +18,9 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
     const newOrder = nextState[orderId]
 
     if (currentOrder) {
+      // TODO: add popup
+      playMooOnTwapOrderFill(currentOrder, newOrder)
+
       if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) {
         if (!deepEqual(currentOrder.executionInfo, newOrder.executionInfo)) {
           acc[orderId] = { ...currentOrder, executionInfo: newOrder.executionInfo }
@@ -40,4 +45,10 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
   }, {})
 
   return { ...currentState, ...newState }
+}
+
+function playMooOnTwapOrderFill(currentItem: TwapOrderItem, newItem: TwapOrderItem) {
+  if (currentItem.executionInfo.executedSellAmount !== newItem.executionInfo.executedSellAmount) {
+    getCowSoundSuccess().play()
+  }
 }
