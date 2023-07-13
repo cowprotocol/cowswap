@@ -4,7 +4,9 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
 import { OrderID } from 'api/gnosisProtocol'
+import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
+import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
 import {
   addOrUpdateOrders,
@@ -279,7 +281,7 @@ export default createReducer(initialState, (builder) =>
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
 
         // Skip overriding orders, because they get updated in SettledPartOrdersUpdater
-        if (orderObj?.order.composableCowInfo?.isVirtualPart === false && !newOrder.composableCowInfo) {
+        if (getIsComposableCowDiscreteOrder(orderObj?.order) && getIsNotComposableCowOrder(newOrder)) {
           return
         }
 
