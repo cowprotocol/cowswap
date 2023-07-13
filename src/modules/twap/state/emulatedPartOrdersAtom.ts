@@ -15,16 +15,21 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   const twapParticleOrders = get(twapPartOrdersListAtom)
   const tokensByAddress = get(tokensByAddressAtom)
 
-  return twapParticleOrders
-    .filter((item) => !item.isSettledInOrderBook)
-    .map<Order>((item) => {
-      const isVirtualPart = true
-      const parent = twapOrders[item.twapOrderId]
-      const enrichedOrder = emulatePartAsOrder(item, parent)
+  return twapParticleOrders.reduce<Order[]>((acc, item) => {
+    if (item.isSettledInOrderBook) return acc
 
-      return mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
-    })
-    .filter((order) => {
-      return !CONFIRMED_STATES.includes(order.status)
-    })
+    const isVirtualPart = true
+    const parent = twapOrders[item.twapOrderId]
+
+    if (!parent) return acc
+
+    const enrichedOrder = emulatePartAsOrder(item, parent)
+    const order = mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+
+    if (!CONFIRMED_STATES.includes(order.status)) {
+      acc.push(order)
+    }
+
+    return acc
+  }, [])
 })

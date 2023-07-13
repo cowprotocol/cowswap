@@ -5,6 +5,8 @@ import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { deepEqual } from 'utils/deepEqual'
+
 export interface TwapPartOrderItem {
   uid: string
   index: number
@@ -50,21 +52,26 @@ export const markPartOrdersAsSettledAtom = atom(null, (get, set, update: { [pare
 
   if (!parentsIds.length) return
 
-  const newState = parentsIds.reduce<TwapPartOrders>((acc, parentId) => {
-    const settledIds = update[parentId]
+  const newState = parentsIds.reduce<TwapPartOrders>(
+    (acc, parentId) => {
+      const settledIds = update[parentId]
 
-    acc[parentId] = currentState[parentId].map((item) => {
-      if (settledIds.includes(item.uid)) {
-        return { ...item, isSettledInOrderBook: true }
-      }
+      acc[parentId] = currentState[parentId].map((item) => {
+        if (settledIds.includes(item.uid)) {
+          return { ...item, isSettledInOrderBook: true }
+        }
 
-      return item
-    })
+        return item
+      })
 
-    return acc
-  }, currentState)
+      return acc
+    },
+    { ...currentState }
+  )
 
-  set(twapPartOrdersAtom, newState)
+  if (!deepEqual(currentState, newState)) {
+    set(twapPartOrdersAtom, newState)
+  }
 })
 
 export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
