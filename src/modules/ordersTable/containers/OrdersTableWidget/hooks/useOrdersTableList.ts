@@ -32,7 +32,7 @@ export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
       (acc, order) => {
         if (PENDING_STATES.includes(order.status)) {
           acc.pending.push(order)
-        } else if (!order.composableCowInfo?.isVirtualPart) {
+        } else {
           acc.history.push(order)
         }
 

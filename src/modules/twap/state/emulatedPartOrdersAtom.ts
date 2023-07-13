@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { Order } from 'legacy/state/orders/actions'
+import { CONFIRMED_STATES, Order } from 'legacy/state/orders/actions'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 
@@ -23,5 +23,8 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
       const enrichedOrder = emulatePartAsOrder(item, parent)
 
       return mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+    })
+    .filter((order) => {
+      return !CONFIRMED_STATES.includes(order.status)
     })
 })
