@@ -4,6 +4,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { openTwapOrdersAtom } from './twapOrdersListAtom'
@@ -41,8 +42,8 @@ export const emulatedTwapOrdersAtom = atom((get) => {
           id: order.id,
         },
         sellAmountBeforeFee: enrichedOrder.sellAmount,
-        inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-        outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+        inputToken: getTokensByAddress(chainId, enrichedOrder.sellToken, tokensByAddress),
+        outputToken: getTokensByAddress(chainId, enrichedOrder.buyToken, tokensByAddress),
         creationTime: enrichedOrder.creationDate,
         summary: '',
         status,

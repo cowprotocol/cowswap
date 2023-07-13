@@ -4,6 +4,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
+import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
 
 import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
@@ -18,6 +19,7 @@ export function mapPartOrderToStoreOrder(
   parent: TwapOrderItem,
   tokensByAddress: TokensByAddress
 ): Order {
+  const chainId = item.chainId
   const isCancelling = parent.status === TwapOrderStatus.Cancelling || enrichedOrder.invalidated
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
 
@@ -30,8 +32,8 @@ export function mapPartOrderToStoreOrder(
       parentId: parent.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken: getTokensByAddress(chainId, enrichedOrder.sellToken, tokensByAddress),
+    outputToken: getTokensByAddress(chainId, enrichedOrder.buyToken, tokensByAddress),
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,
