@@ -143,10 +143,15 @@ export function OrderRow({
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
+  const isChildOrder = getIsComposableCowChildOrder(order)
+  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
+  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
+
   const withWarning =
+    !isComposableCowParentOrder &&
     (!hasEnoughBalance || !hasEnoughAllowance) &&
-    // show the warning only for pending orders
-    status === OrderStatus.PENDING
+    // show the warning only for pending and scheduled orders
+    (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
@@ -177,10 +182,6 @@ export function OrderRow({
   const isUnfillable =
     (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
-
-  const isChildOrder = getIsComposableCowChildOrder(order)
-  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
-  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
 
   return (
     <TableRow
