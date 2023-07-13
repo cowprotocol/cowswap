@@ -245,7 +245,7 @@ export const ToggleExpandButton = styled.button<{ isCollapsed?: boolean }>`
 
   &::before,
   &::after {
-    content: "";
+    content: '';
     transform: rotate(0);
     top: 7px;
     inset-inline-end: 3px;

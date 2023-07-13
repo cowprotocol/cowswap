@@ -309,19 +309,19 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
-  const [collapsedOrder, setCollapsedOrder] = useState<{[index: string]: boolean}>({});
+  const [collapsedOrder, setCollapsedOrder] = useState<{ [index: string]: boolean }>({})
 
   const handleOnClickToggle = (order: ParsedOrder) => {
-    const orderId = order.composableCowInfo?.id; // If it's a parent, use its own ID
-    const parentOrderId = getComposableCowParentId(order); // If it's a child, use its parent ID
+    const orderId = order.composableCowInfo?.id // If it's a parent, use its own ID
+    const parentOrderId = getComposableCowParentId(order) // If it's a child, use its parent ID
 
-    const idToToggle = parentOrderId !== undefined ? parentOrderId : orderId;
+    const idToToggle = parentOrderId !== undefined ? parentOrderId : orderId
 
     // If the order has a parent, toggle the collapsed state for that parent
     if (idToToggle !== undefined) {
-      setCollapsedOrder(prevState => ({ ...prevState, [idToToggle]: !prevState[idToToggle] }));
+      setCollapsedOrder((prevState) => ({ ...prevState, [idToToggle]: !prevState[idToToggle] }))
     }
-  };
+  }
 
   return (
     <>
@@ -456,8 +456,8 @@ export function OrdersTable({
                   isRateInverted={isRateInverted}
                   orderActions={orderActions}
                   onClick={() => orderActions.selectReceiptOrder(order)}
-                  collapsedOrder={collapsedOrder} 
-                  onToggle={handleOnClickToggle} 
+                  collapsedOrder={collapsedOrder}
+                  onToggle={handleOnClickToggle}
                 />
               )
             })}

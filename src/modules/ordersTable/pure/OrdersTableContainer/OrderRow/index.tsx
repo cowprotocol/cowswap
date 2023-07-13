@@ -113,8 +113,8 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
-  collapsedOrder: { [key: string]: boolean } | null | undefined;
-  onToggle: (order: ParsedOrder) => void;
+  collapsedOrder: { [key: string]: boolean } | null | undefined
+  onToggle: (order: ParsedOrder) => void
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
@@ -186,27 +186,28 @@ export function OrderRow({
   const isChildOrder = getIsComposableCowChildOrder(order)
   const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
   const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
-  
+
   const handleOnClickToggle = () => {
-    onToggle(order); // Pass the whole order, not just the ID
-  };
+    onToggle(order) // Pass the whole order, not just the ID
+  }
 
   const isParentOrderCollapsed = (): boolean => {
     if (collapsedOrder && collapsedOrder[order.id]) {
-      return true;
+      return true
     }
-  
-  const parentOrderId = getComposableCowParentId(order);
-    if (parentOrderId !== undefined && collapsedOrder && collapsedOrder[parentOrderId]) { // Check for undefined here
-      return true;
+
+    const parentOrderId = getComposableCowParentId(order)
+    if (parentOrderId !== undefined && collapsedOrder && collapsedOrder[parentOrderId]) {
+      // Check for undefined here
+      return true
     }
-  
-    return false;
-  };
-  
+
+    return false
+  }
+
   const shouldHideRow = isChildOrder && isParentOrderCollapsed()
-  console.log("shouldHideRow", shouldHideRow, order)
-  
+  console.log('shouldHideRow', shouldHideRow, order)
+
   return (
     <TableRow
       data-id={order.id}
@@ -231,7 +232,9 @@ export function OrderRow({
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
         {/* Expand/Collapse TWAP order button */}
-        {isComposableCowParentOrder && <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()} />}
+        {isComposableCowParentOrder && (
+          <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()} />
+        )}
 
         <styledEl.CurrencyLogoPair clickable onClick={onClick}>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
