@@ -13,7 +13,7 @@ export interface TwapPartOrderItem {
   chainId: SupportedChainId
   safeAddress: string
   twapOrderId: string
-  isSettledInOrderBook: boolean
+  isCreatedInOrderBook: boolean
   order: OrderParameters
 }
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
@@ -21,7 +21,7 @@ export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
 
 /**
- * The only goal of this function is protection from isSettledInOrderBook flag overriding
+ * The only goal of this function is protection from isCreatedInOrderBook flag overriding
  */
 export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders) => {
   const currentState = get(twapPartOrdersAtom)
@@ -36,7 +36,7 @@ export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrd
     acc[parentId] = items.map((item) => {
       return {
         ...item,
-        isSettledInOrderBook: currentItemsMap[item.uid]?.isSettledInOrderBook || item.isSettledInOrderBook,
+        isCreatedInOrderBook: currentItemsMap[item.uid]?.isCreatedInOrderBook || item.isCreatedInOrderBook,
       }
     })
 
@@ -46,7 +46,7 @@ export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrd
   set(twapPartOrdersAtom, newState)
 })
 
-export const markPartOrdersAsSettledAtom = atom(null, (get, set, update: { [parentId: string]: string[] }) => {
+export const markPartOrdersAsCreatedAtom = atom(null, (get, set, update: { [parentId: string]: string[] }) => {
   const currentState = get(twapPartOrdersAtom)
   const parentsIds = Object.keys(update)
 
@@ -58,7 +58,7 @@ export const markPartOrdersAsSettledAtom = atom(null, (get, set, update: { [pare
 
       acc[parentId] = (currentState[parentId] || []).map((item) => {
         if (settledIds.includes(item.uid)) {
-          return { ...item, isSettledInOrderBook: true }
+          return { ...item, isCreatedInOrderBook: true }
         }
 
         return item

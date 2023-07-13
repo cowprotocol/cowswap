@@ -10,7 +10,7 @@ import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { markPartOrdersAsSettledAtom, TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { markPartOrdersAsCreatedAtom, TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 const isVirtualPart = false
@@ -20,13 +20,13 @@ const isVirtualPart = false
  * Since WatchTower creates orders only in PROD env, we use useSWRProdOrders()
  * To distinguish parts settled in order-book from other parts, we mark them by isSettledInOrderBook flag
  */
-export function SettledPartOrdersUpdater() {
+export function CreatedInOrderBookOrdersUpdater() {
   const { chainId } = useWalletInfo()
   const prodOrders = useSWRProdOrders()
   const tokensByAddress = useAtomValue(tokensByAddressAtom)
   const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
-  const markPartOrdersAsSettled = useUpdateAtom(markPartOrdersAsSettledAtom)
+  const markPartOrdersAsCreated = useUpdateAtom(markPartOrdersAsCreatedAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
 
   const twapPartOrdersMap = useMemo(() => {
@@ -55,7 +55,7 @@ export function SettledPartOrdersUpdater() {
   useEffect(() => {
     if (!partOrdersFromProd.length) return
 
-    const settledOrders = partOrdersFromProd.reduce<{ [parentId: string]: string[] }>((acc, val) => {
+    const createdInOrderBookOrders = partOrdersFromProd.reduce<{ [parentId: string]: string[] }>((acc, val) => {
       const parentId = val.composableCowInfo?.parentId
 
       if (parentId) {
@@ -67,9 +67,9 @@ export function SettledPartOrdersUpdater() {
       return acc
     }, {})
 
-    markPartOrdersAsSettled(settledOrders)
+    markPartOrdersAsCreated(createdInOrderBookOrders)
     addOrUpdateOrders({ orders: partOrdersFromProd, chainId })
-  }, [chainId, partOrdersFromProd, addOrUpdateOrders, markPartOrdersAsSettled])
+  }, [chainId, partOrdersFromProd, addOrUpdateOrders, markPartOrdersAsCreated])
 
   return null
 }

@@ -16,7 +16,7 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   const tokensByAddress = get(tokensByAddressAtom)
 
   return twapParticleOrders.reduce<Order[]>((acc, item) => {
-    if (item.isSettledInOrderBook) return acc
+    if (item.isCreatedInOrderBook) return acc
 
     const isVirtualPart = true
     const parent = twapOrders[item.twapOrderId]

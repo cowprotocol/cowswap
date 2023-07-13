@@ -11,7 +11,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getOrders } from 'api/gnosisProtocol'
 
-import { useOrderBook } from './useOrderBook'
+import { useApiOrders } from './useApiOrders'
 import { useSWROrdersRequest } from './useSWROrdersRequest'
 
 // Fetch PROD orders only when current env is not prod
@@ -19,7 +19,7 @@ import { useSWROrdersRequest } from './useSWROrdersRequest'
 export function useSWRProdOrders(): EnrichedOrder[] {
   const { chainId } = useWalletInfo()
   const requestParams = useSWROrdersRequest()
-  const orderBook = useOrderBook()
+  const apiOrders = useApiOrders()
 
   const { data: loadedProdOrders = [] } = useSWR<EnrichedOrder[]>(
     ['prod-orders', requestParams, chainId],
@@ -33,6 +33,6 @@ export function useSWRProdOrders(): EnrichedOrder[] {
   )
 
   return useMemo(() => {
-    return isBarnBackendEnv ? loadedProdOrders : orderBook
-  }, [orderBook, loadedProdOrders])
+    return isBarnBackendEnv ? loadedProdOrders : apiOrders
+  }, [apiOrders, loadedProdOrders])
 }

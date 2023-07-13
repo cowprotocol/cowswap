@@ -64,7 +64,7 @@ async function generateTwapOrderParts(
         twapOrderId,
         chainId,
         safeAddress,
-        isSettledInOrderBook: false,
+        isCreatedInOrderBook: false,
         order: parts[index],
       }
     }),
