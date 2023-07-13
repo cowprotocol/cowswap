@@ -71,44 +71,52 @@ function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return <CurrencyLogo currency={amount.currency} size="28px" />
 }
 
-const BalanceWarning = (symbol: string) => (
-  <styledEl.WarningParagraph>
-    <h3>Insufficient balance</h3>
-    <p>
-      Your wallet currently has insufficient{' '}
-      <strong>
-        <TokenSymbol token={{ symbol }} />
-      </strong>{' '}
-      balance to execute this order.
-      <br />
-      <br />
-      The order is still open and will become executable when you top up your{' '}
-      <strong>
-        <TokenSymbol token={{ symbol }} />
-      </strong>{' '}
-      balance.
-    </p>
-  </styledEl.WarningParagraph>
-)
+function BalanceWarning(params: { symbol: string }) {
+  const { symbol } = params
 
-const AllowanceWarning = (symbol: string) => (
-  <styledEl.WarningParagraph>
-    <h3>Insufficient approval for this order</h3>
-    <p>
-      This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
-      <strong>
-        <TokenSymbol token={{ symbol }} />
-      </strong>
-      .
-      <br />
-      The order will become executable when you approve{' '}
-      <strong>
-        <TokenSymbol token={{ symbol }} />
-      </strong>{' '}
-      in your account token page.
-    </p>
-  </styledEl.WarningParagraph>
-)
+  return (
+    <styledEl.WarningParagraph>
+      <h3>Insufficient balance</h3>
+      <p>
+        Your wallet currently has insufficient{' '}
+        <strong>
+          <TokenSymbol token={{ symbol }} />
+        </strong>{' '}
+        balance to execute this order.
+        <br />
+        <br />
+        The order is still open and will become executable when you top up your{' '}
+        <strong>
+          <TokenSymbol token={{ symbol }} />
+        </strong>{' '}
+        balance.
+      </p>
+    </styledEl.WarningParagraph>
+  )
+}
+
+function AllowanceWarning(params: { symbol: string }) {
+  const { symbol } = params
+
+  return (
+    <styledEl.WarningParagraph>
+      <h3>Insufficient approval for this order</h3>
+      <p>
+        This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
+        <strong>
+          <TokenSymbol token={{ symbol }} />
+        </strong>
+        .
+        <br />
+        The order will become executable when you approve{' '}
+        <strong>
+          <TokenSymbol token={{ symbol }} />
+        </strong>{' '}
+        in your account token page.
+      </p>
+    </styledEl.WarningParagraph>
+  )
+}
 
 export interface OrderRowProps {
   order: ParsedOrder
@@ -182,6 +190,8 @@ export function OrderRow({
   const isUnfillable =
     (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
+
+  const inputTokenSymbol = order.inputToken.symbol || ''
 
   return (
     <TableRow
@@ -320,8 +330,8 @@ export function OrderRow({
                   bgColor={theme.alert}
                   content={
                     <styledEl.WarningContent>
-                      {!hasEnoughBalance && BalanceWarning(order.inputToken.symbol || '')}
-                      {!hasEnoughAllowance && AllowanceWarning(order.inputToken.symbol || '')}
+                      {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} />}
+                      {!hasEnoughAllowance && <AllowanceWarning symbol={inputTokenSymbol} />}
                     </styledEl.WarningContent>
                   }
                   placement="bottom"
