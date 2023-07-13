@@ -7,12 +7,10 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget, useEmulatedOrders } from 'modules/twap'
+import { TwapFormWidget, useEmulatedOrders, SettledPartOrdersUpdater } from 'modules/twap'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
-
-import { SettledPartOrdersUpdater } from '../../modules/twap/updaters/SettledPartOrdersUpdater'
 
 export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()

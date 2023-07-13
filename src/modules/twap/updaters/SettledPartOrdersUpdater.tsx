@@ -15,6 +15,11 @@ import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 const isVirtualPart = false
 
+/**
+ * For complete control of discrete orders created by TWAP, we process them separately from other discrete orders
+ * Since WatchTower creates orders only in PROD env, we use useSWRProdOrders()
+ * To distinguish parts settled in order-book from other parts, we mark them by isSettledInOrderBook flag
+ */
 export function SettledPartOrdersUpdater() {
   const { chainId } = useWalletInfo()
   const prodOrders = useSWRProdOrders()
