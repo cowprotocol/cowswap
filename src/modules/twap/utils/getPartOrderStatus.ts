@@ -1,7 +1,7 @@
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderStatus as SdkOrderStatus } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { isOrderExpired, isOrderFulfilled } from 'legacy/state/orders/utils'
+import { isOrderCancelled, isOrderExpired, isOrderFulfilled } from 'legacy/state/orders/utils'
 
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
@@ -12,6 +12,7 @@ export function getPartOrderStatus(
 ): OrderStatus {
   if (isOrderExpired(enrichedOrder)) return OrderStatus.EXPIRED
   if (isOrderFulfilled(enrichedOrder)) return OrderStatus.FULFILLED
+  if (isOrderCancelled(enrichedOrder) || enrichedOrder.status === SdkOrderStatus.CANCELLED) return OrderStatus.CANCELLED
 
   if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
   if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
