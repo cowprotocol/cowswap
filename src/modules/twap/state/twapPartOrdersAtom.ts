@@ -16,7 +16,7 @@ export interface TwapPartOrderItem {
 }
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 
-export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v6', {})
+export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
 
 /**
  * The only goal of this function is protection from isSettledInOrderBook flag overriding
