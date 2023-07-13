@@ -8,7 +8,7 @@ import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_
 import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { useAddOrUpdateOrders, useCleanOrdersStorageOnUnmount } from 'legacy/state/orders/hooks'
+import { useAddOrUpdateOrders, useCleanOrdersStorage } from 'legacy/state/orders/hooks'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
@@ -202,7 +202,7 @@ function _filterOrders(
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
-  useCleanOrdersStorageOnUnmount()
+  useCleanOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
   const allTokens = useAllTokens()

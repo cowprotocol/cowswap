@@ -419,6 +419,46 @@ export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback =>
  * It runs when the parent component is unmounted
  */
 
+export const useCleanOrdersStorage = () => {
+  useEffect(() => {
+    _cleanOrdersStorage()
+    return _cleanOrdersStorage
+  }, [])
+}
+
+function _cleanOrdersStorage() {
+  // Get orders state from local storage
+  const ordersCache = localStorage.getItem(ORDER_STORAGE_KEY)
+
+  if (!ordersCache) return
+
+  const parsedState = JSON.parse(ordersCache)
+
+  // Iterate by each chain
+  Object.keys(parsedState).forEach((chainId) => {
+    const orderListByChain: OrderLists = parsedState[chainId]
+
+    // Iterate order statuses we want to clean up
+    CONFIRMED_STATES.forEach((status) => {
+      const orders = orderListByChain[status]
+
+      // Sort by expiration time
+      const ordersCleaned = Object.values(orders)
+        .sort(_orderSorterByExpirationTime)
+        // Take top n orders
+        .slice(0, MAX_ITEMS_PER_STATUS)
+        // Return back to appropriate data structure
+        .reduce<PartialOrdersMap>(_toPartialsOrderMap, {})
+
+      // Update parts of the state, with the "cleaned" ones
+      parsedState[chainId][status] = ordersCleaned
+    })
+  })
+
+  // Stringify data and save to storage
+  localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(parsedState))
+}
+
 function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject | undefined) {
   const validToA = Number(a?.order.validTo)
   const validToB = Number(b?.order.validTo)
@@ -436,41 +476,4 @@ function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject
 function _toPartialsOrderMap(acc: PartialOrdersMap, element: OrderObject | undefined) {
   element && (acc[element.id] = element)
   return acc
-}
-
-export const useCleanOrdersStorageOnUnmount = () => {
-  useEffect(() => {
-    return () => {
-      // Get orders state from local storage
-      const ordersCache = localStorage.getItem(ORDER_STORAGE_KEY)
-
-      if (!ordersCache) return
-
-      const parsedState = JSON.parse(ordersCache)
-
-      // Iterate by each chain
-      Object.keys(parsedState).forEach((chainId) => {
-        const orderListByChain: OrderLists = parsedState[chainId]
-
-        // Iterate order statuses we want to clean up
-        CONFIRMED_STATES.forEach((status) => {
-          const orders = orderListByChain[status]
-
-          // Sort by expiration time
-          const ordersCleaned = Object.values(orders)
-            .sort(_orderSorterByExpirationTime)
-            // Take top n orders
-            .slice(0, MAX_ITEMS_PER_STATUS)
-            // Return back to appropriate data structure
-            .reduce<PartialOrdersMap>(_toPartialsOrderMap, {})
-
-          // Update parts of the state, with the "cleaned" ones
-          parsedState[chainId][status] = ordersCleaned
-        })
-      })
-
-      // Stringify data and save to storage
-      localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(parsedState))
-    }
-  }, [])
 }
