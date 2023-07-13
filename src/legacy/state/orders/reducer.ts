@@ -278,7 +278,7 @@ export default createReducer(initialState, (builder) =>
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
 
-        // Skip overriding orders, because they get updates from ProdOrdersUpdater
+        // Skip overriding orders, because they get updated in SettledPartOrdersUpdater
         if (orderObj?.order.composableCowInfo?.isVirtualPart === false && !newOrder.composableCowInfo) {
           return
         }
