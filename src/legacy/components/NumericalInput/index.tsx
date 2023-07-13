@@ -26,13 +26,13 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     -webkit-appearance: none;
   }
 
-  [type='number'] {
-    -moz-appearance: textfield;
+  input[type='number'] {
+    appearance: none;
   }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  input[type='number']:focus,
+  input[type='number']:hover {
+    appearance: auto;
   }
 
   ::placeholder {
