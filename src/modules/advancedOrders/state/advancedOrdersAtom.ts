@@ -8,10 +8,12 @@ import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/ty
 
 export interface AdvancedOrdersDerivedState extends TradeDerivedState {
   readonly isUnlocked: boolean
+  readonly recipientAddress: string | null
 }
 
 export interface AdvancedOrdersRawState extends ExtendedTradeRawState {
   readonly isUnlocked: boolean
+  readonly recipientAddress: string | null
 }
 
 export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersRawState {
@@ -21,6 +23,7 @@ export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null):
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
     isUnlocked: false,
+    recipientAddress: null,
   }
 }
 
@@ -46,4 +49,5 @@ export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial
 export const advancedOrdersDerivedStateAtom = atom<AdvancedOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
   isUnlocked: true,
+  recipientAddress: null,
 })

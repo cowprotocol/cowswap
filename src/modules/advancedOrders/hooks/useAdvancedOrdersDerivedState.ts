@@ -19,8 +19,9 @@ export function useFillAdvancedOrdersDerivedState() {
 
   const derivedState = useBuildTradeDerivedState(advancedOrdersAtom)
   const isUnlocked = rawState.isUnlocked
+  const recipientAddress = rawState.recipientAddress
 
   useEffect(() => {
-    updateDerivedState({ ...derivedState, isUnlocked })
-  }, [derivedState, isUnlocked, updateDerivedState])
+    updateDerivedState({ ...derivedState, isUnlocked, recipientAddress })
+  }, [derivedState, isUnlocked, recipientAddress, updateDerivedState])
 }
