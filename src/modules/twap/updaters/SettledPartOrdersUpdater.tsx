@@ -38,19 +38,16 @@ export function SettledPartOrdersUpdater() {
 
   // Take only orders related to TWAP from prod API response
   const partOrdersFromProd = useMemo(() => {
-    return prodOrders
-      .filter((enrichedOrder) => {
-        const item = twapPartOrdersMap[enrichedOrder.uid]
-        const parent = twapOrders[item?.twapOrderId]
+    return prodOrders.reduce<Order[]>((acc, enrichedOrder) => {
+      const item = twapPartOrdersMap[enrichedOrder.uid]
+      const parent = twapOrders[item?.twapOrderId]
 
-        return !!parent
-      })
-      .map<Order>((enrichedOrder) => {
-        const item = twapPartOrdersMap[enrichedOrder.uid]
-        const parent = twapOrders[item.twapOrderId]
+      if (parent) {
+        acc.push(mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress))
+      }
 
-        return mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
-      })
+      return acc
+    }, [])
   }, [prodOrders, twapPartOrdersMap, tokensByAddress, twapOrders])
 
   useEffect(() => {
