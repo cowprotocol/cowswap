@@ -56,7 +56,7 @@ export const markPartOrdersAsSettledAtom = atom(null, (get, set, update: { [pare
     (acc, parentId) => {
       const settledIds = update[parentId]
 
-      acc[parentId] = currentState[parentId].map((item) => {
+      acc[parentId] = (currentState[parentId] || []).map((item) => {
         if (settledIds.includes(item.uid)) {
           return { ...item, isSettledInOrderBook: true }
         }
