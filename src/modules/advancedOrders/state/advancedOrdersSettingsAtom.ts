@@ -10,7 +10,7 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
 }
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
-  'advanced-orders-settings-atom:v2',
+  'advanced-orders-settings-atom:v0',
   defaultAdvancedOrdersSettings
 )
 

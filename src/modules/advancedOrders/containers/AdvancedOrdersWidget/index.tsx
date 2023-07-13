@@ -20,7 +20,7 @@ import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { AdvancedOrdersSettings } from '../SettingsWidget'
+import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
 export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
