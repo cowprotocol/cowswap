@@ -3,8 +3,6 @@ import { Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
-import { OrderTypeKeys } from './reducer'
-
 export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
   [ChainId.MAINNET]: 11469934,
   [ChainId.GNOSIS_CHAIN]: 13566914,
@@ -21,5 +19,4 @@ export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100
 
 // Clear order's storage
 export const ORDER_STORAGE_KEY = 'redux_localstorage_simple_orders'
-export const ORDER_STATUSES_TO_CLEAR: OrderTypeKeys[] = ['expired', 'cancelled', 'fulfilled']
 export const MAX_ITEMS_PER_STATUS = 10

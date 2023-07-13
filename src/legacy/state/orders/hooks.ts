@@ -16,6 +16,7 @@ import {
   AddOrUpdateOrdersParams,
   addPendingOrder,
   cancelOrdersBatch,
+  CONFIRMED_STATES,
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
@@ -32,7 +33,7 @@ import {
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
-import { MAX_ITEMS_PER_STATUS, ORDER_STATUSES_TO_CLEAR, ORDER_STORAGE_KEY } from './consts'
+import { MAX_ITEMS_PER_STATUS, ORDER_STORAGE_KEY } from './consts'
 import {
   getDefaultNetworkState,
   ORDER_LIST_KEYS,
@@ -452,7 +453,7 @@ export const useCleanOrdersStorageOnUnmount = () => {
         const orderListByChain: OrderLists = parsedState[chainId]
 
         // Iterate order statuses we want to clean up
-        ORDER_STATUSES_TO_CLEAR.forEach((status) => {
+        CONFIRMED_STATES.forEach((status) => {
           const orders = orderListByChain[status]
 
           // Sort by expiration time
