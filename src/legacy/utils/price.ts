@@ -27,14 +27,16 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
   if (isTokenSupportsEIP2612) {
     // TODO - we need to actually have some hook for fee estimates here. I also
     // don't know where the right place to put this is...
-    (quoteParams as any).appData = JSON.stringify({
+    ;(quoteParams as any).appData = JSON.stringify({
       backend: {
         hooks: {
-          pre: [{
-            target: '0x0000000000000000000000000000000000000000',
-            callData: '0x',
-            gasLimit: '100000',
-          }],
+          pre: [
+            {
+              target: '0x0000000000000000000000000000000000000000',
+              callData: '0x',
+              gasLimit: '100000',
+            },
+          ],
           post: [],
         },
       },
