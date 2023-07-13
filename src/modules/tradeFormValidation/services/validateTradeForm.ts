@@ -1,6 +1,7 @@
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import { isAddress } from 'legacy/utils'
 
+import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
@@ -27,6 +28,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
   if (!isWrapUnwrap && tradeQuote.error) {
+    if (!account && tradeQuote.error.type === GpQuoteErrorCodes.UnsupportedToken) {
+      return TradeFormValidation.WalletNotConnected
+    }
+
     return TradeFormValidation.QuoteErrors
   }
 
