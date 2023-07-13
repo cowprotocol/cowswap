@@ -417,15 +417,33 @@ export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback =>
  *
  * It runs when the parent component is unmounted
  */
+
+function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject | undefined) {
+  const validToA = Number(a?.order.validTo)
+  const validToB = Number(b?.order.validTo)
+
+  if (!validToA || !validToB) {
+    return -1
+  }
+
+  const expirationTimeB = Number(new Date(validToB * 1000))
+  const expirationTimeA = Number(new Date(validToA * 1000))
+
+  return expirationTimeB - expirationTimeA
+}
+
+function _toPartialsOrderMap(acc: PartialOrdersMap, element: OrderObject | undefined) {
+  element && (acc[element.id] = element)
+  return acc
+}
+
 export const useCleanOrdersStorageOnUnmount = () => {
   useEffect(() => {
     return () => {
       // Get orders state from local storage
       const ordersCache = localStorage.getItem(ORDER_STORAGE_KEY)
 
-      if (!ordersCache) {
-        return
-      }
+      if (!ordersCache) return
 
       const parsedState = JSON.parse(ordersCache)
 
@@ -439,26 +457,11 @@ export const useCleanOrdersStorageOnUnmount = () => {
 
           // Sort by expiration time
           const ordersCleaned = Object.values(orders)
-            .sort((a: OrderObject | undefined, b: OrderObject | undefined) => {
-              const validToA = Number(a?.order.validTo)
-              const validToB = Number(b?.order.validTo)
-
-              if (!validToA || !validToB) {
-                return -1
-              }
-
-              const expirationTimeB = Number(new Date(validToB * 1000))
-              const expirationTimeA = Number(new Date(validToA * 1000))
-
-              return expirationTimeB - expirationTimeA
-            })
+            .sort(_orderSorterByExpirationTime)
             // Take top n orders
             .slice(0, MAX_ITEMS_PER_STATUS)
             // Return back to appropriate data structure
-            .reduce<PartialOrdersMap>((acc, element) => {
-              element && (acc[element.id] = element)
-              return acc
-            }, {})
+            .reduce<PartialOrdersMap>(_toPartialsOrderMap, {})
 
           // Update parts of the state, with the "cleaned" ones
           parsedState[chainId][status] = ordersCleaned
