@@ -2,6 +2,8 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
+import { autofocus } from 'common/utils/autofocus'
+
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -67,7 +69,7 @@ export const Input = React.memo(function InnerInput({
     <StyledInput
       {...rest}
       value={prependSymbol && value ? prependSymbol + value : value}
-      onFocus={(e) => e.target.select()}
+      onFocus={autofocus}
       onChange={(event) => {
         if (prependSymbol) {
           const value = event.target.value

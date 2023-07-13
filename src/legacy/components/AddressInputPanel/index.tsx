@@ -11,6 +11,8 @@ import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { autofocus } from 'common/utils/autofocus'
+
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
@@ -132,7 +134,7 @@ export function AddressInputPanel({
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
               value={value}
-              onFocus={(e) => e.target.select()}
+              onFocus={autofocus}
             />
           </AutoColumn>
         </InputContainer>
