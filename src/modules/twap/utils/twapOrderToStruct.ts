@@ -10,7 +10,7 @@ export function twapOrderToStruct(order: TWAPOrder): TWAPOrderStruct {
     buyToken: buyToken.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : buyToken.address,
     receiver: order.receiver,
     partSellAmount: order.sellAmount.divide(order.numOfParts).quotient.toString(),
-    minPartLimit: order.buyAmount.divide(order.numOfParts / 2).quotient.toString(),
+    minPartLimit: order.buyAmount.divide(order.numOfParts).quotient.toString(),
     t0: order.startTime,
     n: order.numOfParts,
     t: order.timeInterval,
