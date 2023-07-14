@@ -10,8 +10,11 @@ import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { toErc20Address } from 'legacy/utils/tokens'
 
+import { toKeccak256 } from 'modules/appData/utils/buildAppData'
+
 import { getQuote } from 'api/gnosisProtocol'
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { generatePermitHook, PermitHookParams } from 'utils/generatePermitHook'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -20,27 +23,18 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
  * Queries the new Quote api endpoint found here: https://protocol-mainnet.gnosis.io/api/#/default/post_api_v1_quote
  * TODO: consider name // check with backend when logic returns best quote, not first
  */
-export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuoteParams }): Promise<QuoteResult> {
+export async function getFullQuote({
+  quoteParams,
+  permitHookParams,
+}: {
+  quoteParams: LegacyFeeQuoteParams
+  permitHookParams?: PermitHookParams
+}): Promise<QuoteResult> {
   // TODO
   const isTokenSupportsEIP2612 = true
 
-  if (isTokenSupportsEIP2612) {
-    // TODO - we need to actually have some hook for fee estimates here. I also
-    // don't know where the right place to put this is...
-    ;(quoteParams as any).appData = JSON.stringify({
-      backend: {
-        hooks: {
-          pre: [
-            {
-              target: '0x0000000000000000000000000000000000000000',
-              callData: '0x',
-              gasLimit: '100000',
-            },
-          ],
-          post: [],
-        },
-      },
-    })
+  if (isTokenSupportsEIP2612 && permitHookParams) {
+    ;(quoteParams as any).appData = toKeccak256(await generatePermitHook(permitHookParams))
   }
 
   const { kind } = quoteParams
@@ -64,32 +58,40 @@ export async function getBestQuote({
   quoteParams,
   fetchFee,
   previousFee,
+  permitHookParams,
 }: LegacyQuoteParams): Promise<QuoteResult> {
   if (strategy === 'COWSWAP') {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
 
-    return getFullQuote({ quoteParams }).catch((err) => {
+    return getFullQuote({ quoteParams, permitHookParams }).catch((err) => {
       console.warn(
         '[GP PRICE::API] getBestQuote - error using COWSWAP price strategy, reason: [',
         err,
         '] - trying back up price sources...'
       )
       // ATTEMPT LEGACY CALL
-      return getBestQuote({ strategy: 'LEGACY', quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+      return getBestQuote({
+        strategy: 'LEGACY',
+        quoteParams,
+        fetchFee,
+        previousFee,
+        isPriceRefresh: false,
+        permitHookParams,
+      })
     })
   } else {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')
 
     const { getBestQuoteLegacy } = await import('legacy/utils/priceLegacy')
 
-    return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+    return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false, permitHookParams })
   }
 }
 
-export async function getFastQuote({ quoteParams }: LegacyQuoteParams): Promise<QuoteResult> {
+export async function getFastQuote({ quoteParams, permitHookParams }: LegacyQuoteParams): Promise<QuoteResult> {
   console.debug('[GP PRICE::API] getFastQuote - Attempting fast quote retrieval, hang tight.')
 
-  return getFullQuote({ quoteParams })
+  return getFullQuote({ quoteParams, permitHookParams })
 }
 
 export function getValidParams(params: LegacyPriceQuoteParams) {

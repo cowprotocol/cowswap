@@ -109,7 +109,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
-    appData: getAppData().appDataKeccak256,
+    appData: (params as any)['appData'] || getAppData().appDataKeccak256,
     validTo,
     partiallyFillable: false,
     priceQuality: priceQuality ? (priceQuality as PriceQuality) : undefined,

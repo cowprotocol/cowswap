@@ -1,20 +1,19 @@
-import { MaxUint256, Percent, Token } from '@uniswap/sdk-core'
-
-import { splitSignature } from 'ethers/lib/utils'
+import { Web3Provider } from '@ethersproject/providers'
+import { Percent, Token } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
+import { generatePermitHook } from 'utils/generatePermitHook'
+
 import { presignOrderStep } from './steps/presignOrderStep'
 
-import { GP_VAULT_RELAYER } from '../../../../legacy/constants'
-import { getAddress } from '../../../../utils/getAddress'
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
@@ -33,58 +32,11 @@ export async function swapFlow(
   let newAppData = null
 
   if (isTokenSupportsEIP2612) {
-    const sellTokenContract = input.sellTokenContract
-    const inputToken = input.context.trade.inputAmount.currency
-    const nonce = await sellTokenContract?.nonces(input.orderParams.account)
-
-    const permit = {
-      owner: input.orderParams.account,
-      spender: GP_VAULT_RELAYER[input.orderParams.chainId],
-      value: MaxUint256.toString(),
-      nonce: nonce ? nonce.toString() : '0',
-      deadline: MaxUint256.toString(),
-    }
-    const permitSignature = splitSignature(
-      await (input.orderParams.signer.provider as any).getSigner()._signTypedData(
-        {
-          name: inputToken.name,
-          chainId: inputToken.chainId,
-          verifyingContract: (inputToken as Token).address,
-        },
-        {
-          Permit: [
-            { name: 'owner', type: 'address' },
-            { name: 'spender', type: 'address' },
-            { name: 'value', type: 'uint256' },
-            { name: 'nonce', type: 'uint256' },
-            { name: 'deadline', type: 'uint256' },
-          ],
-        },
-        permit
-      )
-    )
-
-    const permitParams = [
-      permit.owner,
-      permit.spender,
-      permit.value,
-      permit.deadline,
-      permitSignature.v,
-      permitSignature.r,
-      permitSignature.s,
-    ]
-    const permitHook = {
-      target: getAddress(inputToken),
-      callData: sellTokenContract?.interface.encodeFunctionData('permit', permitParams as any),
-      gasLimit: `${await (sellTokenContract as any).estimateGas.permit(...permitParams)}`,
-    }
-    newAppData = JSON.stringify({
-      backend: {
-        hooks: {
-          pre: [permitHook],
-          post: [],
-        },
-      },
+    newAppData = await generatePermitHook({
+      inputToken: input.context.trade.inputAmount.currency as Token,
+      provider: input.orderParams.signer.provider as Web3Provider,
+      account: input.orderParams.account,
+      chainId: input.orderParams.chainId,
     })
   }
 
