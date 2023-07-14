@@ -124,6 +124,7 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: () => void
   orderActions: LimitOrderActions
+  twapOrderParts?: number
 }
 
 export function OrderRow({
@@ -139,6 +140,7 @@ export function OrderRow({
   onClick,
   prices,
   spotPrice,
+  twapOrderParts,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -231,11 +233,6 @@ export function OrderRow({
 
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
-        {/* Expand/Collapse TWAP order button */}
-        {isComposableCowParentOrder && (
-          <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()} />
-        )}
-
         <styledEl.CurrencyLogoPair clickable onClick={onClick}>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
@@ -364,6 +361,14 @@ export function OrderRow({
                 </styledEl.WarningIndicator>
               )}
             </>
+          )}
+
+          {/* Expand/Collapse TWAP order button */}
+          {isStatusBoxHidden && isComposableCowParentOrder && (
+            <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()}>
+              {twapOrderParts && <i>{twapOrderParts} part{twapOrderParts > 1 && 's'}</i>}
+              <button />
+              </styledEl.ToggleExpandButton>
           )}
         </styledEl.StatusBox>
       </styledEl.CellElement>

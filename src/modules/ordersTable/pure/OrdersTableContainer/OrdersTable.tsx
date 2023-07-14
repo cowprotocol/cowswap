@@ -450,6 +450,7 @@ export function OrdersTable({
                   isRowSelected={!!selectedOrdersMap[order.id]}
                   isOpenOrdersTab={isOpenOrdersTab}
                   order={order}
+                  twapOrderParts={composableCowOrders[order.id] ? partsOrders[order.id]?.length || 0 : undefined}
                   spotPrice={spotPrice}
                   prices={pendingOrdersPrices[order.id]}
                   orderParams={getOrderParams(chainId, balancesAndAllowances, order)}

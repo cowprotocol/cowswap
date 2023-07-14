@@ -39,11 +39,11 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean; isRowHidde
   display: ${({ isRowHidden }) => (isRowHidden ? 'none' : 'grid')};
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+    background: ${({ theme }) => transparentize(0.9, theme.bg1)};
   }
 
   > div:first-child {
-    margin: ${({ isChildOrder }) => (isChildOrder ? '0 0 0 24px' : '0')};
+    margin: 0;
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
