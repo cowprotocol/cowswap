@@ -333,7 +333,7 @@ export function OrderRow({
       )} */}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow clickable onClick={onClick} colspan={isStatusBoxHidden ? 2 : 0}>
+      <styledEl.CellElement doubleRow clickable onClick={onClick}>
         <b>{filledPercentDisplay}%</b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
