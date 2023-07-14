@@ -366,9 +366,13 @@ export function OrderRow({
           {/* Expand/Collapse TWAP order button */}
           {isStatusBoxHidden && isComposableCowParentOrder && (
             <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()}>
-              {twapOrderParts && <i>{twapOrderParts} part{twapOrderParts > 1 && 's'}</i>}
+              {twapOrderParts && (
+                <i>
+                  {twapOrderParts} part{twapOrderParts > 1 && 's'}
+                </i>
+              )}
               <button />
-              </styledEl.ToggleExpandButton>
+            </styledEl.ToggleExpandButton>
           )}
         </styledEl.StatusBox>
       </styledEl.CellElement>

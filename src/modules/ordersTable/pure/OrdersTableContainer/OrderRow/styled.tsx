@@ -227,7 +227,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   border-radius: 9px;
   width: 100%;
   height: 28px;
-  
+
   background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.7, theme.bg1)} 100%);
   background-size: 200% 100%;
   background-position: 100% 0;
@@ -242,15 +242,27 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   }
 
   @keyframes gradientMove {
-    0% { background-position: 100% 0 }
-    50% { background-position: 0 0 }
-    100% { background-position: 100% 0 }
+    0% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
   }
 
   @keyframes changeOpacity {
-    0% { background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%) }
-    50% { background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.1, theme.bg1)} 100%) }
-    100% { background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.5, theme.bg1)} 100%) }
+    0% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%);
+    }
+    50% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.1, theme.bg1)} 100%);
+    }
+    100% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.5, theme.bg1)} 100%);
+    }
   }
 
   > i {
