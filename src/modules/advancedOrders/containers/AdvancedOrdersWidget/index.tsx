@@ -11,6 +11,7 @@ import {
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
@@ -18,6 +19,8 @@ import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
 export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
@@ -56,6 +59,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { inputPartAmount } = useAtomValue(partsStateAtom)
+  const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
 
   const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
@@ -83,7 +87,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
 
   // TODO
   const slots: TradeWidgetSlots = {
-    settingsWidget: <div></div>,
+    settingsWidget: <AdvancedOrdersSettings />,
     bottomContent: children,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
@@ -101,21 +105,23 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const params = {
     recipient,
     compactView: true,
-    showRecipient: false,
+    showRecipient,
     isTradePriceUpdating,
     priceImpact,
     isExpertMode: false, // TODO: bind value
   }
 
   return (
-    <TradeWidget
-      id="advanced-orders-page"
-      disableOutput={true}
-      slots={slots}
-      actions={actions}
-      params={params}
-      inputCurrencyInfo={inputCurrencyInfo}
-      outputCurrencyInfo={outputCurrencyInfo}
-    />
+    <>
+      <TradeWidget
+        id="advanced-orders-page"
+        disableOutput={true}
+        slots={slots}
+        actions={actions}
+        params={params}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+      />
+    </>
   )
 }

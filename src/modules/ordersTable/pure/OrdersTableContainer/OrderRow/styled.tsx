@@ -88,6 +88,7 @@ export const CellElement = styled.div<{
   clickable?: boolean
   doubleRow?: boolean
   hasBackground?: boolean
+  colspan?: number
 }>`
   padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
@@ -115,6 +116,12 @@ export const CellElement = styled.div<{
     > i {
       opacity: 0.6;
     }
+  `}
+
+  ${({ colspan }) =>
+    colspan &&
+    `
+    grid-column: span ${colspan};
   `}
 
   ${RateWrapper} {

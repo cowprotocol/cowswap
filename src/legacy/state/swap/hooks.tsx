@@ -421,6 +421,7 @@ export function queryParametersToSwapState(
   }
 
   const recipient = validatedRecipient(parsedQs.recipient)
+  const recipientAddress = validatedRecipient(parsedQs.recipientAddress)
 
   return {
     chainId: chainId || null,
@@ -433,6 +434,7 @@ export function queryParametersToSwapState(
     typedValue,
     independentField,
     recipient,
+    recipientAddress,
   }
 }
 

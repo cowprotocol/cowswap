@@ -11,6 +11,7 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   decimalsPlaces?: number
   min?: number
   max?: number
+  step?: number
   placeholder?: string
   prefixComponent?: React.ReactElement
 }
@@ -24,6 +25,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     decimalsPlaces = 0,
     min,
     max = 100_000,
+    step = 1,
     prefixComponent,
   } = props
 
@@ -74,6 +76,10 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
             value={displayedValue}
             onBlur={(e) => validateInput(e.target.value)}
             onUserInput={(value) => setDisplayedValue(value)}
+            type="number"
+            min={min}
+            max={max}
+            step={step}
           />
           {suffix && <Suffix>{suffix}</Suffix>}
         </span>

@@ -53,6 +53,17 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean; isRowHidde
     }
   }
 
+  > div:first-child {
+    margin-left: ${({ isChildOrder }) => (isChildOrder ? '5px' : '')};
+
+    &::before {
+      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
+      color: ${({ theme }) => transparentize(0.6, theme.text3)};
+      content: '↳';
+      text-decoration: none !important;
+    }
+  }
+
   &:last-child {
     border-bottom: 0;
   }

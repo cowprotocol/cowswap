@@ -17,6 +17,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const rawState = useAtomValue(stateAtom)
 
   const recipient = rawState.recipient
+  const recipientAddress = rawState.recipientAddress
   const orderKind = rawState.orderKind
 
   const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
@@ -33,6 +34,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   return useSafeMemoObject({
     orderKind,
     recipient,
+    recipientAddress,
     inputCurrency,
     outputCurrency,
     inputCurrencyAmount,
