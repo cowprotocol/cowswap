@@ -16,7 +16,7 @@ export function useSwapDerivedState(): SwapDerivedState {
 }
 
 export function useFillSwapDerivedState() {
-  const { independentField, recipient } = useSwapState()
+  const { independentField, recipient, recipientAddress } = useSwapState()
   const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
 
   const isSellTrade = independentField === Field.INPUT
@@ -43,6 +43,7 @@ export function useFillSwapDerivedState() {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
   })
 
