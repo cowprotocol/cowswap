@@ -363,8 +363,8 @@ export function OrderRow({
                     <styledEl.WarningContent>
                       {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
                       {!hasEnoughAllowance && (
-                      <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
-                    )}
+                        <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
+                      )}
                     </styledEl.WarningContent>
                   }
                   placement="bottom"
