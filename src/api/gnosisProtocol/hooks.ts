@@ -7,18 +7,14 @@ import useSWR from 'swr'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
-import { isTruthy } from 'legacy/utils/misc'
 
 import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
-import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
-import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
+import { twapPartOrdersAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { OrderWithComposableCowInfo } from 'common/types'
 
 import { getOrders } from './api'
-
-type TwapPartOrdersMap = { [twapOrderHash: string]: TwapPartOrderItem }
 
 /**
  * TODO: refactor this hook
@@ -34,8 +30,7 @@ type TwapPartOrdersMap = { [twapOrderHash: string]: TwapPartOrderItem }
  */
 export function useGpOrders(account?: string | null, refreshInterval?: number): OrderWithComposableCowInfo[] {
   const { chainId } = useWalletInfo()
-  const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
+  const twapPartOrders = useAtomValue(twapPartOrdersAtom)
 
   const requestParams = useMemo(() => {
     return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
@@ -69,65 +64,66 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
     return isBarnBackendEnv ? loadedProdOrders : currentEnvOrders
   }, [currentEnvOrders, loadedProdOrders])
 
-  const twapPartOrdersMap: TwapPartOrdersMap = useMemo(() => {
-    return twapParticleOrders.reduce<TwapPartOrdersMap>((acc, val) => {
-      acc[val.uid] = val
-
-      return acc
-    }, {})
-  }, [twapParticleOrders])
-
-  const twapChildOrders = useTwapChildOrders(prodOrders, twapPartOrdersMap)
+  const twapChildOrders = useTwapChildOrders(prodOrders)
 
   const regularOrders: OrderWithComposableCowInfo[] = useMemo(() => {
     if (!currentEnvOrders) return []
 
-    return currentEnvOrders.filter((order) => !twapPartOrdersMap[order.uid]).map((order) => ({ order }))
-  }, [currentEnvOrders, twapPartOrdersMap])
+    return currentEnvOrders.filter((order) => !twapPartOrders[order.uid]).map((order) => ({ order }))
+  }, [currentEnvOrders, twapPartOrders])
 
   return useMemo(() => {
-    return [...regularOrders, ...emulatedTwapOrders, ...twapChildOrders]
-  }, [regularOrders, emulatedTwapOrders, twapChildOrders])
+    return [...regularOrders, ...twapChildOrders]
+  }, [regularOrders, twapChildOrders])
 }
 
+interface TwapChildOrders {
+  discreteOrders: { order: OrderWithComposableCowInfo; orderFromProd: EnrichedOrder }[]
+  virtualOrders: OrderWithComposableCowInfo[]
+}
 // Take only orders are connected to TWAP orders
-function useTwapChildOrders(
-  prodOrders: EnrichedOrder[] | undefined,
-  twapPartOrdersMap: TwapPartOrdersMap
-): OrderWithComposableCowInfo[] {
+function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithComposableCowInfo[] {
   const emulatedPartOrders = useAtomValue(emulatedPartOrdersAtom)
 
-  const filteredEmulatedPartOrders = useMemo(() => {
-    const prodOrdersMap = (prodOrders || []).reduce<{ [key: string]: true }>((acc, val) => {
-      acc[val.uid] = true
+  const { discreteOrders, virtualOrders } = useMemo(() => {
+    const prodOrdersMap = (prodOrders || []).reduce<{ [key: string]: EnrichedOrder }>((acc, val) => {
+      acc[val.uid] = val
       return acc
     }, {})
 
-    return emulatedPartOrders.filter((order) => !prodOrdersMap[order.order.uid])
+    return emulatedPartOrders.reduce<TwapChildOrders>(
+      (acc, order) => {
+        const orderFromProd = prodOrdersMap[order.order.uid]
+
+        if (orderFromProd) {
+          acc.discreteOrders.push({ order, orderFromProd })
+        } else {
+          acc.virtualOrders.push(order)
+        }
+
+        return acc
+      },
+      { discreteOrders: [], virtualOrders: [] }
+    )
   }, [emulatedPartOrders, prodOrders])
 
   const partOrdersFromProd = useMemo(() => {
-    if (!prodOrders) return []
-
-    const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = prodOrders
-      .map((order) => {
-        const particleOrder = twapPartOrdersMap[order.uid]
-
-        if (!particleOrder) return null
-
-        return {
-          order,
-          composableCowInfo: {
-            parentId: particleOrder.twapOrderId,
-          },
-        } as OrderWithComposableCowInfo
-      })
-      .filter(isTruthy)
-
-    return orderWithComposableCowInfo
-  }, [prodOrders, twapPartOrdersMap])
+    return discreteOrders.map(({ order: { order, composableCowInfo }, orderFromProd }) => {
+      return {
+        order: {
+          ...orderFromProd,
+          status: order.status,
+        },
+        composableCowInfo: {
+          id: composableCowInfo?.id,
+          parentId: composableCowInfo?.parentId,
+          isCancelling: composableCowInfo?.isCancelling,
+        },
+      } as OrderWithComposableCowInfo
+    })
+  }, [discreteOrders])
 
   return useMemo(() => {
-    return [...partOrdersFromProd, ...filteredEmulatedPartOrders]
-  }, [partOrdersFromProd, filteredEmulatedPartOrders])
+    return [...partOrdersFromProd, ...virtualOrders]
+  }, [partOrdersFromProd, virtualOrders])
 }

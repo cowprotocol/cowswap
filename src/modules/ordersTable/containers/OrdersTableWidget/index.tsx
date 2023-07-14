@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -46,11 +47,20 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export function OrdersTableWidget() {
+export interface OrdersTableWidgetProps {
+  additionalOrders?: Order[]
+}
+
+export function OrdersTableWidget({ additionalOrders }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
-  const allOrders = useOrders({ chainId })
+  const commonOrders = useOrders(chainId)
+  const allOrders = useMemo(() => {
+    if (!additionalOrders) return commonOrders
+
+    return commonOrders.concat(additionalOrders)
+  }, [commonOrders, additionalOrders])
   const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()
   const { allowsOffchainSigning } = useWalletDetails()

@@ -1,5 +1,3 @@
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
-
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
@@ -9,7 +7,6 @@ export function getTwapOrderStatus(
   isExecuted: boolean,
   executionDate: Date | null,
   auth: boolean | undefined,
-  discreteOrder: Order | undefined,
   executionInfo: TwapOrderExecutionInfo
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
@@ -22,9 +19,7 @@ export function getTwapOrderStatus(
 
   if (auth === false) return TwapOrderStatus.Cancelled
 
-  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
-
-  return TwapOrderStatus.Scheduled
+  return TwapOrderStatus.Pending
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {

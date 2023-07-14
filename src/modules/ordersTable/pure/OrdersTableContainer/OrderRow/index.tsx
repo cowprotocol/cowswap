@@ -37,12 +37,13 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getAddress } from 'utils/getAddress'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
-import { getIsComposableCowParentOrder } from '../../../../../utils/orderUtils/getIsComposableCowParentOrder'
 import { OrderParams } from '../utils/getOrderParams'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -177,8 +178,17 @@ export function OrderRow({
     (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
+  const isChildOrder = getIsComposableCowChildOrder(order)
+  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
+  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
+
   return (
-    <TableRow data-id={order.id} isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+    <TableRow
+      data-id={order.id}
+      isChildOrder={isOpenOrdersTab && isChildOrder}
+      isOpenOrdersTab={isOpenOrdersTab}
+      isRowSelectable={isRowSelectable}
+    >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
         <TableRowCheckboxWrapper>
@@ -292,34 +302,36 @@ export function OrderRow({
       )} */}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow clickable onClick={onClick}>
+      <styledEl.CellElement doubleRow clickable onClick={onClick} colspan={isStatusBoxHidden ? 2 : 0}>
         <b>{filledPercentDisplay}%</b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}
-      <styledEl.CellElement>
-        <styledEl.StatusBox>
-          <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
-          {withWarning && (
-            <styledEl.WarningIndicator>
-              <MouseoverTooltipContent
-                wrap={false}
-                bgColor={theme.alert}
-                content={
-                  <styledEl.WarningContent>
-                    {!hasEnoughBalance && BalanceWarning(order.inputToken.symbol || '')}
-                    {!hasEnoughAllowance && AllowanceWarning(order.inputToken.symbol || '')}
-                  </styledEl.WarningContent>
-                }
-                placement="bottom"
-              >
-                <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-              </MouseoverTooltipContent>
-            </styledEl.WarningIndicator>
-          )}
-        </styledEl.StatusBox>
-      </styledEl.CellElement>
+      {!isStatusBoxHidden && (
+        <styledEl.CellElement>
+          <styledEl.StatusBox>
+            <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
+            {withWarning && (
+              <styledEl.WarningIndicator>
+                <MouseoverTooltipContent
+                  wrap={false}
+                  bgColor={theme.alert}
+                  content={
+                    <styledEl.WarningContent>
+                      {!hasEnoughBalance && BalanceWarning(order.inputToken.symbol || '')}
+                      {!hasEnoughAllowance && AllowanceWarning(order.inputToken.symbol || '')}
+                    </styledEl.WarningContent>
+                  }
+                  placement="bottom"
+                >
+                  <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+                </MouseoverTooltipContent>
+              </styledEl.WarningIndicator>
+            )}
+          </styledEl.StatusBox>
+        </styledEl.CellElement>
+      )}
 
       {/* Action content menu */}
       <styledEl.CellElement>

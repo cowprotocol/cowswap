@@ -128,22 +128,24 @@ export function ReceiptModal({
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
-            <styledEl.Field>
-              {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
-                <>
-                  <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
-                  <PriceField order={order} price={estimatedExecutionPrice} />
-                </>
-              ) : (
-                <>
-                  <FieldLabel
-                    label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
-                    tooltip={tooltips.EXECUTION_PRICE}
-                  />{' '}
-                  <PriceField order={order} price={executionPrice} />
-                </>
-              )}
-            </styledEl.Field>
+            {(!twapOrder || isTwapPartOrder) && (
+              <styledEl.Field>
+                {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
+                  <>
+                    <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                    <PriceField order={order} price={estimatedExecutionPrice} />
+                  </>
+                ) : (
+                  <>
+                    <FieldLabel
+                      label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
+                      tooltip={tooltips.EXECUTION_PRICE}
+                    />{' '}
+                    <PriceField order={order} price={executionPrice} />
+                  </>
+                )}
+              </styledEl.Field>
+            )}
 
             {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
             {/*The condition should be removed once we have the data*/}

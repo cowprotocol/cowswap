@@ -33,12 +33,23 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   `}
 `
 
-export const TableRow = styled(TableHeader)`
+export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
   background: transparent;
   transition: background 0.15s ease-in-out;
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  }
+
+  > div:first-child {
+    margin-left: ${({ isChildOrder }) => (isChildOrder ? '5px' : '')};
+
+    &::before {
+      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
+      color: ${({ theme }) => transparentize(0.6, theme.text3)};
+      content: '↳';
+      text-decoration: none !important;
+    }
   }
 
   &:last-child {

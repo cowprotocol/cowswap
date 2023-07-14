@@ -32,9 +32,7 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
   5: twapHandlerAddress,
 }
 
-export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Scheduled]
-
-export const TWAP_CANCELLED_STATUSES = [TwapOrderStatus.Cancelling, TwapOrderStatus.Cancelled]
+export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Cancelling]
 
 export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
 

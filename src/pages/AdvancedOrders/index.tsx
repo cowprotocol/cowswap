@@ -7,7 +7,7 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget } from 'modules/twap'
+import { TwapFormWidget, emulatedTwapOrdersAtom } from 'modules/twap'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
@@ -16,6 +16,7 @@ export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()
   const tradeContext = useTradeRouteContext()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
+  const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
 
   if (!isAdvancedOrdersEnabled) {
     // To prevent direct access when the flag is off
@@ -33,7 +34,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget />
+          <OrdersTableWidget additionalOrders={emulatedTwapOrders} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
