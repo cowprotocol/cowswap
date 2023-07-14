@@ -13,7 +13,7 @@ import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
 import { deleteTwapOrdersFromListAtom, twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData, TwapOrderStatus } from '../types'
+import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
@@ -131,8 +131,6 @@ function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem 
 
   // Skip NOT pending orders
   if (existingOrder) {
-    if (existingOrder.status === TwapOrderStatus.Cancelling) return true
-
     return TWAP_PENDING_STATUSES.includes(existingOrder.status)
   }
 

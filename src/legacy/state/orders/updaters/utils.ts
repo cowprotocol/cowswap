@@ -9,7 +9,6 @@ import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -65,14 +64,6 @@ type PopupData = {
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
   // Skip EthFlow creating orders
   if (orderFromStore.status === OrderStatus.CREATING) {
-    return null
-  }
-  // Skip ComposableCow orders
-  if (getIsComposableCowParentOrder(orderFromStore)) {
-    return null
-  }
-  // Skip ComposableCow part orders
-  if (orderFromStore.composableCowInfo?.isVirtualPart) {
     return null
   }
   // Get order from API

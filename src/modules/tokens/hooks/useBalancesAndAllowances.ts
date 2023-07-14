@@ -12,7 +12,7 @@ export function useBalancesAndAllowances(params: BalancesAndAllowancesParams): B
   const balancesAndAllowances = useOnchainBalancesAndAllowances(params)
 
   // TODO: This function still has too many re-renders, we shold investigate (for now, focusing on only the re-factor)
-  console.debug('[usebalancesAndAllowances] Get balancesAndAllowances', params, balancesAndAllowances)
+  // console.debug('[usebalancesAndAllowances] Get balancesAndAllowances', params, balancesAndAllowances)
 
   // TODO: Apply all the balance transformations (i.e. bundled tx)
 

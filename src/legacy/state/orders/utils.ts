@@ -29,7 +29,7 @@ export type OrderTransitionStatus =
  * An order is considered fulfilled if all sellAmount has been sold, for sell orders
  * or all buyAmount has been bought, for buy orders
  */
-function isOrderFulfilled(
+export function isOrderFulfilled(
   order: Pick<EnrichedOrder, 'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'>
 ): boolean {
   const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
@@ -49,7 +49,7 @@ function isOrderFulfilled(
  *
  * We assume the order is not fulfilled.
  */
-function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated'>): boolean {
+export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
   return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
