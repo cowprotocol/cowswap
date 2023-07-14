@@ -9,8 +9,8 @@ export function RecipientAddressUpdater() {
   const { address: recipientAddress } = useENSAddress(state?.recipient)
 
   useEffect(() => {
-    updateState?.({ recipientAddress })
-  }, [recipientAddress, updateState])
+    updateState?.({ ...state, recipientAddress })
+  }, [recipientAddress, state, updateState])
 
   return null
 }
