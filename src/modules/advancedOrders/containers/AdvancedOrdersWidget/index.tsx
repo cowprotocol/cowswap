@@ -12,7 +12,6 @@ import {
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { RecipientUpdater } from 'modules/advancedOrders/updaters/RecipientUpdater'
 import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
@@ -114,7 +113,6 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
 
   return (
     <>
-      <RecipientUpdater />
       <TradeWidget
         id="advanced-orders-page"
         disableOutput={true}

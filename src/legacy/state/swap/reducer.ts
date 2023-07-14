@@ -11,6 +11,7 @@ import {
   replaceSwapState,
   selectCurrency,
   setRecipient,
+  setRecipientAddress,
   switchCurrencies,
   typeInput,
 } from 'legacy/state/swap/actions'
@@ -32,6 +33,9 @@ export interface SwapState {
   }
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly recipient: string | null
+
+  // this only stores address or null, not ENS
+  readonly recipientAddress: string | null
 }
 
 // Mod: added second parameter
@@ -45,6 +49,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
         chainId,
         typedValue: originalTypedValue,
         recipient,
+        recipientAddress,
         independentField: originalIndependentField,
         inputCurrencyId,
         outputCurrencyId,
@@ -68,6 +73,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
         independentField,
         typedValue,
         recipient,
+        recipientAddress,
       }
     })
     .addCase(replaceOnlyTradeRawState, (state, { payload }) => {
@@ -132,6 +138,9 @@ export default createReducer<SwapState>(initialState, (builder) =>
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient
+    })
+    .addCase(setRecipientAddress, (state, { payload: { recipientAddress } }) => {
+      state.recipientAddress = recipientAddress
     })
 )
 
