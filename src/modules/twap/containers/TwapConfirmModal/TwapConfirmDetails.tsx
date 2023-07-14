@@ -1,9 +1,14 @@
 import React from 'react'
 
+import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
+import { shortenAddress } from 'legacy/utils'
+
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
+import { useWalletInfo } from 'modules/wallet'
 
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -38,6 +43,9 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
+
+  const { account } = useWalletInfo()
+  const { recipient } = useAdvancedOrdersDerivedState()
 
   return (
     <Wrapper>
@@ -86,6 +94,19 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       >
         {totalDurationDisplay}
       </ConfirmDetailsItem>
+
+      {/* Recipient */}
+      {recipient && recipient !== account && (
+        <ConfirmDetailsItem
+          withArrow={false}
+          label="Recipient"
+          tooltip="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
+        >
+          <div>
+            <span title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
+          </div>
+        </ConfirmDetailsItem>
+      )}
     </Wrapper>
   )
 })

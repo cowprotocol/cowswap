@@ -1,36 +1,6 @@
-import { ReactNode, useContext } from 'react'
-
-import { Trans } from '@lingui/macro'
-import { ThemeContext } from 'styled-components/macro'
-
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import Toggle from 'legacy/components/Toggle'
-
-import * as styledEl from './styled'
+import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
-
-interface SettingsBoxProps {
-  title: string
-  tooltip: ReactNode
-  value: boolean
-  disabled?: boolean
-  toggle: () => void
-}
-
-function SettingsBox({ title, tooltip, value, toggle, disabled = false }: SettingsBoxProps) {
-  const theme = useContext(ThemeContext)
-
-  return (
-    <styledEl.SettingsBox disabled={disabled}>
-      <styledEl.SettingsBoxTitle>
-        <Trans>{title}</Trans>
-        <QuestionHelper bgColor={theme.grey1} color={theme.text1} text={<Trans>{tooltip}</Trans>} />
-      </styledEl.SettingsBoxTitle>
-      <Toggle isActive={value} toggle={toggle} />
-    </styledEl.SettingsBox>
-  )
-}
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
@@ -42,8 +12,8 @@ export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: 
   const { expertMode, showRecipient, partialFillsEnabled } = state
 
   return (
-    <styledEl.SettingsContainer>
-      <styledEl.SettingsTitle>Interface Settings</styledEl.SettingsTitle>
+    <SettingsContainer>
+      <SettingsTitle>Interface Settings</SettingsTitle>
       <SettingsBox
         title="Expert Mode"
         tooltip="Allow high price impact trades and skip the confirm screen. Use at your own risk."
@@ -75,6 +45,6 @@ export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: 
         value={featurePartialFillsEnabled && partialFillsEnabled}
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
-    </styledEl.SettingsContainer>
+    </SettingsContainer>
   )
 }

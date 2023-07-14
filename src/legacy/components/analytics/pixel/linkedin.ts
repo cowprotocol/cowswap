@@ -1,4 +1,5 @@
 import { PIXEL_EVENTS } from './constants'
+import { sendPixel } from './utils'
 
 const events = {
   [PIXEL_EVENTS.INIT]: 10759506,
@@ -6,6 +7,6 @@ const events = {
   [PIXEL_EVENTS.POST_TRADE]: 10759522,
 }
 
-export const sendLinkedinEvent = (event: PIXEL_EVENTS) => {
+export const sendLinkedinEvent = sendPixel((event) => {
   window.lintrk?.('track', { conversion_id: events[event] })
-}
+})

@@ -183,6 +183,10 @@ export function OrderRow({
     (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
+  const isChildOrder = getIsComposableCowChildOrder(order)
+  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
+  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
+
   return (
     <TableRow
       data-id={order.id}

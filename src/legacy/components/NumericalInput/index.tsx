@@ -2,6 +2,8 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
+import { autofocus } from 'common/utils/autofocus'
+
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -26,13 +28,13 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     -webkit-appearance: none;
   }
 
-  [type='number'] {
-    -moz-appearance: textfield;
+  input[type='number'] {
+    appearance: none;
   }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  input[type='number']:focus,
+  input[type='number']:hover {
+    appearance: auto;
   }
 
   ::placeholder {
@@ -47,6 +49,7 @@ export const Input = React.memo(function InnerInput({
   onUserInput,
   placeholder,
   prependSymbol,
+  type,
   ...rest
 }: {
   value: string | number
@@ -66,6 +69,7 @@ export const Input = React.memo(function InnerInput({
     <StyledInput
       {...rest}
       value={prependSymbol && value ? prependSymbol + value : value}
+      onFocus={autofocus}
       onChange={(event) => {
         if (prependSymbol) {
           const value = event.target.value
@@ -86,7 +90,7 @@ export const Input = React.memo(function InnerInput({
       autoComplete="off"
       autoCorrect="off"
       // text-specific options
-      type="text"
+      type={type || 'text'}
       pattern="^[0-9]*[.,]?[0-9]*$"
       placeholder={placeholder || '0.0'}
       minLength={1}
