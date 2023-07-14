@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { isAddress } from 'ethers/lib/utils'
@@ -6,10 +5,10 @@ import styled from 'styled-components/macro'
 
 import { shortenAddress } from 'legacy/utils'
 
-import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
-import { walletInfoAtom } from 'modules/wallet/api/state'
+import { useWalletInfo } from 'modules/wallet'
 
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -45,8 +44,8 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
 
-  const { account } = useAtomValue(walletInfoAtom)
-  const { recipient } = useAtomValue(advancedOrdersDerivedStateAtom)
+  const { account } = useWalletInfo()
+  const { recipient } = useAdvancedOrdersDerivedState()
 
   return (
     <Wrapper>
