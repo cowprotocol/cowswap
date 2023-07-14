@@ -8,6 +8,7 @@ import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
@@ -117,6 +118,8 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   return (
     <styledEl.Container id={id}>
+      <RecipientAddressUpdater />
+
       {!disableQuotePolling && <TradeQuoteUpdater />}
       <TradeWidgetModals />
       <WrapNativeModal />

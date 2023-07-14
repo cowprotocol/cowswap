@@ -23,6 +23,7 @@ export interface TradeDerivedState {
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
+  readonly recipientAddress: string | null
   readonly orderKind: OrderKind
 }
 
@@ -37,5 +38,6 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   inputCurrencyFiatAmount: null,
   outputCurrencyFiatAmount: null,
   recipient: null,
+  recipientAddress: null,
   orderKind: OrderKind.SELL,
 }

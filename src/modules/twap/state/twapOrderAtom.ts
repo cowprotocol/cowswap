@@ -40,7 +40,7 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const { account } = get(walletInfoAtom)
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
-  const { inputCurrencyAmount, recipient } = get(advancedOrdersDerivedStateAtom)
+  const { inputCurrencyAmount, recipient, recipientAddress } = get(advancedOrdersDerivedStateAtom)
   const buyAmount = get(twapSlippageAdjustedBuyAmount)
 
   if (!inputCurrencyAmount || !buyAmount || !account) return null
@@ -48,7 +48,7 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   return {
     sellAmount: inputCurrencyAmount as CurrencyAmount<Token>,
     buyAmount,
-    receiver: recipient || account, // TODO: check case with ENS name
+    receiver: recipientAddress || recipient || account,
     numOfParts: numberOfPartsValue,
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,

@@ -15,6 +15,7 @@ export function useTradeStateFromUrl(): TradeRawState {
   return useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     const recipient = searchParams.get('recipient')
+    const recipientAddress = searchParams.get('recipientAddress')
     const { chainId, inputCurrencyId, outputCurrencyId } = params
     const chainIdAsNumber = chainId && /^\d+$/.test(chainId) ? parseInt(chainId) : null
 
@@ -23,6 +24,7 @@ export function useTradeStateFromUrl(): TradeRawState {
       inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
       outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
       recipient,
+      recipientAddress,
     }
 
     return state

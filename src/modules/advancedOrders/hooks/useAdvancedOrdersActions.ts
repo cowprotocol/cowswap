@@ -12,6 +12,7 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 import { updateTradeQuoteAtom } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
+import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
@@ -20,6 +21,8 @@ export function useAdvancedOrdersActions() {
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
+
+  const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency | null) => {
@@ -48,10 +51,12 @@ export function useAdvancedOrdersActions() {
     [inputCurrency, updateCurrencyAmount]
   )
 
-  // TODO: implement this one
-  const onChangeRecipient = useCallback(() => {
-    console.log('On change recipient')
-  }, [])
+  const onChangeRecipient = useCallback(
+    (recipient: string | null) => {
+      updateAdvancedOrdersState({ recipient })
+    },
+    [updateAdvancedOrdersState]
+  )
 
   const onSwitchTokensDefault = useSwitchTokensPlaces({
     outputCurrencyAmount: null,
