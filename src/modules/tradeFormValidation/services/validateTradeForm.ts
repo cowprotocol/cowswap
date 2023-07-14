@@ -30,7 +30,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.QuoteErrors
   }
 
-  if (!account) {
+  if (!isSwapUnsupported && !account) {
     return TradeFormValidation.WalletNotConnected
   }
 

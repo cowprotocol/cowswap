@@ -25,6 +25,7 @@ import GpQuoteError, {
   isValidQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'
 import { calculateValidTo } from 'utils/time'
 
 interface HandleQuoteErrorParams {
@@ -35,19 +36,11 @@ interface HandleQuoteErrorParams {
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
 
-function isMessageIncludeToken(message: string, tokenAddress: string): string | null {
-  if (message.toLowerCase().includes(tokenAddress.toLowerCase())) return tokenAddress
-
-  return null
-}
-
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
-        const unsupportedTokenAddress =
-          isMessageIncludeToken(error.description, quoteData.sellToken) ||
-          isMessageIncludeToken(error.description, quoteData.buyToken)
+        const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteData)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
@@ -86,9 +79,7 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
 
       case GpQuoteErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
-        const unsupportedTokenAddress =
-          isMessageIncludeToken(error.description, quoteData.sellToken) ||
-          isMessageIncludeToken(error.description, quoteData.buyToken)
+        const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteData)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
