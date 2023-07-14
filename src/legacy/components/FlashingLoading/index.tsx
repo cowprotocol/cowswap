@@ -19,7 +19,7 @@ export const LoadingWrapper = styled.div`
   backdrop-filter: blur(3px);
 
   > svg {
-    animation: spin 4s infinite ease-in-out;
+    animation: pulse 1s infinite ease-in-out;
     transform-style: preserve-3d;
     backface-visibility: visible;
   }
@@ -38,19 +38,26 @@ export const LoadingWrapper = styled.div`
     color: ${({ theme }) => theme.text2};
   }
 
-  @keyframes spin {
+  @keyframes pulse {
     0% {
-      transform: rotateX(0deg) rotateY(0deg);
-    }
-
-    50% {
-      transform: rotateY(180deg);
-    }
-
-    100% {
-      transform: scale(1) rotateX(0deg) rotateY(0deg);
-    }
+    transform: scale(1);
   }
+  20% {
+    transform: scale(1.05);
+  }
+  30% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 `
 
 export const Loading = (
