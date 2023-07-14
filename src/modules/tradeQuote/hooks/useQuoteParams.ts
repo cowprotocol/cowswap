@@ -27,6 +27,8 @@ export function useQuoteParams() {
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
+    if (!sellToken || !buyToken) return
+
     return {
       sellToken,
       buyToken,
