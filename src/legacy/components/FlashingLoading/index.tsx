@@ -40,24 +40,24 @@ export const LoadingWrapper = styled.div`
 
   @keyframes pulse {
     0% {
-    transform: scale(1);
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.05);
+    }
+    30% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.05);
+    }
+    50% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
-  20% {
-    transform: scale(1.05);
-  }
-  30% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.05);
-  }
-  50% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 `
 
 export const Loading = (
