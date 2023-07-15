@@ -14,6 +14,7 @@ import { OrdersTablePagination } from './OrdersTablePagination'
 import { LimitOrderActions } from './types'
 import { getOrderParams } from './utils/getOrderParams'
 
+import { OrderStatus } from '../../../../legacy/state/orders/actions'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 
@@ -59,6 +60,8 @@ export function TableGroup(props: TableGroupProps) {
   const step = currentPage * ORDERS_TABLE_PAGE_SIZE
   const childrenPage = children.slice(step - ORDERS_TABLE_PAGE_SIZE, step)
 
+  const isParentSigning = parent.status === OrderStatus.PRESIGNATURE_PENDING
+
   const commonProps = {
     isRowSelectable,
     isOpenOrdersTab,
@@ -78,14 +81,16 @@ export function TableGroup(props: TableGroupProps) {
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
       >
-        <styledEl.ToggleExpandButton onClick={() => setIsCollapsed((state) => !state)} isCollapsed={isCollapsed}>
-          {childrenLength && (
-            <i>
-              {childrenLength} part{childrenLength > 1 && 's'}
-            </i>
-          )}
-          <button />
-        </styledEl.ToggleExpandButton>
+        {isParentSigning ? undefined : (
+          <styledEl.ToggleExpandButton onClick={() => setIsCollapsed((state) => !state)} isCollapsed={isCollapsed}>
+            {childrenLength && (
+              <i>
+                {childrenLength} part{childrenLength > 1 && 's'}
+              </i>
+            )}
+            <button />
+          </styledEl.ToggleExpandButton>
+        )}
       </OrderRow>
 
       {!isCollapsed && (
