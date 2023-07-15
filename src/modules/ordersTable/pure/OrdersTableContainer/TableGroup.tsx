@@ -19,6 +19,10 @@ import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 
 const GroupBox = styled.div``
 
+const Pagination = styled(OrdersTablePagination)`
+  margin: 10px 0;
+`
+
 export interface TableGroupProps {
   item: OrderTableGroup
   prices: PendingOrderPrices | undefined | null
@@ -100,7 +104,7 @@ export function TableGroup(props: TableGroupProps) {
           {/* Only show pagination if more than 1 page available */}
           {/*TODO: add styled to the paginator*/}
           {childrenLength > ORDERS_TABLE_PAGE_SIZE && (
-            <OrdersTablePagination
+            <Pagination
               pageSize={ORDERS_TABLE_PAGE_SIZE}
               totalCount={childrenLength}
               currentPage={currentPage}

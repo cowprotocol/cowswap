@@ -8,6 +8,7 @@ export interface OrdersTablePaginationProps {
   pageSize: number
   totalCount: number
   currentPage: number
+  className?: string
 }
 
 const PaginationBox = styled.div`
@@ -57,11 +58,12 @@ export function OrdersTablePagination({
   currentPage,
   getPageUrl,
   onPageChange,
+  className,
 }: OrdersTablePaginationProps) {
   const pagesCount = Math.ceil(totalCount / pageSize)
 
   return (
-    <PaginationBox>
+    <PaginationBox className={className}>
       {[...new Array(pagesCount)].map((item, i) => {
         const index = i + 1
 
