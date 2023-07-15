@@ -33,10 +33,10 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   `}
 `
 
-export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean; isRowHidden?: boolean }>`
+export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
   background: ${({ isChildOrder, theme }) => (isChildOrder ? transparentize(0.91, theme.text1) : 'transparent')};
   transition: background 0.15s ease-in-out;
-  display: ${({ isRowHidden }) => (isRowHidden ? 'none' : 'grid')};
+  display: grid;
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.bg1)};

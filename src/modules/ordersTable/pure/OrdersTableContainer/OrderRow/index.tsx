@@ -37,8 +37,6 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getAddress } from 'utils/getAddress'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
-import { getComposableCowParentId } from 'utils/orderUtils/getComposableCowParentId'
-import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -113,34 +111,32 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
-  collapsedOrder: { [key: string]: boolean } | null | undefined
-  onToggle: (order: ParsedOrder) => void
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
+  isChild?: boolean
   orderParams: OrderParams
   onClick: () => void
   orderActions: LimitOrderActions
-  twapOrderParts?: number
+  children?: JSX.Element
 }
 
 export function OrderRow({
   order,
-  collapsedOrder,
-  onToggle,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
   isRowSelected,
+  isChild,
   orderActions,
   orderParams,
   onClick,
   prices,
   spotPrice,
-  twapOrderParts,
+  children,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -150,12 +146,7 @@ export function OrderRow({
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
-  const isChildOrder = getIsComposableCowChildOrder(order)
-  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
-  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
-
   const withWarning =
-    !isComposableCowParentOrder &&
     (!hasEnoughBalance || !hasEnoughAllowance) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
@@ -190,34 +181,12 @@ export function OrderRow({
     (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
-  const handleOnClickToggle = () => {
-    onToggle(order) // Pass the whole order, not just the ID
-  }
-
-  const isParentOrderCollapsed = (): boolean => {
-    if (collapsedOrder && collapsedOrder[order.id]) {
-      return true
-    }
-
-    const parentOrderId = getComposableCowParentId(order)
-    if (parentOrderId !== undefined && collapsedOrder && collapsedOrder[parentOrderId]) {
-      // Check for undefined here
-      return true
-    }
-
-    return false
-  }
-
-  const shouldHideRow = isChildOrder && isParentOrderCollapsed()
-  console.log('shouldHideRow', shouldHideRow, order)
-
   return (
     <TableRow
       data-id={order.id}
-      isChildOrder={isOpenOrdersTab && isChildOrder}
+      isChildOrder={isOpenOrdersTab && isChild}
       isOpenOrdersTab={isOpenOrdersTab}
       isRowSelectable={isRowSelectable}
-      isRowHidden={shouldHideRow}
     >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
@@ -341,7 +310,9 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          {!isStatusBoxHidden && (
+          {children ? (
+            children
+          ) : (
             <>
               <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
               {withWarning && (
@@ -362,18 +333,6 @@ export function OrderRow({
                 </styledEl.WarningIndicator>
               )}
             </>
-          )}
-
-          {/* Expand/Collapse TWAP order button */}
-          {isStatusBoxHidden && isComposableCowParentOrder && (
-            <styledEl.ToggleExpandButton onClick={handleOnClickToggle} isCollapsed={isParentOrderCollapsed()}>
-              {twapOrderParts && (
-                <i>
-                  {twapOrderParts} part{twapOrderParts > 1 && 's'}
-                </i>
-              )}
-              <button />
-            </styledEl.ToggleExpandButton>
           )}
         </styledEl.StatusBox>
       </styledEl.CellElement>
