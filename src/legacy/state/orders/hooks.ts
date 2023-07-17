@@ -31,6 +31,7 @@ import {
   setOrderCancellationHash,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
+  clearOrdersStorage,
 } from './actions'
 import {
   getDefaultNetworkState,
@@ -407,4 +408,14 @@ export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
 export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: SetIsOrderRefundedBatch) => dispatch(setIsOrderRefundedBatch(params)), [dispatch])
+}
+
+/**
+ * Hook that "cleans" orders local storage
+ * Related issue https://github.com/cowprotocol/cowswap/issues/2690
+ *
+ */
+export const useClearOrdersStorage = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(() => dispatch(clearOrdersStorage()), [dispatch])
 }
