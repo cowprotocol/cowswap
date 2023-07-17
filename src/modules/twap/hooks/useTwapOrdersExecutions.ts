@@ -10,7 +10,7 @@ import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderExecutionInfo } from '../types'
 
-export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; areAllPartsConfirmed: boolean }
+export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
 export type TwapOrdersExecutionMap = { [id: string]: TwapOrdersExecution }
 
 type PartsIdsInfo = {
@@ -56,14 +56,14 @@ export function useTwapOrdersExecutions(ids: string[]): TwapOrdersExecutionMap {
         const executedBuyAmount = sumChildrenAmount(children, 'executedBuyAmount').toString()
         const executedSellAmount = sumChildrenAmount(children, 'executedSellAmount').toString()
         const executedFeeAmount = sumChildrenAmount(children, 'executedFeeAmount').toString()
-        const areAllPartsConfirmed = children.every((order) => CONFIRMED_STATES.includes(order.status))
+        const confirmedPartsCount = children.filter((order) => CONFIRMED_STATES.includes(order.status)).length
 
         acc[id] = {
           info: { executedSellAmount, executedFeeAmount, executedBuyAmount },
-          areAllPartsConfirmed,
+          confirmedPartsCount,
         }
       } else {
-        acc[id] = { info: DEFAULT_TWAP_EXECUTION_INFO, areAllPartsConfirmed: false }
+        acc[id] = { info: DEFAULT_TWAP_EXECUTION_INFO, confirmedPartsCount: 0 }
       }
 
       return acc

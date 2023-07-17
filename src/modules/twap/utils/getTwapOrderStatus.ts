@@ -8,7 +8,7 @@ export function getTwapOrderStatus(
   isTransactionExecuted: boolean,
   executionDate: Date | null,
   auth: boolean | undefined,
-  { areAllPartsConfirmed, info: executionInfo }: TwapOrdersExecution
+  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
@@ -16,7 +16,7 @@ export function getTwapOrderStatus(
 
   if (auth === false) return TwapOrderStatus.Cancelled
 
-  if (areAllPartsConfirmed) {
+  if (confirmedPartsCount === order.n) {
     if (+executionInfo.executedSellAmount > 0) return TwapOrderStatus.Fulfilled
 
     return TwapOrderStatus.Expired
