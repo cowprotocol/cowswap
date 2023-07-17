@@ -16,7 +16,11 @@ export function getTwapOrderStatus(
 
   if (auth === false) return TwapOrderStatus.Cancelled
 
-  if (isWholeOrderExecuted) return TwapOrderStatus.Fulfilled
+  if (isWholeOrderExecuted) {
+    if (+executionInfo.executedSellAmount > 0) return TwapOrderStatus.Fulfilled
+
+    return TwapOrderStatus.Expired
+  }
 
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
