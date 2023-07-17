@@ -109,7 +109,7 @@ export function useCreateTwapOrder() {
           safeAddress: account,
           submissionDate: new Date().toISOString(),
           id: orderId,
-          executionInfo: { isExecuted: false, info: DEFAULT_TWAP_EXECUTION_INFO },
+          executionInfo: { areAllPartsConfirmed: false, info: DEFAULT_TWAP_EXECUTION_INFO },
         }
 
         addTwapOrderToList(orderItem)
