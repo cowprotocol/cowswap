@@ -12,9 +12,11 @@ export function getTwapOrderStatus(
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
-  if (isFulfilled || isWholeOrderExecuted) return TwapOrderStatus.Fulfilled
+  if (isFulfilled) return TwapOrderStatus.Fulfilled
 
   if (auth === false) return TwapOrderStatus.Cancelled
+
+  if (isWholeOrderExecuted) return TwapOrderStatus.Fulfilled
 
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
