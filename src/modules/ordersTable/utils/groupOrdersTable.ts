@@ -16,6 +16,7 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
     const parsedOrder = parseOrder(order)
     const composableOrderId = order.composableCowInfo?.id
     const parentOrderId = order.composableCowInfo?.parentId
+    const isPending = PENDING_STATES.includes(order.status)
 
     // Parent
     if (composableOrderId) {
@@ -27,7 +28,7 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
         group.parent = parsedOrder
       }
       // Child
-    } else if (parentOrderId) {
+    } else if (parentOrderId && isPending) {
       const group = groupsMap.get(parentOrderId)
 
       if (!group) {
@@ -46,13 +47,7 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
   const groups = Array.from(groupsMap.entries()) //
     .reduce<OrderTableGroup[]>((acc, [, group]) => {
       if (group.parent) {
-        const isParentPending = PENDING_STATES.includes(group.parent.status)
-
-        const children = group.children.filter((child) => {
-          return isParentPending ? PENDING_STATES.includes(child.status) : !PENDING_STATES.includes(child.status)
-        })
-
-        acc.push({ parent: group.parent, children })
+        acc.push(group as OrderTableGroup)
       }
       return acc
     }, [])
