@@ -156,6 +156,7 @@ export function TwapFormWidget() {
           </em>
         }
         suffix="%"
+        step={0.1}
       />
       <styledEl.Row>
         <TradeNumberInput

@@ -1,4 +1,5 @@
 import { PIXEL_EVENTS } from './constants'
+import { sendPixel } from './utils'
 
 const events = {
   [PIXEL_EVENTS.INIT]: 'Lead',
@@ -6,6 +7,6 @@ const events = {
   [PIXEL_EVENTS.POST_TRADE]: 'Purchase',
 }
 
-export const sendRedditEvent = (event: PIXEL_EVENTS) => {
+export const sendRedditEvent = sendPixel((event) => {
   window.rdt?.('track', events[event])
-}
+})

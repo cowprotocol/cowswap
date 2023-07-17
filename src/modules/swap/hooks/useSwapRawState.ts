@@ -12,6 +12,7 @@ export function useSwapRawState(): TradeRawState {
   return {
     chainId: swapState.chainId,
     recipient: swapState.recipient,
+    recipientAddress: swapState.recipientAddress,
     inputCurrencyId: swapState.INPUT.currencyId || null,
     outputCurrencyId: swapState.OUTPUT.currencyId || null,
   }
@@ -24,6 +25,7 @@ export function useUpdateSwapRawState(): (update: Partial<TradeRawState>) => voi
       const newState: ReplaceOnlyTradeRawStatePayload = {
         chainId: state.chainId ?? null,
         recipient: state.recipient ?? null,
+        recipientAddress: state.recipientAddress ?? null,
         inputCurrencyId: state.inputCurrencyId || undefined,
         outputCurrencyId: state.outputCurrencyId || undefined,
       }
