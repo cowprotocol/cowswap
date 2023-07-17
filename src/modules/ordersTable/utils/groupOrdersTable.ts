@@ -29,13 +29,11 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
       }
       // Child
     } else if (parentOrderId && isPending) {
-      const group = groupsMap.get(parentOrderId)
-
-      if (!group) {
+      if (!groupsMap.has(parentOrderId)) {
         groupsMap.set(parentOrderId, { parent: null, children: [] })
-      } else {
-        group.children.push(parsedOrder)
       }
+
+      groupsMap.get(parentOrderId)!.children.push(parsedOrder)
       // Regular order
     } else {
       acc.push(parsedOrder)
