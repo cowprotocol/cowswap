@@ -363,7 +363,9 @@ export function OrderRow({
                     bgColor={theme.alert}
                     content={
                       <styledEl.WarningContent>
-                        {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
+                        {!hasEnoughBalance && (
+                          <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
+                        )}
                         {!hasEnoughAllowance && (
                           <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
