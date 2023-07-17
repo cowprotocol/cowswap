@@ -37,7 +37,6 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getAddress } from 'utils/getAddress'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
-import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -156,9 +155,11 @@ export interface OrderRowProps {
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
+  isChild?: boolean
   orderParams: OrderParams
   onClick: () => void
   orderActions: LimitOrderActions
+  children?: JSX.Element
 }
 
 export function OrderRow({
@@ -167,11 +168,13 @@ export function OrderRow({
   isOpenOrdersTab,
   isRowSelectable,
   isRowSelected,
+  isChild,
   orderActions,
   orderParams,
   onClick,
   prices,
   spotPrice,
+  children,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -181,12 +184,7 @@ export function OrderRow({
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
-  const isChildOrder = getIsComposableCowChildOrder(order)
-  const isComposableCowParentOrder = getIsComposableCowParentOrder(order)
-  const isStatusBoxHidden = isComposableCowParentOrder && order.status !== OrderStatus.PRESIGNATURE_PENDING
-
   const withWarning =
-    !isComposableCowParentOrder &&
     (!hasEnoughBalance || !hasEnoughAllowance) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
@@ -227,7 +225,7 @@ export function OrderRow({
   return (
     <TableRow
       data-id={order.id}
-      isChildOrder={isOpenOrdersTab && isChildOrder}
+      isChildOrder={isOpenOrdersTab && isChild}
       isOpenOrdersTab={isOpenOrdersTab}
       isRowSelectable={isRowSelectable}
     >
@@ -243,13 +241,14 @@ export function OrderRow({
           <CheckboxCheckmark />
         </TableRowCheckboxWrapper>
       )}
+
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell clickable onClick={onClick}>
-        <styledEl.CurrencyLogoPair>
+      <styledEl.CurrencyCell>
+        <styledEl.CurrencyLogoPair clickable onClick={onClick}>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
         </styledEl.CurrencyLogoPair>
-        <styledEl.CurrencyAmountWrapper>
+        <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />
         </styledEl.CurrencyAmountWrapper>
@@ -344,38 +343,42 @@ export function OrderRow({
       )} */}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow clickable onClick={onClick} colspan={isStatusBoxHidden ? 2 : 0}>
+      <styledEl.CellElement doubleRow clickable onClick={onClick}>
         <b>{filledPercentDisplay}%</b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}
-      {!isStatusBoxHidden && (
-        <styledEl.CellElement>
-          <styledEl.StatusBox>
-            <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
-            {withWarning && (
-              <styledEl.WarningIndicator>
-                <MouseoverTooltipContent
-                  wrap={false}
-                  bgColor={theme.alert}
-                  content={
-                    <styledEl.WarningContent>
-                      {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
-                      {!hasEnoughAllowance && (
-                        <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
-                      )}
-                    </styledEl.WarningContent>
-                  }
-                  placement="bottom"
-                >
-                  <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-                </MouseoverTooltipContent>
-              </styledEl.WarningIndicator>
-            )}
-          </styledEl.StatusBox>
-        </styledEl.CellElement>
-      )}
+      <styledEl.CellElement>
+        <styledEl.StatusBox>
+          {children ? (
+            children
+          ) : (
+            <>
+              <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
+              {withWarning && (
+                <styledEl.WarningIndicator>
+                  <MouseoverTooltipContent
+                    wrap={false}
+                    bgColor={theme.alert}
+                    content={
+                      <styledEl.WarningContent>
+                        {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
+                        {!hasEnoughAllowance && (
+                          <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
+                        )}
+                      </styledEl.WarningContent>
+                    }
+                    placement="bottom"
+                  >
+                    <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+                  </MouseoverTooltipContent>
+                </styledEl.WarningIndicator>
+              )}
+            </>
+          )}
+        </styledEl.StatusBox>
+      </styledEl.CellElement>
 
       {/* Action content menu */}
       <styledEl.CellElement>

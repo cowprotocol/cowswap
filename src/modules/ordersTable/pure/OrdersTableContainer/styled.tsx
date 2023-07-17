@@ -34,11 +34,23 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
 `
 
 export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
-  background: transparent;
+  background: ${({ isChildOrder, theme }) => (isChildOrder ? transparentize(0.91, theme.text1) : 'transparent')};
   transition: background 0.15s ease-in-out;
+  display: grid;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+    background: ${({ theme }) => transparentize(0.9, theme.bg1)};
+  }
+
+  > div:first-child {
+    margin: 0;
+
+    &::before {
+      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
+      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      content: '↳';
+      text-decoration: none !important;
+    }
   }
 
   > div:first-child {

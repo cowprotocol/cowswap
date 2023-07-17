@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { Order, OrderInfoApi } from 'legacy/state/orders/actions'
+import { CONFIRMED_STATES, Order, OrderInfoApi } from 'legacy/state/orders/actions'
 import { useOrdersById } from 'legacy/state/orders/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
@@ -10,7 +10,8 @@ import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderExecutionInfo } from '../types'
 
-export type TwapOrdersExecutionMap = { [id: string]: TwapOrderExecutionInfo }
+export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
+export type TwapOrdersExecutionMap = { [id: string]: TwapOrdersExecution }
 
 type PartsIdsInfo = {
   sets: { [id: string]: Set<string> }
@@ -55,10 +56,14 @@ export function useTwapOrdersExecutions(ids: string[]): TwapOrdersExecutionMap {
         const executedBuyAmount = sumChildrenAmount(children, 'executedBuyAmount').toString()
         const executedSellAmount = sumChildrenAmount(children, 'executedSellAmount').toString()
         const executedFeeAmount = sumChildrenAmount(children, 'executedFeeAmount').toString()
+        const confirmedPartsCount = children.filter((order) => CONFIRMED_STATES.includes(order.status)).length
 
-        acc[id] = { executedSellAmount, executedFeeAmount, executedBuyAmount }
+        acc[id] = {
+          info: { executedSellAmount, executedFeeAmount, executedBuyAmount },
+          confirmedPartsCount,
+        }
       } else {
-        acc[id] = DEFAULT_TWAP_EXECUTION_INFO
+        acc[id] = { info: DEFAULT_TWAP_EXECUTION_INFO, confirmedPartsCount: 0 }
       }
 
       return acc

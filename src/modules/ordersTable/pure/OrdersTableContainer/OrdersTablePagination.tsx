@@ -1,13 +1,14 @@
 import { transparentize } from 'polished'
-import { Link, useLocation } from 'react-router-dom'
-import styled from 'styled-components/macro'
-
-import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
+import { Link } from 'react-router-dom'
+import styled, { css } from 'styled-components/macro'
 
 export interface OrdersTablePaginationProps {
+  getPageUrl?(index: number): Partial<{ pathname: string; search: string }>
+  onPageChange?(index: number): void
   pageSize: number
   totalCount: number
   currentPage: number
+  className?: string
 }
 
 const PaginationBox = styled.div`
@@ -25,7 +26,7 @@ const PaginationBox = styled.div`
   `};
 `
 
-const PageButton = styled(Link)<{ $active?: boolean }>`
+const pageButtonStyles = css<{ $active?: boolean }>`
   background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
   color: ${({ theme, $active }) => ($active ? theme.text1 : transparentize(0.2, theme.text1))};
   border: 0;
@@ -43,24 +44,46 @@ const PageButton = styled(Link)<{ $active?: boolean }>`
   }
 `
 
-export function OrdersTablePagination({ pageSize, totalCount, currentPage }: OrdersTablePaginationProps) {
-  const location = useLocation()
+const PageButtonLink = styled(Link)`
+  ${pageButtonStyles}
+`
+
+const PageButton = styled.div`
+  ${pageButtonStyles}
+`
+
+export function OrdersTablePagination({
+  pageSize,
+  totalCount,
+  currentPage,
+  getPageUrl,
+  onPageChange,
+  className,
+}: OrdersTablePaginationProps) {
   const pagesCount = Math.ceil(totalCount / pageSize)
 
   return (
-    <PaginationBox>
+    <PaginationBox className={className}>
       {[...new Array(pagesCount)].map((item, i) => {
         const index = i + 1
 
-        return (
-          <PageButton
-            key={index}
-            $active={index === currentPage}
-            to={buildOrdersTableUrl(location, { pageNumber: index })}
-          >
-            {index}
-          </PageButton>
-        )
+        if (onPageChange) {
+          return (
+            <PageButton key={index} $active={index === currentPage} onClick={() => onPageChange(index)}>
+              {index}
+            </PageButton>
+          )
+        }
+
+        if (getPageUrl) {
+          return (
+            <PageButtonLink key={index} $active={index === currentPage} to={getPageUrl(index)}>
+              {index}
+            </PageButtonLink>
+          )
+        }
+
+        return null
       })}
     </PaginationBox>
   )
