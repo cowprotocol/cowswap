@@ -18,5 +18,4 @@ export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = ms`15s`
 export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%
 
 // Clear order's storage
-export const ORDER_STORAGE_KEY = 'redux_localstorage_simple_orders'
 export const MAX_ITEMS_PER_STATUS = 10
