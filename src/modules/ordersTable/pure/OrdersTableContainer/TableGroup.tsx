@@ -3,7 +3,10 @@ import React, { useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
+
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { BalancesAndAllowances } from 'modules/tokens'
@@ -14,14 +17,15 @@ import { OrdersTablePagination } from './OrdersTablePagination'
 import { LimitOrderActions } from './types'
 import { getOrderParams } from './utils/getOrderParams'
 
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 
 const GroupBox = styled.div``
 
 const Pagination = styled(OrdersTablePagination)`
-  margin: 10px 0;
+  background: ${({ theme }) => transparentize(0.91, theme.text1)};
+  margin: 0;
+  padding: 10px 0;
 `
 
 export interface TableGroupProps {
