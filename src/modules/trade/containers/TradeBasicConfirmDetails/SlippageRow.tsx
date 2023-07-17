@@ -5,12 +5,19 @@ import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 
 export type SlippageRowProps = {
   slippage: Percent
+  slippageLabel?: React.ReactNode
+  slippageTooltip?: React.ReactNode
 }
 
-export function SlippageRow({ slippage }: SlippageRowProps) {
+export function SlippageRow({ slippage, slippageLabel, slippageTooltip }: SlippageRowProps) {
   return (
     <ConfirmDetailsItem>
-      <RowSlippage allowedSlippage={slippage} showSettingOnClick={false} />
+      <RowSlippage
+        allowedSlippage={slippage}
+        showSettingOnClick={false}
+        slippageLabel={slippageLabel}
+        slippageTooltip={slippageTooltip}
+      />
     </ConfirmDetailsItem>
   )
 }
