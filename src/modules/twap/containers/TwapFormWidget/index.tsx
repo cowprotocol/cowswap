@@ -27,7 +27,7 @@ import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, MAX_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -143,7 +143,7 @@ export function TwapFormWidget() {
         onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
         decimalsPlaces={2}
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-        max={50}
+        max={MAX_TWAP_SLIPPAGE}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
         prefixComponent={
