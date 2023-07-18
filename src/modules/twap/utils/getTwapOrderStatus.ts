@@ -1,30 +1,32 @@
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
-
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
-import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrdersExecution } from '../hooks/useTwapOrdersExecutions'
+import { TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
-  isExecuted: boolean,
+  isTransactionExecuted: boolean,
   executionDate: Date | null,
   auth: boolean | undefined,
-  discreteOrder: Order | undefined,
-  executionInfo: TwapOrderExecutionInfo
+  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
 
-  if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
-
-  if (!isExecuted) return TwapOrderStatus.WaitSigning
-
   if (auth === false) return TwapOrderStatus.Cancelled
 
-  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
+  if (confirmedPartsCount === order.n) {
+    if (+executionInfo.executedSellAmount > 0) return TwapOrderStatus.Fulfilled
 
-  return TwapOrderStatus.Scheduled
+    return TwapOrderStatus.Expired
+  }
+
+  if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
+
+  if (!isTransactionExecuted) return TwapOrderStatus.WaitSigning
+
+  return TwapOrderStatus.Pending
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {

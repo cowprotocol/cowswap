@@ -13,7 +13,7 @@ import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/upd
 import { getCowSoundSend } from 'legacy/utils/sound'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -40,12 +40,14 @@ export function useCreateTwapOrder() {
   const twapOrder = useAtomValue(twapOrderAtom)
   const addTwapOrderToList = useUpdateAtom(addTwapOrderToListAtom)
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount, outputCurrencyAmount, recipient } = useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
   const safeAppsSdk = useSafeAppsSdk()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
+
+  const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
 
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -106,15 +108,15 @@ export function useCreateTwapOrder() {
           safeAddress: account,
           submissionDate: new Date().toISOString(),
           id: orderId,
-          executionInfo: DEFAULT_TWAP_EXECUTION_INFO,
+          executionInfo: { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO },
         }
 
         addTwapOrderToList(orderItem)
 
         const summary = getOrderSubmitSummary({
-          recipient: twapOrder.receiver,
+          recipient: recipient || account,
           kind: OrderKind.SELL,
-          recipientAddressOrName: null,
+          recipientAddressOrName: recipient || account,
           account,
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
@@ -123,6 +125,7 @@ export function useCreateTwapOrder() {
         getCowSoundSend().play()
         dispatchPresignedOrderPosted(store, orderId, summary, OrderClass.LIMIT)
 
+        updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
@@ -137,15 +140,17 @@ export function useCreateTwapOrder() {
       account,
       inputCurrencyAmount,
       outputCurrencyAmount,
-      twapOrder,
-      tradeConfirmActions,
       twapOrderCreationContext,
       extensibleFallbackContext,
-      addTwapOrderToList,
       safeAppsSdk,
+      appDataInfo,
+      twapOrder,
       confirmPriceImpactWithoutFee,
       priceImpact,
-      appDataInfo,
+      tradeConfirmActions,
+      addTwapOrderToList,
+      recipient,
+      updateAdvancedOrdersState,
     ]
   )
 }

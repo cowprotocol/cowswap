@@ -50,19 +50,11 @@ enum TxReceiptStatus {
 export default function useRecentActivity() {
   const { chainId, account } = useWalletInfo()
   const allTransactions = useAllTransactions()
-  const allNonEmptyOrders = useOrders({ chainId })
+  const allNonEmptyOrders = useOrders(chainId, account)
 
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
-    if (!chainId || !account) {
-      return []
-    }
-
-    const accountLowerCase = account.toLowerCase()
-
     return (
       allNonEmptyOrders
-        // only show orders for connected account that are not hidden
-        .filter((order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden)
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
@@ -76,7 +68,7 @@ export default function useRecentActivity() {
         // show at most MAXIMUM_ORDERS_TO_DISPLAY regular orders, and as much pending as there are
         .filter((order, index) => index < MAXIMUM_ORDERS_TO_DISPLAY || order.status === OrderStatus.PENDING)
     )
-  }, [account, allNonEmptyOrders, chainId])
+  }, [allNonEmptyOrders])
 
   const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(() => {
     if (!account) {

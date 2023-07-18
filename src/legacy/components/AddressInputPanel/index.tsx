@@ -1,6 +1,6 @@
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 
-import { Trans, t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -10,6 +10,8 @@ import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
+
+import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -132,6 +134,7 @@ export function AddressInputPanel({
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
               value={value}
+              onFocus={autofocus}
             />
           </AutoColumn>
         </InputContainer>

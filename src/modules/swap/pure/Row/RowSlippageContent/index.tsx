@@ -49,14 +49,27 @@ export interface RowSlippageContentProps extends RowSlippageProps {
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
-
+  slippageLabel?: React.ReactNode
+  slippageTooltip?: React.ReactNode
   styleProps?: RowStyleProps
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
-  const { showSettingOnClick, toggleSettings, displaySlippage, isEoaEthFlow, symbols, styleProps } = props
+  const {
+    showSettingOnClick,
+    toggleSettings,
+    displaySlippage,
+    isEoaEthFlow,
+    symbols,
+    slippageLabel,
+    slippageTooltip,
+    styleProps,
+  } = props
+
+  const tooltipContent =
+    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip())
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -64,16 +77,13 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} />
+              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
             </ClickableText>
           ) : (
-            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} />
+            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent
-          wrap
-          content={isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
-        >
+        <MouseoverTooltipContent wrap content={tooltipContent}>
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>
@@ -88,12 +98,12 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   )
 }
 
-type SlippageTextContentsProps = { isEoaEthFlow: boolean }
+type SlippageTextContentsProps = { isEoaEthFlow: boolean; slippageLabel?: React.ReactNode }
 
-function SlippageTextContents({ isEoaEthFlow }: SlippageTextContentsProps) {
+function SlippageTextContents({ isEoaEthFlow, slippageLabel }: SlippageTextContentsProps) {
   return (
     <TransactionText>
-      <Trans>Slippage tolerance</Trans>
+      <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
       {isEoaEthFlow && <i>(modified)</i>}
     </TransactionText>
   )

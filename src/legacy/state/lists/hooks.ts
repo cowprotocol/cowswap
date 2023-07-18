@@ -6,6 +6,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 
 import { shallowEqual } from 'react-redux'
+import { Nullish } from 'types'
 
 import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import BROKEN_LIST from 'legacy/constants/tokenLists/broken.tokenlist.json'
@@ -191,6 +192,22 @@ export function useIsUnsupportedTokenGp() {
       return gpUnsupportedTokens[address.toLowerCase()]
     },
     [chainId, gpUnsupportedTokens]
+  )
+}
+
+export function useIsUnsupportedTokens() {
+  const gpUnsupportedTokens = useGpUnsupportedTokens()
+
+  return useCallback(
+    ({ sellToken, buyToken }: { sellToken: Nullish<string>; buyToken: Nullish<string> }) => {
+      if (!gpUnsupportedTokens) return false
+
+      return !!(
+        (sellToken && gpUnsupportedTokens[sellToken.toLowerCase()]) ||
+        (buyToken && gpUnsupportedTokens[buyToken.toLowerCase()])
+      )
+    },
+    [gpUnsupportedTokens]
   )
 }
 

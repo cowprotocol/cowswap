@@ -174,14 +174,25 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
   }, [JSON.stringify(ordersState), chainId])
 }
 
-export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
+export const useOrders = (chainId: SupportedChainId, account: string | undefined): Order[] => {
   const state = useOrdersStateNetwork(chainId)
+  const accountLowerCase = account?.toLowerCase()
 
   return useMemo(() => {
     if (!state) return []
 
-    return _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
-  }, [state])
+    return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
+      if (order?.order.owner.toLowerCase() === accountLowerCase) {
+        const mappedOrder = _deserializeOrder(order)
+
+        if (mappedOrder && !mappedOrder.isHidden) {
+          acc.push(mappedOrder)
+        }
+      }
+
+      return acc
+    }, [])
+  }, [state, accountLowerCase])
 }
 
 export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => {

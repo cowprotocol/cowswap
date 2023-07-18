@@ -192,6 +192,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     settingsWidget: <SettingsWidget />,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
+        id="limit-orders"
         items={LIMIT_BULLET_LIST_CONTENT}
         buttonLink={UNLOCK_SCREEN.buttonLink}
         title={UNLOCK_SCREEN.title}

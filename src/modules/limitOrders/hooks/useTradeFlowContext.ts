@@ -7,7 +7,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useDispatch } from 'react-redux'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'
@@ -30,7 +29,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
-  const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
@@ -51,8 +49,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   }
 
   const isGnosisSafeWallet = !!gnosisSafeInfo
-  const recipientAddressOrName = state.recipient || ensRecipientAddress
-  const recipient = ensRecipientAddress || state.recipient || account
+  const recipientAddressOrName = state.recipient || state.recipientAddress
+  const recipient = state.recipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
