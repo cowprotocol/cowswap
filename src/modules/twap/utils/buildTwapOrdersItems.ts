@@ -3,15 +3,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
-import { TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
+import { TwapOrdersExecution, TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
-import {
-  TwapOrderItem,
-  TwapOrderInfo,
-  TwapOrdersAuthResult,
-  TwapOrdersSafeData,
-  TwapOrderExecutionInfo,
-} from '../types'
+import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult, TwapOrdersSafeData } from '../types'
 
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,
@@ -32,7 +26,7 @@ function getTwapOrderItem(
   safeData: TwapOrdersSafeData,
   id: string,
   authorized: boolean | undefined,
-  executionInfo: TwapOrderExecutionInfo
+  executionInfo: TwapOrdersExecution
 ): TwapOrderItem {
   const { conditionalOrderParams, safeTxParams } = safeData
   const { isExecuted, submissionDate, executionDate: _executionDate } = safeTxParams

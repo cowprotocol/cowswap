@@ -1,13 +1,14 @@
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
-import { TwapOrderExecutionInfo, TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrdersExecution } from '../hooks/useTwapOrdersExecutions'
+import { TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
-  isExecuted: boolean,
+  isTransactionExecuted: boolean,
   executionDate: Date | null,
   auth: boolean | undefined,
-  executionInfo: TwapOrderExecutionInfo
+  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
 
@@ -15,9 +16,15 @@ export function getTwapOrderStatus(
 
   if (auth === false) return TwapOrderStatus.Cancelled
 
+  if (confirmedPartsCount === order.n) {
+    if (+executionInfo.executedSellAmount > 0) return TwapOrderStatus.Fulfilled
+
+    return TwapOrderStatus.Expired
+  }
+
   if (isTwapOrderExpired(order, executionDate)) return TwapOrderStatus.Expired
 
-  if (!isExecuted) return TwapOrderStatus.WaitSigning
+  if (!isTransactionExecuted) return TwapOrderStatus.WaitSigning
 
   return TwapOrderStatus.Pending
 }

@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
@@ -30,14 +31,19 @@ import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderEx
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
-import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
-import { ordersSorter } from 'utils/orderUtils/ordersSorter'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrderRow } from './OrderRow'
 import { OrdersTablePagination } from './OrdersTablePagination'
+import { TableGroup } from './TableGroup'
 import { getOrderParams } from './utils/getOrderParams'
+
+import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
+import {
+  getParsedOrderFromItem,
+  isParsedOrder,
+  OrderTableItem,
+  tableItemsToOrders,
+} from '../../utils/orderTableGroupUtils'
 
 // TODO: move elements to styled.jsx
 
@@ -192,9 +198,9 @@ export interface OrdersTableProps {
   isOpenOrdersTab: boolean
   allowsOffchainSigning: boolean
   currentPageNumber: number
-  chainId: SupportedChainId | undefined
+  chainId: SupportedChainId
   pendingOrdersPrices: PendingOrdersPrices
-  orders: ParsedOrder[]
+  orders: OrderTableItem[]
   selectedOrders: CancellableOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
@@ -213,49 +219,13 @@ export function OrdersTable({
   orderActions,
   currentPageNumber,
 }: OrdersTableProps) {
+  const location = useLocation()
   const [isRateInverted, setIsRateInverted] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
-  const composableCowOrders = orders.reduce<{ [key: string]: ParsedOrder }>((acc, order) => {
-    if (!getIsComposableCowParentOrder(order)) return acc
-
-    const parentId = order.composableCowInfo!.id!
-    acc[parentId] = order
-    return acc
-  }, {})
-
-  const partsOrders = orders.reduce<{ [key: string]: ParsedOrder[] }>((acc, order) => {
-    if (!getIsComposableCowChildOrder(order)) return acc
-
-    const parentId = order.composableCowInfo!.parentId!
-    acc[parentId] = acc[parentId] || []
-    acc[parentId].push(order)
-    return acc
-  }, {})
-
-  const ordersPage = orders
-    .sort(ordersSorter)
-    .map((order) => {
-      if (!order.composableCowInfo) return order
-
-      const isPartOrder = getIsComposableCowChildOrder(order)
-
-      if (isPartOrder) {
-        const parentId = order.composableCowInfo.parentId!
-
-        // In case when part order is on "history" page and its parent on "open"
-        // We shouldn't consider this order for grouping
-        return composableCowOrders[parentId] ? [] : order
-      }
-
-      const composableOrderId = order.composableCowInfo.id!
-
-      return [order, ...(partsOrders[composableOrderId] || []).reverse()]
-    })
-    .flat()
-    .slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+  const ordersPage = orders.slice(step - ORDERS_TABLE_PAGE_SIZE, step)
 
   const onScroll = useCallback(() => {
     // Emit event to close OrderContextMenu
@@ -289,13 +259,18 @@ export function OrdersTable({
     localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
   }, [showOrdersExplainerBanner])
 
-  const cancellableOrders = useMemo(() => ordersPage.filter(isOrderOffChainCancellable), [ordersPage])
+  const cancellableOrders = useMemo(
+    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromItem(item))),
+    [ordersPage]
+  )
 
   const allOrdersSelected = useMemo(() => {
     if (!cancellableOrders.length) return false
 
-    return cancellableOrders.every((item) => selectedOrdersMap[item.id])
+    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromItem(item).id])
   }, [cancellableOrders, selectedOrdersMap])
+
+  const getPageUrl = useCallback((index: number) => buildOrdersTableUrl(location, { pageNumber: index }), [location])
 
   // React doesn't support indeterminate attribute
   // Because of it, we have to use element reference
@@ -321,7 +296,9 @@ export function OrdersTable({
                     disabled={cancellableOrders.length === 0}
                     type="checkbox"
                     onChange={(event) =>
-                      orderActions.toggleOrdersForCancellation(event.target.checked ? ordersPage : [])
+                      orderActions.toggleOrdersForCancellation(
+                        event.target.checked ? tableItemsToOrders(ordersPage) : []
+                      )
                     }
                   />
                   <CheckboxCheckmark />
@@ -421,28 +398,49 @@ export function OrdersTable({
           )}
 
           <Rows>
-            {ordersPage.map((order) => {
+            {ordersPage.map((item) => {
+              const { inputToken, outputToken } = getParsedOrderFromItem(item)
               const spotPrice = getSpotPrice({
                 chainId: chainId as SupportedChainId,
-                sellTokenAddress: order.inputToken.address,
-                buyTokenAddress: order.outputToken.address,
+                sellTokenAddress: inputToken.address,
+                buyTokenAddress: outputToken.address,
               })
 
-              return (
-                <OrderRow
-                  key={order.id}
-                  isRowSelectable={isRowSelectable}
-                  isRowSelected={!!selectedOrdersMap[order.id]}
-                  isOpenOrdersTab={isOpenOrdersTab}
-                  order={order}
-                  spotPrice={spotPrice}
-                  prices={pendingOrdersPrices[order.id]}
-                  orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
-                  isRateInverted={isRateInverted}
-                  orderActions={orderActions}
-                  onClick={() => orderActions.selectReceiptOrder(order)}
-                />
-              )
+              if (isParsedOrder(item)) {
+                const order = item
+
+                return (
+                  <OrderRow
+                    key={order.id}
+                    isRowSelectable={isRowSelectable}
+                    isRowSelected={!!selectedOrdersMap[order.id]}
+                    isOpenOrdersTab={isOpenOrdersTab}
+                    order={order}
+                    spotPrice={spotPrice}
+                    prices={pendingOrdersPrices[order.id]}
+                    orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                    isRateInverted={isRateInverted}
+                    orderActions={orderActions}
+                    onClick={() => orderActions.selectReceiptOrder(order)}
+                  />
+                )
+              } else {
+                return (
+                  <TableGroup
+                    item={item}
+                    chainId={chainId}
+                    balancesAndAllowances={balancesAndAllowances}
+                    key={item.parent.id}
+                    isRowSelectable={isRowSelectable}
+                    isRowSelected={!!selectedOrdersMap[item.parent.id]}
+                    isOpenOrdersTab={isOpenOrdersTab}
+                    spotPrice={spotPrice}
+                    prices={pendingOrdersPrices[item.parent.id]}
+                    isRateInverted={isRateInverted}
+                    orderActions={orderActions}
+                  />
+                )
+              }
             })}
           </Rows>
         </TableInner>
@@ -451,6 +449,7 @@ export function OrdersTable({
       {/* Only show pagination if more than 1 page available */}
       {orders.length > ORDERS_TABLE_PAGE_SIZE && (
         <OrdersTablePagination
+          getPageUrl={getPageUrl}
           pageSize={ORDERS_TABLE_PAGE_SIZE}
           totalCount={orders.length}
           currentPage={currentPageNumber}

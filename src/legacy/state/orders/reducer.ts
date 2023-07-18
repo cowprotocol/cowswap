@@ -280,7 +280,7 @@ export default createReducer(initialState, (builder) =>
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
 
-        // Skip overriding orders, because they get updated in SettledPartOrdersUpdater
+        // Skip overriding pending orders, because they get updated in CreatedInOrderBookOrdersUpdater
         if (getIsComposableCowDiscreteOrder(orderObj?.order) && getIsNotComposableCowOrder(newOrder)) {
           return
         }

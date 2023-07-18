@@ -88,7 +88,6 @@ export const CellElement = styled.div<{
   clickable?: boolean
   doubleRow?: boolean
   hasBackground?: boolean
-  colspan?: number
 }>`
   padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
@@ -118,12 +117,6 @@ export const CellElement = styled.div<{
     }
   `}
 
-  ${({ colspan }) =>
-    colspan &&
-    `
-    grid-column: span ${colspan};
-  `}
-
   ${RateWrapper} {
     font-weight: 500;
     font-size: 12px;
@@ -136,8 +129,9 @@ export const PriceElement = styled(CellElement)`
   cursor: pointer;
 `
 
-export const CurrencyLogoPair = styled.div`
+export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
   display: flex;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
 
   > img,
   > svg {
@@ -166,8 +160,9 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   }
 `
 
-export const CurrencyAmountWrapper = styled.div`
+export const CurrencyAmountWrapper = styled.div<{ clickable?: boolean }>`
   display: flex;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
   flex-flow: column wrap;
   gap: 2px;
 `
@@ -223,4 +218,103 @@ export const ExecuteInformationTooltip = styled.div`
   flex-flow: row wrap;
   padding: 0;
   margin: 0;
+`
+
+export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 9px;
+  width: 100%;
+  height: 28px;
+
+  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.7, theme.bg1)} 100%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  padding: 0 6px 0 10px;
+  cursor: pointer;
+  transition: background 0.5s ease-in-out;
+
+  &:hover {
+    animation: gradientMove 3s linear infinite;
+  }
+
+  @keyframes gradientMove {
+    0% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+
+  @keyframes changeOpacity {
+    0% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%);
+    }
+    50% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.1, theme.bg1)} 100%);
+    }
+    100% {
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.5, theme.bg1)} 100%);
+    }
+  }
+
+  > i {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > button {
+    --size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 0 6px;
+    cursor: pointer;
+    outline: none;
+    color: ${({ theme }) => theme.text1};
+    transition: color 0.2s ease-out;
+    position: relative;
+    height: var(--height);
+    transition: all 0.3s;
+    width: var(--size);
+    height: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
+    line-height: 1;
+    background: transparent;
+    border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+    border-radius: 6px;
+    user-select: none;
+  }
+
+  > button::before,
+  > button::after {
+    content: '';
+    transform: rotate(0);
+    top: 7px;
+    inset-inline-end: 3px;
+    inset-inline-start: 3px;
+    height: 1px;
+    position: absolute;
+    background: currentcolor;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  > button::after {
+    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(90deg)' : 'rotate(0deg)')};
+  }
 `
