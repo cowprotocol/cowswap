@@ -13,7 +13,6 @@ import {
   addPendingOrder,
   cancelOrdersBatch,
   clearOrders,
-  CONFIRMED_STATES,
   CREATING_STATES,
   deleteOrders,
   expireOrdersBatch,
@@ -281,14 +280,8 @@ export default createReducer(initialState, (builder) =>
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
 
-        const isNewOrderConfirmed = CONFIRMED_STATES.includes(status)
-
         // Skip overriding pending orders, because they get updated in CreatedInOrderBookOrdersUpdater
-        if (
-          getIsComposableCowDiscreteOrder(orderObj?.order) &&
-          getIsNotComposableCowOrder(newOrder) &&
-          !isNewOrderConfirmed
-        ) {
+        if (getIsComposableCowDiscreteOrder(orderObj?.order) && getIsNotComposableCowOrder(newOrder)) {
           return
         }
 
