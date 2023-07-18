@@ -1,3 +1,4 @@
+import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -12,6 +13,7 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
@@ -186,6 +188,7 @@ export function GpOrdersUpdater(): null {
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const getToken = useTokenLazy()
+  const updateApiOrders = useUpdateAtom(apiOrdersAtom)
   const gpOrders = useGpOrders()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
@@ -234,6 +237,10 @@ export function GpOrdersUpdater(): null {
     },
     [addOrUpdateOrders, gpOrders, getToken]
   )
+
+  useEffect(() => {
+    updateApiOrders(gpOrders)
+  }, [gpOrders, updateApiOrders])
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {
