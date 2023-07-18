@@ -57,8 +57,7 @@ export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
 
-  const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
-    useAtomValue(twapOrdersSettingsAtom)
+  const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
   const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -139,7 +138,7 @@ export function TwapFormWidget() {
         </styledEl.Row>
       )}
       <TradeNumberInput
-        value={slippageValue}
+        value={+twapOrderSlippage.toFixed(2)}
         onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
         decimalsPlaces={2}
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
