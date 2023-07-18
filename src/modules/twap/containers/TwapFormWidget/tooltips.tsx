@@ -68,9 +68,7 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
       </>
     ),
     tooltip: (
-      <>
-        Your TWAP order won't execute and is protected if the market price dips more than your set slippage tolerance.
-      </>
+      <>Your TWAP order won't execute and is protected if the market price dips more than your set price protection.</>
     ),
   },
   price: {

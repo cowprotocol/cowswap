@@ -9,6 +9,8 @@ import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
+export const MAX_TWAP_SLIPPAGE = 100 // 100%
+
 export type OrderDeadline = { label: string; value: number }
 
 export const DEFAULT_NUM_OF_PARTS = 2
@@ -32,9 +34,7 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
   5: twapHandlerAddress,
 }
 
-export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Scheduled]
-
-export const TWAP_CANCELLED_STATUSES = [TwapOrderStatus.Cancelling, TwapOrderStatus.Cancelled]
+export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Cancelling]
 
 export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
 

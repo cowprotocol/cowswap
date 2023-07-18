@@ -22,6 +22,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.OUTPUT,
         recipient: null,
+        recipientAddress: null,
       })
     })
 
@@ -39,6 +40,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.INPUT,
         recipient: null,
+        recipientAddress: null,
       })
     })
 
@@ -56,6 +58,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.INPUT,
         recipient: null,
+        recipientAddress: null,
       })
     })
 
@@ -73,6 +76,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.INPUT,
         recipient: null,
+        recipientAddress: null,
       })
     })
 
@@ -93,6 +97,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.INPUT,
         recipient: '0x0fF2D1eFd7A57B7562b2bf27F3f37899dB27F4a5',
+        recipientAddress: null,
       })
     })
     test('accepts any recipient', () => {
@@ -112,6 +117,7 @@ describe('hooks', () => {
         chainId: null,
         independentField: Field.INPUT,
         recipient: 'bob.argent.xyz',
+        recipientAddress: null,
       })
     })
   })

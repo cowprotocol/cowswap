@@ -1,11 +1,9 @@
-import { EnrichedOrder, OrderClass, OrderKind, SigningScheme, OrderStatus } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
-import { TWAP_CANCELLED_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,
-  [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
   [TwapOrderStatus.Cancelling]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
@@ -24,7 +22,7 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
 
   const creationTime = new Date(item.executedDate || item.submissionDate)
   const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
-  const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo
+  const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo.info
 
   return {
     signingScheme: SigningScheme.EIP1271,
@@ -48,6 +46,6 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
     executedFeeAmount,
-    invalidated: TWAP_CANCELLED_STATUSES.includes(status),
+    invalidated: status === TwapOrderStatus.Cancelling,
   }
 }

@@ -63,7 +63,9 @@ export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs({
+export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs<{
+  mobile: boolean
+}>({
   'aria-label': 'dialog',
 })`
   overflow-y: auto;

@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -27,8 +28,9 @@ import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { getParsedOrderFromItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
-function getOrdersListByIndex(ordersList: OrdersTableList, id: string): ParsedOrder[] {
+function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
@@ -46,11 +48,22 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export function OrdersTableWidget() {
+export interface OrdersTableWidgetProps {
+  additionalOrders?: Order[]
+}
+
+export function OrdersTableWidget({ additionalOrders }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
-  const allOrders = useOrders({ chainId })
+  const commonOrders = useOrders(chainId, account)
+  const allOrders = useMemo(() => {
+    if (!additionalOrders) return commonOrders
+
+    const additionalOrdersIds = new Set(additionalOrders.map((order) => order.id))
+
+    return commonOrders.filter((order) => !additionalOrdersIds.has(order.id)).concat(additionalOrders)
+  }, [commonOrders, additionalOrders])
   const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -87,7 +100,7 @@ export function OrdersTableWidget() {
   const tokens = useMemo(() => {
     const pendingOrders = isOpenOrdersTab ? ordersList.pending : []
 
-    return pendingOrders.map((order) => order.inputToken)
+    return pendingOrders.map((item) => getParsedOrderFromItem(item).inputToken)
   }, [isOpenOrdersTab, ordersList.pending])
 
   // Get effective balance
@@ -147,7 +160,7 @@ export function OrdersTableWidget() {
           selectedOrders={ordersToCancel}
           allowsOffchainSigning={allowsOffchainSigning}
         >
-          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={orders} />}
+          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />

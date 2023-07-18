@@ -13,6 +13,7 @@ export interface TradeRawState {
   readonly inputCurrencyId: string | null
   readonly outputCurrencyId: string | null
   readonly recipient: string | null
+  readonly recipientAddress: string | null
 }
 
 export interface ExtendedTradeRawState extends TradeRawState {
@@ -29,5 +30,6 @@ export function getDefaultTradeRawState(chainId: SupportedChainId | null): Trade
     inputCurrencyId: chainId ? WETH[chainId]?.symbol || null : null,
     outputCurrencyId: null,
     recipient: null,
+    recipientAddress: null,
   }
 }

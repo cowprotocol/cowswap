@@ -10,11 +10,10 @@ import { useGnosisSafeInfo } from 'modules/wallet'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
-import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
 import { deleteTwapOrdersFromListAtom, twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData, TwapOrderStatus } from '../types'
+import { TwapOrderInfo, TwapOrderItem, TwapOrdersSafeData } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
@@ -27,7 +26,6 @@ export function TwapOrdersUpdater(props: {
 }) {
   const { safeAddress, chainId, composableCowContract } = props
 
-  const twapDiscreteOrders = useTwapDiscreteOrders()
   const twapOrdersList = useAtomValue(twapOrdersAtom)
   const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
   const deleteTwapOrders = useUpdateAtom(deleteTwapOrdersFromListAtom)
@@ -71,14 +69,13 @@ export function TwapOrdersUpdater(props: {
   }, [safeNonce, allOrdersInfo])
 
   useEffect(() => {
-    if (!ordersAuthResult || !twapDiscreteOrders) return
+    if (!ordersAuthResult) return
 
     const items = buildTwapOrdersItems(
       chainId,
       safeAddress,
       allOrdersInfo,
       ordersAuthResult,
-      twapDiscreteOrders,
       twapOrderExecutions.current
     )
 
@@ -88,16 +85,7 @@ export function TwapOrdersUpdater(props: {
 
     updateTwapOrders(items)
     deleteTwapOrders(ordersToDelete)
-  }, [
-    chainId,
-    safeAddress,
-    allOrdersInfo,
-    ordersAuthResult,
-    twapDiscreteOrders,
-    updateTwapOrders,
-    ordersToDelete,
-    deleteTwapOrders,
-  ])
+  }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, updateTwapOrders, ordersToDelete, deleteTwapOrders])
 
   return null
 }
@@ -143,8 +131,6 @@ function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem 
 
   // Skip NOT pending orders
   if (existingOrder) {
-    if (existingOrder.status === TwapOrderStatus.Cancelling) return true
-
     return TWAP_PENDING_STATUSES.includes(existingOrder.status)
   }
 

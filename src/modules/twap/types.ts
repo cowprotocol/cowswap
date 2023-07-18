@@ -1,6 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { TwapOrdersExecution } from './hooks/useTwapOrdersExecutions'
+
 import { SafeTransactionParams } from '../../common/types'
 
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
@@ -34,9 +36,8 @@ export interface TWAPOrderStruct {
 export enum TwapOrderStatus {
   WaitSigning = 'WaitSigning',
   Pending = 'Pending',
-  Scheduled = 'Scheduled',
-  Cancelled = 'Cancelled',
   Cancelling = 'Cancelling',
+  Cancelled = 'Cancelled',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
 }
@@ -61,7 +62,7 @@ export interface TwapOrderItem {
   safeAddress: string
   id: string
   safeTxParams?: SafeTransactionParams
-  executionInfo: TwapOrderExecutionInfo
+  executionInfo: TwapOrdersExecution
 }
 
 export interface ConditionalOrderParams {
