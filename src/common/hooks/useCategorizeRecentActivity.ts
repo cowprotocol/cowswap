@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import useRecentActivity, { TransactionAndOrder } from 'legacy/hooks/useRecentActivity'
+import { useRecentActivity, TransactionAndOrder } from 'legacy/hooks/useRecentActivity'
 import { CONFIRMED_STATES, PENDING_STATES } from 'legacy/state/orders/actions'
 
 const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
@@ -19,7 +19,7 @@ export function useCategorizeRecentActivity() {
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
           // Not order transactions (wrap, approve, etc.) doesn't have class property
-          if (!activity.class || activity.class !== OrderClass.LIMIT) {
+          if (!activity.class || activity.class === OrderClass.MARKET) {
             if (isPending(activity)) {
               acc[0].push(activity.id)
             } else if (isConfirmed(activity)) {

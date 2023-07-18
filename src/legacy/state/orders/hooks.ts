@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -173,7 +173,7 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
   }, [JSON.stringify(ordersState), chainId])
 }
 
-export const useOrders = (chainId: SupportedChainId, account: string | undefined): Order[] => {
+export const useOrders = (chainId: SupportedChainId, account: string | undefined, orderClass: OrderClass): Order[] => {
   const state = useOrdersStateNetwork(chainId)
   const accountLowerCase = account?.toLowerCase()
 
@@ -181,7 +181,12 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
     if (!state) return []
 
     return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
-      if (order?.order.owner.toLowerCase() === accountLowerCase) {
+      if (!order) return acc
+
+      const doesBelongToAccount = order.order.owner.toLowerCase() === accountLowerCase
+      const doesMatchClass = order.order.class === orderClass
+
+      if (doesBelongToAccount && doesMatchClass) {
         const mappedOrder = _deserializeOrder(order)
 
         if (mappedOrder && !mappedOrder.isHidden) {
@@ -191,10 +196,10 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
 
       return acc
     }, [])
-  }, [state, accountLowerCase])
+  }, [state, accountLowerCase, orderClass])
 }
 
-export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
+const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
   const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
@@ -218,7 +223,7 @@ export type OrdersMap = {
 }
 
 export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap | null => {
-  const allOrders = useAllOrders({ chainId })
+  const allOrders = useAllOrdersMap({ chainId })
 
   return useMemo(() => {
     if (!allOrders || !ids) {

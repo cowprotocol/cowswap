@@ -6,11 +6,10 @@ import styled from 'styled-components/macro'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
-import { useOrders } from 'legacy/state/orders/hooks'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { ORDERS_TABLE_TABS, OPEN_TAB } from 'modules/ordersTable/const/tabs'
+import { OPEN_TAB, ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
 import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
 import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
@@ -49,23 +48,15 @@ const ContentWrapper = styled.div`
 `
 
 export interface OrdersTableWidgetProps {
-  additionalOrders?: Order[]
+  orders: Order[]
 }
 
-export function OrdersTableWidget({ additionalOrders }: OrdersTableWidgetProps) {
+export function OrdersTableWidget({ orders: allOrders }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
-  const commonOrders = useOrders(chainId, account)
-  const allOrders = useMemo(() => {
-    if (!additionalOrders) return commonOrders
-
-    const additionalOrdersIds = new Set(additionalOrders.map((order) => order.id))
-
-    return commonOrders.filter((order) => !additionalOrdersIds.has(order.id)).concat(additionalOrders)
-  }, [commonOrders, additionalOrders])
-  const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()
+  const ordersList = useOrdersTableList(allOrders)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
