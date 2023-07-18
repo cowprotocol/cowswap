@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -18,7 +18,11 @@ export interface TwapPartOrderItem {
 }
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 
-export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
+export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
+  'twap-part-orders-list:v1',
+  {},
+  createJSONStorage(() => localStorage)
+)
 
 /**
  * The only goal of this function is protection from isCreatedInOrderBook flag overriding
