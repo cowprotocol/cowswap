@@ -91,6 +91,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
     bottomContent: children,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
+        id="advanced-orders"
         items={TWAP_BULLET_LIST_CONTENT}
         buttonLink={UNLOCK_SCREEN.buttonLink}
         title={UNLOCK_SCREEN.title}
