@@ -127,18 +127,11 @@ All price feeds are enabled by default, but they can be individually disabled by
 
 The app will attach some metadata to all orders.
 
-This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade.
-
-Any web app or client using CoW Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
-information to the order.
-
-For example, CoW Swap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ
-which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See
-[CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
+This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
 
 The format of the JSON follows this typescript format: <src/utils/metadata.ts>
 
-To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [CoW Swap's Discord channel](https://discord.com/invite/cowprotocol/). For more details, check out the environment file (<.env>)
+To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
 
 ### Supported networks
 

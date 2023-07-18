@@ -5,11 +5,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UtmParams } from 'modules/utm'
 
-import { APP_DATA_HASH } from '../constants'
 import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
 import { AppDataOrderClass } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
+import { getAppData } from '../utils/fullAppData'
 
 export type UseAppDataParams = {
   chainId: SupportedChainId
@@ -25,6 +25,7 @@ export type UseAppDataParams = {
 export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useUpdateAtom(appDataInfoAtom)
+
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
 
@@ -39,19 +40,13 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
 
     const updateAppData = async (): Promise<void> => {
       try {
-        const { doc, calculatedAppData } = await buildAppData(params)
-        console.debug(`[useAppData] appDataInfo`, JSON.stringify(doc), calculatedAppData)
+        const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
+        console.debug(`[useAppData] appDataInfo`, fullAppData)
 
-        if (calculatedAppData?.appDataHash) {
-          setAppDataInfo({ doc, hash: calculatedAppData.appDataHash })
-        } else {
-          // For some reason failed to calculate the appDataHash, use a default hash
-          throw new Error("Couldn't calculate appDataHash")
-        }
+        setAppDataInfo({ doc, fullAppData, appDataKeccak256 })
       } catch (e: any) {
-        console.error(`[useAppData] failed to generate appData, falling back to default`, params)
-        console.error(e)
-        setAppDataInfo({ hash: APP_DATA_HASH })
+        console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+        setAppDataInfo(getAppData())
       }
     }
 

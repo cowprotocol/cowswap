@@ -207,6 +207,8 @@ export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheck
   'order/updateLastCheckedBlock'
 )
 
+export const clearOrdersStorage = createAction('order/clearOrdersStorage')
+
 export type SetIsOrderUnfillableParams = {
   id: UID
   chainId: ChainId

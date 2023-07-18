@@ -20,9 +20,9 @@ import { ZERO_ADDRESS } from 'legacy/constants/misc'
 import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
 import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
 
-import { getAppDataHash } from 'modules/appData'
+import { getAppData } from 'modules/appData'
 
-import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
 
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
@@ -45,7 +45,6 @@ const PROFILE_API_BASE_URL = getProfileUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-  'X-AppId': getAppDataHash(),
 }
 const API_NAME = 'CoW Protocol'
 /**
@@ -110,7 +109,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
-    appData: getAppDataHash(),
+    appData: getAppData().appDataKeccak256,
     validTo,
     partiallyFillable: false,
     priceQuality: priceQuality ? (priceQuality as PriceQuality) : undefined,
@@ -141,7 +140,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   const quoteParams = _mapNewToLegacyParams(params)
 
   return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
-    if (error instanceof OrderBookApiError<{ errorType: ApiErrorCodes }>) {
+    if (isOrderbookTypedError(error)) {
       const errorObject = mapOperatorErrorToQuoteError(error.body)
 
       return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
@@ -149,6 +148,13 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
 
     return Promise.reject(error)
   })
+}
+
+export type OrderbookTypedError = OrderBookApiError<ApiErrorObject>
+
+function isOrderbookTypedError(e: any): e is OrderbookTypedError {
+  const error = e as OrderbookTypedError
+  return error.body.errorType !== undefined && error.body.description !== undefined
 }
 
 export async function getOrder(chainId: ChainId, orderId: string, env?: CowEnv): Promise<EnrichedOrder | null> {

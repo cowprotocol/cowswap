@@ -5,13 +5,15 @@ import { COW } from 'legacy/constants/tokens'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
-import { getAppDataHash } from 'modules/appData'
+import { getAppData } from 'modules/appData'
 
 import { createTwapOrderTxs } from './createTwapOrderTxs'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
+
+const APP_DATA_HASH = getAppData().appDataKeccak256
 
 const chainId = SupportedChainId.GOERLI
 
@@ -23,7 +25,7 @@ const order: TWAPOrder = {
   startTime: 1684764716,
   timeInterval: 600,
   span: 0,
-  appData: getAppDataHash(),
+  appData: APP_DATA_HASH,
 }
 
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'

@@ -14,7 +14,7 @@ import { getCowSoundSend } from 'legacy/utils/sound'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useAppData, useUploadAppData } from 'modules/appData'
+import { useAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { useWalletInfo } from 'modules/wallet'
@@ -49,7 +49,6 @@ export function useCreateTwapOrder() {
 
   const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
 
-  const uploadAppData = useUploadAppData()
   const tradeConfirmActions = useTradeConfirmActions()
 
   const { priceImpact } = useTradePriceImpact()
@@ -126,7 +125,6 @@ export function useCreateTwapOrder() {
         getCowSoundSend().play()
         dispatchPresignedOrderPosted(store, orderId, summary, OrderClass.LIMIT)
 
-        uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
@@ -152,7 +150,6 @@ export function useCreateTwapOrder() {
       tradeConfirmActions,
       addTwapOrderToList,
       recipient,
-      uploadAppData,
       updateAdvancedOrdersState,
     ]
   )
