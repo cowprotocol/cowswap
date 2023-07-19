@@ -280,9 +280,8 @@ export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] 
  *
  * The difference is that this hook returns only orders that have the status PENDING
  * while usePendingOrders aggregates all pending states
- * @param chainId
  */
-export const useOnlyPendingOrders = (chainId: SupportedChainId | undefined): Order[] => {
+export const useOnlyPendingOrders = (chainId: SupportedChainId, orderClass: OrderClass): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.pending
   )
@@ -290,8 +289,11 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId | undefined): Ord
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
-  }, [state])
+    return Object.values(state)
+      .filter((order) => order?.order.class === orderClass)
+      .map(_deserializeOrder)
+      .filter(isTruthy)
+  }, [state, orderClass])
 }
 
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {

@@ -90,7 +90,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pending = useOnlyPendingOrders(chainId)
+  const pending = useOnlyPendingOrders(chainId, OrderClass.LIMIT)
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 
