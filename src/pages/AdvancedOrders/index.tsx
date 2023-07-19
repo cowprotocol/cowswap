@@ -36,7 +36,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget additionalOrders={allEmulatedOrders} />
+          <OrdersTableWidget orders={allEmulatedOrders} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
