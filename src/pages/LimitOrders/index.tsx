@@ -10,6 +10,7 @@ import {
   LIMIT_ORDER_SLIPPAGE,
 } from 'modules/limitOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
+import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function LimitOrderPage() {
@@ -27,7 +28,7 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget />
+          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

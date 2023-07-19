@@ -23,7 +23,7 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
@@ -158,7 +158,7 @@ export interface OrderRowProps {
   isChild?: boolean
   orderParams: OrderParams
   onClick: () => void
-  orderActions: LimitOrderActions
+  orderActions: OrderActions
   children?: JSX.Element
 }
 
