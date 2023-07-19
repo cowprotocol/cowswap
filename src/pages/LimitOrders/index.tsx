@@ -1,4 +1,9 @@
 import { useAtomValue } from 'jotai/utils'
+import { useMemo } from 'react'
+
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
+import { useOrders } from 'legacy/state/orders/hooks'
 
 import { AppDataUpdater } from 'modules/appData'
 import {
@@ -12,9 +17,15 @@ import {
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { useWalletInfo } from 'modules/wallet'
+
+import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
 export default function LimitOrderPage() {
+  const { chainId, account } = useWalletInfo()
   const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
+  const allLimitOrders = useOrders(chainId, account, OrderClass.LIMIT)
+  const onlyPlainLimitOrders = useMemo(() => allLimitOrders.filter(getIsNotComposableCowOrder), [allLimitOrders])
 
   return (
     <>
@@ -28,7 +39,7 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
+          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={onlyPlainLimitOrders} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
