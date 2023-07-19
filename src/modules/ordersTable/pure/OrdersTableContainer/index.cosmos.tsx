@@ -1,11 +1,11 @@
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
 
-import { OrdersTableContainer } from './index'
+import { OrdersTableContainer, TabOrderTypes } from './index'
 
 import { OrderTab } from '../../const/tabs'
 
@@ -30,7 +30,7 @@ const balancesAndAllowances: BalancesAndAllowances = {
   isLoading: false,
 }
 
-const orderActions: LimitOrderActions = {
+const orderActions: OrderActions = {
   getShowCancellationModal: (order) => {
     if (order.status === 'pending') {
       return () => alert('cancelling!')
@@ -62,5 +62,6 @@ export default (
     balancesAndAllowances={balancesAndAllowances}
     getSpotPrice={() => null}
     orderActions={orderActions}
+    orderType={TabOrderTypes.LIMIT}
   />
 )
