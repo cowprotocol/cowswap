@@ -1,6 +1,8 @@
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'
 
+import { isTruthy } from 'legacy/utils/misc'
+
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
 import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
@@ -10,6 +12,7 @@ import { updateOrderPopup } from './updateOrderPopup'
 
 import { AppState } from '../../index'
 import * as OrderActions from '../actions'
+import { getOrderByIdFromState } from '../helpers'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -34,27 +37,29 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const { chainId } = action.payload
 
     // use current state to lookup orders' data
-    const orders = store.getState().orders[chainId]
+    const ordersMap = store.getState().orders[chainId]
 
-    if (!orders) {
+    if (!ordersMap) {
       return result
     }
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
-      batchFulfillOrderPopup(store, action.payload, orders)
+      batchFulfillOrderPopup(store, action.payload, ordersMap)
     } else if (action.type === 'order/cancelOrdersBatch') {
       // Why is this and the next condition are not using a `isAnyOf` like the others?
       // Because these 3 actions (this and the next 2) have the exact same payload structure.
       // Seems like redux is not smart enough to differentiate based on action.type,
       // so we need to do it manually like this
 
-      batchCancelOrdersPopup(store, action.payload, orders)
+      const orders = action.payload.ids.map((id) => getOrderByIdFromState(ordersMap, id)?.order).filter(isTruthy)
+
+      batchCancelOrdersPopup(store, orders)
     } else if (action.type === 'order/expireOrdersBatch') {
       // construct Expired Order Popups for each Order
-      batchExpireOrdersPopup(store, action.payload, orders)
+      batchExpireOrdersPopup(store, action.payload, ordersMap)
     } else if (action.type === 'order/presignOrders') {
-      batchPresignOrdersPopup(store, action.payload, orders)
+      batchPresignOrdersPopup(store, action.payload, ordersMap)
     }
   }
 

@@ -68,8 +68,8 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
   set(twapOrdersAtom, currentState)
 })
 
-export const cancelTwapOrderAtom = atom(null, (get, set, orderId: string) => {
+export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, status: TwapOrderStatus) => {
   const currentState = get(twapOrdersAtom)
 
-  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status: TwapOrderStatus.Cancelling } })
+  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status } })
 })

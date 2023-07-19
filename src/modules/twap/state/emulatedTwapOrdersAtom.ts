@@ -29,7 +29,7 @@ export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
 
   if (!accountLowerCase) return []
 
-  const orderWithComposableCowInfo: Order[] = openOrders
+  return openOrders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
       const enrichedOrder = emulateTwapAsOrder(order)
@@ -57,6 +57,11 @@ export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
 
       return storeOrder
     })
+})
 
-  return orderWithComposableCowInfo
+export const emulatedTwapOrdersMapAtom = atom<{ [orderId: string]: Order }>((get) => {
+  return get(emulatedTwapOrdersAtom).reduce<{ [orderId: string]: Order }>((acc, order) => {
+    acc[order.id] = order
+    return acc
+  }, {})
 })
