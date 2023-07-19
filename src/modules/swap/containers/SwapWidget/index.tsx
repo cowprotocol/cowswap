@@ -172,6 +172,8 @@ export function SwapWidget() {
   // Show the same banner when approval is needed or selling native token
   const showSafeWcBundlingBanner = showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner
 
+  const canSellAllNative = isSafeWallet
+
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
@@ -232,6 +234,7 @@ export function SwapWidget() {
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
+    canSellAllNative,
     isExpertMode,
   }
 

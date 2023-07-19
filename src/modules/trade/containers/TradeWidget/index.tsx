@@ -11,7 +11,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -44,6 +44,7 @@ interface TradeWidgetParams {
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
+  canSellAllNative?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -80,6 +81,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     priceImpact,
     recipient,
     disableQuotePolling = false,
+    canSellAllNative = false,
     isExpertMode,
   } = params
 
@@ -87,11 +89,9 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-  const isSafeWallet = useIsSafeWallet()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
-  const canSellAllNative = isSafeWallet
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
