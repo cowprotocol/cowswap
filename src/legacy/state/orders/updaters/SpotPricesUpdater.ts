@@ -4,7 +4,7 @@ import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import { useUpdateAtom } from 'legacy/state/application/atoms'
+import { useSetAtom } from 'legacy/state/application/atoms'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
@@ -118,7 +118,7 @@ export function SpotPricesUpdater(): null {
   const { chainId } = useWalletInfo()
 
   const isWindowVisible = useIsWindowVisible()
-  const updateSpotPrices = useUpdateAtom(updateSpotPricesAtom)
+  const updateSpotPrices = useSetAtom(updateSpotPricesAtom)
   const markets = useMarkets(chainId)
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   const updatePending = useUpdatePending({ isUpdating, markets, updateSpotPrices })

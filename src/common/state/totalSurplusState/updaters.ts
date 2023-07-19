@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -15,7 +15,7 @@ import { totalSurplusAtom } from './atoms'
 export function TotalSurplusUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const nativeCurrency = useNativeCurrency()
-  const setTotalSurplus = useUpdateAtom(totalSurplusAtom)
+  const setTotalSurplus = useSetAtom(totalSurplusAtom)
 
   const fetcher = useCallback(
     async ([, chainId, account]: [string, number, string]) => {

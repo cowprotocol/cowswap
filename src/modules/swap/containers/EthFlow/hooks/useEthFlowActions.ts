@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'

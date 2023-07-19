@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -60,7 +60,7 @@ export function OrdersTableWidget({ orders: allOrders }: OrdersTableWidgetProps)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
+  const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
 

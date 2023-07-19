@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -27,7 +27,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
   const updateRate = useUpdateActiveRate()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 

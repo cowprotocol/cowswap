@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
@@ -62,7 +62,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
 
-  const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
+  const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
 
   useSetTradeQuoteParams(inputPartAmount)
 

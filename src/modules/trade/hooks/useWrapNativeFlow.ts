@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -38,7 +38,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { chainId } = useWalletInfo()
   const wethContract = useWETHContract()
   const addTransaction = useTransactionAdder()
-  const setWrapNativeState = useUpdateAtom(wrapNativeStateAtom)
+  const setWrapNativeState = useSetAtom(wrapNativeStateAtom)
 
   if (!wethContract || !chainId || !amount) {
     return null

@@ -4,7 +4,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'legacy/state/application/atoms'
+import { handleFollowPendingTxPopupAtom, useSetAtom } from 'legacy/state/application/atoms'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
@@ -40,7 +40,7 @@ export function TransactionConfirmationModal({
   operationType,
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
-  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
+  const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const { showSurplus: canShowSurplus } = useGetSurplusData(activityDerivedState?.order)

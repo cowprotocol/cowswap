@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import React, { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -38,7 +38,7 @@ const confirmationState: TradeConfirmationProps = {
 }
 
 function Custom({ stateValue }: { stateValue: string }) {
-  const updateWalletInfo = useUpdateAtom(walletInfoAtom)
+  const updateWalletInfo = useSetAtom(walletInfoAtom)
   const actions = useTradeConfirmActions()
 
   useEffect(() => {

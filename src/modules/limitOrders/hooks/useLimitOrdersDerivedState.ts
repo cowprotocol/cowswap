@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import {
@@ -14,7 +14,7 @@ export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
 
 export function useFillLimitOrdersDerivedState() {
   const rawState = useAtomValue(limitOrdersRawStateAtom)
-  const updateDerivedState = useUpdateAtom(limitOrdersDerivedStateAtom)
+  const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)
 
   const isUnlocked = rawState.isUnlocked
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom)

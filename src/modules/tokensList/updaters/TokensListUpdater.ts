@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
@@ -11,8 +11,8 @@ import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from 'modules/
  */
 export function TokensListUpdater() {
   const allTokens = useTokensListWithDefaults()
-  const updateTokensByAddress = useUpdateAtom(tokensByAddressAtom)
-  const updateTokensBySymbol = useUpdateAtom(tokensBySymbolAtom)
+  const updateTokensByAddress = useSetAtom(tokensByAddressAtom)
+  const updateTokensBySymbol = useSetAtom(tokensBySymbolAtom)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const allTokensMemo = useMemo(() => allTokens, [JSON.stringify(allTokens)])

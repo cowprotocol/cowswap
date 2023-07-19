@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

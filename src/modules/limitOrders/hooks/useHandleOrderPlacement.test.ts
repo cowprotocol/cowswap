@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { renderHook } from '@testing-library/react-hooks'
 
@@ -72,7 +72,7 @@ describe('useHandleOrderPlacement', () => {
     // Arrange
     renderHook(
       () => {
-        const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+        const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
         updateLimitOrdersState({ recipient })
       },

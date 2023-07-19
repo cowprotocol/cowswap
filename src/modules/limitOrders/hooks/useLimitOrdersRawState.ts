@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import {
   limitOrdersRawStateAtom,
@@ -11,5 +11,5 @@ export function useLimitOrdersRawState(): LimitOrdersRawState {
 }
 
 export function useUpdateLimitOrdersRawState(): (update: Partial<LimitOrdersRawState>) => void {
-  return useUpdateAtom(updateLimitOrdersRawStateAtom)
+  return useSetAtom(updateLimitOrdersRawStateAtom)
 }

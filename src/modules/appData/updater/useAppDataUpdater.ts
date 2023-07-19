@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -24,7 +24,7 @@ export type UseAppDataParams = {
  */
 export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
-  const setAppDataInfo = useUpdateAtom(appDataInfoAtom)
+  const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
