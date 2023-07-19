@@ -16,7 +16,7 @@ export const twapTimeIntervalAtom = atom<number>((get) => {
   const { numberOfPartsValue, isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
   const seconds = isCustomDeadline ? customDeadlineToSeconds(customDeadline) : deadline / 1000
 
-  return seconds / numberOfPartsValue
+  return Math.ceil(seconds / numberOfPartsValue)
 })
 
 /**
