@@ -9,6 +9,8 @@ import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 import { isTruthy } from 'legacy/utils/misc'
 
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
+
 import { OrderID } from 'api/gnosisProtocol'
 
 import {
@@ -201,16 +203,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
   return useMemo(() => {
     if (!state) return {}
 
-    return {
-      ...state.pending,
-      ...state.presignaturePending,
-      ...state.fulfilled,
-      ...state.expired,
-      ...state.cancelled,
-      ...state.creating,
-      ...state.failed,
-      ...state.scheduled,
-    }
+    return flatOrdersStateNetwork(state)
   }, [state])
 }
 
