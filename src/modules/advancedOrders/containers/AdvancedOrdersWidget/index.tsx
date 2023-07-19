@@ -15,8 +15,7 @@ import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advance
 import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
-import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -58,13 +57,10 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
-  const { inputPartAmount } = useAtomValue(partsStateAtom)
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
 
   const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
-
-  useSetTradeQuoteParams(inputPartAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
