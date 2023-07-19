@@ -13,7 +13,7 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
 
 export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
   const { safeAddress, id, status, executionInfo } = item
-  const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData } = item.order
+  const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData, receiver } = item.order
   const numOfParts = BigInt(n)
   const sellAmountValue = BigInt(partSellAmount) * numOfParts
   const buyAmount = BigInt(minPartLimit) * numOfParts
@@ -47,5 +47,6 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
     executedBuyAmount,
     executedFeeAmount,
     invalidated: status === TwapOrderStatus.Cancelling,
+    receiver,
   }
 }
