@@ -1,8 +1,6 @@
 import { Atom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { SetAtom } from 'jotai/core/atom'
-
 interface NotificationState {
   isClosed: boolean
 }
@@ -61,7 +59,8 @@ function getNotificationStateAtom(key: string | undefined) {
   }
 }
 
-export function useNotificationState(key: string | undefined): [NotificationState, SetAtom<NotificationState, void>] {
+// TODO: replace any
+export function useNotificationState(key: string | undefined): [NotificationState, any] {
   const [notificationState, setNotificationState] = useAtom(getNotificationStateAtom(key))
 
   if (typeof key === 'string') {

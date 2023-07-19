@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -26,7 +26,7 @@ export function CreatedInOrderBookOrdersUpdater() {
   const tokensByAddress = useAtomValue(tokensByAddressAtom)
   const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
-  const markPartOrdersAsCreated = useUpdateAtom(markPartOrdersAsCreatedAtom)
+  const markPartOrdersAsCreated = useSetAtom(markPartOrdersAsCreatedAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
 
   const twapPartOrdersMap = useMemo(() => {

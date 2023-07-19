@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -190,7 +190,7 @@ export function GpOrdersUpdater(): null {
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const getToken = useTokenLazy()
-  const updateApiOrders = useUpdateAtom(apiOrdersAtom)
+  const updateApiOrders = useSetAtom(apiOrdersAtom)
   const gpOrders = useGpOrders()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added

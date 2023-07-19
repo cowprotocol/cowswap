@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
@@ -15,7 +15,7 @@ export function useAdvancedOrdersDerivedState(): AdvancedOrdersDerivedState {
 
 export function useFillAdvancedOrdersDerivedState() {
   const rawState = useAtomValue(advancedOrdersAtom)
-  const updateDerivedState = useUpdateAtom(advancedOrdersDerivedStateAtom)
+  const updateDerivedState = useSetAtom(advancedOrdersDerivedStateAtom)
 
   const derivedState = useBuildTradeDerivedState(advancedOrdersAtom)
   const isUnlocked = rawState.isUnlocked

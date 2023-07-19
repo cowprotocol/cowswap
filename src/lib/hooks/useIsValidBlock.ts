@@ -1,6 +1,7 @@
-import { atomWithImmer } from 'jotai/immer'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
+
+import { atomWithImmer } from 'jotai-immer'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -13,7 +14,7 @@ const DEFAULT_MAX_BLOCK_AGE = 10
 
 export function useSetOldestValidBlock(): (block: number) => void {
   const { chainId } = useWalletInfo()
-  const updateValidBlock = useUpdateAtom(oldestBlockMapAtom)
+  const updateValidBlock = useSetAtom(oldestBlockMapAtom)
   return useCallback(
     (block: number) => {
       if (!chainId) return

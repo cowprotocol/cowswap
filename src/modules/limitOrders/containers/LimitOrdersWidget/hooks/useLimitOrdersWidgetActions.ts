@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -23,7 +23,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
   const onCurrencySelection = useOnCurrencySelection()
 

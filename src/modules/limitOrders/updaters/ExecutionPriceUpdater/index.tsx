@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -10,7 +10,7 @@ import { calculateExecutionPrice } from 'utils/orderUtils/calculateExecutionPric
 export function ExecutionPriceUpdater() {
   const { marketRate, feeAmount } = useAtomValue(limitRateAtom)
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()
-  const setExecutionPrice = useUpdateAtom(executionPriceAtom)
+  const setExecutionPrice = useSetAtom(executionPriceAtom)
 
   const price = calculateExecutionPrice({
     inputCurrencyAmount,

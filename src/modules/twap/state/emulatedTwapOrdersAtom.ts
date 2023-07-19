@@ -21,7 +21,7 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
 }
 
-export const emulatedTwapOrdersAtom = atom((get) => {
+export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
   const openOrders = get(openTwapOrdersAtom)
   const tokensByAddress = get(tokensByAddressAtom)

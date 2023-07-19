@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -21,7 +21,7 @@ type CurrencyAmountProps = {
 }
 
 export function useUpdateCurrencyAmount() {
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
   return useCallback(
