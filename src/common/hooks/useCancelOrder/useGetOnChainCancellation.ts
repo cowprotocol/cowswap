@@ -4,7 +4,7 @@ import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useCo
 import { Order } from 'legacy/state/orders/actions'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
-import { useCancelTwapOrder } from 'modules/twap/hooks/useCancelTwapOrder'
+import { useCancelTwapOrder } from 'modules/twap'
 
 import {
   getEthFlowCancellation,

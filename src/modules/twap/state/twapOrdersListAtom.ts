@@ -8,7 +8,7 @@ import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { deepEqual } from 'utils/deepEqual'
 
-import { TWAP_PENDING_STATUSES } from '../const'
+import { TWAP_FINAL_STATUSES, TWAP_PENDING_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
@@ -70,6 +70,9 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
 
 export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, status: TwapOrderStatus) => {
   const currentState = get(twapOrdersAtom)
+  const currentOrder = currentState[orderId]
 
-  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status } })
+  if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) return
+
+  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentOrder, status } })
 })

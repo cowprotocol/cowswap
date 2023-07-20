@@ -4,7 +4,9 @@ import { Middleware } from 'redux'
 
 import { isTruthy } from 'legacy/utils/misc'
 
-import { emulatedTwapOrdersMapAtom, setTwapOrderStatusAtom, TwapOrderStatus } from 'modules/twap'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { setTwapOrderStatusAtom, twapOrdersAtom, TwapOrderStatus } from 'modules/twap'
+import { mapTwapOrderToStoreOrder } from 'modules/twap/utils/mapTwapOrderToStoreOrder'
 
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 
@@ -19,8 +21,11 @@ export const composableOrdersPopupMiddleware: Middleware<Record<string, unknown>
 
     if (isCancelOrdersBatch(action)) {
       // TODO: generalize this to all composable orders, not only twap
-      const composableOrders = jotaiStore.get(emulatedTwapOrdersMapAtom)
-      const cancelledOrders = action.payload.ids.map((id) => composableOrders[id]).filter(isTruthy)
+      const composableOrders = jotaiStore.get(twapOrdersAtom)
+      const tokensByAddress = jotaiStore.get(tokensByAddressAtom)
+
+      const cancelledOrdersItems = action.payload.ids.map((id) => composableOrders[id]).filter(isTruthy)
+      const cancelledOrders = cancelledOrdersItems.map((order) => mapTwapOrderToStoreOrder(order, tokensByAddress))
 
       batchCancelOrdersPopup(store, cancelledOrders)
 

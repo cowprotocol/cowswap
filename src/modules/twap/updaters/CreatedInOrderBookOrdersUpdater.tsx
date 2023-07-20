@@ -10,7 +10,7 @@ import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { markPartOrdersAsCreatedAtom, TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 const isVirtualPart = false
@@ -26,7 +26,7 @@ export function CreatedInOrderBookOrdersUpdater() {
   const tokensByAddress = useAtomValue(tokensByAddressAtom)
   const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
-  const markPartOrdersAsCreated = useSetAtom(markPartOrdersAsCreatedAtom)
+  const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
 
   const twapPartOrdersMap = useMemo(() => {
@@ -55,21 +55,18 @@ export function CreatedInOrderBookOrdersUpdater() {
   useEffect(() => {
     if (!partOrdersFromProd.length) return
 
-    const createdInOrderBookOrders = partOrdersFromProd.reduce<{ [parentId: string]: string[] }>((acc, val) => {
-      const parentId = val.composableCowInfo?.parentId
+    const createdInOrderBookOrders = partOrdersFromProd.reduce<{ [orderId: string]: { isCreatedInOrderBook: true } }>(
+      (acc, order) => {
+        acc[order.id] = { isCreatedInOrderBook: true }
 
-      if (parentId) {
-        acc[parentId] = acc[parentId] || []
+        return acc
+      },
+      {}
+    )
 
-        acc[parentId].push(val.id)
-      }
-
-      return acc
-    }, {})
-
-    markPartOrdersAsCreated(createdInOrderBookOrders)
+    updatePartOrders(createdInOrderBookOrders)
     addOrUpdateOrders({ orders: partOrdersFromProd, chainId })
-  }, [chainId, partOrdersFromProd, addOrUpdateOrders, markPartOrdersAsCreated])
+  }, [chainId, partOrdersFromProd, addOrUpdateOrders, updatePartOrders])
 
   return null
 }
