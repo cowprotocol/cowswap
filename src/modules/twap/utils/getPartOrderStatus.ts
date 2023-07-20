@@ -11,18 +11,19 @@ export function getPartOrderStatus(
   isVirtualPart: boolean
 ): OrderStatus {
   const isExpired = isOrderExpired(enrichedOrder)
+  const isCancelled = isOrderCancelled(enrichedOrder) || enrichedOrder.status === SdkOrderStatus.CANCELLED
 
   if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
   if (isOrderFulfilled(enrichedOrder)) return OrderStatus.FULFILLED
 
   if (parent.status === TwapOrderStatus.Cancelled) {
-    if (!isVirtualPart && isExpired) {
+    if (!isVirtualPart && isExpired && !isCancelled) {
       return OrderStatus.EXPIRED
     }
 
     return OrderStatus.CANCELLED
   }
-  if (isOrderCancelled(enrichedOrder) || enrichedOrder.status === SdkOrderStatus.CANCELLED) return OrderStatus.CANCELLED
+  if (isCancelled) return OrderStatus.CANCELLED
 
   if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
   if (isExpired) return OrderStatus.EXPIRED
