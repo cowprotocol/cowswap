@@ -20,6 +20,7 @@ export interface TwapPartOrderItem {
 
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 
+// Fields that are stored only in localStorage
 const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isCancelling']
 
 export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
