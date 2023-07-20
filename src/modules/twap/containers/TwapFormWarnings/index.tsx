@@ -17,14 +17,20 @@ import {
   SmallPartVolumeWarning,
   UnsupportedWalletWarning,
 } from './warnings'
+import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 
 import { useAdvancedOrdersDerivedState } from '../../../advancedOrders'
 import { TradeFormValidation, useGetTradeFormValidation } from '../../../tradeFormValidation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { twapOrderAtom } from '../../state/twapOrderAtom'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
+import {
+  twapOrderSlippageAtom,
+  twapOrdersSettingsAtom,
+  updateTwapOrdersSettingsAtom,
+} from '../../state/twapOrdersSettingsAtom'
+import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
 
 const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap, TradeFormValidation.ExpertApproveAndSwap]
 
@@ -37,6 +43,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const twapOrder = useAtomValue(twapOrderAtom)
+  const slippage = useAtomValue(twapOrderSlippageAtom)
+  const deadline = useAtomValue(twapDeadlineAtom)
   const { outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const primaryFormValidation = useGetTradeFormValidation()
 
@@ -57,7 +65,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const showZeroApprovalWarning = !isConfirmationModal && shouldZeroApprove && outputCurrencyAmount !== null
   const showApprovalBundlingBanner =
     !isConfirmationModal && primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
-  const showFallbackHandlerWarning = !isConfirmationModal && canTrade && isFallbackHandlerRequired
+  const showTradeFormWarnings = !isConfirmationModal && canTrade
+  const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
 
   const setIsPriceImpactAccepted = useCallback(() => {
     updateTwapOrdersSettings({ isPriceImpactAccepted: !isPriceImpactAccepted })
@@ -99,6 +108,10 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
               toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
             />
           )
+        }
+
+        if (showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage)) {
+          return <SmallPriceProtectionWarning />
         }
 
         return null
