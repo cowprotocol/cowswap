@@ -33,6 +33,7 @@ import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { parseTwapErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 export function useCreateTwapOrder() {
@@ -87,14 +88,14 @@ export function useCreateTwapOrder() {
         orderClass: 'TWAP',
       }
 
-      const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
-      const orderId = getConditionalOrderId(paramsStruct)
-
-      tradeConfirmActions.onSign(pendingTrade)
-      tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
-      twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
-
       try {
+        const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
+        const orderId = getConditionalOrderId(paramsStruct)
+
+        tradeConfirmActions.onSign(pendingTrade)
+        tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
+        twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
+
         const fallbackSetupTxs = fallbackHandlerIsNotSet
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
@@ -130,8 +131,9 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
       } catch (error) {
-        tradeConfirmActions.onError(error.message || error)
-        tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
+        const errorMessage = parseTwapErrorMessage(error)
+        tradeConfirmActions.onError(errorMessage)
+        tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
       }
     },
