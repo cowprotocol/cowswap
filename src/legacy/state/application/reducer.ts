@@ -32,6 +32,7 @@ export interface MetaTxPopupContent {
     id: string
     success?: boolean
     summary?: string | JSX.Element
+    isComposableOrder?: boolean
   }
 }
 

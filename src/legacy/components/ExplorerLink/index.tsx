@@ -8,11 +8,14 @@ import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { getSafeWebUrl } from 'api/gnosisSafe'
+
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType
   label?: string
   className?: string
   defaultChain?: SupportedChainId
+  isComposableOrder?: boolean
 }
 
 interface PropsWithId extends PropsBase {
@@ -31,17 +34,18 @@ export type Props = PropsWithId | PropsWithoutId
  * @param props
  */
 export function ExplorerLink(props: Props) {
-  const { chainId: _chainId } = useWalletInfo()
-  const chainId = _chainId || props.defaultChain
+  const { chainId, account } = useWalletInfo()
 
-  if (!chainId) {
-    return null
-  }
+  if (!account) return null
 
-  const url = getUrl(chainId, props)
+  const { isComposableOrder = false } = props
+  const url = getUrl(chainId, isComposableOrder, account, props)
+
+  if (!url) return null
+
   const { className } = props
 
-  const linkContent = getContent(chainId, props)
+  const linkContent = getContent(chainId, isComposableOrder, props)
   return (
     <ExternalLink className={className} href={url}>
       {linkContent}
@@ -49,11 +53,15 @@ export function ExplorerLink(props: Props) {
   )
 }
 
-function getUrl(chainId: SupportedChainId, props: Props) {
+function getUrl(chainId: SupportedChainId, isComposableOrder: boolean, account: string, props: Props) {
   const { type } = props
 
   if (type === 'cow-explorer-home') {
     return getExplorerBaseUrl(chainId)
+  }
+
+  if (isComposableOrder) {
+    return getSafeWebUrl(chainId, account, props.id)
   }
 
   // return
@@ -67,12 +75,12 @@ function getLabel(chainId: SupportedChainId, props: Props) {
 
   return label || getExplorerLabel(chainId, type, id)
 }
-function getContent(chainId: SupportedChainId, props: Props) {
+function getContent(chainId: SupportedChainId, isComposableOrder: boolean, props: Props) {
   if (props.children) {
     return props.children
   }
 
-  const linkLabel = getLabel(chainId, props)
+  const linkLabel = isComposableOrder ? 'View on Safe' : getLabel(chainId, props)
 
   return (
     <>

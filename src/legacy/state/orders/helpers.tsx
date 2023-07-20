@@ -25,6 +25,7 @@ enum OrderIdType {
 interface BasePopupContent {
   success: boolean
   summary: string | JSX.Element
+  isComposableOrder?: boolean
 }
 
 type IdOrHash<K extends OrderIdType, T extends OrderTxTypes> = {
@@ -60,7 +61,13 @@ function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryPar
 // Metatxn popup
 export function setPopupData(
   type: OrderTxTypes.METATXN,
-  { success, id, summary, status, descriptor }: SetOrderSummaryParams & { success?: boolean }
+  {
+    success,
+    id,
+    summary,
+    status,
+    descriptor,
+  }: SetOrderSummaryParams & { success?: boolean; isComposableOrder: boolean }
 ): { key?: string; content: MetaPopupContent }
 // Txn popup
 export function setPopupData(
@@ -69,7 +76,7 @@ export function setPopupData(
 ): { key?: string; content: TxnPopupContent }
 export function setPopupData(
   type: OrderTxTypes,
-  { hash, success = true, id, summary, status, descriptor }: any
+  { hash, success = true, id, summary, status, descriptor, isComposableOrder }: any
 ): { key?: string; content: TxnPopupContent | MetaPopupContent } {
   const key = id + '_' + status
   const baseContent = {
@@ -95,6 +102,7 @@ export function setPopupData(
       metatxn: {
         id,
         ...baseContent,
+        isComposableOrder,
       },
     }
   }

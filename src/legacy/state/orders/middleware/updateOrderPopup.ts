@@ -19,7 +19,7 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
   // This was a presign order created hidden
   // Trigger the popup if order is no longer hidden
   if (!order.isHidden && orderObject) {
-    dispatchPresignedOrderPosted(store, order.id, orderObject.order.summary, orderObject.order.class)
+    dispatchPresignedOrderPosted(store, order.id, orderObject.order.summary, orderObject.order.class, false)
   }
 }
 
@@ -27,12 +27,14 @@ export function dispatchPresignedOrderPosted(
   store: MiddlewareAPI<Dispatch>,
   orderId: string,
   summary: string,
-  orderClass: OrderClass
+  orderClass: OrderClass,
+  isComposableOrder: boolean
 ) {
   const popup = setPopupData(OrderTxTypes.METATXN, {
     summary,
     status: 'submitted',
     id: orderId,
+    isComposableOrder,
   })
   orderAnalytics('Posted', orderClass, 'Presign')
 

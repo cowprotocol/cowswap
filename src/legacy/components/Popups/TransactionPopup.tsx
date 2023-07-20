@@ -17,10 +17,12 @@ const RowNoFlex = styled(AutoRow)`
 export function TransactionPopup({
   hash,
   success,
+  isComposableOrder,
   summary,
 }: {
   hash: string
   success?: boolean
+  isComposableOrder?: boolean
   summary?: string | JSX.Element
 }) {
   const { chainId } = useWalletInfo()
@@ -40,7 +42,7 @@ export function TransactionPopup({
         ) : (
           summary
         )}
-        {chainId && <ExplorerLink id={hash} type="transaction" />}
+        {chainId && <ExplorerLink id={hash} isComposableOrder={isComposableOrder} type="transaction" />}
       </AutoColumn>
     </RowNoFlex>
   )
