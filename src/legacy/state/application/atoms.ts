@@ -1,9 +1,10 @@
 import { atom } from 'jotai'
-import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
+import { useSetAtom, useAtomValue } from 'jotai'
+import { atomWithStorage, selectAtom } from 'jotai/utils'
 
 import { OrderID } from 'api/gnosisProtocol'
 
-export { useUpdateAtom, useAtomValue, selectAtom }
+export { useSetAtom, useAtomValue, selectAtom }
 
 type FollowPendingTxPopup = {
   showPopup: boolean

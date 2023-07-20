@@ -62,7 +62,7 @@ function chainToChainId(chain: Chain) {
 }
 
 const tokenLogoCacheAtom = atom<TokenLogoCache>(new Map())
-const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 'address' | 'project'>>(
+const tokenLogoCache = atom<TokenLogoCache, [Pick<FetchTokensResult, 'chainId' | 'address' | 'project'>], unknown>(
   (get) => get(tokenLogoCacheAtom),
   (get, _, { chainId, address, project: { logoUrl } }) => {
     const cache = get(tokenLogoCacheAtom)

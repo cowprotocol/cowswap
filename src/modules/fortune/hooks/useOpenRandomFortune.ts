@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { CheckedFortunesList, checkedFortunesListAtom } from 'modules/fortune/state/checkedFortunesListAtom'
@@ -18,7 +18,7 @@ function getRandomFortuneFromList(items: FortuneItem[], checkedFortunes: Checked
 
 export function useOpenRandomFortune() {
   const fortunesList = useAtomValue(fortunesListAtom)
-  const setOpenFortuneAtom = useUpdateAtom(updateOpenFortuneAtom)
+  const setOpenFortuneAtom = useSetAtom(updateOpenFortuneAtom)
   const [checkedFortunes, setCheckedFortunes] = useAtom(checkedFortunesListAtom)
 
   return useCallback(() => {

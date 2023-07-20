@@ -16820,10 +16820,10 @@ joi@^17.7.0:
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
 
-jotai@1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.7.0.tgz#b22e4cb995270a0215564990eeacc804025eb557"
-  integrity sha512-4KuvLcPuzzd86P2YHgU6cnu07HMDXgSyuakMNT/j+ihTN2cTjzmg9sCq59f4H9ImPe02wgdYBJ6LKIySNEAD/w==
+jotai@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.2.0.tgz#80c176efeb59d32d7eef7f14510ba8e01ef7b0db"
+  integrity sha512-2gsMVpoaBa6aPHLArNhphck4+n8unZ8xF4Ciqhb+Z+tjsvabn5QFisNFHBMWooMAAmmTNU5TcvBIP8/XAsZy8Q==
 
 jpeg-js@^0.4.2:
   version "0.4.4"

@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
@@ -289,7 +289,7 @@ const StyledCloseIcon = styled(X)`
 export function FortuneWidget() {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
-  const updateOpenFortune = useUpdateAtom(updateOpenFortuneAtom)
+  const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
   const [isFortunesFeatureDisabled, setIsFortunesFeatureDisabled] = useAtom(isFortunesFeatureDisabledAtom)
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)

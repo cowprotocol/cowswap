@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { RefreshCw } from 'react-feather'
@@ -41,7 +41,7 @@ export function RateInput() {
     initialRate,
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
-  const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 

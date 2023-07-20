@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
@@ -15,7 +15,7 @@ import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
-  const cancelTwapOrder = useUpdateAtom(cancelTwapOrderAtom)
+  const cancelTwapOrder = useSetAtom(cancelTwapOrderAtom)
   const safeAppsSdk = useSafeAppsSdk()
   const settlementContract = useGP2SettlementContract()
   const composableCowContract = useComposableCowContract()

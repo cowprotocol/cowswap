@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
@@ -38,7 +38,7 @@ import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
-  const addTwapOrderToList = useUpdateAtom(addTwapOrderToListAtom)
+  const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
 
   const { inputCurrencyAmount, outputCurrencyAmount, recipient } = useAdvancedOrdersDerivedState()
 
@@ -47,7 +47,7 @@ export function useCreateTwapOrder() {
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
+  const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
 
   const tradeConfirmActions = useTradeConfirmActions()
 

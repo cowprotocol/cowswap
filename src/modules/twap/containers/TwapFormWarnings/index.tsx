@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { modifySafeHandlerAnalytics } from 'legacy/components/analytics/events/twapEvents'
@@ -35,7 +35,7 @@ interface TwapFormWarningsProps {
 
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
   const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
-  const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const twapOrder = useAtomValue(twapOrderAtom)
   const { outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const primaryFormValidation = useGetTradeFormValidation()

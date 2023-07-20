@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
@@ -27,8 +27,8 @@ export function TwapOrdersUpdater(props: {
   const { safeAddress, chainId, composableCowContract } = props
 
   const twapOrdersList = useAtomValue(twapOrdersAtom)
-  const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
-  const deleteTwapOrders = useUpdateAtom(deleteTwapOrdersFromListAtom)
+  const updateTwapOrders = useSetAtom(updateTwapOrdersListAtom)
+  const deleteTwapOrders = useSetAtom(deleteTwapOrdersFromListAtom)
   const safeInfo = useGnosisSafeInfo()
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
   const safeNonce = safeInfo?.nonce

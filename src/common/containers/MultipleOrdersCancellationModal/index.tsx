@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
 import { ButtonPrimary } from 'legacy/components/Button'
@@ -25,7 +25,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   const { chainId } = useWalletInfo()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
+  const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const cancelAll = useCancelMultipleOrders()
   const cancelPendingOrder = useRequestOrderCancellation()
   const [cancellationInProgress, setCancellationInProgress] = useState(false)
