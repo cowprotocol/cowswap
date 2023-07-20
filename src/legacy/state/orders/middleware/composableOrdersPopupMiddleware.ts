@@ -5,7 +5,8 @@ import { Middleware } from 'redux'
 import { isTruthy } from 'legacy/utils/misc'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { setTwapOrderStatusAtom, twapOrdersAtom, TwapOrderStatus } from 'modules/twap'
+import { setTwapOrderStatusAtom, twapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
+import { TwapOrderStatus } from 'modules/twap/types'
 import { mapTwapOrderToStoreOrder } from 'modules/twap/utils/mapTwapOrderToStoreOrder'
 
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
