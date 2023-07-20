@@ -9,9 +9,10 @@ const TwapErrorMessages = {
 function parseInvalidArgumentError(error: any) {
   const regex = /(?<=\(argument=")[^"]+(?=",)/g
   const matches = error.message.match(regex)
-  const invalidAgument = matches?.length ? matches[1] : ''
+  const invalidArgument = matches?.length ? matches[1] : ''
+  const str = invalidArgument ? `"${invalidArgument}" ` : ''
 
-  return `Invalid argument "${invalidAgument}" provided`
+  return `Invalid argument ${str}provided`
 }
 
 export function parseTwapErrorMessage(error: any) {
@@ -20,6 +21,6 @@ export function parseTwapErrorMessage(error: any) {
       return parseInvalidArgumentError(error)
 
     default:
-      return TwapErrorMessages.DEFAULT
+      return error.message || TwapErrorMessages.DEFAULT
   }
 }
