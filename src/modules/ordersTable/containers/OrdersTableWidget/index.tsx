@@ -13,7 +13,7 @@ import { OPEN_TAB, ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
 import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
 import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
@@ -26,7 +26,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
 import { getParsedOrderFromItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
@@ -49,9 +49,10 @@ const ContentWrapper = styled.div`
 
 export interface OrdersTableWidgetProps {
   orders: Order[]
+  orderType: TabOrderTypes
 }
 
-export function OrdersTableWidget({ orders: allOrders }: OrdersTableWidgetProps) {
+export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
@@ -120,7 +121,7 @@ export function OrdersTableWidget({ orders: allOrders }: OrdersTableWidgetProps)
     [allOrders, cancelOrder]
   )
 
-  const orderActions: LimitOrderActions = {
+  const orderActions: OrderActions = {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
@@ -150,6 +151,7 @@ export function OrdersTableWidget({ orders: allOrders }: OrdersTableWidgetProps)
           getSpotPrice={getSpotPrice}
           selectedOrders={ordersToCancel}
           allowsOffchainSigning={allowsOffchainSigning}
+          orderType={orderType}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>

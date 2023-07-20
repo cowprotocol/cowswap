@@ -23,7 +23,7 @@ import {
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
@@ -204,7 +204,7 @@ export interface OrdersTableProps {
   selectedOrders: CancellableOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  orderActions: LimitOrderActions
+  orderActions: OrderActions
 }
 
 export function OrdersTable({
