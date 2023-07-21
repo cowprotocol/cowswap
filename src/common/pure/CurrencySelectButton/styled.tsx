@@ -9,12 +9,14 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   align-items: center;
   cursor: pointer;
   gap: 6px;
-  border: 0;
+  border: ${({ theme }) => (theme.darkMode ? `1px solid ${transparentize(0.5, theme.grey1)}` : 0)};
   outline: none;
   background-color: ${({ theme, $stubbed }) => ($stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
   color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
   box-shadow: ${({ theme }) =>
-    theme.darkMode ? `0px 4px 8px ${theme.black}` : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
+    theme.darkMode
+      ? `0px 4px 8px ${transparentize(0.32, theme.black)}`
+      : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: 16px;

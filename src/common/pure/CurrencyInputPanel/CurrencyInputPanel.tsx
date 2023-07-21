@@ -127,7 +127,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   return (
     <styledEl.OuterWrapper>
-      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
+      <styledEl.Wrapper
+        id={id}
+        className={className}
+        withReceiveAmountInfo={!!receiveAmountInfo}
+        disabled={disabled}
+        inputDisabled={inputDisabled}
+      >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox>
