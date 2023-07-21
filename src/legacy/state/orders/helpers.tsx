@@ -67,7 +67,7 @@ export function setPopupData(
     summary,
     status,
     descriptor,
-  }: SetOrderSummaryParams & { success?: boolean; isComposableOrder: boolean }
+  }: SetOrderSummaryParams & { success?: boolean; isComposableOrder?: boolean }
 ): { key?: string; content: MetaPopupContent }
 // Txn popup
 export function setPopupData(
