@@ -11,6 +11,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
+import { RateInput } from 'modules/limitOrders/containers/RateInput'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -56,6 +57,7 @@ export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
+  console.log(RateInput)
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
   const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
@@ -137,38 +139,46 @@ export function TwapFormWidget() {
           />
         </styledEl.Row>
       )}
-      <TradeNumberInput
-        value={+twapOrderSlippage.toFixed(2)}
-        onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
-        decimalsPlaces={2}
-        placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-        max={MAX_TWAP_SLIPPAGE}
-        label={LABELS_TOOLTIPS.slippage.label}
-        tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-        prefixComponent={
-          <em>
-            {limitPrice ? (
-              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
-            ) : (
-              '0'
-            )}
-          </em>
-        }
-        suffix="%"
-        step={0.1}
-      />
-      <styledEl.Row>
+      <div style={{ display: 'none' }}>
         <TradeNumberInput
-          value={numberOfPartsValue}
-          onUserInput={(value: number | null) =>
-            updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+          value={+twapOrderSlippage.toFixed(2)}
+          onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
+          decimalsPlaces={2}
+          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
+          max={MAX_TWAP_SLIPPAGE}
+          label={LABELS_TOOLTIPS.slippage.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+          prefixComponent={
+            <em>
+              {limitPrice ? (
+                <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+              ) : (
+                '0'
+              )}
+            </em>
           }
-          min={DEFAULT_NUM_OF_PARTS}
-          label={LABELS_TOOLTIPS.numberOfParts.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
+          suffix="%"
+          step={0.1}
         />
-      </styledEl.Row>
 
+        <styledEl.Row>
+          <TradeNumberInput
+            value={numberOfPartsValue}
+            onUserInput={(value: number | null) =>
+              updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+            }
+            min={DEFAULT_NUM_OF_PARTS}
+            label={LABELS_TOOLTIPS.numberOfParts.label}
+            tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
+          />
+        </styledEl.Row>
+      </div>
+      {/* <RateInput /> */}
+      {/* <styledEl.RateWrapper> */}
+      <RateInput />
+      <RateInput />
+      {/* <DeadlineInput /> */}
+      {/* </styledEl.RateWrapper> */}
       <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
@@ -185,9 +195,9 @@ export function TwapFormWidget() {
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>
-
-      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
-
+      <div style={{ display: 'none' }}>
+        <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
+      </div>
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}

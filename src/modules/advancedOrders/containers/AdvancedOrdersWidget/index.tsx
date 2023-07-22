@@ -23,17 +23,17 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
 export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
-  { content: 'Customize your order size, expiration, and number of parts' },
-  { content: 'Always receive 100% of your order surplus' },
-  { content: 'Reduce your slippage by breaking big orders into smaller ones' },
+  { content: 'My custom point on why out product is great' },
+  { content: 'My custom point on why out product is great' },
+  { content: 'My custom point on why out product is great' },
+  { content: 'My custom point on why out product is great' },
 ]
 
 const UNLOCK_SCREEN = {
-  title: 'Unlock the Power of Advanced Orders',
-  subtitle: 'Begin with TWAP Today!',
+  title: 'Unlock the Power of Dutch auctions',
+  subtitle: 'Begin with auctions today!',
   orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders (BETA)',
+  buttonText: 'Unlock dutch orders (BETA)',
   // TODO: add actual link before deploy to PROD
   buttonLink: '',
 }

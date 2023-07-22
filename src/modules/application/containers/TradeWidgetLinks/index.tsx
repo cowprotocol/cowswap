@@ -21,7 +21,7 @@ const menuItems: MenuItemConfig[] = [
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
   {
     route: Routes.ADVANCED_ORDERS,
-    label: 'Advanced',
+    label: 'Dutch',
     featureGuard: 'advancedOrdersEnabled',
   },
 ]
