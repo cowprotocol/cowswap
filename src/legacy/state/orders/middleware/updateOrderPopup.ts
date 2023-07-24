@@ -3,6 +3,8 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
+import { BlockExplorerLinkType } from 'legacy/utils'
+
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
@@ -19,7 +21,7 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
   // This was a presign order created hidden
   // Trigger the popup if order is no longer hidden
   if (!order.isHidden && orderObject) {
-    dispatchPresignedOrderPosted(store, order.id, orderObject.order.summary, orderObject.order.class, false)
+    dispatchPresignedOrderPosted(store, order.id, orderObject.order.summary, orderObject.order.class)
   }
 }
 
@@ -28,13 +30,13 @@ export function dispatchPresignedOrderPosted(
   orderId: string,
   summary: string,
   orderClass: OrderClass,
-  isComposableOrder: boolean
+  orderType: BlockExplorerLinkType = 'transaction'
 ) {
   const popup = setPopupData(OrderTxTypes.METATXN, {
     summary,
     status: 'submitted',
     id: orderId,
-    isComposableOrder,
+    orderType,
   })
   orderAnalytics('Posted', orderClass, 'Presign')
 

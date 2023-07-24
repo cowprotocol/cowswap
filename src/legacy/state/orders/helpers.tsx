@@ -1,4 +1,4 @@
-import { formatOrderId } from 'legacy/utils'
+import { BlockExplorerLinkType, formatOrderId } from 'legacy/utils'
 
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'
@@ -10,6 +10,7 @@ interface SetOrderSummaryParams {
   status?: OrderStatusExtended
   summary?: string | JSX.Element
   descriptor?: string | null
+  orderType?: BlockExplorerLinkType
 }
 
 export enum OrderTxTypes {
@@ -25,7 +26,7 @@ enum OrderIdType {
 interface BasePopupContent {
   success: boolean
   summary: string | JSX.Element
-  isComposableOrder?: boolean
+  orderType?: BlockExplorerLinkType
 }
 
 type IdOrHash<K extends OrderIdType, T extends OrderTxTypes> = {
@@ -67,7 +68,7 @@ export function setPopupData(
     summary,
     status,
     descriptor,
-  }: SetOrderSummaryParams & { success?: boolean; isComposableOrder?: boolean }
+  }: SetOrderSummaryParams & { success?: boolean; orderType?: BlockExplorerLinkType }
 ): { key?: string; content: MetaPopupContent }
 // Txn popup
 export function setPopupData(
@@ -76,7 +77,7 @@ export function setPopupData(
 ): { key?: string; content: TxnPopupContent }
 export function setPopupData(
   type: OrderTxTypes,
-  { hash, success = true, id, summary, status, descriptor, isComposableOrder }: any
+  { hash, success = true, id, summary, status, descriptor, orderType }: any
 ): { key?: string; content: TxnPopupContent | MetaPopupContent } {
   const key = id + '_' + status
   const baseContent = {
@@ -102,7 +103,7 @@ export function setPopupData(
       metatxn: {
         id,
         ...baseContent,
-        isComposableOrder,
+        orderType,
       },
     }
   }

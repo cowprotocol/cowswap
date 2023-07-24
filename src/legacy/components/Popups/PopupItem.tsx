@@ -48,11 +48,9 @@ export function PopupItem({
     popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
   } else if (isMetaTxn) {
     const {
-      metatxn: { id, success, summary, isComposableOrder },
+      metatxn: { id, success, summary, orderType },
     } = content
-    popupContent = (
-      <TransactionPopup hash={id} success={success} summary={summary} isComposableOrder={isComposableOrder} />
-    )
+    popupContent = <TransactionPopup hash={id} success={success} summary={summary} type={orderType} />
   } else if ('failedSwitchNetwork' in content) {
     popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
   } else if (isWarningTxn) {

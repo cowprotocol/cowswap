@@ -7,6 +7,7 @@ import { AutoColumn } from 'legacy/components/Column'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
+import { BlockExplorerLinkType } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -17,13 +18,13 @@ const RowNoFlex = styled(AutoRow)`
 export function TransactionPopup({
   hash,
   success,
-  isComposableOrder,
+  type = 'transaction',
   summary,
 }: {
   hash: string
   success?: boolean
-  isComposableOrder?: boolean
   summary?: string | JSX.Element
+  type?: BlockExplorerLinkType
 }) {
   const { chainId } = useWalletInfo()
 
@@ -42,7 +43,7 @@ export function TransactionPopup({
         ) : (
           summary
         )}
-        {chainId && <ExplorerLink id={hash} isComposableOrder={isComposableOrder} type="transaction" />}
+        {chainId && <ExplorerLink id={hash} type={type} />}
       </AutoColumn>
     </RowNoFlex>
   )
