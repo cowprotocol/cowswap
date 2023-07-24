@@ -25,7 +25,9 @@ export const composableOrdersPopupMiddleware: Middleware<Record<string, unknown>
       const composableOrders = jotaiStore.get(twapOrdersAtom)
       const tokensByAddress = jotaiStore.get(tokensByAddressAtom)
 
+      // Select TWAP orders by ids
       const cancelledOrdersItems = action.payload.ids.map((id) => composableOrders[id]).filter(isTruthy)
+      // Map TWAP orders to store orders
       const cancelledOrders = cancelledOrdersItems.map((order) => mapTwapOrderToStoreOrder(order, tokensByAddress))
 
       batchCancelOrdersPopup(store, cancelledOrders)

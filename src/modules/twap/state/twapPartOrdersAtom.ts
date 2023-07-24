@@ -45,6 +45,8 @@ export const setPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders
     acc[parentId] = items.map((item) => {
       return {
         ...item,
+        // We need to keep virtual fields from the previous state if they are present in it
+        // Because they get updates from `useSetPartOrderCancelling` and `CreatedInOrderBookOrdersUpdater`
         ...virtualFields.reduce<Partial<TwapPartOrderItem>>((acc, val) => {
           acc[val] = (currentItemsMap[item.uid]?.[val] || item[val]) as any
           return acc

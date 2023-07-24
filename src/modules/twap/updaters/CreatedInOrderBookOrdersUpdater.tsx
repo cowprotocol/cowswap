@@ -55,14 +55,13 @@ export function CreatedInOrderBookOrdersUpdater() {
   useEffect(() => {
     if (!partOrdersFromProd.length) return
 
-    const createdInOrderBookOrders = partOrdersFromProd.reduce<{ [orderId: string]: { isCreatedInOrderBook: true } }>(
-      (acc, order) => {
-        acc[order.id] = { isCreatedInOrderBook: true }
+    const createdInOrderBookOrders = partOrdersFromProd.reduce<{
+      [orderId: string]: Pick<TwapPartOrderItem, 'isCreatedInOrderBook'>
+    }>((acc, order) => {
+      acc[order.id] = { isCreatedInOrderBook: true }
 
-        return acc
-      },
-      {}
-    )
+      return acc
+    }, {})
 
     updatePartOrders(createdInOrderBookOrders)
     addOrUpdateOrders({ orders: partOrdersFromProd, chainId })
