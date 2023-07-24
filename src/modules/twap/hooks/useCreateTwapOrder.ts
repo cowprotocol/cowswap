@@ -124,7 +124,7 @@ export function useCreateTwapOrder() {
           feeAmount: undefined,
         })
         getCowSoundSend().play()
-        dispatchPresignedOrderPosted(store, orderId, summary, OrderClass.LIMIT)
+        dispatchPresignedOrderPosted(store, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)

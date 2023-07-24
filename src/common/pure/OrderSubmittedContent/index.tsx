@@ -6,6 +6,7 @@ import styled from 'styled-components/macro'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
+import { isCowOrder } from 'legacy/utils'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
@@ -39,7 +40,7 @@ export interface OrderSubmittedContentProps {
 export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
   const tx = {
     hash,
-    hashType: isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    hashType: isSafeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: hash,
       safe: account,

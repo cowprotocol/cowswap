@@ -8,6 +8,8 @@ import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { getSafeWebUrl } from 'api/gnosisSafe'
+
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType
   label?: string
@@ -24,21 +26,26 @@ interface PropsWithoutId extends PropsBase {
   type: 'cow-explorer-home'
 }
 
-export type Props = PropsWithId | PropsWithoutId
+interface PropsComposableOrder extends PropsBase {
+  type: 'composable-order'
+  id: string
+}
+
+export type Props = PropsWithId | PropsWithoutId | PropsComposableOrder
 
 /**
  * Creates a link to the relevant explorer: Etherscan, GP Explorer or Blockscout
  * @param props
  */
 export function ExplorerLink(props: Props) {
-  const { chainId: _chainId } = useWalletInfo()
-  const chainId = _chainId || props.defaultChain
+  const { chainId, account } = useWalletInfo()
 
-  if (!chainId) {
-    return null
-  }
+  if (!account) return null
 
-  const url = getUrl(chainId, props)
+  const url = getUrl(chainId, account, props)
+
+  if (!url) return null
+
   const { className } = props
 
   const linkContent = getContent(chainId, props)
@@ -49,11 +56,15 @@ export function ExplorerLink(props: Props) {
   )
 }
 
-function getUrl(chainId: SupportedChainId, props: Props) {
+function getUrl(chainId: SupportedChainId, account: string, props: Props) {
   const { type } = props
 
   if (type === 'cow-explorer-home') {
     return getExplorerBaseUrl(chainId)
+  }
+
+  if (type === 'composable-order') {
+    return getSafeWebUrl(chainId, account, props.id)
   }
 
   // return
@@ -72,7 +83,7 @@ function getContent(chainId: SupportedChainId, props: Props) {
     return props.children
   }
 
-  const linkLabel = getLabel(chainId, props)
+  const linkLabel = props.type === 'composable-order' ? 'View on Safe' : getLabel(chainId, props)
 
   return (
     <>
