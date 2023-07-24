@@ -1,6 +1,6 @@
 import { ExternalLink } from 'legacy/theme'
 
-import { SAFE_COW_APPLINK, UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
+import { SAFE_COW_APP_LINK, UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
 
@@ -11,7 +11,7 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
         <strong>Use Safe web app</strong>
         <p>
           Use the Safe web app for advanced trading. <br />
-          Only available in the <ExternalLink href={SAFE_COW_APPLINK}>CoW Swap Safe App↗</ExternalLink>
+          Only available in the <ExternalLink href={SAFE_COW_APP_LINK}>CoW Swap Safe App↗</ExternalLink>
         </p>
       </InlineBanner>
     )
