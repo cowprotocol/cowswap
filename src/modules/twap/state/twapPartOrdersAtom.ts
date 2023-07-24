@@ -14,9 +14,14 @@ export interface TwapPartOrderItem {
   safeAddress: string
   twapOrderId: string
   isCreatedInOrderBook: boolean
+  isCancelling: boolean
   order: OrderParameters
 }
+
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
+
+// Fields that are stored only in localStorage
+const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isCancelling']
 
 export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
   'twap-part-orders-list:v1',
@@ -27,7 +32,7 @@ export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
 /**
  * The only goal of this function is protection from isCreatedInOrderBook flag overriding
  */
-export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders) => {
+export const setPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders) => {
   const currentState = get(twapPartOrdersAtom)
 
   const newState = Object.keys(nextState).reduce<TwapPartOrders>((acc, parentId) => {
@@ -40,7 +45,12 @@ export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrd
     acc[parentId] = items.map((item) => {
       return {
         ...item,
-        isCreatedInOrderBook: currentItemsMap[item.uid]?.isCreatedInOrderBook || item.isCreatedInOrderBook,
+        // We need to keep virtual fields from the previous state if they are present in it
+        // Because they get updates from `useSetPartOrderCancelling` and `CreatedInOrderBookOrdersUpdater`
+        ...virtualFields.reduce<Partial<TwapPartOrderItem>>((acc, val) => {
+          acc[val] = (currentItemsMap[item.uid]?.[val] || item[val]) as any
+          return acc
+        }, {}),
       }
     })
 
@@ -50,33 +60,26 @@ export const updatePartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrd
   set(twapPartOrdersAtom, newState)
 })
 
-export const markPartOrdersAsCreatedAtom = atom(null, (get, set, update: { [parentId: string]: string[] }) => {
-  const currentState = get(twapPartOrdersAtom)
-  const parentsIds = Object.keys(update)
+export const updatePartOrdersAtom = atom(
+  null,
+  (get, set, updates: { [orderId: string]: Partial<TwapPartOrderItem> }) => {
+    const currentState = get(twapPartOrdersAtom)
 
-  if (!parentsIds.length) return
+    const newState = Object.keys(currentState).reduce<TwapPartOrders>((acc, parentId) => {
+      acc[parentId] = currentState[parentId].map((item) => {
+        const update = updates[item.uid]
 
-  const newState = parentsIds.reduce<TwapPartOrders>(
-    (acc, parentId) => {
-      const createdOrdersIds = update[parentId]
-
-      acc[parentId] = (currentState[parentId] || []).map((item) => {
-        if (createdOrdersIds.includes(item.uid)) {
-          return { ...item, isCreatedInOrderBook: true }
-        }
-
-        return item
+        return update ? { ...item, ...update } : item
       })
 
       return acc
-    },
-    { ...currentState }
-  )
+    }, {})
 
-  if (!deepEqual(currentState, newState)) {
-    set(twapPartOrdersAtom, newState)
+    if (!deepEqual(currentState, newState)) {
+      set(twapPartOrdersAtom, newState)
+    }
   }
-})
+)
 
 export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)

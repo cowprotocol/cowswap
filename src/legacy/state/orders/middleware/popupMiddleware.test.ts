@@ -106,6 +106,7 @@ describe('popupMiddleware', () => {
 
     it('should call batchCancelOrdersPopup when is batch cancel order action', () => {
       when(actionMock.type).thenReturn('order/cancelOrdersBatch')
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: [1] })
 
       popupMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 

@@ -1,4 +1,4 @@
-import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -49,9 +49,11 @@ export function isOrderFulfilled(
  *
  * We assume the order is not fulfilled.
  */
-export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated'>): boolean {
+export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated' | 'status'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
-  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
+  return (
+    (order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER) || order.status === OrderStatus.CANCELLED
+  )
 }
 
 /**

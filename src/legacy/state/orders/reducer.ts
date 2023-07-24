@@ -3,6 +3,8 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
+
 import { OrderID } from 'api/gnosisProtocol'
 import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
@@ -431,17 +433,7 @@ export default createReducer(initialState, (builder) =>
           cancelOrderInState(state, chainId, orderObject)
 
           if (getIsComposableCowParentOrder(orderObject.order)) {
-            const ordersMap = state[chainId]
-            const allOrdersMap = {
-              ...ordersMap.pending,
-              ...ordersMap.presignaturePending,
-              ...ordersMap.fulfilled,
-              ...ordersMap.expired,
-              ...ordersMap.cancelled,
-              ...ordersMap.creating,
-              ...ordersMap.failed,
-              ...ordersMap.scheduled,
-            }
+            const allOrdersMap = flatOrdersStateNetwork(state[chainId])
 
             const children = Object.values(allOrdersMap).filter(
               (item) => item?.order.composableCowInfo?.parentId === id

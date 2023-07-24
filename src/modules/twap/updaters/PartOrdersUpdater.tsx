@@ -11,13 +11,13 @@ import { useWalletInfo } from 'modules/wallet'
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, setPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 
 export function PartOrdersUpdater() {
   const { chainId, account } = useWalletInfo()
   const twapOrders = useAtomValue(twapOrdersListAtom)
-  const updateTwapPartOrders = useSetAtom(updatePartOrdersAtom)
+  const updateTwapPartOrders = useSetAtom(setPartOrdersAtom)
 
   useEffect(() => {
     if (!chainId || !account) return
@@ -65,6 +65,7 @@ async function generateTwapOrderParts(
         chainId,
         safeAddress,
         isCreatedInOrderBook: false,
+        isCancelling: false,
         order: parts[index],
       }
     }),
