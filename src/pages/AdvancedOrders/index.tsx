@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import { Navigate } from 'react-router-dom'
 
-import { AdvancedOrdersWidget, advancedOrdersAtom } from 'modules/advancedOrders'
+import { AdvancedOrdersWidget, advancedOrdersAtom, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
@@ -28,6 +28,7 @@ export default function AdvancedOrdersPage() {
   return (
     <>
       <CreatedInOrderBookOrdersUpdater />
+      <FillAdvancedOrdersDerivedStateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget>

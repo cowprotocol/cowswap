@@ -22,6 +22,8 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
+import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
+import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 import { WrapNativeModal } from '../WrapNativeModal'
@@ -44,6 +46,7 @@ interface TradeWidgetParams {
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
+  disableNativeSelling?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -81,6 +84,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     recipient,
     disableQuotePolling = false,
     isExpertMode,
+    disableNativeSelling = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -125,6 +129,8 @@ export function TradeWidget(props: TradeWidgetProps) {
       <WrapNativeModal />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater isExpertMode={isExpertMode} />
+      <CommonTradeUpdater />
+      {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>

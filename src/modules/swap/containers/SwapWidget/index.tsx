@@ -24,7 +24,6 @@ import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
@@ -38,7 +37,7 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { TradeWidget, TradeWidgetContainer, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -56,9 +55,6 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
 export function SwapWidget() {
-  useSetupTradeState()
-  useSetupSwapAmountsFromUrl()
-
   const { chainId, account } = useWalletInfo()
   const {
     slippageAdjustedSellAmount,

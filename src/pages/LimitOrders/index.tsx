@@ -11,8 +11,10 @@ import {
   QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
+  FillLimitOrdersDerivedStateUpdater,
   limitOrdersRawStateAtom,
   LIMIT_ORDER_SLIPPAGE,
+  SetupLimitOrderAmountsFromUrlUpdater,
 } from 'modules/limitOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
@@ -31,6 +33,8 @@ export default function LimitOrderPage() {
     <>
       <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
       <QuoteObserverUpdater />
+      <FillLimitOrdersDerivedStateUpdater />
+      <SetupLimitOrderAmountsFromUrlUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
