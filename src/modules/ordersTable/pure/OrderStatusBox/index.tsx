@@ -56,6 +56,14 @@ function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTheme): {
   }
 
   if (CONFIRMED_STATES.includes(order.status)) {
+    // Partially filled is also not a real status
+    if (order.executionData.partiallyFilled) {
+      return {
+        title: 'Partially Filled',
+        color: theme.success,
+      }
+    }
+
     return {
       title: orderStatusTitleMap[order.status],
       color: order.status === OrderStatus.EXPIRED ? theme.warning : theme.danger,
@@ -67,14 +75,6 @@ function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTheme): {
     return {
       title: 'Cancelling...',
       color: theme.text1,
-    }
-  }
-
-  // Partially filled is also not a real status
-  if (order.executionData.partiallyFilled) {
-    return {
-      title: 'Partially Filled',
-      color: theme.success,
     }
   }
 
