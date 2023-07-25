@@ -18,12 +18,14 @@ import {
   UnsupportedWalletWarning,
 } from './warnings'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
+import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
 import { useAdvancedOrdersDerivedState } from '../../../advancedOrders'
 import { TradeFormValidation, useGetTradeFormValidation } from '../../../tradeFormValidation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
 import {
   twapOrderSlippageAtom,
@@ -45,6 +47,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useAtomValue(twapOrderSlippageAtom)
   const deadline = useAtomValue(twapDeadlineAtom)
+  const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
   const { outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const primaryFormValidation = useGetTradeFormValidation()
 
@@ -110,8 +113,11 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           )
         }
 
-        if (showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage)) {
-          return <SmallPriceProtectionWarning />
+        if (showTradeFormWarnings) {
+          return [
+            isPriceProtectionNotEnough(deadline, slippage) ? <SmallPriceProtectionWarning /> : null,
+            swapAmountDifference?.greaterThan(0) ? <SwapPriceDifferenceWarning amount={swapAmountDifference} /> : null,
+          ]
         }
 
         return null
