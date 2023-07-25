@@ -125,8 +125,8 @@ export default function FeesUpdater(): null {
     currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
   } = useDerivedSwapInfo()
 
-  const sellCurrencyId = getAddress(sellCurrency)
-  const buyCurrencyId = getAddress(buyCurrency)
+  const sellCurrencyId = getAddress(sellCurrency)?.toLowerCase()
+  const buyCurrencyId = getAddress(buyCurrency)?.toLowerCase()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
