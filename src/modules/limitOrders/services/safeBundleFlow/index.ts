@@ -56,8 +56,18 @@ export async function safeBundleFlow(
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
-  const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
-    params
+  const {
+    chainId,
+    postOrderParams,
+    provider,
+    erc20Contract,
+    spender,
+    dispatch,
+    settlementContract,
+    safeAppsSdk,
+    appData,
+    uploadAppData,
+  } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
@@ -134,12 +144,14 @@ export async function safeBundleFlow(
       },
       dispatch
     )
-
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+
+    logTradeFlow(LOG_PREFIX, 'STEP 8: add app data to upload queue')
+    uploadAppData({ chainId, orderId, appData })
 
     return orderId
   } catch (error: any) {
-    logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
+    logTradeFlow(LOG_PREFIX, 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

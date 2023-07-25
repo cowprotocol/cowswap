@@ -65,11 +65,14 @@ export async function swapFlow(
       )
     }
 
-    logTradeFlow('SWAP FLOW', 'STEP 6: show UI of the successfully sent transaction', orderId)
+    logTradeFlow('SWAP FLOW', 'STEP 6: add app data to upload queue')
+    input.callbacks.uploadAppData({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
+
+    logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     input.swapConfirmManager.transactionSent(orderId)
     tradeFlowAnalytics.sign(input.swapFlowAnalyticsContext)
   } catch (error: any) {
-    logTradeFlow('SWAP FLOW', 'STEP 7: ERROR: ', error)
+    logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
