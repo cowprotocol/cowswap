@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'

@@ -4,12 +4,12 @@ import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
 import { Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { stringToCurrency } from 'legacy/state/swap/extension'
+import { shortenAddress } from 'legacy/utils'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -26,8 +26,17 @@ export function computeOrderSummary({
   // if we can find the order from the API
   // and our specific order exists in our state, let's use that
   if (orderFromApi) {
-    const { buyToken, sellToken, sellAmount, feeAmount, buyAmount, executedBuyAmount, executedSellAmount } =
-      orderFromApi
+    const {
+      buyToken,
+      sellToken,
+      sellAmount,
+      feeAmount,
+      buyAmount,
+      executedBuyAmount,
+      executedSellAmount,
+      owner,
+      receiver,
+    } = orderFromApi
 
     if (orderFromStore) {
       const { inputToken, outputToken, status, kind } = orderFromStore
@@ -50,6 +59,10 @@ export function computeOrderSummary({
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`
     }
+
+    if (owner && receiver && receiver !== owner) {
+      summary += ` to ${shortenAddress(receiver)}`
+    }
   } else {
     console.log(`[state:orders:updater] computeFulfilledSummary::API data not yet in sync with blockchain`)
   }
@@ -65,14 +78,6 @@ type PopupData = {
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
   // Skip EthFlow creating orders
   if (orderFromStore.status === OrderStatus.CREATING) {
-    return null
-  }
-  // Skip ComposableCow orders
-  if (getIsComposableCowParentOrder(orderFromStore)) {
-    return null
-  }
-  // Skip ComposableCow part orders
-  if (orderFromStore.composableCowInfo?.isVirtualPart) {
     return null
   }
   // Get order from API

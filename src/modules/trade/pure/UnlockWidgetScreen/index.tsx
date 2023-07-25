@@ -12,6 +12,7 @@ export type BulletListItem = {
 }
 
 type UnlockWidgetProps = {
+  id: string
   items: BulletListItem[]
   handleUnlock: () => void
   title: string
@@ -22,6 +23,7 @@ type UnlockWidgetProps = {
 }
 
 export function UnlockWidgetScreen({
+  id,
   handleUnlock,
   buttonText,
   orderType,
@@ -56,7 +58,7 @@ export function UnlockWidgetScreen({
             Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
           </span>
         )}
-        <ButtonPrimary id={`unlock-${orderType}-orders-btn`} onClick={handleUnlock}>
+        <ButtonPrimary id={`unlock-${id}-btn`} onClick={handleUnlock}>
           {buttonText}
         </ButtonPrimary>
       </styledEl.ControlSection>

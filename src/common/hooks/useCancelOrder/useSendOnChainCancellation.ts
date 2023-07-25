@@ -5,6 +5,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { useSetPartOrderCancelling } from 'modules/twap/hooks/useSetPartOrderCancelling'
 import { useWalletInfo } from 'modules/wallet'
 
 import { CancelledOrderInfo } from './onChainCancellation'
@@ -14,6 +15,7 @@ export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()
   const setOrderCancellationHash = useSetOrderCancellationHash()
   const cancelPendingOrder = useRequestOrderCancellation()
+  const setPartOrderCancelling = useSetPartOrderCancelling()
   const addTransaction = useTransactionAdder()
   const getOnChainCancellation = useGetOnChainCancellation()
 
@@ -25,6 +27,7 @@ export function useSendOnChainCancellation() {
 
       cancelPendingOrder({ id: orderId, chainId })
       setOrderCancellationHash({ chainId, id: orderId, hash: txHash })
+      setPartOrderCancelling(orderId)
 
       if (isEthFlowOrder) {
         addTransaction({ hash: txHash, ethFlow: { orderId, subType: 'cancellation' } })
@@ -35,7 +38,7 @@ export function useSendOnChainCancellation() {
         })
       }
     },
-    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction]
+    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction, setPartOrderCancelling]
   )
 
   return useCallback(

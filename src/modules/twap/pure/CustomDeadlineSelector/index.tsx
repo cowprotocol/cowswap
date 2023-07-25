@@ -66,12 +66,12 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         <styledEl.ModalContent>
           <styledEl.FieldWrapper>
             <styledEl.FieldLabel>Hours</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onHoursChange} value={hoursValue} />
+            <styledEl.Input onUserInput={onHoursChange} value={hoursValue} type="number" />
           </styledEl.FieldWrapper>
 
           <styledEl.FieldWrapper>
             <styledEl.FieldLabel>Minutes</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onMinutesChange} value={minutesValue} />
+            <styledEl.Input onUserInput={onMinutesChange} value={minutesValue} type="number" />
           </styledEl.FieldWrapper>
         </styledEl.ModalContent>
 

@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
@@ -13,7 +13,7 @@ import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/upd
 import { getCowSoundSend } from 'legacy/utils/sound'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -33,19 +33,22 @@ import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { parseTwapErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
-  const addTwapOrderToList = useUpdateAtom(addTwapOrderToListAtom)
+  const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount, outputCurrencyAmount, recipient } = useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
   const safeAppsSdk = useSafeAppsSdk()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
+
+  const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
 
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -85,14 +88,14 @@ export function useCreateTwapOrder() {
         orderClass: 'TWAP',
       }
 
-      const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
-      const orderId = getConditionalOrderId(paramsStruct)
-
-      tradeConfirmActions.onSign(pendingTrade)
-      tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
-      twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
-
       try {
+        const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
+        const orderId = getConditionalOrderId(paramsStruct)
+
+        tradeConfirmActions.onSign(pendingTrade)
+        tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
+        twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
+
         const fallbackSetupTxs = fallbackHandlerIsNotSet
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
@@ -106,29 +109,31 @@ export function useCreateTwapOrder() {
           safeAddress: account,
           submissionDate: new Date().toISOString(),
           id: orderId,
-          executionInfo: DEFAULT_TWAP_EXECUTION_INFO,
+          executionInfo: { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO },
         }
 
         addTwapOrderToList(orderItem)
 
         const summary = getOrderSubmitSummary({
-          recipient: twapOrder.receiver,
+          recipient: recipient || account,
           kind: OrderKind.SELL,
-          recipientAddressOrName: null,
+          recipientAddressOrName: recipient || account,
           account,
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
           feeAmount: undefined,
         })
         getCowSoundSend().play()
-        dispatchPresignedOrderPosted(store, orderId, summary, OrderClass.LIMIT)
+        dispatchPresignedOrderPosted(store, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
+        updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
       } catch (error) {
-        tradeConfirmActions.onError(error.message || error)
-        tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
+        const errorMessage = parseTwapErrorMessage(error)
+        tradeConfirmActions.onError(errorMessage)
+        tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
       }
     },
@@ -137,15 +142,17 @@ export function useCreateTwapOrder() {
       account,
       inputCurrencyAmount,
       outputCurrencyAmount,
-      twapOrder,
-      tradeConfirmActions,
       twapOrderCreationContext,
       extensibleFallbackContext,
-      addTwapOrderToList,
       safeAppsSdk,
+      appDataInfo,
+      twapOrder,
       confirmPriceImpactWithoutFee,
       priceImpact,
-      appDataInfo,
+      tradeConfirmActions,
+      addTwapOrderToList,
+      recipient,
+      updateAdvancedOrdersState,
     ]
   )
 }

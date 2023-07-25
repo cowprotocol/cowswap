@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -7,8 +7,8 @@ import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
 export function useSetTradeQuoteParams(currencyAmount: CurrencyAmount<Currency> | null) {
-  const updateTradeQuote = useUpdateAtom(updateTradeQuoteAtom)
-  const updateState = useUpdateAtom(tradeQuoteParamsAtom)
+  const updateTradeQuote = useSetAtom(updateTradeQuoteAtom)
+  const updateState = useSetAtom(tradeQuoteParamsAtom)
 
   const amount = currencyAmount?.quotient.toString() || null
 

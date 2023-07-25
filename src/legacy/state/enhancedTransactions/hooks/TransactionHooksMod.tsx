@@ -15,14 +15,6 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
   return chainId ? state[chainId] ?? {} : {}
 }
 
-export function useIsTransactionPending(transactionHash?: string): boolean {
-  const transactions = useAllTransactions()
-
-  if (!transactionHash || !transactions[transactionHash]) return false
-
-  return !transactions[transactionHash].receipt
-}
-
 /**
  * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
  * @param tx to check for recency

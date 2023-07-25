@@ -1,44 +1,25 @@
 import { atom } from 'jotai'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { OrderWithComposableCowInfo } from 'common/types'
+import { openTwapOrdersAtom } from './twapOrdersListAtom'
 
-import { twapOrdersListAtom } from './twapOrdersListAtom'
+import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
-import { TwapOrderStatus } from '../types'
-import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
-
-const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
-  [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
-  [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
-  [TwapOrderStatus.Pending]: OrderStatus.PENDING,
-  [TwapOrderStatus.Scheduled]: OrderStatus.SCHEDULED,
-  [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
-  [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
-  [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
-}
-
-export const emulatedTwapOrdersAtom = atom((get) => {
+export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
-  const orders = get(twapOrdersListAtom)
+  const openOrders = get(openTwapOrdersAtom)
+  const tokensByAddress = get(tokensByAddressAtom)
   const accountLowerCase = account?.toLowerCase()
 
   if (!accountLowerCase) return []
 
-  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = orders
+  return openOrders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
-      return {
-        order: emulateTwapAsOrder(order),
-        composableCowInfo: {
-          id: order.id,
-          status: statusesMap[order.status],
-        },
-      }
+      return mapTwapOrderToStoreOrder(order, tokensByAddress)
     })
-
-  return orderWithComposableCowInfo
 })

@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 
 import { ExtensibleFallbackVerification } from '../services/verifyExtensibleFallback'
 import { fallbackHandlerVerificationAtom } from '../state/fallbackHandlerVerificationAtom'

@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 
 export type OrdersToDisplayModal = {
   orderIds: string[]
@@ -65,11 +65,11 @@ export const orderIdForSurplusModalAtom = atom<string | undefined>((get) => {
 })
 
 export function useSetIsConfirmationModalOpen() {
-  return useUpdateAtom(setIsConfirmationModalOpenAtom)
+  return useSetAtom(setIsConfirmationModalOpenAtom)
 }
 
 export function useAddOrderToSurplusQueue() {
-  return useUpdateAtom(addSurplusOrderAtom)
+  return useSetAtom(addSurplusOrderAtom)
 }
 
 export function useOrderIdForSurplusModal() {
@@ -77,5 +77,5 @@ export function useOrderIdForSurplusModal() {
 }
 
 export function useRemoveOrderFromSurplusQueue() {
-  return useUpdateAtom(removeSurplusOrderAtom)
+  return useSetAtom(removeSurplusOrderAtom)
 }

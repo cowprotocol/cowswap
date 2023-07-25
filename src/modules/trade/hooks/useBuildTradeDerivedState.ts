@@ -1,6 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
-
-import { Atom } from 'jotai/core/atom'
+import { Atom, useAtomValue } from 'jotai'
 
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
@@ -17,6 +15,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const rawState = useAtomValue(stateAtom)
 
   const recipient = rawState.recipient
+  const recipientAddress = rawState.recipientAddress
   const orderKind = rawState.orderKind
 
   const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
@@ -33,6 +32,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   return useSafeMemoObject({
     orderKind,
     recipient,
+    recipientAddress,
     inputCurrency,
     outputCurrency,
     inputCurrencyAmount,

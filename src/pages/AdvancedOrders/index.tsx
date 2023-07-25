@@ -4,10 +4,11 @@ import { Navigate } from 'react-router-dom'
 
 import { AdvancedOrdersWidget, advancedOrdersAtom } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
+import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget } from 'modules/twap'
+import { TwapFormWidget, useEmulatedOrders, CreatedInOrderBookOrdersUpdater } from 'modules/twap'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
@@ -17,6 +18,8 @@ export default function AdvancedOrdersPage() {
   const tradeContext = useTradeRouteContext()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
 
+  const allEmulatedOrders = useEmulatedOrders()
+
   if (!isAdvancedOrdersEnabled) {
     // To prevent direct access when the flag is off
     return <Navigate to={parameterizeTradeRoute(tradeContext, RoutesEnum.SWAP)} />
@@ -24,6 +27,7 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
+      <CreatedInOrderBookOrdersUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget>
@@ -33,7 +37,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget />
+          <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} orders={allEmulatedOrders} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

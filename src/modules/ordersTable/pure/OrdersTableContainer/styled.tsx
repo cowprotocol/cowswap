@@ -33,12 +33,35 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   `}
 `
 
-export const TableRow = styled(TableHeader)`
-  background: transparent;
+export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
+  background: ${({ isChildOrder, theme }) => (isChildOrder ? transparentize(0.91, theme.text1) : 'transparent')};
   transition: background 0.15s ease-in-out;
+  display: grid;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+    background: ${({ theme }) => transparentize(0.9, theme.bg1)};
+  }
+
+  > div:first-child {
+    margin: 0;
+
+    &::before {
+      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
+      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      content: '↳';
+      text-decoration: none !important;
+    }
+  }
+
+  > div:first-child {
+    margin-left: ${({ isChildOrder }) => (isChildOrder ? '5px' : '')};
+
+    &::before {
+      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
+      color: ${({ theme }) => transparentize(0.6, theme.text3)};
+      content: '↳';
+      text-decoration: none !important;
+    }
   }
 
   &:last-child {

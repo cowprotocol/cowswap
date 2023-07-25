@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -266,7 +266,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 
 export function PendingOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const removeOrdersToCancel = useUpdateAtom(removeOrdersToCancelAtom)
+  const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
 
   const pending = useCombinedPendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises

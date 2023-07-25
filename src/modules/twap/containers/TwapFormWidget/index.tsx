@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import {
@@ -27,7 +27,7 @@ import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
+import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, MAX_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -45,6 +45,7 @@ import {
 } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
+import { QuoteParamsUpdater } from '../../updaters/QuoteParamsUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
@@ -57,8 +58,7 @@ export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
 
-  const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
-    useAtomValue(twapOrdersSettingsAtom)
+  const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
   const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -71,7 +71,7 @@ export function TwapFormWidget() {
   const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
-  const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -120,6 +120,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
@@ -139,11 +140,11 @@ export function TwapFormWidget() {
         </styledEl.Row>
       )}
       <TradeNumberInput
-        value={slippageValue}
+        value={+twapOrderSlippage.toFixed(2)}
         onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
         decimalsPlaces={2}
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-        max={50}
+        max={MAX_TWAP_SLIPPAGE}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
         prefixComponent={
@@ -156,6 +157,7 @@ export function TwapFormWidget() {
           </em>
         }
         suffix="%"
+        step={0.1}
       />
       <styledEl.Row>
         <TradeNumberInput

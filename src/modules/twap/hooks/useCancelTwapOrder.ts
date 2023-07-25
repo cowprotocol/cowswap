@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
@@ -10,32 +10,27 @@ import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
-import { cancelTwapOrderAtom } from '../state/twapOrdersListAtom'
-import { twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
+import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapOrderStatus } from '../types'
 
-export function useCancelTwapOrder(): (order: Order) => Promise<OnChainCancellation> {
-  const twapPartOrders = useAtomValue(twapPartOrdersListAtom)
-  const cancelTwapOrder = useUpdateAtom(cancelTwapOrderAtom)
+export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
+  const twapPartOrders = useAtomValue(twapPartOrdersAtom)
+  const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const safeAppsSdk = useSafeAppsSdk()
   const settlementContract = useGP2SettlementContract()
   const composableCowContract = useComposableCowContract()
 
   return useCallback(
-    async (order: Order) => {
-      const orderId = order.composableCowInfo?.id
-
-      if (!orderId) {
-        throw new Error('Wrong orderId for TWAP order cancellation')
-      }
-
+    async (twapOrderId: string, order: Order) => {
       if (!composableCowContract || !settlementContract || !safeAppsSdk) {
         throw new Error('Context is not full to cancel TWAP order')
       }
 
-      const partOrder = twapPartOrders.find((item) => item.twapOrderId === orderId)
+      const partOrder = twapPartOrders[twapOrderId].sort((a, b) => a.order.validTo - b.order.validTo)[0]
       const partOrderId = partOrder?.uid
 
-      const context = { composableCowContract, settlementContract, orderId, partOrderId }
+      const context = { composableCowContract, settlementContract, orderId: twapOrderId, partOrderId }
 
       return {
         estimatedGas: await estimateCancelTwapOrderTxs(context),
@@ -45,12 +40,12 @@ export function useCancelTwapOrder(): (order: Order) => Promise<OnChainCancellat
             const sellTokenAddress = order.inputToken.address
             const sellTokenSymbol = order.inputToken.symbol
 
-            cancelTwapOrder(orderId)
-            processCancelledOrder({ txHash, orderId, sellTokenAddress, sellTokenSymbol })
+            setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
+            processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
           })
         },
       }
     },
-    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, cancelTwapOrder]
+    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, setTwapOrderStatus]
   )
 }

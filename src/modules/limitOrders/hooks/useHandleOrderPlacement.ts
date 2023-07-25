@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -25,7 +25,7 @@ export function useHandleOrderPlacement(
   tradeConfirmActions: TradeConfirmActions
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)

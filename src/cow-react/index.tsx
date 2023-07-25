@@ -29,6 +29,7 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+import { jotaiStore } from '../jotaiStore'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -44,7 +45,7 @@ root.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Provider store={store}>
-      <AtomProvider>
+      <AtomProvider store={jotaiStore}>
         <HashRouter>
           <LanguageProvider>
             <Web3Provider>

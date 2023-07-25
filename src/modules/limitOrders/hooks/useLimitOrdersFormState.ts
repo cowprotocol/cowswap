@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 

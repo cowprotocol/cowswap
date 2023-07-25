@@ -1,39 +1,38 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { ordersSorter } from 'utils/orderUtils/ordersSorter'
-import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
+import { groupOrdersTable } from '../../../utils/groupOrdersTable'
+import { getParsedOrderFromItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'
 
 export interface OrdersTableList {
-  pending: ParsedOrder[]
-  history: ParsedOrder[]
+  pending: OrderTableItem[]
+  history: OrderTableItem[]
+}
+
+const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
+  const aCreationTime = getParsedOrderFromItem(a).creationTime
+  const bCreationTime = getParsedOrderFromItem(b).creationTime
+
+  return bCreationTime.getTime() - aCreationTime.getTime()
 }
 
 const ORDERS_LIMIT = 100
 
 export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
-  const { account } = useWalletInfo()
-  const accountLowerCase = account?.toLowerCase()
-
-  const ordersFilter = useCallback(
-    (order: Order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden,
-    [accountLowerCase]
-  )
-
   const allSortedOrders = useMemo(() => {
-    return allOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)
-  }, [allOrders, ordersFilter])
+    return groupOrdersTable(allOrders).sort(ordersSorter)
+  }, [allOrders])
 
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(
-      (acc, order) => {
+      (acc, item) => {
+        const order = isParsedOrder(item) ? item : item.parent
+
         if (PENDING_STATES.includes(order.status)) {
-          acc.pending.push(order)
+          acc.pending.push(item)
         } else {
-          acc.history.push(order)
+          acc.history.push(item)
         }
 
         return acc

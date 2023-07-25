@@ -64,6 +64,7 @@ const CancellationSummary = styled.span`
   margin: 0;
   border-radius: 6px;
   background: ${({ theme }) => theme.grey1};
+  line-height: 1.6;
 `
 
 const OrderTypeDetails = styled.div`

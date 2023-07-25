@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -16,7 +16,7 @@ export function useSwapDerivedState(): SwapDerivedState {
 }
 
 export function useFillSwapDerivedState() {
-  const { independentField, recipient } = useSwapState()
+  const { independentField, recipient, recipientAddress } = useSwapState()
   const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
 
   const isSellTrade = independentField === Field.INPUT
@@ -30,7 +30,7 @@ export function useFillSwapDerivedState() {
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
-  const updateDerivedState = useUpdateAtom(swapDerivedStateAtom)
+  const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 
   const state = useSafeMemoObject({
     inputCurrency,
@@ -43,6 +43,7 @@ export function useFillSwapDerivedState() {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
   })
 

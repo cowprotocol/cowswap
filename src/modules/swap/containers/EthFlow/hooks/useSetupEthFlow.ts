@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'

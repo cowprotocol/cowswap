@@ -80,6 +80,7 @@ export type BlockExplorerLinkType =
   | 'block'
   | 'token-transfer'
   | 'cow-explorer-home'
+  | 'composable-order'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   const url = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]

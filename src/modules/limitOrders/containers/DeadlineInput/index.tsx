@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useCallback, useMemo, useRef } from 'react'
 
 import { DeadlineSelector } from 'modules/limitOrders/pure/DeadlineSelector'

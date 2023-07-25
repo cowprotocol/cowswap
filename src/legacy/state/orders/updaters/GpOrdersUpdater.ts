@@ -1,24 +1,22 @@
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
-import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
+import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
-import { OrderWithComposableCowInfo } from 'common/types'
-import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-
-type OrderWithComposableCowInfoMap = { [id: string]: OrderWithComposableCowInfo }
 
 function _getTokenFromMapping(
   address: string,
@@ -44,10 +42,9 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 }
 
 function _transformGpOrderToStoreOrder(
-  { order, composableCowInfo }: OrderWithComposableCowInfo,
+  order: EnrichedOrder,
   chainId: ChainId,
-  allTokens: { [address: string]: Token | null },
-  ordersMap: OrderWithComposableCowInfoMap
+  allTokens: { [address: string]: Token | null }
 ): Order | undefined {
   const {
     uid: id,
@@ -62,16 +59,13 @@ function _transformGpOrderToStoreOrder(
   // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
   const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
 
-  const isComposableCowChildOrder = getIsComposableCowChildOrder({ composableCowInfo })
-  const parentOrder = isComposableCowChildOrder ? ordersMap[composableCowInfo!.parentId!] : null
-
   const isEthFlow = Boolean(ethflowData)
 
   const inputToken = _getInputToken(isEthFlow, chainId, sellToken, allTokens)
   const outputToken = _getTokenFromMapping(buyToken, chainId, allTokens)
 
   const apiStatus = classifyOrder(order)
-  const status = composableCowInfo?.status || statusMapping[apiStatus]
+  const status = statusMapping[apiStatus]
 
   if (!status) {
     console.warn(`GpOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
@@ -86,8 +80,6 @@ function _transformGpOrderToStoreOrder(
     return
   }
 
-  const isCancelling = (apiStatus === 'pending' && order.invalidated) || parentOrder?.order.invalidated
-
   const storeOrder: Order = {
     ...order,
     // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
@@ -100,7 +92,7 @@ function _transformGpOrderToStoreOrder(
     status,
     receiver: receiver || '',
     apiAdditionalInfo: order,
-    isCancelling,
+    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
     owner: onchainOrderData?.sender || owner,
     validTo: ethflowData?.userValidTo || order.validTo,
@@ -108,7 +100,6 @@ function _transformGpOrderToStoreOrder(
     refundHash: ethflowData?.refundTxHash || undefined,
     buyTokenBalance: order.buyTokenBalance,
     sellTokenBalance: order.sellTokenBalance,
-    composableCowInfo,
   }
 
   // The function to compute the summary needs the Order instance to exist already
@@ -136,14 +127,14 @@ function _getInputToken(
 }
 
 function _getMissingTokensAddresses(
-  orders: OrderWithComposableCowInfo[],
+  orders: EnrichedOrder[],
   tokens: Record<string, Token>,
   chainId: ChainId
 ): string[] {
   const tokensToFetch = new Set<string>()
 
   // Find out which tokens are not yet loaded in the UI
-  orders.forEach(({ order: { sellToken, buyToken } }) => {
+  orders.forEach(({ sellToken, buyToken }) => {
     if (!_getTokenFromMapping(sellToken, chainId, tokens)) tokensToFetch.add(sellToken)
     if (!_getTokenFromMapping(buyToken, chainId, tokens)) tokensToFetch.add(buyToken)
   })
@@ -170,19 +161,9 @@ async function _fetchTokens(
   }, {})
 }
 
-function _filterOrders(
-  orders: OrderWithComposableCowInfo[],
-  tokens: Record<string, Token | null>,
-  chainId: ChainId
-): Order[] {
-  const ordersMap = orders.reduce<OrderWithComposableCowInfoMap>((acc, val) => {
-    acc[val.order.uid] = val
-
-    return acc
-  }, {})
-
+function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens, ordersMap)
+    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {
       acc.push(storeOrder)
     }
@@ -202,12 +183,15 @@ function _filterOrders(
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
+  const clearOrderStorage = useClearOrdersStorage()
+
   const { account, chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const getToken = useTokenLazy()
-  const gpOrders = useGpOrders(account, GP_ORDER_UPDATE_INTERVAL)
+  const updateApiOrders = useSetAtom(apiOrdersAtom)
+  const gpOrders = useGpOrders()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked
@@ -257,10 +241,22 @@ export function GpOrdersUpdater(): null {
   )
 
   useEffect(() => {
+    updateApiOrders(gpOrders)
+  }, [gpOrders, updateApiOrders])
+
+  useEffect(() => {
     if (account && chainId && tokensAreLoaded) {
       updateOrders(chainId, account)
     }
   }, [account, chainId, tokensAreLoaded, updateOrders])
+
+  useEffect(() => {
+    clearOrderStorage()
+
+    return function () {
+      clearOrderStorage()
+    }
+  }, [clearOrderStorage])
 
   return null
 }

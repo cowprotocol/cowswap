@@ -16,3 +16,6 @@ export const SPOT_PRICE_CHECK_POLL_INTERVAL = ms`15s`
 export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = ms`15s`
 
 export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%
+
+// Clear order's storage
+export const MAX_ITEMS_PER_STATUS = 10

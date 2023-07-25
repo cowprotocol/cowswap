@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } fro
 
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import {
-  useUpdateAtom,
+  useSetAtom,
   useAtomValue,
   handleFollowPendingTxPopupAtom,
   handleHidePopupPermanentlyAtom,
@@ -19,8 +19,8 @@ import { OrderID } from 'api/gnosisProtocol'
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {
-  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
-  const setLastOrderClosed = useUpdateAtom(handleCloseOrderPopupAtom)
+  const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
+  const setLastOrderClosed = useSetAtom(handleCloseOrderPopupAtom)
   const lastPendingOrder = useRecentActivityLastPendingOrder()
 
   const onClose = useCallback(() => {
@@ -64,8 +64,8 @@ const useShowingPopupFirstTime = (orderId: OrderID | undefined) => {
 }
 
 const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
-  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
-  const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
+  const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
+  const setHidePendingTxPopupPermanently = useSetAtom(handleHidePopupPermanentlyAtom)
   const isExpertMode = useIsExpertMode()
   const { lastPendingOrder, onClose } = useLastPendingOrder()
   const { showPopup: showFollowPendingTxPopup, firstTimePopupOrderAppears } = useShowingPopupFirstTime(

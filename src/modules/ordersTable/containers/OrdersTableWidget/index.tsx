@@ -1,19 +1,19 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { useOrders } from 'legacy/state/orders/hooks'
+import { Order } from 'legacy/state/orders/actions'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { ORDERS_TABLE_TABS, OPEN_TAB } from 'modules/ordersTable/const/tabs'
+import { OPEN_TAB, ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
 import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
 import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
@@ -26,9 +26,10 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
+import { getParsedOrderFromItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
-function getOrdersListByIndex(ordersList: OrdersTableList, id: string): ParsedOrder[] {
+function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
@@ -46,17 +47,21 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export function OrdersTableWidget() {
+export interface OrdersTableWidgetProps {
+  orders: Order[]
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
-  const allOrders = useOrders({ chainId })
-  const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()
+  const ordersList = useOrdersTableList(allOrders)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
+  const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
 
@@ -87,7 +92,7 @@ export function OrdersTableWidget() {
   const tokens = useMemo(() => {
     const pendingOrders = isOpenOrdersTab ? ordersList.pending : []
 
-    return pendingOrders.map((order) => order.inputToken)
+    return pendingOrders.map((item) => getParsedOrderFromItem(item).inputToken)
   }, [isOpenOrdersTab, ordersList.pending])
 
   // Get effective balance
@@ -116,7 +121,7 @@ export function OrdersTableWidget() {
     [allOrders, cancelOrder]
   )
 
-  const orderActions: LimitOrderActions = {
+  const orderActions: OrderActions = {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
@@ -146,8 +151,9 @@ export function OrdersTableWidget() {
           getSpotPrice={getSpotPrice}
           selectedOrders={ordersToCancel}
           allowsOffchainSigning={allowsOffchainSigning}
+          orderType={orderType}
         >
-          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={orders} />}
+          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />

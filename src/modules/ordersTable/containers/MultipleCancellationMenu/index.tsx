@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { transparentize } from 'polished'
@@ -87,7 +87,7 @@ const CancelAllButton = styled(TextButton)`
 export function MultipleCancellationMenu({ pendingOrders }: Props) {
   const { allowsOffchainSigning } = useWalletDetails()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
+  const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const multipleCancellation = useMultipleOrdersCancellation()
 
   const ordersToCancelCount = ordersToCancel.length || 0

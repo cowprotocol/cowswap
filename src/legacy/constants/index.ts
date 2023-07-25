@@ -1,8 +1,7 @@
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import networksJson from '@cowprotocol/contracts/networks.json'
-import { IpfsConfig } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Token, Fraction, Percent } from '@uniswap/sdk-core'
+import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Fraction, Percent, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
@@ -211,3 +210,9 @@ export const FAQ_MENU_LINKS = [
 
 // Min USD value to show surplus
 export const MIN_FIAT_SURPLUS_VALUE = 0.01
+
+// Min FIAT value for displaying the surplus modal
+export const MIN_FIAT_SURPLUS_VALUE_MODAL = 1
+
+// Min surplus value in units for displaying the surplus modal when FIAT value is not available
+export const MIN_SURPLUS_UNITS = 0.01

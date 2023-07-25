@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import store from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
@@ -8,12 +8,17 @@ import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { deepEqual } from 'utils/deepEqual'
 
+import { TWAP_FINAL_STATUSES, TWAP_PENDING_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v5', {})
+export const twapOrdersAtom = atomWithStorage<TwapOrdersList>(
+  'twap-orders-list:v1',
+  {},
+  createJSONStorage(() => localStorage)
+)
 
 export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
@@ -27,6 +32,12 @@ export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
   return orders
     .flat()
     .filter((order) => order.safeAddress.toLowerCase() === accountLowerCase && order.chainId === chainId)
+})
+
+export const openTwapOrdersAtom = atom<TwapOrderItem[]>((get) => {
+  const allTwapOrders = get(twapOrdersListAtom)
+
+  return allTwapOrders.filter((item) => TWAP_PENDING_STATUSES.includes(item.status))
 })
 
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
@@ -57,8 +68,11 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
   set(twapOrdersAtom, currentState)
 })
 
-export const cancelTwapOrderAtom = atom(null, (get, set, orderId: string) => {
+export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, status: TwapOrderStatus) => {
   const currentState = get(twapOrdersAtom)
+  const currentOrder = currentState[orderId]
 
-  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentState[orderId], status: TwapOrderStatus.Cancelling } })
+  if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) return
+
+  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentOrder, status } })
 })

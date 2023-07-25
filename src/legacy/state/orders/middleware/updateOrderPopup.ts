@@ -3,6 +3,8 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
+import { BlockExplorerLinkType } from 'legacy/utils'
+
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
@@ -27,12 +29,14 @@ export function dispatchPresignedOrderPosted(
   store: MiddlewareAPI<Dispatch>,
   orderId: string,
   summary: string,
-  orderClass: OrderClass
+  orderClass: OrderClass,
+  orderType: BlockExplorerLinkType = 'transaction'
 ) {
   const popup = setPopupData(OrderTxTypes.METATXN, {
     summary,
     status: 'submitted',
     id: orderId,
+    orderType,
   })
   orderAnalytics('Posted', orderClass, 'Presign')
 
