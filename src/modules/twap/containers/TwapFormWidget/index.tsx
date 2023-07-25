@@ -44,6 +44,7 @@ import {
   updateTwapOrdersSettingsAtom,
 } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
+import { FullAmountQuoteUpdater } from '../../updaters/FullAmountQuoteUpdater'
 import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
 import { QuoteParamsUpdater } from '../../updaters/QuoteParamsUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
@@ -125,6 +126,7 @@ export function TwapFormWidget() {
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />
       <PartOrdersUpdater />
+      <FullAmountQuoteUpdater />
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}

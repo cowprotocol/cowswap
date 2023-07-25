@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useLayoutEffect } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
@@ -15,6 +15,8 @@ import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/Quote
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
 
+import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000
 
@@ -22,8 +24,9 @@ const PRICE_UPDATE_INTERVAL = 10_000
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
+  const { amount } = useAtomValue(tradeQuoteParamsAtom)
   // TODO: add throttling
-  const quoteParams = useQuoteParams()
+  const quoteParams = useQuoteParams(amount)
 
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
