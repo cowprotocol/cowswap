@@ -59,6 +59,10 @@ export function useAnalyticsReporter() {
   const tradeTypeInfo = useTradeTypeInfo()
   const derivedTradeState = useDerivedTradeState()
 
+  const sellSymbol = derivedTradeState?.state?.inputCurrency?.symbol
+  const buySymbol = derivedTradeState?.state?.outputCurrency?.symbol
+  const tradePair = sellSymbol && buySymbol ? `${sellSymbol},${buySymbol}` : null
+
   // Handle chain id custom dimension
   const { connector } = useWeb3React()
   const { chainId, account } = useWalletInfo()
@@ -98,9 +102,9 @@ export function useAnalyticsReporter() {
 
   useEffect(() => {
     // Custom dimension 5 - market
-    const market = getMarketDimension({ tradeTypeInfo, derivedTradeState })
+    const market = getMarketDimension({ tradeTypeInfo, tradePair })
     googleAnalytics.setDimension(Dimensions.market, market)
-  }, [tradeTypeInfo, derivedTradeState])
+  }, [tradeTypeInfo, tradePair])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)

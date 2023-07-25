@@ -1,33 +1,26 @@
-import { TradeDerivedState, TradeType, TradeTypeInfo } from 'modules/trade'
+import { TradeType, TradeTypeInfo } from 'modules/trade'
 
 type GetMarketDimensionParams = {
   tradeTypeInfo: TradeTypeInfo | null
-  derivedTradeState: { state?: TradeDerivedState | undefined }
+  tradePair: string | null
+}
+
+const widgetTypeMap: Record<TradeType, string> = {
+  [TradeType.SWAP]: 'SWAP',
+  [TradeType.LIMIT_ORDER]: 'LIMIT',
+  // TODO: set different type for other advanced orders
+  [TradeType.ADVANCED_ORDERS]: 'TWAP',
 }
 
 /**
- * Util function that takes tradeTypeInfo and derivedTradeState
+ * Util function that takes tradeTypeInfo and tradePair
  * and returns "market" dimension in a form of `${sellSymbol},${buySymbol}::${widgetType}`
- *
+ * or null
  */
-export function getMarketDimension({ tradeTypeInfo, derivedTradeState }: GetMarketDimensionParams) {
-  const params = { widgetType: '', market: '' }
-
-  if (!tradeTypeInfo || !derivedTradeState || !derivedTradeState.state) {
-    return ''
+export function getMarketDimension({ tradeTypeInfo, tradePair }: GetMarketDimensionParams): string | null {
+  if (!tradeTypeInfo || !tradePair) {
+    return null
   }
 
-  if (tradeTypeInfo.tradeType === TradeType.SWAP) {
-    params.widgetType = 'SWAP'
-  } else if (tradeTypeInfo.tradeType === TradeType.LIMIT_ORDER) {
-    params.widgetType = 'LIMIT'
-  } else if (tradeTypeInfo.tradeType === TradeType.ADVANCED_ORDERS) {
-    params.widgetType = 'TWAP'
-  }
-
-  const sellSymbol = derivedTradeState.state.inputCurrency?.symbol
-  const buySymbol = derivedTradeState.state.outputCurrency?.symbol
-  params.market = `${sellSymbol},${buySymbol}`
-
-  return `${params.market}::${params.widgetType}`
+  return `${tradePair}::${widgetTypeMap[tradeTypeInfo.tradeType]}`
 }
