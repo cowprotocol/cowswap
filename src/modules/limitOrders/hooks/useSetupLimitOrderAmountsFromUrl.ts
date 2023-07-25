@@ -45,8 +45,11 @@ export function useSetupLimitOrderAmountsFromUrl() {
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
     const update: Partial<Writeable<LimitOrdersRawState>> = {}
 
-    const sellCurrencyAmount = inputCurrency && sellAmount ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
-    const buyCurrencyAmount = outputCurrency && buyAmount ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
+    const isSellAmountValid = inputCurrency && sellAmount && +sellAmount >= 0
+    const isBuyAmountValid = outputCurrency && buyAmount && +buyAmount >= 0
+
+    const sellCurrencyAmount = isSellAmountValid ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
+    const buyCurrencyAmount = isBuyAmountValid ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
 
     if (sellCurrencyAmount) {
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(sellCurrencyAmount)
