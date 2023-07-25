@@ -16,6 +16,7 @@ import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots 
 import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -34,7 +35,7 @@ const UNLOCK_SCREEN = {
   orderType: 'TWAP',
   buttonText: 'Unlock TWAP orders (BETA)',
   // TODO: add actual link before deploy to PROD
-  buttonLink: '',
+  buttonLink: TWAP_LEARN_MORE_LINK,
 }
 
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {

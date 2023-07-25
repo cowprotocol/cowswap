@@ -57,3 +57,4 @@ export const UNSUPPORTED_SAFE_LINK =
   'https://blog.cow.fi/@cow-protocol/all-you-need-to-know-about-cow-swaps-new-safe-fallback-handler-8ef0439925d1'
 export const UNSUPPORTED_WALLET_LINK =
   'https://blog.cow.fi/@cow-protocol/how-to-use-cow-swaps-twap-orders-via-safe-wallet-1a0854484dfb'
+export const TWAP_LEARN_MORE_LINK = 'https://blog.cow.fi/@cow-protocol/cow-swap-launches-twap-orders-d5583135b472'
