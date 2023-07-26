@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
@@ -86,6 +86,7 @@ export function SwapWidget() {
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
+  const isSellTrade = independentField === Field.INPUT
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
@@ -93,21 +94,26 @@ export function SwapWidget() {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
     amount: parsedAmounts.INPUT || null,
-    isIndependent: independentField === Field.INPUT,
+    isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
-    receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
     amount: parsedAmounts.OUTPUT || null,
-    isIndependent: independentField === Field.OUTPUT,
+    isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
-    receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
+
+  const buyingFiatAmount = useMemo(
+    () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
+    [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]
+  )
 
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
@@ -186,6 +192,8 @@ export function SwapWidget() {
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
+    buyingFiatAmount,
+    allowedSlippage,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

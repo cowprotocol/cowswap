@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -13,6 +13,8 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
+
+import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
@@ -27,6 +29,8 @@ export interface SwapWarningsTopProps {
   showSafeWcBundlingBanner: boolean
   nativeCurrencySymbol: string
   wrappedCurrencySymbol: string
+  buyingFiatAmount: CurrencyAmount<Currency> | null
+  allowedSlippage: Percent
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -58,6 +62,8 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
+    buyingFiatAmount,
+    allowedSlippage,
   } = props
 
   console.debug('SWAP WARNING RENDER TOP: ', props)
@@ -83,6 +89,8 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       {showSafeWcBundlingBanner && (
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
+
+      <TwapSuggestionBanner slippage={allowedSlippage} buyingFiatAmount={buyingFiatAmount} />
     </>
   )
 }, genericPropsChecker)
