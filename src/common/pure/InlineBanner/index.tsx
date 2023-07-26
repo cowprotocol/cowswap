@@ -45,7 +45,7 @@ const Wrapper = styled.span<{ color: string }>`
   align-items: center;
   justify-content: center;
   background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
-  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
+  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.1, color) : darken(0.2, color))};
   gap: 24px 10px;
   border-radius: 16px;
   margin: auto;
@@ -93,6 +93,7 @@ const Wrapper = styled.span<{ color: string }>`
     display: flex;
     align-items: center;
     gap: 6px;
+    color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
   }
 
   > span > p {
