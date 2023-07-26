@@ -1,11 +1,16 @@
 import { atom } from 'jotai'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { fullAmountQuoteAtom } from './fullAmountQuoteAtom'
 import { partsStateAtom } from './partsStateAtom'
 
-export const swapAmountDifferenceAtom = atom<CurrencyAmount<Currency> | null>((get) => {
+export interface SwapAmountDifference {
+  amount: CurrencyAmount<Currency>
+  percent: Percent
+}
+
+export const swapAmountDifferenceAtom = atom<SwapAmountDifference | null>((get) => {
   const fullAmountQuote = get(fullAmountQuoteAtom)
   const { numberOfPartsValue, outputPartAmount } = get(partsStateAtom)
 
@@ -16,6 +21,12 @@ export const swapAmountDifferenceAtom = atom<CurrencyAmount<Currency> | null>((g
   if (!fullQuoteBuyAmountStr || !numberOfPartsValue) return null
 
   const fullQuoteBuyAmount = CurrencyAmount.fromRawAmount(outputPartAmount.currency, fullQuoteBuyAmountStr)
+  const allPartsAmount = outputPartAmount.multiply(numberOfPartsValue)
 
-  return outputPartAmount.multiply(numberOfPartsValue).subtract(fullQuoteBuyAmount)
+  const differenceAmount = allPartsAmount.subtract(fullQuoteBuyAmount)
+
+  return {
+    amount: differenceAmount,
+    percent: new Percent(differenceAmount.quotient, allPartsAmount.quotient),
+  }
 })

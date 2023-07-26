@@ -86,7 +86,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     <SwapPriceDifferenceWarning
       tradeUrlParams={tradeUrlParams}
       feeFiatAmount={tradeQuoteFeeFiatAmount}
-      amount={swapAmountDifference}
+      swapAmountDifference={swapAmountDifference}
     />
   ) : null
 
