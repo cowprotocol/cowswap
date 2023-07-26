@@ -41,16 +41,26 @@ export function SwapPriceDifferenceWarning({ tradeUrlParams, amount, feeFiatAmou
     <InlineBanner type={'savings'}>
       {isTwapBetter ? (
         <>
-          <strong>Maximizing Your Gains! <InfoIcon content="TODO: set the tooltip content"></InfoIcon></strong>
+          <strong>
+            Maximizing Your Gains! <InfoIcon content="TODO: set the tooltip content"></InfoIcon>
+          </strong>
           <p>
-            You could gain an extra <b><TokenAmount amount={amount} tokenSymbol={amount.currency} /></b> compared to using a {swapOrderLink}
+            You could gain an extra{' '}
+            <b>
+              <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+            </b>{' '}
+            compared to using a {swapOrderLink}
           </p>
         </>
       ) : (
         <>
           <strong>Trade Smart, Save More!</strong>
           <p>
-            Considering current market fees (<b><FiatAmount amount={feeFiatAmount} /></b> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+            Considering current market fees (
+            <b>
+              <FiatAmount amount={feeFiatAmount} />
+            </b>{' '}
+            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
           </p>
         </>
       )}

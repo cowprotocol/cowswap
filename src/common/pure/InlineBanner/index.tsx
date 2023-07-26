@@ -119,9 +119,9 @@ export type InlineBannerProps = {
 }
 
 export function InlineBanner({ children, className, hideIcon, type = 'alert' }: InlineBannerProps) {
-  const theme = useTheme();
-  const config = BANNER_CONFIG[type];
-  const color = theme[config.colorKey];
+  const theme = useTheme()
+  const config = BANNER_CONFIG[type]
+  const color = theme[config.colorKey]
 
   return (
     <Wrapper className={className} color={color}>
