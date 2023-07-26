@@ -42,7 +42,7 @@ export function TwapSuggestionBanner({ priceImpact, buyingFiatAmount, tradeUrlPa
     <InlineBanner type="alert">
       <p>
         The price impact is {+priceImpact.toFixed(2)}%. Consider breaking up your order using{' '}
-        <StyledNavLink to={routePath}>TWAP orders</StyledNavLink>
+        a{' '}<StyledNavLink to={routePath}>TWAP order</StyledNavLink>
       </p>
     </InlineBanner>
   )
