@@ -63,6 +63,7 @@
     ]
   },
   "dependencies": {
+    "@1inch/permit-signed-approvals-utils": "^1.4.8",
     "@amplitude/analytics-browser": "^1.1.4",
     "@babel/runtime": "^7.17.0",
     "@coinbase/wallet-sdk": "^3.3.0",
