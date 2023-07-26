@@ -9,11 +9,11 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 // Mod imports
 import usePrevious from 'legacy/hooks/usePrevious'
 
-import { useTradeTypeInfo } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { getConnectionName, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+
+import { useGetMarketDimension } from './useGetMarketDimension'
 
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
 import { PIXEL_EVENTS } from '../pixel/constants'
@@ -24,7 +24,6 @@ import { sendPavedEvent } from '../pixel/paved'
 import { sendRedditEvent } from '../pixel/reddit'
 import { sendTwitterEvent } from '../pixel/twitter'
 import { Dimensions } from '../types'
-import { getMarketDimension } from '../utils/getMarketDimension'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
@@ -56,18 +55,14 @@ let initiatedPixel = false
 // tracks web vitals and pageviews
 export function useAnalyticsReporter() {
   const { pathname, search } = useLocation()
-  const tradeTypeInfo = useTradeTypeInfo()
-  const derivedTradeState = useDerivedTradeState()
-
-  const sellSymbol = derivedTradeState?.state?.inputCurrency?.symbol
-  const buySymbol = derivedTradeState?.state?.outputCurrency?.symbol
-  const tradePair = sellSymbol && buySymbol ? `${sellSymbol},${buySymbol}` : null
 
   // Handle chain id custom dimension
   const { connector } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const { walletName: _walletName } = useWalletDetails()
   const prevAccount = usePrevious(account)
+
+  const marketDimension = useGetMarketDimension()
 
   useEffect(() => {
     // custom dimension 1 - chainId
@@ -102,9 +97,8 @@ export function useAnalyticsReporter() {
 
   useEffect(() => {
     // Custom dimension 5 - market
-    const market = getMarketDimension({ tradeTypeInfo, tradePair })
-    googleAnalytics.setDimension(Dimensions.market, market)
-  }, [tradeTypeInfo, tradePair])
+    googleAnalytics.setDimension(Dimensions.market, marketDimension)
+  }, [marketDimension])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)
