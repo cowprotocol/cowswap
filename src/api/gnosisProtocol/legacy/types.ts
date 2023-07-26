@@ -1,5 +1,4 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { AppData, EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { FeeInformation, PriceInformation } from 'types'
 
@@ -41,6 +40,7 @@ export type LegacyFeeQuoteParams = FeeQuoteParams & {
   priceQuality?: string
   isBestQuote?: boolean
   isEthFlow: boolean
+  appData?: AppData
 }
 
 export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 'sellToken' | 'buyToken'> & {
