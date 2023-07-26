@@ -38,6 +38,7 @@ import {
 } from 'modules/swap/pure/warnings'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -131,6 +132,8 @@ export function SwapWidget() {
     priceImpactParams,
   })
 
+  const tradeUrlParams = useTradeRouteContext()
+
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
@@ -194,6 +197,7 @@ export function SwapWidget() {
     shouldZeroApprove,
     buyingFiatAmount,
     allowedSlippage,
+    tradeUrlParams,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

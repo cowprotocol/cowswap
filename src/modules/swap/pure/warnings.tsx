@@ -9,6 +9,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
@@ -31,6 +32,7 @@ export interface SwapWarningsTopProps {
   wrappedCurrencySymbol: string
   buyingFiatAmount: CurrencyAmount<Currency> | null
   allowedSlippage: Percent
+  tradeUrlParams: TradeUrlParams
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -64,6 +66,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     shouldZeroApprove,
     buyingFiatAmount,
     allowedSlippage,
+    tradeUrlParams,
   } = props
 
   console.debug('SWAP WARNING RENDER TOP: ', props)
@@ -90,7 +93,11 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      <TwapSuggestionBanner slippage={allowedSlippage} buyingFiatAmount={buyingFiatAmount} />
+      <TwapSuggestionBanner
+        slippage={allowedSlippage}
+        buyingFiatAmount={buyingFiatAmount}
+        tradeUrlParams={tradeUrlParams}
+      />
     </>
   )
 }, genericPropsChecker)
