@@ -3,8 +3,6 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { InfoIcon } from 'legacy/components/InfoIcon'
-
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -53,9 +51,7 @@ export function SwapPriceDifferenceWarning({
     <InlineBanner type={'savings'}>
       {isTwapBetter ? (
         <>
-          <strong>
-            Maximizing Your Gains! <InfoIcon content="TODO: set the tooltip content"></InfoIcon>
-          </strong>
+          <strong>Maximizing Your Gains! {/*<InfoIcon content="TODO: set the tooltip content"></InfoIcon>*/}</strong>
           <p>
             You could gain an extra{' '}
             <b>
