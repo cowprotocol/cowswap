@@ -38,7 +38,9 @@ export function dispatchPresignedOrderPosted(
     id: orderId,
     orderType,
   })
-  orderAnalytics('Posted', orderClass, 'Presign')
+
+  const analyticsOrderType = orderType === 'composable-order' ? 'TWAP' : orderClass
+  orderAnalytics('Posted', analyticsOrderType, 'Presign')
 
   store.dispatch(addPopup(popup))
 }

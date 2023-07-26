@@ -13,6 +13,8 @@ import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { getConnectionName, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
+import { useGetMarketDimension } from './useGetMarketDimension'
+
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'
@@ -60,6 +62,8 @@ export function useAnalyticsReporter() {
   const { walletName: _walletName } = useWalletDetails()
   const prevAccount = usePrevious(account)
 
+  const marketDimension = useGetMarketDimension()
+
   useEffect(() => {
     // custom dimension 1 - chainId
     googleAnalytics.setDimension(Dimensions.chainId, chainId)
@@ -72,12 +76,13 @@ export function useAnalyticsReporter() {
   const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
 
   useEffect(() => {
-    // custom dimension 2 - walletname
+    // Custom dimension 2 - walletname
     googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
 
-    // Set userId and also new dimension because ReactGA.set might not be working
-    googleAnalytics.setDimension(Dimensions.userAddress, `"${account}"`)
-    ReactGA.set({ userId: `"${account}"` })
+    // Custom dimension 4 - user id - because ReactGA.set might not be working
+    const userId = account ? `"${account}"` : ''
+    googleAnalytics.setDimension(Dimensions.userAddress, userId)
+    ReactGA.set({ userId })
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account) {
@@ -89,6 +94,11 @@ export function useAnalyticsReporter() {
       sendMicrosoftEvent(PIXEL_EVENTS.CONNECT_WALLET)
     }
   }, [account, walletName, prevAccount])
+
+  useEffect(() => {
+    // Custom dimension 5 - market
+    googleAnalytics.setDimension(Dimensions.market, marketDimension)
+  }, [marketDimension])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)

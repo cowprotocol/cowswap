@@ -24,6 +24,7 @@ jest.mock('modules/swap/services/swapFlow')
 jest.mock('modules/swap/services/ethFlow')
 jest.mock('modules/swap/services/safeBundleFlow')
 jest.mock('modules/twap/state/twapOrdersListAtom', () => ({}))
+jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
 
 const mockUseSwapActionHandlers = useSwapActionHandlers as jest.MockedFunction<typeof useSwapActionHandlers>
 const mockSwapFlow = swapFlow as jest.MockedFunction<typeof swapFlow>

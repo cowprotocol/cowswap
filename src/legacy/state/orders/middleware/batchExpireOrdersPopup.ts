@@ -18,7 +18,7 @@ export function batchExpireOrdersPopup(
 
     // Do not trigger expired pop up if order is hidden
     if (orderObject && !orderObject.order.isHidden) {
-      const { summary, class: orderClass } = orderObject.order
+      const { summary, class: orderClass, composableCowInfo } = orderObject.order
 
       const popup = setPopupData(OrderTxTypes.METATXN, {
         success: false,
@@ -26,7 +26,8 @@ export function batchExpireOrdersPopup(
         id,
         status: OrderActions.OrderStatus.EXPIRED,
       })
-      orderAnalytics('Expired', orderClass)
+      const orderType = composableCowInfo ? 'TWAP' : orderClass
+      orderAnalytics('Expired', orderType)
 
       store.dispatch(addPopup(popup))
     }
