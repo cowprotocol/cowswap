@@ -80,6 +80,10 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
+  const swapPriceDifferenceWarning = swapAmountDifference ? (
+    <SwapPriceDifferenceWarning feeFiatAmount={tradeQuoteFeeFiatAmount} amount={swapAmountDifference} />
+  ) : null
+
   return (
     <>
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />}
@@ -107,20 +111,19 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (showFallbackHandlerWarning) {
-          return (
+          return [
+            isFallbackHandlerSetupAccepted ? swapPriceDifferenceWarning : null,
             <FallbackHandlerWarning
               isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
               toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-            />
-          )
+            />,
+          ]
         }
 
         if (showTradeFormWarnings) {
           return [
             isPriceProtectionNotEnough(deadline, slippage) ? <SmallPriceProtectionWarning /> : null,
-            swapAmountDifference ? (
-              <SwapPriceDifferenceWarning feeFiatAmount={tradeQuoteFeeFiatAmount} amount={swapAmountDifference} />
-            ) : null,
+            swapPriceDifferenceWarning,
           ]
         }
 
