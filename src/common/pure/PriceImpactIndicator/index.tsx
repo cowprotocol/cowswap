@@ -36,7 +36,7 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
       {priceImpact ? (
         <PriceImpactWrapper priceImpact$={priceImpact}>
           {' '}
-          <MouseoverTooltip text={t`The estimated difference between the USD values of input and output amounts.`}>
+          <MouseoverTooltip text={t`Price impact due to current liquidity levels`}>
             ({formatPercent(priceImpact.multiply(-1))}%)
           </MouseoverTooltip>
         </PriceImpactWrapper>
