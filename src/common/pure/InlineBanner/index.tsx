@@ -9,11 +9,11 @@ import iconAlert from 'legacy/assets/cow-swap/alert.svg'
 import iconDanger from 'legacy/assets/cow-swap/alert.svg'
 import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
-type BannerType = 'alert' | 'information' | 'success' | 'danger'
+type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface BannerConfig {
   icon: string
-  colorKey: BannerType
+  colorKey: Exclude<BannerType, 'savings'>
 }
 
 const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
@@ -27,6 +27,10 @@ const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
   },
   success: {
     icon: iconSuccess,
+    colorKey: 'success',
+  },
+  savings: {
+    icon: '💸',
     colorKey: 'success',
   },
   danger: {
@@ -106,9 +110,9 @@ export type InlineBannerProps = {
 }
 
 export function InlineBanner({ children, className, hideIcon, type = 'alert' }: InlineBannerProps) {
-  const theme = useTheme()
-  const config = BANNER_CONFIG[type]
-  const color = theme[config.colorKey]
+  const theme = useTheme();
+  const config = BANNER_CONFIG[type];
+  const color = theme[config.colorKey];
 
   return (
     <Wrapper className={className} color={color}>

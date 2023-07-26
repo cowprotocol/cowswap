@@ -11,8 +11,7 @@ export function SwapPriceDifferenceWarning({ amount }: SwapPriceDifferenceWarnin
   return (
     <InlineBanner type="success">
       <p>
-        You are expected to receive <TokenAmount amount={amount} tokenSymbol={amount.currency} /> more compared to the
-        same SWAP order
+        You could gain an extra <TokenAmount amount={amount} tokenSymbol={amount.currency} /> compared to using SWAP. Every bit counts!
       </p>
     </InlineBanner>
   )
