@@ -40,8 +40,8 @@ export function SwapPriceDifferenceWarning({ amount, feeFiatAmount }: SwapPriceD
             </>
           ) : (
             <>
-              Given the current Market Fees (<FiatAmount amount={feeFiatAmount} /> per chunk) , it’s better to reduce
-              the number of parts or use SWAP
+              Given the current Market Fees (<FiatAmount amount={feeFiatAmount} /> per chunk), it’s better to reduce the
+              number of parts or use SWAP
             </>
           )}
         </div>
