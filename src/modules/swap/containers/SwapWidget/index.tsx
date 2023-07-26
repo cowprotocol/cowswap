@@ -180,6 +180,7 @@ export function SwapWidget() {
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
+    chainId,
     trade,
     account,
     feeWarningAccepted,

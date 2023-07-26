@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -18,6 +19,7 @@ import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
+  chainId: SupportedChainId
   trade: TradeGp | undefined
   account: string | undefined
   feeWarningAccepted: boolean
@@ -50,6 +52,7 @@ const StyledNoImpactWarning = styled(NoImpactWarning)`
 
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
   const {
+    chainId,
     trade,
     account,
     feeWarningAccepted,
@@ -94,6 +97,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       )}
 
       <TwapSuggestionBanner
+        chainId={chainId}
         priceImpact={priceImpact}
         buyingFiatAmount={buyingFiatAmount}
         tradeUrlParams={tradeUrlParams}

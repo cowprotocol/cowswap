@@ -21,6 +21,7 @@ const StyledNavLink = styled(NavLink)`
 `
 
 export interface TwapSuggestionBannerProps {
+  chainId: SupportedChainId
   priceImpact: Percent | undefined
   buyingFiatAmount: CurrencyAmount<Currency> | null
   tradeUrlParams: TradeUrlParams
@@ -33,11 +34,16 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.GOERLI]: 100, // $100
 }
 
-export function TwapSuggestionBanner({ priceImpact, buyingFiatAmount, tradeUrlParams }: TwapSuggestionBannerProps) {
+export function TwapSuggestionBanner({
+  priceImpact,
+  buyingFiatAmount,
+  tradeUrlParams,
+  chainId,
+}: TwapSuggestionBannerProps) {
   if (!priceImpact || priceImpact.lessThan(0)) return null
 
   const shouldSuggestTwap =
-    +priceImpact.toFixed(2) > PRICE_IMPACT_LIMIT && +(buyingFiatAmount?.toExact() || 0) > AMOUNT_LIMIT
+    +priceImpact.toFixed(2) > PRICE_IMPACT_LIMIT && +(buyingFiatAmount?.toExact() || 0) > AMOUNT_LIMIT[chainId]
 
   if (!shouldSuggestTwap) return null
 
