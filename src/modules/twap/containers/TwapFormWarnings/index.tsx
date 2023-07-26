@@ -4,7 +4,9 @@ import { useCallback } from 'react'
 
 import { modifySafeHandlerAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -54,7 +56,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const { chainId } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isSafeViaWc = useIsSafeViaWc()
+  const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
+  const tradeUrlParams = useTradeRouteContext()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -77,6 +81,14 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
+
+  const swapPriceDifferenceWarning = swapAmountDifference ? (
+    <SwapPriceDifferenceWarning
+      tradeUrlParams={tradeUrlParams}
+      feeFiatAmount={tradeQuoteFeeFiatAmount}
+      amount={swapAmountDifference}
+    />
+  ) : null
 
   return (
     <>
@@ -105,18 +117,19 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (showFallbackHandlerWarning) {
-          return (
+          return [
+            isFallbackHandlerSetupAccepted ? swapPriceDifferenceWarning : null,
             <FallbackHandlerWarning
               isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
               toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-            />
-          )
+            />,
+          ]
         }
 
         if (showTradeFormWarnings) {
           return [
             isPriceProtectionNotEnough(deadline, slippage) ? <SmallPriceProtectionWarning /> : null,
-            swapAmountDifference?.greaterThan(0) ? <SwapPriceDifferenceWarning amount={swapAmountDifference} /> : null,
+            swapPriceDifferenceWarning,
           ]
         }
 

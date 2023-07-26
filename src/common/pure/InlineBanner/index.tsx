@@ -12,8 +12,9 @@ import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface BannerConfig {
-  icon: string
   colorKey: Exclude<BannerType, 'savings'>
+  icon?: string
+  iconText?: string
 }
 
 const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
@@ -30,7 +31,7 @@ const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
     colorKey: 'success',
   },
   savings: {
-    icon: '💸',
+    iconText: '💸',
     colorKey: 'success',
   },
   danger: {
@@ -59,7 +60,7 @@ const Wrapper = styled.span<{ color: string }>`
     justify-content: center;
     align-items: center;
     flex-flow: column wrap;
-    gap: 16px;
+    gap: 10px;
     width: 100%;
   }
 
@@ -91,6 +92,7 @@ const Wrapper = styled.span<{ color: string }>`
   > span > strong {
     display: flex;
     align-items: center;
+    gap: 6px;
   }
 
   > span > p {
@@ -99,6 +101,12 @@ const Wrapper = styled.span<{ color: string }>`
     padding: 0;
     width: 100%;
     text-align: center;
+  }
+
+  > span > i {
+    font-style: normal;
+    font-size: 32px;
+    line-height: 1;
   }
 `
 
@@ -117,7 +125,8 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
   return (
     <Wrapper className={className} color={color}>
       <span>
-        {!hideIcon && <SVG src={config.icon} description={type} />}
+        {!hideIcon && config.icon && <SVG src={config.icon} description={type} />}
+        {!hideIcon && config.iconText && <i>{config.iconText}</i>}
         {children}
       </span>
     </Wrapper>
