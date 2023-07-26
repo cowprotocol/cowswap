@@ -226,8 +226,20 @@ export function useRefetchQuoteCallback() {
       }
 
       // Init get quote methods params
-      const bestQuoteParams = { ...params, strategy }
-      const fastQuoteParams = { quoteParams: { ...quoteParams, priceQuality: 'fast' } }
+
+      const bestQuoteParams = {
+        ...params,
+        strategy,
+        quoteParams: {
+          ...quoteParams,
+        },
+      }
+      const fastQuoteParams = {
+        quoteParams: {
+          ...quoteParams,
+          priceQuality: 'fast',
+        },
+      }
 
       // Register get best and fast quote methods on window
       registerOnWindow({

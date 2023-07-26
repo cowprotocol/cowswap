@@ -255,7 +255,8 @@ export async function getBestQuoteLegacy({
   fetchFee,
   previousFee,
 }: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
-  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validTo } = quoteParams
+  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validTo, enoughBalance } =
+    quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
   // Get a new fee quote (if required)
   const feePromise =
@@ -297,6 +298,7 @@ export async function getBestQuoteLegacy({
           kind,
           userAddress,
           validTo,
+          enoughBalance,
         })
       : // fee exceeds our price, is invalid
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)

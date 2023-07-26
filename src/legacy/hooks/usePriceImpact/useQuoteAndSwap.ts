@@ -34,6 +34,7 @@ type GetQuoteParams = {
   fromDecimals?: number
   toDecimals?: number
   validTo?: number
+  enoughBalance: boolean
 } & WithLoading
 
 type FeeQuoteParamsWithError = LegacyFeeQuoteParams & { error?: QuoteError }
@@ -50,6 +51,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     loading,
     setLoading,
     validTo,
+    enoughBalance,
   } = params
   const { chainId } = useWalletInfo()
   const { account } = useWalletInfo()
@@ -77,6 +79,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
       chainId,
       validTo,
       isEthFlow,
+      enoughBalance,
     }
     let quoteData: QuoteInformationObject | LegacyFeeQuoteParams = quoteParams
     getBestQuoteResolveOnlyLastCall({
@@ -127,6 +130,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     isEthFlow,
     setLoading,
     strategy,
+    enoughBalance,
   ])
 
   return { quote, loading, setLoading }

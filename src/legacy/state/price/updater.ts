@@ -16,6 +16,7 @@ import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useEnoughBalance } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
@@ -123,7 +124,10 @@ export default function FeesUpdater(): null {
   const {
     currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
     currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
+    parsedAmount,
   } = useDerivedSwapInfo()
+
+  const enoughBalance = useEnoughBalance({ account, amount: parsedAmount })
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
@@ -200,6 +204,7 @@ export default function FeesUpdater(): null {
       userAddress: account,
       validTo,
       isEthFlow,
+      enoughBalance,
     }
 
     // Don't refetch if offline.
@@ -270,6 +275,7 @@ export default function FeesUpdater(): null {
     validTo,
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
+    enoughBalance,
   ])
 
   return null

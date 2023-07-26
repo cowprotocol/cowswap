@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
+import { useEnoughBalance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -18,6 +22,12 @@ export function useQuoteParams(amount: string | null) {
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
 
+  const currency = orderKind === OrderKind.SELL ? inputCurrency : outputCurrency
+  const enoughBalance = useEnoughBalance({
+    account,
+    amount: (currency && amount && CurrencyAmount.fromRawAmount(currency, amount)) || undefined,
+  })
+
   return useMemo(() => {
     if (!sellToken || !buyToken || !amount) return
 
@@ -31,6 +41,7 @@ export function useQuoteParams(amount: string | null) {
       toDecimals,
       fromDecimals,
       isEthFlow: false,
+      priceQuality: enoughBalance ? 'verified' : 'optimal',
     }
-  }, [sellToken, buyToken, toDecimals, fromDecimals, amount, account, chainId, orderKind])
+  }, [amount, account, chainId, orderKind, enoughBalance, buyToken, fromDecimals, sellToken, toDecimals])
 }

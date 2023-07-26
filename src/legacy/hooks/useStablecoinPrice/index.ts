@@ -63,6 +63,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       userAddress: account,
       validTo: getUsdQuoteValidTo(),
       isEthFlow: false,
+      enoughBalance: false,
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, chainId])
 
