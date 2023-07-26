@@ -20,18 +20,19 @@ const StyledNavLink = styled(NavLink)`
 `
 
 export interface TwapSuggestionBannerProps {
-  slippage: Percent
+  priceImpact: Percent | undefined
   buyingFiatAmount: CurrencyAmount<Currency> | null
   tradeUrlParams: TradeUrlParams
 }
 
-const TWAP_SUGGESTION_SLIPPAGE_LIMIT = 1 // 1%
-const TWAP_SUGGESTION_AMOUNT_LIMIT = 50_000 // $50,000
+const PRICE_IMPACT_LIMIT = 1 // 1%
+const AMOUNT_LIMIT = 50_000 // $50,000
 
-export function TwapSuggestionBanner({ slippage, buyingFiatAmount, tradeUrlParams }: TwapSuggestionBannerProps) {
+export function TwapSuggestionBanner({ priceImpact, buyingFiatAmount, tradeUrlParams }: TwapSuggestionBannerProps) {
+  if (!priceImpact || priceImpact.lessThan(0)) return null
+
   const shouldSuggestTwap =
-    +slippage.toFixed(2) > TWAP_SUGGESTION_SLIPPAGE_LIMIT &&
-    +(buyingFiatAmount?.toExact() || 0) > TWAP_SUGGESTION_AMOUNT_LIMIT
+    +priceImpact.toFixed(2) > PRICE_IMPACT_LIMIT && +(buyingFiatAmount?.toExact() || 0) > AMOUNT_LIMIT
 
   if (!shouldSuggestTwap) return null
 
@@ -40,7 +41,7 @@ export function TwapSuggestionBanner({ slippage, buyingFiatAmount, tradeUrlParam
   return (
     <InlineBanner type="alert">
       <p>
-        Your slippage is {+slippage.toFixed(2)}%. Consider breaking up your order using{' '}
+        The price impact is {+priceImpact.toFixed(2)}%. Consider breaking up your order using{' '}
         <StyledNavLink to={routePath}>TWAP orders</StyledNavLink>
       </p>
     </InlineBanner>

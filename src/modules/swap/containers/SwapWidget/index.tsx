@@ -196,7 +196,7 @@ export function SwapWidget() {
     setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,
-    allowedSlippage,
+    priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
   }
 

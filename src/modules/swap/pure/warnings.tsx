@@ -31,7 +31,7 @@ export interface SwapWarningsTopProps {
   nativeCurrencySymbol: string
   wrappedCurrencySymbol: string
   buyingFiatAmount: CurrencyAmount<Currency> | null
-  allowedSlippage: Percent
+  priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
@@ -65,7 +65,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,
-    allowedSlippage,
+    priceImpact,
     tradeUrlParams,
   } = props
 
@@ -94,7 +94,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       )}
 
       <TwapSuggestionBanner
-        slippage={allowedSlippage}
+        priceImpact={priceImpact}
         buyingFiatAmount={buyingFiatAmount}
         tradeUrlParams={tradeUrlParams}
       />
