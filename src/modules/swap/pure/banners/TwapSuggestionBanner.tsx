@@ -1,3 +1,4 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'
@@ -26,7 +27,11 @@ export interface TwapSuggestionBannerProps {
 }
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
-const AMOUNT_LIMIT = 50_000 // $50,000
+const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: 50_000, // $50,000
+  [SupportedChainId.GNOSIS_CHAIN]: 5_000, // $5000
+  [SupportedChainId.GOERLI]: 100, // $100
+}
 
 export function TwapSuggestionBanner({ priceImpact, buyingFiatAmount, tradeUrlParams }: TwapSuggestionBannerProps) {
   if (!priceImpact || priceImpact.lessThan(0)) return null
@@ -42,7 +47,7 @@ export function TwapSuggestionBanner({ priceImpact, buyingFiatAmount, tradeUrlPa
     <InlineBanner type="alert">
       <p>
         The price impact is {+priceImpact.toFixed(2)}%. Consider breaking up your order using{' '}
-        <StyledNavLink to={routePath}>TWAP orders</StyledNavLink>
+        <StyledNavLink to={routePath}>Advanced orders</StyledNavLink>
       </p>
     </InlineBanner>
   )
