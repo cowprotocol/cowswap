@@ -9,11 +9,9 @@ import { Field } from 'legacy/state/swap/actions'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeWidget, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
-import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
+import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -25,7 +23,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import * as styledEl from './styled'
 
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
-import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
+import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -60,11 +58,6 @@ const UNLOCK_SCREEN = {
 }
 
 export function LimitOrdersWidget() {
-  useSetupTradeState()
-  useSetupLimitOrderAmountsFromUrl()
-  useDisableNativeTokenSelling()
-  useFillLimitOrdersDerivedState()
-
   const {
     inputCurrency,
     outputCurrency,
@@ -236,6 +229,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const params = {
     disableNonToken: false,
     compactView: false,
+    disableNativeSelling: true,
     isExpertMode,
     recipient,
     showRecipient,

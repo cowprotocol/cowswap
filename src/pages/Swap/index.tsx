@@ -5,7 +5,7 @@ import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { AppDataUpdater } from 'modules/appData'
-import { SwapWidget, SwapDerivedStateUpdater } from 'modules/swap'
+import { SwapWidget, SwapDerivedStateUpdater, SwapAmountsFromUrlUpdater } from 'modules/swap'
 import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
@@ -25,6 +25,7 @@ export function SwapPage() {
     <>
       <AppDataUpdater orderClass="market" slippage={slippage} />
       <SwapDerivedStateUpdater />
+      <SwapAmountsFromUrlUpdater />
       <SwapWidget />
     </>
   )

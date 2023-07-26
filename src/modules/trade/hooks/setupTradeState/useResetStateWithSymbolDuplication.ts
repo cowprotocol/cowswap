@@ -31,12 +31,12 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
   const { inputCurrencyId, outputCurrencyId } = state || {}
 
   useEffect(() => {
-    const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
-    const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
+    const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId)
+    const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId)
     let timeoutId: NodeJS.Timeout | null = null
 
-    if (chainId && (inputCurrencyIsDoubled || outputCurrencyIsDoubled)) {
-      const doubledSymbol = inputCurrencyIsDoubled ? inputCurrencyId : outputCurrencyId
+    if (chainId && (inputCurrencyIsDuplicated || outputCurrencyIsDuplicated)) {
+      const doubledSymbol = inputCurrencyIsDuplicated ? inputCurrencyId : outputCurrencyId
 
       // TODO: add UI modal instead of alert
       // Show alert in 500ms to avoid glitch with transparent Import token modal
