@@ -21,20 +21,11 @@ export type SwapPriceDifferenceWarningProps = {
   tradeUrlParams: TradeUrlParams
 }
 
-const Wrapper = styled.p`
-  display: flex;
-  gap: 12px;
-  text-align: left !important;
-`
-
-const EmojiBox = styled.span`
-  font-size: 18px;
-`
-
 const StyledNavLink = styled(NavLink)`
   color: inherit;
   display: inline;
   text-decoration: underline;
+
   &:hover {
     text-decoration: none;
   }
@@ -59,26 +50,32 @@ export function SwapPriceDifferenceWarning({
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
   return (
-    <InlineBanner type={isTwapBetter ? 'success' : 'information'} hideIcon={true}>
-      <Wrapper>
-        {isTwapBetter && <EmojiBox>🤑</EmojiBox>}
-        <div>
-          {isTwapBetter ? (
-            <>
-              You are expected to receive <TokenAmount amount={amount} tokenSymbol={amount.currency} /> more compared to
-              the same {swapOrderLink}
-            </>
-          ) : (
-            <>
-              Given the current Market Fees (<FiatAmount amount={feeFiatAmount} /> per chunk), it’s better to reduce the
-              number of parts or use {swapOrderLink}
-            </>
-          )}
-        </div>
-        <div>
-          <InfoIcon content="TODO: set the tooltip content"></InfoIcon>
-        </div>
-      </Wrapper>
+    <InlineBanner type={'savings'}>
+      {isTwapBetter ? (
+        <>
+          <strong>
+            Maximizing Your Gains! <InfoIcon content="TODO: set the tooltip content"></InfoIcon>
+          </strong>
+          <p>
+            You could gain an extra{' '}
+            <b>
+              <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+            </b>{' '}
+            compared to using a {swapOrderLink}
+          </p>
+        </>
+      ) : (
+        <>
+          <strong>Trade Smart, Save More!</strong>
+          <p>
+            Considering current market fees (
+            <b>
+              <FiatAmount amount={feeFiatAmount} />
+            </b>{' '}
+            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+          </p>
+        </>
+      )}
     </InlineBanner>
   )
 }
