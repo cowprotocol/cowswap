@@ -3,6 +3,8 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
+
 import { OrderID } from 'api/gnosisProtocol'
 import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
@@ -29,8 +31,10 @@ import {
   updateLastCheckedBlock,
   updateOrder,
   updatePresignGnosisSafeTx,
+  clearOrdersStorage,
+  CONFIRMED_STATES,
 } from './actions'
-import { ContractDeploymentBlocks } from './consts'
+import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
 
 export interface OrderObject {
   id: OrderID
@@ -202,6 +206,25 @@ function cancelOrderInState(state: Required<OrdersState>, chainId: ChainId, orde
   orderObject.order.isCancelling = false
 
   addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
+}
+
+function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject | undefined) {
+  const validToA = Number(a?.order.validTo)
+  const validToB = Number(b?.order.validTo)
+
+  if (!validToA || !validToB) {
+    return -1
+  }
+
+  const expirationTimeB = Number(new Date(validToB * 1000))
+  const expirationTimeA = Number(new Date(validToA * 1000))
+
+  return expirationTimeB - expirationTimeA
+}
+
+function _toPartialsOrderMap(acc: PartialOrdersMap, element: OrderObject | undefined) {
+  element && (acc[element.id] = element)
+  return acc
 }
 
 const initialState: OrdersState = {}
@@ -410,17 +433,7 @@ export default createReducer(initialState, (builder) =>
           cancelOrderInState(state, chainId, orderObject)
 
           if (getIsComposableCowParentOrder(orderObject.order)) {
-            const ordersMap = state[chainId]
-            const allOrdersMap = {
-              ...ordersMap.pending,
-              ...ordersMap.presignaturePending,
-              ...ordersMap.fulfilled,
-              ...ordersMap.expired,
-              ...ordersMap.cancelled,
-              ...ordersMap.creating,
-              ...ordersMap.failed,
-              ...ordersMap.scheduled,
-            }
+            const allOrdersMap = flatOrdersStateNetwork(state[chainId])
 
             const children = Object.values(allOrdersMap).filter(
               (item) => item?.order.composableCowInfo?.parentId === id
@@ -482,6 +495,32 @@ export default createReducer(initialState, (builder) =>
 
       ids.forEach((id) => {
         deleteOrderById(state, chainId, id)
+      })
+    })
+    .addCase(clearOrdersStorage, (state) => {
+      Object.keys(state).forEach((_chainId) => {
+        const chainId = _chainId as unknown as ChainId
+        const orderListByChain = state[chainId]
+
+        // Iterate order statuses we want to clean up
+        CONFIRMED_STATES.forEach((status) => {
+          const orders = orderListByChain?.[status]
+
+          if (!orders) {
+            return
+          }
+
+          // Sort by expiration time
+          const ordersCleaned = Object.values(orders)
+            .sort(_orderSorterByExpirationTime)
+            // Take top n orders
+            .slice(0, MAX_ITEMS_PER_STATUS)
+            // Return back to appropriate data structure
+            .reduce<PartialOrdersMap>(_toPartialsOrderMap, {})
+
+          // Update parts of the state, with the "cleaned" ones
+          orderListByChain[status] = ordersCleaned
+        })
       })
     })
 )

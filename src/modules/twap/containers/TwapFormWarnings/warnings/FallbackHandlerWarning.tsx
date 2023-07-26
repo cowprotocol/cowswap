@@ -1,5 +1,9 @@
 import styled from 'styled-components/macro'
 
+import { ExternalLink } from 'legacy/theme'
+
+import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
+
 import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`
@@ -84,8 +88,7 @@ export function FallbackHandlerWarning({
             Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
             TWAP orders when placing your order.
           </p>
-          {/*<HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>*/}
-          {/*TODO: set a proper link*/}
+          <ExternalLink href={UNSUPPORTED_SAFE_LINK}>Learn more</ExternalLink>
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>
         </InlineBannerWithCheckbox>
       </Wrapper>

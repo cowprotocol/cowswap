@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { NativeCurrency, Token } from '@uniswap/sdk-core'

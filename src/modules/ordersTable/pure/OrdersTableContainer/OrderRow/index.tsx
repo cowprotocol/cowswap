@@ -23,7 +23,7 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
@@ -44,17 +44,6 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import * as styledEl from './styled'
 
 import { OrderParams } from '../utils/getOrderParams'
-
-export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: 'Open',
-  [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
-  [OrderStatus.FULFILLED]: 'Filled',
-  [OrderStatus.EXPIRED]: 'Expired',
-  [OrderStatus.CANCELLED]: 'Cancelled',
-  [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.FAILED]: 'Failed',
-  [OrderStatus.SCHEDULED]: 'Scheduled',
-}
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
 
@@ -158,7 +147,7 @@ export interface OrderRowProps {
   isChild?: boolean
   orderParams: OrderParams
   onClick: () => void
-  orderActions: LimitOrderActions
+  orderActions: OrderActions
   children?: JSX.Element
 }
 

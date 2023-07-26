@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
@@ -15,7 +15,7 @@ import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPric
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
   return useCallback(
     (field: Field, currency: Currency | null) => {

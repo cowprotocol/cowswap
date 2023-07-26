@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import ms from 'ms.macro'
@@ -14,7 +14,7 @@ const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
 export function GasPriceStrategyUpdater(): null {
   const { chainId } = useWalletInfo()
-  const setGasPriceStrategy = useUpdateAtom(gasPriceStrategyAtom)
+  const setGasPriceStrategy = useSetAtom(gasPriceStrategyAtom)
 
   useEffect(() => {
     if (!chainId) return

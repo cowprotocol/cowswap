@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -8,6 +8,8 @@ import { AppDispatch, AppState } from 'legacy/state'
 import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 import { isTruthy } from 'legacy/utils/misc'
+
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
 
 import { OrderID } from 'api/gnosisProtocol'
 
@@ -31,6 +33,7 @@ import {
   setOrderCancellationHash,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
+  clearOrdersStorage,
 } from './actions'
 import {
   getDefaultNetworkState,
@@ -173,7 +176,7 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
   }, [JSON.stringify(ordersState), chainId])
 }
 
-export const useOrders = (chainId: SupportedChainId, account: string | undefined): Order[] => {
+export const useOrders = (chainId: SupportedChainId, account: string | undefined, orderClass: OrderClass): Order[] => {
   const state = useOrdersStateNetwork(chainId)
   const accountLowerCase = account?.toLowerCase()
 
@@ -181,7 +184,12 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
     if (!state) return []
 
     return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
-      if (order?.order.owner.toLowerCase() === accountLowerCase) {
+      if (!order) return acc
+
+      const doesBelongToAccount = order.order.owner.toLowerCase() === accountLowerCase
+      const doesMatchClass = order.order.class === orderClass
+
+      if (doesBelongToAccount && doesMatchClass) {
         const mappedOrder = _deserializeOrder(order)
 
         if (mappedOrder && !mappedOrder.isHidden) {
@@ -191,25 +199,16 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
 
       return acc
     }, [])
-  }, [state, accountLowerCase])
+  }, [state, accountLowerCase, orderClass])
 }
 
-export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
+const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
   const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
     if (!state) return {}
 
-    return {
-      ...state.pending,
-      ...state.presignaturePending,
-      ...state.fulfilled,
-      ...state.expired,
-      ...state.cancelled,
-      ...state.creating,
-      ...state.failed,
-      ...state.scheduled,
-    }
+    return flatOrdersStateNetwork(state)
   }, [state])
 }
 
@@ -218,7 +217,7 @@ export type OrdersMap = {
 }
 
 export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap | null => {
-  const allOrders = useAllOrders({ chainId })
+  const allOrders = useAllOrdersMap({ chainId })
 
   return useMemo(() => {
     if (!allOrders || !ids) {
@@ -274,9 +273,8 @@ export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] 
  *
  * The difference is that this hook returns only orders that have the status PENDING
  * while usePendingOrders aggregates all pending states
- * @param chainId
  */
-export const useOnlyPendingOrders = (chainId: SupportedChainId | undefined): Order[] => {
+export const useOnlyPendingOrders = (chainId: SupportedChainId, orderClass: OrderClass): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.pending
   )
@@ -284,8 +282,11 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId | undefined): Ord
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
-  }, [state])
+    return Object.values(state)
+      .filter((order) => order?.order.class === orderClass)
+      .map(_deserializeOrder)
+      .filter(isTruthy)
+  }, [state, orderClass])
 }
 
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
@@ -418,4 +419,14 @@ export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
 export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: SetIsOrderRefundedBatch) => dispatch(setIsOrderRefundedBatch(params)), [dispatch])
+}
+
+/**
+ * Hook that "cleans" orders local storage
+ * Related issue https://github.com/cowprotocol/cowswap/issues/2690
+ *
+ */
+export const useClearOrdersStorage = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(() => dispatch(clearOrdersStorage()), [dispatch])
 }

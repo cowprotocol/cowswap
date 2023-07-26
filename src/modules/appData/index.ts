@@ -1,5 +1,4 @@
-export { getAppDataHash } from './utils/appDataHash'
-export { UploadToIpfsUpdater } from './updater/UploadToIpfsUpdater'
+export { getAppData } from './utils/fullAppData'
 export { AppDataUpdater } from './updater/AppDataInfoUpdater'
-export { useUploadAppData, useAppData } from './hooks'
-export type { UploadAppDataParams, AppDataInfo } from './types'
+export { useAppData } from './hooks'
+export type { AppDataInfo } from './types'

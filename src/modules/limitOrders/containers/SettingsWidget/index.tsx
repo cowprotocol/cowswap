@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'

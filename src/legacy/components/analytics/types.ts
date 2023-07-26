@@ -32,6 +32,7 @@ export enum Dimensions {
   walletName = 'walletName',
   customBrowserType = 'customBrowserType',
   userAddress = 'userAddress',
+  market = 'market',
 }
 
 export type AnalyticsOrderType = OrderClass | 'TWAP'

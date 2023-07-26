@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { usePriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -7,7 +7,7 @@ import { useTradePriceImpactParams } from '../hooks/useTradePriceImpactParams'
 import { priceImpactAtom } from '../state/priceImpactAtom'
 
 export function PriceImpactUpdater() {
-  const updatePriceImpact = useUpdateAtom(priceImpactAtom)
+  const updatePriceImpact = useSetAtom(priceImpactAtom)
   const params = useTradePriceImpactParams()
   const priceImpact = usePriceImpact(params)
   const priceImpactValue = priceImpact.priceImpact?.quotient.toString()

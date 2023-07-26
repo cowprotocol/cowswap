@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { useNavigate } from 'react-router-dom'
@@ -43,8 +43,8 @@ const cacheMessages = (event: MessageEvent) => {
 })()
 
 export function InjectedWidgetUpdater() {
-  const updateParams = useUpdateAtom(injectedWidgetParamsAtom)
-  const updateMetaData = useUpdateAtom(injectedWidgetMetaDataAtom)
+  const updateParams = useSetAtom(injectedWidgetParamsAtom)
+  const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
   const navigate = useNavigate()
   const prevData = useRef(null)
 

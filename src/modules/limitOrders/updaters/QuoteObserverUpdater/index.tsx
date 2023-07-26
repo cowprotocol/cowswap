@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
@@ -15,7 +15,7 @@ export function QuoteObserverUpdater() {
   const { response } = useTradeQuote()
   const { state } = useDerivedTradeState()
 
-  const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
 
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency

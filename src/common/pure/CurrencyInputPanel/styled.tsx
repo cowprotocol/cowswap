@@ -12,14 +12,14 @@ export const OuterWrapper = styled.div`
   flex-flow: column wrap;
 `
 
-export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
+export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; inputDisabled: boolean; disabled: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
   gap: 10px;
   padding: 16px;
-  background: ${({ theme }) => theme.input.bg1};
-  border: none;
+  background: ${({ theme, inputDisabled }) => (inputDisabled ? 'transparent' : theme.input.bg1)};
+  border: ${({ theme, inputDisabled }) => (inputDisabled ? `1px solid ${theme.grey1}` : 'none')};
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
   min-height: 106px;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};

@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import {
@@ -45,6 +45,7 @@ import {
 } from '../../state/twapOrdersSettingsAtom'
 import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
 import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
+import { QuoteParamsUpdater } from '../../updaters/QuoteParamsUpdater'
 import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
@@ -70,7 +71,7 @@ export function TwapFormWidget() {
   const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
-  const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -119,6 +120,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
       <FallbackHandlerVerificationUpdater />

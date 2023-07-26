@@ -17,6 +17,8 @@ import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils/index'
 
+import { AppDataInfo } from 'modules/appData'
+
 import { getTrades, OrderID } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import { formatTokenAmount } from 'utils/amountFormat'
@@ -37,7 +39,7 @@ export type PostOrderParams = {
   recipient: string
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
-  appDataHash: string
+  appData: AppDataInfo
   class: OrderClass
   partiallyFillable: boolean
   quoteId?: number
@@ -85,11 +87,13 @@ export function getOrderSubmitSummary(
   }
 }
 
-export function getOrderParams(params: PostOrderParams): {
+export type SignOrderParams = {
   summary: string
   quoteId: number | undefined
   order: UnsignedOrder
-} {
+}
+
+export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   const {
     kind,
     inputAmount,
@@ -100,7 +104,7 @@ export function getOrderParams(params: PostOrderParams): {
     validTo,
     recipient,
     partiallyFillable,
-    appDataHash,
+    appData,
     quoteId,
   } = params
   const sellTokenAddress = sellToken.address
@@ -127,7 +131,7 @@ export function getOrderParams(params: PostOrderParams): {
       sellAmount,
       buyAmount,
       validTo,
-      appData: appDataHash,
+      appData: appData.appDataKeccak256,
       feeAmount: feeAmount?.quotient.toString() || '0',
       kind,
       receiver,
@@ -198,10 +202,10 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
 }
 
 export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const { chainId, account, signer, allowsOffchainSigning } = params
+  const { chainId, account, signer, allowsOffchainSigning, appData } = params
 
   // Prepare order
-  const { summary, quoteId, order: unsignedOrder } = getOrderParams(params)
+  const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
   const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
@@ -229,6 +233,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       // Include the signature
       signature,
       quoteId,
+      appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
     },
     { chainId }
   )

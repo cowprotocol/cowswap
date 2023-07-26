@@ -1,6 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
-
-import { Atom } from 'jotai/core/atom'
+import { Atom, useAtomValue } from 'jotai'
 
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 

@@ -5,6 +5,7 @@ import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
 
+import { getAppData } from 'modules/appData'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -64,11 +65,10 @@ export const tradeContextMock: TradeFlowContext = {
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
     partiallyFillable: true,
-    appDataHash: '0xabc',
+    appData: getAppData(),
   },
   rateImpact: 0,
   appData: {} as any,
-  uploadAppData: () => void 0,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,

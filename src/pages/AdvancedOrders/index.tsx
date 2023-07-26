@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 import { AdvancedOrdersWidget, advancedOrdersAtom } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
+import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
@@ -36,7 +37,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget additionalOrders={allEmulatedOrders} />
+          <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} orders={allEmulatedOrders} />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

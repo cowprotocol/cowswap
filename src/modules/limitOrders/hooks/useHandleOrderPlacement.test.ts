@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { renderHook } from '@testing-library/react-hooks'
 
@@ -26,6 +26,7 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
 jest.mock('common/hooks/featureFlags/useIsTxBundlingEnabled')
+jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
@@ -72,7 +73,7 @@ describe('useHandleOrderPlacement', () => {
     // Arrange
     renderHook(
       () => {
-        const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+        const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
         updateLimitOrdersState({ recipient })
       },

@@ -3,32 +3,22 @@ import { Dispatch, MiddlewareAPI } from 'redux'
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup, AddPopupPayload } from '../../application/reducer'
 import { AppState } from '../../index'
-import { CancelOrdersBatchParams, SerializedOrder } from '../actions'
+import { BaseOrder } from '../actions'
 import { buildCancellationPopupSummary } from '../buildCancellationPopupSummary'
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
-import { OrdersStateNetwork } from '../reducer'
+import { OrderTxTypes, setPopupData } from '../helpers'
 
-export function batchCancelOrdersPopup(
-  store: MiddlewareAPI<Dispatch, AppState>,
-  payload: CancelOrdersBatchParams,
-  orders: OrdersStateNetwork
-) {
+export function batchCancelOrdersPopup(store: MiddlewareAPI<Dispatch, AppState>, orders: BaseOrder[]) {
   // construct Cancelled Order Popups for each Order
-  payload.ids.forEach((id) => {
-    const orderObject = getOrderByIdFromState(orders, id)
+  orders.forEach((order) => {
+    const popup = _buildCancellationPopup(order)
+    const orderType = order.composableCowInfo ? 'TWAP' : order.class
+    orderAnalytics('Canceled', orderType)
 
-    if (orderObject) {
-      const { order } = orderObject
-
-      const popup = _buildCancellationPopup(order)
-      orderAnalytics('Canceled', order.class)
-
-      store.dispatch(addPopup(popup))
-    }
+    store.dispatch(addPopup(popup))
   })
 }
 
-function _buildCancellationPopup(order: SerializedOrder) {
+function _buildCancellationPopup(order: BaseOrder) {
   const { cancellationHash, apiAdditionalInfo, id, summary } = order
 
   if (cancellationHash && !apiAdditionalInfo) {

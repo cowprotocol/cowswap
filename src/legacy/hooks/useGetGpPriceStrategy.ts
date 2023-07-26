@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 
 import { gasPriceStrategyAtom, GpPriceStrategy } from 'legacy/state/gas/atoms'
 

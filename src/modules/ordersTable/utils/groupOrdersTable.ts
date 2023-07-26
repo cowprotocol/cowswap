@@ -9,6 +9,10 @@ interface OrderTableGroupMapItem {
   children: ParsedOrder[]
 }
 
+const childrenOrdersSorter = (a: ParsedOrder, b: ParsedOrder) => {
+  return a.creationTime.getTime() - b.creationTime.getTime()
+}
+
 export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
   const groupsMap = new Map<string, OrderTableGroupMapItem>()
 
@@ -45,7 +49,10 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
   const groups = Array.from(groupsMap.entries()) //
     .reduce<OrderTableGroup[]>((acc, [, group]) => {
       if (group.parent) {
-        acc.push(group as OrderTableGroup)
+        acc.push({
+          parent: group.parent,
+          children: group.children.sort(childrenOrdersSorter),
+        })
       }
       return acc
     }, [])

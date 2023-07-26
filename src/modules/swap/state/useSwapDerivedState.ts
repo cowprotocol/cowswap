@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -30,7 +30,7 @@ export function useFillSwapDerivedState() {
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
-  const updateDerivedState = useUpdateAtom(swapDerivedStateAtom)
+  const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 
   const state = useSafeMemoObject({
     inputCurrency,

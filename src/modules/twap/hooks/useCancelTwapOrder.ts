@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
@@ -10,12 +10,13 @@ import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
-import { cancelTwapOrderAtom } from '../state/twapOrdersListAtom'
+import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapOrderStatus } from '../types'
 
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
-  const cancelTwapOrder = useUpdateAtom(cancelTwapOrderAtom)
+  const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const safeAppsSdk = useSafeAppsSdk()
   const settlementContract = useGP2SettlementContract()
   const composableCowContract = useComposableCowContract()
@@ -39,12 +40,12 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
             const sellTokenAddress = order.inputToken.address
             const sellTokenSymbol = order.inputToken.symbol
 
-            cancelTwapOrder(twapOrderId)
+            setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
             processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
           })
         },
       }
     },
-    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, cancelTwapOrder]
+    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, setTwapOrderStatus]
   )
 }

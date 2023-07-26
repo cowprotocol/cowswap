@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'

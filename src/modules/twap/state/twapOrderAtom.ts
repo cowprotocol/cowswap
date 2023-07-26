@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
-import { getAppDataHash } from 'modules/appData'
+import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
@@ -12,9 +12,15 @@ import { twapOrderSlippageAtom, twapOrdersSettingsAtom } from './twapOrdersSetti
 import { TWAPOrder } from '../types'
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
 
+export const twapDeadlineAtom = atom<number>((get) => {
+  const { isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
+
+  return isCustomDeadline ? customDeadlineToSeconds(customDeadline) : deadline / 1000
+})
+
 export const twapTimeIntervalAtom = atom<number>((get) => {
-  const { numberOfPartsValue, isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
-  const seconds = isCustomDeadline ? customDeadlineToSeconds(customDeadline) : deadline / 1000
+  const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
+  const seconds = get(twapDeadlineAtom)
 
   return Math.ceil(seconds / numberOfPartsValue)
 })
@@ -53,6 +59,6 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,
     span: 0,
-    appData: appDataInfo?.hash || getAppDataHash(),
+    appData: appDataInfo?.appDataKeccak256 || getAppData().appDataKeccak256,
   }
 })

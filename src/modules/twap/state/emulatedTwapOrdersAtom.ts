@@ -1,27 +1,15 @@
 import { atom } from 'jotai'
 
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
+import { Order } from 'legacy/state/orders/actions'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { openTwapOrdersAtom } from './twapOrdersListAtom'
 
-import { TwapOrderStatus } from '../types'
-import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
+import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
-const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
-  [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
-  [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
-  [TwapOrderStatus.Pending]: OrderStatus.PENDING,
-  [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
-  [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
-  [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
-}
-
-export const emulatedTwapOrdersAtom = atom((get) => {
+export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
   const openOrders = get(openTwapOrdersAtom)
   const tokensByAddress = get(tokensByAddressAtom)
@@ -29,34 +17,9 @@ export const emulatedTwapOrdersAtom = atom((get) => {
 
   if (!accountLowerCase) return []
 
-  const orderWithComposableCowInfo: Order[] = openOrders
+  return openOrders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
-      const enrichedOrder = emulateTwapAsOrder(order)
-      const status = statusesMap[order.status]
-
-      const storeOrder: Order = {
-        ...enrichedOrder,
-        id: enrichedOrder.uid,
-        composableCowInfo: {
-          id: order.id,
-        },
-        sellAmountBeforeFee: enrichedOrder.sellAmount,
-        inputToken: getTokensByAddress(chainId, enrichedOrder.sellToken, tokensByAddress),
-        outputToken: getTokensByAddress(chainId, enrichedOrder.buyToken, tokensByAddress),
-        creationTime: enrichedOrder.creationDate,
-        summary: '',
-        status,
-        apiAdditionalInfo: enrichedOrder,
-        isCancelling: order.status === TwapOrderStatus.Cancelling,
-      }
-
-      const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
-
-      storeOrder.summary = summary || ''
-
-      return storeOrder
+      return mapTwapOrderToStoreOrder(order, tokensByAddress)
     })
-
-  return orderWithComposableCowInfo
 })

@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -170,7 +170,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,

@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 
 import {
   setCloseTradeConfirmAtom,
@@ -18,11 +18,11 @@ export interface TradeConfirmActions {
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
-  const setOpenTradeConfim = useUpdateAtom(setOpenTradeConfirmAtom)
-  const setCloseTradeConfirm = useUpdateAtom(setCloseTradeConfirmAtom)
-  const setErrorTradeConfirm = useUpdateAtom(setErrorTradeConfirmAtom)
-  const setPendingTradeConfirm = useUpdateAtom(setPendingTradeConfirmAtom)
-  const setTxHashTradeConfirm = useUpdateAtom(setTxHashTradeConfirmAtom)
+  const setOpenTradeConfim = useSetAtom(setOpenTradeConfirmAtom)
+  const setCloseTradeConfirm = useSetAtom(setCloseTradeConfirmAtom)
+  const setErrorTradeConfirm = useSetAtom(setErrorTradeConfirmAtom)
+  const setPendingTradeConfirm = useSetAtom(setPendingTradeConfirmAtom)
+  const setTxHashTradeConfirm = useSetAtom(setTxHashTradeConfirmAtom)
 
   return {
     onSign(pendingTrade: TradeAmounts) {

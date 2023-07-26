@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useOpenModal } from 'legacy/state/application/hooks'
@@ -8,7 +8,7 @@ import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancella
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
 export function useMultipleOrdersCancellation() {
-  const setOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
+  const setOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const openModal = useOpenModal(ApplicationModal.MULTIPLE_CANCELLATION)
 
   return useCallback(

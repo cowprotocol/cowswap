@@ -6,6 +6,7 @@ import { Nullish } from 'types'
 
 import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
 import { initialState } from 'legacy/state/application/initialState'
+import { BlockExplorerLinkType } from 'legacy/utils'
 
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId
@@ -32,6 +33,7 @@ export interface MetaTxPopupContent {
     id: string
     success?: boolean
     summary?: string | JSX.Element
+    orderType?: BlockExplorerLinkType
   }
 }
 

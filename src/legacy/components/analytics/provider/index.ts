@@ -12,6 +12,7 @@ const DIMENSION_MAP = {
   [Dimensions.walletName]: 'dimension2',
   [Dimensions.customBrowserType]: 'dimension3',
   [Dimensions.userAddress]: 'dimension4',
+  [Dimensions.market]: 'dimension5',
 }
 
 type DimensionKey = keyof typeof DIMENSION_MAP
@@ -28,6 +29,7 @@ export class GAProvider {
       walletName: '',
       customBrowserType: '',
       userAddress: '',
+      market: '',
     }
   }
 

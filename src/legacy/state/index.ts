@@ -21,7 +21,7 @@ import user from 'legacy/state/user/reducer'
 
 import multicall from 'lib/state/multicall'
 
-import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
+import { appziMiddleware, popupMiddleware, soundMiddleware, composableOrdersPopupMiddleware } from './orders/middleware'
 
 const UNISWAP_REDUCERS = {
   application,
@@ -52,6 +52,7 @@ const store = configureStore({
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
+      .concat(composableOrdersPopupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware)

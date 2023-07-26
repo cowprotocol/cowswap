@@ -1,7 +1,3 @@
-/**
- * This file is basically a Mod of src/state/enhancedTransactions/updater
- */
-
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
@@ -16,8 +12,7 @@ import { AppDispatch } from 'legacy/state'
 import { useAddPopup } from 'legacy/state/application/hooks'
 import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
-// import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { cancelOrdersBatch, invalidateOrdersBatch } from 'legacy/state/orders/actions'
+import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
@@ -26,6 +21,7 @@ import { useWalletInfo } from 'modules/wallet'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { CancelOrdersBatchCallback, useCancelOrdersBatch } from '../../orders/hooks'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 
@@ -64,6 +60,7 @@ interface CheckEthereumTransactions {
   addPopup: ReturnType<typeof useAddPopup>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
+  cancelOrdersBatch: CancelOrdersBatchCallback
 }
 
 type Cancel = () => void
@@ -162,11 +159,11 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, dispatch, addPopup } = params
+  const { chainId, dispatch, addPopup, cancelOrdersBatch } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
-    dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+    cancelOrdersBatch({ chainId, ids: [orderId] })
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
@@ -262,6 +259,7 @@ export default function Updater(): null {
   const accountLowerCase = account?.toLowerCase() || ''
 
   const dispatch = useAppDispatch()
+  const cancelOrdersBatch = useCancelOrdersBatch()
   const getReceipt = useGetReceipt()
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
@@ -291,6 +289,7 @@ export default function Updater(): null {
       dispatch,
       removeInFlightOrderId,
       nativeCurrencySymbol,
+      cancelOrdersBatch,
     })
 
     return () => {
@@ -308,6 +307,7 @@ export default function Updater(): null {
     getSafeInfo,
     removeInFlightOrderId,
     nativeCurrencySymbol,
+    cancelOrdersBatch,
   ])
 
   return null

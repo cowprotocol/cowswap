@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
@@ -87,10 +87,10 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
  */
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
+  const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pending = useOnlyPendingOrders(chainId)
+  const pending = useOnlyPendingOrders(chainId, OrderClass.LIMIT)
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 

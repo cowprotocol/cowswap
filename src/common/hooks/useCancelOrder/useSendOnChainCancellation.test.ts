@@ -28,6 +28,7 @@ jest.mock('modules/wallet', () => {
 })
 jest.mock('legacy/state/enhancedTransactions/hooks')
 jest.mock('legacy/hooks/useContract')
+jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
 
 const orderMock = {
   id: 'xx1',

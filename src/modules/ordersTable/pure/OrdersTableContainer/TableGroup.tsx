@@ -14,7 +14,7 @@ import { BalancesAndAllowances } from 'modules/tokens'
 import { OrderRow } from './OrderRow'
 import * as styledEl from './OrderRow/styled'
 import { OrdersTablePagination } from './OrdersTablePagination'
-import { LimitOrderActions } from './types'
+import { OrderActions } from './types'
 import { getOrderParams } from './utils/getOrderParams'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -36,7 +36,7 @@ export interface TableGroupProps {
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
-  orderActions: LimitOrderActions
+  orderActions: OrderActions
   chainId: SupportedChainId
   balancesAndAllowances: BalancesAndAllowances
 }
