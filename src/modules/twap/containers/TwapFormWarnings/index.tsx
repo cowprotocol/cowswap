@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { modifySafeHandlerAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -54,6 +55,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const { chainId } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isSafeViaWc = useIsSafeViaWc()
+  const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
@@ -116,7 +118,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         if (showTradeFormWarnings) {
           return [
             isPriceProtectionNotEnough(deadline, slippage) ? <SmallPriceProtectionWarning /> : null,
-            swapAmountDifference?.greaterThan(0) ? <SwapPriceDifferenceWarning amount={swapAmountDifference} /> : null,
+            swapAmountDifference ? (
+              <SwapPriceDifferenceWarning feeFiatAmount={tradeQuoteFeeFiatAmount} amount={swapAmountDifference} />
+            ) : null,
           ]
         }
 
