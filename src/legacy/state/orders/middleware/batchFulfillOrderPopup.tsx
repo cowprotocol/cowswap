@@ -21,7 +21,7 @@ export function batchFulfillOrderPopup(
   payload.ordersData.forEach(({ id, summary }) => {
     const orderObject = getOrderByIdFromState(orders, id)
     if (orderObject) {
-      const { class: orderClass } = orderObject.order
+      const { class: orderClass, composableCowInfo } = orderObject.order
       // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
       // because it's nicer there
       const parsedOrder = parseOrder(orderObject.order as Order)
@@ -33,7 +33,8 @@ export function batchFulfillOrderPopup(
         status: OrderActions.OrderStatus.FULFILLED,
         descriptor: null,
       })
-      orderAnalytics('Executed', orderClass)
+      const orderType = composableCowInfo ? 'TWAP' : orderClass
+      orderAnalytics('Executed', orderType)
 
       store.dispatch(addPopup(popup))
     }

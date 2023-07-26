@@ -3,6 +3,8 @@ import { parse } from 'qs'
 import { Field } from './actions'
 import { queryParametersToSwapState } from './hooks'
 
+jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+
 describe('hooks', () => {
   describe('#queryParametersToSwapState', () => {
     test('ETH to DAI', () => {

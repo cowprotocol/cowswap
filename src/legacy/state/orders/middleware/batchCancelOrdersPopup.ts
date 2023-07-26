@@ -11,7 +11,8 @@ export function batchCancelOrdersPopup(store: MiddlewareAPI<Dispatch, AppState>,
   // construct Cancelled Order Popups for each Order
   orders.forEach((order) => {
     const popup = _buildCancellationPopup(order)
-    orderAnalytics('Canceled', order.class)
+    const orderType = order.composableCowInfo ? 'TWAP' : order.class
+    orderAnalytics('Canceled', orderType)
 
     store.dispatch(addPopup(popup))
   })
