@@ -5,9 +5,9 @@ import { getSignatureVerifierContract } from './getSignatureVerifierContract'
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export enum ExtensibleFallbackVerification {
-  HAS_EXTENSIBLE_FALLBACK,
-  HAS_DOMAIN_VERIFIER,
-  HAS_NOTHING,
+  HAS_EXTENSIBLE_FALLBACK = 'HAS_EXTENSIBLE_FALLBACK',
+  HAS_DOMAIN_VERIFIER = 'HAS_DOMAIN_VERIFIER',
+  HAS_NOTHING = 'HAS_NOTHING',
 }
 
 /**
