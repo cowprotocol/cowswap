@@ -38,7 +38,7 @@ export function SwapPriceDifferenceWarning({ tradeUrlParams, amount, feeFiatAmou
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
   return (
-    <InlineBanner type={isTwapBetter ? 'savings' : 'information'}>
+    <InlineBanner type={'savings'}>
       {isTwapBetter ? (
         <>
           <strong>Maximizing Your Gains! <InfoIcon content="TODO: set the tooltip content"></InfoIcon></strong>
@@ -47,10 +47,12 @@ export function SwapPriceDifferenceWarning({ tradeUrlParams, amount, feeFiatAmou
           </p>
         </>
       ) : (
-        <p>
-          Given the current Market Fees (<FiatAmount amount={feeFiatAmount} /> per chunk), it's better to reduce the
-          number of parts or use {swapOrderLink}
-        </p>
+        <>
+          <strong>Trade Smart, Save More!</strong>
+          <p>
+            Considering current market fees (<b><FiatAmount amount={feeFiatAmount} /></b> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+          </p>
+        </>
       )}
     </InlineBanner>
   )
