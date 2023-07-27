@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { Percent } from '@uniswap/sdk-core'
 
@@ -42,7 +42,8 @@ export const defaultTwapOrdersSettings: TwapOrdersSettingsState = {
 
 export const twapOrdersSettingsAtom = atomWithStorage<TwapOrdersSettingsState>(
   'twap-orders-settings-atom:v1',
-  defaultTwapOrdersSettings
+  defaultTwapOrdersSettings,
+  createJSONStorage(() => localStorage)
 )
 
 export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<TwapOrdersSettingsState>) => {
