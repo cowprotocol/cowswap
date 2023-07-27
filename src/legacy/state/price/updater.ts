@@ -19,6 +19,7 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useEnoughBalance } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
@@ -204,7 +205,7 @@ export default function FeesUpdater(): null {
       userAddress: account,
       validTo,
       isEthFlow,
-      enoughBalance,
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
     }
 
     // Don't refetch if offline.

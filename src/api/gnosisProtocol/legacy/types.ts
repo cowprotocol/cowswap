@@ -35,10 +35,9 @@ export type LegacyFeeQuoteParams = FeeQuoteParams & {
   fromDecimals: number
   toDecimals: number
   chainId: ChainId
-  priceQuality?: string
+  priceQuality: string
   isBestQuote?: boolean
   isEthFlow: boolean
-  enoughBalance: boolean
 }
 
 export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 'sellToken' | 'buyToken'> & {

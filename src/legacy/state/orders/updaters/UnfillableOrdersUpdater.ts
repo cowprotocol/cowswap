@@ -29,6 +29,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { hasEnoughBalance, useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
 /**
@@ -238,7 +239,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, enoughBalance: boo
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
-    enoughBalance,
+    priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })

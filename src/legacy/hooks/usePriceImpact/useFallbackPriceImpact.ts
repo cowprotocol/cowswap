@@ -78,7 +78,7 @@ export default function useFallbackPriceImpact({
     amountAtoms: parsedAmount?.quotient.toString(),
     loading,
     setLoading,
-    enoughBalance: false, // Not relevant for price impact calculation (estimation)
+    verifyQuote: false,
   })
 
   // Calculate BA trade

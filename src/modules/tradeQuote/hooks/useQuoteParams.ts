@@ -9,6 +9,7 @@ import { useEnoughBalance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null) {
@@ -41,7 +42,7 @@ export function useQuoteParams(amount: string | null) {
       toDecimals,
       fromDecimals,
       isEthFlow: false,
-      priceQuality: enoughBalance ? 'verified' : 'optimal',
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
     }
   }, [amount, account, chainId, orderKind, enoughBalance, buyToken, fromDecimals, sellToken, toDecimals])
 }

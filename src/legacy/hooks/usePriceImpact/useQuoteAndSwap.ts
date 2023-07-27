@@ -17,6 +17,7 @@ import { getBestQuote, QuoteResult } from 'legacy/utils/price'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
@@ -34,7 +35,7 @@ type GetQuoteParams = {
   fromDecimals?: number
   toDecimals?: number
   validTo?: number
-  enoughBalance: boolean
+  verifyQuote: boolean
 } & WithLoading
 
 type FeeQuoteParamsWithError = LegacyFeeQuoteParams & { error?: QuoteError }
@@ -51,7 +52,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     loading,
     setLoading,
     validTo,
-    enoughBalance,
+    verifyQuote,
   } = params
   const { chainId } = useWalletInfo()
   const { account } = useWalletInfo()
@@ -79,7 +80,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
       chainId,
       validTo,
       isEthFlow,
-      enoughBalance,
+      priceQuality: getPriceQuality({ verifyQuote }),
     }
     let quoteData: QuoteInformationObject | LegacyFeeQuoteParams = quoteParams
     getBestQuoteResolveOnlyLastCall({
@@ -130,7 +131,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     isEthFlow,
     setLoading,
     strategy,
-    enoughBalance,
+    verifyQuote,
   ])
 
   return { quote, loading, setLoading }

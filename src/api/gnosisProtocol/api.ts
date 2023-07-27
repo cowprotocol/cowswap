@@ -8,10 +8,10 @@ import {
   OrderQuoteRequest,
   OrderQuoteResponse,
   PartialApiContext,
-  PriceQuality,
   SigningScheme,
   SupportedChainId as ChainId,
   Trade,
+  PriceQuality,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -100,19 +100,7 @@ const ETH_FLOW_AUX_QUOTE_PARAMS = {
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
-  const {
-    amount,
-    kind,
-    userAddress,
-    receiver,
-    validTo,
-    sellToken,
-    buyToken,
-    chainId,
-    priceQuality,
-    isEthFlow,
-    enoughBalance,
-  } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -124,9 +112,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     appData: getAppData().appDataKeccak256,
     validTo,
     partiallyFillable: false,
-    priceQuality: priceQuality
-      ? (priceQuality as PriceQuality)
-      : ((enoughBalance ? 'verified' : 'optimal') as PriceQuality), // TODO: Remove the casting once we update the SDK
+    priceQuality: priceQuality as PriceQuality,
   }
 
   if (isEthFlow) {
@@ -264,4 +250,17 @@ function getBaseUrl(): string {
 
   // Production, staging, ens, ...
   return 'https://api.cow.fi/'
+}
+
+export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): /*PriceQuality*/ string {
+  const { fast = false, verifyQuote } = props
+  if (fast) {
+    return 'fast'
+  }
+
+  if (verifyQuote) {
+    return 'verified'
+  }
+
+  return 'optimal'
 }
