@@ -30,7 +30,7 @@ export interface TwapSuggestionBannerProps {
 const PRICE_IMPACT_LIMIT = 1 // 1%
 const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 50_000, // $50,000
-  [SupportedChainId.GNOSIS_CHAIN]: 5_000, // $5000
+  [SupportedChainId.GNOSIS_CHAIN]: 500, // $500
   [SupportedChainId.GOERLI]: 100, // $100
 }
 
@@ -53,7 +53,7 @@ export function TwapSuggestionBanner({
     <InlineBanner type="alert">
       <p>
         The price impact is {+priceImpact.toFixed(2)}%. Consider breaking up your order using{' '}
-        <StyledNavLink to={routePath}>Advanced orders</StyledNavLink>
+        <StyledNavLink to={routePath}>TWAP order</StyledNavLink>
       </p>
     </InlineBanner>
   )
