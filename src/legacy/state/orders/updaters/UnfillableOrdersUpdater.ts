@@ -26,7 +26,7 @@ import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { hasEnoughBalance, useBalancesAndAllowances } from 'modules/tokens'
+import { hasEnoughBalanceAndAllowance, useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
@@ -144,7 +144,7 @@ export function UnfillableOrdersUpdater(): null {
           order.kind === OrderKind.SELL ? [order.sellAmount, order.inputToken] : [order.buyAmount, order.outputToken]
 
         const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
-        const enoughBalance = hasEnoughBalance({ account, amount: currencyAmount, balances })
+        const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
 
         _getOrderPrice(chainId, order, enoughBalance, strategy)
           .then((quote) => {

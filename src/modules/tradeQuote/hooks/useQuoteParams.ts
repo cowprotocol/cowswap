@@ -5,7 +5,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
-import { useEnoughBalance } from 'modules/tokens'
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -24,7 +24,7 @@ export function useQuoteParams(amount: string | null) {
   const toDecimals = outputCurrency?.decimals
 
   const currency = orderKind === OrderKind.SELL ? inputCurrency : outputCurrency
-  const enoughBalance = useEnoughBalance({
+  const enoughBalance = useEnoughBalanceAndAllowance({
     account,
     amount: (currency && amount && CurrencyAmount.fromRawAmount(currency, amount)) || undefined,
   })

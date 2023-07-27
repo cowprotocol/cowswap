@@ -15,7 +15,7 @@ export interface UseEnoughBalanceParams {
   checkAllowanceAddress?: string
 }
 
-export function useEnoughBalance(params: UseEnoughBalanceParams): boolean {
+export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean {
   const { account, amount, checkAllowanceAddress } = params
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped
@@ -29,7 +29,7 @@ export function useEnoughBalance(params: UseEnoughBalanceParams): boolean {
   const native = useNativeCurrency()
   const [nativeBalance] = useCurrencyBalances(isNativeCurrency ? account : undefined, [native])
 
-  return hasEnoughBalance({
+  return hasEnoughBalanceAndAllowance({
     ...params,
     balances,
     allowances: checkAllowanceAddress ? allowances : undefined,
@@ -43,7 +43,7 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
   nativeBalance?: CurrencyAmount<Currency>
 }
 
-export function hasEnoughBalance(params: EnoughBalanceParams): boolean {
+export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean {
   const { account, amount, balances, nativeBalance, allowances } = params
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped

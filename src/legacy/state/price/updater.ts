@@ -16,7 +16,7 @@ import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { useEnoughBalance } from 'modules/tokens'
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
@@ -128,7 +128,7 @@ export default function FeesUpdater(): null {
     parsedAmount,
   } = useDerivedSwapInfo()
 
-  const enoughBalance = useEnoughBalance({ account, amount: parsedAmount })
+  const enoughBalance = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
