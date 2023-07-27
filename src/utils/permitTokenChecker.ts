@@ -32,48 +32,67 @@ const daiLikePermitParams = {
   expiry: Math.ceil(Date.now() / 1000) + 50_000,
 }
 
-export function estimatePermit(
+export type EstimatePermitResult =
+  // When it's a permittable token:
+  | {
+      type: 'dai' | 'permit'
+      gasLimit: number
+    }
+  // When something failed:
+  | { error: string }
+  // When it's not permittable:
+  | null
+
+export async function estimatePermit(
   tokenAddress: string,
   tokenName: string,
   chainId: SupportedChainId,
   walletAddress: string,
   provider: Web3Provider
-) {
+): Promise<EstimatePermitResult> {
   if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
-    return Promise.resolve({
-      token: tokenAddress,
-      supported: false,
-    })
+    // We shouldn't call this for the native token, but just in case
+    return null
   }
 
   const spender = GP_VAULT_RELAYER[chainId]
+  // TODO: use a provider with a fake PK just to avoid requiring user interaction
   const web3ProviderConnector = new Web3ProviderConnector(provider)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
-  return eip2612PermitUtils
-    .getTokenNonce(tokenAddress, walletAddress)
-    .then((nonce) => {
-      return eip2612PermitUtils.buildPermitCallData(
-        {
-          ...permitParams,
-          owner: walletAddress,
-          spender,
-          nonce,
-        },
-        +chainId,
-        tokenName,
-        tokenAddress
-      )
+  try {
+    const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, walletAddress)
+
+    const permitCallData = await eip2612PermitUtils.buildPermitCallData(
+      {
+        ...permitParams,
+        owner: walletAddress,
+        spender,
+        nonce,
+      },
+      +chainId,
+      tokenName,
+      tokenAddress
+    )
+
+    const estimatedGas = await provider.estimateGas({
+      data: permitCallData.replace('0x', '0xd505accf'),
+      from: walletAddress,
+      to: tokenAddress,
     })
-    .then((data) => {
-      return provider.estimateGas({
-        data: data.replace('0x', '0xd505accf'),
-        from: walletAddress,
-        to: tokenAddress,
-      })
-    })
-    .catch((_error) => {
-      return estimateDaiLikeToken(
+
+    const gasLimit = estimatedGas.toNumber()
+
+    // TODO: I'm not sure why this is needed, check with Sasha
+    return gasLimit > permitGasLimitMin[chainId]
+      ? {
+          type: 'permit',
+          gasLimit,
+        }
+      : null
+  } catch (e) {
+    try {
+      return await estimateDaiLikeToken(
         tokenAddress,
         tokenName,
         chainId,
@@ -82,26 +101,10 @@ export function estimatePermit(
         provider,
         eip2612PermitUtils
       )
-    })
-    .catch((error) => {
-      return {
-        token: tokenAddress,
-        supported: false,
-        gasLimit: 0,
-        error,
-      }
-    })
-    .then((res) => {
-      if (typeof res === 'object' && res && 'token' in res && res.token && res.error) {
-        return res
-      }
-
-      return {
-        token: tokenAddress,
-        supported: typeof res === 'number' && res > permitGasLimitMin[chainId],
-        gasLimit: res,
-      }
-    })
+    } catch (e) {
+      return { error: e.toString() }
+    }
+  }
 }
 
 function estimateDaiLikeToken(
@@ -112,13 +115,13 @@ function estimateDaiLikeToken(
   spender: string,
   provider: Web3Provider,
   eip2612PermitUtils: Eip2612PermitUtils
-) {
+): Promise<EstimatePermitResult> {
   return eip2612PermitUtils.getPermitTypeHash(tokenAddress).then((permitTypeHash) => {
     return permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH
       ? eip2612PermitUtils
           .getTokenNonce(tokenAddress, walletAddress)
-          .then((nonce) => {
-            return eip2612PermitUtils.buildDaiLikePermitCallData(
+          .then((nonce) =>
+            eip2612PermitUtils.buildDaiLikePermitCallData(
               {
                 ...daiLikePermitParams,
                 holder: walletAddress,
@@ -129,13 +132,24 @@ function estimateDaiLikeToken(
               tokenName,
               tokenAddress
             )
-          })
-          .then((daiLikeData) => {
-            return provider.estimateGas({
+          )
+          .then((daiLikeData) =>
+            provider.estimateGas({
               data: daiLikeData.replace('0x', '0x8fcbaf0c'),
               from: walletAddress,
               to: tokenAddress,
             })
+          )
+          .then((res) => {
+            const gasLimit = res.toNumber()
+
+            // TODO: I'm not sure why this is needed, check with Sasha
+            return gasLimit > permitGasLimitMin[chainId]
+              ? {
+                  gasLimit,
+                  type: 'dai',
+                }
+              : null
           })
       : null
   })
