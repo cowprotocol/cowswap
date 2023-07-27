@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { DEFAULT_DECIMALS } from 'legacy/constants'
 import useDebounce from 'legacy/hooks/useDebounce'
@@ -21,8 +19,8 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { usePermitHookParams } from 'common/hooks/usePermitHookParams'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { PermitHookParams } from 'utils/generatePermitHook'
 
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
 import { QuoteInformationObject } from './reducer'
@@ -146,17 +144,7 @@ export default function FeesUpdater(): null {
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
-  const { provider } = useWeb3React()
-
-  const permitHookParams: PermitHookParams | undefined = useMemo(() => {
-    if (!account || !sellCurrency || !provider) return undefined
-    return {
-      account,
-      chainId,
-      provider,
-      inputToken: sellCurrency as Token,
-    }
-  }, [sellCurrency, account, chainId, provider])
+  const permitHookParams = usePermitHookParams(sellCurrency)
 
   const refetchQuote = useRefetchQuoteCallback()
   const setQuoteError = useSetQuoteError()
