@@ -230,9 +230,7 @@ export function useRefetchQuoteCallback() {
       const bestQuoteParams = {
         ...params,
         strategy,
-        quoteParams: {
-          ...quoteParams,
-        },
+        quoteParams,
       }
       const fastQuoteParams = {
         quoteParams: {
