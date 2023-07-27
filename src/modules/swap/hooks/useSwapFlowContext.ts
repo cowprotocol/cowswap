@@ -6,9 +6,13 @@ import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { SwapFlowContext } from 'modules/swap/services/types'
 
+import { useIsTokenPermittable } from 'common/hooks/useIsTokenPermittable'
+
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
   const baseProps = useBaseFlowContextSetup()
+  const sellCurrency = baseProps.trade?.inputAmount?.currency
+  const permitInfo = useIsTokenPermittable(sellCurrency)
 
   if (!baseProps.trade) return null
 
@@ -23,5 +27,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   return {
     ...baseContext,
     contract,
+    permitInfo,
   }
 }
