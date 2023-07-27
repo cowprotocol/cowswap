@@ -1,5 +1,4 @@
-import { Erc20, Weth } from '@cowprotocol/abis'
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
+import { CoWSwapEthFlow, Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -13,6 +12,8 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import { AppDataInfo } from 'modules/appData'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+
+import { IsTokenPermittableResult } from 'common/hooks/useIsTokenPermittable'
 
 import { FlowType } from '../hooks/useFlowContext'
 
@@ -42,6 +43,7 @@ export interface BaseFlowContext {
 
 export type SwapFlowContext = BaseFlowContext & {
   contract: GPv2Settlement
+  permitInfo: IsTokenPermittableResult
 }
 
 export type EthFlowContext = BaseFlowContext & {
