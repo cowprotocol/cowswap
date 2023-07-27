@@ -9,11 +9,12 @@ import iconAlert from 'legacy/assets/cow-swap/alert.svg'
 import iconDanger from 'legacy/assets/cow-swap/alert.svg'
 import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
-type BannerType = 'alert' | 'information' | 'success' | 'danger'
+type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface BannerConfig {
-  icon: string
-  colorKey: BannerType
+  colorKey: Exclude<BannerType, 'savings'>
+  icon?: string
+  iconText?: string
 }
 
 const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
@@ -29,6 +30,10 @@ const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
     icon: iconSuccess,
     colorKey: 'success',
   },
+  savings: {
+    iconText: '💸',
+    colorKey: 'success',
+  },
   danger: {
     icon: iconDanger,
     colorKey: 'danger',
@@ -40,7 +45,7 @@ const Wrapper = styled.span<{ color: string }>`
   align-items: center;
   justify-content: center;
   background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
-  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
+  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.1, color) : darken(0.2, color))};
   gap: 24px 10px;
   border-radius: 16px;
   margin: auto;
@@ -55,7 +60,7 @@ const Wrapper = styled.span<{ color: string }>`
     justify-content: center;
     align-items: center;
     flex-flow: column wrap;
-    gap: 16px;
+    gap: 10px;
     width: 100%;
   }
 
@@ -87,6 +92,8 @@ const Wrapper = styled.span<{ color: string }>`
   > span > strong {
     display: flex;
     align-items: center;
+    gap: 6px;
+    color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
   }
 
   > span > p {
@@ -95,6 +102,12 @@ const Wrapper = styled.span<{ color: string }>`
     padding: 0;
     width: 100%;
     text-align: center;
+  }
+
+  > span > i {
+    font-style: normal;
+    font-size: 32px;
+    line-height: 1;
   }
 `
 
@@ -113,7 +126,8 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
   return (
     <Wrapper className={className} color={color}>
       <span>
-        {!hideIcon && <SVG src={config.icon} description={type} />}
+        {!hideIcon && config.icon && <SVG src={config.icon} description={type} />}
+        {!hideIcon && config.iconText && <i>{config.iconText}</i>}
         {children}
       </span>
     </Wrapper>

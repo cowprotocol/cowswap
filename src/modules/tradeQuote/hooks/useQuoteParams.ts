@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
@@ -8,26 +7,19 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getAddress } from 'utils/getAddress'
 
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
-
-export function useQuoteParams() {
+export function useQuoteParams(amount: string | null) {
   const { chainId, account } = useWalletInfo()
   const { state } = useDerivedTradeState()
-  const { amount } = useAtomValue(tradeQuoteParamsAtom)
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
+  const sellToken = getAddress(inputCurrency)
+  const buyToken = outputCurrency?.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
+  const fromDecimals = inputCurrency?.decimals
+  const toDecimals = outputCurrency?.decimals
+
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !amount) {
-      return
-    }
-
-    const sellToken = getAddress(inputCurrency)
-    const buyToken = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
-    const fromDecimals = inputCurrency?.decimals
-    const toDecimals = outputCurrency?.decimals
-
-    if (!sellToken || !buyToken) return
+    if (!sellToken || !buyToken || !amount) return
 
     return {
       sellToken,
@@ -40,5 +32,5 @@ export function useQuoteParams() {
       fromDecimals,
       isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
+  }, [sellToken, buyToken, toDecimals, fromDecimals, amount, account, chainId, orderKind])
 }
