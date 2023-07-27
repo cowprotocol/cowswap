@@ -30,11 +30,9 @@ export async function getFullQuote({
   quoteParams: LegacyFeeQuoteParams
   permitHookParams?: PermitHookParams
 }): Promise<QuoteResult> {
-  // TODO
-  const isTokenSupportsEIP2612 = true
-
-  if (isTokenSupportsEIP2612 && permitHookParams) {
-    ;(quoteParams as any).appData = toKeccak256(await generatePermitHook(permitHookParams))
+  if (permitHookParams) {
+    // TODO: use a provider with a fake pk to avoid requiring user to sign in ONLY when quoting prices
+    quoteParams.appData = toKeccak256(await generatePermitHook(permitHookParams))
   }
 
   const { kind } = quoteParams
