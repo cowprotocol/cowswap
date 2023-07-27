@@ -7,21 +7,22 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { useFallbackHandlerVerification } from '../hooks/useFallbackHandlerVerification'
-import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
+import { ExtensibleFallbackVerification, verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
 import { updateFallbackHandlerVerificationAtom } from '../state/fallbackHandlerVerificationAtom'
 
 export function FallbackHandlerVerificationUpdater() {
   const { account } = useWalletInfo()
   const update = useSetAtom(updateFallbackHandlerVerificationAtom)
-  const currentWalletVerification = useFallbackHandlerVerification()
+  const verification = useFallbackHandlerVerification()
+  const isFallbackHandlerRequired = verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
 
   const extensibleFallbackContext = useExtensibleFallbackContext()
   const fallbackHandlerVerification = useAsyncMemo(
     () =>
-      extensibleFallbackContext && !currentWalletVerification
+      extensibleFallbackContext && isFallbackHandlerRequired
         ? verifyExtensibleFallback(extensibleFallbackContext)
         : null,
-    [currentWalletVerification, extensibleFallbackContext],
+    [isFallbackHandlerRequired, extensibleFallbackContext],
     null
   )
 
