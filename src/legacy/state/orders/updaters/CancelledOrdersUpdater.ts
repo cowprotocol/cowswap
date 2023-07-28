@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
 import { CANCELLED_ORDERS_PENDING_TIME } from 'legacy/constants'
 import { OrderFulfillmentData } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -11,6 +9,8 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
+
+import { usePolling } from 'common/hooks/usePolling'
 
 /**
  * Updater for cancelled orders.
@@ -39,94 +39,93 @@ export function CancelledOrdersUpdater(): null {
 
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
-  const updateOrders = useCallback(
-    async (chainId: ChainId, account: string) => {
-      const lowerCaseAccount = account.toLowerCase()
-      const now = Date.now()
-
-      if (isUpdating.current) {
-        return
-      }
-
-      // const startTime = Date.now()
-      // console.debug('[CancelledOrdersUpdater] Checking recently canceled orders....')
-      try {
-        isUpdating.current = true
-
-        // Filter orders:
-        // - Owned by the current connected account
-        // - Created in the last 5 min, no further
-        // - Not an order already cancelled on-chain
-        const pending = cancelledRef.current.filter(
-          ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
-            const creationTime = new Date(creationTimeString).getTime()
-
-            return (
-              owner.toLowerCase() === lowerCaseAccount &&
-              now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
-              !(cancellationHash && status === 'cancelled')
-            )
-          }
-        )
-
-        if (pending.length === 0) {
-          // console.debug(`[CancelledOrdersUpdater] No orders are being cancelled`)
-          return
-        } /* else {
-          console.debug(`[CancelledOrdersUpdater] Checking ${pending.length} recently canceled orders...`)
-        }*/
-
-        // Iterate over pending orders fetching operator order data, async
-        const unfilteredOrdersData = await Promise.all(
-          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
-        )
-
-        // Group resolved promises by status
-        // Only pick fulfilled
-        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
-          (acc, orderData) => {
-            if (orderData && orderData.popupData) {
-              acc[orderData.status].push(orderData.popupData)
-            }
-            return acc
-          },
-          {
-            fulfilled: [],
-            presigned: [],
-            expired: [],
-            cancelled: [],
-            unknown: [],
-            presignaturePending: [],
-            pending: [],
-          }
-        )
-
-        // Bach state update fulfilled orders, if any
-        if (fulfilled.length) {
-          const ordersData = fulfilled as OrderFulfillmentData[]
-          fulfillOrdersBatch({
-            ordersData,
-            chainId,
-          })
-          ordersData.forEach(({ id }) => addOrderToSurplusQueue(id))
-        }
-      } finally {
-        isUpdating.current = false
-        // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
-      }
-    },
-    [addOrderToSurplusQueue, fulfillOrdersBatch]
-  )
-
-  useEffect(() => {
-    if (!chainId || !account) {
+  const updateOrders = useCallback(async () => {
+    if (!chainId || !account || isUpdating.current) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), MARKET_OPERATOR_API_POLL_INTERVAL)
+    const lowerCaseAccount = account.toLowerCase()
+    const now = Date.now()
 
-    return () => clearInterval(interval)
+    // const startTime = Date.now()
+    // console.debug('[CancelledOrdersUpdater] Checking recently canceled orders....')
+    try {
+      isUpdating.current = true
+
+      // Filter orders:
+      // - Owned by the current connected account
+      // - Created in the last 5 min, no further
+      // - Not an order already cancelled on-chain
+      const pending = cancelledRef.current.filter(
+        ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
+          const creationTime = new Date(creationTimeString).getTime()
+
+          return (
+            owner.toLowerCase() === lowerCaseAccount &&
+            now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
+            !(cancellationHash && status === 'cancelled')
+          )
+        }
+      )
+
+      if (pending.length === 0) {
+        // console.debug(`[CancelledOrdersUpdater] No orders are being cancelled`)
+        return
+      } /* else {
+          console.debug(`[CancelledOrdersUpdater] Checking ${pending.length} recently canceled orders...`)
+        }*/
+
+      // Iterate over pending orders fetching operator order data, async
+      const unfilteredOrdersData = await Promise.all(
+        pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+      )
+
+      // Group resolved promises by status
+      // Only pick fulfilled
+      const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
+        (acc, orderData) => {
+          if (orderData && orderData.popupData) {
+            acc[orderData.status].push(orderData.popupData)
+          }
+          return acc
+        },
+        {
+          fulfilled: [],
+          presigned: [],
+          expired: [],
+          cancelled: [],
+          unknown: [],
+          presignaturePending: [],
+          pending: [],
+        }
+      )
+
+      // Bach state update fulfilled orders, if any
+      if (fulfilled.length) {
+        const ordersData = fulfilled as OrderFulfillmentData[]
+        fulfillOrdersBatch({
+          ordersData,
+          chainId,
+        })
+        ordersData.forEach(({ id }) => addOrderToSurplusQueue(id))
+      }
+    } catch (e) {
+      console.error('[CancelledOrdersUpdater] Error checking recently canceled orders', e)
+    } finally {
+      isUpdating.current = false
+      // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
+    }
+  }, [addOrderToSurplusQueue, fulfillOrdersBatch, account, chainId])
+
+  useEffect(() => {
+    updateOrders()
   }, [account, chainId, updateOrders])
+
+  usePolling({
+    callback: updateOrders,
+    name: 'CancelledOrdersUpdater',
+    pollingFrequency: MARKET_OPERATOR_API_POLL_INTERVAL,
+  })
 
   return null
 }
