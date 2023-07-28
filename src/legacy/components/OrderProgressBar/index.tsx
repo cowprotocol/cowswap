@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -19,6 +19,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { usePolling } from 'common/hooks/usePolling'
 import { CancelButton } from 'common/pure/CancelButton'
 
 import {
@@ -92,18 +93,20 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     trail: 3000,
   })
 
-  useEffect(() => {
+  const updatePercentage = useCallback(() => {
     if (!isPending) {
       return
     }
 
-    const id = setInterval(() => {
-      const percentage = getPercentage(elapsedSeconds, expirationInSeconds, chainId)
-      setPercentage(percentage)
-    }, REFRESH_INTERVAL_MS)
+    const percentage = getPercentage(elapsedSeconds, expirationInSeconds, chainId)
+    setPercentage(percentage)
+  }, [chainId, elapsedSeconds, expirationInSeconds, isPending])
 
-    return () => clearInterval(id)
-  }, [creationTime, validTo, chainId, elapsedSeconds, expirationInSeconds, isPending])
+  usePolling({
+    callback: updatePercentage,
+    name: 'OrderProgressBar::updatePercentage',
+    pollingFrequency: REFRESH_INTERVAL_MS,
+  })
 
   useEffect(() => {
     let timeout: NodeJS.Timeout
