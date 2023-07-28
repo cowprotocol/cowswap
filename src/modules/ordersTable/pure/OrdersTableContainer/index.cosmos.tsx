@@ -55,6 +55,7 @@ export default (
     currentPageNumber={1}
     orders={ordersMock}
     tabs={tabs}
+    isSafeViaWc={false}
     allowsOffchainSigning={true}
     isOpenOrdersTab={true}
     isWalletConnected={true}

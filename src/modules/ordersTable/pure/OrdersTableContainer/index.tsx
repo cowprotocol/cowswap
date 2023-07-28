@@ -12,6 +12,8 @@ import { ExternalLink } from 'legacy/theme'
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
 
+import { SAFE_COW_APP_LINK } from 'common/constants/common'
+
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
@@ -141,6 +143,7 @@ const ExternalArrow = styled.span`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
+  isSafeViaWc: boolean
   children?: ReactNode
   orderType: TabOrderTypes
 }
@@ -155,6 +158,7 @@ export function OrdersTableContainer({
   orders,
   tabs,
   isWalletConnected,
+  isSafeViaWc,
   selectedOrders,
   isOpenOrdersTab,
   allowsOffchainSigning,
@@ -198,16 +202,23 @@ export function OrdersTableContainer({
             <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
           </h3>
           <p>
-            <Trans>
-              You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
-              Create one for free! {/* TODO: add link for Advanced orders also */}
-              {orderType === TabOrderTypes.LIMIT ? (
-                <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                  Learn more
-                  <ExternalArrow />
-                </ExternalLink>
-              ) : null}
-            </Trans>
+            {isSafeViaWc ? (
+              <Trans>
+                Use the <ExternalLink href={SAFE_COW_APP_LINK}>Safe web app</ExternalLink> to see{' '}
+                {isOpenOrdersTab ? 'open' : 'history'} orders
+              </Trans>
+            ) : (
+              <Trans>
+                You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
+                Create one for free! {/* TODO: add link for Advanced orders also */}
+                {orderType === TabOrderTypes.LIMIT ? (
+                  <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                    Learn more
+                    <ExternalArrow />
+                  </ExternalLink>
+                ) : null}
+              </Trans>
+            )}
           </p>
         </Content>
       )

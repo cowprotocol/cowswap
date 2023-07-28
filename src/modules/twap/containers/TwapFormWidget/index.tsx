@@ -124,11 +124,13 @@ export function TwapFormWidget() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
-      <FallbackHandlerVerificationUpdater />
-      <PartOrdersUpdater />
-      <FullAmountQuoteUpdater />
       {shouldLoadTwapOrders && (
-        <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        <>
+          <FullAmountQuoteUpdater />
+          <FallbackHandlerVerificationUpdater />
+          <PartOrdersUpdater />
+          <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        </>
       )}
       <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 
