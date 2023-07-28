@@ -107,9 +107,9 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   }, [chainId, inputCurrency, outputCurrency])
 
   usePolling({
-    doPolling: fetchPrice,
+    callback: fetchPrice,
     name: 'useGetInitialPrice',
-    pollingTimeMs: PRICE_UPDATE_INTERVAL,
+    pollingFrequency: PRICE_UPDATE_INTERVAL,
   })
 
   return { price, isLoading }

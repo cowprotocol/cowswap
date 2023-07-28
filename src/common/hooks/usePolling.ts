@@ -1,21 +1,43 @@
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 import { useCallback, useEffect } from 'react'
 
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+
 export interface UsePollingParams {
-  doPolling: () => void
-  pollingTimeMs: number
+  /**
+   * Callback to be executed on each polling
+   * @returns a
+   */
+  callback: () => void
+
+  /**
+   * Polling frequency in milliseconds
+   */
+  pollingFrequency: number
+
+  /**
+   * If true, the polling will be executed immediately instead of waiting for the next interval
+   */
   triggerEagerly?: boolean
-  name: string // Just for debugging porpouses
+
+  /**
+   * Name of the polling function. Just for debugging porpouses
+   */
+  name: string
 }
 
-export function usePolling(params: UsePollingParams) {
-  const { doPolling: doPollingImpl, pollingTimeMs, triggerEagerly = true, name } = params
+/**
+ *  Hook to execute a function periodically
+ *
+ * @param params Parameters to configure the polling
+ */
+export function usePolling(params: UsePollingParams): void {
+  const { callback, pollingFrequency, triggerEagerly = true, name } = params
   const isWindowVisible = useIsWindowVisible()
 
   const doPolling = useCallback(() => {
     console.debug(`[usePolling][${name}] Executing polling function`)
-    doPollingImpl()
-  }, [doPollingImpl, name])
+    callback()
+  }, [callback, name])
 
   useEffect(() => {
     if (!isWindowVisible) {
@@ -24,11 +46,11 @@ export function usePolling(params: UsePollingParams) {
     }
 
     console.debug(`[usePolling][${name}] Schedule polling`)
-    const intervalId = setInterval(doPolling, pollingTimeMs)
+    const intervalId = setInterval(doPolling, pollingFrequency)
 
     if (triggerEagerly) {
       doPolling()
     }
     return () => clearInterval(intervalId)
-  }, [doPolling, pollingTimeMs, triggerEagerly, name, isWindowVisible])
+  }, [doPolling, pollingFrequency, triggerEagerly, name, isWindowVisible])
 }

@@ -32,9 +32,9 @@ export function GasPriceStrategyUpdater(): null {
   }, [chainId, setGasPriceStrategy])
 
   usePolling({
-    doPolling: updateCallback,
+    callback: updateCallback,
     name: 'GasPriceStrategyUpdater',
-    pollingTimeMs: GP_PRICE_STRATEGY_INTERVAL_TIME,
+    pollingFrequency: GP_PRICE_STRATEGY_INTERVAL_TIME,
   })
 
   return null

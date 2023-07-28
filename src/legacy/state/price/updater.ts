@@ -265,9 +265,9 @@ export default function FeesUpdater(): null {
    * Periodically fetch quotes
    */
   usePolling({
-    doPolling: refetchQuoteIfRequired,
+    callback: refetchQuoteIfRequired,
     name: 'FeesUpdater',
-    pollingTimeMs: REFETCH_CHECK_INTERVAL,
+    pollingFrequency: REFETCH_CHECK_INTERVAL,
   })
 
   // Query quotes if any relevant parameter changes

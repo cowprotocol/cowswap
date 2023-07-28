@@ -216,9 +216,9 @@ export function UnfillableOrdersUpdater(): null {
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   usePolling({
-    doPolling: updatePending,
+    callback: updatePending,
     name: 'UnfillableOrdersUpdater',
-    pollingTimeMs: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
+    pollingFrequency: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
   })
 
   return null
