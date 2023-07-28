@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
 
 import ms from 'ms.macro'
 
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
+import { usePolling } from 'common/hooks/usePolling'
 
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
@@ -21,20 +22,19 @@ export function useFetchTwapOrdersFromSafe({
   const safeApiKit = useSafeApiKit()
   const [ordersSafeData, setOrdersSafeData] = useState<TwapOrdersSafeData[]>([])
 
-  useEffect(() => {
+  const persistOrders = useCallback(() => {
     if (!safeApiKit) return
 
     // TODO: now it fetches only last N transactions, should take into account the pagination
-    const persistOrders = () => {
-      fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
-    }
-
-    const interval = setInterval(persistOrders, PENDING_TWAP_UPDATE_INTERVAL)
-
-    persistOrders()
-
-    return () => clearInterval(interval)
+    fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
   }, [safeAddress, safeApiKit, composableCowContract])
+
+  usePolling({
+    callback: persistOrders,
+    name: 'useFetchTwapOrdersFromSafe',
+    delay: PENDING_TWAP_UPDATE_INTERVAL,
+    triggerEagerly: true,
+  })
 
   return ordersSafeData
 }

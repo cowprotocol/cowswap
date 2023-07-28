@@ -105,7 +105,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   usePolling({
     callback: updatePercentage,
     name: 'OrderProgressBar::updatePercentage',
-    pollingFrequency: REFRESH_INTERVAL_MS,
+    delay: REFRESH_INTERVAL_MS,
   })
 
   useEffect(() => {

@@ -19,7 +19,7 @@ export default function useTimeAgo(value?: string | Date, interval = 1000): stri
   usePolling({
     callback: updateTime,
     name: 'useTimeAgo',
-    pollingFrequency: interval,
+    delay: interval,
     triggerEagerly: true,
   })
 

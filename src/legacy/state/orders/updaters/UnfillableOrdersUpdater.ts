@@ -218,7 +218,7 @@ export function UnfillableOrdersUpdater(): null {
   usePolling({
     callback: updatePending,
     name: 'UnfillableOrdersUpdater',
-    pollingFrequency: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
+    delay: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
   })
 
   return null

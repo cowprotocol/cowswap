@@ -12,7 +12,7 @@ export interface UsePollingParams {
   /**
    * Polling frequency in milliseconds
    */
-  pollingFrequency: number
+  delay: number
 
   /**
    * If true, the polling will be executed immediately instead of waiting for the next interval
@@ -31,7 +31,7 @@ export interface UsePollingParams {
  * @param params Parameters to configure the polling
  */
 export function usePolling(params: UsePollingParams): void {
-  const { callback, pollingFrequency, triggerEagerly = true, name } = params
+  const { callback, delay, triggerEagerly = true, name } = params
   const isWindowVisible = useIsWindowVisible()
 
   const doPolling = useCallback(() => {
@@ -46,11 +46,11 @@ export function usePolling(params: UsePollingParams): void {
     }
 
     console.debug(`[usePolling][${name}] Schedule polling`)
-    const intervalId = setInterval(doPolling, pollingFrequency)
+    const intervalId = setInterval(doPolling, delay)
 
     if (triggerEagerly) {
       doPolling()
     }
     return () => clearInterval(intervalId)
-  }, [doPolling, pollingFrequency, triggerEagerly, name, isWindowVisible])
+  }, [doPolling, delay, triggerEagerly, name, isWindowVisible])
 }

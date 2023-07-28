@@ -34,7 +34,7 @@ export function GasPriceStrategyUpdater(): null {
   usePolling({
     callback: updateCallback,
     name: 'GasPriceStrategyUpdater',
-    pollingFrequency: GP_PRICE_STRATEGY_INTERVAL_TIME,
+    delay: GP_PRICE_STRATEGY_INTERVAL_TIME,
   })
 
   return null

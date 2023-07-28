@@ -109,7 +109,7 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   usePolling({
     callback: fetchPrice,
     name: 'useGetInitialPrice',
-    pollingFrequency: PRICE_UPDATE_INTERVAL,
+    delay: PRICE_UPDATE_INTERVAL,
   })
 
   return { price, isLoading }

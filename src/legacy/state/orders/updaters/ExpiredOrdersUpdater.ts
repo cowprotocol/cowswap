@@ -74,7 +74,7 @@ export function ExpiredOrdersUpdater(): null {
   usePolling({
     callback: updateOrders,
     name: 'ExpiredOrdersUpdater',
-    pollingFrequency: EXPIRED_ORDERS_CHECK_POLL_INTERVAL,
+    delay: EXPIRED_ORDERS_CHECK_POLL_INTERVAL,
     triggerEagerly: true,
   })
 

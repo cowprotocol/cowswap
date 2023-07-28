@@ -340,13 +340,13 @@ export function PendingOrdersUpdater(): null {
   usePolling({
     callback: () => updateOrders(OrderClass.MARKET, chainId, account),
     name: 'PendingOrdersUpdater:MARKET',
-    pollingFrequency: MARKET_OPERATOR_API_POLL_INTERVAL,
+    delay: MARKET_OPERATOR_API_POLL_INTERVAL,
   })
 
   usePolling({
     callback: () => updateOrders(OrderClass.LIMIT, chainId, account),
     name: 'PendingOrdersUpdater:LIMIT',
-    pollingFrequency: LIMIT_OPERATOR_API_POLL_INTERVAL,
+    delay: LIMIT_OPERATOR_API_POLL_INTERVAL,
   })
 
   return null

@@ -124,7 +124,7 @@ export function CancelledOrdersUpdater(): null {
   usePolling({
     callback: updateOrders,
     name: 'CancelledOrdersUpdater',
-    pollingFrequency: MARKET_OPERATOR_API_POLL_INTERVAL,
+    delay: MARKET_OPERATOR_API_POLL_INTERVAL,
   })
 
   return null

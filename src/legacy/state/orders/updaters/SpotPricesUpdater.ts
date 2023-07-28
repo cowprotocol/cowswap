@@ -135,7 +135,7 @@ export function SpotPricesUpdater(): null {
   usePolling({
     callback: updateSpotPrice,
     name: 'SpotPricesUpdater',
-    pollingFrequency: SPOT_PRICE_CHECK_POLL_INTERVAL,
+    delay: SPOT_PRICE_CHECK_POLL_INTERVAL,
     triggerEagerly: true,
   })
 
