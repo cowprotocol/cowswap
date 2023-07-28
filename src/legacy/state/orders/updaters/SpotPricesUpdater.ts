@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
@@ -12,6 +12,7 @@ import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 import { useWalletInfo } from 'modules/wallet'
 
+import { usePolling } from 'common/hooks/usePolling'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
 import { FractionUtils } from 'utils/fractionUtils'
@@ -123,19 +124,20 @@ export function SpotPricesUpdater(): null {
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   const updatePending = useUpdatePending({ isUpdating, markets, updateSpotPrices })
 
-  useEffect(() => {
+  const updateSpotPrice = useCallback(() => {
     if (!chainId || !isWindowVisible) {
-      console.debug('[SpotPricesUpdater] No need to update spot prices')
       return
     }
 
-    console.debug('[SpotPricesUpdater] Periodically check spot prices')
-
     updatePending()
-    const interval = setInterval(updatePending, SPOT_PRICE_CHECK_POLL_INTERVAL)
-
-    return () => clearInterval(interval)
   }, [chainId, isWindowVisible, updatePending])
+
+  usePolling({
+    callback: updateSpotPrice,
+    name: 'SpotPricesUpdater',
+    pollingFrequency: SPOT_PRICE_CHECK_POLL_INTERVAL,
+    triggerEagerly: true,
+  })
 
   return null
 }
