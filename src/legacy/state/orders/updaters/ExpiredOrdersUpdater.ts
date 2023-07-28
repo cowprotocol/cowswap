@@ -8,7 +8,7 @@ import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'legacy/state/order
 import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder } from 'api/gnosisProtocol'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 export function ExpiredOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
@@ -71,7 +71,7 @@ export function ExpiredOrdersUpdater(): null {
     }
   }, [setIsOrderRefundedBatch, account, chainId])
 
-  usePolling({
+  useInterval({
     callback: updateOrders,
     name: 'ExpiredOrdersUpdater',
     delay: EXPIRED_ORDERS_CHECK_POLL_INTERVAL,

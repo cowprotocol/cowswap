@@ -5,7 +5,7 @@ import { ComposableCoW } from '@cowprotocol/abis'
 import ms from 'ms.macro'
 
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
@@ -29,7 +29,7 @@ export function useFetchTwapOrdersFromSafe({
     fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
   }, [safeAddress, safeApiKit, composableCowContract])
 
-  usePolling({
+  useInterval({
     callback: persistOrders,
     name: 'useFetchTwapOrdersFromSafe',
     delay: PENDING_TWAP_UPDATE_INTERVAL,

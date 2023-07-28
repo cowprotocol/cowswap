@@ -3,6 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
+import ms from 'ms.macro'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -22,7 +23,7 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import useInterval from 'lib/hooks/useInterval'
+import { useInterval } from 'common/hooks/useInterval'
 import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
@@ -296,7 +297,14 @@ export function FortuneWidget() {
   const [isFortunedShared, setIsFortunedShared] = useState(false)
 
   const [today, setToday] = useState(new Date())
-  useInterval(() => setToday(new Date()), 2_000)
+  const updateToday = useCallback(() => setToday(new Date()), [])
+  useInterval({
+    callback: updateToday,
+    name: 'FortuneWidget',
+    delay: ms`10m`,
+    triggerEagerly: true,
+  })
+  console.log('FortuneWidget today', typeof setToday)
 
   const checkboxRef = useRef<HTMLInputElement>(null)
 
@@ -306,6 +314,7 @@ export function FortuneWidget() {
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {
+    console.log('FortuneWidget', { lastCheckedFortune, today: today.toISOString() })
     if (!lastCheckedFortune) return false
 
     const lastCheckedFortuneDate = new Date(lastCheckedFortune.checkTimestamp)

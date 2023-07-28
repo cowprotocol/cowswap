@@ -18,8 +18,8 @@ import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useInterval } from 'common/hooks/useInterval'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { usePolling } from 'common/hooks/usePolling'
 import { CancelButton } from 'common/pure/CancelButton'
 
 import {
@@ -102,7 +102,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     setPercentage(percentage)
   }, [chainId, elapsedSeconds, expirationInSeconds, isPending])
 
-  usePolling({
+  useInterval({
     callback: updatePercentage,
     name: 'OrderProgressBar::updatePercentage',
     delay: REFRESH_INTERVAL_MS,

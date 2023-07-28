@@ -10,7 +10,7 @@ import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getNativePrice } from 'api/gnosisProtocol'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 import { getAddress } from 'utils/getAddress'
 
 type PriceResult = number | Error | undefined
@@ -106,7 +106,7 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
       })
   }, [chainId, inputCurrency, outputCurrency])
 
-  usePolling({
+  useInterval({
     callback: fetchPrice,
     name: 'useGetInitialPrice',
     delay: PRICE_UPDATE_INTERVAL,

@@ -6,7 +6,7 @@ import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
-import useInterval from 'lib/hooks/useInterval'
+import { useInterval } from 'common/hooks/useInterval'
 
 // MOD imports
 
@@ -124,7 +124,12 @@ export default function Popover({
   const updateCallback = useCallback(() => {
     update && update()
   }, [update])
-  useInterval(updateCallback, show ? 100 : null)
+
+  useInterval({
+    callback: updateCallback,
+    name: 'popover',
+    delay: show ? 100 : null,
+  })
 
   return (
     <>

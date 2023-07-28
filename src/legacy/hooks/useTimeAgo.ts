@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import * as timeago from 'timeago.js'
 
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 export default function useTimeAgo(value?: string | Date, interval = 1000): string {
   const [timeAgoValue, setTimeAgoValue] = useState('')
@@ -16,7 +16,7 @@ export default function useTimeAgo(value?: string | Date, interval = 1000): stri
     setTimeAgoValue(timeago.format(value))
   }, [value])
 
-  usePolling({
+  useInterval({
     callback: updateTime,
     name: 'useTimeAgo',
     delay: interval,

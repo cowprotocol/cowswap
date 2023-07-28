@@ -14,7 +14,7 @@ import { useActiveListUrls } from 'legacy/state/lists/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import useInterval from 'lib/hooks/useInterval'
+import { useInterval } from 'common/hooks/useInterval'
 
 export default function Updater(): null {
   const { provider } = useWeb3React()
@@ -35,7 +35,11 @@ export default function Updater(): null {
   }, [fetchList, isWindowVisible, lists])
 
   // fetch all lists every 10 minutes, but only after we initialize provider
-  useInterval(fetchAllListsCallback, provider ? 1000 * 60 * 10 : null)
+  useInterval({
+    callback: fetchAllListsCallback,
+    name: 'ListsUpdater',
+    delay: provider ? 1000 * 60 * 10 : null,
+  })
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {

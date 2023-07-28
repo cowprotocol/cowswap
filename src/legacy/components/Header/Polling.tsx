@@ -163,6 +163,7 @@ const DEFAULT_MS_BEFORE_WARNING = ms`10m`
 const NETWORK_HEALTH_CHECK_MS = ms`10s`
 
 export function Polling() {
+  console.log('Polling render')
   const { chainId } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [isMounting, setIsMounting] = useState(false)

@@ -12,7 +12,7 @@ import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 import { useWalletInfo } from 'modules/wallet'
 
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
 import { FractionUtils } from 'utils/fractionUtils'
@@ -132,7 +132,7 @@ export function SpotPricesUpdater(): null {
     updatePending()
   }, [chainId, isWindowVisible, updatePending])
 
-  usePolling({
+  useInterval({
     callback: updateSpotPrice,
     name: 'SpotPricesUpdater',
     delay: SPOT_PRICE_CHECK_POLL_INTERVAL,

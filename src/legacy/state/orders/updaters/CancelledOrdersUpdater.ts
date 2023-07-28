@@ -10,7 +10,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 /**
  * Updater for cancelled orders.
@@ -121,7 +121,7 @@ export function CancelledOrdersUpdater(): null {
     updateOrders()
   }, [account, chainId, updateOrders])
 
-  usePolling({
+  useInterval({
     callback: updateOrders,
     name: 'CancelledOrdersUpdater',
     delay: MARKET_OPERATOR_API_POLL_INTERVAL,

@@ -19,7 +19,7 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { getAddress } from 'utils/getAddress'
 
@@ -264,7 +264,7 @@ export default function FeesUpdater(): null {
   /**
    * Periodically fetch quotes
    */
-  usePolling({
+  useInterval({
     callback: refetchQuoteIfRequired,
     name: 'FeesUpdater',
     delay: REFETCH_CHECK_INTERVAL,

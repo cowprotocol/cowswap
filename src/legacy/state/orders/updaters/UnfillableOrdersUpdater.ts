@@ -29,7 +29,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { useWalletInfo } from 'modules/wallet'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -215,7 +215,7 @@ export function UnfillableOrdersUpdater(): null {
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
-  usePolling({
+  useInterval({
     callback: updatePending,
     name: 'UnfillableOrdersUpdater',
     delay: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,

@@ -9,7 +9,7 @@ import { gasPriceStrategyAtom } from 'legacy/state/gas/atoms'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceStrategy } from 'api/gnosisProtocol/priceApi'
-import { usePolling } from 'common/hooks/usePolling'
+import { useInterval } from 'common/hooks/useInterval'
 
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
@@ -31,7 +31,7 @@ export function GasPriceStrategyUpdater(): null {
       })
   }, [chainId, setGasPriceStrategy])
 
-  usePolling({
+  useInterval({
     callback: updateCallback,
     name: 'GasPriceStrategyUpdater',
     delay: GP_PRICE_STRATEGY_INTERVAL_TIME,

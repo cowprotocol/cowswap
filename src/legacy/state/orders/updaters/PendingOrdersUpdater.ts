@@ -30,8 +30,8 @@ import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
+import { useInterval } from 'common/hooks/useInterval'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { usePolling } from 'common/hooks/usePolling'
 import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
 import { timeSinceInSeconds } from 'utils/time'
 
@@ -337,13 +337,13 @@ export function PendingOrdersUpdater(): null {
     ]
   )
 
-  usePolling({
+  useInterval({
     callback: () => updateOrders(OrderClass.MARKET, chainId, account),
     name: 'PendingOrdersUpdater:MARKET',
     delay: MARKET_OPERATOR_API_POLL_INTERVAL,
   })
 
-  usePolling({
+  useInterval({
     callback: () => updateOrders(OrderClass.LIMIT, chainId, account),
     name: 'PendingOrdersUpdater:LIMIT',
     delay: LIMIT_OPERATOR_API_POLL_INTERVAL,
