@@ -66,9 +66,9 @@ export function Modal({
                     }
                   : {})}
                 aria-label="dialog content"
-                minHeight={minHeight}
-                maxHeight={maxHeight}
-                mobile={isMobile}
+                $minHeight={minHeight}
+                $maxHeight={maxHeight}
+                $mobile={isMobile}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {/* eslint-disable-next-line jsx-a11y/tabindex-no-positive, jsx-a11y/no-noninteractive-tabindex */}
