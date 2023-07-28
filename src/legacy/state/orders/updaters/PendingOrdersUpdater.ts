@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
@@ -31,6 +31,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { usePolling } from 'common/hooks/usePolling'
 import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
 import { timeSinceInSeconds } from 'utils/time'
 
@@ -295,8 +296,8 @@ export function PendingOrdersUpdater(): null {
   )
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string, orderClass: OrderClass) => {
-      if (!account) {
+    async (orderClass: OrderClass, chainId?: ChainId, account?: string) => {
+      if (!account || !chainId) {
         return []
       }
 
@@ -336,25 +337,17 @@ export function PendingOrdersUpdater(): null {
     ]
   )
 
-  useEffect(() => {
-    if (!chainId || !account) {
-      return
-    }
+  usePolling({
+    callback: () => updateOrders(OrderClass.MARKET, chainId, account),
+    name: 'PendingOrdersUpdater:MARKET',
+    pollingFrequency: MARKET_OPERATOR_API_POLL_INTERVAL,
+  })
 
-    const marketInterval = setInterval(
-      () => updateOrders(chainId, account, OrderClass.MARKET),
-      MARKET_OPERATOR_API_POLL_INTERVAL
-    )
-    const limitInterval = setInterval(
-      () => updateOrders(chainId, account, OrderClass.LIMIT),
-      LIMIT_OPERATOR_API_POLL_INTERVAL
-    )
-
-    return () => {
-      clearInterval(marketInterval)
-      clearInterval(limitInterval)
-    }
-  }, [account, chainId, updateOrders])
+  usePolling({
+    callback: () => updateOrders(OrderClass.LIMIT, chainId, account),
+    name: 'PendingOrdersUpdater:LIMIT',
+    pollingFrequency: LIMIT_OPERATOR_API_POLL_INTERVAL,
+  })
 
   return null
 }
