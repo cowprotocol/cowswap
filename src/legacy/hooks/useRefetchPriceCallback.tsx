@@ -233,10 +233,10 @@ export function useRefetchQuoteCallback() {
       }
 
       // Register get best and fast quote methods on window
-      registerOnWindow({
-        getBestQuote: async () => getBestQuoteResolveOnlyLastCall(bestQuoteParams),
-        getFastQuote: async () => getFastQuoteResolveOnlyLastCall(fastQuoteParams),
-      })
+      // registerOnWindow({
+      //   getBestQuote: async () => getBestQuoteResolveOnlyLastCall(bestQuoteParams),
+      //   getFastQuote: async () => getFastQuoteResolveOnlyLastCall(fastQuoteParams),
+      // })
 
       // Get the fast quote
       if (!isPriceRefresh) {

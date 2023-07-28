@@ -34,6 +34,14 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   const tokenName = token?.name || lowerCaseAddress || ''
 
   useEffect(() => {
+    console.debug(
+      `bug--useIsTokenPermittable--useEffect`,
+      chainId,
+      lowerCaseAddress,
+      tokenName,
+      account,
+      PERMITTABLE_TOKENS_CACHE[chainId]
+    )
     if (!chainId || !lowerCaseAddress || !provider || !account || PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress]) {
       return
     }
