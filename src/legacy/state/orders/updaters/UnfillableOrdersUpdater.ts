@@ -76,6 +76,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     isEthFlow,
   }
   try {
+    // TODO: use hooks params for the quote, maybe?
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e: any) {
     return null

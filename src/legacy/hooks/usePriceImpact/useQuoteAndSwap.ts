@@ -84,6 +84,8 @@ export function useCalculateQuote(params: GetQuoteParams) {
       quoteParams,
       fetchFee: true,
       isPriceRefresh: false,
+      //   TODO: add hook params thingy, maybe?
+      //   TODO: or maybe not as this is used only for price impact
     })
       .then(({ cancelled, data }) => {
         if (cancelled) return

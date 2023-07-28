@@ -18,6 +18,7 @@ export function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHook
   const permitInfo = useIsTokenPermittable(sellCurrency)
 
   return useMemo(() => {
+    console.debug(`bug--usePermitHookParams-useEffect`, chainId, account, sellCurrency, provider, permitInfo)
     if (!account || !sellCurrency || !provider || !permitInfo) return undefined
     return {
       account,
