@@ -1,24 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import * as timeago from 'timeago.js'
+
+import { usePolling } from 'common/hooks/usePolling'
 
 export default function useTimeAgo(value?: string | Date, interval = 1000): string {
   const [timeAgoValue, setTimeAgoValue] = useState('')
 
-  useEffect(() => {
+  const updateTime = useCallback(() => {
     if (!value) {
       setTimeAgoValue('')
       return
-    } else {
-      setTimeAgoValue(timeago.format(value))
     }
 
-    const id = setInterval(() => {
-      setTimeAgoValue(timeago.format(value))
-    }, interval)
+    setTimeAgoValue(timeago.format(value))
+  }, [value])
 
-    return () => clearInterval(id)
-  }, [value, interval])
+  usePolling({
+    callback: updateTime,
+    name: 'useTimeAgo',
+    pollingFrequency: interval,
+    triggerEagerly: true,
+  })
 
   return timeAgoValue
 }
