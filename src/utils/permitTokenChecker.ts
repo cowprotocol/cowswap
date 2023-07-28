@@ -161,7 +161,7 @@ export class Web3ProviderConnector implements ProviderConnector {
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
     const contract = getContract(address || '', abi, this.provider)
 
-    return contract.methods[methodName](...methodParams).encodeABI()
+    return contract.interface.encodeFunctionData(methodName, methodParams)
   }
 
   signTypedData(_walletAddress: string, typedData: EIP712TypedData, _typedDataHash: string): Promise<string> {
