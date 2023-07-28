@@ -32,8 +32,7 @@ export async function getFullQuote({
 }): Promise<QuoteResult> {
   if (permitHookParams) {
     console.debug(`bug--getFullQuote--permitHookParams`, permitHookParams)
-    // TODO: use a provider with a fake pk to avoid requiring user to sign in ONLY when quoting prices
-    // TODO: merged with existing appData rather than replacing it
+    // TODO: merge with existing appData rather than replacing it
     quoteParams.appData = toKeccak256(await generatePermitHook(permitHookParams))
   }
 

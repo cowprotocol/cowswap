@@ -30,6 +30,7 @@ export async function swapFlow(
 
   if (input.permitInfo) {
     // TODO: maybe we need a modal to inform the user what they need to sign?
+    // TODO: merge with existing app data rather than replacing it
     newAppData = await generatePermitHook({
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
