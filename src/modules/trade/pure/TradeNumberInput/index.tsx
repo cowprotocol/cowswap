@@ -63,8 +63,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
   // Initial setup of value
   useEffect(() => {
     validateInput(value ? value.toString() : '')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [value, validateInput])
 
   return (
     <TradeWidgetField {...props} hasPrefix={!!prefixComponent}>

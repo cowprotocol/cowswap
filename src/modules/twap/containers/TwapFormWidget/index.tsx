@@ -164,9 +164,9 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(value: number | null) =>
+          onUserInput={(value: number | null) => {
             updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
-          }
+          }}
           min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
