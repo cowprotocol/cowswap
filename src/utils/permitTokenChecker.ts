@@ -2,6 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
 import type { Web3Provider } from '@ethersproject/providers'
+import { Wallet } from '@ethersproject/wallet'
 
 import {
   AbiItem,
@@ -44,12 +45,15 @@ export type EstimatePermitResult =
   // When it's not permittable:
   | null
 
+const FAKE_SIGNER = buildFakeSigner()
+
 export async function estimatePermit(
   tokenAddress: string,
   tokenName: string,
   chainId: SupportedChainId,
   walletAddress: string,
-  provider: Web3Provider
+  provider: Web3Provider,
+  useFakeSigner: boolean
 ): Promise<EstimatePermitResult> {
   if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
     // We shouldn't call this for the native token, but just in case
@@ -57,9 +61,11 @@ export async function estimatePermit(
   }
 
   const spender = GP_VAULT_RELAYER[chainId]
-  // TODO: use a provider with a fake PK just to avoid requiring user interaction
-  const web3ProviderConnector = new Web3ProviderConnector(provider)
+
+  const web3ProviderConnector = new Web3ProviderConnector(provider, useFakeSigner ? FAKE_SIGNER : undefined)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
+
+  const owner = useFakeSigner ? FAKE_SIGNER.address : walletAddress
 
   try {
     const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, walletAddress)
@@ -67,7 +73,7 @@ export async function estimatePermit(
     const permitCallData = await eip2612PermitUtils.buildPermitCallData(
       {
         ...permitParams,
-        owner: walletAddress,
+        owner,
         spender,
         nonce,
       },
@@ -78,7 +84,7 @@ export async function estimatePermit(
 
     const estimatedGas = await provider.estimateGas({
       data: permitCallData.replace('0x', '0xd505accf'),
-      from: walletAddress,
+      from: owner,
       to: tokenAddress,
     })
 
@@ -94,15 +100,7 @@ export async function estimatePermit(
   } catch (e) {
     console.debug(`bug--estimatePermit--error1`, e)
     try {
-      return await estimateDaiLikeToken(
-        tokenAddress,
-        tokenName,
-        chainId,
-        walletAddress,
-        spender,
-        provider,
-        eip2612PermitUtils
-      )
+      return await estimateDaiLikeToken(tokenAddress, tokenName, chainId, owner, spender, provider, eip2612PermitUtils)
     } catch (e) {
       console.debug(`bug--estimatePermit--error2`, e)
       return { error: e.toString() }
@@ -159,7 +157,7 @@ function estimateDaiLikeToken(
 }
 
 export class Web3ProviderConnector implements ProviderConnector {
-  constructor(private provider: Web3Provider) {}
+  constructor(private provider: Web3Provider, private walletSigner?: Wallet | undefined) {}
 
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
     const contract = getContract(address || '', abi, this.provider)
@@ -177,7 +175,9 @@ export class Web3ProviderConnector implements ProviderConnector {
       return acc
     }, {})
 
-    return this.provider.getSigner()._signTypedData(typedData.domain, types, typedData.message)
+    const signer = this.walletSigner || this.provider.getSigner()
+
+    return signer._signTypedData(typedData.domain, types, typedData.message)
   }
 
   ethCall(contractAddress: string, callData: string): Promise<string> {
@@ -193,4 +193,11 @@ export class Web3ProviderConnector implements ProviderConnector {
   decodeABIParameters<T>(types: AbiInput[], hex: string): T {
     return defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
   }
+}
+
+/**
+ * Builds a fake EthersJS Wallet signer to use with EIP2612 Permit
+ */
+export function buildFakeSigner(): Wallet {
+  return Wallet.createRandom()
 }

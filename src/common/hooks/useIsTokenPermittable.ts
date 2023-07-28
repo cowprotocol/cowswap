@@ -46,7 +46,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
       return
     }
 
-    estimatePermit(lowerCaseAddress, tokenName, chainId, account, provider).then((result) => {
+    estimatePermit(lowerCaseAddress, tokenName, chainId, account, provider, true).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
         PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress] = false
