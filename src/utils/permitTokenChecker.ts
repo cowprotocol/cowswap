@@ -51,9 +51,7 @@ export async function estimatePermit(
   tokenAddress: string,
   tokenName: string,
   chainId: SupportedChainId,
-  walletAddress: string,
-  provider: Web3Provider,
-  useFakeSigner: boolean
+  provider: Web3Provider
 ): Promise<EstimatePermitResult> {
   if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
     // We shouldn't call this for the native token, but just in case
@@ -62,13 +60,13 @@ export async function estimatePermit(
 
   const spender = GP_VAULT_RELAYER[chainId]
 
-  const web3ProviderConnector = new Web3ProviderConnector(provider, useFakeSigner ? FAKE_SIGNER : undefined)
+  const web3ProviderConnector = new Web3ProviderConnector(provider, FAKE_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
-  const owner = useFakeSigner ? FAKE_SIGNER.address : walletAddress
+  const owner = FAKE_SIGNER.address
 
   try {
-    const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, walletAddress)
+    const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
 
     const permitCallData = await eip2612PermitUtils.buildPermitCallData(
       {
