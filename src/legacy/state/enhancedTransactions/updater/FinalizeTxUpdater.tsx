@@ -252,7 +252,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
   })
 }
 
-export default function Updater(): null {
+export default function FinalizeTxUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const lastBlockNumber = useBlockNumber()

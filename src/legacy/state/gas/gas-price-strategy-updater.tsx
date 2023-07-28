@@ -35,6 +35,7 @@ export function GasPriceStrategyUpdater(): null {
     callback: updateCallback,
     name: 'GasPriceStrategyUpdater',
     delay: GP_PRICE_STRATEGY_INTERVAL_TIME,
+    triggerEagerly: false,
   })
 
   return null

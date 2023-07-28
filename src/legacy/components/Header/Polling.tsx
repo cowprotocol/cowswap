@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
@@ -16,6 +18,7 @@ import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
@@ -163,22 +166,31 @@ const DEFAULT_MS_BEFORE_WARNING = ms`10m`
 const NETWORK_HEALTH_CHECK_MS = ms`10s`
 
 export function Polling() {
-  console.log('Polling render')
   const { chainId } = useWalletInfo()
   const blockNumber = useBlockNumber()
+  const blockTime = useCurrentBlockTimestamp()
+  const ethGasPrice = useGasPrice()
+
   const [isMounting, setIsMounting] = useState(false)
   const [isHover, setIsHover] = useState(false)
   const machineTime = useMachineTimeMs(NETWORK_HEALTH_CHECK_MS)
-  const blockTime = useCurrentBlockTimestamp()
-  const theme = useTheme()
 
-  const ethGasPrice = useGasPrice()
-  const priceGwei = ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined
+  const priceGwei = useSafeMemo(
+    () => (ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined),
+    [ethGasPrice]
+  )
 
-  const waitMsBeforeWarning =
-    (chainId ? getChainInfo(chainId)?.blockWaitMsBeforeWarning : DEFAULT_MS_BEFORE_WARNING) ?? DEFAULT_MS_BEFORE_WARNING
+  const waitMsBeforeWarning = useMemo(
+    () =>
+      (chainId ? getChainInfo(chainId)?.blockWaitMsBeforeWarning : DEFAULT_MS_BEFORE_WARNING) ??
+      DEFAULT_MS_BEFORE_WARNING,
+    [chainId]
+  )
 
-  const warning = Boolean(!!blockTime && machineTime - blockTime.mul(1000).toNumber() > waitMsBeforeWarning)
+  const warning = useMemo(
+    () => Boolean(!!blockTime && machineTime - blockTime.mul(1000).toNumber() > waitMsBeforeWarning),
+    [blockTime, machineTime, waitMsBeforeWarning]
+  )
 
   useEffect(
     () => {
@@ -198,12 +210,37 @@ export function Polling() {
     //if you pass a value to array, like this [data] than clearTimeout will run every time this value changes (useEffect re-run)
   )
 
-  //TODO - chainlink gas oracle is really slow. Can we get a better data source?
+  return (
+    <PollingPure
+      chainId={chainId}
+      onHover={setIsHover}
+      warning={warning}
+      priceGwei={priceGwei}
+      isMounting={isMounting}
+      isHover={isHover}
+      blockNumber={blockNumber}
+    />
+  )
+}
+
+interface PollingPureProps {
+  chainId: SupportedChainId
+  onHover: (isOver: boolean) => void
+  warning: boolean
+  priceGwei: JSBI | undefined
+  isMounting: boolean
+  isHover: boolean
+  blockNumber: number | undefined
+}
+
+const PollingPure = React.memo((props: PollingPureProps) => {
+  const { chainId, onHover, priceGwei, warning, isMounting, isHover, blockNumber } = props
+  const theme = useTheme()
 
   return (
     <Wrapper>
       <RowFixed>
-        <StyledPolling onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)} warning={warning}>
+        <StyledPolling onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)} warning={warning}>
           <ExternalLink href={'https://etherscan.io/gastracker'}>
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
@@ -242,4 +279,4 @@ export function Polling() {
       </RowFixed>
     </Wrapper>
   )
-}
+})

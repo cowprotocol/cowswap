@@ -32,7 +32,7 @@ function _getSentryChainIdAndConnectionStatus(appChainId: number | null, connect
   return sentryChainId?.toString() || SentryTag.DISCONNECTED
 }
 
-export default function Updater(): null {
+export default function SentryUpdater(): null {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
   // app chain id maintains state for users disconnected but browsing app

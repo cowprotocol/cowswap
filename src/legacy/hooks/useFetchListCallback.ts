@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { TokenList } from '@uniswap/token-lists'
 
@@ -14,15 +14,21 @@ import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
 import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
+  const fetchingPromises = useRef<Record<string, Promise<TokenList> | undefined>>({})
   const dispatch = useAppDispatch()
   const { chainId } = useWalletInfo()
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(
     async (listUrl: string, sendDispatch = true) => {
+      let fetchingPromise = fetchingPromises.current[listUrl]
+      if (fetchingPromise) {
+        return fetchingPromise
+      }
+
       const requestId = nanoid()
       sendDispatch && dispatch(fetchTokenList.pending({ requestId, url: listUrl, chainId }))
-      return getTokenList(listUrl, (ensName: string) => resolveENSContentHash(ensName, MAINNET_PROVIDER))
+      fetchingPromise = getTokenList(listUrl, (ensName: string) => resolveENSContentHash(ensName, MAINNET_PROVIDER))
         .then((tokenList) => {
           // Mod: add chainId
           sendDispatch && dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId, chainId }))
@@ -34,6 +40,13 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
             dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message, chainId }))
           throw error
         })
+        .finally(() => {
+          fetchingPromises.current[listUrl] = undefined
+        })
+
+      fetchingPromises.current[listUrl] = fetchingPromise
+
+      return fetchingPromise
     },
     [chainId, dispatch]
   )

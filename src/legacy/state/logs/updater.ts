@@ -12,7 +12,7 @@ import { isHistoricalLog, keyToFilter } from './utils'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
 
-export default function Updater(): null {
+export default function Web3LogsUpdater(): null {
   const dispatch = useAppDispatch()
   const state = useAppSelector((state) => state.logs)
   const { provider } = useWeb3React()

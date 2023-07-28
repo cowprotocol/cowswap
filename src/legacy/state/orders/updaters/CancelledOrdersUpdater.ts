@@ -125,6 +125,7 @@ export function CancelledOrdersUpdater(): null {
     callback: updateOrders,
     name: 'CancelledOrdersUpdater',
     delay: MARKET_OPERATOR_API_POLL_INTERVAL,
+    triggerEagerly: false,
   })
 
   return null

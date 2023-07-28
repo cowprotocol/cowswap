@@ -106,6 +106,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     callback: updatePercentage,
     name: 'OrderProgressBar::updatePercentage',
     delay: REFRESH_INTERVAL_MS,
+    triggerEagerly: false,
   })
 
   useEffect(() => {

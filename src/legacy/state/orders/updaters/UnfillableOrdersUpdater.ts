@@ -219,6 +219,7 @@ export function UnfillableOrdersUpdater(): null {
     callback: updatePending,
     name: 'UnfillableOrdersUpdater',
     delay: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
+    triggerEagerly: false,
   })
 
   return null

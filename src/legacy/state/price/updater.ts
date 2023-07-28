@@ -268,6 +268,7 @@ export default function FeesUpdater(): null {
     callback: refetchQuoteIfRequired,
     name: 'FeesUpdater',
     delay: REFETCH_CHECK_INTERVAL,
+    triggerEagerly: true,
   })
 
   // Query quotes if any relevant parameter changes

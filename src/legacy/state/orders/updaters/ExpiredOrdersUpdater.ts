@@ -75,7 +75,7 @@ export function ExpiredOrdersUpdater(): null {
     callback: updateOrders,
     name: 'ExpiredOrdersUpdater',
     delay: EXPIRED_ORDERS_CHECK_POLL_INTERVAL,
-    triggerEagerly: true,
+    triggerEagerly: false,
   })
 
   return null

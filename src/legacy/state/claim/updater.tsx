@@ -12,7 +12,7 @@ import { ClaimInfo } from 'legacy/state/claim/reducer'
 
 import { useWalletInfo } from 'modules/wallet'
 
-export default function Updater() {
+export default function ClaimUpdater() {
   const { chainId } = useWalletInfo()
   const { activeClaimAccount } = useClaimState()
   const { setClaimsCount } = useClaimDispatchers()

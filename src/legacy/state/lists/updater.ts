@@ -16,7 +16,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useInterval } from 'common/hooks/useInterval'
 
-export default function Updater(): null {
+export default function ListsUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
@@ -38,7 +38,8 @@ export default function Updater(): null {
   useInterval({
     callback: fetchAllListsCallback,
     name: 'ListsUpdater',
-    delay: provider ? 1000 * 60 * 10 : null,
+    delay: provider ? 1000 * 5 : null, // provider ? ms`10m` : null,
+    triggerEagerly: true,
   })
 
   // whenever a list is not loaded and not loading, try again to load it

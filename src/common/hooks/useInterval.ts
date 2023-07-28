@@ -17,7 +17,7 @@ export interface UseIntervalParams {
   /**
    * If true, the callback will be executed immediately instead of waiting for the next interval
    */
-  triggerEagerly?: boolean
+  triggerEagerly: boolean
 
   /**
    * Name of the polling function. Just for debugging porpouses
@@ -25,70 +25,38 @@ export interface UseIntervalParams {
   name: string
 }
 
-// TODO: remove this
-const NAMES = [
-  '',
-  // 'CancelledOrdersUpdater',
-  // 'OrderProgressBar::updatePercentage',
-  // 'popover',
-  // 'useMachineTimeMs',
-  // 'GasPriceStrategyUpdater',
-  // 'GasPriceStrategyUpdater',
-  // 'ListsUpdater',
-  // 'CancelledOrdersUpdater',
-  // 'ExpiredOrdersUpdater',
-  // 'PendingOrdersUpdater:MARKET',
-  // 'PendingOrdersUpdater:LIMIT'
-  // 'SpotPricesUpdater',
-  // 'UnfillableOrdersUpdater',
-  // 'FeesUpdater',
-  // 'FortuneWidget',
-  // 'UnfillableOrdersUpdater',
-  // 'FeesUpdater',
-  // 'useGetInitialPrice',
-  // 'useFetchTwapOrdersFromSafe',
-]
-
 /**
- *  Hook to execute a function periodically. The function will not execute if the window is not visible
- *
- * @param params Parameters to configure the polling
+ * Invokes callback repeatedly over an interval defined by the delay
  */
-export function useInterval(params: UseIntervalParams): void {
-  const { callback, delay, triggerEagerly = false, name } = params
+export function useInterval(props: UseIntervalParams) {
+  const { callback, delay, triggerEagerly = true, name } = props
   const isWindowVisible = useIsWindowVisible()
   const savedCallback = useRef<() => void>()
 
   // Remember the latest callback.
-  useEffect(() => (savedCallback.current = callback), [callback])
   useEffect(() => {
-    // console.debug(`[useInterval:${name}] Setup`, { isWindowVisible })
+    savedCallback.current = callback
+  }, [callback])
 
+  // Set up the interval.
+  useEffect(() => {
     function executeCallBack() {
-      try {
-        const { current: currentCallback } = savedCallback
-        if (!currentCallback) {
-          console.debug(`[useInterval:${name}] Do nothing`)
-          return
-        }
+      const { current: currentCallback } = savedCallback
+      if (isWindowVisible && currentCallback) {
         console.debug(`[useInterval:${name}] Execute callback`)
-        currentCallback && currentCallback()
-      } catch (e) {
-        console.error(`[useInterval:${name}] Error executing callback`, e)
+        currentCallback()
       }
     }
 
-    if (!isWindowVisible || !delay || !NAMES.includes(name)) {
-      // console.debug(`[useInterval:${name}] No need to schedule interval`)
+    if (delay === null || !isWindowVisible) {
       return
     }
 
     console.debug(`[useInterval:${name}] Schedule interval`)
-    const intervalId = setInterval(executeCallBack, delay)
-
     if (triggerEagerly) {
       executeCallBack()
     }
-    return () => clearInterval(intervalId)
-  }, [delay, triggerEagerly, name, isWindowVisible])
+    const id = setInterval(executeCallBack, delay)
+    return () => clearInterval(id)
+  }, [delay, triggerEagerly, isWindowVisible, name])
 }

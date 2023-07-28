@@ -110,6 +110,7 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
     callback: fetchPrice,
     name: 'useGetInitialPrice',
     delay: PRICE_UPDATE_INTERVAL,
+    triggerEagerly: true,
   })
 
   return { price, isLoading }

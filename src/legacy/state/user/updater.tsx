@@ -4,7 +4,7 @@ import { useAppDispatch } from 'legacy/state/hooks'
 
 import { updateMatchesDarkMode } from './reducer'
 
-export default function Updater(): null {
+export default function UserUpdater(): null {
   const dispatch = useAppDispatch()
 
   // keep dark mode in sync with the system

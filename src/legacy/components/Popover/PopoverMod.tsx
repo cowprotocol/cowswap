@@ -129,6 +129,7 @@ export default function Popover({
     callback: updateCallback,
     name: 'popover',
     delay: show ? 100 : null,
+    triggerEagerly: true,
   })
 
   return (

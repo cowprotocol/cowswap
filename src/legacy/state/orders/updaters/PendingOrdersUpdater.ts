@@ -341,12 +341,14 @@ export function PendingOrdersUpdater(): null {
     callback: () => updateOrders(OrderClass.MARKET, chainId, account),
     name: 'PendingOrdersUpdater:MARKET',
     delay: MARKET_OPERATOR_API_POLL_INTERVAL,
+    triggerEagerly: false,
   })
 
   useInterval({
     callback: () => updateOrders(OrderClass.LIMIT, chainId, account),
     name: 'PendingOrdersUpdater:LIMIT',
     delay: LIMIT_OPERATOR_API_POLL_INTERVAL,
+    triggerEagerly: false,
   })
 
   return null

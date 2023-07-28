@@ -3,7 +3,7 @@ import React from 'react'
 import CancelReplaceTxUpdater from './CancelReplaceTxUpdater'
 import FinalizeTxUpdater from './FinalizeTxUpdater'
 
-export default function Updater() {
+export default function EnhancedTransactionsUpdater() {
   return (
     <>
       <FinalizeTxUpdater />

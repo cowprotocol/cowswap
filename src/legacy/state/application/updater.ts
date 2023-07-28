@@ -12,7 +12,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { updateChainId } from './reducer'
 
-export default function Updater(): null {
+export default function ApplicationUpdater(): null {
   const { chainId } = useWalletInfo()
   const { provider, account } = useWeb3React()
   const dispatch = useAppDispatch()

@@ -11,6 +11,7 @@ const useMachineTimeMs = (updateInterval: number): number => {
     },
     name: 'useMachineTimeMs',
     delay: updateInterval,
+    triggerEagerly: false,
   })
 
   return now
