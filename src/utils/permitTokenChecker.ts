@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
+import { TypedDataField } from '@ethersproject/abstract-signer'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import {
@@ -91,6 +92,7 @@ export async function estimatePermit(
         }
       : null
   } catch (e) {
+    console.debug(`bug--estimatePermit--error1`, e)
     try {
       return await estimateDaiLikeToken(
         tokenAddress,
@@ -102,6 +104,7 @@ export async function estimatePermit(
         eip2612PermitUtils
       )
     } catch (e) {
+      console.debug(`bug--estimatePermit--error2`, e)
       return { error: e.toString() }
     }
   }
@@ -165,7 +168,16 @@ export class Web3ProviderConnector implements ProviderConnector {
   }
 
   signTypedData(_walletAddress: string, typedData: EIP712TypedData, _typedDataHash: string): Promise<string> {
-    return this.provider.getSigner()._signTypedData(typedData.domain, typedData.types, typedData.message)
+    // Removes `EIP712Domain` as it's already part of EIP712 (see https://ethereum.stackexchange.com/a/151930/55204)
+    // and EthersJS complains when a type is not needed (see https://github.com/ethers-io/ethers.js/discussions/4000)
+    const types = Object.keys(typedData.types).reduce<Record<string, TypedDataField[]>>((acc, type) => {
+      if (type !== 'EIP712Domain') {
+        acc[type] = typedData.types[type]
+      }
+      return acc
+    }, {})
+
+    return this.provider.getSigner()._signTypedData(typedData.domain, types, typedData.message)
   }
 
   ethCall(contractAddress: string, callData: string): Promise<string> {
