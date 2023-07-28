@@ -1,10 +1,15 @@
 import { useAtomValue } from 'jotai'
 
+import { useWalletInfo } from 'modules/wallet'
+
 import { ExtensibleFallbackVerification } from '../services/verifyExtensibleFallback'
 import { fallbackHandlerVerificationAtom } from '../state/fallbackHandlerVerificationAtom'
 
-export function useFallbackHandlerVerification() {
-  return useAtomValue(fallbackHandlerVerificationAtom)
+export function useFallbackHandlerVerification(): ExtensibleFallbackVerification | null {
+  const { account } = useWalletInfo()
+  const state = useAtomValue(fallbackHandlerVerificationAtom)
+
+  return account ? state[account] || null : null
 }
 
 export function useIsFallbackHandlerRequired(): boolean {

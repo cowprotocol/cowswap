@@ -2,6 +2,8 @@ import { atom } from 'jotai'
 
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
+import { atomWithPartialUpdate } from 'utils/jotai/atomWithPartialUpdate'
+
 export interface LimitRateState {
   readonly isLoading: boolean
   readonly isLoadingMarketRate: boolean
@@ -29,12 +31,6 @@ export const initLimitRateState = () => ({
   typedValue: null,
 })
 
-export const limitRateAtom = atom<LimitRateState>(initLimitRateState())
-
-export const updateLimitRateAtom = atom(null, (get, set, nextState: Partial<LimitRateState>) => {
-  set(limitRateAtom, () => {
-    const prevState = get(limitRateAtom)
-
-    return { ...prevState, ...nextState }
-  })
-})
+export const { atom: limitRateAtom, updateAtom: updateLimitRateAtom } = atomWithPartialUpdate(
+  atom<LimitRateState>(initLimitRateState())
+)
