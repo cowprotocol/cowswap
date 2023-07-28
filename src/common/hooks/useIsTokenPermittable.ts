@@ -26,7 +26,7 @@ const PERMITTABLE_TOKENS_CACHE: Record<SupportedChainId, Record<string, PermitIn
 }
 
 export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermittableResult {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
   const lowerCaseAddress = token?.wrapped?.address?.toLowerCase()
@@ -39,14 +39,13 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
       chainId,
       lowerCaseAddress,
       tokenName,
-      account,
       PERMITTABLE_TOKENS_CACHE[chainId]
     )
-    if (!chainId || !lowerCaseAddress || !provider || !account || PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress]) {
+    if (!chainId || !lowerCaseAddress || !provider || PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress]) {
       return
     }
 
-    estimatePermit(lowerCaseAddress, tokenName, chainId, account, provider, true).then((result) => {
+    estimatePermit(lowerCaseAddress, tokenName, chainId, provider).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
         PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress] = false
@@ -60,7 +59,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
         PERMITTABLE_TOKENS_CACHE[chainId][lowerCaseAddress] = result
       }
     })
-  }, [account, chainId, lowerCaseAddress, provider, tokenName])
+  }, [chainId, lowerCaseAddress, provider, tokenName])
 
   if (isNative) {
     return false
