@@ -62,7 +62,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   // Initial setup of value
   useEffect(() => {
-    validateInput(value ? value.toString() : '')
+    validateInput(value !== null ? value.toString() : '')
   }, [value, validateInput])
 
   return (
