@@ -2,9 +2,9 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ExternalLink } from 'legacy/theme'
-
 import { TokenAmount } from 'common/pure/TokenAmount'
+
+import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
 import { InlineBanner } from './index'
 
@@ -53,10 +53,7 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
       <strong>Use Safe web app</strong>
       <p>
         Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
-        Only available in the{' '}
-        <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
-          CoW Swap Safe App↗
-        </ExternalLink>
+        Only available in the <CowSwapSafeAppLink />
       </p>
     </InlineBanner>
   )

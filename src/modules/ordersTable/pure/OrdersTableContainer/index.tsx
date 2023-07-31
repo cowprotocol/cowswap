@@ -12,7 +12,7 @@ import { ExternalLink } from 'legacy/theme'
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
 
-import { SAFE_COW_APP_LINK } from 'common/constants/common'
+import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
@@ -204,8 +204,7 @@ export function OrdersTableContainer({
           <p>
             {isSafeViaWc ? (
               <Trans>
-                Use the <ExternalLink href={SAFE_COW_APP_LINK}>Safe web app</ExternalLink> to see{' '}
-                {isOpenOrdersTab ? 'open' : 'history'} orders
+                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open' : 'history'} orders
               </Trans>
             ) : (
               <Trans>
