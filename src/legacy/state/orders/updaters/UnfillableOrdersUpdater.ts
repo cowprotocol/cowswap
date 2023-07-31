@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
-import { OrderClass, SupportedChainId as ChainId, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'
@@ -140,10 +140,8 @@ export function UnfillableOrdersUpdater(): null {
 
       pending.forEach((order, index) => {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
-        const [amount, token] =
-          order.kind === OrderKind.SELL ? [order.sellAmount, order.inputToken] : [order.buyAmount, order.outputToken]
 
-        const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
+        const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
 
         _getOrderPrice(chainId, order, enoughBalance, strategy)
