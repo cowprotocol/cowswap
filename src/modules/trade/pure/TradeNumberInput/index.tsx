@@ -30,7 +30,7 @@ export function InputArrows() {
           <SVG src={carretDown} />
         </span>
       </span>
-      
+
       <span role="button" aria-label="Decrease Value" aria-disabled="false">
         <span role="img" aria-label="down">
           <SVG src={carretDown} />

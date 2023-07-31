@@ -25,50 +25,50 @@ export const ArrowsWrapper = styled.div`
   gap: 3px;
   margin: 0 -16px 0 0;
 
-    > span,
-    > span > span {
-      display: flex;
-      flex-flow: column wrap;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
+  > span,
+  > span > span {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 
-    > span {
-      overflow: hidden;
-      cursor: pointer;
-      transition: color 0.2s linear;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: auto;
-      height: 50%;
+  > span {
+    overflow: hidden;
+    cursor: pointer;
+    transition: color 0.2s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: auto;
+    height: 50%;
 
-      &:hover {
-        > span > svg > path {
-          fill: ${({ theme }) => theme.text1};
-        }
+    &:hover {
+      > span > svg > path {
+        fill: ${({ theme }) => theme.text1};
       }
     }
+  }
 
-    > span > span > svg {
-      display: flex;
-      --size: 12px;
-      width: var(--size);
-      height: var(--size);
-      border-radius: var(--size);
-      object-fit: contain;
-      cursor: pointer;
-    }
+  > span > span > svg {
+    display: flex;
+    --size: 12px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    object-fit: contain;
+    cursor: pointer;
+  }
 
-    > span > span > svg > path {
-      fill: ${({ theme }) => transparentize(0.7, theme.text1)};
-      transition: fill 0.2s linear;
-    }
+  > span > span > svg > path {
+    fill: ${({ theme }) => transparentize(0.7, theme.text1)};
+    transition: fill 0.2s linear;
+  }
 
-    > span:first-child > span > svg {
-      transform: rotate(180deg);
-    }
+  > span:first-child > span > svg {
+    transform: rotate(180deg);
+  }
 `
 
 export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArrowsLeftAlign?: boolean }>`
