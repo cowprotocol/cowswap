@@ -114,7 +114,7 @@ async function generatePermitPermitData(params: GeneratePermitDataParams) {
   return {
     target: inputToken.address,
     callData: sellTokenContract.interface.encodeFunctionData('permit', permitParams as any),
-    gasLimit,
+    gasLimit: gasLimit.toString(),
   }
 }
 
@@ -167,6 +167,6 @@ async function generateDaiPermitData(params: GeneratePermitDataParams) {
   return {
     target: inputToken.address,
     callData: sellTokenContract.interface.encodeFunctionData('permit', permitParams as any),
-    gasLimit,
+    gasLimit: gasLimit.toString(),
   }
 }
