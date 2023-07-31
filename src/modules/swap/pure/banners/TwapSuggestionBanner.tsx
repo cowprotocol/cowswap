@@ -4,6 +4,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
+import { TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -49,7 +50,8 @@ export function TwapSuggestionBanner({
 
   if (!shouldSuggestTwap) return null
 
-  const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) + `?sellAmount=${sellAmount}`
+  const routePath =
+    parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) + `?${TRADE_URL_SELL_AMOUNT_KEY}=${sellAmount}`
 
   return (
     <InlineBanner type="alert">
