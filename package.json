@@ -5,7 +5,9 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "scripts": {},
+  "scripts": {
+    "cosmos:export": "nx run cowswap-frontend:cosmos:export"
+  },
   "browser": {
     "crypto": false
   },
