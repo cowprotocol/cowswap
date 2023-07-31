@@ -1,0 +1,16 @@
+import { defaultLimitOrderDeadline } from './deadlines'
+
+import { DeadlineSelector } from './index'
+
+const Fixtures = {
+  default: (
+    <DeadlineSelector
+      deadline={defaultLimitOrderDeadline}
+      customDeadline={null}
+      selectDeadline={() => void 0}
+      selectCustomDeadline={() => void 0}
+    />
+  ),
+}
+
+export default Fixtures

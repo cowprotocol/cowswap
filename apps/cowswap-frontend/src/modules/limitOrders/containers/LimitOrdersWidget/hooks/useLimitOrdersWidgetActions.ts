@@ -1,0 +1,61 @@
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
+
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import { changeSwapAmountAnalytics } from '../../../../../legacy/components/analytics'
+import { Field } from '../../../../../legacy/state/swap/actions'
+
+import { updateLimitOrdersRawStateAtom } from '../../../index'
+import { useLimitOrdersDerivedState } from '../../../hooks/useLimitOrdersDerivedState'
+import { useUpdateCurrencyAmount } from '../../../hooks/useUpdateCurrencyAmount'
+import { limitRateAtom } from '../../../state/limitRateAtom'
+import { TradeWidgetActions } from '../../../../trade'
+import { useIsWrapOrUnwrap } from '../../../../trade/hooks/useIsWrapOrUnwrap'
+import { useOnCurrencySelection } from '../../../../trade/hooks/useOnCurrencySelection'
+import { useSwitchTokensPlaces } from '../../../../trade/hooks/useSwitchTokensPlaces'
+
+import tryParseCurrencyAmount from '../../../../../lib/utils/tryParseCurrencyAmount'
+
+export function useLimitOrdersWidgetActions(): TradeWidgetActions {
+  const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()
+  const { activeRate } = useAtomValue(limitRateAtom)
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const updateCurrencyAmount = useUpdateCurrencyAmount()
+
+  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+
+  const onCurrencySelection = useOnCurrencySelection()
+
+  const onUserInput = useCallback(
+    (field: Field, typedValue: string) => {
+      const currency = field === Field.INPUT ? inputCurrency : outputCurrency
+
+      if (!currency) return
+
+      const value = tryParseCurrencyAmount(typedValue, currency) || null
+
+      changeSwapAmountAnalytics(field, Number(typedValue))
+
+      updateCurrencyAmount({
+        activeRate,
+        amount: value,
+        orderKind: isWrapOrUnwrap || field === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
+      })
+    },
+    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
+  )
+
+  const onSwitchTokens = useSwitchTokensPlaces({
+    orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
+  })
+
+  const onChangeRecipient = useCallback(
+    (recipient: string | null) => {
+      updateLimitOrdersState({ recipient })
+    },
+    [updateLimitOrdersState]
+  )
+
+  return { onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection }
+}

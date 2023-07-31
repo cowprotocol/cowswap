@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "module": "commonjs",
+    "types": ["jest", "node"]
+  },
+  "include": [
+    "jest.config.ts",
+    "apps/cowswap-frontend/src/**/*.test.ts",
+    "apps/cowswap-frontend/src/**/*.spec.ts",
+    "apps/cowswap-frontend/src/**/*.d.ts"
+  ]
+}

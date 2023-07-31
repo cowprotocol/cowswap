@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "baseUrl": "src"
+  },
+  "exclude": ["node_modules", "cypress"],
+  "include": [
+    "apps/cowswap-frontend/src/**/*"
+  ]
+}

@@ -1,0 +1,45 @@
+import { useMemo } from 'react'
+
+import { Percent } from '@uniswap/sdk-core'
+
+import { useToggleSettingsMenu } from '../../../../../legacy/state/application/hooks'
+
+import { useIsEoaEthFlow } from '../../../hooks/useIsEoaEthFlow'
+import { RowSlippageContent } from '../../../pure/Row/RowSlippageContent'
+
+import useNativeCurrency from '../../../../../lib/hooks/useNativeCurrency'
+import { formatPercent } from '../../../../../utils/amountFormat'
+
+export interface RowSlippageProps {
+  allowedSlippage: Percent
+  showSettingOnClick?: boolean
+  slippageLabel?: React.ReactNode
+  slippageTooltip?: React.ReactNode
+}
+
+export function RowSlippage({
+  allowedSlippage,
+  showSettingOnClick = true,
+  slippageTooltip,
+  slippageLabel,
+}: RowSlippageProps) {
+  const toggleSettings = useToggleSettingsMenu()
+
+  const isEoaEthFlow = useIsEoaEthFlow()
+  const nativeCurrency = useNativeCurrency()
+
+  const props = useMemo(
+    () => ({
+      isEoaEthFlow,
+      symbols: [nativeCurrency.symbol],
+      showSettingOnClick,
+      allowedSlippage,
+      slippageLabel,
+      slippageTooltip,
+      displaySlippage: `${formatPercent(allowedSlippage)}%`,
+    }),
+    [isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
+  )
+
+  return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
+}

@@ -1,0 +1,42 @@
+import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
+
+import { ConnectionType, useWalletMetaData } from '../../index'
+import { default as AlphaImage } from '../../api/assets/alpha.svg'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { getConnectionName, getIsAlphaWallet } from '../../api/utils/connection'
+import { WC_DISABLED_TEXT } from '../../constants'
+
+import { useFeatureFlags } from '../../../../common/hooks/featureFlags/useFeatureFlags'
+
+import { TryActivation } from './index'
+
+import { walletConnectConnection } from './walletConnect'
+import { walletConnectConnectionV2 } from './walletConnectV2'
+
+const alphaOption = {
+  color: '#4196FC',
+  icon: AlphaImage,
+  id: 'alpha',
+}
+
+export function AlphaOption({ tryActivation }: { tryActivation: TryActivation }) {
+  const { walletName } = useWalletMetaData()
+  const { walletConnectV1Enabled } = useFeatureFlags()
+
+  const connection = walletConnectV1Enabled ? walletConnectConnection : walletConnectConnectionV2
+
+  const isWalletConnect = useIsActiveWallet(connection)
+  const isActive = isWalletConnect && getIsAlphaWallet(walletName)
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+
+  return (
+    <ConnectWalletOption
+      {...alphaOption}
+      isActive={isActive}
+      tooltipText={tooltipText}
+      clickable={!isWalletConnect}
+      onClick={() => tryActivation(connection.connector)}
+      header={getConnectionName(ConnectionType.ALPHA)}
+    />
+  )
+}

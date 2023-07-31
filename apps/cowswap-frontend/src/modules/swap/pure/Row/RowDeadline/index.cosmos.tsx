@@ -1,0 +1,13 @@
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '../../../../../legacy/constants'
+
+import { RowDeadlineContent, RowDeadlineProps } from './index'
+
+const defaultProps: RowDeadlineProps = {
+  toggleSettings: console.log,
+  isEoaEthFlow: true,
+  displayDeadline: Math.floor(MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60) + ' minutes',
+  symbols: ['ETH', 'WETH'],
+  userDeadline: 600,
+}
+
+export default <RowDeadlineContent {...defaultProps} />

@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "dts",
+    "baseUrl": "src/lib",
+    "paths": {
+      "lib/*": ["./*"],
+      "abis/*": ["../abis/*"],
+      "assets/*": ["../assets/*"],
+      "constants/*": ["../constants/*"],
+      "hooks/*": ["../hooks/*"],
+      "locales/*": ["../locales/*"],
+      "state/*": ["../state/*"],
+      "types/*": ["../types/*"],
+      "utils/*": ["../utils/*"]
+    }
+  },
+  "exclude": ["node_modules",
+    "apps/cowswap-frontend/src/**/*.test.*"
+  ],
+  "include": [
+    "apps/cowswap-frontend/src/lib/**/*.d.ts",
+    "apps/cowswap-frontend/src/lib/index.tsx"
+  ]
+}

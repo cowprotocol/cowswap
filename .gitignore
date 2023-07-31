@@ -2,13 +2,13 @@
 
 # generated contract types
 /src/lib/locales/**/*.js
-/src/lib/locales/**/en-US.po
-/src/lib/locales/**/pseudo.po
+/apps/cowswap-frontend/src/lib/locales/**/en-US.po
+/apps/cowswap-frontend/src/lib/locales/**/pseudo.po
 /src/locales/**/*.js
 /src/locales/**/*.ts
 /src/locales/**/*.json
-/src/locales/**/en-US.po
-/src/locales/**/pseudo.po
+/apps/cowswap-frontend/src/locales/**/en-US.po
+/apps/cowswap-frontend/src/locales/**/pseudo.po
 
 # dependencies
 node_modules
@@ -20,7 +20,7 @@ cypress.env.json
 # builds
 /build
 /dts
-/public/cosmos
+/apps/cowswap-frontend/public/cosmos
 /dist
 
 # misc
@@ -54,7 +54,7 @@ cypress-custom/fixtures/example.json
 yalc.lock
 
 # public
-public/version.json
+apps/cowswap-frontend/public/version.json
 
 # vercel
 .vercel
