@@ -97,23 +97,10 @@ async function _actuallyUploadToIpfs(
   updatePending({ chainId, orderId, uploading: true })
 
   try {
-    // TODO: Remove the "|| appDataKeccak256" once tuploadAppDataDocOrderbookApi is implemented
-    const actualHash = (await uploadAppDataDocOrderbookApi(fullAppData)) || appDataKeccak256
-
+    await uploadAppDataDocOrderbookApi(appDataKeccak256, fullAppData)
     removePending({ chainId, orderId })
-
-    if (appDataKeccak256 !== actualHash) {
-      // TODO: add sentry error to track hard failure
-      console.error(
-        `[UploadToIpfsUpdater] Uploaded data hash (${actualHash}) differs from calculated (${appDataKeccak256}) for doc`,
-        fullAppData
-      )
-    } else {
-      console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, fullAppData)
-    }
   } catch (e: any) {
-    // TODO: add sentry error to track soft failure
-    console.warn(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, fullAppData)
+    console.error(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, e, fullAppData)
     updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
   }
 }
