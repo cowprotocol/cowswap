@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { PriceQuality } from '@cowprotocol/cow-sdk'
+
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { isOnline } from 'legacy/hooks/useIsOnline'
 import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'
@@ -235,7 +237,7 @@ export function useRefetchQuoteCallback() {
       const fastQuoteParams = {
         quoteParams: {
           ...quoteParams,
-          priceQuality: 'fast',
+          priceQuality: PriceQuality.FAST,
         },
       }
 

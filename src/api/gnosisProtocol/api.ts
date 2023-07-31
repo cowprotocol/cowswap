@@ -112,7 +112,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     appData: getAppData().appDataKeccak256,
     validTo,
     partiallyFillable: false,
-    priceQuality: priceQuality as PriceQuality,
+    priceQuality,
   }
 
   if (isEthFlow) {
@@ -252,15 +252,15 @@ function getBaseUrl(): string {
   return 'https://api.cow.fi/'
 }
 
-export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): /*PriceQuality*/ string {
+export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): PriceQuality {
   const { fast = false, verifyQuote } = props
   if (fast) {
-    return 'fast'
+    return PriceQuality.FAST
   }
 
   if (verifyQuote) {
-    return 'verified'
+    return PriceQuality.VERIFIED
   }
 
-  return 'optimal'
+  return PriceQuality.OPTIMAL
 }
