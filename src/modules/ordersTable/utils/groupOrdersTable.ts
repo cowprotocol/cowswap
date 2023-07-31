@@ -1,4 +1,4 @@
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
@@ -20,7 +20,6 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
     const parsedOrder = parseOrder(order)
     const composableOrderId = order.composableCowInfo?.id
     const parentOrderId = order.composableCowInfo?.parentId
-    const isPending = PENDING_STATES.includes(order.status)
 
     // Parent
     if (composableOrderId) {
@@ -32,7 +31,7 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
         group.parent = parsedOrder
       }
       // Child
-    } else if (parentOrderId && isPending) {
+    } else if (parentOrderId) {
       if (!groupsMap.has(parentOrderId)) {
         groupsMap.set(parentOrderId, { parent: null, children: [] })
       }
