@@ -12,6 +12,7 @@ import {
   SupportedChainId as ChainId,
   Trade,
   PriceQuality,
+  TotalSurplus,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -191,6 +192,10 @@ export async function getNativePrice(chainId: ChainId, currencyAddress: string):
   return orderBookApi.getNativePrice(currencyAddress, { chainId })
 }
 
+export async function getSurplusData(chainId: ChainId, address: string): Promise<TotalSurplus> {
+  return orderBookApi.getTotalSurplus(address, { chainId })
+}
+
 export type ProfileData = {
   totalTrades: number
   totalReferrals: number
@@ -216,40 +221,6 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   } else {
     return response.json()
   }
-}
-
-const NETWORK_TO_API_PREFIX = {
-  [ChainId.MAINNET]: 'mainnet',
-  [ChainId.GOERLI]: 'goerli',
-  [ChainId.GNOSIS_CHAIN]: 'xdai',
-}
-
-export type TotalSurplusData = {
-  totalSurplus: string
-}
-
-// TODO: Move to the SDK
-export async function getSurplusData(chainId: ChainId, address: string): Promise<TotalSurplusData> {
-  console.log(`[api:${API_NAME}] Get surplus data for`, chainId, address)
-
-  const baseUrl = `${getBaseUrl()}${NETWORK_TO_API_PREFIX[chainId]}/api`
-  const url = `/v1/users/${address}/total_surplus`
-
-  const response = await fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS,
-  })
-
-  return response.json()
-}
-
-// TODO: this is temporary until the surplus data is moved to the SDK
-function getBaseUrl(): string {
-  if (isLocal || isDev || isPr || isBarn) {
-    return 'https://barn.api.cow.fi/'
-  }
-
-  // Production, staging, ens, ...
-  return 'https://api.cow.fi/'
 }
 
 export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): PriceQuality {
