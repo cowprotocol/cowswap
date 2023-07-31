@@ -10,11 +10,27 @@ import { useCurrencyBalances } from './useCurrencyBalance'
 import { TokenAmounts } from '../types'
 
 export interface UseEnoughBalanceParams {
+  /**
+   * Address of the account to check balance (and optionally the allowance)
+   */
   account?: string
+
+  /**
+   * Amount against which to check balance (and optionally the allowance)
+   */
   amount?: CurrencyAmount<Currency>
+
+  /**
+   * Address of the account to check allowance. Set to undefined to skip allowance check.
+   */
   checkAllowanceAddress?: string
 }
 
+/**
+ * Check if the account has enough balance and optionally allowance
+ * @param params Parameters to check balance and optionally the allowance
+ * @returns true if the account has enough balance (and allowance if it applies)
+ */
 export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean {
   const { account, amount, checkAllowanceAddress } = params
   const isNativeCurrency = amount?.currency.isNative
@@ -38,11 +54,27 @@ export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): bo
 }
 
 export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'checkAllowanceAddress'> {
+  /**
+   * Balances per token for the account
+   */
   balances: TokenAmounts
+
+  /**
+   * Allowances per token for the account
+   */
   allowances?: TokenAmounts
+
+  /**
+   * Native balance for the account
+   */
   nativeBalance?: CurrencyAmount<Currency>
 }
 
+/**
+ * Check if the account has enough balance and optionally allowance
+ * @param params Parameters to check balance and optionally the allowance
+ * @returns true if the account has enough balance (and allowance if it applies)
+ */
 export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean {
   const { account, amount, balances, nativeBalance, allowances } = params
   const isNativeCurrency = amount?.currency.isNative
