@@ -37,11 +37,11 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
   const request = new Promise<string>(async (resolve) => {
     const sellTokenContract = getContract(inputToken.address, Erc20Abi, provider, account)
 
-    const nonce = (await sellTokenContract?.nonces(account)?.toString()) || '0'
+    const nonce = (await sellTokenContract?.nonces(account))?.toString() || '0'
 
     const generatePermitHookData = permitInfo.type === 'dai' ? generateDaiPermitData : generatePermitPermitData
 
-    const permitHookData = generatePermitHookData({ ...params, nonce })
+    const permitHookData = await generatePermitHookData({ ...params, nonce })
 
     const permitHook = JSON.stringify({
       backend: {
