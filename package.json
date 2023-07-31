@@ -6,7 +6,9 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "cosmos:export": "nx run cowswap-frontend:cosmos:export"
+    "cosmos:export": "nx run cowswap-frontend:cosmos:export",
+    "build": "nx run cowswap-frontend:build",
+    "postbuild": "mkdir build && mv dist/apps/cowswap-frontend/* build"
   },
   "browser": {
     "crypto": false
