@@ -144,6 +144,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
   isSafeViaWc: boolean
+  displayOrdersOnlyForSafeApp: boolean
   children?: ReactNode
   orderType: TabOrderTypes
 }
@@ -159,6 +160,7 @@ export function OrdersTableContainer({
   tabs,
   isWalletConnected,
   isSafeViaWc,
+  displayOrdersOnlyForSafeApp,
   selectedOrders,
   isOpenOrdersTab,
   allowsOffchainSigning,
@@ -202,7 +204,7 @@ export function OrdersTableContainer({
             <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
           </h3>
           <p>
-            {isSafeViaWc ? (
+            {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
               <Trans>
                 Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
               </Trans>
