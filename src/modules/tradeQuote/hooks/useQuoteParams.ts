@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
@@ -23,10 +22,9 @@ export function useQuoteParams(amount: string | null) {
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
 
-  const currency = orderKind === OrderKind.SELL ? inputCurrency : outputCurrency
   const enoughBalance = useEnoughBalanceAndAllowance({
     account,
-    amount: (currency && amount && CurrencyAmount.fromRawAmount(currency, amount)) || undefined,
+    amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
   })
 
   return useMemo(() => {
