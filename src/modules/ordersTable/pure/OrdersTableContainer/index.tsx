@@ -12,6 +12,8 @@ import { ExternalLink } from 'legacy/theme'
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
 
+import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
+
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
@@ -33,7 +35,6 @@ const Content = styled.div`
   min-height: 490px;
   padding: 0;
 
-  // Icon
   > span {
     --size: 130px;
     width: var(--size);
@@ -141,6 +142,8 @@ const ExternalArrow = styled.span`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
+  isSafeViaWc: boolean
+  displayOrdersOnlyForSafeApp: boolean
   children?: ReactNode
   orderType: TabOrderTypes
 }
@@ -155,6 +158,8 @@ export function OrdersTableContainer({
   orders,
   tabs,
   isWalletConnected,
+  isSafeViaWc,
+  displayOrdersOnlyForSafeApp,
   selectedOrders,
   isOpenOrdersTab,
   allowsOffchainSigning,
@@ -195,19 +200,25 @@ export function OrdersTableContainer({
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
           </h3>
           <p>
-            <Trans>
-              You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
-              Create one for free! {/* TODO: add link for Advanced orders also */}
-              {orderType === TabOrderTypes.LIMIT ? (
-                <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                  Learn more
-                  <ExternalArrow />
-                </ExternalLink>
-              ) : null}
-            </Trans>
+            {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
+              <Trans>
+                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
+              </Trans>
+            ) : (
+              <Trans>
+                You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
+                Create one for free! {/* TODO: add link for Advanced orders also */}
+                {orderType === TabOrderTypes.LIMIT ? (
+                  <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                    Learn more
+                    <ExternalArrow />
+                  </ExternalLink>
+                ) : null}
+              </Trans>
+            )}
           </p>
         </Content>
       )

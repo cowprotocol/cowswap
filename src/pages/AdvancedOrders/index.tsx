@@ -38,7 +38,11 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} orders={allEmulatedOrders} />
+          <OrdersTableWidget
+            displayOrdersOnlyForSafeApp={true}
+            orderType={TabOrderTypes.ADVANCED}
+            orders={allEmulatedOrders}
+          />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

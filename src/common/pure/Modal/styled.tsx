@@ -64,7 +64,7 @@ const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs<{
-  mobile: boolean
+  $mobile: boolean
 }>({
   'aria-label': 'dialog',
 })`
@@ -80,18 +80,18 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
     overflow-y: auto;
     overflow-x: hidden;
 
-    align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
+    align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
 
     max-width: 420px;
-    ${({ maxHeight }) =>
-      maxHeight &&
+    ${({ $maxHeight }) =>
+      $maxHeight &&
       css`
-        max-height: ${maxHeight}vh;
+        max-height: ${$maxHeight}vh;
       `}
-    ${({ minHeight }) =>
-      minHeight &&
+    ${({ $minHeight }) =>
+      $minHeight &&
       css`
-        min-height: ${minHeight}vh;
+        min-height: ${$minHeight}vh;
       `}
     display: flex;
     border-radius: 20px;
@@ -99,10 +99,10 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
       width: 65vw;
       margin: 0;
     `}
-    ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
+    ${({ theme, $mobile }) => theme.mediaWidth.upToSmall`
       width:  85vw;
       ${
-        mobile &&
+        $mobile &&
         css`
           width: 100vw;
           border-radius: 20px;

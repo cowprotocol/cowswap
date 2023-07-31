@@ -50,6 +50,7 @@ export const Input = React.memo(function InnerInput({
   placeholder,
   prependSymbol,
   type,
+  onFocus,
   ...rest
 }: {
   value: string | number
@@ -69,7 +70,10 @@ export const Input = React.memo(function InnerInput({
     <StyledInput
       {...rest}
       value={prependSymbol && value ? prependSymbol + value : value}
-      onFocus={autofocus}
+      onFocus={(event) => {
+        autofocus(event)
+        onFocus?.(event)
+      }}
       onChange={(event) => {
         if (prependSymbol) {
           const value = event.target.value

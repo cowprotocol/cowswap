@@ -43,7 +43,11 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={onlyPlainLimitOrders} />
+          <OrdersTableWidget
+            displayOrdersOnlyForSafeApp={false}
+            orderType={TabOrderTypes.LIMIT}
+            orders={onlyPlainLimitOrders}
+          />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
