@@ -13,21 +13,14 @@ export const ArrowsWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  /* position: absolute; */
   position: relative;
   inset-block-start: 0;
   inset-inline-end: 0;
   background: transparent;
-  border-start-start-radius: 0;
-  border-start-end-radius: 6px;
-  border-end-end-radius: 6px;
-  border-end-start-radius: 0;
+  border-radius: 6px;
   display: flex;
   flex-flow: column wrap;
   align-items: stretch;
-  /* height: calc(100% + 20px); */
-  /* top: -10px; */
-  /* right: 0; */
   width: 28px;
   gap: 3px;
   margin: 0 -16px 0 0;
@@ -44,7 +37,6 @@ export const ArrowsWrapper = styled.div`
     > span {
       overflow: hidden;
       cursor: pointer;
-      /* border-inline-end: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)}; */
       transition: color 0.2s linear;
       display: flex;
       align-items: center;
@@ -53,8 +45,6 @@ export const ArrowsWrapper = styled.div`
       height: 50%;
 
       &:hover {
-        /* height: 60%; */
-
         > span > svg > path {
           fill: ${({ theme }) => theme.text1};
         }
@@ -79,18 +69,12 @@ export const ArrowsWrapper = styled.div`
     > span:first-child > span > svg {
       transform: rotate(180deg);
     }
-
-    > span:last-child {
-      /* border-block-start: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)}; */
-    }
 `
 
 export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArrowsLeftAlign?: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
-  /* padding: ${({ showUpDownArrows }) => (showUpDownArrows ? '0 36px 0 0' : '0')};
-  margin: ${({ showUpDownArrows }) => (showUpDownArrows ? '0 -16px 0 0' : '0')}; */
 
   &:hover ${ArrowsWrapper} {
     opacity: 1;
@@ -100,8 +84,6 @@ export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArro
     upDownArrowsLeftAlign &&
     `
     ${ArrowsWrapper} {
-      // right: auto;
-      // left: 0;
       order: -1;
       margin: 0;
     }
