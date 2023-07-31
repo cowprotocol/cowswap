@@ -45,7 +45,7 @@ export function UnfillableOrdersUpdater(): null {
   const strategy = useGetGpPriceStrategy()
 
   const tokens = useMemo(() => {
-    return pending.map((order) => (order.kind === OrderKind.SELL ? order.inputToken : order.outputToken))
+    return pending.map((order) => order.inputToken)
   }, [pending])
 
   const { balances } = useBalancesAndAllowances({
