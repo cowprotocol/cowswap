@@ -25,6 +25,7 @@ export interface TwapSuggestionBannerProps {
   priceImpact: Percent | undefined
   buyingFiatAmount: CurrencyAmount<Currency> | null
   tradeUrlParams: TradeUrlParams
+  sellAmount: string | undefined
 }
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
@@ -39,6 +40,7 @@ export function TwapSuggestionBanner({
   buyingFiatAmount,
   tradeUrlParams,
   chainId,
+  sellAmount,
 }: TwapSuggestionBannerProps) {
   if (!priceImpact || priceImpact.lessThan(0)) return null
 
@@ -47,7 +49,7 @@ export function TwapSuggestionBanner({
 
   if (!shouldSuggestTwap) return null
 
-  const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS)
+  const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) + `?sellAmount=${sellAmount}`
 
   return (
     <InlineBanner type="alert">
