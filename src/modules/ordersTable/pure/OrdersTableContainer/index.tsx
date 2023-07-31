@@ -35,7 +35,6 @@ const Content = styled.div`
   min-height: 490px;
   padding: 0;
 
-  // Icon
   > span {
     --size: 130px;
     width: var(--size);
