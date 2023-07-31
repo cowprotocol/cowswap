@@ -199,12 +199,12 @@ export function OrdersTableContainer({
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No history orders'}</Trans>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
           </h3>
           <p>
             {isSafeViaWc ? (
               <Trans>
-                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open' : 'history'} orders
+                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
               </Trans>
             ) : (
               <Trans>
