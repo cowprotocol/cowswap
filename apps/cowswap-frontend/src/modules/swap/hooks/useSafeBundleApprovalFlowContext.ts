@@ -1,7 +1,7 @@
-import { useTokenContract } from '../../../legacy/hooks/useContract'
+import { useTokenContract } from 'legacy/hooks/useContract'
 
-import { FlowType } from './useFlowContext'
-import { SafeBundleApprovalFlowContext } from '../services/types'
+import { FlowType } from 'modules/swap/hooks/useFlowContext'
+import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
 
 import { useBaseSafeBundleFlowContext } from './useBaseSafeBundleFlowContext'
 

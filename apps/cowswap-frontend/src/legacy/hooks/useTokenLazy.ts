@@ -1,18 +1,18 @@
 import { useCallback } from 'react'
 
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20 } from '@cowswap/abis'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { getBytes32TokenContract, getTokenContract } from './useContract'
-import { useAddUserToken } from '../state/user/hooks'
-import { retry } from '../utils/retry'
+import { getBytes32TokenContract, getTokenContract } from 'legacy/hooks/useContract'
+import { useAddUserToken } from 'legacy/state/user/hooks'
+import { retry } from 'legacy/utils/retry'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { parseStringOrBytes32 } from '../../lib/hooks/useCurrency'
+import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}

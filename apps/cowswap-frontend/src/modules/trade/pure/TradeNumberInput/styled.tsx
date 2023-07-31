@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import Input from '../../../../legacy/components/NumericalInput'
+import Input from 'legacy/components/NumericalInput'
 
 export const Suffix = styled.span`
   margin: 0 0 0 3px;

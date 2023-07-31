@@ -1,14 +1,14 @@
 import { Atom, useAtomValue } from 'jotai'
 
-import { useHigherUSDValue } from '../../../legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import useCurrencyBalance from '../../tokens/hooks/useCurrencyBalance'
-import { ExtendedTradeRawState } from '../types/TradeRawState'
-import { useWalletInfo } from '../../wallet'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSafeMemoObject } from '../../../common/hooks/useSafeMemo'
-import { useTokenBySymbolOrAddress } from '../../../common/hooks/useTokenBySymbolOrAddress'
-import { tryParseFractionalAmount } from '../../../utils/tryParseFractionalAmount'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
+import { tryParseFractionalAmount } from 'utils/tryParseFractionalAmount'
 
 export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {
   const { account } = useWalletInfo()

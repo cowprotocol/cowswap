@@ -1,4 +1,4 @@
-import { Widget, AppBodyProps } from './index'
+import { Widget, AppBodyProps } from '.'
 
 function Custom({ children, className }: AppBodyProps) {
   return (

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { safeNamehash } from '../utils/safeNamehash'
+import { safeNamehash } from 'legacy/utils/safeNamehash'
 
-import { useSingleCallResult } from '../../lib/hooks/multicall'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 

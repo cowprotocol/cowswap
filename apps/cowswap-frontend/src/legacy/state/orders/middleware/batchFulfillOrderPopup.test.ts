@@ -57,8 +57,7 @@ describe('batchFulfillOrderPopup', () => {
   it('should not trigger pop up if there are no pending orders', () => {
     when(payloadMock.ordersData).thenReturn([{ id: '0x000', ...BASE_PAYLOAD }])
 
-    // @ts-ignore
-    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     verify(storeMock.dispatch(anything())).never()
   })
@@ -69,8 +68,7 @@ describe('batchFulfillOrderPopup', () => {
       { id: '0x002', ...BASE_PAYLOAD },
     ])
 
-    // @ts-ignore
-    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 

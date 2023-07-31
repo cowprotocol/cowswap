@@ -1,7 +1,7 @@
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
-import { OrderStatus } from '../../../legacy/state/orders/actions'
-import { isOrderCancelled, isOrderExpired, isOrderFulfilled } from '../../../legacy/state/orders/utils'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { isOrderCancelled, isOrderExpired, isOrderFulfilled } from 'legacy/state/orders/utils'
 
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 

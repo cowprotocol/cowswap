@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Trans } from '@lingui/macro'
 import ms from 'ms'
 
-import { ButtonPrimary } from '../../../../legacy/components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 
-import { CowModal as Modal } from '../../../../common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 
 import * as styledEl from './styled'
 

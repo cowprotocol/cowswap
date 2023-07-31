@@ -1,4 +1,4 @@
-import { isProdLike } from '../legacy/utils/environments'
+import { isProdLike } from 'legacy/utils/environments'
 
 // We can define here some flags to be enabled while we develop
 // TODO: update this before the deployment

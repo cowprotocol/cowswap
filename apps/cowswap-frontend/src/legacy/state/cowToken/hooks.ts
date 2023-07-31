@@ -5,18 +5,18 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { ConfirmOperationType } from '../../components/TransactionConfirmationModal'
-import { V_COW, COW } from '../../constants/tokens'
-import { APPROVE_GAS_LIMIT_DEFAULT } from '../../hooks/useApproveCallback/useApproveCallbackMod'
-import { useVCowContract } from '../../hooks/useContract'
-import { AppState } from '../index'
-import { useTransactionAdder } from '../enhancedTransactions/hooks'
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { V_COW, COW } from 'legacy/constants/tokens'
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
+import { useVCowContract } from 'legacy/hooks/useContract'
+import { AppState } from 'legacy/state'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
-import { useTokenBalance } from '../../../modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from '../../../modules/wallet'
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSingleCallResult, CallStateResult as Result } from '../../../lib/hooks/multicall'
+import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 

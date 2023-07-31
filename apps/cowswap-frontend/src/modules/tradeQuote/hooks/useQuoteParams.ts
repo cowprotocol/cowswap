@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '../../../legacy/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
-import { useDerivedTradeState } from '../../trade/hooks/useDerivedTradeState'
-import { useWalletInfo } from '../../wallet'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getAddress } from '../../../utils/getAddress'
+import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null) {
   const { chainId, account } = useWalletInfo()

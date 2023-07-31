@@ -2,10 +2,10 @@
 
 See also:
 
-- [CoW Swap Architecture](../../../../../docs/architecture-overview.md)
+- [CoW Swap Architecture](../../../docs/architecture-overview.md)
 - [Broader CoW Swap Architecture](https://github.com/cowprotocol/cowswap-diagrams)
 
-![appData module](appData-module.drawio.svg)
+![appData module](./appData-module.drawio.svg)
 
 ## Desciption
 

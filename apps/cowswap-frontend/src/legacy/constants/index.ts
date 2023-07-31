@@ -1,12 +1,12 @@
-import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import networksJson from '@cowprotocol/contracts/networks.json'
 import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { ethFlowBarnJson, ethFlowProdJson } from '@cowswap/abis'
 import { Fraction, Percent, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'legacy/constants/ipfs'
 
 // TODO: move those consts to src/constants/common
 

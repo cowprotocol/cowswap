@@ -1,4 +1,4 @@
-import { COMPOSABLE_COW_ADDRESS } from '../../advancedOrders/const'
+import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 
 import { getSignatureVerifierContract } from './getSignatureVerifierContract'
 

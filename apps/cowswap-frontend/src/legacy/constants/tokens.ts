@@ -1,12 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
-import cowLogo from '../assets/cow-swap/cow.svg'
-import gnoLogo from '../assets/cow-swap/gno.png'
-import usdcLogo from '../assets/cow-swap/usdc.png'
-import vCowLogo from '../assets/cow-swap/vCOW.png'
-import wxDaiLogo from '../assets/cow-swap/wxdai.png'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './index'
+import cowLogo from 'legacy/assets/cow-swap/cow.svg'
+import gnoLogo from 'legacy/assets/cow-swap/gno.png'
+import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
+import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
+import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import {
   USDC_GNOSIS_CHAIN,
   WBTC_GNOSIS_CHAIN,
@@ -14,8 +14,8 @@ import {
   WXDAI,
   XDAI_NAME,
   XDAI_SYMBOL,
-} from '../utils/gnosis_chain/constants'
-import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from '../utils/goerli/constants'
+} from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { UNI_ADDRESS } from './addresses'
 

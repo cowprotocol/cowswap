@@ -1,6 +1,6 @@
-import { TradeUrlParams } from '../trade/types/TradeRawState'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { RoutesValues } from '../../common/constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 export enum MenuItemKind {
   DROP_DOWN = 'DROP_DOWN',

@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser'
 import BlocknativeSdk from 'bnc-sdk'
 
-import { ALL_SUPPORTED_CHAIN_IDS } from '../constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
 const BLOCKNATIVE_API_KEY = process.env.REACT_APP_BLOCKNATIVE_API_KEY
 

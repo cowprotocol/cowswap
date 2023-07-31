@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
-import { useLimitOrdersDerivedState } from '../../limitOrders/hooks/useLimitOrdersDerivedState'
-import { useSwapDerivedState } from '../../swap/state/useSwapDerivedState'
-import { TradeDerivedState } from '../types/TradeDerivedState'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
+import { TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 
 import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
 

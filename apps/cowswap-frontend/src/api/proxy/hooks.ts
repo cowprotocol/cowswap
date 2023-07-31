@@ -5,8 +5,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import * as Sentry from '@sentry/react'
 import useSWR from 'swr'
 
-import { ALL_SUPPORTED_CHAIN_IDS } from '../../legacy/constants/chains'
-import { isAddress } from '../../legacy/utils'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
+import { isAddress } from 'legacy/utils'
 
 import { getTokens } from './api'
 

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { MouseoverTooltipContent, TooltipContainer } from '../Tooltip'
+import { MouseoverTooltipContent, TooltipContainer } from 'legacy/components/Tooltip'
 
 const StyledInfoIcon = styled(Info)`
   opacity: 0.5;

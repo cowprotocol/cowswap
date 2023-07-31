@@ -6,16 +6,16 @@ import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '../../constants'
-import { SupportedLocale } from '../../constants/locales'
-import { L2_DEADLINE_FROM_NOW } from '../../constants/misc'
-import useCurrentBlockTimestamp from '../../hooks/useCurrentBlockTimestamp'
-import { AppState } from '../index'
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { SupportedLocale } from 'legacy/constants/locales'
+import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
+import { AppState } from 'legacy/state'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { calculateValidTo } from '../../../utils/time'
+import { calculateValidTo } from 'utils/time'
 
 import {
   addSerializedPair,

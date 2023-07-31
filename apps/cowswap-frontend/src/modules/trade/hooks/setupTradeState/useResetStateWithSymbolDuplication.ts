@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 import { t } from '@lingui/macro'
 
-import { useWalletInfo } from '../../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useAreThereTokensWithSameSymbol } from '../../../../common/hooks/useAreThereTokensWithSameSymbol'
+import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'

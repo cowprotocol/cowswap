@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useIsAdvancedOrdersEnabled } from '../../common/hooks/useIsAdvancedOrdersEnabled'
+import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
 
 import { MenuTreeItem } from './types'
 import { buildMainMenuTreeItems } from './utils'

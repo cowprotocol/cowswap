@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
+import { ComposableCoW } from '@cowswap/abis'
 
 import ms from 'ms.macro'
 
-import { useSafeApiKit } from '../../../api/gnosisSafe/hooks/useSafeApiKit'
+import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'

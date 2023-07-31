@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { useRecentActivity, TransactionAndOrder } from '../../legacy/hooks/useRecentActivity'
-import { CONFIRMED_STATES, PENDING_STATES } from '../../legacy/state/orders/actions'
+import { useRecentActivity, TransactionAndOrder } from 'legacy/hooks/useRecentActivity'
+import { CONFIRMED_STATES, PENDING_STATES } from 'legacy/state/orders/actions'
 
 const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
 

@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../types'
+import { Nullish } from 'types'
 
-import { MIN_FIAT_SURPLUS_VALUE, MIN_FIAT_SURPLUS_VALUE_MODAL, MIN_SURPLUS_UNITS } from '../../legacy/constants'
-import { useCoingeckoUsdValue } from '../../legacy/hooks/useStablecoinPrice'
-import { Order } from '../../legacy/state/orders/actions'
+import { MIN_FIAT_SURPLUS_VALUE, MIN_FIAT_SURPLUS_VALUE_MODAL, MIN_SURPLUS_UNITS } from 'legacy/constants'
+import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
+import { Order } from 'legacy/state/orders/actions'
 
-import { getExecutedSummaryData } from '../../utils/getExecutedSummaryData'
-import { ParsedOrder } from '../../utils/orderUtils/parseOrder'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 type Output = {
   surplusFiatValue: Nullish<CurrencyAmount<Currency>>

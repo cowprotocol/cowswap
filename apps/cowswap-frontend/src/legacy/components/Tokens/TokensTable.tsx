@@ -4,15 +4,15 @@ import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { balanceComparator, useTokenComparator } from '../SearchModal/CurrencySearch/sorting'
-import { ConfirmOperationType } from '../TransactionConfirmationModal'
-import { useErrorModal } from '../../hooks/useErrorMessageAndModal'
-import useFilterTokens from '../../hooks/useFilterTokens'
-import usePrevious from '../../hooks/usePrevious'
-import useTransactionConfirmationModal from '../../hooks/useTransactionConfirmationModal'
-import { useToggleWalletModal } from '../../state/application/hooks'
+import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import useFilterTokens from 'legacy/hooks/useFilterTokens'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { TokenAmounts } from '../../../modules/tokens'
+import { TokenAmounts } from 'modules/tokens'
 
 import {
   Label,

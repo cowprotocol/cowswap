@@ -14,16 +14,16 @@ import {
   Trade,
 } from '@cowprotocol/cow-sdk'
 
-import { orderBookApi } from '../../cowSdk'
+import { orderBookApi } from 'cowSdk'
 
-import { ZERO_ADDRESS } from '../../legacy/constants/misc'
-import { isBarn, isDev, isLocal, isPr } from '../../legacy/utils/environments'
-import { toErc20Address, toNativeBuyAddress } from '../../legacy/utils/tokens'
+import { ZERO_ADDRESS } from 'legacy/constants/misc'
+import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
+import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
 
-import { getAppData } from '../../modules/appData'
+import { getAppData } from 'modules/appData'
 
-import { ApiErrorObject } from './errors/OperatorError'
-import GpQuoteError, { mapOperatorErrorToQuoteError } from './errors/QuoteError'
+import { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
 
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 

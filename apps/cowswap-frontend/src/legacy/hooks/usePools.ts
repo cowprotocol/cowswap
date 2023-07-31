@@ -8,9 +8,9 @@ import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 
 import JSBI from 'jsbi'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useMultipleContractSingleData } from '../../lib/hooks/multicall'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
 

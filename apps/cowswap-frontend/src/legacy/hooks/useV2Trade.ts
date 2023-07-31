@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { Pair, Trade } from '@uniswap/v2-sdk'
 
-import { isTradeBetter } from '../utils/isTradeBetter'
+import { isTradeBetter } from 'legacy/utils/isTradeBetter'
 
 import { useAllCurrencyCombinations } from './useAllCurrencyCombinations'
 import { PairState, useV2Pairs } from './useV2Pairs'

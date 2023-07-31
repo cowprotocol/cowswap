@@ -2,10 +2,10 @@ import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { ConfirmOperationType } from './index'
-import { COW, GNO } from '../../constants/tokens'
-import store from '../../state'
-import { addPendingOrder, OrderStatus } from '../../state/orders/actions'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { COW, GNO } from 'legacy/constants/tokens'
+import store from 'legacy/state'
+import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 

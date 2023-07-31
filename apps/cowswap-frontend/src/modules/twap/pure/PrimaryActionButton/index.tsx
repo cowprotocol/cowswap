@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ButtonPrimary } from '../../../../legacy/components/Button'
-import { ButtonSize } from '../../../../legacy/theme/enum'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ButtonSize } from 'legacy/theme/enum'
 
 import { TwapFormState } from './getTwapFormState'
 

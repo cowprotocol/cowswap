@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { useTradeState } from './useTradeState'
-import { useWalletInfo } from '../../wallet'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getIsWrapOrUnwrap } from '../../../utils/getIsWrapOrUnwrap'
+import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
 
 export function useIsWrapOrUnwrap(): boolean {
   const { chainId } = useWalletInfo()

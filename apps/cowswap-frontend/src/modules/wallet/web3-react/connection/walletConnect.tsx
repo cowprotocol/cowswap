@@ -3,26 +3,26 @@ import { useMemo } from 'react'
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
-import { RPC_URLS } from '../../../../legacy/constants/networks'
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
+import { RPC_URLS } from 'legacy/constants/networks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType, useWalletMetaData } from '../../index'
-import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
+import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import {
   getConnectionName,
   getIsAlphaWallet,
   getIsAmbireWallet,
   getIsTrustWallet,
   getIsZengoWallet,
-} from '../../api/utils/connection'
-import { WC_DISABLED_TEXT } from '../../constants'
+} from 'modules/wallet/api/utils/connection'
+import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
-import { useFeatureFlags } from '../../../../common/hooks/featureFlags/useFeatureFlags'
-
-import { onError, TryActivation } from './index'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { Web3ReactConnection } from '../types'
+
+import { onError, TryActivation } from '.'
 
 const WC_SUNSET_LINK =
   'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'

@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
-import { Field } from '../../../../../legacy/state/swap/actions'
-import TradeGp from '../../../../../legacy/state/swap/TradeGp'
-import { computeSlippageAdjustedAmounts } from '../../../../../legacy/utils/prices'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
-import { RowReceivedAfterSlippageContent } from '../../../pure/Row/RowReceivedAfterSlippageContent'
-import { RowWithShowHelpersProps } from '../../../pure/Row/typings'
+import { RowReceivedAfterSlippageContent } from 'modules/swap/pure/Row/RowReceivedAfterSlippageContent'
+import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/typings'
 
 export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
   trade: TradeGp

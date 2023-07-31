@@ -1,9 +1,9 @@
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20 } from '@cowswap/abis'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { ApprovalState } from '../../../legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 
 interface ShouldZeroApproveBaseParams {
   tokenContract: Nullish<Erc20>

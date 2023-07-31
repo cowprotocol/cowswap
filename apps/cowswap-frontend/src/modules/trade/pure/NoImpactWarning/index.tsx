@@ -1,4 +1,4 @@
-import { TradeWarning, TradeWarningType } from '../TradeWarning'
+import { TradeWarning, TradeWarningType } from 'modules/trade/pure/TradeWarning'
 
 const NoImpactWarningMessage = (
   <div>

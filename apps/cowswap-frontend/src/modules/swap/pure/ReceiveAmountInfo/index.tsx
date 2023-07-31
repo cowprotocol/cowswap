@@ -4,12 +4,12 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { BalanceAndSubsidy } from '../../../../legacy/hooks/useCowBalanceAndSubsidy'
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { ReceiveAmountInfo } from '../../helpers/tradeReceiveAmount'
-import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
-import { TokenSymbol } from '../../../../common/pure/TokenSymbol'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import * as styledEl from './styled'
 

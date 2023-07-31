@@ -1,7 +1,7 @@
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from '../../../../legacy/components/Button'
+import { ButtonSecondary } from 'legacy/components/Button'
 
 import { NumericalInput } from '../../../trade/pure/TradeNumberInput'
 

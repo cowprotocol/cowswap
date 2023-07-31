@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
 

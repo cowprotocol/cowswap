@@ -5,8 +5,8 @@ import {
   limitOrdersRawStateAtom,
   LimitOrdersDerivedState,
   limitOrdersDerivedStateAtom,
-} from '../state/limitOrdersRawStateAtom'
-import { useBuildTradeDerivedState } from '../../trade/hooks/useBuildTradeDerivedState'
+} from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
   return useAtomValue(limitOrdersDerivedStateAtom)

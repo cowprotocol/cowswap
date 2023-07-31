@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowswap/abis'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from '../../../legacy/components/TransactionConfirmationModal'
-import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from '../../../legacy/constants'
-import { COW as COW_TOKENS } from '../../../legacy/constants/tokens'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from '../../../legacy/constants/tokens'
-import { useContract } from '../../../legacy/hooks/useContract'
-import { useTransactionAdder } from '../../../legacy/state/enhancedTransactions/hooks'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'
+import { COW as COW_TOKENS } from 'legacy/constants/tokens'
+import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
+import { useContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSingleCallResult } from '../../../lib/hooks/multicall'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { fetchClaim } from './claimData'
 

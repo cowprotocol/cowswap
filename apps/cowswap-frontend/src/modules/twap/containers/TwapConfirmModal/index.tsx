@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
-import { useAdvancedOrdersDerivedState } from '../../../advancedOrders'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from '../../../trade'
-import { TradeBasicConfirmDetails } from '../../../trade/containers/TradeBasicConfirmDetails'
-import { NoImpactWarning } from '../../../trade/pure/NoImpactWarning'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
+import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
-import { useRateInfoParams } from '../../../../common/hooks/useRateInfoParams'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 

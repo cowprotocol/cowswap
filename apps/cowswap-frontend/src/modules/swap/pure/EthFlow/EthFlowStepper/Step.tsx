@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { ExplorerLink } from '../../../../../legacy/components/ExplorerLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 
 import { StatusIcon, StatusIconState } from './StatusIcon'
 

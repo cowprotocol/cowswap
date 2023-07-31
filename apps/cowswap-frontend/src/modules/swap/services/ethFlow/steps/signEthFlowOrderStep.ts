@@ -1,14 +1,14 @@
-import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
+import { CoWSwapEthFlow } from '@cowswap/abis'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
-import { Order } from '../../../../../legacy/state/orders/actions'
-import { calculateGasMargin } from '../../../../../legacy/utils/calculateGasMargin'
-import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from '../../../../../legacy/utils/trade'
+import { Order } from 'legacy/state/orders/actions'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
-import { ETHFLOW_GAS_LIMIT_DEFAULT } from '../const'
-import { logTradeFlow, logTradeFlowError } from '../../../../trade/utils/logger'
+import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
+import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency

@@ -4,19 +4,19 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { USDC } from '../../constants/tokens'
-import { useGetGpPriceStrategy } from '../useGetGpPriceStrategy'
-import { stringToCurrency } from '../../state/swap/extension'
-import { useGetGpUsdcPrice } from '../../utils/price'
+import { USDC } from 'legacy/constants/tokens'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
+import { stringToCurrency } from 'legacy/state/swap/extension'
+import { useGetGpUsdcPrice } from 'legacy/utils/price'
 
-import { useIsWrapOrUnwrap } from '../../../modules/trade/hooks/useIsWrapOrUnwrap'
-import { useWalletInfo } from '../../../modules/wallet'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useGetCoingeckoUsdPrice } from '../../../api/coingecko'
-import useBlockNumber from '../../../lib/hooks/useBlockNumber'
-import tryParseCurrencyAmount from '../../../lib/utils/tryParseCurrencyAmount'
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 

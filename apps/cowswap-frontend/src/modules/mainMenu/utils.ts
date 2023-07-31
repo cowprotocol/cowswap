@@ -1,6 +1,6 @@
 import cloneDeep from 'clone-deep'
 
-import { Routes } from '../../common/constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import { MAIN_MENU } from './constants/mainMenu'
 import { DropDownItem, MainMenuItemId, MenuItemKind, MenuTreeItem } from './types'

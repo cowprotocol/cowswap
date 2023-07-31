@@ -5,16 +5,16 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
 
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Writeable } from '../../../types'
+import { Writeable } from 'types'
 
-import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from '../index'
-import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-import { useUpdateActiveRate } from './useUpdateActiveRate'
-import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '../../trade/const/tradeUrl'
+import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
+import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
 
-import tryParseCurrencyAmount from '../../../lib/utils/tryParseCurrencyAmount'
-import { FractionUtils } from '../../../utils/fractionUtils'
-import { getIntOrFloat } from '../../../utils/getIntOrFloat'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { FractionUtils } from 'utils/fractionUtils'
+import { getIntOrFloat } from 'utils/getIntOrFloat'
 
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget

@@ -1,11 +1,11 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
-import { PriceInformation } from '../../types'
+import { PriceInformation } from 'types'
 
-import { SWR_OPTIONS } from '../../legacy/constants'
+import { SWR_OPTIONS } from 'legacy/constants'
 
-import { fetchWithRateLimit } from '../../common/utils/fetch'
+import { fetchWithRateLimit } from 'common/utils/fetch'
 
 function getApiUrl(): string {
   // it's all the same base url

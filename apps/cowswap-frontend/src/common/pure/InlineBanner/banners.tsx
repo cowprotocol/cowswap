@@ -1,10 +1,10 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { ExternalLink } from '../../../legacy/theme'
+import { ExternalLink } from 'legacy/theme'
 
-import { TokenAmount } from '../TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { InlineBanner } from './index'
 

@@ -4,10 +4,10 @@ import { Trans } from '@lingui/macro'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from '../Row'
-import { MouseoverTooltipContent } from '../Tooltip'
-import { InterfaceTrade } from '../../state/routing/types'
-import { ThemedText } from '../../theme'
+import { RowBetween } from 'legacy/components/Row'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { InterfaceTrade } from 'legacy/state/routing/types'
+import { ThemedText } from 'legacy/theme'
 
 import { ResponsiveTooltipContainer } from './styleds'
 

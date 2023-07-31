@@ -8,30 +8,30 @@ import { ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { AutoColumn } from '../../Column'
-import { RowBetween, RowFixed } from '../../Row'
-import { AdvancedSwapDetails } from '../AdvancedSwapDetails'
-import { AuxInformationContainer, TruncatedText } from '../styleds'
-import { WarningProps } from '../../SwapWarnings'
-import { INPUT_OUTPUT_EXPLANATION } from '../../../constants'
-import { useHigherUSDValue } from '../../../hooks/useStablecoinPrice'
-import { Field } from '../../../state/swap/actions'
-import TradeGp from '../../../state/swap/TradeGp'
-import { ThemedText } from '../../../theme'
-import { isAddress, shortenAddress } from '../../../utils'
-import { computeSlippageAdjustedAmounts } from '../../../utils/prices'
+import { AutoColumn } from 'legacy/components/Column'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
+import { AuxInformationContainer, TruncatedText } from 'legacy/components/swap/styleds'
+import { WarningProps } from 'legacy/components/SwapWarnings'
+import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { ThemedText } from 'legacy/theme'
+import { isAddress, shortenAddress } from 'legacy/utils'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
-import { PriceUpdatedBanner } from '../../../../modules/trade/pure/PriceUpdatedBanner'
+import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 
-import { CurrencyLogo } from '../../../../common/pure/CurrencyLogo'
-import { FiatValue } from '../../../../common/pure/FiatValue'
-import { RateInfo, RateInfoParams } from '../../../../common/pure/RateInfo'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-import { TokenSymbol } from '../../../../common/pure/TokenSymbol'
-
-import { LightCardType } from './index'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { FiatValue } from 'common/pure/FiatValue'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import FeeInformationTooltip from '../FeeInformationTooltip'
+
+import { LightCardType } from './index'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;
@@ -161,7 +161,7 @@ export default function SwapModalHeader({
       <LightCard
         flatBorder={!!exactOutLabel}
         padding="0.75rem 1rem"
-        style={{ marginBottom: !!exactOutLabel ? '0' : '0.25rem' }}
+        style={{ marginBottom: exactOutLabel ? '0' : '0.25rem' }}
       >
         <AutoColumn gap={'8px'}>
           <RowBetween>

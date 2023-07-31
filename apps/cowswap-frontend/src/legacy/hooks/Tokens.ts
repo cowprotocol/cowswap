@@ -4,18 +4,18 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { getChainInfo } from '../constants/chainInfo'
-import { useAllLists, useInactiveListUrls } from '../state/lists/hooks'
-import { deserializeToken, useUserAddedTokens } from '../state/user/hooks'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
+import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
 
-import { tokensByAddressAtom } from '../../modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from '../../modules/wallet'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useCurrencyFromMap, useTokenFromMapOrNetwork } from '../../lib/hooks/useCurrency'
-import { getTokenFilter } from '../../lib/hooks/useTokenList/filtering'
-import { doesTokenMatchSymbolOrAddress } from '../../utils/doesTokenMatchSymbolOrAddress'
+import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
-import { TokenAddressMap, useUnsupportedTokenList } from '../state/lists/hooks'
+import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {

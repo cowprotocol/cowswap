@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet'
 
-import { APP_TITLE } from '../../../../legacy/constants'
+import { APP_TITLE } from 'legacy/constants'
 
 type PageTitleProps = {
   title?: string

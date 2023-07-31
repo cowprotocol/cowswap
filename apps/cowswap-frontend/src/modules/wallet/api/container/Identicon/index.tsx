@@ -3,10 +3,10 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import jazzicon from '@metamask/jazzicon'
 
-import useENSAvatar from '../../../../../legacy/hooks/useENSAvatar'
+import useENSAvatar from 'legacy/hooks/useENSAvatar'
 
-import { useWalletInfo } from '../../../index'
-import { Identicon as IdenticonPure } from '../../pure/Identicon'
+import { useWalletInfo } from 'modules/wallet'
+import { Identicon as IdenticonPure } from 'modules/wallet/api/pure/Identicon'
 
 export interface IdenticonProps {
   size?: number

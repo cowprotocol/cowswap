@@ -1,6 +1,6 @@
 import JSBI from 'jsbi'
 
-import { Order } from '../../legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 /**
  * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)

@@ -3,25 +3,25 @@ import { useEffect } from 'react'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CowProtocolImage from '../../legacy/assets/cow-swap/cowprotocol.svg'
-import Circle from '../../legacy/assets/images/blue-loader.svg'
-import CowProtocolLogo from '../../legacy/components/CowProtocolLogo'
-import { ClaimStatus } from '../../legacy/state/claim/actions'
+import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+import Circle from 'legacy/assets/images/blue-loader.svg'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   ClaimType,
   useClaimDispatchers,
   useClaimState,
   useClaimTimeInfo,
   useClaimLinks,
-} from '../../legacy/state/claim/hooks'
-import { getPaidClaims, getIndexes } from '../../legacy/state/claim/hooks/utils'
-import { useAllClaimingTransactionIndices } from '../../legacy/state/enhancedTransactions/hooks'
-import { CustomLightSpinner } from '../../legacy/theme'
-import { ExternalLink } from '../../legacy/theme'
+} from 'legacy/state/claim/hooks'
+import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
+import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
+import { CustomLightSpinner } from 'legacy/theme'
+import { ExternalLink } from 'legacy/theme'
 
-import { TokenAmount } from '../../common/pure/TokenAmount'
-import { Countdown } from './Countdown'
-import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from './styled'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Countdown } from 'pages/Claim/Countdown'
+import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
 
 import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 

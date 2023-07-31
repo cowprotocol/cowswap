@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { useOrders } from '../../legacy/state/orders/hooks'
+import { useOrders } from 'legacy/state/orders/hooks'
 
-import { AppDataUpdater } from '../../modules/appData'
+import { AppDataUpdater } from 'modules/appData'
 import {
   LimitOrdersWidget,
   QuoteObserverUpdater,
@@ -15,13 +15,13 @@ import {
   limitOrdersRawStateAtom,
   LIMIT_ORDER_SLIPPAGE,
   SetupLimitOrderAmountsFromUrlUpdater,
-} from '../../modules/limitOrders'
-import { OrdersTableWidget } from '../../modules/ordersTable'
-import { TabOrderTypes } from '../../modules/ordersTable/pure/OrdersTableContainer'
-import * as styledEl from '../../modules/trade/pure/TradePageLayout'
-import { useWalletInfo } from '../../modules/wallet'
+} from 'modules/limitOrders'
+import { OrdersTableWidget } from 'modules/ordersTable'
+import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
+import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getIsNotComposableCowOrder } from '../../utils/orderUtils/getIsNotComposableCowOrder'
+import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
 export default function LimitOrderPage() {
   const { chainId, account } = useWalletInfo()

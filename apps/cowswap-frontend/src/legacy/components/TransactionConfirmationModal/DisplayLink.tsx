@@ -3,9 +3,9 @@ import React, { useContext } from 'react'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
-import { OrderStatus } from '../../state/orders/actions'
-import { useOrder } from '../../state/orders/hooks'
-import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '../../utils'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { useOrder } from 'legacy/state/orders/hooks'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from 'legacy/utils'
 
 import { ExternalLinkCustom } from './styled'
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { TokenAmount } from '../TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { FiatAmount } from '../FiatAmount'
 

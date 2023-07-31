@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { createAction } from '@reduxjs/toolkit'
 
-import { LegacyFeeQuoteParams } from '../../../api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 import { QuoteInformationObject } from './reducer'
 

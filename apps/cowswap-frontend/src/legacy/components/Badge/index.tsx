@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import { readableColor } from 'polished'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { Color } from '../../theme/styled'
+import { Color } from 'legacy/theme/styled'
 
 export enum BadgeVariant {
   DEFAULT = 'DEFAULT',

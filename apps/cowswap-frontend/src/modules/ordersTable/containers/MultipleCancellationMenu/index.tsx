@@ -5,12 +5,12 @@ import { transparentize } from 'polished'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { useWalletDetails } from '../../../wallet'
+import { useWalletDetails } from 'modules/wallet'
 
-import { useMultipleOrdersCancellation } from '../../../../common/hooks/useMultipleOrdersCancellation'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from '../../../../common/hooks/useMultipleOrdersCancellation/state'
-import { isOrderOffChainCancellable } from '../../../../common/utils/isOrderOffChainCancellable'
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 interface Props {
   pendingOrders: ParsedOrder[]
@@ -116,7 +116,7 @@ export function MultipleCancellationMenu({ pendingOrders }: Props) {
 
   return (
     <Wrapper hasSelectedItems={!!ordersToCancelCount}>
-      {!!ordersToCancelCount ? (
+      {ordersToCancelCount ? (
         <>
           <ActionButton onClick={cancelSelectedOrders}>
             <Trash2 size={14} /> Cancel {ordersToCancelCount} selected

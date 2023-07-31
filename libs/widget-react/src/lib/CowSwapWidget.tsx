@@ -4,7 +4,7 @@ import {
   cowSwapWidget,
   CowSwapWidgetParams as CowSwapWidgetParamsAux,
   CowSwapWidgetSettings,
-} from 'libs/widget-lib/src'
+} from '@cowswap/widget-lib'
 
 export type CowSwapWidgetParams = Omit<CowSwapWidgetParamsAux, 'container'>
 export interface CowSwapWidgetProps {

@@ -26,6 +26,7 @@ const actionMock = mock<AnyAction>()
 describe('popupMiddleware', () => {
   beforeEach(() => {
     resetCalls(actionMock)
+    jest.clearAllMocks()
 
     when(actionMock.payload).thenReturn('mock payload')
   })

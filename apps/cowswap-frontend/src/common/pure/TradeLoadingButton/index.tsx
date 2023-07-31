@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { Dots } from '../../../legacy/components/swap/styleds'
-import { LONG_LOAD_THRESHOLD } from '../../../legacy/constants'
-import { ThemedText } from '../../../legacy/theme'
+import { Dots } from 'legacy/components/swap/styleds'
+import { LONG_LOAD_THRESHOLD } from 'legacy/constants'
+import { ThemedText } from 'legacy/theme'
 
 const fadeIn = `
   @keyframes fadeIn {

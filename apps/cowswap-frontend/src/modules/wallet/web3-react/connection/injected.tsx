@@ -3,19 +3,19 @@ import { MetaMask } from '@web3-react/metamask'
 
 import { Trans } from '@lingui/macro'
 
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
-import useTheme from '../../../../legacy/hooks/useTheme'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+import useTheme from 'legacy/hooks/useTheme'
 
-import { ConnectionType } from '../../index'
-import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
-import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
-import { default as MetamaskImage } from '../../api/assets/metamask.png'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { getConnectionName } from '../../api/utils/connection'
-
-import { TryActivation, onError } from './index'
+import { ConnectionType } from 'modules/wallet'
+import { default as InjectedImage } from 'modules/wallet/api/assets/arrow-right.svg'
+import { default as InjectedImageDark } from 'modules/wallet/api/assets/arrow-right.svg'
+import { default as MetamaskImage } from 'modules/wallet/api/assets/metamask.png'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
 import { Web3ReactConnection } from '../types'
+
+import { TryActivation, onError } from '.'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 

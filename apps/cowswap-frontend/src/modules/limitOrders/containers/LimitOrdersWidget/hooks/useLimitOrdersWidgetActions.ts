@@ -3,19 +3,19 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { changeSwapAmountAnalytics } from '../../../../../legacy/components/analytics'
-import { Field } from '../../../../../legacy/state/swap/actions'
+import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
+import { Field } from 'legacy/state/swap/actions'
 
-import { updateLimitOrdersRawStateAtom } from '../../../index'
-import { useLimitOrdersDerivedState } from '../../../hooks/useLimitOrdersDerivedState'
-import { useUpdateCurrencyAmount } from '../../../hooks/useUpdateCurrencyAmount'
-import { limitRateAtom } from '../../../state/limitRateAtom'
-import { TradeWidgetActions } from '../../../../trade'
-import { useIsWrapOrUnwrap } from '../../../../trade/hooks/useIsWrapOrUnwrap'
-import { useOnCurrencySelection } from '../../../../trade/hooks/useOnCurrencySelection'
-import { useSwitchTokensPlaces } from '../../../../trade/hooks/useSwitchTokensPlaces'
+import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { TradeWidgetActions } from 'modules/trade'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
+import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
 
-import tryParseCurrencyAmount from '../../../../../lib/utils/tryParseCurrencyAmount'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()

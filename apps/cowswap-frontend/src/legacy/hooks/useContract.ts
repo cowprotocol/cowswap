@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   ArgentWalletDetector,
   EnsPublicResolver,
@@ -24,8 +25,7 @@ import {
   CoWSwapEthFlow,
   vCowAbi,
   UniswapInterfaceMulticall,
-} from '@cowprotocol/abis'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+} from '@cowswap/abis'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
@@ -35,13 +35,13 @@ import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
-} from '../constants'
-import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from '../constants/addresses'
-import { WRAPPED_NATIVE_CURRENCY } from '../constants/tokens'
-import { getContract } from '../utils'
-import { isEns, isProd, isStaging } from '../utils/environments'
+} from 'legacy/constants'
+import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'legacy/constants/addresses'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { getContract } from 'legacy/utils'
+import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 

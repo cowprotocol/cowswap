@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20 } from '@cowswap/abis'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../types'
+import { Nullish } from 'types'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove/shouldZeroApprove'
 

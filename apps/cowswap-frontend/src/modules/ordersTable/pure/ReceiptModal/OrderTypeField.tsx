@@ -1,4 +1,4 @@
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 

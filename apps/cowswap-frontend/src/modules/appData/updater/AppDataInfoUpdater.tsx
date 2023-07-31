@@ -2,10 +2,10 @@ import React from 'react'
 
 import { Percent } from '@uniswap/sdk-core'
 
-import { percentToBips } from '../../../legacy/utils/misc'
+import { percentToBips } from 'legacy/utils/misc'
 
-import { useUtm } from '../../utm'
-import { useWalletInfo } from '../../wallet'
+import { useUtm } from 'modules/utm'
+import { useWalletInfo } from 'modules/wallet'
 
 import { UseAppDataParams, useAppDataUpdater } from './useAppDataUpdater'
 

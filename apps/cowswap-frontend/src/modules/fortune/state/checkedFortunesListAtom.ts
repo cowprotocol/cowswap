@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { fortunesListAtom } from './fortunesListAtom'
+import { fortunesListAtom } from 'modules/fortune/state/fortunesListAtom'
 
 // Map {id: timestamp (when a fortune was checked)}
 export type CheckedFortunesList = { [id: number]: number }

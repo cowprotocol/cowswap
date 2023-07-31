@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
 
-import { Order } from '../../../legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
-import { tokensByAddressAtom } from '../../tokensList/state/tokensListAtom'
-import { walletInfoAtom } from '../../wallet/api/state'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { openTwapOrdersAtom } from './twapOrdersListAtom'
 

@@ -1,7 +1,7 @@
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { USDC_GNOSIS_CHAIN } from '../../legacy/utils/gnosis_chain/constants'
-import { DAI_GOERLI, USDC_GOERLI } from '../../legacy/utils/goerli/constants'
+import { USDC_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 

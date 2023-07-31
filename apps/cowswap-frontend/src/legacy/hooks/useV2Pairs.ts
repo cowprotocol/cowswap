@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import IUniswapV2PairJson from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 
-import { useMultipleContractSingleData } from '../../lib/hooks/multicall'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 import { V2_FACTORY_ADDRESSES } from '../constants/addresses'
 

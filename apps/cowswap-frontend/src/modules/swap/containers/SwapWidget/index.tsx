@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react'
 
-import { NetworkAlert } from '../../../../legacy/components/NetworkAlert/NetworkAlert'
-import SettingsTab from '../../../../legacy/components/Settings'
-import useCowBalanceAndSubsidy from '../../../../legacy/hooks/useCowBalanceAndSubsidy'
-import { useHigherUSDValue } from '../../../../legacy/hooks/useStablecoinPrice'
-import { useModalIsOpen } from '../../../../legacy/state/application/hooks'
-import { ApplicationModal } from '../../../../legacy/state/application/reducer'
-import { useIsTradeUnsupported } from '../../../../legacy/state/lists/hooks'
-import { Field } from '../../../../legacy/state/swap/actions'
+import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
+import SettingsTab from 'legacy/components/Settings'
+import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useModalIsOpen } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
+import { Field } from 'legacy/state/swap/actions'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
@@ -15,37 +15,37 @@ import {
   useSwapActionHandlers,
   useSwapState,
   useUnknownImpactWarning,
-} from '../../../../legacy/state/swap/hooks'
-import { useExpertModeManager, useUserSlippageTolerance } from '../../../../legacy/state/user/hooks'
+} from 'legacy/state/swap/hooks'
+import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { ConfirmSwapModalSetupProps } from '../ConfirmSwapModalSetup'
-import { EthFlowProps } from '../EthFlow'
-import { SwapModals, SwapModalsProps } from '../SwapModals'
-import { SwapButtonState } from '../../helpers/getSwapButtonState'
-import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '../../helpers/tradeReceiveAmount'
-import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
-import { useShowRecipientControls } from '../../hooks/useShowRecipientControls'
-import { useSwapButtonContext } from '../../hooks/useSwapButtonContext'
-import { useSwapCurrenciesAmounts } from '../../hooks/useSwapCurrenciesAmounts'
-import { useTradePricesUpdate } from '../../hooks/useTradePricesUpdate'
-import { SwapButtons } from '../../pure/SwapButtons'
-import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
+import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
+import { EthFlowProps } from 'modules/swap/containers/EthFlow'
+import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
+import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
+import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
+import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
+import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
+import { SwapButtons } from 'modules/swap/pure/SwapButtons'
+import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates'
 import {
   SwapWarningsBottom,
   SwapWarningsBottomProps,
   SwapWarningsTop,
   SwapWarningsTopProps,
-} from '../../pure/warnings'
-import useCurrencyBalance from '../../../tokens/hooks/useCurrencyBalance'
-import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from '../../../trade'
-import { useTradeRouteContext } from '../../../trade/hooks/useTradeRouteContext'
-import { useWrappedToken } from '../../../trade/hooks/useWrappedToken'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '../../../wallet'
+} from 'modules/swap/pure/warnings'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
-import { useRateInfoParams } from '../../../../common/hooks/useRateInfoParams'
-import { useShouldZeroApprove } from '../../../../common/hooks/useShouldZeroApprove'
-import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
-import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 

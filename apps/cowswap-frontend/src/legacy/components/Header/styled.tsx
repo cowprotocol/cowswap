@@ -6,8 +6,8 @@ import { NavLink } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
-import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from '../MenuDropdown/styled'
-import Row, { RowFixed } from '../Row'
+import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
+import Row, { RowFixed } from 'legacy/components/Row'
 
 const activeClassName = 'active'
 

@@ -2,13 +2,13 @@ import { PropsWithChildren } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ExternalLink } from '../../theme'
-import { getExplorerLabel, getEtherscanLink } from '../../utils'
-import { getExplorerBaseUrl } from '../../utils/explorer'
+import { ExternalLink } from 'legacy/theme'
+import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
+import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getSafeWebUrl } from '../../../api/gnosisSafe'
+import { getSafeWebUrl } from 'api/gnosisSafe'
 
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType

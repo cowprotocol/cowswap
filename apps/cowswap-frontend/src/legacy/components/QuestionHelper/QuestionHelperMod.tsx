@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
-import Tooltip, { renderTooltip } from '../Tooltip'
-import { TooltipProps } from '../Tooltip'
+import Tooltip, { renderTooltip } from 'legacy/components/Tooltip'
+import { TooltipProps } from 'legacy/components/Tooltip'
 
 import { QuestionWrapper } from './index'
 

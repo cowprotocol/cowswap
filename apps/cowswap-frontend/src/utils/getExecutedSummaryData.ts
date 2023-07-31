@@ -1,9 +1,9 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Order } from '../legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
-import { getFilledAmounts } from './orderUtils/getFilledAmounts'
+import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 
 import { isParsedOrder, ParsedOrder, parseOrder } from './orderUtils/parseOrder'
 

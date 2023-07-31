@@ -4,14 +4,14 @@ import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { AppDispatch, AppState } from '../index'
-import { isOrderExpired, partialOrderUpdate } from './utils'
-import { deserializeToken, serializeToken } from '../user/hooks'
-import { isTruthy } from '../../utils/misc'
+import { AppDispatch, AppState } from 'legacy/state'
+import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
+import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
+import { isTruthy } from 'legacy/utils/misc'
 
-import { flatOrdersStateNetwork } from '../../../modules/orders/utils/flatOrdersStateNetwork'
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
 
-import { OrderID } from '../../../api/gnosisProtocol'
+import { OrderID } from 'api/gnosisProtocol'
 
 import {
   addOrUpdateOrders,

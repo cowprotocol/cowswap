@@ -1,10 +1,10 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { loadingOpacityMixin } from '../../../legacy/components/Loader/styled'
-import Input from '../../../legacy/components/NumericalInput'
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
+import Input from 'legacy/components/NumericalInput'
 
-import { TokenAmount } from '../TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const OuterWrapper = styled.div`
   max-width: 100%;

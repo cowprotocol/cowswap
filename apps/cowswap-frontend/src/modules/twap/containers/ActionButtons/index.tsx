@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { twapConversionAnalytics } from '../../../../legacy/components/analytics/events/twapEvents'
+import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
-import { useTradeConfirmActions } from '../../../trade'
-import { TradeFormButtons, TradeFormValidation } from '../../../tradeFormValidation'
-import { useTradeFormButtonContext } from '../../../tradeFormValidation'
+import { useTradeConfirmActions } from 'modules/trade'
+import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'

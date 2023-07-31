@@ -1,13 +1,13 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { signEthFlowOrderStep } from './steps/signEthFlowOrderStep'
-import { EthFlowContext } from '../types'
-import { addPendingOrderStep } from '../../../trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
-import { logTradeFlow } from '../../../trade/utils/logger'
-import { getSwapErrorMessage } from '../../../trade/utils/swapErrorHelper'
+import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
+import { EthFlowContext } from 'modules/swap/services/types'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 

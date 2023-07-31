@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useIsRecipientToggleVisible } from '../../../legacy/state/user/hooks'
+import { useIsRecipientToggleVisible } from 'legacy/state/user/hooks'
 
 export function useShowRecipientControls(recipient: string | null): boolean {
   const isRecipientToggleVisible = useIsRecipientToggleVisible()

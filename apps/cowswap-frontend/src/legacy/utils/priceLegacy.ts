@@ -3,32 +3,30 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
-import { OptimalRate } from 'paraswap-core'
-import { FeeInformation, PriceInformation } from '../../types'
+import { FeeInformation, PriceInformation } from 'types'
 
-import { PRICE_API_TIMEOUT_MS } from '../constants'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from './misc'
+import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
+import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
 
 import {
   getPriceQuote as getPriceQuote1inch,
   PriceQuote1inch,
   toPriceInformation as toPriceInformation1inch,
-} from '../../api/1inch'
-import { getQuote } from '../../api/gnosisProtocol'
-import GpQuoteError, { GpQuoteErrorCodes } from '../../api/gnosisProtocol/errors/QuoteError'
+} from 'api/1inch'
+import { getQuote } from 'api/gnosisProtocol'
+import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import {
   LegacyPriceInformationWithSource,
   LegacyPriceQuoteError,
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
-} from '../../api/gnosisProtocol/legacy/types'
+} from 'api/gnosisProtocol/legacy/types'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,
   toPriceInformation as toPriceInformationMatcha,
-} from '../../api/matcha-0x'
-import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from '../../api/paraswap'
+} from 'api/matcha-0x'
 
 /**
  * ************************************************** *
@@ -76,7 +74,7 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 export type AllPricesResult = {
   gpPriceResult: PromiseSettledResult<PriceInformation | null>
-  paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>
+  paraSwapPriceResult: PromiseSettledResult<null>
   matcha0xPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
   oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>
 }
@@ -85,27 +83,18 @@ export type AllPricesResult = {
  *  Return all price estimations from all price sources
  */
 async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesResult> {
-  const paraSwapPricePromise = withTimeout(
-    getPriceQuoteParaswap(params),
-    PRICE_API_TIMEOUT_MS,
-    'Paraswap: Get Price API'
-  )
   const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
   const oneInchPricePromise = withTimeout(getPriceQuote1inch(params), PRICE_API_TIMEOUT_MS, '1inch: Get Price API')
 
   // Get results from API queries
-  const [paraSwapPrice, matchaPrice, oneInchPrice] = await Promise.allSettled([
-    paraSwapPricePromise,
-    matchaPricePromise,
-    oneInchPricePromise,
-  ])
+  const [matchaPrice, oneInchPrice] = await Promise.allSettled([matchaPricePromise, oneInchPricePromise])
 
   return {
     // Warning!
     // /markets endpoint was deleted, so we just skip it
     gpPriceResult: { status: 'fulfilled', value: null },
-    paraSwapPriceResult: paraSwapPrice,
+    paraSwapPriceResult: { status: 'fulfilled', value: null },
     matcha0xPriceResult: matchaPrice,
     oneInchPriceResult: oneInchPrice,
   }
@@ -119,7 +108,7 @@ function _extractPriceAndErrorPromiseValues(
   // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
   kind: OrderKind,
   gpPriceResult: PromiseSettledResult<PriceInformation | null>,
-  paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>,
+  paraSwapPriceResult: PromiseSettledResult<null>,
   matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>,
   oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>
 ): [Array<LegacyPriceInformationWithSource>, Array<LegacyPromiseRejectedResultWithSource>] {
@@ -134,15 +123,6 @@ function _extractPriceAndErrorPromiseValues(
     }
   } else {
     errorsGetPrice.push({ ...gpPriceResult, source: 'gnosis-protocol' })
-  }
-
-  if (isPromiseFulfilled(paraSwapPriceResult)) {
-    const paraswapPrice = toPriceInformationParaswap(paraSwapPriceResult.value)
-    if (paraswapPrice) {
-      priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
-    }
-  } else {
-    errorsGetPrice.push({ ...paraSwapPriceResult, source: 'paraswap' })
   }
 
   if (isPromiseFulfilled(matchaPriceResult)) {

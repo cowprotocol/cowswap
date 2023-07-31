@@ -1,7 +1,7 @@
-import { Field } from '../../../state/swap/actions'
-import { debounce } from '../../../utils/misc'
+import { Field } from 'legacy/state/swap/actions'
+import { debounce } from 'legacy/utils/misc'
 
-import { sendEvent } from '../index'
+import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
 export function currencySelectAnalytics(field: Field, label: string | undefined) {

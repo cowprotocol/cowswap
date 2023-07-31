@@ -3,12 +3,12 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { CompatibilityIssuesWarning } from '../../../trade/pure/CompatibilityIssuesWarning'
+import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 
-import { GpQuoteErrorCodes } from '../../../../api/gnosisProtocol/errors/QuoteError'
-import { TradeApproveButton } from '../../../../common/containers/TradeApprove'
-import { TokenSymbol } from '../../../../common/pure/TokenSymbol'
-import { TradeLoadingButton } from '../../../../common/pure/TradeLoadingButton'
+import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { TradeApproveButton } from 'common/containers/TradeApprove'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'

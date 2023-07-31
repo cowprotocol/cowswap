@@ -1,17 +1,17 @@
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import OrderCancelledImage from '../../../../legacy/assets/cow-swap/order-cancelled.svg'
-import OrderCheckImage from '../../../../legacy/assets/cow-swap/order-check.svg'
-import OrderExpiredImage from '../../../../legacy/assets/cow-swap/order-expired.svg'
-import OrderOpenImage from '../../../../legacy/assets/cow-swap/order-open.svg'
-import PresignaturePendingImage from '../../../../legacy/assets/cow-swap/order-presignature-pending.svg'
-import { getActivityState } from '../../../../legacy/hooks/useActivityDerivedState'
-import { ExplorerDataType, getExplorerLink } from '../../../../legacy/utils/getExplorerLink'
+import OrderCancelledImage from 'legacy/assets/cow-swap/order-cancelled.svg'
+import OrderCheckImage from 'legacy/assets/cow-swap/order-check.svg'
+import OrderExpiredImage from 'legacy/assets/cow-swap/order-expired.svg'
+import OrderOpenImage from 'legacy/assets/cow-swap/order-open.svg'
+import PresignaturePendingImage from 'legacy/assets/cow-swap/order-presignature-pending.svg'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
-import { getSafeWebUrl } from '../../../../api/gnosisSafe'
-import { CancelButton } from '../../../../common/pure/CancelButton'
-import { isOrderCancellable } from '../../../../common/utils/isOrderCancellable'
+import { getSafeWebUrl } from 'api/gnosisSafe'
+import { CancelButton } from 'common/pure/CancelButton'
+import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 import { CancelTxLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
 

@@ -1,4 +1,4 @@
-import { useIsEthFlowBundlingEnabled } from '../../../common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
+import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
 
 import { useIsSwapEth } from './useIsSwapEth'
 

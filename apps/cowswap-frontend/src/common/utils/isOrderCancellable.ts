@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { OrderStatus } from '../../legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 export interface CancellableOrder {
   id: string

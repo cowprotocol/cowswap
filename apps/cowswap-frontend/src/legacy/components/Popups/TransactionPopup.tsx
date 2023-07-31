@@ -3,13 +3,13 @@ import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { AutoColumn } from '../Column'
-import { ExplorerLink } from '../ExplorerLink'
-import { AutoRow } from '../Row'
-import { ThemedText } from '../../theme'
-import { BlockExplorerLinkType } from '../../utils'
+import { AutoColumn } from 'legacy/components/Column'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { AutoRow } from 'legacy/components/Row'
+import { ThemedText } from 'legacy/theme'
+import { BlockExplorerLinkType } from 'legacy/utils'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

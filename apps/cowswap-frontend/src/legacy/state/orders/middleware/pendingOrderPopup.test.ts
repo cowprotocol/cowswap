@@ -79,8 +79,7 @@ describe('pendingOrderPopup', () => {
 
   it('should trigger pop up for regular order', () => {
     when(payloadMock.id).thenReturn('0x002')
-    // @ts-ignore
-    when(payloadMock.order).thenReturn({ isHidden: false })
+    when(payloadMock.order).thenReturn({ isHidden: false } as any)
 
     pendingOrderPopup(instance(storeMock), instance(payloadMock))
 
@@ -91,8 +90,7 @@ describe('pendingOrderPopup', () => {
 
   it('should not trigger pop up for hidden order', () => {
     when(payloadMock.id).thenReturn('0x003')
-    // @ts-ignore
-    when(payloadMock.order).thenReturn({ isHidden: true })
+    when(payloadMock.order).thenReturn({ isHidden: true } as any)
 
     pendingOrderPopup(instance(storeMock), instance(payloadMock))
 

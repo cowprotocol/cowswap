@@ -3,18 +3,18 @@ import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { useWETHContract } from '../../../legacy/hooks/useContract'
+import { useWETHContract } from 'legacy/hooks/useContract'
 import {
   wrapUnwrapCallback,
   WrapUnwrapCallback,
   WrapUnwrapCallbackParams,
   WrapUnwrapContext,
-} from '../../../legacy/hooks/useWrapCallback'
-import { useTransactionAdder } from '../../../legacy/state/enhancedTransactions/hooks'
+} from 'legacy/hooks/useWrapCallback'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 

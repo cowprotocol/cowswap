@@ -1,12 +1,12 @@
 import { Trans } from '@lingui/macro'
 
-import Loader from '../../../../../legacy/components/Loader'
-import FollowPendingTxPopup from '../../../../../legacy/components/Popups/FollowPendingTxPopup'
-import { RowBetween } from '../../../../../legacy/components/Row'
-import { shortenAddress } from '../../../../../legacy/utils'
+import Loader from 'legacy/components/Loader'
+import FollowPendingTxPopup from 'legacy/components/Popups/FollowPendingTxPopup'
+import { RowBetween } from 'legacy/components/Row'
+import { shortenAddress } from 'legacy/utils'
 
-import StatusIcon from '../StatusIcon'
-import { ConnectionType } from '../../types'
+import StatusIcon from 'modules/wallet/api/pure/StatusIcon'
+import { ConnectionType } from 'modules/wallet/api/types'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
@@ -53,9 +53,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <>
-            <Text>{ensName || shortenAddress(account)}</Text>
-          </>
+          <Text>{ensName || shortenAddress(account)}</Text>
         )}
         {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>

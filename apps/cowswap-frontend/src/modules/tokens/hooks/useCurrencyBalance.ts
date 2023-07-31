@@ -6,15 +6,15 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { nativeOnChain } from '../../../legacy/constants/tokens'
-import { useInterfaceMulticall } from '../../../legacy/hooks/useContract'
-import { isAddress } from '../../../legacy/utils'
+import { nativeOnChain } from 'legacy/constants/tokens'
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
+import { isAddress } from 'legacy/utils'
 
-import { useOnchainBalances } from '../index'
-import { TokenAmounts } from '../index'
-import { useWalletInfo } from '../../wallet'
+import { useOnchainBalances } from 'modules/tokens'
+import { TokenAmounts } from 'modules/tokens'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSingleContractMultipleData } from '../../../lib/hooks/multicall'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 // TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**

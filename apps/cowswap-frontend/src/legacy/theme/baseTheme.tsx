@@ -1,13 +1,13 @@
 import { transparentize, lighten } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import Cursor1 from '../assets/cow-swap/cursor1.gif'
-import Cursor2 from '../assets/cow-swap/cursor2.gif'
-import Cursor3 from '../assets/cow-swap/cursor3.gif'
-import Cursor4 from '../assets/cow-swap/cursor4.gif'
-import { colorsUniswap } from './colorsUniswap'
-import { ButtonSize } from './enum'
-import { Colors } from './styled'
+import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
+import Cursor2 from 'legacy/assets/cow-swap/cursor2.gif'
+import Cursor3 from 'legacy/assets/cow-swap/cursor3.gif'
+import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
+import { colorsUniswap } from 'legacy/theme/colorsUniswap'
+import { ButtonSize } from 'legacy/theme/enum'
+import { Colors } from 'legacy/theme/styled'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items

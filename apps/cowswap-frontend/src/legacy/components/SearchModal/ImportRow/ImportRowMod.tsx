@@ -6,16 +6,16 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../Button'
-import { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import { AutoRow, RowFixed } from '../../Row'
-import { useIsTokenActive, useIsUserAddedToken } from '../../../hooks/Tokens'
-import useTheme from '../../../hooks/useTheme'
-import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
-import { ThemedText } from '../../../theme'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { AutoColumn } from 'legacy/components/Column'
+import ListLogo from 'legacy/components/ListLogo'
+import { AutoRow, RowFixed } from 'legacy/components/Row'
+import { useIsTokenActive, useIsUserAddedToken } from 'legacy/hooks/Tokens'
+import useTheme from 'legacy/hooks/useTheme'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
+import { ThemedText } from 'legacy/theme'
 
-import { CurrencyLogo } from '../../../../common/pure/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 export const TokenSection = styled.div<{ dim?: boolean }>`
   padding: 4px 20px;

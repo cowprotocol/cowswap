@@ -2,16 +2,16 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { BoxProps } from 'rebass'
 
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '../../../../legacy/constants'
-import { useHigherUSDValue } from '../../../../legacy/hooks/useStablecoinPrice'
-import TradeGp from '../../../../legacy/state/swap/TradeGp'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { RowFee } from '../Row/RowFee'
-import { RowReceivedAfterSlippage } from '../Row/RowReceivedAfterSlippage'
-import { RowSlippage } from '../Row/RowSlippage'
-import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
-import { LowerSectionWrapper } from '../../pure/styled'
-import { useIsWrapOrUnwrap } from '../../../trade/hooks/useIsWrapOrUnwrap'
+import { RowFee } from 'modules/swap/containers/Row/RowFee'
+import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { LowerSectionWrapper } from 'modules/swap/pure/styled'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string

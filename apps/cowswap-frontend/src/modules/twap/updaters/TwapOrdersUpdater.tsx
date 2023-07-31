@@ -1,12 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ComposableCoW } from '@cowswap/abis'
 
 import ms from 'ms.macro'
 
-import { useGnosisSafeInfo } from '../../wallet'
+import { useGnosisSafeInfo } from 'modules/wallet'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
@@ -100,7 +100,9 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
       }
 
       acc.push(info)
-    } catch (e) {}
+    } catch (e) {
+      // Do nothing
+    }
 
     return acc
   }, [])

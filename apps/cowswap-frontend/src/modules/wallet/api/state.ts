@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
-import { shortenAddress } from '../../../legacy/utils'
+import { shortenAddress } from 'legacy/utils'
 
-import { getCurrentChainIdFromUrl } from '../../../utils/getCurrentChainIdFromUrl'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 
-import { SideMenu } from '../../legacy/components/SideMenu'
-import { FAQ_MENU_LINKS } from '../../legacy/constants'
+import { SideMenu } from 'legacy/components/SideMenu'
+import { FAQ_MENU_LINKS } from 'legacy/constants'
 
 export function FaqMenu() {
   return (

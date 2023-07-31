@@ -4,9 +4,9 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { TransactionStatusText } from './index'
-import useCopyClipboard from '../../hooks/useCopyClipboard'
-import { LinkStyledButton } from '../../theme'
+import { TransactionStatusText } from 'legacy/components/Copy/index'
+import useCopyClipboard from 'legacy/hooks/useCopyClipboard'
+import { LinkStyledButton } from 'legacy/theme'
 
 // MOD imports
 

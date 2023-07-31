@@ -6,9 +6,9 @@ import {
   ModalName,
   PageName,
   SectionName,
-} from './constants' // Mod
+} from 'legacy/components/AmplitudeAnalytics/constants' // Mod
 
-import { sendAnalyticsEvent } from './index'
+import { sendAnalyticsEvent } from '.'
 
 export interface ITraceContext {
   // Highest order context: eg Swap or Explore.

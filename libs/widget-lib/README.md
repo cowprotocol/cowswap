@@ -21,7 +21,7 @@ Create an empty div somewhere in your website:
 Import the widget and initialise it:
 
 ```js
-import { cowSwapWidget } from '@cowprotocol/widget-lib'
+import { cowSwapWidget } from '@cowswap/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')

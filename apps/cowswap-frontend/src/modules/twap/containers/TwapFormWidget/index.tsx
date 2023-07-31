@@ -5,24 +5,24 @@ import { useEffect, useState } from 'react'
 import {
   openAdvancedOrdersTabAnalytics,
   twapWalletCompatibilityAnalytics,
-} from '../../../../legacy/components/analytics/events/twapEvents'
-import { renderTooltip } from '../../../../legacy/components/Tooltip'
+} from 'legacy/components/analytics/events/twapEvents'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
-import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from '../../../advancedOrders'
-import { useComposableCowContract } from '../../../advancedOrders/hooks/useComposableCowContract'
-import { AppDataUpdater } from '../../../appData'
-import { useIsWrapOrUnwrap } from '../../../trade/hooks/useIsWrapOrUnwrap'
-import { useTradeState } from '../../../trade/hooks/useTradeState'
-import { TradeNumberInput } from '../../../trade/pure/TradeNumberInput'
-import { TradeTextBox } from '../../../trade/pure/TradeTextBox'
-import { useGetTradeFormValidation } from '../../../tradeFormValidation'
-import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { QuoteObserverUpdater } from '../../updaters/QuoteObserverUpdater'
-import { useIsSafeApp, useWalletInfo } from '../../../wallet'
+import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { AppDataUpdater } from 'modules/appData'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
+import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
+import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
-import { usePrice } from '../../../../common/hooks/usePrice'
-import { useRateInfoParams } from '../../../../common/hooks/useRateInfoParams'
-import { ExecutionPrice } from '../../../../common/pure/ExecutionPrice'
+import { usePrice } from 'common/hooks/usePrice'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
 import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
@@ -124,11 +124,13 @@ export function TwapFormWidget() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
-      <FallbackHandlerVerificationUpdater />
-      <PartOrdersUpdater />
-      <FullAmountQuoteUpdater />
       {shouldLoadTwapOrders && (
-        <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        <>
+          <FullAmountQuoteUpdater />
+          <FallbackHandlerVerificationUpdater />
+          <PartOrdersUpdater />
+          <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        </>
       )}
       <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 

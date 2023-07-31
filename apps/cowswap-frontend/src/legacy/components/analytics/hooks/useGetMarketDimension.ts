@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { TradeType, useTradeTypeInfo } from '../../../../modules/trade'
-import { useDerivedTradeState } from '../../../../modules/trade/hooks/useDerivedTradeState'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 const widgetTypeMap: Record<TradeType, string> = {
   [TradeType.SWAP]: 'SWAP',

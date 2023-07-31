@@ -5,16 +5,16 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { HighFeeWarning } from '../../../legacy/components/SwapWarnings'
-import TradeGp from '../../../legacy/state/swap/TradeGp'
+import { HighFeeWarning } from 'legacy/components/SwapWarnings'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { CompatibilityIssuesWarning } from '../../trade/pure/CompatibilityIssuesWarning'
-import { NoImpactWarning } from '../../trade/pure/NoImpactWarning'
-import { TradeUrlParams } from '../../trade/types/TradeRawState'
+import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from '../../../common/pure/InlineBanner/banners'
-import { ZeroApprovalWarning } from '../../../common/pure/ZeroApprovalWarning'
-import { genericPropsChecker } from '../../../utils/genericPropsChecker'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
+import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 

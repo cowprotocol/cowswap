@@ -4,10 +4,10 @@ import { lighten, darken, transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { useTheme } from 'styled-components/macro' // import useTheme
 
-import iconInformation from '../../../legacy/assets/cow-swap/alert-circle.svg'
-import iconAlert from '../../../legacy/assets/cow-swap/alert.svg'
-import iconDanger from '../../../legacy/assets/cow-swap/alert.svg'
-import iconSuccess from '../../../legacy/assets/cow-swap/check.svg'
+import iconInformation from 'legacy/assets/cow-swap/alert-circle.svg'
+import iconAlert from 'legacy/assets/cow-swap/alert.svg'
+import iconDanger from 'legacy/assets/cow-swap/alert.svg'
+import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
 type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 

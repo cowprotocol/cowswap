@@ -3,7 +3,7 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { Percent } from '@uniswap/sdk-core'
 
-import { Milliseconds } from '../../../types'
+import { Milliseconds } from 'types'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_ORDER_DEADLINE, DEFAULT_TWAP_SLIPPAGE } from '../const'
 

@@ -6,25 +6,25 @@ import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 
 import { shallowEqual } from 'react-redux'
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
-import BROKEN_LIST from '../../constants/tokenLists/broken.tokenlist.json'
-import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/unsupported.tokenlist.json'
-import { AppState } from '../index'
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
+import BROKEN_LIST from 'legacy/constants/tokenLists/broken.tokenlist.json'
+import UNSUPPORTED_TOKEN_LIST from 'legacy/constants/tokenLists/unsupported.tokenlist.json'
+import { AppState } from 'legacy/state'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
   removeGpUnsupportedToken,
   RemoveGpUnsupportedTokenParams,
-} from './actions'
-import sortByListPriority from '../../utils/listSort'
+} from 'legacy/state/lists/actions'
+import sortByListPriority from 'legacy/utils/listSort'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { UnsupportedToken } from '../../../api/gnosisProtocol'
-import { ChainTokenMap, tokensToChainTokenMap } from '../../../lib/hooks/useTokenList/utils'
+import { UnsupportedToken } from 'api/gnosisProtocol'
+import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 export type TokenAddressMap = ChainTokenMap
 

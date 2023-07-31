@@ -3,8 +3,8 @@ import { ReactNode } from 'react'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import QuestionImage from '../../assets/svg/question.svg'
-import { renderTooltip } from '../Tooltip'
+import QuestionImage from 'legacy/assets/svg/question.svg'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 

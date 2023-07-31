@@ -2,23 +2,23 @@ import { useAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import React from 'react'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { LimitOrdersWarnings } from '../LimitOrdersWarnings'
-import { useHandleOrderPlacement } from '../../hooks/useHandleOrderPlacement'
-import { useIsSafeApprovalBundle } from '../../hooks/useIsSafeApprovalBundle'
-import { useLimitOrdersWarningsAccepted } from '../../hooks/useLimitOrdersWarningsAccepted'
-import { useRateImpact } from '../../hooks/useRateImpact'
-import { executionPriceAtom } from '../../state/executionPriceAtom'
-import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-import { limitRateAtom } from '../../state/limitRateAtom'
-import { partiallyFillableOverrideAtom } from '../../state/partiallyFillableOverride'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from '../../../trade'
+import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
+import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
-import { useFeatureFlags } from '../../../../common/hooks/featureFlags/useFeatureFlags'
-import { useRateInfoParams } from '../../../../common/hooks/useRateInfoParams'
-import { CurrencyPreviewInfo } from '../../../../common/pure/CurrencyAmountPreview'
-import { TokenSymbol } from '../../../../common/pure/TokenSymbol'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
@@ -64,32 +64,30 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   )
 
   return (
-    <>
-      <TradeConfirmModal>
-        <TradeConfirmation
-          title="Review limit order"
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-          onConfirm={doTrade}
-          onDismiss={tradeConfirmActions.onDismiss}
-          isConfirmDisabled={isConfirmDisabled}
-          priceImpact={priceImpact}
-          buttonText={buttonText}
-        >
-          <>
-            <LimitOrdersDetails
-              limitRateState={limitRateState}
-              tradeContext={tradeContext}
-              rateInfoParams={rateInfoParams}
-              settingsState={settingsState}
-              executionPrice={executionPrice}
-              partiallyFillableOverride={partiallyFillableOverride}
-              featurePartialFillsEnabled={partialFillsEnabled}
-            />
-            <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
-          </>
-        </TradeConfirmation>
-      </TradeConfirmModal>
-    </>
+    <TradeConfirmModal>
+      <TradeConfirmation
+        title="Review limit order"
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        onConfirm={doTrade}
+        onDismiss={tradeConfirmActions.onDismiss}
+        isConfirmDisabled={isConfirmDisabled}
+        priceImpact={priceImpact}
+        buttonText={buttonText}
+      >
+        <>
+          <LimitOrdersDetails
+            limitRateState={limitRateState}
+            tradeContext={tradeContext}
+            rateInfoParams={rateInfoParams}
+            settingsState={settingsState}
+            executionPrice={executionPrice}
+            partiallyFillableOverride={partiallyFillableOverride}
+            featurePartialFillsEnabled={partialFillsEnabled}
+          />
+          <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+        </>
+      </TradeConfirmation>
+    </TradeConfirmModal>
   )
 }

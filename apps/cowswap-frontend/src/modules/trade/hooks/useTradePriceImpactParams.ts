@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { PriceImpactParams } from '../../../legacy/hooks/usePriceImpact'
+import type { PriceImpactParams } from 'legacy/hooks/usePriceImpact'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'

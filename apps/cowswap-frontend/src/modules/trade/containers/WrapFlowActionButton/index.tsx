@@ -1,4 +1,4 @@
-import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from '../../../tradeFormValidation'
+import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 const doTradeText = ''
 const confirmText = ''

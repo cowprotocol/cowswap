@@ -1,10 +1,10 @@
 import { OrderKind, OrderClass } from '@cowprotocol/cow-sdk'
 
-import { COW, DAI, GNO, USDC } from '../../../../legacy/constants/tokens'
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
-import { WETH_GOERLI } from '../../../../legacy/utils/goerli/constants'
+import { COW, DAI, GNO, USDC } from 'legacy/constants/tokens'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
-import { ParsedOrder, parseOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
 const chainId = 5
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'

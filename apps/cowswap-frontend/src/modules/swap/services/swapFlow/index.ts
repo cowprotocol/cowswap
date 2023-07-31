@@ -1,12 +1,12 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
-import { partialOrderUpdate } from '../../../../legacy/state/orders/utils'
-import { signAndPostOrder } from '../../../../legacy/utils/trade'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { addPendingOrderStep } from '../../../trade/utils/addPendingOrderStep'
-import { logTradeFlow } from '../../../trade/utils/logger'
-import { getSwapErrorMessage } from '../../../trade/utils/swapErrorHelper'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 

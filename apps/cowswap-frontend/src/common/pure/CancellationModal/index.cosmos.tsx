@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { CancellationModalContext } from '../../hooks/useCancelOrder/state'
-import { MAINNET_NATIVE_CURRENCY } from '../../../lib/hooks/useNativeCurrency'
+import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
-import { CancellationModal, CancellationModalProps } from './index'
+import { CancellationModal, CancellationModalProps } from '.'
 
 const context: CancellationModalContext = {
   chainId: 1,

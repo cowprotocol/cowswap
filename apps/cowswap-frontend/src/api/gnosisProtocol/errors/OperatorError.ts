@@ -50,7 +50,7 @@ export enum ApiErrorCodeDetails {
   InsufficientAllowance = "The account doesn't have enough funds.",
   InsufficientBalance = 'The account needs to approve the selling token in order to trade.',
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CoW Swap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
-  NotFound = 'Token pair selected has insufficient liquidity.',
+  NotFound = 'Token is not found.',
   OrderNotFound = 'The order you are trying to cancel does not exist.',
   AlreadyCancelled = 'Order is already cancelled.',
   OrderFullyExecuted = 'Order is already filled.',

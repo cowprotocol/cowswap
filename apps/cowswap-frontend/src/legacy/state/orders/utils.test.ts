@@ -3,7 +3,7 @@ import { Price } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
-import { USDC_MAINNET as USDC, USDT } from '../../constants/tokens'
+import { USDC_MAINNET as USDC, USDT } from 'legacy/constants/tokens'
 
 import { generateOrder } from './mocks'
 import { classifyOrder, getOrderMarketPrice, isOrderUnfillable } from './utils'

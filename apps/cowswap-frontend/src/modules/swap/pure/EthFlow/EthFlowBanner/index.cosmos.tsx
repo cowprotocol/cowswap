@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { GpEther } from '../../../../../legacy/constants/tokens'
+import { GpEther } from 'legacy/constants/tokens'
 
-import { EthFlowBannerContent, EthFlowBannerContentProps } from './index'
+import { EthFlowBannerContent, EthFlowBannerContentProps } from '.'
 
 const defaultProps: EthFlowBannerContentProps = {
   native: GpEther.onChain(SupportedChainId.MAINNET),

@@ -1,8 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import Loader from '../../../../legacy/components/Loader'
-import Input from '../../../../legacy/components/NumericalInput'
+import Loader from 'legacy/components/Loader'
+import Input from 'legacy/components/NumericalInput'
 
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};

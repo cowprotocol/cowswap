@@ -1,14 +1,14 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { Writable } from '../../../types'
+import { Writable } from 'types'
 
-import { flatOrdersStateNetwork } from '../../../modules/orders/utils/flatOrdersStateNetwork'
+import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
 
-import { OrderID } from '../../../api/gnosisProtocol'
-import { getIsComposableCowDiscreteOrder } from '../../../utils/orderUtils/getIsComposableCowDiscreteOrder'
-import { getIsComposableCowParentOrder } from '../../../utils/orderUtils/getIsComposableCowParentOrder'
-import { getIsNotComposableCowOrder } from '../../../utils/orderUtils/getIsNotComposableCowOrder'
+import { OrderID } from 'api/gnosisProtocol'
+import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
+import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
 import {
   addOrUpdateOrders,

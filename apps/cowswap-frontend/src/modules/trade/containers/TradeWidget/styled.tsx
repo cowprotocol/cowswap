@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { SetRecipient } from '../../../swap/containers/SetRecipient'
+import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 
 export const Container = styled.div`
   width: 100%;

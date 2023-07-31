@@ -1,8 +1,8 @@
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
 
-import { environmentName, isProdLike } from './environments'
-import { userAgent, majorBrowserVersion, isImTokenBrowser } from './userAgent'
+import { environmentName, isProdLike } from 'legacy/utils/environments'
+import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'legacy/utils/userAgent'
 
 import EventEmitter from 'events'
 

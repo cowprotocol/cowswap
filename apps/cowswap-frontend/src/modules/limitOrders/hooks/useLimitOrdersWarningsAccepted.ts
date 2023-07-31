@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { limitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
-import { limitOrdersWarningsAtom } from '../state/limitOrdersWarningsAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitOrdersWarningsAtom } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 
 export function useLimitOrdersWarningsAccepted(isConfirmScreen: boolean): boolean {
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)

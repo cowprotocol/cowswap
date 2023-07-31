@@ -2,24 +2,22 @@ import { ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderProgressBar } from '../../../../legacy/components/OrderProgressBar'
-import { V_COW_CONTRACT_ADDRESS } from '../../../../legacy/constants'
-import { V_COW, COW } from '../../../../legacy/constants/tokens'
-import { useToken } from '../../../../legacy/hooks/Tokens'
-import { getActivityState } from '../../../../legacy/hooks/useActivityDerivedState'
-import { ActivityStatus } from '../../../../legacy/hooks/useRecentActivity'
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
+import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
+import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
+import { V_COW, COW } from 'legacy/constants/tokens'
+import { useToken } from 'legacy/hooks/Tokens'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { EthFlowStepper } from '../../../swap/containers/EthFlowStepper'
+import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { useCancelOrder } from '../../../../common/hooks/useCancelOrder'
-import { useGetSurplusData } from '../../../../common/hooks/useGetSurplusFiatValue'
-import { CurrencyLogo } from '../../../../common/pure/CurrencyLogo'
-import { RateInfoParams, RateInfo } from '../../../../common/pure/RateInfo'
-import { SafeWalletLink } from '../../../../common/pure/SafeWalletLink'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-
-import { ActivityDerivedState } from './index'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { StatusDetails } from './StatusDetails'
 import {
@@ -34,6 +32,8 @@ import {
   StyledFiatAmount,
   FiatWrapper,
 } from './styled'
+
+import { ActivityDerivedState } from './index'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',

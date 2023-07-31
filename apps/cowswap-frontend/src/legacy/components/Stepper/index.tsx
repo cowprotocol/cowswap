@@ -1,7 +1,7 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import CheckCircle from '../../assets/cow-swap/check.svg'
+import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 
 export const Wrapper = styled.div<{ totalSteps: number }>`
   width: 100%;

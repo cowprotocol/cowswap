@@ -1,7 +1,7 @@
-import { ApprovalState } from '../../../legacy/hooks/useApproveCallback'
-import { isAddress } from '../../../legacy/utils'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { isAddress } from 'legacy/utils'
 
-import { isFractionFalsy } from '../../../utils/isFractionFalsy'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 

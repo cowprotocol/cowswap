@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 
-import { GAS_PRICE_UPDATE_THRESHOLD } from '../../constants'
+import { GAS_PRICE_UPDATE_THRESHOLD } from 'legacy/constants'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { gasFeeApi } from '../../../api/gasPrices'
-import useBlockNumber from '../../../lib/hooks/useBlockNumber'
+import { gasFeeApi } from 'api/gasPrices'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { RateInfo } from '../../../../common/pure/RateInfo'
+import { RateInfo } from 'common/pure/RateInfo'
 
 export const Wrapper = styled.div`
   padding: 10px;

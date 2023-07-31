@@ -1,17 +1,17 @@
 import { initializeConnector } from '@web3-react/core'
 
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from '../../index'
-import { default as FormaticImage } from '../../api/assets/formatic.png'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { getConnectionName } from '../../api/utils/connection'
+import { ConnectionType } from 'modules/wallet'
+import { default as FormaticImage } from 'modules/wallet/api/assets/formatic.png'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
 import { AsyncConnector } from './asyncConnector'
 
-import { TryActivation } from './index'
-
 import { Web3ReactConnection } from '../types'
+
+import { TryActivation } from '.'
 
 const [web3Fortmatic, web3FortmaticHooks] = initializeConnector<AsyncConnector>(
   (actions) =>

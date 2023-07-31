@@ -2,9 +2,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import safeLogo from '../../../../wallet/api/assets/safe-logo.svg'
+import safeLogo from 'modules/wallet/api/assets/safe-logo.svg'
 
-import { SafeWalletLink } from '../../../../../common/pure/SafeWalletLink'
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 import { FieldLabel } from '../FieldLabel'
 import { Field } from '../styled'

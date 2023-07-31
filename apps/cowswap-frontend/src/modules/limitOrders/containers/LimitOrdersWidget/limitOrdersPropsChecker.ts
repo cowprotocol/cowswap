@@ -1,17 +1,17 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { TradeFlowContext } from '../../services/types'
-import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
-import { PartiallyFillableOverrideDispatcherType } from '../../state/partiallyFillableOverride'
-import { TradeWidgetActions } from '../../../trade'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeWidgetActions } from 'modules/trade'
 
-import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
-import { RateInfoParams } from '../../../../common/pure/RateInfo'
-import { areFractionsEqual } from '../../../../utils/areFractionsEqual'
-import { genericPropsChecker } from '../../../../utils/genericPropsChecker'
-import { getAddress } from '../../../../utils/getAddress'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import { areFractionsEqual } from 'utils/areFractionsEqual'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
+import { getAddress } from 'utils/getAddress'
 
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo

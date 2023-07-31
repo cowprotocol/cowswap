@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useTradePriceImpact } from '../../trade'
-import { TradeFormValidation, useGetTradeFormValidation } from '../../tradeFormValidation'
-import { useWalletInfo } from '../../wallet'
+import { useTradePriceImpact } from 'modules/trade'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useWalletInfo } from 'modules/wallet'
 
 const NOT_BLOCKING_VALIDATIONS = [
   TradeFormValidation.ExpertApproveAndSwap,

@@ -1,28 +1,28 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
-import Confetti from '../../legacy/components/Confetti'
-import Loader from '../../legacy/components/Loader'
-import { ConfirmOperationType } from '../../legacy/components/TransactionConfirmationModal'
-import useENS from '../../legacy/hooks/useENS'
-import { useErrorModal } from '../../legacy/hooks/useErrorMessageAndModal'
-import usePrevious from '../../legacy/hooks/usePrevious'
-import useTransactionConfirmationModal from '../../legacy/hooks/useTransactionConfirmationModal'
-import { useToggleWalletModal } from '../../legacy/state/application/hooks'
-import { ClaimStatus } from '../../legacy/state/claim/actions'
+import Confetti from 'legacy/components/Confetti'
+import Loader from 'legacy/components/Loader'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import useENS from 'legacy/hooks/useENS'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useUserEnhancedClaimData,
   useUserUnclaimedAmount,
   useClaimCallback,
   ClaimInput,
-} from '../../legacy/state/claim/hooks'
-import { useClaimDispatchers, useClaimState } from '../../legacy/state/claim/hooks'
-import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from '../../legacy/state/claim/hooks/utils'
-import ClaimsOnOtherChainsUpdater from '../../legacy/state/claim/updater'
-import { getProviderErrorMessage } from '../../legacy/utils/misc'
+} from 'legacy/state/claim/hooks'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
+import ClaimsOnOtherChainsUpdater from 'legacy/state/claim/updater'
+import { getProviderErrorMessage } from 'legacy/utils/misc'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { PageWrapper, InnerPageWrapper } from './styled'
+import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
 
 import CanUserClaimMessage from './CanUserClaimMessage'
 import ClaimAddress from './ClaimAddress'

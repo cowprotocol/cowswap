@@ -6,48 +6,48 @@ import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
 
-import Copy from '../../../../legacy/components/Copy'
-import { MouseoverTooltip } from '../../../../legacy/components/Tooltip'
+import Copy from 'legacy/components/Copy'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
-} from '../../../../legacy/hooks/useRecentActivity'
-import { ExternalLink } from '../../../../legacy/theme'
-import { getEtherscanLink, getExplorerLabel, shortenAddress } from '../../../../legacy/utils'
-import { getExplorerAddressLink } from '../../../../legacy/utils/explorer'
-import { isMobile } from '../../../../legacy/utils/userAgent'
+} from 'legacy/hooks/useRecentActivity'
+import { ExternalLink } from 'legacy/theme'
+import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
+import { getExplorerAddressLink } from 'legacy/utils/explorer'
+import { isMobile } from 'legacy/utils/userAgent'
 
-import Activity from '../Transaction'
-import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from '../../../wallet'
-import CoinbaseWalletIcon from '../../../wallet/api/assets/coinbase.svg'
-import FortmaticIcon from '../../../wallet/api/assets/formatic.png'
-import KeystoneImage from '../../../wallet/api/assets/keystone.svg'
-import LedgerIcon from '../../../wallet/api/assets/ledger.svg'
-import TallyIcon from '../../../wallet/api/assets/tally.svg'
-import TrustIcon from '../../../wallet/api/assets/trust.svg'
-import WalletConnectIcon from '../../../wallet/api/assets/walletConnectIcon.svg'
-import { Identicon } from '../../../wallet/api/container/Identicon'
-import { useWalletDetails } from '../../../wallet/api/hooks'
+import Activity from 'modules/account/containers/Transaction'
+import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
+import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
+import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
+import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
+import LedgerIcon from 'modules/wallet/api/assets/ledger.svg'
+import TallyIcon from 'modules/wallet/api/assets/tally.svg'
+import TrustIcon from 'modules/wallet/api/assets/trust.svg'
+import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
+import { Identicon } from 'modules/wallet/api/container/Identicon'
+import { useWalletDetails } from 'modules/wallet/api/hooks'
 import {
   getConnectionName,
   getIsCoinbaseWallet,
   getIsMetaMask,
   getIsTrustWallet,
-} from '../../../wallet/api/utils/connection'
-import { getWeb3ReactConnection } from '../../../wallet/web3-react/connection'
-import { coinbaseWalletConnection } from '../../../wallet/web3-react/connection/coinbase'
-import { fortmaticConnection } from '../../../wallet/web3-react/connection/formatic'
-import { injectedConnection } from '../../../wallet/web3-react/connection/injected'
-import { keystoneConnection } from '../../../wallet/web3-react/connection/keystone'
-import { ledgerConnection } from '../../../wallet/web3-react/connection/ledger'
-import { tallyWalletConnection } from '../../../wallet/web3-react/connection/tally'
-import { trustWalletConnection } from '../../../wallet/web3-react/connection/trust'
-import { walletConnectConnection } from '../../../wallet/web3-react/connection/walletConnect'
-import { walletConnectConnectionV2 } from '../../../wallet/web3-react/connection/walletConnectV2'
+} from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { coinbaseWalletConnection } from 'modules/wallet/web3-react/connection/coinbase'
+import { fortmaticConnection } from 'modules/wallet/web3-react/connection/formatic'
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
+import { keystoneConnection } from 'modules/wallet/web3-react/connection/keystone'
+import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
+import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
+import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
-import { UNSUPPORTED_WALLET_TEXT } from '../../../../common/containers/WalletUnsupportedNetworkBanner'
-import { useIsProviderNetworkUnsupported } from '../../../../common/hooks/useIsProviderNetworkUnsupported'
+import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
   AccountControl,

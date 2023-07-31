@@ -1,4 +1,4 @@
-import { InfoIcon } from '../../../../legacy/components/InfoIcon'
+import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import * as styledEl from './styled'
 

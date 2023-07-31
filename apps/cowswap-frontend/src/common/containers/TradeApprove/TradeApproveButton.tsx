@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useShouldZeroApprove } from '../../hooks/useShouldZeroApprove'
-import { useZeroApprove } from '../../hooks/useZeroApprove'
-import { ApproveButton } from '../../pure/ApproveButton'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { useZeroApprove } from 'common/hooks/useZeroApprove'
+import { ApproveButton } from 'common/pure/ApproveButton'
 
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { useTradeApproveState } from './useTradeApproveState'

@@ -3,8 +3,8 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from '../../trade/types/TradeDerivedState'
-import { ExtendedTradeRawState, getDefaultTradeRawState } from '../../trade/types/TradeRawState'
+import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
+import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
 export interface LimitOrdersDerivedState extends TradeDerivedState {
   readonly isUnlocked: boolean

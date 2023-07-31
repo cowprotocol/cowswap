@@ -2,9 +2,9 @@ import { Fragment } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { useMultipleActivityDescriptors, groupActivitiesByDay } from '../../../../legacy/hooks/useRecentActivity'
+import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 
-import { useWalletInfo } from '../../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'

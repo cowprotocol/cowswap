@@ -1,10 +1,10 @@
-import { ComposableCoW } from '@cowprotocol/abis'
+import { ComposableCoW } from '@cowswap/abis'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
-import { isTruthy } from '../../../legacy/utils/misc'
+import { isTruthy } from 'legacy/utils/misc'
 
-import { SafeTransactionParams } from '../../../common/types'
+import { SafeTransactionParams } from 'common/types'
 
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 

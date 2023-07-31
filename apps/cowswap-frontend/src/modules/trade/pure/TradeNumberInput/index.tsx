@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
+import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
 
 import { NumericalInput, Suffix } from './styled'
 

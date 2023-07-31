@@ -2,16 +2,16 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { renderHook } from '@testing-library/react-hooks'
 
-import { PriceImpact } from '../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useSafeBundleFlowContext } from './useSafeBundleFlowContext'
-import { safeBundleFlow } from '../services/safeBundleFlow'
-import { tradeFlow } from '../services/tradeFlow'
-import { TradeFlowContext } from '../services/types'
+import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
+import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
+import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
-import { useIsTxBundlingEnabled } from '../../../common/hooks/featureFlags/useIsTxBundlingEnabled'
-import { useNeedsApproval } from '../../../common/hooks/useNeedsApproval'
-import { withModalProvider } from '../../../utils/withModalProvider'
+import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 

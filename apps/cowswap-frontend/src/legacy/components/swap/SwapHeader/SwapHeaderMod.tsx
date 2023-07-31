@@ -2,10 +2,10 @@ import { Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { RowBetween, RowFixed } from '../../Row'
-import SettingsTab from '../../Settings'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+import SettingsTab from 'legacy/components/Settings'
 
-import { TradeWidgetLinks } from '../../../../modules/application/containers/TradeWidgetLinks'
+import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 
 const StyledSwapHeader = styled.div`
   width: 100%;

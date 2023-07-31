@@ -2,9 +2,9 @@ import { useState, useRef } from 'react'
 
 import SVG from 'react-inlinesvg'
 
-import IMAGE_CARRET_DOWN from '../../assets/cow-swap/carret-down.svg'
-import { useMediaQuery, LargeAndUp } from '../../hooks/useMediaQuery'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import IMAGE_CARRET_DOWN from 'legacy/assets/cow-swap/carret-down.svg'
+import { useMediaQuery, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 
 import { MenuFlyout, Content } from './styled'
 

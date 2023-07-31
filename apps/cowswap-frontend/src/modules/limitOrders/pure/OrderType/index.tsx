@@ -1,10 +1,10 @@
 import { Menu } from '@reach/menu-button'
 
-import IMAGE_CARET_DOWN from '../../../../legacy/assets/cow-swap/carret-down.svg'
-import { InfoIcon } from '../../../../legacy/components/InfoIcon'
+import IMAGE_CARET_DOWN from 'legacy/assets/cow-swap/carret-down.svg'
+import { InfoIcon } from 'legacy/components/InfoIcon'
 
-import { DetailsRow } from '../LimitOrdersDetails/styled'
-import { PartiallyFillableOverrideDispatcherType } from '../../state/partiallyFillableOverride'
+import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'
+import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 
 import * as styledEl from './styled'
 
@@ -58,28 +58,26 @@ function OrderTypePicker({
   return (
     <Menu>
       {({ isExpanded }: { isExpanded: boolean }) => (
-        <>
-          <styledEl.Wrapper>
-            <styledEl.StyledMenuButton disabled={disabled}>
-              <styledEl.LabelText>{labelText}</styledEl.LabelText>
-              {!disabled && (
-                <styledEl.StyledSVG
-                  src={IMAGE_CARET_DOWN}
-                  description="dropdown icon"
-                  className={isExpanded ? 'expanded' : ''}
-                />
-              )}
-            </styledEl.StyledMenuButton>
+        <styledEl.Wrapper>
+          <styledEl.StyledMenuButton disabled={disabled}>
+            <styledEl.LabelText>{labelText}</styledEl.LabelText>
+            {!disabled && (
+              <styledEl.StyledSVG
+                src={IMAGE_CARET_DOWN}
+                description="dropdown icon"
+                className={isExpanded ? 'expanded' : ''}
+              />
+            )}
+          </styledEl.StyledMenuButton>
 
-            <styledEl.StyledMenuList portal={false}>
-              {LABELS.map((label) => (
-                <styledEl.StyledMenuItem key={label} onSelect={() => onSelect(label)}>
-                  {label}
-                </styledEl.StyledMenuItem>
-              ))}
-            </styledEl.StyledMenuList>
-          </styledEl.Wrapper>
-        </>
+          <styledEl.StyledMenuList portal={false}>
+            {LABELS.map((label) => (
+              <styledEl.StyledMenuItem key={label} onSelect={() => onSelect(label)}>
+                {label}
+              </styledEl.StyledMenuItem>
+            ))}
+          </styledEl.StyledMenuList>
+        </styledEl.Wrapper>
       )}
     </Menu>
   )

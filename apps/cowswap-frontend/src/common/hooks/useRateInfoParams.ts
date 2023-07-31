@@ -2,16 +2,16 @@ import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../types'
+import { Nullish } from 'types'
 
-import { useHigherUSDValue } from '../../legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { usePrice } from './usePrice'
-import { useSafeMemoObject } from './useSafeMemo'
-import { RateInfoParams } from '../pure/RateInfo'
-import tryParseCurrencyAmount from '../../lib/utils/tryParseCurrencyAmount'
+import { usePrice } from 'common/hooks/usePrice'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useRateInfoParams(
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,

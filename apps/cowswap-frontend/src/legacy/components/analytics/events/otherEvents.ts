@@ -1,6 +1,6 @@
-import { detectExplorer } from '../../../utils/explorer'
+import { detectExplorer } from 'legacy/utils/explorer'
 
-import { sendEvent } from '../index'
+import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
 type GameType = 'CoW Runner' | 'MEV Slicer'

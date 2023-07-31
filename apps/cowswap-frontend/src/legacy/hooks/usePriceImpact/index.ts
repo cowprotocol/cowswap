@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import { Percent } from '@uniswap/sdk-core'
 
-import { QuoteError } from '../../state/price/actions'
+import { QuoteError } from 'legacy/state/price/actions'
 
-import { getAddress } from '../../../utils/getAddress'
+import { getAddress } from 'utils/getAddress'
 
 import { ParsedAmounts, PriceImpactTrade } from './types'
 import useFallbackPriceImpact from './useFallbackPriceImpact'

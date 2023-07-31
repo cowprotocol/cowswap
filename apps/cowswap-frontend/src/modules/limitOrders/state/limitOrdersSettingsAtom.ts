@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { Milliseconds, Timestamp } from '../../../types'
+import { Milliseconds, Timestamp } from 'types'
 
-import { defaultLimitOrderDeadline } from '../pure/DeadlineSelector/deadlines'
-import { partiallyFillableOverrideAtom } from './partiallyFillableOverride'
+import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersSettingsState {
   readonly expertMode: boolean

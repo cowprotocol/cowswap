@@ -4,9 +4,9 @@ import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../Button'
-import { StyledListLogo } from '../../ListLogo'
-import { AutoRow } from '../../Row'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { StyledListLogo } from 'legacy/components/ListLogo'
+import { AutoRow } from 'legacy/components/Row'
 
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 

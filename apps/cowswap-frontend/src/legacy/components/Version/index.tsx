@@ -3,14 +3,14 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from '../../constants'
-import { DEFAULT_NETWORK_FOR_LISTS } from '../../constants/lists'
-import { ExternalLink } from '../../theme'
-import { getEtherscanLink } from '../../utils'
+import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'legacy/constants'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
+import { ExternalLink } from 'legacy/theme'
+import { getEtherscanLink } from 'legacy/utils'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import pkg from '../../../../../../package.json'
+import pkg from '../../../../package.json'
 
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]

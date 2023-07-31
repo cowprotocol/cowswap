@@ -1,17 +1,16 @@
-import { PageName } from '../../legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from '../../legacy/components/AmplitudeAnalytics/Trace'
-import { LinkScrollable } from '../../legacy/components/Link'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { LinkScrollable } from 'legacy/components/Link'
 
-import { PageTitle } from '../../modules/application/containers/PageTitle'
-import { Page, Content } from '../../modules/application/pure/Page'
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
 import { Wrapper, ExternalLinkFaq } from './styled'
-
-import { Footer } from './index'
-
 import ToC from './ToC'
+
+import { Footer } from '.'
 
 // AmplitudeAnalytics
 

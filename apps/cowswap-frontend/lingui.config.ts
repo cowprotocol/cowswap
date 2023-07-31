@@ -5,7 +5,6 @@ const linguiConfig = {
       include: ['<rootDir>/src'],
     },
   ],
-  compileNamespace: 'cjs',
   fallbackLocales: {
     default: 'en-US',
   },
@@ -49,7 +48,6 @@ const linguiConfig = {
     'pseudo',
   ],
   orderBy: 'messageId',
-  rootDir: '.',
   runtimeConfigModule: ['@lingui/core', 'i18n'],
   sourceLocale: 'en-US',
   pseudoLocale: 'pseudo',

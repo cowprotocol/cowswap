@@ -4,10 +4,10 @@ import { Trans } from '@lingui/macro'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from '../../constants/chainInfo'
-import { MEDIA_WIDTHS } from '../../theme'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const BodyRow = styled.div`
   color: ${({ theme }) => theme.black};

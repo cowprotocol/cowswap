@@ -4,7 +4,7 @@ import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
 import { Web3ReactProvider } from '@web3-react/core'
 
-import { LanguageProvider } from './i18n'
+import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
@@ -12,15 +12,15 @@ import { Flex } from 'rebass'
 import styled from 'styled-components/macro'
 import { ThemeContext } from 'styled-components/macro'
 
-import IMAGE_MOON from './legacy/assets/cow-swap/moon.svg'
-import IMAGE_SUN from './legacy/assets/cow-swap/sun.svg'
-import store from './legacy/state'
-import { useDarkModeManager } from './legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './legacy/theme'
+import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
+import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
+import store from 'legacy/state'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
-import { injectedConnection } from './modules/wallet/web3-react/connection/injected'
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
 
-import { BlockNumberProvider } from './lib/hooks/useBlockNumber'
+import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 const DarkModeToggleButton = styled.button`
   display: flex;

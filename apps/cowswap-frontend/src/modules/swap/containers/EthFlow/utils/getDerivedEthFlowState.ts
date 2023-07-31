@@ -1,7 +1,7 @@
-import { ActivityStatus } from '../../../../../legacy/hooks/useRecentActivity'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
-import { EthFlowState } from '../../../services/ethFlow/types'
-import { EthFlowContext } from '../../../state/EthFlow/ethFlowContextAtom'
+import { EthFlowState } from 'modules/swap/services/ethFlow/types'
+import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
 // returns derived ethflow state from current props
 export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: boolean): EthFlowState {

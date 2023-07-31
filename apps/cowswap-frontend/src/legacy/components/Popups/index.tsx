@@ -5,13 +5,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { AutoColumn } from '../Column'
-import { PopupItem } from './PopupItem'
-import { useActivePopups, useRemovePopup } from '../../state/application/hooks'
-import { useURLWarningVisible } from '../../state/user/hooks'
-import { MEDIA_WIDTHS } from '../../theme'
+import { AutoColumn } from 'legacy/components/Column'
+import { PopupItem } from 'legacy/components/Popups/PopupItem'
+import { useActivePopups, useRemovePopup } from 'legacy/state/application/hooks'
+import { useURLWarningVisible } from 'legacy/state/user/hooks'
+import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export const MobilePopupInner = styled.div`
   height: 99%;

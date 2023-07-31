@@ -1,13 +1,13 @@
-import { OrderActions } from './types'
-import { BalancesAndAllowances } from '../../../tokens'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { BalancesAndAllowances } from 'modules/tokens'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
 
-import { OrdersTableContainer, TabOrderTypes } from './index'
-
 import { OrderTab } from '../../const/tabs'
+
+import { OrdersTableContainer, TabOrderTypes } from './index'
 
 const tabs: OrderTab[] = [
   {
@@ -55,6 +55,7 @@ export default (
     currentPageNumber={1}
     orders={ordersMock}
     tabs={tabs}
+    isSafeViaWc={false}
     allowsOffchainSigning={true}
     isOpenOrdersTab={true}
     isWalletConnected={true}

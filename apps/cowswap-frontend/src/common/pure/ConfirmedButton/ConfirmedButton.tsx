@@ -2,7 +2,7 @@ import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useSt
 
 import styled from 'styled-components/macro'
 
-import { ButtonError } from '../../../legacy/components/Button'
+import { ButtonError } from 'legacy/components/Button'
 
 const Container = styled.div``
 const Instruction = styled.p`

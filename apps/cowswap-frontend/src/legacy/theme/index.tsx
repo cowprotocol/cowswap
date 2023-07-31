@@ -8,12 +8,12 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
 
-import { useIsDarkMode } from '../state/user/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import {
   colors as colorsBaseTheme,
   FixedGlobalStyle as FixedGlobalStyleBase,
   themeVariables as baseThemeVariables,
-} from './baseTheme'
+} from 'legacy/theme/baseTheme'
 
 import { Colors } from './styled'
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }

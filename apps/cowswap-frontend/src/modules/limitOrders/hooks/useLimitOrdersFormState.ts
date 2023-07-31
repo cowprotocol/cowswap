@@ -2,11 +2,11 @@ import { useAtomValue } from 'jotai'
 
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import { limitRateAtom } from '../state/limitRateAtom'
-import { useTradeQuote } from '../../tradeQuote'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useSafeMemo } from '../../../common/hooks/useSafeMemo'
-import { isFractionFalsy } from '../../../utils/isFractionFalsy'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

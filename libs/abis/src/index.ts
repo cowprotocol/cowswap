@@ -1,13 +1,53 @@
 // Custom
+import _GPv2SettlementAbi from "./abis/GPv2Settlement.json";
+
+import _ComposableCoWAbi from "./abis/ComposableCoW.json";
+
+import _vCowAbi from "./abis/vCow.json";
+
+import _SignatureVerifierMuxerAbi from "./abis/SignatureVerifierMuxer.json";
+
+import _MerkleDropAbi from "./abis/MerkleDrop.json";
+
+import _TokenDistroAbi from "./abis/TokenDistro.json";
+
+import _ethFlowBarnJson from "@cowprotocol/ethflowcontract/networks.barn.json";
+
+import _ethFlowProdJson from "@cowprotocol/ethflowcontract/networks.prod.json";
+
+
+// Legacy ABIs
+import _ArgentWalletContractAbi from "./abis-legacy/argent-wallet-contract.json";
+
+import _ArgentWalletDetectorAbi from "./abis-legacy/argent-wallet-detector.json";
+
+import _CoWSwapEthFlowJson from "@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json";
+
+import _Eip2612Abi from "./abis-legacy/eip_2612.json";
+
+import _EnsPublicResolverAbi from "./abis-legacy/ens-public-resolver.json";
+
+import _EnsAbi from "./abis-legacy/ens-registrar.json";
+
+import _Erc1155Abi from "./abis-legacy/erc1155.json";
+
+import _Erc20Abi from "./abis-legacy/erc20.json";
+
+import _Erc20Bytes32Abi from "./abis-legacy/erc20_bytes32.json";
+
+import _Erc721Abi from "./abis-legacy/erc721.json";
+
+import _WethAbi from "./abis-legacy/weth.json";
+
+export const GPv2SettlementAbi = _GPv2SettlementAbi;
+export const ComposableCoWAbi = _ComposableCoWAbi;
+export const vCowAbi = _vCowAbi;
+export const SignatureVerifierMuxerAbi = _SignatureVerifierMuxerAbi;
+export const MerkleDropAbi = _MerkleDropAbi;
+export const TokenDistroAbi = _TokenDistroAbi;
+
 export * from './generated/custom'
 export type { GPv2Order } from './generated/custom/ComposableCoW'
-export const GPv2SettlementAbi = require('./abis/GPv2Settlement.json')
-export const ComposableCoWAbi = require('./abis/ComposableCoW.json')
-export const vCowAbi = require('./abis/vCow.json')
-export const SignatureVerifierMuxerAbi = require('./abis/SignatureVerifierMuxer.json')
-export const MerkleDropAbi = require('./abis/MerkleDrop.json')
-export const TokenDistroAbi = require('./abis/TokenDistro.json')
-
 // Legacy
 export type {
   ArgentWalletContract,
@@ -25,18 +65,17 @@ export type { Erc20Interface } from './generated/legacy/Erc20'
 
 // EthFlow
 export type { CoWSwapEthFlow } from './generated/ethflow'
-export const ethFlowBarnJson = require('@cowprotocol/ethflowcontract/networks.barn.json')
-export const ethFlowProdJson = require('@cowprotocol/ethflowcontract/networks.prod.json')
 
-// Legacy ABIs
-export const ArgentWalletContractAbi = require('./abis-legacy/argent-wallet-contract.json')
-export const ArgentWalletDetectorAbi = require('./abis-legacy/argent-wallet-detector.json')
-export const CoWSwapEthFlowJson = require('@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json')
-export const Eip2612Abi = require('./abis-legacy/eip_2612.json')
-export const EnsPublicResolverAbi = require('./abis-legacy/ens-public-resolver.json')
-export const EnsAbi = require('./abis-legacy/ens-registrar.json')
-export const Erc1155Abi = require('./abis-legacy/erc1155.json')
-export const Erc20Abi = require('./abis-legacy/erc20.json')
-export const Erc20Bytes32Abi = require('./abis-legacy/erc20_bytes32.json')
-export const Erc721Abi = require('./abis-legacy/erc721.json')
-export const WethAbi = require('./abis-legacy/weth.json')
+export const ethFlowBarnJson = _ethFlowBarnJson;
+export const ethFlowProdJson = _ethFlowProdJson;
+export const ArgentWalletContractAbi = _ArgentWalletContractAbi;
+export const ArgentWalletDetectorAbi = _ArgentWalletDetectorAbi;
+export const CoWSwapEthFlowJson = _CoWSwapEthFlowJson;
+export const Eip2612Abi = _Eip2612Abi;
+export const EnsPublicResolverAbi = _EnsPublicResolverAbi;
+export const EnsAbi = _EnsAbi;
+export const Erc1155Abi = _Erc1155Abi;
+export const Erc20Abi = _Erc20Abi;
+export const Erc20Bytes32Abi = _Erc20Bytes32Abi;
+export const Erc721Abi = _Erc721Abi;
+export const WethAbi = _WethAbi;

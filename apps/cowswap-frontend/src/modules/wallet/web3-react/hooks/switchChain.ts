@@ -1,11 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
-import { getChainInfo } from '../../../../legacy/constants/chainInfo'
-import { RPC_URLS } from '../../../../legacy/constants/networks'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import { RPC_URLS } from 'legacy/constants/networks'
 
-import { networkConnection } from '../connection/network'
-import { walletConnectConnection } from '../connection/walletConnect'
+import { networkConnection } from 'modules/wallet/web3-react/connection/network'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 
 import { isChainAllowed } from '../connection'
 

@@ -1,4 +1,4 @@
-import { PageTitle } from './index'
+import { PageTitle } from '.'
 
 const Fixtures = {
   setTitleToCow: <PageTitle title="🐮🔄 is pure ❤️" />,

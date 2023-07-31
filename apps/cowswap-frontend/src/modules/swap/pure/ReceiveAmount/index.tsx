@@ -2,10 +2,10 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { BalanceAndSubsidy } from '../../../../legacy/hooks/useCowBalanceAndSubsidy'
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { ReceiveAmountInfo } from '../../helpers/tradeReceiveAmount'
-import { ReceiveAmountInfoTooltip } from '../ReceiveAmountInfo'
+import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
 
 import * as styledEl from './styled'
 

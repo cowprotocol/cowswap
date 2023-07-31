@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../../types'
+import { Nullish } from 'types'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'

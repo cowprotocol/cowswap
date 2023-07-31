@@ -3,13 +3,13 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { TradeUrlParams } from '../../../../trade/types/TradeRawState'
-import { parameterizeTradeRoute } from '../../../../trade/utils/parameterizeTradeRoute'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes } from '../../../../../common/constants/routes'
-import { FiatAmount } from '../../../../../common/pure/FiatAmount'
-import { InlineBanner } from '../../../../../common/pure/InlineBanner'
-import { TokenAmount } from '../../../../../common/pure/TokenAmount'
+import { Routes } from 'common/constants/routes'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { InlineBanner } from 'common/pure/InlineBanner'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { SwapAmountDifference } from '../../../state/swapAmountDifferenceAtom'
 

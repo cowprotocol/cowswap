@@ -6,26 +6,26 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import CowProtocolIcon from '../../legacy/assets/cow-swap/cowprotocol.svg'
-import discordImage from '../../legacy/assets/cow-swap/discord.svg'
-import twitterImage from '../../legacy/assets/cow-swap/twitter.svg'
-import { ButtonSecondary } from '../../legacy/components/Button'
-import CopyHelper from '../../legacy/components/Copy'
-import CowProtocolLogo from '../../legacy/components/CowProtocolLogo'
-import { EnhancedTransactionLink } from '../../legacy/components/EnhancedTransactionLink'
-import { ExplorerLink } from '../../legacy/components/ExplorerLink'
-import { V_COW } from '../../legacy/constants/tokens'
-import { ClaimStatus } from '../../legacy/state/claim/actions'
-import { useClaimDispatchers, useClaimState } from '../../legacy/state/claim/hooks'
-import { useAllClaimingTransactions } from '../../legacy/state/enhancedTransactions/hooks'
-import { ExternalLink } from '../../legacy/theme'
-import { shortenAddress } from '../../legacy/utils'
+import CowProtocolIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
+import discordImage from 'legacy/assets/cow-swap/discord.svg'
+import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { ButtonSecondary } from 'legacy/components/Button'
+import CopyHelper from 'legacy/components/Copy'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { V_COW } from 'legacy/constants/tokens'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { ExternalLink } from 'legacy/theme'
+import { shortenAddress } from 'legacy/utils'
 
-import { useWalletInfo } from '../../modules/wallet'
-import AddToMetamask from '../../modules/wallet/web3-react/containers/AddToMetamask'
+import { useWalletInfo } from 'modules/wallet'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
-import { Routes } from '../../common/constants/routes'
-import { TokenAmount } from '../../common/pure/TokenAmount'
+import { Routes } from 'common/constants/routes'
+import { TokenAmount } from 'common/pure/TokenAmount'
 import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
@@ -33,7 +33,7 @@ import {
   CowSpinner,
   BannersWrapper,
   SuccessBanner,
-} from './styled'
+} from 'pages/Claim/styled'
 
 import { ClaimCommonTypes } from './types'
 

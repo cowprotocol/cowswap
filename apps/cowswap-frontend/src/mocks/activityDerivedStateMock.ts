@@ -1,6 +1,6 @@
-import { ActivityStatus, ActivityType } from '../legacy/hooks/useRecentActivity'
+import { ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 
-import { ActivityDerivedState } from '../modules/account/containers/Transaction'
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 export const activityDerivedStateMock: ActivityDerivedState = {
   id: '0x11',

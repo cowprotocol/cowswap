@@ -2,12 +2,12 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo, useRef } from 'react'
 
-import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { LimitOrderDeadline, limitOrdersDeadlines } from '../../pure/DeadlineSelector/deadlines'
+import { DeadlineSelector } from 'modules/limitOrders/pure/DeadlineSelector'
+import { LimitOrderDeadline, limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
-} from '../../state/limitOrdersSettingsAtom'
+} from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export function DeadlineInput() {
   const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(limitOrdersSettingsAtom)

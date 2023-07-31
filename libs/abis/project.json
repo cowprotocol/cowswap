@@ -1,7 +1,7 @@
 {
   "name": "abis",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "src/libs/abis/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/abis/src",
   "projectType": "library",
   "targets": {
     "abis": {
@@ -11,19 +11,19 @@
     "abi:ethflow": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/ethflow \"./src/libs/abis/node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\""
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/ethflow \"./libs/abis/node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\""
       }
     },
     "abi:custom": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/custom './src/libs/abis/src/abis/**/*.json'"
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/custom './libs/abis/src/abis/**/*.json'"
       }
     },
     "abis-legacy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./src/libs/abis/src/generated/legacy './src/libs/abis/src/abis-legacy/**/*.json'"
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/legacy './libs/abis/src/abis-legacy/**/*.json'"
       }
     },
     "build": {
@@ -41,7 +41,7 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["src/libs/abis/**/*.ts"]
+        "lintFilePatterns": ["libs/abis/**/*.ts"]
       }
     }
   },

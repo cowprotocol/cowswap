@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
-import { USDC } from '../../legacy/constants/tokens'
+import { USDC } from 'legacy/constants/tokens'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
@@ -52,7 +52,6 @@ export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedFeeAmount: '0',
 }
 
-export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
 export const UNSUPPORTED_SAFE_LINK =
   'https://blog.cow.fi/@cow-protocol/all-you-need-to-know-about-cow-swaps-new-safe-fallback-handler-8ef0439925d1'
 export const UNSUPPORTED_WALLET_LINK =

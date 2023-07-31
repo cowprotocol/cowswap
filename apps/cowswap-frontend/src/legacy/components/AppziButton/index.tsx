@@ -2,8 +2,8 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import FeedbackIcon from '../../assets/cow-swap/feedback.svg'
-import { isAppziEnabled, openFeedbackAppzi } from '../../utils/appzi'
+import FeedbackIcon from 'legacy/assets/cow-swap/feedback.svg'
+import { isAppziEnabled, openFeedbackAppzi } from 'legacy/utils/appzi'
 
 const Wrapper = styled.div`
   background: ${({ theme }) => transparentize(0.3, theme.bg2)};

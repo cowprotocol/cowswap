@@ -2,12 +2,12 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { PendingOrdersPrices } from '../../../orders/state/pendingOrdersPricesAtom'
-import { ReceiptModal } from '../../pure/ReceiptModal'
-import { useTwapOrderById, useTwapOrderByChildId } from '../../../twap'
-import { useWalletInfo } from '../../../wallet'
+import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
+import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
+import { useWalletInfo } from 'modules/wallet'
 
-import { calculatePrice } from '../../../../utils/orderUtils/calculatePrice'
+import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 

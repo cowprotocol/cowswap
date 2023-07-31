@@ -1,7 +1,7 @@
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 
-import { initialPriceLoadAnalytics } from '../../components/analytics'
-import { AppState } from '../index'
+import { initialPriceLoadAnalytics } from 'legacy/components/analytics'
+import { AppState } from 'legacy/state'
 
 import * as PriceActions from './actions'
 

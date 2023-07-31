@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '../ConfirmSwapModalSetup'
-import { EthFlowModal, EthFlowProps } from '../EthFlow'
+import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
+import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 
-import { genericPropsChecker } from '../../../../utils/genericPropsChecker'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import { SurplusModalSetup } from '../SurplusModalSetup'
 

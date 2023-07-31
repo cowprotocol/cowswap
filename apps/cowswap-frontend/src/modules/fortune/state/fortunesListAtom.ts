@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { RAW_CODE_LINK } from '../../../legacy/constants'
+import { RAW_CODE_LINK } from 'legacy/constants'
 
-import { FortuneItem } from '../types'
+import { FortuneItem } from 'modules/fortune/types'
 
 const FILE_PATH = '/configuration/config/fortunes.json'
 

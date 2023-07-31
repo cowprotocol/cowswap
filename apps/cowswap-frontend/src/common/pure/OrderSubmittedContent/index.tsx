@@ -3,12 +3,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../../legacy/components/Button'
-import { EnhancedTransactionLink } from '../../../legacy/components/EnhancedTransactionLink'
-import { HashType } from '../../../legacy/state/enhancedTransactions/reducer'
-import { isCowOrder } from '../../../legacy/utils'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
+import { isCowOrder } from 'legacy/utils'
 
-import AnimatedConfirmation from '../AnimatedConfirmation'
+import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
 const Wrapper = styled.div`
   width: 100%;

@@ -6,18 +6,19 @@ import { transparentize } from 'polished'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { LightGreyCard } from '../../Card'
-import Column from '../../Column'
-import { RowFixed } from '../../Row'
-import { MenuItem as MenuItemMod } from '../styleds'
-import { MouseoverTooltip } from '../../Tooltip'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from '../../../constants'
-import { TagInfo } from '../../../state/lists/wrappedTokenInfo'
+import { LightGreyCard } from 'legacy/components/Card'
+import Column from 'legacy/components/Column'
+import { RowFixed } from 'legacy/components/Row'
+import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
+import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-import { StyledLogo } from '../../../../common/pure/CurrencyLogo'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
+import { StyledLogo } from 'common/pure/CurrencyLogo'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
-import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
+import CurrencyListMod, { StyledBalanceText, TagContainer } from './CurrencyListMod'
+import { Tag as TagMod } from './styled'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

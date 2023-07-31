@@ -5,18 +5,18 @@ import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } f
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from '../../../constants'
-import { useAllTokens } from '../../../hooks/Tokens'
-import { useTokenLazy } from '../../../hooks/useTokenLazy'
-import { Order, OrderStatus } from '../actions'
-import { useAddOrUpdateOrders, useClearOrdersStorage } from '../hooks'
-import { computeOrderSummary } from './utils'
-import { classifyOrder, OrderTransitionStatus } from '../utils'
+import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { useAllTokens } from 'legacy/hooks/Tokens'
+import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
+import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
+import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { apiOrdersAtom } from '../../../../modules/orders/state/apiOrdersAtom'
-import { useWalletInfo } from '../../../../modules/wallet'
+import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useGpOrders } from '../../../../api/gnosisProtocol/hooks'
+import { useGpOrders } from 'api/gnosisProtocol/hooks'
 
 function _getTokenFromMapping(
   address: string,

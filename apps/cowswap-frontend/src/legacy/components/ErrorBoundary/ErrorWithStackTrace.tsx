@@ -3,16 +3,16 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import CowError from '../../assets/cow-swap/CowError.png'
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
-import { CODE_LINK, DISCORD_LINK } from '../../constants'
-import store, { AppState } from '../../state'
-import { MEDIA_WIDTHS, ThemedText } from '../../theme'
-import { ExternalLink } from '../../theme'
-import { userAgent } from '../../utils/userAgent'
+import CowError from 'legacy/assets/cow-swap/CowError.png'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+import { CODE_LINK, DISCORD_LINK } from 'legacy/constants'
+import store, { AppState } from 'legacy/state'
+import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
+import { ExternalLink } from 'legacy/theme'
+import { userAgent } from 'legacy/utils/userAgent'
 
-import { Title } from '../../../modules/application/pure/Page'
+import { Title } from 'modules/application/pure/Page'
 
 const FlexContainer = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { useSetTradeQuoteParams } from '../../tradeQuote'
+import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { partsStateAtom } from '../state/partsStateAtom'
 

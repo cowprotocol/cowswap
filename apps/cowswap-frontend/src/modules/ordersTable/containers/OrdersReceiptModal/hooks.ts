@@ -1,9 +1,9 @@
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { updateReceiptAtom, receiptAtom } from '../../state/orderReceiptAtom'
+import { updateReceiptAtom, receiptAtom } from 'modules/ordersTable/state/orderReceiptAtom'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export function useCloseReceiptModal() {
   const updateReceiptState = useSetAtom(updateReceiptAtom)

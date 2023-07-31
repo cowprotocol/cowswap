@@ -4,7 +4,7 @@ import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
 
-import { isMobile } from '../../../legacy/utils/userAgent'
+import { isMobile } from 'legacy/utils/userAgent'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -66,9 +66,9 @@ export function Modal({
                     }
                   : {})}
                 aria-label="dialog content"
-                minHeight={minHeight}
-                maxHeight={maxHeight}
-                mobile={isMobile}
+                $minHeight={minHeight}
+                $maxHeight={maxHeight}
+                $mobile={isMobile}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {/* eslint-disable-next-line jsx-a11y/tabindex-no-positive, jsx-a11y/no-noninteractive-tabindex */}

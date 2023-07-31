@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { rawToTokenAmount } from '../rawToTokenAmount'
+import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null

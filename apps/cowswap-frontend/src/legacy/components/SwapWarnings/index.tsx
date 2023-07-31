@@ -5,12 +5,12 @@ import { Fraction } from '@uniswap/sdk-core'
 import { AlertTriangle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { MouseoverTooltipContent } from '../Tooltip'
-import { useHighFeeWarning } from '../../state/swap/hooks'
-import TradeGp from '../../state/swap/TradeGp'
-import { useIsDarkMode } from '../../state/user/hooks'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { useHighFeeWarning } from 'legacy/state/swap/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { StyledInfoIcon } from '../../../modules/swap/pure/styled'
+import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
 import { AuxInformationContainer } from '../swap/styleds'
 

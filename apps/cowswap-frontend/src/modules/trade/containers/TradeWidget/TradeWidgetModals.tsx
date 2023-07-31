@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { useWalletInfo } from '../../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { ImportTokenModal } from '../../../../common/containers/ImportTokenModal'
-import { TradeApproveModal } from '../../../../common/containers/TradeApprove'
-import { ZeroApprovalModal } from '../../../../common/containers/ZeroApprovalModal'
-import { useShouldZeroApprove } from '../../../../common/hooks/useShouldZeroApprove'
+import { ImportTokenModal } from 'common/containers/ImportTokenModal'
+import { TradeApproveModal } from 'common/containers/TradeApprove'
+import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 

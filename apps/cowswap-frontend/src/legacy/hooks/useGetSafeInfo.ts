@@ -3,13 +3,13 @@ import { useCallback } from 'react'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { useWeb3React } from '@web3-react/core'
 
-import { RetryResult } from '../../types'
+import { RetryResult } from 'types'
 
-import { retry, RetryOptions } from '../utils/retry'
+import { retry, RetryOptions } from 'legacy/utils/retry'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getSafeTransaction } from '../../api/gnosisSafe'
+import { getSafeTransaction } from 'api/gnosisSafe'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 

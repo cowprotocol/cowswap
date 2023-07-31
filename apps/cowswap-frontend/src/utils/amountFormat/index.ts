@@ -1,14 +1,14 @@
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-import { FractionLike, Nullish } from '../../types'
+import { FractionLike, Nullish } from 'types'
 
-import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from '../../legacy/constants'
-import { maxAmountSpend } from '../../legacy/utils/maxAmountSpend'
+import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from 'legacy/constants'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
-import { INTL_NUMBER_FORMAT } from '../../common/constants/intl'
-import { FractionUtils } from '../fractionUtils'
-import { trimTrailingZeros } from '../trimTrailingZeros'
+import { INTL_NUMBER_FORMAT } from 'common/constants/intl'
+import { FractionUtils } from 'utils/fractionUtils'
+import { trimTrailingZeros } from 'utils/trimTrailingZeros'
 
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
 

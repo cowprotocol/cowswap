@@ -8,10 +8,10 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 
 import JSBI from 'jsbi'
 
-import { ORDER_ID_SHORT_LENGTH } from '../constants'
-import { getExplorerOrderLink } from './explorer'
+import { ORDER_ID_SHORT_LENGTH } from 'legacy/constants'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
-import { ChainTokenMap } from '../../lib/hooks/useTokenList/utils'
+import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {

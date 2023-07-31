@@ -1,4 +1,4 @@
-import { BlockExplorerLinkType, formatOrderId } from '../../utils'
+import { BlockExplorerLinkType, formatOrderId } from 'legacy/utils'
 
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'

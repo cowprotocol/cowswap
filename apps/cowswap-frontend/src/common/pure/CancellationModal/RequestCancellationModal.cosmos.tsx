@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET_NATIVE_CURRENCY } from '../../../lib/hooks/useNativeCurrency'
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 import { RequestCancellationModal, RequestCancellationModalProps } from './RequestCancellationModal'
 

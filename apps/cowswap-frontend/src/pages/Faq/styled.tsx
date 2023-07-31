@@ -1,10 +1,10 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../legacy/components/Button'
-import { ExternalLink as ExternalLinkTheme } from '../../legacy/theme'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
-import { Content } from '../../modules/application/pure/Page'
+import { Content } from 'modules/application/pure/Page'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;

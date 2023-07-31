@@ -2,10 +2,10 @@ import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { MouseoverTooltip } from '../Tooltip'
-import { useHigherUSDValue } from '../../hooks/useStablecoinPrice'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import { FiatAmount } from '../../../common/pure/FiatAmount'
+import { FiatAmount } from 'common/pure/FiatAmount'
 
 import { BalanceValue, InfoCircle, FiatValue } from './styled'
 

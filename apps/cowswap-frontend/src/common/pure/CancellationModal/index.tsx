@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
-import { ConfirmOperationType } from '../../../legacy/components/TransactionConfirmationModal'
-import { LegacyConfirmationPendingContent } from '../../../legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { shortenOrderId } from '../../../legacy/utils'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
+import { shortenOrderId } from 'legacy/utils'
 
-import { CancellationModalContext } from '../../hooks/useCancelOrder/state'
-import { CowModal as Modal } from '../Modal'
-import { TransactionErrorContent } from '../TransactionErrorContent'
+import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
+import { CowModal as Modal } from 'common/pure/Modal'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
 

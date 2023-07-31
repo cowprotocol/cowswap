@@ -3,10 +3,10 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
-import CowProtocolLogo from '../CowProtocolLogo'
-import { useCombinedBalance } from '../../state/cowToken/hooks'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 
-import { TokenAmount } from '../../../common/pure/TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;

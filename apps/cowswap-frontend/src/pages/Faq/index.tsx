@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
-import { PageName } from '../../legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from '../../legacy/components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
@@ -10,13 +10,13 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from '../../legacy/constants'
-import { StyledInternalLink } from '../../legacy/theme'
+} from 'legacy/constants'
+import { StyledInternalLink } from 'legacy/theme'
 
-import { PageTitle } from '../../modules/application/containers/PageTitle'
-import { Page, Content } from '../../modules/application/pure/Page'
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
 
-import { Routes } from '../../common/constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'

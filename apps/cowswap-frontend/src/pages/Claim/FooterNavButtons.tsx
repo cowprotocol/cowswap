@@ -4,18 +4,18 @@ import { isAddress } from '@ethersproject/address'
 
 import { Trans } from '@lingui/macro'
 
-import { ButtonPrimary, ButtonSecondary } from '../../legacy/components/Button'
-import { ClaimStatus } from '../../legacy/state/claim/actions'
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimDispatchers,
   useClaimState,
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
-} from '../../legacy/state/claim/hooks'
+} from 'legacy/state/claim/hooks'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { ClaimCommonTypes } from './types'
+import { ClaimCommonTypes } from 'pages/Claim/types'
 
 import { ClaimAddressProps } from './ClaimAddress'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
@@ -93,11 +93,9 @@ export default function FooterNavButtons({
   // User has no set active claim account and/or has claims, show claim account search
   else if (!hasClaims && claimStatus === ClaimStatus.DEFAULT) {
     buttonContent = (
-      <>
-        <ButtonPrimary ref={buttonRef} disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
-          <Trans>Check claimable vCOW</Trans>
-        </ButtonPrimary>
-      </>
+      <ButtonPrimary ref={buttonRef} disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
+        <Trans>Check claimable vCOW</Trans>
+      </ButtonPrimary>
     )
   }
 
@@ -105,11 +103,9 @@ export default function FooterNavButtons({
   if (isConnectedAndHasClaims) {
     if (!isInvestFlowActive) {
       buttonContent = (
-        <>
-          <ButtonPrimary onClick={handleSubmitClaim} disabled={isPaidClaimsOnly && noPaidClaimsSelected}>
-            <Trans>Claim vCOW</Trans>
-          </ButtonPrimary>
-        </>
+        <ButtonPrimary onClick={handleSubmitClaim} disabled={isPaidClaimsOnly && noPaidClaimsSelected}>
+          <Trans>Claim vCOW</Trans>
+        </ButtonPrimary>
       )
     } else if (!isAirdropOnly) {
       buttonContent = (

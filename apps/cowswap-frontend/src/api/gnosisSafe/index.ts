@@ -7,7 +7,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
-import { registerOnWindow } from '../../legacy/utils/misc'
+import { registerOnWindow } from 'legacy/utils/misc'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',

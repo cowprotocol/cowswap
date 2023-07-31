@@ -6,16 +6,17 @@ import styled from 'styled-components/macro'
 // MOD imports
 
 // import { UniIcon, LogoImage } from '../Header'
-import { sendError } from '../analytics'
-import { ChunkLoadError } from './ChunkLoadError'
-import { ErrorWithStackTrace } from './ErrorWithStackTrace'
-import Footer from '../Footer'
-import { UniIcon, LogoImage, HeaderRow } from '../Header/styled' // mod
-import { MEDIA_WIDTHS } from '../../theme'
+import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
+import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
+import Footer from 'legacy/components/Footer'
+import { UniIcon, LogoImage, HeaderRow } from 'legacy/components/Header/styled' // mod
+import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { Page } from '../../../modules/application/pure/Page'
+import { Page } from 'modules/application/pure/Page'
 
-import { Routes } from '../../../common/constants/routes'
+import { Routes } from 'common/constants/routes'
+
+import { sendError } from '../analytics/googleAnalytics'
 
 /* const FallbackWrapper = styled.div`
   display: flex;

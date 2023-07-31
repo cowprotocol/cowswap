@@ -1,6 +1,6 @@
-import { getEthFlowEnabled } from '../helpers/getEthFlowEnabled'
+import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 
-import { useIsSmartContractWallet } from '../../../common/hooks/useIsSmartContractWallet'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
 import { useIsSwapEth } from './useIsSwapEth'
 

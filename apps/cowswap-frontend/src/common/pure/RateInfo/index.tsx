@@ -7,14 +7,14 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { usePrice } from '../../hooks/usePrice'
-import { FiatAmount } from '../FiatAmount'
-import { TokenAmount } from '../TokenAmount'
-import { TokenSymbol } from '../TokenSymbol'
-import { getQuoteCurrency } from '../../services/getQuoteCurrency'
-import { getAddress } from '../../../utils/getAddress'
+import { usePrice } from 'common/hooks/usePrice'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+import { getAddress } from 'utils/getAddress'
 
 const DEFAULT_DECIMALS = 4
 

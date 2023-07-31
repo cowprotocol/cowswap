@@ -1,20 +1,20 @@
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
-import { partialOrderUpdate } from '../../../../legacy/state/orders/utils'
-import { signAndPostOrder } from '../../../../legacy/utils/trade'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { buildApproveTx } from '../../../operations/bundle/buildApproveTx'
-import { buildPresignTx } from '../../../operations/bundle/buildPresignTx'
-import { buildZeroApproveTx } from '../../../operations/bundle/buildZeroApproveTx'
-import { SafeBundleApprovalFlowContext } from '../types'
-import { addPendingOrderStep } from '../../../trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
-import { logTradeFlow } from '../../../trade/utils/logger'
-import { getSwapErrorMessage } from '../../../trade/utils/swapErrorHelper'
+import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
+import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
+import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
+import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
-import { shouldZeroApprove as shouldZeroApproveFn } from '../../../../common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 

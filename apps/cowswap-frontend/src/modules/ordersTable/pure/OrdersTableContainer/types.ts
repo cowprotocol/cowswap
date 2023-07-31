@@ -1,5 +1,5 @@
-import { UseCancelOrderReturn } from '../../../../common/hooks/useCancelOrder'
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn

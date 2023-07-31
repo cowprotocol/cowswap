@@ -10,27 +10,27 @@ import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import iconOrderExecution from '../../../../legacy/assets/cow-swap/orderExecution.svg'
-import { QuestionWrapper } from '../../../../legacy/components/QuestionHelper'
-import QuestionHelper from '../../../../legacy/components/QuestionHelper'
+import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 
-import { PendingOrdersPrices } from '../../../orders/state/pendingOrdersPricesAtom'
-import { SpotPricesKeyParams } from '../../../orders/state/spotPricesAtom'
-import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
+import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable/const/tabs'
 import {
   TableHeader,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
-} from './styled'
-import { OrderActions } from './types'
-import { BalancesAndAllowances } from '../../../tokens'
+} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { BalancesAndAllowances } from 'modules/tokens'
 
-import { ordersTableFeatures } from '../../../../common/constants/featureFlags'
-import { OrderExecutionStatusList, RateTooltipHeader } from '../../../../common/pure/OrderExecutionStatusList'
-import { InvertRateControl } from '../../../../common/pure/RateInfo'
-import { CancellableOrder } from '../../../../common/utils/isOrderCancellable'
-import { isOrderOffChainCancellable } from '../../../../common/utils/isOrderOffChainCancellable'
+import { ordersTableFeatures } from 'common/constants/featureFlags'
+import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
+import { InvertRateControl } from 'common/pure/RateInfo'
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
+import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderRow } from './OrderRow'
 import { OrdersTablePagination } from './OrdersTablePagination'

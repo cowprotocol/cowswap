@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { StyledRowBetween } from '../../../swap/pure/Row/styled'
+import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 
 export const Wrapper = styled.div`
   display: flex;

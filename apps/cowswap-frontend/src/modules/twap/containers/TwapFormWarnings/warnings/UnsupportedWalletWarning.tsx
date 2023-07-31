@@ -1,8 +1,9 @@
-import { ExternalLink } from '../../../../../legacy/theme'
+import { ExternalLink } from 'legacy/theme'
 
-import { SAFE_COW_APP_LINK, UNSUPPORTED_WALLET_LINK } from '../../../const'
+import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
-import { InlineBanner } from '../../../../../common/pure/InlineBanner'
+import { SAFE_COW_APP_LINK } from 'common/constants/common'
+import { InlineBanner } from 'common/pure/InlineBanner'
 
 export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean }) {
   if (isSafeViaWc) {

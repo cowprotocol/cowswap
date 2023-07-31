@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { ParsedOrder } from '../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface ReceiptState {
   order: ParsedOrder | null

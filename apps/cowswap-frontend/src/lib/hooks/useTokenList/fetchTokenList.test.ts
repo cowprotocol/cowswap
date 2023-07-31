@@ -1,13 +1,18 @@
 import fetchMock from 'jest-fetch-mock'
 
-import tokenList from './mockTokenList.json'
+import tokenList from 'lib/hooks/useTokenList/mockTokenList.json'
 
 import fetchTokenList, { DEFAULT_TOKEN_LIST } from './fetchTokenList'
 
 fetchMock.enableMocks()
 
 describe('fetchTokenList', () => {
-  const resolver = jest.fn()
+  let resolver: jest.Mock
+
+  beforeEach(() => {
+    fetchMock.resetMocks()
+    resolver = jest.fn()
+  })
 
   it('throws on an invalid list url', async () => {
     fetchMock.mockReject(() => Promise.reject("URL doesn't exist"))
@@ -30,13 +35,13 @@ describe('fetchTokenList', () => {
 
   it('fetches and validates the default token list', async () => {
     const list = tokenList
-    fetchMock.mockImplementationOnce(() =>
-      // @ts-ignore
-      Promise.resolve({
-        status: 200,
-        ok: true,
-        json: () => Promise.resolve(list),
-      })
+    fetchMock.mockImplementationOnce(
+      () =>
+        Promise.resolve({
+          status: 200,
+          ok: true,
+          json: () => Promise.resolve(list),
+        }) as any
     )
     await expect(fetchTokenList(DEFAULT_TOKEN_LIST, resolver)).resolves.toStrictEqual(list)
     expect(resolver).not.toHaveBeenCalled()

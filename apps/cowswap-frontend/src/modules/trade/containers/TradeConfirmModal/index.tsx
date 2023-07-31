@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 
-import { useIsSafeWallet, useWalletInfo } from '../../../wallet'
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
-import { CowModal } from '../../../../common/pure/Modal'
-import { OrderSubmittedContent } from '../../../../common/pure/OrderSubmittedContent'
-import { TransactionErrorContent } from '../../../../common/pure/TransactionErrorContent'
+import { CowModal } from 'common/pure/Modal'
+import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 

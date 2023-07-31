@@ -2,12 +2,12 @@ import React, { useMemo } from 'react'
 
 import styled from 'styled-components/macro'
 
-import Checkmark from '../../../../../../legacy/assets/cow-swap/checkmark.svg'
-import Exclamation from '../../../../../../legacy/assets/cow-swap/exclamation.svg'
-import Finish from '../../../../../../legacy/assets/cow-swap/finish.svg'
-import Refund from '../../../../../../legacy/assets/cow-swap/refund.svg'
+import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
+import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
+import Finish from 'legacy/assets/cow-swap/finish.svg'
+import Refund from 'legacy/assets/cow-swap/refund.svg'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`

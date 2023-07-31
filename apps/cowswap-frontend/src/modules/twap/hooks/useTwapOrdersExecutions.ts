@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { CONFIRMED_STATES, Order, OrderInfoApi } from '../../../legacy/state/orders/actions'
-import { useOrdersById } from '../../../legacy/state/orders/hooks'
+import { CONFIRMED_STATES, Order, OrderInfoApi } from 'legacy/state/orders/actions'
+import { useOrdersById } from 'legacy/state/orders/hooks'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
@@ -71,7 +71,7 @@ export function useTwapOrdersExecutions(ids: string[]): TwapOrdersExecutionMap {
   }, [ids, partSets, allPartOrders])
 }
 
-function sumChildrenAmount(children: Order[], key: keyof OrderInfoApi): BigInt {
+function sumChildrenAmount(children: Order[], key: keyof OrderInfoApi): bigint {
   return children.reduce((acc, order) => {
     return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
   }, BigInt(0))

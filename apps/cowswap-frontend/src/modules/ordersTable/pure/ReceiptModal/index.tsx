@@ -1,15 +1,15 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
-import { CloseIcon } from '../../../../legacy/theme'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { CloseIcon } from 'legacy/theme'
 
-import { TwapOrderItem } from '../../../twap/types'
+import { TwapOrderItem } from 'modules/twap/types'
 
-import { InlineBanner } from '../../../../common/pure/InlineBanner'
-import { CowModal } from '../../../../common/pure/Modal'
-import { getSellAmountWithFee } from '../../../../utils/orderUtils/getSellAmountWithFee'
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { InlineBanner } from 'common/pure/InlineBanner'
+import { CowModal } from 'common/pure/Modal'
+import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { CurrencyField } from './CurrencyField'
 import { DateField } from './DateField'

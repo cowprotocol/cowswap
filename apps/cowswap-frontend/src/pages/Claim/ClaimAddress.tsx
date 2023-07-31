@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 
 import { Trans } from '@lingui/macro'
 
-import Circle from '../../legacy/assets/images/blue-loader.svg'
-import { ButtonSecondary } from '../../legacy/components/Button'
-import useENS from '../../legacy/hooks/useENS'
-import { ClaimStatus } from '../../legacy/state/claim/actions'
-import { useClaimDispatchers, useClaimState } from '../../legacy/state/claim/hooks'
-import { CustomLightSpinner, ThemedText } from '../../legacy/theme'
+import Circle from 'legacy/assets/images/blue-loader.svg'
+import { ButtonSecondary } from 'legacy/components/Button'
+import useENS from 'legacy/hooks/useENS'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 import { ClaimCommonTypes } from './types'

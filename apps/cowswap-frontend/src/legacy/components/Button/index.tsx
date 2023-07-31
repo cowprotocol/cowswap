@@ -5,9 +5,9 @@ import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from '../Row'
-import useTheme from '../../hooks/useTheme'
-import { ButtonSize } from '../../theme/enum'
+import { RowBetween } from 'legacy/components/Row'
+import useTheme from 'legacy/hooks/useTheme'
+import { ButtonSize } from 'legacy/theme/enum'
 
 import {
   // Import only the basic buttons

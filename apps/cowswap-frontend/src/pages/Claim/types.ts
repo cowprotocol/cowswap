@@ -2,8 +2,8 @@ import { SyntheticEvent } from 'react'
 
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
-import { GpEther } from '../../legacy/constants/tokens'
-import { UserClaimData } from '../../legacy/state/claim/hooks'
+import { GpEther } from 'legacy/constants/tokens'
+import { UserClaimData } from 'legacy/state/claim/hooks'
 
 export type ClaimCommonTypes = {
   account: string | null | undefined

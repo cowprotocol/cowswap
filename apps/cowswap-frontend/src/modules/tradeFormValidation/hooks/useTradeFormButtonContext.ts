@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import { useToggleWalletModal } from '../../../legacy/state/application/hooks'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useWrapNativeFlow } from '../../trade'
-import { useDerivedTradeState } from '../../trade/hooks/useDerivedTradeState'
-import { useTradeQuote } from '../../tradeQuote'
-import { useWalletDetails } from '../../wallet'
+import { useWrapNativeFlow } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { useWalletDetails } from 'modules/wallet'
 
 import { TradeFormButtonContext } from '../types'
 

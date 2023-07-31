@@ -3,15 +3,15 @@ import { useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
 
-import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from '../../constants'
-import { ClaimType } from '../../state/claim/hooks'
-import { Field } from '../../state/swap/actions'
-import TradeGp from '../../state/swap/TradeGp'
-import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
+import { ClaimType } from 'legacy/state/claim/hooks'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { EnhancedUserClaimData } from '../../../pages/Claim/types'
+import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
 

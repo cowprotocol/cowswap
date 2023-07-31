@@ -3,16 +3,16 @@ import { useCallback } from 'react'
 
 import { Percent } from '@uniswap/sdk-core'
 
-import { ConfirmSwapModal } from '../../../../legacy/components/swap/ConfirmSwapModal'
-import { Field } from '../../../../legacy/state/swap/actions'
-import { useSwapActionHandlers } from '../../../../legacy/state/swap/hooks'
-import TradeGp from '../../../../legacy/state/swap/TradeGp'
+import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
+import { Field } from 'legacy/state/swap/actions'
+import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useSwapConfirmManager } from '../../hooks/useSwapConfirmManager'
-import { HandleSwapCallback } from '../../pure/SwapButtons'
-import { swapConfirmAtom } from '../../state/swapConfirmAtom'
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
+import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
 
-import { RateInfoParams } from '../../../../common/pure/RateInfo'
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
@@ -44,18 +44,16 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   // TODO: use TradeConfirmModal
   return (
-    <>
-      <ConfirmSwapModal
-        rateInfoParams={rateInfoParams}
-        swapConfirmState={swapConfirmState}
-        trade={trade}
-        onAcceptChanges={handleAcceptChanges}
-        recipient={recipient}
-        allowedSlippage={allowedSlippage}
-        priceImpact={priceImpact}
-        onConfirm={handleSwap}
-        onDismiss={handleConfirmDismiss}
-      />
-    </>
+    <ConfirmSwapModal
+      rateInfoParams={rateInfoParams}
+      swapConfirmState={swapConfirmState}
+      trade={trade}
+      onAcceptChanges={handleAcceptChanges}
+      recipient={recipient}
+      allowedSlippage={allowedSlippage}
+      priceImpact={priceImpact}
+      onConfirm={handleSwap}
+      onDismiss={handleConfirmDismiss}
+    />
   )
 }

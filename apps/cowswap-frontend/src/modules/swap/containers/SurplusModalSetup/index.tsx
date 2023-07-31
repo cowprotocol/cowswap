@@ -1,13 +1,13 @@
 import { useCallback, useEffect } from 'react'
 
-import { useOrder } from '../../../../legacy/state/orders/hooks'
+import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useWalletInfo } from '../../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useGetSurplusData } from '../../../../common/hooks/useGetSurplusFiatValue'
-import { CowModal } from '../../../../common/pure/Modal'
-import * as styledEl from '../../../../common/pure/TransactionSubmittedContent/styled'
-import { SurplusModal } from '../../../../common/pure/TransactionSubmittedContent/SurplusModal'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CowModal } from 'common/pure/Modal'
+import * as styledEl from 'common/pure/TransactionSubmittedContent/styled'
+import { SurplusModal } from 'common/pure/TransactionSubmittedContent/SurplusModal'
 
 import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from '../../state/surplusModal'
 

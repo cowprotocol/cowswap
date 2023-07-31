@@ -1,6 +1,6 @@
-import { Order, PENDING_STATES } from '../../../legacy/state/orders/actions'
+import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { ParsedOrder, parseOrder } from '../../../utils/orderUtils/parseOrder'
+import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrderTableGroup, OrderTableItem } from './orderTableGroupUtils'
 

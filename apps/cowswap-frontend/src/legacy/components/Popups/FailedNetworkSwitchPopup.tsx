@@ -6,9 +6,9 @@ import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
-import { getChainInfo } from '../../constants/chainInfo'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

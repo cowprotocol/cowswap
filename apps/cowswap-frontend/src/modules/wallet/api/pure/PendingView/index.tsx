@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonEmpty, ButtonPrimary } from '../../../../../legacy/components/Button'
-import Loader from '../../../../../legacy/components/Loader'
-import { ThemedText } from '../../../../../legacy/theme'
+import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
+import Loader from 'legacy/components/Loader'
+import { ThemedText } from 'legacy/theme'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -78,14 +78,12 @@ export function PendingView({
               </ButtonEmpty>
             </ErrorGroup>
           ) : (
-            <>
-              <ThemedText.Black fontSize={20} marginY={16}>
-                <LoaderContainer>
-                  <Loader stroke="currentColor" size="32px" />
-                </LoaderContainer>
-                <Trans>Connecting...</Trans>
-              </ThemedText.Black>
-            </>
+            <ThemedText.Black fontSize={20} marginY={16}>
+              <LoaderContainer>
+                <Loader stroke="currentColor" size="32px" />
+              </LoaderContainer>
+              <Trans>Connecting...</Trans>
+            </ThemedText.Black>
           )}
         </LoadingWrapper>
       </LoadingMessage>

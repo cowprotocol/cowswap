@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
 
-import { ButtonPrimary, ButtonSecondary } from '../../../../legacy/components/Button'
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 
 import {
   calculateMinMax,
@@ -12,9 +12,9 @@ import {
   getInputStartDate,
   getTimeZoneOffset,
   limitDateString,
-} from './utils'
+} from 'modules/limitOrders/pure/DeadlineSelector/utils'
 
-import { CowModal as Modal } from '../../../../common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'

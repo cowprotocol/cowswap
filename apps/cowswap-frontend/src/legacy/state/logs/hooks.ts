@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react'
 
 import { Filter } from '@ethersproject/providers'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import useBlockNumber from '../../../lib/hooks/useBlockNumber'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { addListener, removeListener } from './slice'
 import { filterToKey, isHistoricalLog, Log } from './utils'

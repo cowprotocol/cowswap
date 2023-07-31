@@ -1,14 +1,14 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import QuestionHelper, { QuestionWrapper } from '../../../../legacy/components/QuestionHelper'
-import { useHigherUSDValue } from '../../../../legacy/hooks/useStablecoinPrice'
-import { ExternalLink } from '../../../../legacy/theme'
+import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { ExternalLink } from 'legacy/theme'
 
-import { FiatAmount } from '../../../../common/pure/FiatAmount'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-import { useTotalSurplus } from '../../../../common/state/totalSurplusState'
-import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { useTotalSurplus } from 'common/state/totalSurplusState'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
 

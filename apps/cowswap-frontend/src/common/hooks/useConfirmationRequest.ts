@@ -4,8 +4,8 @@ import { useCallback } from 'react'
 
 import { t } from '@lingui/macro'
 
-import { useCloseModal, useOpenModal } from '../../legacy/state/application/hooks'
-import { ApplicationModal } from '../../legacy/state/application/reducer'
+import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
 

@@ -7,14 +7,14 @@ import { ArrowRight, ArrowLeft } from 'react-feather'
 import { NavHashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../../legacy/components/Button'
-import NotificationBanner from '../../../legacy/components/NotificationBanner'
-import { LegacyConfirmationModalContent } from '../../../legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
-import { LinkStyledButton } from '../../../legacy/theme'
+import { ButtonPrimary } from 'legacy/components/Button'
+import NotificationBanner from 'legacy/components/NotificationBanner'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { LinkStyledButton } from 'legacy/theme'
 
-import { Routes } from '../../constants/routes'
-import { CancellationType } from '../../hooks/useCancelOrder/state'
-import { TokenAmount } from '../TokenAmount'
+import { Routes } from 'common/constants/routes'
+import { CancellationType } from 'common/hooks/useCancelOrder/state'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export type RequestCancellationModalProps = {
   summary?: string

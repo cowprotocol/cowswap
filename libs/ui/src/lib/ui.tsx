@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { return5 } from 'libs/ui-utils/src'
+import { return5 } from '@cowswap/ui-utils'
 
 /* eslint-disable-next-line */
 export interface UiProps extends PropsWithChildren {}

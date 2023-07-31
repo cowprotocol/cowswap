@@ -1,6 +1,6 @@
 import { initializeConnector } from '@web3-react/core'
 
-import { ConnectionType } from '../../index'
+import { ConnectionType } from 'modules/wallet'
 
 import { AsyncConnector } from './asyncConnector'
 

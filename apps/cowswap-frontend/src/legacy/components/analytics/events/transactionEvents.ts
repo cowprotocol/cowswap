@@ -1,6 +1,6 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { sendEvent } from '../index'
+import { sendEvent } from '../googleAnalytics'
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'
 import { sendLinkedinEvent } from '../pixel/linkedin'

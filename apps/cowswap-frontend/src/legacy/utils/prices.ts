@@ -5,8 +5,8 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 
 import JSBI from 'jsbi'
 
-import { Field } from '../state/swap/actions'
-import TradeGp from '../state/swap/TradeGp'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 import {
   ALLOWED_PRICE_IMPACT_HIGH,

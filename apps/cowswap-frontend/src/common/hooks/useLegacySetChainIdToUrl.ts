@@ -4,9 +4,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { getChainInfo } from '../../legacy/constants/chainInfo'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 
-import { useTradeTypeInfo } from '../../modules/trade'
+import { useTradeTypeInfo } from 'modules/trade'
 
 /**
  * Changing chainId in query parameters: ?chain=mainnet

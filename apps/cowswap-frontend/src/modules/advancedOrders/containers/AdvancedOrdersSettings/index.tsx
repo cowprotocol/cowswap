@@ -4,8 +4,8 @@ import { useCallback } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
-import { Settings } from '../../pure/Settings'
-import { MenuContent, SettingsButton, SettingsIcon } from '../../../trade/pure/Settings'
+import { Settings } from 'modules/advancedOrders/pure/Settings'
+import { MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import {
   advancedOrdersSettingsAtom,
@@ -25,17 +25,15 @@ export function AdvancedOrdersSettings() {
   )
 
   return (
-    <>
-      <Menu>
-        <SettingsButton>
-          <SettingsIcon />
-        </SettingsButton>
-        <MenuContent>
-          <MenuItem disabled={true} onSelect={() => void 0}>
-            <Settings state={settingsState} onStateChanged={onStateChanged} />
-          </MenuItem>
-        </MenuContent>
-      </Menu>
-    </>
+    <Menu>
+      <SettingsButton>
+        <SettingsIcon />
+      </SettingsButton>
+      <MenuContent>
+        <MenuItem disabled={true} onSelect={() => void 0}>
+          <Settings state={settingsState} onStateChanged={onStateChanged} />
+        </MenuItem>
+      </MenuContent>
+    </Menu>
   )
 }

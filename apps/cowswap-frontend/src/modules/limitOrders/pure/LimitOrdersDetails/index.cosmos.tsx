@@ -5,11 +5,11 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { COW, GNO } from '../../../../legacy/constants/tokens'
+import { COW, GNO } from 'legacy/constants/tokens'
 
-import { getAppData } from '../../../appData'
-import { defaultLimitOrdersSettings } from '../../state/limitOrdersSettingsAtom'
-import { initLimitRateState } from '../../state/limitRateAtom'
+import { getAppData } from 'modules/appData'
+import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 
 import { TradeFlowContext } from '../../services/types'
 

@@ -22,12 +22,12 @@ beforeEach(() => {
 
 function mockAndFailUntilAttempt(attempt: number) {
   let count = 0
-  // @ts-ignore
-  fetchMock.mockImplementation(() => {
+
+  fetchMock.mockImplementation((() => {
     count++
     // console.log('ATTEMPT', count)
     return count >= attempt ? Promise.resolve(OK_RESPONSE) : Promise.reject(ERROR_MESSAGE)
-  })
+  }) as any)
 }
 
 // We use fetchWithRateLimit instead of fetchWithBackoff, since that is just a default config version of fetchWithBackoff

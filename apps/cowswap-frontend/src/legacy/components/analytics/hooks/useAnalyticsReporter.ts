@@ -7,15 +7,16 @@ import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
-import usePrevious from '../../../hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 
-import { useWalletDetails, useWalletInfo } from '../../../../modules/wallet'
-import { getConnectionName, getIsMetaMask } from '../../../../modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from '../../../../modules/wallet/web3-react/connection'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { getConnectionName, getIsMetaMask } from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { useGetMarketDimension } from './useGetMarketDimension'
 
-import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
+import { googleAnalytics } from '../googleAnalytics'
+import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'
 import { sendLinkedinEvent } from '../pixel/linkedin'

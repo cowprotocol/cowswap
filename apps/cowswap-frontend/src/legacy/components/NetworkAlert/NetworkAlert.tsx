@@ -5,13 +5,13 @@ import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AutoRow } from '../Row'
-import { getChainInfo } from '../../constants/chainInfo'
-import useTheme from '../../hooks/useTheme'
-import { useDarkModeManager } from '../../state/user/hooks'
-import { ExternalLink, HideSmall } from '../../theme'
+import { AutoRow } from 'legacy/components/Row'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import useTheme from 'legacy/hooks/useTheme'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { ExternalLink, HideSmall } from 'legacy/theme'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const L2Icon = styled.img`
   width: 24px;

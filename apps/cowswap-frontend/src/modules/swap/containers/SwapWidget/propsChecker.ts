@@ -1,11 +1,11 @@
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { SwapFormProps } from './types'
-import { ReceiveAmountInfo } from '../../helpers/tradeReceiveAmount'
+import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
+import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 
-import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
-import { areFractionsEqual } from '../../../../utils/areFractionsEqual'
-import { genericPropsChecker } from '../../../../utils/genericPropsChecker'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { areFractionsEqual } from 'utils/areFractionsEqual'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
   if (!prev || !next) {

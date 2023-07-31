@@ -4,9 +4,9 @@ import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { Order, OrderStatus } from '../../legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ComposableCowInfo } from '../../common/types'
+import { ComposableCowInfo } from 'common/types'
 
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
 import { getOrderFilledAmount } from './getOrderFilledAmount'

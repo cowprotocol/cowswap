@@ -3,12 +3,12 @@ import { useEffect } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
-import { onlyResolvesLast } from '../../../legacy/utils/async'
+import { onlyResolvesLast } from 'legacy/utils/async'
 
-import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
-import { useTradeQuote, useQuoteParams } from '../../tradeQuote'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
 
-import { getQuote } from '../../../api/gnosisProtocol/api'
+import { getQuote } from 'api/gnosisProtocol/api'
 
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 

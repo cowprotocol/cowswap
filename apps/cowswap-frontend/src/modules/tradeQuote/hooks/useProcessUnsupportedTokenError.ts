@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
-import { useAddGpUnsupportedToken } from '../../../legacy/state/lists/hooks'
+import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import GpQuoteError from '../../../api/gnosisProtocol/errors/QuoteError'
-import { getQuoteUnsupportedToken } from '../../../utils/getQuoteUnsupportedToken'
+import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
+import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'
 
 export function useProcessUnsupportedTokenError() {
   const { chainId } = useWalletInfo()

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { CloseIcon } from '../../../legacy/theme'
+import { CloseIcon } from 'legacy/theme'
 
 export const ButtonCustom = styled.button`
   display: flex;

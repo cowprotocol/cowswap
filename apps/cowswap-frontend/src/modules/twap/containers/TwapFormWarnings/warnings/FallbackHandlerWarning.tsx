@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 
-import { ExternalLink } from '../../../../../legacy/theme'
+import { ExternalLink } from 'legacy/theme'
 
-import { UNSUPPORTED_SAFE_LINK } from '../../../const'
+import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
 
-import { InlineBanner } from '../../../../../common/pure/InlineBanner'
+import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`
   display: flex;

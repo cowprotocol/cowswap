@@ -6,17 +6,17 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { useGP2SettlementContract } from '../../../legacy/hooks/useContract'
-import { AppDispatch } from '../../../legacy/state'
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { AppDispatch } from 'legacy/state'
 
-import { useAppData } from '../../appData'
-import { useRateImpact } from './useRateImpact'
-import { TradeFlowContext } from '../services/types'
-import { limitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
-import { useTradeQuote } from '../../tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '../../wallet'
+import { useAppData } from 'modules/appData'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
-import { useFeatureFlags } from '../../../common/hooks/featureFlags/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

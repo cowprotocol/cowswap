@@ -1,7 +1,7 @@
-import { signTradeAnalytics, tradeAnalytics } from '../../../legacy/components/analytics'
-import { AnalyticsOrderType } from '../../../legacy/components/analytics/types'
+import { signTradeAnalytics, tradeAnalytics } from 'legacy/components/analytics'
+import { AnalyticsOrderType } from 'legacy/components/analytics/types'
 
-import { USER_SWAP_REJECTED_ERROR } from './swapErrorHelper'
+import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
 export interface SwapFlowAnalyticsContext {
   account: string | null

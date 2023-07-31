@@ -4,12 +4,12 @@ import { Trans } from '@lingui/macro'
 import { ArrowLeft } from 'react-feather'
 import { Text } from 'rebass'
 
-import { RowBetween } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { ManageLists } from '../ManageLists'
-import ManageTokens from '../ManageTokens'
-import { PaddedColumn, Separator } from '../styleds'
-import { CloseIcon } from '../../../theme'
+import { RowBetween } from 'legacy/components/Row'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { ManageLists } from 'legacy/components/SearchModal/ManageLists'
+import ManageTokens from 'legacy/components/SearchModal/ManageTokens'
+import { PaddedColumn, Separator } from 'legacy/components/SearchModal/styleds'
+import { CloseIcon } from 'legacy/theme'
 
 import { ManageProps, Wrapper } from './index'
 

@@ -1,5 +1,5 @@
-import { AdvancedOrdersSettingsState } from '../../state/advancedOrdersSettingsAtom'
-import { SettingsBox, SettingsContainer, SettingsTitle } from '../../../trade/pure/Settings'
+import { AdvancedOrdersSettingsState } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 export interface SettingsProps {
   state: AdvancedOrdersSettingsState

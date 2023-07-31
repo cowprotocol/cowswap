@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { UtmParams } from '../../utm'
+import { UtmParams } from 'modules/utm'
 
 import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'

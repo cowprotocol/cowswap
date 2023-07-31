@@ -4,14 +4,14 @@ import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
 // import Modal from '../Modal'
-import { CurrencySearch } from './CurrencySearch'
-import { ImportList } from './ImportList'
-import { ImportToken } from './ImportToken'
-import Manage from './Manage'
-import usePrevious from '../../hooks/usePrevious'
-import { WrappedTokenInfo } from '../../state/lists/wrappedTokenInfo'
+import { CurrencySearch } from 'legacy/components/SearchModal/CurrencySearch'
+import { ImportList } from 'legacy/components/SearchModal/ImportList'
+import { ImportToken } from 'legacy/components/SearchModal/ImportToken'
+import Manage from 'legacy/components/SearchModal/Manage'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-import { CowModal as Modal } from '../../../common/pure/Modal'
+import { CowModal as Modal } from 'common/pure/Modal'
 
 import useLast from '../../hooks/useLast'
 

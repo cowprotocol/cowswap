@@ -1,4 +1,4 @@
-import { Weth } from '@cowprotocol/abis'
+import { Weth } from '@cowswap/abis'
 
 export type BuildWrapTxParams = {
   wrappedNativeContract: Weth

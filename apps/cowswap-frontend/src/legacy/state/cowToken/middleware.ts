@@ -1,7 +1,7 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 
-import { AppState } from '../index'
-import { getCowSoundSuccess, getCowSoundError } from '../../utils/sound'
+import { AppState } from 'legacy/state'
+import { getCowSoundSuccess, getCowSoundError } from 'legacy/utils/sound'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 

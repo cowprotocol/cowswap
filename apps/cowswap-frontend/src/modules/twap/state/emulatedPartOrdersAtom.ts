@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
-import { CONFIRMED_STATES, Order } from '../../../legacy/state/orders/actions'
+import { CONFIRMED_STATES, Order } from 'legacy/state/orders/actions'
 
-import { tokensByAddressAtom } from '../../tokensList/state/tokensListAtom'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 
 import { twapOrdersAtom } from './twapOrdersListAtom'
 import { twapPartOrdersListAtom } from './twapPartOrdersAtom'

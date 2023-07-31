@@ -3,7 +3,7 @@ import { Children, cloneElement, isValidElement, memo, PropsWithChildren, Synthe
 import { Event, EventName } from './constants'
 import { ITraceContext, Trace, TraceContext } from './Trace'
 
-import { sendAnalyticsEvent } from './index'
+import { sendAnalyticsEvent } from '.'
 
 type TraceEventProps = {
   events: Event[]

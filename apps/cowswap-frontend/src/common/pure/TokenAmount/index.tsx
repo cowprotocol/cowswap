@@ -1,14 +1,14 @@
 import { darken, transparentize } from 'polished'
 import styled from 'styled-components/macro'
-import { FractionLike, Nullish } from '../../../types'
+import { FractionLike, Nullish } from 'types'
 
-import { LONG_PRECISION } from '../../../legacy/constants'
+import { LONG_PRECISION } from 'legacy/constants'
 
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../constants/featureFlags'
-import { TokenSymbol, TokenSymbolProps } from '../TokenSymbol'
-import { formatTokenAmount } from '../../../utils/amountFormat'
-import { FeatureFlag } from '../../../utils/featureFlags'
-import { FractionUtils } from '../../../utils/fractionUtils'
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'common/constants/featureFlags'
+import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
+import { formatTokenAmount } from 'utils/amountFormat'
+import { FeatureFlag } from 'utils/featureFlags'
+import { FractionUtils } from 'utils/fractionUtils'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};

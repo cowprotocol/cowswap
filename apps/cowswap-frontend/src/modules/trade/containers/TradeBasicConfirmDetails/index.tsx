@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction } from 'react'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../../types'
+import { Nullish } from 'types'
 
-import { useHigherUSDValue } from '../../../../legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import { usePrice } from '../../../../common/hooks/usePrice'
-import { RateInfoParams } from '../../../../common/pure/RateInfo'
+import { usePrice } from 'common/hooks/usePrice'
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
 import { SlippageRow } from './SlippageRow'

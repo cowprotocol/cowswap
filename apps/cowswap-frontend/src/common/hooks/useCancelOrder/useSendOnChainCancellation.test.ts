@@ -2,14 +2,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { renderHook } from '@testing-library/react-hooks'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '../../../legacy/constants'
-import { COW } from '../../../legacy/constants/tokens'
-import { useEthFlowContract, useGP2SettlementContract } from '../../../legacy/hooks/useContract'
-import { useTransactionAdder } from '../../../legacy/state/enhancedTransactions/hooks'
-import { Order } from '../../../legacy/state/orders/actions'
-import { useRequestOrderCancellation, useSetOrderCancellationHash } from '../../../legacy/state/orders/hooks'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { COW } from 'legacy/constants/tokens'
+import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { Order } from 'legacy/state/orders/actions'
+import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
@@ -61,6 +61,8 @@ const settlementInvalidationMock = jest.fn()
 
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
+
     mockUseWalletInfo.mockReturnValue({ chainId })
     mockUseSetOrderCancellationHash.mockReturnValue(setOrderCancellationHash)
     mockUseRequestOrderCancellation.mockReturnValue(requestOrderCancellation)

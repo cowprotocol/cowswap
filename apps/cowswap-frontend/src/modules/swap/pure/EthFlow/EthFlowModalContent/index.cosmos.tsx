@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-import { useSelect, useValue } from 'react-cosmos/fixture'
+import { useSelect, useValue } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
-import { ActivityStatus } from '../../../../../legacy/hooks/useRecentActivity'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
-import { EthFlowModalContent } from './index'
-import { getEthFlowModalContentProps } from '../../../services/ethFlow/mocks'
+import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
+import { getEthFlowModalContentProps } from 'modules/swap/services/ethFlow/mocks'
 import {
   ApproveErrorTxHashMock,
   ApprovePendingTxHashMock,
@@ -15,11 +15,11 @@ import {
   WrapErrorTxHashMock,
   WrapPendingTxHashMock,
   WrapSuccessfulTxHashMock,
-} from '../../../services/ethFlow/transactionsMocks'
-import { EthFlowState } from '../../../services/ethFlow/types'
-import { EthFlowActionContext } from '../../../state/EthFlow/ethFlowContextAtom'
+} from 'modules/swap/services/ethFlow/transactionsMocks'
+import { EthFlowState } from 'modules/swap/services/ethFlow/types'
+import { EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-import { CowModal } from '../../../../../common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 
 const ALL_STATES = Object.values(EthFlowState)
 

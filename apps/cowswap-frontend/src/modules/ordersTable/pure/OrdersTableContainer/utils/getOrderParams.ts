@@ -1,11 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { BalancesAndAllowances } from '../../../../tokens'
+import { BalancesAndAllowances } from 'modules/tokens'
 
-import { RateInfoParams } from '../../../../../common/pure/RateInfo'
-import { isEnoughAmount } from '../../../../../utils/isEnoughAmount'
-import { ParsedOrder } from '../../../../../utils/orderUtils/parseOrder'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import { isEnoughAmount } from 'utils/isEnoughAmount'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined

@@ -1,8 +1,8 @@
 import { DefaultTheme } from 'styled-components/macro'
 
-import { CONFIRMED_STATES, OrderStatus } from '../../../../legacy/state/orders/actions'
+import { CONFIRMED_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',

@@ -6,10 +6,10 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { PendingOrderPrices } from '../../../orders/state/pendingOrdersPricesAtom'
-import { BalancesAndAllowances } from '../../../tokens'
+import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderRow } from './OrderRow'
 import * as styledEl from './OrderRow/styled'

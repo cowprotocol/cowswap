@@ -4,14 +4,14 @@ import { TokenList } from '@uniswap/token-lists'
 
 import { nanoid } from '@reduxjs/toolkit'
 
-import { MAINNET_PROVIDER } from '../constants/networks'
-import { useAppDispatch } from '../state/hooks'
-import { fetchTokenList } from '../state/lists/actions'
+import { MAINNET_PROVIDER } from 'legacy/constants/networks'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { fetchTokenList } from 'legacy/state/lists/actions'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import getTokenList from '../../lib/hooks/useTokenList/fetchTokenList'
-import resolveENSContentHash from '../../lib/utils/resolveENSContentHash'
+import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
+import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()

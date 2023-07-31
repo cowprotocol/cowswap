@@ -1,4 +1,4 @@
-import { Content, Page, Title, SectionTitle } from './index'
+import { Content, Page, Title, SectionTitle } from '.'
 
 function Custom() {
   return (

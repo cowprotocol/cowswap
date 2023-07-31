@@ -8,11 +8,11 @@ import {
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
-} from '../../constants/lists'
-import { updateVersion } from '../global/actions'
-import { getChainIdValues } from '../../utils/misc'
+} from 'legacy/constants/lists'
+import { updateVersion } from 'legacy/state/global/actions'
+import { getChainIdValues } from 'legacy/utils/misc'
 
-import { UnsupportedToken } from '../../../api/gnosisProtocol'
+import { UnsupportedToken } from 'api/gnosisProtocol'
 
 import {
   acceptListUpdate,

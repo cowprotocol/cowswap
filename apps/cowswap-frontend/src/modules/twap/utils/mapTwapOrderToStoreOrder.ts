@@ -1,8 +1,8 @@
-import { Order, OrderStatus } from '../../../legacy/state/orders/actions'
-import { computeOrderSummary } from '../../../legacy/state/orders/updaters/utils'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
-import { TokensByAddress } from '../../tokensList/state/tokensListAtom'
-import { getTokensByAddress } from '../../tokensList/utils/getTokensByAddress'
+import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
+import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
 
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 

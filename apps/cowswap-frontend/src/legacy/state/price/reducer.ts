@@ -2,11 +2,11 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
-import { FeeInformation, PriceInformation } from '../../../types'
+import { FeeInformation, PriceInformation } from 'types'
 
-import { Writable } from '../../types'
+import { Writable } from 'legacy/types'
 
-import { LegacyFeeQuoteParams } from '../../../api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 

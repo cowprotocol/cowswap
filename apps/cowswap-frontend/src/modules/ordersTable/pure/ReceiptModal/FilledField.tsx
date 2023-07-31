@@ -1,10 +1,10 @@
 // Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
 
-import { ProgressBarWrapper, ProgressBar } from '../OrdersTableContainer/OrderRow/styled'
+import { ProgressBarWrapper, ProgressBar } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
 
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-import { getFilledAmounts } from '../../../../utils/orderUtils/getFilledAmounts'
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 

@@ -5,11 +5,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import NotificationBanner from '../../legacy/components/NotificationBanner'
-import { useClaimState } from '../../legacy/state/claim/hooks'
-import { ClaimInfo } from '../../legacy/state/claim/reducer'
+import NotificationBanner from 'legacy/components/NotificationBanner'
+import { useClaimState } from 'legacy/state/claim/hooks'
+import { ClaimInfo } from 'legacy/state/claim/reducer'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 // const ChainSpan = styled.span``
 const Wrapper = styled.div`

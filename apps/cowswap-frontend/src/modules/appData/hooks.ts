@@ -1,11 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '../../legacy/constants'
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
 
-import { useIsSafeApp } from '../wallet'
+import { useIsSafeApp } from 'modules/wallet'
 
-import { isInjectedWidget } from '../../common/utils/isInjectedWidget'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import { appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'

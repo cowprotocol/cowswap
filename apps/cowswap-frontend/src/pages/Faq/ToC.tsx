@@ -1,10 +1,10 @@
-import { LinkScrollable } from '../../legacy/components/Link'
+import { LinkScrollable } from 'legacy/components/Link'
 
-import { Content, Title } from '../../modules/application/pure/Page'
+import { Content, Title } from 'modules/application/pure/Page'
 
 import { PageIndex } from './styled'
 
-import { TocSection } from './index'
+import { TocSection } from '.'
 
 export default function Toc(props: { toc: TocSection[]; name: string }) {
   const { toc, name } = props

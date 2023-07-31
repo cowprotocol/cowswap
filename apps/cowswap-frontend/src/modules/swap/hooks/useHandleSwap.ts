@@ -1,15 +1,15 @@
 import { useCallback } from 'react'
 
-import { PriceImpact } from '../../../legacy/hooks/usePriceImpact'
-import { useSwapActionHandlers } from '../../../legacy/state/swap/hooks'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-import { useSafeBundleApprovalFlowContext } from './useSafeBundleApprovalFlowContext'
-import { ethFlow } from '../services/ethFlow'
-import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
-import { swapFlow } from '../services/swapFlow'
-import { logTradeFlow } from '../../trade/utils/logger'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
+import { ethFlow } from 'modules/swap/services/ethFlow'
+import { safeBundleApprovalFlow, safeBundleEthFlow } from 'modules/swap/services/safeBundleFlow'
+import { swapFlow } from 'modules/swap/services/swapFlow'
+import { logTradeFlow } from 'modules/trade/utils/logger'
 
-import { useConfirmPriceImpactWithoutFee } from '../../../common/hooks/useConfirmPriceImpactWithoutFee'
+import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useEthFlowContext } from './useEthFlowContext'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'

@@ -1,7 +1,7 @@
-import { ApprovalState } from '../../legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 
-import { TradeDerivedState } from '../trade'
-import { TradeQuoteState } from '../tradeQuote'
+import { TradeDerivedState } from 'modules/trade'
+import { TradeQuoteState } from 'modules/tradeQuote'
 
 export enum TradeFormValidation {
   // Wrap/unwrap

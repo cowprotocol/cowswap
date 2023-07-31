@@ -1,4 +1,4 @@
-import { EthFlowState } from '../../../services/ethFlow/types'
+import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 
 export interface EthFlowConfig {
   title: string

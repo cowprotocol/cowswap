@@ -6,16 +6,16 @@ import { transparentize } from 'polished'
 import { AlertCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
 
-import Card from '../../Card'
-import { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import { RowFixed } from '../../Row'
-import { ExternalLink, ThemedText } from '../../../theme'
-import { getEtherscanLink as getExplorerLink } from '../../../utils'
+import Card from 'legacy/components/Card'
+import { AutoColumn } from 'legacy/components/Column'
+import ListLogo from 'legacy/components/ListLogo'
+import { RowFixed } from 'legacy/components/Row'
+import { ExternalLink, ThemedText } from 'legacy/theme'
+import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { CurrencyLogo } from '../../../../common/pure/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
   background-color: ${({ theme, highWarning }) =>

@@ -1,4 +1,4 @@
-import { SettingsBox, SettingsContainer, SettingsTitle } from '../../../trade/pure/Settings'
+import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 

@@ -3,7 +3,7 @@ import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
+import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 
 import { OrderTab } from '../../const/tabs'
 

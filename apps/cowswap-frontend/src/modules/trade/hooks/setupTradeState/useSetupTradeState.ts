@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
 
-import usePrevious from '../../../../legacy/hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 
-import { useTradeNavigate } from '../useTradeNavigate'
-import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
-import { useWalletInfo } from '../../../wallet'
-import { switchChain } from '../../../wallet/web3-react/hooks/switchChain'
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { useWalletInfo } from 'modules/wallet'
+import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'

@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
 
-import { useTradeRouteContext } from '../../../trade/hooks/useTradeRouteContext'
-import { parameterizeTradeRoute } from '../../../trade/utils/parameterizeTradeRoute'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes, RoutesValues } from '../../../../common/constants/routes'
-import { FeatureGuard } from '../../../../common/containers/FeatureGuard'
+import { Routes, RoutesValues } from 'common/constants/routes'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import * as styledEl from './styled'
 

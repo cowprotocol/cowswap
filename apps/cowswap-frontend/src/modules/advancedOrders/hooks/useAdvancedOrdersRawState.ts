@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { ExtendedTradeRawState } from '../../trade/types/TradeRawState'
+import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { advancedOrdersAtom, updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'
 

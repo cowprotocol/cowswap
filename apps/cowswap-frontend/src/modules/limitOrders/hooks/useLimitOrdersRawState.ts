@@ -4,7 +4,7 @@ import {
   limitOrdersRawStateAtom,
   LimitOrdersRawState,
   updateLimitOrdersRawStateAtom,
-} from '../state/limitOrdersRawStateAtom'
+} from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 
 export function useLimitOrdersRawState(): LimitOrdersRawState {
   return useAtomValue(limitOrdersRawStateAtom)

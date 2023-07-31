@@ -1,7 +1,7 @@
-import { useAtomValue } from '../../../legacy/state/application/atoms'
+import { useAtomValue } from 'legacy/state/application/atoms'
 
-import { cancellationModalContextAtom } from '../../hooks/useCancelOrder/state'
-import { CancellationModal as Pure } from '../../pure/CancellationModal'
+import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
+import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 
 export type CancellationModalProps = {
   isOpen: boolean

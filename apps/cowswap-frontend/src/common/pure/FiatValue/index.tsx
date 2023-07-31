@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { PriceImpact } from '../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { FiatAmount } from '../FiatAmount'
+import { FiatAmount } from 'common/pure/FiatAmount'
 
 import { PriceImpactIndicator } from '../PriceImpactIndicator'
 

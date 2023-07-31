@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { useTokensListWithDefaults } from '../../../legacy/state/lists/hooks'
+import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 
-import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from '../state/tokensListAtom'
+import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from 'modules/tokensList/state/tokensListAtom'
 
 /**
  * This updater protects from redundant recalculations

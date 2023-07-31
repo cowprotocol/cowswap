@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { InfoIcon } from '../../../../legacy/components/InfoIcon'
+import { InfoIcon } from 'legacy/components/InfoIcon'
 
 export enum TradeWarningType {
   LOW,

@@ -1,6 +1,6 @@
-import { OrderStatusBox } from '../OrderStatusBox'
+import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 

@@ -3,19 +3,19 @@ import React from 'react'
 
 import { Trans } from '@lingui/macro'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useHandleOrderPlacement } from '../../hooks/useHandleOrderPlacement'
-import { useLimitOrdersWarningsAccepted } from '../../hooks/useLimitOrdersWarningsAccepted'
-import { TradeFlowContext } from '../../services/types'
-import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-import { useTradeConfirmActions } from '../../../trade'
+import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useTradeConfirmActions } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
   useGetTradeFormValidation,
   useTradeFormButtonContext,
-} from '../../../tradeFormValidation'
+} from 'modules/tradeFormValidation'
 
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 

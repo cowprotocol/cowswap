@@ -4,18 +4,18 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { SwapModalFooter } from '../SwapModalFooter'
-import SwapModalHeader from '../SwapModalHeader'
-import { ConfirmOperationType, TransactionConfirmationModal } from '../../TransactionConfirmationModal'
-import { LegacyConfirmationModalContent } from '../../TransactionConfirmationModal/LegacyConfirmationModalContent'
-import TradeGp from '../../../state/swap/TradeGp'
+import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
+import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
+import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { SwapConfirmState } from '../../../../modules/swap/state/swapConfirmAtom'
-import { useWalletDetails } from '../../../../modules/wallet'
+import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
+import { useWalletDetails } from 'modules/wallet'
 
-import { RateInfoParams } from '../../../../common/pure/RateInfo'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-import { TransactionErrorContent } from '../../../../common/pure/TransactionErrorContent'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useButtonText } from './hooks'
 

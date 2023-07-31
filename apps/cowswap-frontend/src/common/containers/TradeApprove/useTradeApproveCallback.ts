@@ -4,11 +4,11 @@ import { useCallback } from 'react'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { approvalAnalytics } from '../../../legacy/components/analytics'
-import { isRejectRequestProviderError } from '../../../legacy/utils/misc'
+import { approvalAnalytics } from 'legacy/components/analytics'
+import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
-import { useApproveCallback } from '../../hooks/useApproveCallback'
-import { useTradeSpenderAddress } from '../../hooks/useTradeSpenderAddress'
+import { useApproveCallback } from 'common/hooks/useApproveCallback'
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { updateTradeApproveStateAtom } from './tradeApproveStateAtom'
 

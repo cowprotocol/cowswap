@@ -4,10 +4,10 @@ import { Edit } from 'react-feather'
 import styled from 'styled-components/macro'
 import { DefaultTheme } from 'styled-components/macro'
 
-import Column from '../../Column'
-import { RowFixed } from '../../Row'
-import { Separator } from '../styleds'
-import { IconWrapper, ThemedText } from '../../../theme'
+import Column from 'legacy/components/Column'
+import { RowFixed } from 'legacy/components/Row'
+import { Separator } from 'legacy/components/SearchModal/styleds'
+import { IconWrapper, ThemedText } from 'legacy/theme'
 
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 

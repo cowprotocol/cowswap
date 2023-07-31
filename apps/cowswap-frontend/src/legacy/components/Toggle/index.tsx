@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { darken, transparentize } from 'polished'
 import styled, { keyframes } from 'styled-components/macro'
-import { WithClassName } from '../../../types'
+import { WithClassName } from 'types'
 
 const turnOnToggle = keyframes`
   from {
@@ -41,7 +41,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
   background: ${({ theme, bgColor, isActive }) =>
-    isActive ? bgColor ?? theme.primary1 : !!bgColor ? theme.bg4 : theme.text3};
+    isActive ? bgColor ?? theme.primary1 : bgColor ? theme.bg4 : theme.text3};
   border-radius: 50%;
   height: 24px;
   :hover {

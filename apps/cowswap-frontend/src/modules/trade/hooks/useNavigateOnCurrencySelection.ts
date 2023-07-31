@@ -2,13 +2,13 @@ import { useCallback } from 'react'
 
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { Field } from '../../../legacy/state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useTradeNavigate } from './useTradeNavigate'
-import { useTradeState } from './useTradeState'
-import { useWalletInfo } from '../../wallet'
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useAreThereTokensWithSameSymbol } from '../../../common/hooks/useAreThereTokensWithSameSymbol'
+import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 
 export type CurrencySelectionCallback = (
   field: Field,

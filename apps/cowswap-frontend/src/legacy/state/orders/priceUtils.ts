@@ -2,7 +2,7 @@
 
 import { BigNumber } from 'bignumber.js'
 
-import { DEFAULT_DECIMALS } from '../../constants'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 
 interface PriceTokenInfo {
   amount: BigNumber | string

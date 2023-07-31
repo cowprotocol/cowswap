@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { EthFlowBannerContent } from '../../pure/EthFlow/EthFlowBanner'
-import { useIsNativeIn } from '../../../trade/hooks/useIsNativeInOrOut'
-import { useWrappedToken } from '../../../trade/hooks/useWrappedToken'
+import { EthFlowBannerContent } from 'modules/swap/pure/EthFlow/EthFlowBanner'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
-import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export interface EthFlowBannerCallbacks {
   wrapCallback: () => void

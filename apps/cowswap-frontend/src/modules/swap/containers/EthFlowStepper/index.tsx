@@ -1,17 +1,17 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '../../../../legacy/constants'
-import { useAllTransactions } from '../../../../legacy/state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from '../../../../legacy/state/enhancedTransactions/reducer'
-import { Order, OrderStatus } from '../../../../legacy/state/orders/actions'
-import { isOrderExpired } from '../../../../legacy/state/orders/utils'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { isOrderExpired } from 'legacy/state/orders/utils'
 
 import {
   EthFlowStepper as Pure,
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
-} from '../../pure/EthFlow/EthFlowStepper'
+} from 'modules/swap/pure/EthFlow/EthFlowStepper'
 
-import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
-import { formatSymbol } from '../../../../utils/format'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {
   order: Order | undefined

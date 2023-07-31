@@ -5,15 +5,15 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from '../../components/TransactionConfirmationModal'
-import { useCurrency } from '../Tokens'
-import { useTokenContract } from '../useContract'
-import usePrevious from '../usePrevious'
-import { useTokenAllowance } from '../useTokenAllowance'
-import { useHasPendingApproval, useTransactionAdder } from '../../state/enhancedTransactions/hooks'
-import { calculateGasMargin } from '../../utils/calculateGasMargin'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useCurrency } from 'legacy/hooks/Tokens'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
+import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 

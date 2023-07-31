@@ -2,12 +2,20 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@cowswap/abis": ["../../libs/abis/src/index.ts"],
+      "@cowswap/ui": ["../../libs/ui/src/index.ts"],
+      "@cowswap/ui-utils": ["../../libs/ui-utils/src/index.ts"],
+      "@cowswap/widget-lib": ["../../libs/widget-lib/src/index.ts"],
+      "@cowswap/widget-react": ["../../libs/widget-react/src/index.ts"]
+    }
   },
   "files": [
-    "../../../node_modules/@nx/react/typings/styled-jsx.d.ts",
-    "../../../node_modules/@nx/react/typings/cssmodule.d.ts",
-    "../../../node_modules/@nx/react/typings/image.d.ts"
+    "../../node_modules/@nx/react/typings/styled-jsx.d.ts",
+    "../../node_modules/@nx/react/typings/cssmodule.d.ts",
+    "../../node_modules/@nx/react/typings/image.d.ts"
   ],
   "exclude": [
     "**/*.spec.ts",

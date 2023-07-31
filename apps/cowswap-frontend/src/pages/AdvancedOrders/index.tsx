@@ -2,16 +2,16 @@ import { useAtomValue } from 'jotai'
 
 import { Navigate } from 'react-router-dom'
 
-import { AdvancedOrdersWidget, advancedOrdersAtom, FillAdvancedOrdersDerivedStateUpdater } from '../../modules/advancedOrders'
-import { OrdersTableWidget } from '../../modules/ordersTable'
-import { TabOrderTypes } from '../../modules/ordersTable/pure/OrdersTableContainer'
-import { useTradeRouteContext } from '../../modules/trade/hooks/useTradeRouteContext'
-import * as styledEl from '../../modules/trade/pure/TradePageLayout'
-import { parameterizeTradeRoute } from '../../modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget, useEmulatedOrders, CreatedInOrderBookOrdersUpdater } from '../../modules/twap'
+import { AdvancedOrdersWidget, advancedOrdersAtom, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
+import { OrdersTableWidget } from 'modules/ordersTable'
+import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
+import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { TwapFormWidget, useEmulatedOrders, CreatedInOrderBookOrdersUpdater } from 'modules/twap'
 
-import { Routes as RoutesEnum } from '../../common/constants/routes'
-import { useIsAdvancedOrdersEnabled } from '../../common/hooks/useIsAdvancedOrdersEnabled'
+import { Routes as RoutesEnum } from 'common/constants/routes'
+import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
 
 export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()

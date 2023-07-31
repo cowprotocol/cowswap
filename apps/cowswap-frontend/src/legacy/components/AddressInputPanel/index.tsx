@@ -3,15 +3,15 @@ import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import { t, Trans } from '@lingui/macro'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
-import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
-import useENS from '../../hooks/useENS'
-import { ExternalLink, ThemedText } from '../../theme'
-import { getBlockExplorerUrl as getExplorerLink } from '../../utils'
+import { AutoColumn } from 'legacy/components/Column'
+import { RowBetween } from 'legacy/components/Row'
+import useENS from 'legacy/hooks/useENS'
+import { ExternalLink, ThemedText } from 'legacy/theme'
+import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { autofocus } from '../../../common/utils/autofocus'
+import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}

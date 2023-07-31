@@ -1,3 +1,3 @@
-import { GovernanceList } from './index'
+import { GovernanceList } from '.'
 
 export default GovernanceList

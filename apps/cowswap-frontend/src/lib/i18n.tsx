@@ -36,7 +36,7 @@ import {
 } from 'make-plural/plurals'
 import { PluralCategory } from 'make-plural/plurals'
 
-import { DEFAULT_LOCALE, SupportedLocale } from '../legacy/constants/locales'
+import { DEFAULT_LOCALE, SupportedLocale } from 'legacy/constants/locales'
 
 type LocalePlural = {
   [key in SupportedLocale]: (n: number | string, ord?: boolean) => PluralCategory
@@ -81,21 +81,23 @@ const plurals: LocalePlural = {
 export async function dynamicActivate(locale: SupportedLocale) {
   i18n.loadLocaleData(locale, { plurals: plurals[locale] })
   try {
-    const catalog = await import(`${process.env.REACT_APP_LOCALES}/${locale}.js`)
+    const catalog = await import(`../locales/${locale}.po`)
     // Bundlers will either export it as default or as a named export named default.
     i18n.load(locale, catalog.messages || catalog.default.messages)
-  } catch {}
+  } catch (error) {
+    // Do nothing
+    console.error('Could not load locale file: ' + locale, error)
+  }
   i18n.activate(locale)
 }
 
 interface ProviderProps {
   locale: SupportedLocale
-  forceRenderAfterLocaleChange?: boolean
   onActivate?: (locale: SupportedLocale) => void
   children: ReactNode
 }
 
-export function Provider({ locale, forceRenderAfterLocaleChange = true, onActivate, children }: ProviderProps) {
+export function Provider({ locale, onActivate, children }: ProviderProps) {
   useEffect(() => {
     dynamicActivate(locale)
       .then(() => onActivate?.(locale))
@@ -114,9 +116,5 @@ export function Provider({ locale, forceRenderAfterLocaleChange = true, onActiva
     i18n.activate(DEFAULT_LOCALE)
   }
 
-  return (
-    <I18nProvider forceRenderOnLocaleChange={forceRenderAfterLocaleChange} i18n={i18n}>
-      {children}
-    </I18nProvider>
-  )
+  return <I18nProvider i18n={i18n}>{children}</I18nProvider>
 }

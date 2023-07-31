@@ -1,14 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
 
-import { COW, GNO } from '../../../../../legacy/constants/tokens'
-import TradeGp from '../../../../../legacy/state/swap/TradeGp'
+import { COW, GNO } from 'legacy/constants/tokens'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { RowReceivedAfterSlippageProps } from '../../../containers/Row/RowReceivedAfterSlippage'
+import { RowReceivedAfterSlippageProps } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import {
   RowReceivedAfterSlippageContent,
   RowReceivedAfterSlippageContentProps,
-} from './index'
+} from 'modules/swap/pure/Row/RowReceivedAfterSlippageContent'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

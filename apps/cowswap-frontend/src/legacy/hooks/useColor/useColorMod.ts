@@ -4,7 +4,7 @@ import Vibrant from 'node-vibrant/lib/bundle'
 import { shade } from 'polished'
 import { hex } from 'wcag-contrast'
 
-import uriToHttp from '../../../lib/utils/uriToHttp'
+import uriToHttp from 'lib/utils/uriToHttp'
 
 export async function getColorFromUriPath(uri: string): Promise<string | null> {
   const formattedPath = uriToHttp(uri)[0]

@@ -2,18 +2,18 @@ import { useCallback } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { LegacyConfirmationModalContent } from '../../../../../legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 
-import { EthFlowActions } from '../../../containers/EthFlow/hooks/useEthFlowActions'
-import { ethFlowConfigs } from './configs'
-import { EthFlowModalBottomContent } from './EthFlowModalBottomContent'
+import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
+import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
+import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
 import {
   BalanceChecks,
   EthFlowModalTopContent,
-} from './EthFlowModalTopContent'
-import { WrappingPreviewProps } from '../WrappingPreview'
-import { EthFlowState } from '../../../services/ethFlow/types'
-import { EthFlowContext } from '../../../state/EthFlow/ethFlowContextAtom'
+} from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
+import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
+import { EthFlowState } from 'modules/swap/services/ethFlow/types'
+import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
 export interface EthFlowModalContentProps {
   state: EthFlowState

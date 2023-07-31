@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import GnosisChainLogo from '../assets/cow-swap/network-gnosis-chain-logo.svg'
-import GoerliLogo from '../assets/cow-swap/network-goerli-logo.svg'
-import EthereumLogo from '../assets/cow-swap/network-mainnet-logo.svg'
+import GnosisChainLogo from 'legacy/assets/cow-swap/network-gnosis-chain-logo.svg'
+import GoerliLogo from 'legacy/assets/cow-swap/network-goerli-logo.svg'
+import EthereumLogo from 'legacy/assets/cow-swap/network-mainnet-logo.svg'
 
 export enum NetworkType {
   L1,

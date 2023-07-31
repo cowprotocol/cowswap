@@ -1,9 +1,9 @@
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { Polling } from '../Header/Polling'
-import { useIsDarkMode } from '../../state/user/hooks'
-import { footerImage } from '../../theme/cowSwapAssets'
+import { Polling } from 'legacy/components/Header/Polling'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
+import { footerImage } from 'legacy/theme/cowSwapAssets'
 
 import { Version } from '../Version'
 

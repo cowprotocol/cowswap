@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
-import { deepEqual } from '../../../utils/deepEqual'
+import { deepEqual } from 'utils/deepEqual'
 
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'

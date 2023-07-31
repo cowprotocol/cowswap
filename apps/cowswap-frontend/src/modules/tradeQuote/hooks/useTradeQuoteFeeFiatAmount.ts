@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useHigherUSDValue } from '../../../legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import { useTradeQuote } from './useTradeQuote'
 

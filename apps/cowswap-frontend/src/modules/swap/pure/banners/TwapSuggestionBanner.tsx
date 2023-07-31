@@ -4,11 +4,11 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { TradeUrlParams } from '../../../trade/types/TradeRawState'
-import { parameterizeTradeRoute } from '../../../trade/utils/parameterizeTradeRoute'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes } from '../../../../common/constants/routes'
-import { InlineBanner } from '../../../../common/pure/InlineBanner'
+import { Routes } from 'common/constants/routes'
+import { InlineBanner } from 'common/pure/InlineBanner'
 
 const StyledNavLink = styled(NavLink)`
   color: inherit;

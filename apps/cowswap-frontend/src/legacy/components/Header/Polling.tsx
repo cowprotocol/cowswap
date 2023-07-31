@@ -5,18 +5,18 @@ import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { RowFixed } from '../Row'
-import { getChainInfo } from '../../constants/chainInfo'
-import useCurrentBlockTimestamp from '../../hooks/useCurrentBlockTimestamp'
-import useGasPrice from '../../hooks/useGasPrice'
-import useMachineTimeMs from '../../hooks/useMachineTime'
-import useTheme from '../../hooks/useTheme'
-import { ExternalLink, ThemedText } from '../../theme'
-import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+import { RowFixed } from 'legacy/components/Row'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
+import useGasPrice from 'legacy/hooks/useGasPrice'
+import useMachineTimeMs from 'legacy/hooks/useMachineTime'
+import useTheme from 'legacy/hooks/useTheme'
+import { ExternalLink, ThemedText } from 'legacy/theme'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import useBlockNumber from '../../../lib/hooks/useBlockNumber'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 

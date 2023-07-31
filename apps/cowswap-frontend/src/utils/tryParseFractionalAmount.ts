@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { FractionUtils } from './fractionUtils'
+import { FractionUtils } from 'utils/fractionUtils'
 
 export function tryParseFractionalAmount(
   currency: Currency | null,

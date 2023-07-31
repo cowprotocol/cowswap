@@ -1,6 +1,6 @@
-import { ArgentWalletContract, ArgentWalletContractAbi } from '@cowprotocol/abis'
+import { ArgentWalletContract, ArgentWalletContractAbi } from '@cowswap/abis'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useContract } from './useContract'
 import useIsArgentWallet from './useIsArgentWallet'

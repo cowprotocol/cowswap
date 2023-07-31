@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 
-import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Erc20Abi, Erc20Interface } from '@cowswap/abis'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZERO_ADDRESS } from '../../../legacy/constants/misc'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from '../../../legacy/constants/tokens'
+import { ZERO_ADDRESS } from 'legacy/constants/misc'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useMultipleContractSingleData } from '../../../lib/hooks/multicall'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'

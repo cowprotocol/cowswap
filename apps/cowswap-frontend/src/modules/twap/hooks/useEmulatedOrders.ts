@@ -3,10 +3,10 @@ import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { Order } from '../../../legacy/state/orders/actions'
-import { useOrders } from '../../../legacy/state/orders/hooks'
+import { Order } from 'legacy/state/orders/actions'
+import { useOrders } from 'legacy/state/orders/hooks'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { emulatedPartOrdersAtom } from '../state/emulatedPartOrdersAtom'
 import { emulatedTwapOrdersAtom } from '../state/emulatedTwapOrdersAtom'

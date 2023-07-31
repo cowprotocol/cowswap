@@ -3,18 +3,18 @@ import { useSetAtom } from 'jotai'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Field } from '../../../../legacy/state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
-import { useAdvancedOrdersDerivedState } from '../../hooks/useAdvancedOrdersDerivedState'
-import { updateAdvancedOrdersAtom } from '../../state/advancedOrdersAtom'
-import { advancedOrdersSettingsAtom } from '../../state/advancedOrdersSettingsAtom'
-import { useTradePriceImpact, TradeWidget, TradeWidgetSlots } from '../../../trade'
-import { BulletListItem, UnlockWidgetScreen } from '../../../trade/pure/UnlockWidgetScreen'
-import { useTradeQuote } from '../../../tradeQuote'
-import { TWAP_LEARN_MORE_LINK } from '../../../twap/const'
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
 
-import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
@@ -103,16 +103,14 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   }
 
   return (
-    <>
-      <TradeWidget
-        id="advanced-orders-page"
-        disableOutput={true}
-        slots={slots}
-        actions={actions}
-        params={params}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-      />
-    </>
+    <TradeWidget
+      id="advanced-orders-page"
+      disableOutput={true}
+      slots={slots}
+      actions={actions}
+      params={params}
+      inputCurrencyInfo={inputCurrencyInfo}
+      outputCurrencyInfo={outputCurrencyInfo}
+    />
   )
 }

@@ -1,14 +1,14 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { PriceImpact } from '../../../legacy/hooks/usePriceImpact'
-import { useSwapActionHandlers } from '../../../legacy/state/swap/hooks'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-import { useSafeBundleApprovalFlowContext } from './useSafeBundleApprovalFlowContext'
-import { ethFlow } from '../services/ethFlow'
-import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
-import { swapFlow } from '../services/swapFlow'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
+import { ethFlow } from 'modules/swap/services/ethFlow'
+import { safeBundleApprovalFlow, safeBundleEthFlow } from 'modules/swap/services/safeBundleFlow'
+import { swapFlow } from 'modules/swap/services/swapFlow'
 
-import { withModalProvider } from '../../../utils/withModalProvider'
+import { withModalProvider } from 'utils/withModalProvider'
 
 import { useEthFlowContext } from './useEthFlowContext'
 import { useHandleSwap } from './useHandleSwap'

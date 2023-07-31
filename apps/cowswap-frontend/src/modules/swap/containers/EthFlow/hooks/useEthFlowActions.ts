@@ -2,16 +2,16 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCY } from '../../../../../legacy/constants/tokens'
-import { WrapUnwrapCallback } from '../../../../../legacy/hooks/useWrapCallback'
-import { Field } from '../../../../../legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers } from '../../../../../legacy/state/swap/hooks'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { Field } from 'legacy/state/swap/actions'
+import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-import { useSwapConfirmManager } from '../../../hooks/useSwapConfirmManager'
-import { HandleSwapCallback } from '../../../pure/SwapButtons'
-import { useWalletInfo } from '../../../../wallet'
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
+import { useWalletInfo } from 'modules/wallet'
 
-import { TradeApproveCallback } from '../../../../../common/containers/TradeApprove/useTradeApproveCallback'
+import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
 
 import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 

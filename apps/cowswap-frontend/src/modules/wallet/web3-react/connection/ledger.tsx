@@ -1,13 +1,13 @@
 import { initializeConnector } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { RPC_URLS } from '../../../../legacy/constants/networks'
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
+import { RPC_URLS } from 'legacy/constants/networks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from '../../index'
-import { default as LedgerImage } from '../../api/assets/ledger.svg'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { getConnectionName } from '../../api/utils/connection'
+import { ConnectionType } from 'modules/wallet'
+import { default as LedgerImage } from 'modules/wallet/api/assets/ledger.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
 import { AsyncConnector } from './asyncConnector'
 

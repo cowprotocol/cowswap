@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { EthFlowStepperProps, Progress, ProgressProps, SmartOrderStatus } from '../index'
+import { EthFlowStepperProps, Progress, ProgressProps, SmartOrderStatus } from '..'
 
 export function Progress1({ order, creation }: EthFlowStepperProps) {
   const { state, isExpired } = order

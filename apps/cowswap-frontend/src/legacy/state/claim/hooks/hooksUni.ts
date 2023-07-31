@@ -5,12 +5,12 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { MERKLE_DISTRIBUTOR_ADDRESS } from '../../../constants/addresses'
-import { UNI } from '../../../constants/tokens'
+import { MERKLE_DISTRIBUTOR_ADDRESS } from 'legacy/constants/addresses'
+import { UNI } from 'legacy/constants/tokens'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSingleCallResult } from '../../../../lib/hooks/multicall'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useContract } from '../../../hooks/useContract'
 import { isAddress } from '../../../utils'

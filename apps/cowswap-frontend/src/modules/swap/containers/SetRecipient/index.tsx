@@ -3,9 +3,9 @@ import { useContext } from 'react'
 import { ArrowDown } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
-import { AddressInputPanel } from '../../../../legacy/components/AddressInputPanel'
-import { AutoRow } from '../../../../legacy/components/Row'
-import { ArrowWrapper } from '../../../../legacy/components/swap/styleds'
+import { AddressInputPanel } from 'legacy/components/AddressInputPanel'
+import { AutoRow } from 'legacy/components/Row'
+import { ArrowWrapper } from 'legacy/components/swap/styleds'
 
 export interface SetRecipientProps {
   recipient: string

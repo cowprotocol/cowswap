@@ -4,9 +4,9 @@ import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonStar } from '../Button'
-import useTheme from '../../hooks/useTheme'
-import { useFavouriteTokens, useToggleFavouriteToken } from '../../state/user/hooks'
+import { ButtonStar } from 'legacy/components/Button'
+import useTheme from 'legacy/hooks/useTheme'
+import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;

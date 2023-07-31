@@ -1,6 +1,6 @@
 import { Location } from 'history'
 
-import { ORDERS_TABLE_TABS } from '../const/tabs'
+import { ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
 
 const ORDERS_TABLE_TAB_KEY = 'tab'
 const ORDERS_TABLE_PAGE_KEY = 'page'

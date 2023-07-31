@@ -7,31 +7,33 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import TokenListLogo from '../../../assets/svg/tokenlist.svg'
-import { ElementName, Event, EventName } from '../../AmplitudeAnalytics/constants'
-import { TraceEvent } from '../../AmplitudeAnalytics/TraceEvent'
-import { LightGreyCard } from '../../Card'
-import Column from '../../Column'
-import Loader from '../../Loader'
-import QuestionHelper from '../../QuestionHelper'
-import { RowBetween, RowFixed } from '../../Row'
-import ImportRow from '../ImportRow'
-import { LoadingRows } from '../styleds'
-import { MouseoverTooltip } from '../../Tooltip'
-import { useAllTokens, useIsUserAddedToken } from '../../../hooks/Tokens'
-import useTheme from '../../../hooks/useTheme'
-import { useIsUnsupportedTokenGp } from '../../../state/lists/hooks'
-import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
-import { ThemedText } from '../../../theme'
+import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
+import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
+import { LightGreyCard } from 'legacy/components/Card'
+import Column from 'legacy/components/Column'
+import Loader from 'legacy/components/Loader'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+import ImportRow from 'legacy/components/SearchModal/ImportRow'
+import { LoadingRows } from 'legacy/components/SearchModal/styleds'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { useAllTokens, useIsUserAddedToken } from 'legacy/hooks/Tokens'
+import useTheme from 'legacy/hooks/useTheme'
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
+import { ThemedText } from 'legacy/theme'
 
-import useCurrencyBalance from '../../../../modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from '../../../../modules/wallet'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
 
-import { CurrencyLogo } from '../../../../common/pure/CurrencyLogo'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
-import { TokenSymbol } from '../../../../common/pure/TokenSymbol'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
-import { MenuItem } from './index' // mod
+import { Tag } from './styled' // mod
+
+import { MenuItem } from './index'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -42,20 +44,6 @@ export const StyledBalanceText = styled(Text)`
   overflow: hidden;
   max-width: 5rem;
   text-overflow: ellipsis;
-`
-
-export const Tag = styled.div`
-  background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text2};
-  font-size: 14px;
-  border-radius: 4px;
-  padding: 0.25rem 0.3rem 0.25rem 0.3rem;
-  max-width: 6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  justify-self: flex-end;
-  margin-right: 4px;
 `
 
 export const FixedContentRow = styled.div`

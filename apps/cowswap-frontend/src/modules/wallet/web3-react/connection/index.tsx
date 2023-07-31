@@ -1,12 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
-import { ALL_SUPPORTED_CHAIN_IDS } from '../../../../legacy/constants/chains'
-import { isMobile } from '../../../../legacy/utils/userAgent'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
+import { isMobile } from 'legacy/utils/userAgent'
 
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
-import { FeatureGuard } from '../../../../common/containers/FeatureGuard'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'

@@ -2,7 +2,7 @@
 // + logic for chainId switch to/from xDAI
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { GpEther as ETHER } from '../../constants/tokens'
+import { GpEther as ETHER } from 'legacy/constants/tokens'
 
 import { XDAI_SYMBOL } from './constants'
 

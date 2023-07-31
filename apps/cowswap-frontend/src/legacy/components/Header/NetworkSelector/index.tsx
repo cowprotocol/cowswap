@@ -7,19 +7,19 @@ import { transparentize, darken } from 'polished'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from '../../../constants/chainInfo'
-import { useMediaQuery, upToMedium } from '../../../hooks/useMediaQuery'
-import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from '../../../state/application/hooks'
-import { ApplicationModal } from '../../../state/application/reducer'
-import { MEDIA_WIDTHS } from '../../../theme'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from '../../../../modules/wallet'
-import { getIsTallyWallet } from '../../../../modules/wallet/api/utils/connection'
+import { useWalletInfo } from 'modules/wallet'
+import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
 
-import { useIsProviderNetworkUnsupported } from '../../../../common/hooks/useIsProviderNetworkUnsupported'
-import { useIsSmartContractWallet } from '../../../../common/hooks/useIsSmartContractWallet'
-import { useOnSelectNetwork } from '../../../../common/hooks/useOnSelectNetwork'
-import { NetworksList } from '../../../../common/pure/NetworksList'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text1};

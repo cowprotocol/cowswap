@@ -1,32 +1,32 @@
 import { useCallback } from 'react'
 
-import { useGetGpPriceStrategy } from './useGetGpPriceStrategy'
-import { isOnline } from './useIsOnline'
-import { AddGpUnsupportedTokenParams } from '../state/lists/actions'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
+import { isOnline } from 'legacy/hooks/useIsOnline'
+import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'
 import {
   useAddGpUnsupportedToken,
   useIsUnsupportedTokenGp,
   useRemoveGpUnsupportedToken,
-} from '../state/lists/hooks'
-import { QuoteError } from '../state/price/actions'
-import { useQuoteDispatchers } from '../state/price/hooks'
-import { QuoteInformationObject } from '../state/price/reducer'
-import { useUserTransactionTTL } from '../state/user/hooks'
-import { CancelableResult, onlyResolvesLast } from '../utils/async'
-import { getPromiseFulfilledValue, isPromiseFulfilled, registerOnWindow } from '../utils/misc'
-import { getBestQuote, getFastQuote, QuoteResult } from '../utils/price'
+} from 'legacy/state/lists/hooks'
+import { QuoteError } from 'legacy/state/price/actions'
+import { useQuoteDispatchers } from 'legacy/state/price/hooks'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { CancelableResult, onlyResolvesLast } from 'legacy/utils/async'
+import { getPromiseFulfilledValue, isPromiseFulfilled, registerOnWindow } from 'legacy/utils/misc'
+import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
-import { useIsEoaEthFlow } from '../../modules/swap/hooks/useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
-import { ApiErrorCodes, isValidOperatorError } from '../../api/gnosisProtocol/errors/OperatorError'
+import { ApiErrorCodes, isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorDetails,
   isValidQuoteError,
-} from '../../api/gnosisProtocol/errors/QuoteError'
-import { LegacyFeeQuoteParams, LegacyQuoteParams } from '../../api/gnosisProtocol/legacy/types'
-import { getQuoteUnsupportedToken } from '../../utils/getQuoteUnsupportedToken'
-import { calculateValidTo } from '../../utils/time'
+} from 'api/gnosisProtocol/errors/QuoteError'
+import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'
+import { calculateValidTo } from 'utils/time'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams

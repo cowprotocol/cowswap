@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '../../../legacy/constants'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 
-import { doesTokenMatchSymbolOrAddress } from '../../../utils/doesTokenMatchSymbolOrAddress'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 import { TokensByAddress } from '../state/tokensListAtom'
 

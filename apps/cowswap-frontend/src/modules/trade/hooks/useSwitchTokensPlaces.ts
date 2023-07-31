@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
-import { switchTokensAnalytics } from '../../../legacy/components/analytics'
+import { switchTokensAnalytics } from 'legacy/components/analytics'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { FractionUtils } from '../../../utils/fractionUtils'
+import { FractionUtils } from 'utils/fractionUtils'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'

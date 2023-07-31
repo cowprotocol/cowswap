@@ -1,10 +1,10 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { ApprovalState } from '../../../legacy/hooks/useApproveCallback'
-import { QuoteError } from '../../../legacy/state/price/actions'
-import TradeGp from '../../../legacy/state/swap/TradeGp'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { QuoteError } from 'legacy/state/price/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { getEthFlowEnabled } from './getEthFlowEnabled'
+import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',

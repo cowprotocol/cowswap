@@ -4,11 +4,11 @@ import { useEffect } from 'react'
 import { Order } from '@cowprotocol/contracts'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { isTruthy } from '../../../legacy/utils/misc'
+import { isTruthy } from 'legacy/utils/misc'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { computeOrderUid } from '../../../utils/orderUtils/computeOrderUid'
+import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, setPartOrdersAtom } from '../state/twapPartOrdersAtom'

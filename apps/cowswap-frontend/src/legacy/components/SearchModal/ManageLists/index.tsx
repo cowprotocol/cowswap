@@ -3,15 +3,15 @@ import { TokenList } from '@uniswap/token-lists'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from '../../Button'
-import CardUni from '../../Card'
-import Row, { RowFixed, RowBetween } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { TextDot } from '../styleds'
-import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
-import { acceptListUpdate, removeList, disableList, enableList } from '../../../state/lists/actions'
+import { ButtonPrimary } from 'legacy/components/Button'
+import CardUni from 'legacy/components/Card'
+import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { TextDot } from 'legacy/components/SearchModal/styleds'
+import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
+import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 

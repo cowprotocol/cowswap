@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
-import store from '../../../legacy/state'
-import { deleteOrders } from '../../../legacy/state/orders/actions'
+import store from 'legacy/state'
+import { deleteOrders } from 'legacy/state/orders/actions'
 
-import { walletInfoAtom } from '../../wallet/api/state'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { deepEqual } from '../../../utils/deepEqual'
+import { deepEqual } from 'utils/deepEqual'
 
 import { TWAP_FINAL_STATUSES, TWAP_PENDING_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'

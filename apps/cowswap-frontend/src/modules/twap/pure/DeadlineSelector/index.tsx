@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { renderTooltip } from '../../../../legacy/components/Tooltip'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
-import { TradeSelect, TradeSelectItem } from '../../../trade/pure/TradeSelect'
-import { Content } from '../../../trade/pure/TradeWidgetField/styled'
-import { LabelTooltip } from '../../index'
-import { customDeadlineToSeconds, deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
+import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
+import { LabelTooltip } from 'modules/twap'
+import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'

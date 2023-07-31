@@ -1,4 +1,4 @@
-import { defaultLimitOrderDeadline } from './deadlines'
+import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 
 import { DeadlineSelector } from './index'
 

@@ -4,10 +4,10 @@ import React, { useCallback, useState } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
-import { ExpertModeIndicator, MenuContent, SettingsButton, SettingsIcon } from '../../../trade/pure/Settings'
+import { ExpertModeIndicator, MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
-import { useFeatureFlags } from '../../../../common/hooks/featureFlags/useFeatureFlags'
-import { ExpertModeModal } from '../../../../common/pure/ExpertModeModal'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { Settings } from '../../pure/Settings'
 import {

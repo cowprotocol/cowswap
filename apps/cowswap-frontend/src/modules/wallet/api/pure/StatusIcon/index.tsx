@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 
-import { ConnectionType } from '../../../index'
-import CoinbaseWalletIcon from '../../assets/coinbase.svg'
-import FortmaticIcon from '../../assets/formatic.png'
-import WalletConnectIcon from '../../assets/walletConnectIcon.svg'
-import { Identicon } from '../../container/Identicon'
+import { ConnectionType } from 'modules/wallet'
+import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
+import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
+import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
+import { Identicon } from 'modules/wallet/api/container/Identicon'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};

@@ -4,15 +4,15 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { wrapAnalytics } from '../components/analytics'
-import { ConfirmOperationType } from '../components/TransactionConfirmationModal'
-import { getOperationMessage } from '../components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { RADIX_HEX } from '../constants'
-import { useTransactionAdder } from '../state/enhancedTransactions/hooks'
-import { calculateGasMargin } from '../utils/calculateGasMargin'
-import { getChainCurrencySymbols } from '../utils/gnosis_chain/hack'
+import { wrapAnalytics } from 'legacy/components/analytics'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { getOperationMessage } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
+import { RADIX_HEX } from 'legacy/constants'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
-import { formatTokenAmount } from '../../utils/amountFormat'
+import { formatTokenAmount } from 'utils/amountFormat'
 
 import { isRejectRequestProviderError } from '../utils/misc'
 

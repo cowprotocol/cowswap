@@ -1,6 +1,6 @@
-import { NATIVE_CURRENCY_BUY_TOKEN } from '../../legacy/constants'
-import { COW } from '../../legacy/constants/tokens'
-import { Order, OrderStatus } from '../../legacy/state/orders/actions'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { COW } from 'legacy/constants/tokens'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { isOrderCancellable } from './isOrderCancellable'
 

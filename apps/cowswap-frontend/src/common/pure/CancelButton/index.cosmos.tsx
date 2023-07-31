@@ -1,4 +1,4 @@
-import { CancelButton, CancelButtonProps } from './index'
+import { CancelButton, CancelButtonProps } from '.'
 
 const props: CancelButtonProps = { onClick: () => alert('Button clicked!') }
 

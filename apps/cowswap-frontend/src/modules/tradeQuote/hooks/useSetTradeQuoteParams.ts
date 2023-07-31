@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useSafeMemoObject } from '../../../common/hooks/useSafeMemo'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'

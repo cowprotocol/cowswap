@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { VCow } from '@cowprotocol/abis'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { VCow } from '@cowswap/abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
@@ -13,29 +13,29 @@ import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { GpEther, V_COW } from '../../../constants/tokens'
-import { useVCowContract } from '../../../hooks/useContract'
-import useIsMounted from '../../../hooks/useIsMounted'
-import { AppDispatch } from '../../index'
-import { AppState } from '../../index'
+import { GpEther, V_COW } from 'legacy/constants/tokens'
+import { useVCowContract } from 'legacy/hooks/useContract'
+import useIsMounted from 'legacy/hooks/useIsMounted'
+import { AppDispatch } from 'legacy/state'
+import { AppState } from 'legacy/state'
 import {
   getClaimKey,
   getClaimsRepoPath,
   isFreeClaim,
   claimTypeToTokenAmount,
   transformRepoClaimsToUserClaims,
-} from './utils'
-import { ClaimInfo } from '../reducer'
-import { useTransactionAdder } from '../../enhancedTransactions/hooks'
-import { useAllClaimingTransactionIndices } from '../../enhancedTransactions/hooks'
-import { isAddress } from '../../../utils'
-import { calculateGasMargin } from '../../../utils/calculateGasMargin'
+} from 'legacy/state/claim/hooks/utils'
+import { ClaimInfo } from 'legacy/state/claim/reducer'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
+import { isAddress } from 'legacy/utils'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useSingleContractMultipleData } from '../../../../lib/hooks/multicall'
-import { EnhancedUserClaimData } from '../../../../pages/Claim/types'
-import { formatTokenAmount } from '../../../../utils/amountFormat'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
+import { EnhancedUserClaimData } from 'pages/Claim/types'
+import { formatTokenAmount } from 'utils/amountFormat'
 
 import {
   setInputAddress,

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getIsNativeToken } from '../../../utils/getIsNativeToken'
+import { getIsNativeToken } from 'utils/getIsNativeToken'
 
 import { useTradeState } from './useTradeState'
 

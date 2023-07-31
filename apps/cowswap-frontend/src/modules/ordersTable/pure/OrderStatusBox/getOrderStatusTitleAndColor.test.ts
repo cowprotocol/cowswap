@@ -1,9 +1,9 @@
 import { DefaultTheme } from 'styled-components/macro'
 import { instance, mock, when } from 'ts-mockito'
 
-import { OrderStatus } from '../../../../legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
 

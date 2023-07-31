@@ -4,8 +4,8 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { useSelector, useDispatch } from 'react-redux'
 
-import { AppDispatch } from '../index'
-import { AppState } from '../index'
+import { AppDispatch } from 'legacy/state'
+import { AppState } from 'legacy/state'
 
 import { updateGasPrices, UpdateGasPrices } from './actions'
 import { GasState } from './reducer'

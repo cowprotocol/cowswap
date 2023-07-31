@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '../../../../mocks/tradeStateMock'
+import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
 
 import { TradeConfirmation } from './index'
 

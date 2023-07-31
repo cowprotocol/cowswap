@@ -7,23 +7,23 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import fortuneCookieImage from '../../../../legacy/assets/cow-swap/fortune-cookie.png'
-import twitterImage from '../../../../legacy/assets/cow-swap/twitter.svg'
-import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '../../../../legacy/components/analytics/events/cowFortune'
-import Confetti from '../../../../legacy/components/Confetti'
-import { ExternalLink } from '../../../../legacy/theme'
-import { addBodyClass, removeBodyClass } from '../../../../legacy/utils/toggleBodyClass'
+import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
+import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'legacy/components/analytics/events/cowFortune'
+import Confetti from 'legacy/components/Confetti'
+import { ExternalLink } from 'legacy/theme'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
-import { useOpenRandomFortune } from '../../hooks/useOpenRandomFortune'
-import { lastCheckedFortuneAtom } from '../../state/checkedFortunesListAtom'
+import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
+import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {
   fortuneStateAtom,
   isFortunesFeatureDisabledAtom,
   updateOpenFortuneAtom,
-} from '../../state/fortuneStateAtom'
+} from 'modules/fortune/state/fortuneStateAtom'
 
-import useInterval from '../../../../lib/hooks/useInterval'
-import { SuccessBanner } from '../../../../pages/Claim/styled'
+import useInterval from 'lib/hooks/useInterval'
+import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;

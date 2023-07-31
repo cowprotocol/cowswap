@@ -2,8 +2,8 @@ import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { RowBetween, RowFixed } from '../../../../legacy/components/Row'
-import { MouseoverTooltipContent } from '../../../../legacy/components/Tooltip'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { RowStyleProps } from './types'
 

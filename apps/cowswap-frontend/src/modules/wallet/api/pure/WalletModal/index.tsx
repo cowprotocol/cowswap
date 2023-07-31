@@ -2,17 +2,17 @@ import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
 
-import { LightCard } from '../../../../../legacy/components/Card'
-import { AutoColumn } from '../../../../../legacy/components/Column'
-import { AutoRow } from '../../../../../legacy/components/Row'
-import { ThemedText } from '../../../../../legacy/theme'
-import { StyledInternalLink } from '../../../../../legacy/theme/components'
+import { LightCard } from 'legacy/components/Card'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+import { ThemedText } from 'legacy/theme'
+import { StyledInternalLink } from 'legacy/theme/components'
 
-import { PendingView } from '../PendingView'
-import { ConnectWalletOptions, TryActivation } from '../../../web3-react/connection'
+import { PendingView } from 'modules/wallet/api/pure/PendingView'
+import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
 
-import { Routes } from '../../../../../common/constants/routes'
-import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from '../../../../../common/pure/Modal'
+import { Routes } from 'common/constants/routes'
+import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'common/pure/Modal'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 

@@ -1,5 +1,5 @@
-import { WrappingPreview } from './index'
-import { wrappingPreviewProps } from '../../../services/ethFlow/mocks'
+import { WrappingPreview } from 'modules/swap/pure/EthFlow/WrappingPreview'
+import { wrappingPreviewProps } from 'modules/swap/services/ethFlow/mocks'
 
 const Fixtures = {
   withBalance: <WrappingPreview {...wrappingPreviewProps} />,

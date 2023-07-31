@@ -4,15 +4,15 @@ import { useCallback } from 'react'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Fraction } from '@uniswap/sdk-core'
 
-import { Writeable } from '../../../types'
+import { Writeable } from 'types'
 
-import { Field } from '../../../legacy/state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 
-import { FractionUtils } from '../../../utils/fractionUtils'
-import { calculateAmountForRate } from '../../../utils/orderUtils/calculateAmountForRate'
+import { FractionUtils } from 'utils/fractionUtils'
+import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null

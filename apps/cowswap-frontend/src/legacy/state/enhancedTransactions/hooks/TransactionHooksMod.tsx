@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useAppSelector } from '../../hooks'
+import { useAppSelector } from 'legacy/state/hooks'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { EnhancedTransactionDetails } from '../reducer'
 

@@ -4,13 +4,13 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
 
-import { safeNamehash } from '../utils/safeNamehash'
+import { safeNamehash } from 'legacy/utils/safeNamehash'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { fetchWithBackoff } from '../../common/utils/fetch'
-import { useSingleCallResult } from '../../lib/hooks/multicall'
-import uriToHttp from '../../lib/utils/uriToHttp'
+import { fetchWithBackoff } from 'common/utils/fetch'
+import { useSingleCallResult } from 'lib/hooks/multicall'
+import uriToHttp from 'lib/utils/uriToHttp'
 
 import { useENSRegistrarContract, useENSResolverContract, useERC721Contract, useERC1155Contract } from './useContract'
 import useDebounce from './useDebounce'

@@ -1,10 +1,10 @@
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowswap/abis'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { Order } from '../../../legacy/state/orders/actions'
-import { calculateGasMargin } from '../../../legacy/utils/calculateGasMargin'
+import { Order } from 'legacy/state/orders/actions'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-import { logTradeFlowError } from '../../../modules/trade/utils/logger'
+import { logTradeFlowError } from 'modules/trade/utils/logger'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
 const CANCELLATION_GAS_LIMIT_DEFAULT = BigNumber.from(150000)

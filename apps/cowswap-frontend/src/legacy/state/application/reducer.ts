@@ -2,11 +2,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { DEFAULT_TXN_DISMISS_MS } from '../../constants/misc'
-import { initialState } from './initialState'
-import { BlockExplorerLinkType } from '../../utils'
+import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
+import { initialState } from 'legacy/state/application/initialState'
+import { BlockExplorerLinkType } from 'legacy/utils'
 
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId
@@ -104,7 +104,7 @@ const applicationSlice = createSlice({
           show: true,
           content,
           removeAfterMs,
-        },
+        } as any,
       ])
     },
     removePopup(state, { payload: { key } }) {

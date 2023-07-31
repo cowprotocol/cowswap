@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { GetSafeInfo, useGetSafeInfo } from '../../../hooks/useGetSafeInfo'
-import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from '../actions'
-import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from '../consts'
+import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
@@ -20,19 +20,19 @@ import {
   useFulfillOrdersBatch,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
-} from '../hooks'
-import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
-import { OrderTransitionStatus } from '../utils'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from '../../../utils/appzi'
-import { getExplorerOrderLink } from '../../../utils/explorer'
+} from 'legacy/state/orders/hooks'
+import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
+import { OrderTransitionStatus } from 'legacy/state/orders/utils'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
-import { useAddOrderToSurplusQueue } from '../../../../modules/swap/state/surplusModal'
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getOrder, OrderID } from '../../../../api/gnosisProtocol'
-import { removeOrdersToCancelAtom } from '../../../../common/hooks/useMultipleOrdersCancellation/state'
-import { useTriggerTotalSurplusUpdateCallback } from '../../../../common/state/totalSurplusState'
-import { timeSinceInSeconds } from '../../../../utils/time'
+import { getOrder, OrderID } from 'api/gnosisProtocol'
+import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
+import { timeSinceInSeconds } from 'utils/time'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.

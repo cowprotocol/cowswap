@@ -2,10 +2,10 @@ import { atom } from 'jotai'
 
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
-import { getAppData } from '../../appData'
-import { appDataInfoAtom } from '../../appData/state/atoms'
-import { walletInfoAtom } from '../../wallet/api/state'
+import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { getAppData } from 'modules/appData'
+import { appDataInfoAtom } from 'modules/appData/state/atoms'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { twapOrderSlippageAtom, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 

@@ -4,7 +4,7 @@ Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
 look and much more!
 
-[![Demo](demo-preview.png)](https://www.youtube.com/watch?v=gxRRH9Rumx4&ab_channel=CoWSwap)
+[![Demo](./demo-preview.png)](https://www.youtube.com/watch?v=gxRRH9Rumx4&ab_channel=CoWSwap)
 
 > [Watch the demo](https://www.youtube.com/watch?v=gxRRH9Rumx4&ab_channel=CoWSwap)
 
@@ -21,7 +21,7 @@ npm install @cowprotocol/widget-lib
 ## Quick start
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowswap/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')
@@ -70,7 +70,7 @@ interface JsonRpcRequest {
 An example of connecting a widget to Metamask:
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { cowSwapWidget, CowSwapWidgetParams } from '@cowswap/widget-lib'
 
 const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),
@@ -137,7 +137,7 @@ export interface TradeAssets {
 You can change all possible widget options on the fly:
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowswap/widget-lib'
 
 const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),

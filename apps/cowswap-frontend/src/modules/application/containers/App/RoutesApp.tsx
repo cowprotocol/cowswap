@@ -3,41 +3,41 @@ import { ReactNode } from 'react'
 
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { Loading } from '../../../../legacy/components/FlashingLoading'
-import Loader from '../../../../legacy/components/Loader'
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '../../../../legacy/constants'
-import { RedirectPathToSwapOnly } from '../../../../legacy/pages/Swap/redirects'
+import { Loading } from 'legacy/components/FlashingLoading'
+import Loader from 'legacy/components/Loader'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
-import { Routes as RoutesEnum, RoutesValues } from '../../../../common/constants/routes'
-import Account, { AccountOverview } from '../../../../pages/Account'
-import AnySwapAffectedUsers from '../../../../pages/error/AnySwapAffectedUsers'
-import { SwapPage } from '../../../../pages/Swap'
+import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
+import Account, { AccountOverview } from 'pages/Account'
+import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
+import { SwapPage } from 'pages/Swap'
 
 // Async routes
-const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '../../../../pages/PrivacyPolicy'))
-const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '../../../../pages/LimitOrders'))
-const AdvancedOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '../../../../pages/AdvancedOrders'))
-const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ '../../../../pages/CookiePolicy'))
-const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ '../../../../pages/TermsAndConditions'))
-const About = lazy(() => import(/* webpackChunkName: "about" */ '../../../../pages/About'))
-const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ '../../../../pages/error/NotFound'))
-const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ '../../../../pages/games/CowRunner'))
-const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ '../../../../pages/games/MevSlicer'))
+const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
+const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))
+const AdvancedOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/AdvancedOrders'))
+const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
+const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
+const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
+const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
+const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
+const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 
 // FAQ pages
-const Faq = lazy(() => import(/* webpackChunkName: "faq" */ '../../../../pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ '../../../../pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ '../../../../pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ '../../../../pages/Faq/TradingFaq'))
-const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '../../../../pages/Faq/LimitOrdersFaq'))
-const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ '../../../../pages/Faq/EthFlowFaq'))
+const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
+const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ 'pages/Faq/LimitOrdersFaq'))
+const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pages/Faq/EthFlowFaq'))
 
 // Account
-const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ '../../../../pages/Account/Tokens'))
-const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ '../../../../pages/error/NotFound'))
+const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
+const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
 
 // Misc
-const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ '../../../../pages/KitchenSink'))
+const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ 'pages/KitchenSink'))
 
 function createRedirectExternal(url: string) {
   return () => {

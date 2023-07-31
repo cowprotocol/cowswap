@@ -3,13 +3,13 @@ import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { changeSwapAmountAnalytics } from '../../../legacy/components/analytics'
-import { Field } from '../../../legacy/state/swap/actions'
+import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useNavigateOnCurrencySelection } from '../../trade/hooks/useNavigateOnCurrencySelection'
-import { useSwitchTokensPlaces } from '../../trade/hooks/useSwitchTokensPlaces'
-import { useUpdateCurrencyAmount } from '../../trade/hooks/useUpdateCurrencyAmount'
-import { updateTradeQuoteAtom } from '../../tradeQuote'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { updateTradeQuoteAtom } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'

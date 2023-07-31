@@ -5,10 +5,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getSurplusData } from '../../../api/gnosisProtocol/api'
-import useNativeCurrency from '../../../lib/hooks/useNativeCurrency'
+import { getSurplusData } from 'api/gnosisProtocol/api'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { totalSurplusAtom } from './atoms'
 

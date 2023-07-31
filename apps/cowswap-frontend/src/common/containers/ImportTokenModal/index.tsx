@@ -4,18 +4,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import TokenWarningModal from '../../../legacy/components/TokenWarningModal'
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '../../../legacy/constants/tokens'
-import { useSearchInactiveTokenLists } from '../../../legacy/hooks/Tokens'
-import useDebounce from '../../../legacy/hooks/useDebounce'
-import { Field } from '../../../legacy/state/swap/actions'
-import { useAddUserToken } from '../../../legacy/state/user/hooks'
+import TokenWarningModal from 'legacy/components/TokenWarningModal'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
+import useDebounce from 'legacy/hooks/useDebounce'
+import { Field } from 'legacy/state/swap/actions'
+import { useAddUserToken } from 'legacy/state/user/hooks'
 
-import { tokensByAddressAtom, tokensBySymbolAtom } from '../../../modules/tokensList/state/tokensListAtom'
-import { useNavigateOnCurrencySelection } from '../../../modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useTradeState } from '../../../modules/trade/hooks/useTradeState'
+import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
-import { isInjectedWidget } from '../../utils/isInjectedWidget'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 export interface ImportTokenModalProps {
   chainId: SupportedChainId
@@ -63,8 +63,8 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
       urlLoadedTokens
         .filter((token: Token) => {
           return (
-            !Boolean(token.address.toLowerCase() in tokensByAddress) &&
-            !Boolean(token.symbol && token.symbol.toLowerCase() in tokensBySymbol)
+            !(token.address.toLowerCase() in tokensByAddress) &&
+            !(token.symbol && token.symbol.toLowerCase() in tokensBySymbol)
           )
         })
         .filter((token: Token) => {

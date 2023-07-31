@@ -3,14 +3,14 @@ import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { Field } from '../../../legacy/state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 
-import { updateLimitOrdersRawStateAtom } from '../../limitOrders'
-import { useLimitOrdersDerivedState } from '../../limitOrders/hooks/useLimitOrdersDerivedState'
-import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
+import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 
-import { FractionUtils } from '../../../utils/fractionUtils'
-import { convertAmountToCurrency } from '../../../utils/orderUtils/calculateExecutionPrice'
+import { FractionUtils } from 'utils/fractionUtils'
+import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useNativeCurrency from '../../../lib/hooks/useNativeCurrency'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsNativeIn, useIsNativeOut } from './useIsNativeInOrOut'
 import { useIsWrappedIn, useIsWrappedOut } from './useIsWrappedInOrOut'

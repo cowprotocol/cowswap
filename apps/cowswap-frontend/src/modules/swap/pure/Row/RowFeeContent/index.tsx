@@ -1,11 +1,11 @@
-import { RowFixed } from '../../../../../legacy/components/Row'
-import { MouseoverTooltipContent } from '../../../../../legacy/components/Tooltip'
+import { RowFixed } from 'legacy/components/Row'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
-import { StyledRowBetween, TextWrapper } from '../styled'
-import { RowStyleProps, RowWithShowHelpersProps } from '../types'
-import { StyledInfoIcon } from '../../styled'
+import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
+import { RowStyleProps, RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
+import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { FiatRate } from '../../../../../common/pure/RateInfo'
+import { FiatRate } from 'common/pure/RateInfo/'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string

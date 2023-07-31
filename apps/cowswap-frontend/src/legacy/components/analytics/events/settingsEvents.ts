@@ -1,6 +1,6 @@
-import { debounce } from '../../../utils/misc'
+import { debounce } from 'legacy/utils/misc'
 
-import { sendEvent } from '../index'
+import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
 export function toggleExpertModeAnalytics(enable: boolean) {

@@ -1,17 +1,17 @@
-import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
+import { ComposableCoW, Erc20 } from '@cowswap/abis'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
-import { useTokenContract } from '../../../legacy/hooks/useContract'
+import { useTokenContract } from 'legacy/hooks/useContract'
 
-import { CURRENT_BLOCK_FACTORY_ADDRESS } from '../../advancedOrders'
-import { useComposableCowContract } from '../../advancedOrders/hooks/useComposableCowContract'
-import { useWalletInfo } from '../../wallet'
+import { CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useNeedsApproval } from '../../../common/hooks/useNeedsApproval'
-import { useNeedsZeroApproval } from '../../../common/hooks/useNeedsZeroApproval'
-import { useTradeSpenderAddress } from '../../../common/hooks/useTradeSpenderAddress'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { useNeedsZeroApproval } from 'common/hooks/useNeedsZeroApproval'
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export interface TwapOrderCreationContext {
   composableCowContract: ComposableCoW

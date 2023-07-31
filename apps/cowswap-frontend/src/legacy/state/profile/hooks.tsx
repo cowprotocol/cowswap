@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
 import { closeAnnouncement } from './actions'
 

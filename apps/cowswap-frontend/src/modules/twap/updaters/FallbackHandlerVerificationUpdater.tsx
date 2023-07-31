@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { useAsyncMemo } from 'use-async-memo'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { useFallbackHandlerVerification } from '../hooks/useFallbackHandlerVerification'

@@ -2,9 +2,9 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
 
-import { ApprovalState } from '../../../../../legacy/hooks/useApproveCallback'
-import { ActivityDescriptors, ActivityStatus } from '../../../../../legacy/hooks/useRecentActivity'
-import { delay } from '../../../../../legacy/utils/misc'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { delay } from 'legacy/utils/misc'
 
 import { EthFlowActions } from './useEthFlowActions'
 

@@ -2,8 +2,8 @@
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { ZERO_BIG_NUMBER } from '../../legacy/constants'
-import { Order } from '../../legacy/state/orders/actions'
+import { ZERO_BIG_NUMBER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
 

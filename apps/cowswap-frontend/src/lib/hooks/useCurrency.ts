@@ -5,15 +5,15 @@ import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { TOKEN_SHORTHANDS } from '../../legacy/constants/tokens'
-import { useBytes32TokenContract, useTokenContract } from '../../legacy/hooks/useContract'
-import { isAddress } from '../../legacy/utils'
+import { TOKEN_SHORTHANDS } from 'legacy/constants/tokens'
+import { useBytes32TokenContract, useTokenContract } from 'legacy/hooks/useContract'
+import { isAddress } from 'legacy/utils'
 
-import { useWalletInfo } from '../../modules/wallet'
-import { isChainAllowed } from '../../modules/wallet/web3-react/connection'
+import { useWalletInfo } from 'modules/wallet'
+import { isChainAllowed } from 'modules/wallet/web3-react/connection'
 
-import { NEVER_RELOAD, useSingleCallResult } from './multicall'
-import useNativeCurrency from './useNativeCurrency'
+import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/

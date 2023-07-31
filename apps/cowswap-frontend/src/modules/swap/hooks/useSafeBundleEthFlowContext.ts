@@ -1,9 +1,9 @@
-import { useWETHContract } from '../../../legacy/hooks/useContract'
+import { useWETHContract } from 'legacy/hooks/useContract'
 
-import { FlowType } from './useFlowContext'
-import { SafeBundleEthFlowContext } from '../services/types'
+import { FlowType } from 'modules/swap/hooks/useFlowContext'
+import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
 
-import { useNeedsApproval } from '../../../common/hooks/useNeedsApproval'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { useBaseSafeBundleFlowContext } from './useBaseSafeBundleFlowContext'
 

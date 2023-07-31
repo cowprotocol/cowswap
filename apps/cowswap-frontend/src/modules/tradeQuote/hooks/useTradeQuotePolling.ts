@@ -5,15 +5,15 @@ import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
-import useDebounce from '../../../legacy/hooks/useDebounce'
-import { useIsUnsupportedTokens } from '../../../legacy/state/lists/hooks'
-import { onlyResolvesLast } from '../../../legacy/utils/async'
+import useDebounce from 'legacy/hooks/useDebounce'
+import { useIsUnsupportedTokens } from 'legacy/state/lists/hooks'
+import { onlyResolvesLast } from 'legacy/utils/async'
 
-import { useUpdateCurrencyAmount } from '../../trade/hooks/useUpdateCurrencyAmount'
-import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { updateTradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
 
-import { getQuote } from '../../../api/gnosisProtocol/api'
-import GpQuoteError, { GpQuoteErrorCodes } from '../../../api/gnosisProtocol/errors/QuoteError'
+import { getQuote } from 'api/gnosisProtocol/api'
+import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'

@@ -4,19 +4,19 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Text } from 'rebass'
 
-import { AutoColumn } from '../Column'
-import { ExternalLink } from '../Link'
-import Row from '../Row'
-import { ConfirmationModalProps } from '../TransactionConfirmationModal'
+import { AutoColumn } from 'legacy/components/Column'
+import { ExternalLink } from 'legacy/components/Link'
+import Row from 'legacy/components/Row'
+import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
 import {
   ConfirmationModalContentProps,
   LegacyConfirmationModalContent,
-} from '../TransactionConfirmationModal/LegacyConfirmationModalContent'
-import useCowBalanceAndSubsidy from '../../hooks/useCowBalanceAndSubsidy'
+} from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { CowModal } from '../../../common/pure/Modal'
+import { CowModal } from 'common/pure/Modal'
 
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'

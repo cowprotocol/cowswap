@@ -3,16 +3,15 @@ import React, { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '../../../../mocks/tradeStateMock'
+import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
 
-import { walletInfoAtom } from '../../../wallet/api/state'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { TradeConfirmation, TradeConfirmationProps } from '../../pure/TradeConfirmation'
+import { TradeAmounts } from '../../types/TradeAmounts'
 
 import { TradeConfirmModal } from './index'
-
-import { TradeAmounts } from '../../types/TradeAmounts'
 
 const chainId = SupportedChainId.MAINNET
 const account = '0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01'

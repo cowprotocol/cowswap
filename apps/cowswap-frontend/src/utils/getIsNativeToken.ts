@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '../legacy/constants'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 

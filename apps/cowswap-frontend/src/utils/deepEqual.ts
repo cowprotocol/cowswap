@@ -20,6 +20,6 @@ export function deepEqual(object1: any, object2: typeof object1): boolean {
   return true
 }
 
-function isObject(object: unknown): object is Object {
+function isObject(object: unknown): object is object {
   return object != null && typeof object === 'object'
 }

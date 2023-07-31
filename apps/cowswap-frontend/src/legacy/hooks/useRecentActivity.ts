@@ -2,15 +2,15 @@ import { useMemo } from 'react'
 
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { MAXIMUM_ORDERS_TO_DISPLAY } from '../constants'
-import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from '../state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from '../state/enhancedTransactions/reducer'
-import { Order, OrderStatus } from '../state/orders/actions'
-import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from '../state/orders/hooks'
+import { MAXIMUM_ORDERS_TO_DISPLAY } from 'legacy/constants'
+import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { getDateTimestamp } from '../../utils/time'
+import { getDateTimestamp } from 'utils/time'
 
 export interface AddedOrder extends Order {
   addedTime: number

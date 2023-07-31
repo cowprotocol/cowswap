@@ -1,4 +1,4 @@
-import { fetchClaim } from './index'
+import { fetchClaim } from '.'
 
 describe('fetchClaim', () => {
   it('should fetch the correct amount and merkle proof for 0x01eda16f6a6c3b051ecc63b0d93c8c3a27491dc2 on mainnet', async () => {

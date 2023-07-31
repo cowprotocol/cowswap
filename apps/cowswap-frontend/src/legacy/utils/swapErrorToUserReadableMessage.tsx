@@ -8,7 +8,7 @@ import { Trans } from '@lingui/macro'
  */
 export function swapErrorToUserReadableMessage(error: any): ReactNode {
   let reason: string | undefined
-  while (Boolean(error)) {
+  while (error) {
     reason = error.reason ?? error.message ?? reason
     error = error.error ?? error.data?.originalError
   }

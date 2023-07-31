@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
-import Checkmark from '../../../../../../legacy/assets/cow-swap/checkmark.svg'
-import Exclamation from '../../../../../../legacy/assets/cow-swap/exclamation.svg'
-import Plus from '../../../../../../legacy/assets/cow-swap/plus.svg'
-import X from '../../../../../../legacy/assets/cow-swap/x.svg'
+import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
+import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
+import Plus from 'legacy/assets/cow-swap/plus.svg'
+import X from 'legacy/assets/cow-swap/x.svg'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }

@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../types'
+import { Nullish } from 'types'
 
 import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../const'
 

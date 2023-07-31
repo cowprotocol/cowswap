@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
-import { autofocus } from '../../../common/utils/autofocus'
+import { autofocus } from 'common/utils/autofocus'
 
 import { escapeRegExp } from '../../utils'
 

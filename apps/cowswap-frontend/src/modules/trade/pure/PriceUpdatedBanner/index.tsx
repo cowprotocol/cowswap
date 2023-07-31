@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { InlineBanner } from '../../../../common/pure/InlineBanner'
+import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`
   display: flex;

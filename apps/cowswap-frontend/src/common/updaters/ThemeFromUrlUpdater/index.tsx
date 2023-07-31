@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 
 import { useLocation } from 'react-router-dom'
 
-import { useAppDispatch } from '../../../legacy/state/hooks'
-import { useIsDarkMode } from '../../../legacy/state/user/hooks'
-import { updateUserDarkMode } from '../../../legacy/state/user/reducer'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
+import { updateUserDarkMode } from 'legacy/state/user/reducer'
 
 /**
  * Switch theme depending on theme query parameter

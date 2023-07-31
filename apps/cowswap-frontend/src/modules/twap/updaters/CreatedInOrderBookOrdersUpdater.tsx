@@ -2,12 +2,12 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Order } from '../../../legacy/state/orders/actions'
-import { useAddOrUpdateOrders } from '../../../legacy/state/orders/hooks'
+import { Order } from 'legacy/state/orders/actions'
+import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
-import { useSWRProdOrders } from '../../orders/hooks/useSWRProdOrders'
-import { tokensByAddressAtom } from '../../tokensList/state/tokensListAtom'
-import { useWalletInfo } from '../../wallet'
+import { useSWRProdOrders } from 'modules/orders/hooks/useSWRProdOrders'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'

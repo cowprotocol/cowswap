@@ -1,10 +1,10 @@
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
-import { orderAnalytics } from '../../../components/analytics'
+import { orderAnalytics } from 'legacy/components/analytics'
 
-import { ExecutedSummary } from '../../../../common/pure/ExecutedSummary'
-import { parseOrder } from '../../../../utils/orderUtils/parseOrder'
+import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+import { parseOrder } from 'utils/orderUtils/parseOrder'
 
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'

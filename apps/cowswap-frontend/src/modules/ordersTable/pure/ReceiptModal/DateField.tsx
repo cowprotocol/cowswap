@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 
-import useTimeAgo from '../../../../legacy/hooks/useTimeAgo'
+import useTimeAgo from 'legacy/hooks/useTimeAgo'
 
 import * as styledEl from './styled'
 

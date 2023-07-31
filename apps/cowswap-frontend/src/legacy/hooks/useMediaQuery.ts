@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { MEDIA_WIDTHS } from '../theme'
+import { MEDIA_WIDTHS } from 'legacy/theme'
 
 export const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false)

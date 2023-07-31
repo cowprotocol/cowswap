@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '../../../utils/sound'
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
 
 import { soundMiddleware } from './soundMiddleware'
 
@@ -22,6 +22,7 @@ describe('soundMiddleware', () => {
         1: 'mock orders',
       },
     } as any)
+    jest.clearAllMocks()
   })
 
   describe('batch order action', () => {

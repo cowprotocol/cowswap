@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
+import { ComposableCoW } from '@cowswap/abis'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 
-import { useSingleContractMultipleData } from '../../../lib/hooks/multicall'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 import { TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 

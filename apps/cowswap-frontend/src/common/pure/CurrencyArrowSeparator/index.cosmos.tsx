@@ -1,4 +1,4 @@
-import { CurrencyArrowSeparator, CurrencyArrowSeparatorProps } from './index'
+import { CurrencyArrowSeparator, CurrencyArrowSeparatorProps } from 'common/pure/CurrencyArrowSeparator'
 
 const defaultProps: CurrencyArrowSeparatorProps = {
   isLoading: false,

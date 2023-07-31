@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '../utils/isInjectedWidget'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 

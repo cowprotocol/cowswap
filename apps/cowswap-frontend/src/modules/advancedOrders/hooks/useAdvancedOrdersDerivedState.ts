@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useBuildTradeDerivedState } from '../../trade/hooks/useBuildTradeDerivedState'
+import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 import {
   AdvancedOrdersDerivedState,

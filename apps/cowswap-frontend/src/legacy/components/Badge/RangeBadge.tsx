@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import Badge, { BadgeVariant } from './index'
+import Badge, { BadgeVariant } from 'legacy/components/Badge'
 
 import { MouseoverTooltip } from '../Tooltip'
 

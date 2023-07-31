@@ -5,30 +5,30 @@ import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { FeeInformation, PriceInformation } from '../../../../types'
+import { FeeInformation, PriceInformation } from 'types'
 
-import { priceOutOfRangeAnalytics } from '../../../components/analytics'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '../../../constants'
-import { WRAPPED_NATIVE_CURRENCY } from '../../../constants/tokens'
-import { useGetGpPriceStrategy } from '../../../hooks/useGetGpPriceStrategy'
-import useIsWindowVisible from '../../../hooks/useIsWindowVisible'
-import { GpPriceStrategy } from '../../gas/atoms'
-import { Order } from '../actions'
-import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from '../consts'
-import { useOnlyPendingOrders, useSetIsOrderUnfillable } from '../hooks'
+import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { Order } from 'legacy/state/orders/actions'
+import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
+import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
   isOrderUnfillable,
-} from '../utils'
-import { getPromiseFulfilledValue } from '../../../utils/misc'
-import { getBestQuote } from '../../../utils/price'
+} from 'legacy/state/orders/utils'
+import { getPromiseFulfilledValue } from 'legacy/utils/misc'
+import { getBestQuote } from 'legacy/utils/price'
 
-import { updatePendingOrderPricesAtom } from '../../../../modules/orders/state/pendingOrdersPricesAtom'
-import { useWalletInfo } from '../../../../modules/wallet'
+import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { useWalletInfo } from 'modules/wallet'
 
-import { PRICE_QUOTE_VALID_TO_TIME } from '../../../../common/constants/quote'
+import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

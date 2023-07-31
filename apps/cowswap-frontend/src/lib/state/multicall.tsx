@@ -3,9 +3,9 @@ import { useWeb3React } from '@web3-react/core'
 
 import { combineReducers, createStore } from 'redux'
 
-import { useInterfaceMulticall } from '../../legacy/hooks/useContract'
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
 
-import useBlockNumber from '../hooks/useBlockNumber'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })

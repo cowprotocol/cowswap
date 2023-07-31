@@ -7,10 +7,10 @@ import {
   useClaimDispatchers,
   useClaimState,
   useClassifiedUserClaims,
-} from './hooks'
-import { ClaimInfo } from './reducer'
+} from 'legacy/state/claim/hooks'
+import { ClaimInfo } from 'legacy/state/claim/reducer'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export default function Updater() {
   const { chainId } = useWalletInfo()

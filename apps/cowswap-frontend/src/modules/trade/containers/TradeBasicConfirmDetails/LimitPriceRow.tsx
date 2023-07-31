@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction } from 'react'
 
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../../types'
+import { Nullish } from 'types'
 
-import { ConfirmDetailsItem } from '../../pure/ConfirmDetailsItem'
+import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 
-import { ExecutionPrice } from '../../../../common/pure/ExecutionPrice'
-import { RateWrapper } from '../../../../common/pure/RateInfo'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
+import { RateWrapper } from 'common/pure/RateInfo'
 
 type Props = {
   price: Nullish<Price<Currency, Currency>>

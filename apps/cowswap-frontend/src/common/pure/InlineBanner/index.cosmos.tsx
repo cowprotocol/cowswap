@@ -1,6 +1,6 @@
-import { DemoContainer } from '../../../cosmos.decorator'
+import { DemoContainer } from 'cosmos.decorator'
 
-import { InlineBanner } from './index'
+import { InlineBanner } from '.'
 
 const Fixtures = {
   'default (alert)': (

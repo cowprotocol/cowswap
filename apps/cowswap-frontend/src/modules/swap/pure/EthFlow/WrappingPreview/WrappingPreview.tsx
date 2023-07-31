@@ -2,10 +2,10 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { ArrowRight } from 'react-feather'
 
-import { colors } from '../../../../../legacy/theme'
+import { colors } from 'legacy/theme'
 
-import * as styledEl from './styled'
-import { WrapCard } from './WrapCard'
+import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
+import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
 
 const COLOUR_SHEET = colors(false)
 

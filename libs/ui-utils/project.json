@@ -1,7 +1,7 @@
 {
   "name": "ui-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "src/libs/ui-utils/src",
+  "sourceRoot": "libs/ui-utils/src",
   "projectType": "library",
   "targets": {
     "build": {
@@ -19,14 +19,14 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["src/libs/ui-utils/**/*.ts"]
+        "lintFilePatterns": ["libs/ui-utils/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "src/libs/ui-utils/jest.config.ts",
+        "jestConfig": "libs/ui-utils/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

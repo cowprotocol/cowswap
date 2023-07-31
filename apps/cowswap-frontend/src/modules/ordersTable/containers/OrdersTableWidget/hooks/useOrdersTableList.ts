@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Order, PENDING_STATES } from '../../../../../legacy/state/orders/actions'
+import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
 import { getParsedOrderFromItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'

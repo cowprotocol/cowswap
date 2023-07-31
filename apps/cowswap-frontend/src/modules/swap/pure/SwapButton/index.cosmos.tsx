@@ -1,4 +1,4 @@
-import { SwapButton, SwapButtonProps } from './index'
+import { SwapButton, SwapButtonProps } from '.'
 
 function onClick() {
   console.log('Click!')

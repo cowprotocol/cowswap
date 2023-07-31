@@ -2,10 +2,10 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../../../types'
+import { Nullish } from 'types'
 
-import { FiatAmount } from '../../../../common/pure/FiatAmount'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 

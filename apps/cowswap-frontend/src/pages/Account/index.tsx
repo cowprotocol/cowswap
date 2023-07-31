@@ -2,22 +2,22 @@ import { lazy, Suspense } from 'react'
 
 import { useLocation, Outlet } from 'react-router-dom'
 
-import { PageName } from '../../legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from '../../legacy/components/AmplitudeAnalytics/Trace'
-import { Loading } from '../../legacy/components/FlashingLoading'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { Loading } from 'legacy/components/FlashingLoading'
 
-import { PageTitle } from '../../modules/application/containers/PageTitle'
-import { Content, Title } from '../../modules/application/pure/Page'
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Content, Title } from 'modules/application/pure/Page'
 
-import { Routes as RoutesEnum } from '../../common/constants/routes'
+import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import { AccountMenu } from './Menu'
 import { Container, CardsWrapper } from './styled'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 
 // Account pages
-const Balances = lazy(() => import(/* webpackChunkName: "account" */ './Balances'))
-const Governance = lazy(() => import(/* webpackChunkName: "governance" */ './Governance'))
+const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
+const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {

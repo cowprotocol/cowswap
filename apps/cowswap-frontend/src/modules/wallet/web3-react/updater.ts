@@ -3,16 +3,16 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { UNSUPPORTED_WC_WALLETS } from '../../../legacy/constants'
-import useENSName from '../../../legacy/hooks/useENSName'
+import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
+import useENSName from 'legacy/hooks/useENSName'
 
-import { useIsSafeWallet, useWalletMetaData } from '../index'
-import { getWalletType } from '../api/utils/getWalletType'
+import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
+import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
 
-import { getSafeInfo } from '../../../api/gnosisSafe'
-import { useIsProviderNetworkUnsupported } from '../../../common/hooks/useIsProviderNetworkUnsupported'
-import { useIsSmartContractWallet } from '../../../common/hooks/useIsSmartContractWallet'
-import { getCurrentChainIdFromUrl } from '../../../utils/getCurrentChainIdFromUrl'
+import { getSafeInfo } from 'api/gnosisSafe'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 

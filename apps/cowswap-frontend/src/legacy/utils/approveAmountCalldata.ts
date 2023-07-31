@@ -1,4 +1,4 @@
-import type { Erc20Interface } from '@cowprotocol/abis'
+import type { Erc20Interface } from '@cowswap/abis'
 import { Interface } from '@ethersproject/abi'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { toHex } from '@uniswap/v3-sdk'

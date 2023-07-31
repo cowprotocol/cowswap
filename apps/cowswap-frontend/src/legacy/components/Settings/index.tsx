@@ -2,9 +2,9 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
-import { WithClassName } from '../../../types'
+import { WithClassName } from 'types'
 
-import { RowFixed } from '../Row'
+import { RowFixed } from 'legacy/components/Row'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 

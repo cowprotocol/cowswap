@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import usePrevious from '../../../legacy/hooks/usePrevious'
-import { Field } from '../../../legacy/state/swap/actions'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useDerivedTradeState } from '../../trade/hooks/useDerivedTradeState'
-import { useUpdateCurrencyAmount } from '../../trade/hooks/useUpdateCurrencyAmount'
-import { useTradeQuote } from '../../tradeQuote'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { partsStateAtom } from '../state/partsStateAtom'
 

@@ -1,10 +1,10 @@
 import { ReactNode, useCallback } from 'react'
 
-import { SupportedLocale } from './legacy/constants/locales'
-import { initialLocale, useActiveLocale } from './legacy/hooks/useActiveLocale'
-import { useUserLocaleManager } from './legacy/state/user/hooks'
+import { SupportedLocale } from 'legacy/constants/locales'
+import { initialLocale, useActiveLocale } from 'legacy/hooks/useActiveLocale'
+import { useUserLocaleManager } from 'legacy/state/user/hooks'
 
-import { dynamicActivate, Provider } from './lib/i18n'
+import { dynamicActivate, Provider } from 'lib/i18n'
 
 dynamicActivate(initialLocale)
 
@@ -21,7 +21,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   )
 
   return (
-    <Provider locale={locale} forceRenderAfterLocaleChange={false} onActivate={onActivate}>
+    <Provider locale={locale} onActivate={onActivate}>
       {children}
     </Provider>
   )

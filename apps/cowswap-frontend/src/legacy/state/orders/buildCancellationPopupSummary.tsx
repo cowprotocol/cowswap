@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { CancellationSummary } from '../../../modules/account/containers/Transaction/styled'
+import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
 
 import { shortenOrderId } from '../../utils'
 

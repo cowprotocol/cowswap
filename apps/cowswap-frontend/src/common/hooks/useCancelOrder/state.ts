@@ -4,7 +4,7 @@ import { atomWithReset } from 'jotai/utils'
 import { BigNumber } from '@ethersproject/bignumber'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
-import { MAINNET_NATIVE_CURRENCY } from '../../../lib/hooks/useNativeCurrency'
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 export type CancellationType = 'offChain' | 'onChain'
 

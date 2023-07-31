@@ -1,7 +1,7 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { RowSlippage } from '../../../swap/containers/Row/RowSlippage'
-import { ConfirmDetailsItem } from '../../pure/ConfirmDetailsItem'
+import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
+import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 
 export type SlippageRowProps = {
   slippage: Percent

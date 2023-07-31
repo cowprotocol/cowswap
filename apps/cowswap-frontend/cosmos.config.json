@@ -2,11 +2,11 @@
   "fixturesDir": "cosmos",
   "fixtureFileSuffix": "cosmos",
   "watchDirs": ["src"],
-  "webpack": {
-    "configPath": "./cosmos.webpack.config",
-    "overridePath": "cosmos.override.js"
-  },
   "port": 5001,
   "exportPath": "./public/cosmos",
-  "publicUrl": "./"
+  "publicUrl": "./",
+  "plugins": ["react-cosmos-plugin-vite"],
+  "vite": {
+    "configPath": "./vite.config.ts"
+  }
 }

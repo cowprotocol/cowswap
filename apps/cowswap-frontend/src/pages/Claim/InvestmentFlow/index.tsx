@@ -5,30 +5,30 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import CowProtocolImage from '../../../legacy/assets/cow-swap/cowprotocol.svg'
-import ImportantIcon from '../../../legacy/assets/cow-swap/important.svg'
-import RoundArrow from '../../../legacy/assets/cow-swap/round-arrow.svg'
-import { BadgeVariant } from '../../../legacy/components/Badge'
-import { ExplorerLink } from '../../../legacy/components/ExplorerLink'
-import { FaqDrawer } from '../../../legacy/components/FaqDrawer'
-import { Stepper } from '../../../legacy/components/Stepper'
-import { ConfirmOperationType } from '../../../legacy/components/TransactionConfirmationModal'
-import { ClaimStatus } from '../../../legacy/state/claim/actions'
+import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
+import RoundArrow from 'legacy/assets/cow-swap/round-arrow.svg'
+import { BadgeVariant } from 'legacy/components/Badge'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { FaqDrawer } from 'legacy/components/FaqDrawer'
+import { Stepper } from 'legacy/components/Stepper'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimState,
   useClaimDispatchers,
   useHasClaimInvestmentFlowError,
   useSomeNotTouched,
   useClaimLinks,
-} from '../../../legacy/state/claim/hooks'
-import { calculateInvestmentAmounts } from '../../../legacy/state/claim/hooks/utils'
-import { InvestClaim } from '../../../legacy/state/claim/reducer'
-import { ExternalLink } from '../../../legacy/theme'
+} from 'legacy/state/claim/hooks'
+import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
+import { InvestClaim } from 'legacy/state/claim/reducer'
+import { ExternalLink } from 'legacy/theme'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { ClaimSummaryView } from '../ClaimSummary'
-import { InvestSummaryRow } from './InvestSummaryRow'
+import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
+import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import {
   InvestFlow,
   InvestContent,
@@ -39,7 +39,7 @@ import {
   Badge,
   UserMessage,
   BannerExplainer,
-} from '../styled'
+} from 'pages/Claim/styled'
 
 import InvestOption from './InvestOption'
 

@@ -1,8 +1,8 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { useHigherUSDValue } from '../../../../legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import { rawToTokenAmount } from '../../../../utils/rawToTokenAmount'
+import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 
 function getPriceQuoteAmount(price: Price<Currency, Currency>, isInverted: boolean): CurrencyAmount<Currency> {
   const executionPrice = isInverted ? price.invert() : price

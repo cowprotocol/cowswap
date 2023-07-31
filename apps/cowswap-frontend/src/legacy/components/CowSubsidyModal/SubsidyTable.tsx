@@ -4,10 +4,10 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { transparentize, lighten } from 'polished'
 import styled from 'styled-components/macro'
 
-import { V_COW } from '../../constants/tokens'
-import { useIsDarkMode } from '../../state/user/hooks'
+import { V_COW } from 'legacy/constants/tokens'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { TokenAmount } from '../../../common/pure/TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { COW_SUBSIDY_DATA } from './constants'
 

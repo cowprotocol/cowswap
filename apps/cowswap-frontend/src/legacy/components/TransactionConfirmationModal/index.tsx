@@ -2,16 +2,16 @@ import React, { ReactNode, useCallback, useEffect } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { getActivityState, useActivityDerivedState } from '../../hooks/useActivityDerivedState'
-import { useMultipleActivityDescriptors } from '../../hooks/useRecentActivity'
-import { handleFollowPendingTxPopupAtom, useSetAtom } from '../../state/application/atoms'
+import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import { handleFollowPendingTxPopupAtom, useSetAtom } from 'legacy/state/application/atoms'
 
-import { useSetIsConfirmationModalOpen } from '../../../modules/swap/state/surplusModal'
-import { useWalletInfo } from '../../../modules/wallet'
+import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useGetSurplusData } from '../../../common/hooks/useGetSurplusFiatValue'
-import { CowModal } from '../../../common/pure/Modal'
-import { TransactionSubmittedContent } from '../../../common/pure/TransactionSubmittedContent'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CowModal } from 'common/pure/Modal'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 import { ConfirmOperationType } from './types'

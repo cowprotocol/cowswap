@@ -1,0 +1,68 @@
+{
+  "name": "@cowprotocol/cowswap",
+  "version": "1.43.0",
+  "description": "CoW Swap",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "nx exec -- craco start",
+    "build": "nx run-many -t build",
+    "build:cowswap": "nx build cowswap",
+    "test": "nx run-many -t test",
+    "e2e": "nx run-many -t e2e",
+    "start:ssl": "nx exec -- HTTPS=true yarn start",
+    "start:service-worker": "nx exec -- yarn _start:service-worker ",
+    "lint": "nx exec -- yarn run eslint ./",
+    "lint:fix": "nx exec -- yarn run eslint --fix ./",
+    "mock": "nx exec -- REACT_APP_MOCK=true yarn start",
+    "build:analyze": "nx exec -- cross-env REACT_APP_ANALYZE_BUNDLE=true yarn build",
+    "ipfs:build": "nx exec -- cross-env PUBLIC_URL=\".\" yarn build",
+    "ipfs:publish": "nx exec -- ipfs-deploy build -p pinata -O",
+    "test:debug": "nx exec -- craco --inspect-brk test --runInBand --no-cache",
+    "eject": "react-scripts eject",
+    "serve": "nx exec -- serve build -l 3000",
+    "serve:ci": "nx exec -- serve website -l 3000",
+    "cypress": "nx exec -- cypress open",
+    "optimize-bundle": "nx exec -- node ./scripts/fix-ethereumjs-bundle.js",
+    "patch-package": "nx exec -- patch-package",
+    "i18n": "nx exec -- yarn i18n:compile",
+    "i18n:compile": "yarn i18n:extract && lingui compile",
+    "i18n:extract": "cross-env NODE_ENV=development lingui extract --locale en-US",
+    "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
+    "postinstall": "yarn i18n && yarn patch-package",
+    "prepare": "husky install",
+    "prepublishOnly": "yarn widgets:build",
+    "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
+    "cosmos:run": "nx exec -- yarn _cosmos:run ",
+    "cosmos:export": "nx exec -- cross-env NODE_ENV=development cosmos-export",
+    "widgets:build": "nx exec -- rollup --config --failAfterWarnings --configPlugin typescript2",
+    "sitemap": "nx exec -- node src/sitemap",
+    "writeVersion": "nx exec -- node src/writeVersion",
+    "_start:service-worker": "yarn build && yarn serve",
+    "_cosmos:run": "yarn cosmos:clear && cosmos"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "nx": {}
+}

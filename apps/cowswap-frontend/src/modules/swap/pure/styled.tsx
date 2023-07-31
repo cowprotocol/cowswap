@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from '../../../legacy/components/Row'
+import { RowBetween } from 'legacy/components/Row'
 
 export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   ...props,

@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useDerivedTradeState } from '../../trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
 

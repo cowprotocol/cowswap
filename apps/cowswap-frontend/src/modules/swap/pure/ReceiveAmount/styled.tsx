@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import QuestionHelper from '../../../../legacy/components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 
 export const ReceiveAmountBox = styled.div`
   display: flex;

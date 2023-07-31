@@ -1,21 +1,21 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
-import CowImage from '../../../../legacy/assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from '../../../../legacy/constants/networks'
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
-import { useSelectedWallet } from '../../../../legacy/state/user/hooks'
+import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
+import { RPC_URLS } from 'legacy/constants/networks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+import { useSelectedWallet } from 'legacy/state/user/hooks'
 
-import { ConnectionType } from '../../index'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { getConnectionName } from '../../api/utils/connection'
+import { ConnectionType } from 'modules/wallet'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
 import { AsyncConnector } from './asyncConnector'
 
-import { TryActivation, onError } from './index'
-
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { Web3ReactConnection } from '../types'
+
+import { TryActivation, onError } from '.'
 
 const coinbaseInjectedOption = {
   color: '#315CF5',

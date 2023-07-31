@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useWalletDetails, useWalletDisplayedAddress } from '../../../modules/wallet'
+import { useWalletDetails, useWalletDisplayedAddress } from 'modules/wallet'
 
-import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
-import { CowModal } from '../../pure/Modal'
-import { useZeroApprovalState } from '../../state/useZeroApprovalState'
+import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
+import { CowModal } from 'common/pure/Modal'
+import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 
 import { useWalletStatusIcon } from '../../hooks/useWalletStatusIcon'
 

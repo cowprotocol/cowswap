@@ -1,7 +1,7 @@
 {
   "name": "widget-lib",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "src/libs/widget-lib/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/widget-lib/src",
   "projectType": "library",
 
   "targets": {
@@ -29,14 +29,14 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["src/libs/widget-lib/**/*.ts"]
+        "lintFilePatterns": ["libs/widget-lib/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "src/libs/widget-lib/jest.config.ts",
+        "jestConfig": "libs/widget-lib/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

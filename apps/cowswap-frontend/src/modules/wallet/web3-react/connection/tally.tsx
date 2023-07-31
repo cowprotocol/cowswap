@@ -1,13 +1,13 @@
 import { initializeConnector } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { useIsActiveWallet } from '../../../../legacy/hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from '../../index'
-import { default as TallyImage } from '../../api/assets/tally.svg'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { getConnectionName } from '../../api/utils/connection'
-import { InjectedWallet } from '../connectors/Injected'
+import { ConnectionType } from 'modules/wallet'
+import { default as TallyImage } from 'modules/wallet/api/assets/tally.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
+import { InjectedWallet } from 'modules/wallet/web3-react/connectors/Injected'
 
 import { Web3ReactConnection } from '../types'
 

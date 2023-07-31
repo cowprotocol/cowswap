@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 
-import useENSAddress from '../../../legacy/hooks/useENSAddress'
-import { useIsTradeUnsupported } from '../../../legacy/state/lists/hooks'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
-import { isUnsupportedTokenInQuote } from '../../limitOrders/utils/isUnsupportedTokenInQuote'
-import { useDerivedTradeState } from '../../trade/hooks/useDerivedTradeState'
-import { useIsWrapOrUnwrap } from '../../trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote } from '../../tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '../../wallet'
+import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
-import { useTradeApproveState } from '../../../common/containers/TradeApprove'
-import { useIsTxBundlingEnabled } from '../../../common/hooks/featureFlags/useIsTxBundlingEnabled'
+import { useTradeApproveState } from 'common/containers/TradeApprove'
+import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 
 import { TradeFormValidationCommonContext } from '../types'
 

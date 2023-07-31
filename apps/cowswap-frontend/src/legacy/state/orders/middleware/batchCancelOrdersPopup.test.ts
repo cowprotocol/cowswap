@@ -25,8 +25,7 @@ describe('batchCancelOrdersPopup', () => {
   })
 
   it('should trigger pop ups for pending orders', () => {
-    // @ts-ignore
-    batchCancelOrdersPopup(instance(storeMock), MOCK_ORDERS)
+    batchCancelOrdersPopup(instance(storeMock), MOCK_ORDERS as any)
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 

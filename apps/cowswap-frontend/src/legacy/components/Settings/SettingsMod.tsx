@@ -9,19 +9,19 @@ import {
   showExpertModeConfirmationAnalytics,
   toggleExpertModeAnalytics,
   toggleRecepientAddressAnalytics,
-} from '../analytics'
-import { AutoColumn } from '../Column'
-import QuestionHelper from '../QuestionHelper'
-import { RowBetween, RowFixed } from '../Row'
-import Toggle from '../Toggle'
-import TransactionSettings from '../TransactionSettings'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
-import { useModalIsOpen, useToggleSettingsMenu } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/reducer'
-import { useExpertModeManager, useRecipientToggleManager } from '../../state/user/hooks'
-import { ThemedText } from '../../theme'
+} from 'legacy/components/analytics'
+import { AutoColumn } from 'legacy/components/Column'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+import Toggle from 'legacy/components/Toggle'
+import TransactionSettings from 'legacy/components/TransactionSettings'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
+import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
+import { ThemedText } from 'legacy/theme'
 
-import { ExpertModeModal } from '../../../common/pure/ExpertModeModal'
+import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { SettingsTabProp } from './index'
 

@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
-import TradeGp from '../../../legacy/state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { TokenAmount, TokenAmountProps } from '../../../common/pure/TokenAmount'
+import { TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 
 export interface ReceiveAmountInfo {
   type: 'from' | 'to'

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ContentWrapper, Modal } from '../Modal'
+import { ContentWrapper, Modal } from 'common/pure/Modal'
 
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
 

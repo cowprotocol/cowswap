@@ -1,11 +1,11 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from '../../../../legacy/components/Button'
-import { YellowCard } from '../../../../legacy/components/Card'
-import { CopyIcon, TransactionStatusText } from '../../../../legacy/components/Copy'
-import { QuestionWrapper } from '../../../../legacy/components/QuestionHelper'
-import { ExternalLink, StyledLink } from '../../../../legacy/theme'
+import { ButtonSecondary } from 'legacy/components/Button'
+import { YellowCard } from 'legacy/components/Card'
+import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import { ExternalLink, StyledLink } from 'legacy/theme'
 
 import {
   StatusLabelWrapper,
@@ -15,7 +15,7 @@ import {
   TransactionInnerDetail,
   TransactionStatusText as ActivityDetailsText,
   TransactionWrapper,
-} from '../Transaction/styled'
+} from '../../containers/Transaction/styled'
 
 export const WalletName = styled.div`
   width: initial;

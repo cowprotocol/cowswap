@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
-import Popover, { PopoverProps } from '../Popover'
+import Popover, { PopoverProps } from 'legacy/components/Popover'
 
 export const TooltipContainer = styled.div`
   max-width: 300px;

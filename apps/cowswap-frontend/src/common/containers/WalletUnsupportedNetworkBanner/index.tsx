@@ -2,10 +2,10 @@ import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from '../../../legacy/constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS } from '../../../legacy/constants/chains'
+import { getChainInfo } from 'legacy/constants/chainInfo'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
-import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 export const UNSUPPORTED_WALLET_TEXT = (
   <Trans>

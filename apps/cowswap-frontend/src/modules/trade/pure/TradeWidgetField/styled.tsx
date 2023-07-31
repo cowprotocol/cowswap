@@ -1,7 +1,7 @@
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
-import { QuestionWrapper } from '../../../../legacy/components/QuestionHelper'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { NumericalInput } from '../TradeNumberInput/styled'
 
@@ -86,7 +86,7 @@ ${({ hasPrefix }) =>
     ${NumericalInput} {
       max-width: 200px;
     };
-
+    
     ${({ hasPrefix }) =>
       hasPrefix &&
       css`

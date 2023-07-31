@@ -4,8 +4,8 @@ import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feat
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { externalLinkAnalytics, outboundLink } from '../components/analytics'
-import { anonymizeLink } from '../utils/anonymizeLink'
+import { externalLinkAnalytics, outboundLink } from 'legacy/components/analytics'
+import { anonymizeLink } from 'legacy/utils/anonymizeLink'
 
 export const ButtonText = styled.button`
   outline: none;

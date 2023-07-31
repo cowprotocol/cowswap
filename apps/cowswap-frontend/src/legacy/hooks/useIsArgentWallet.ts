@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { NEVER_RELOAD, useSingleCallResult } from '../../lib/hooks/multicall'
+import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useArgentWalletDetectorContract } from './useContract'
 

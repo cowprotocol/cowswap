@@ -1,4 +1,4 @@
-import { HelpCircle } from './index'
+import { HelpCircle } from '.'
 
 const fixtures = {
   default: <HelpCircle />,

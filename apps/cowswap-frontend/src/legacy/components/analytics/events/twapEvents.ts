@@ -1,4 +1,4 @@
-import { sendEvent } from '../index'
+import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
 type TwapWalletCompatibility = 'non-compatible' | 'compatible' | 'safe-that-could-be-converted'

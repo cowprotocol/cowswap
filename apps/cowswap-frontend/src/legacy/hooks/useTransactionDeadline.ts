@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { useAppSelector } from '../state/hooks'
+import { useAppSelector } from 'legacy/state/hooks'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import useCurrentBlockTimestamp from './useCurrentBlockTimestamp'
 
@@ -16,5 +16,6 @@ export default function useTransactionDeadline(): BigNumber | undefined {
   return useMemo(() => {
     if (blockTimestamp && ttl) return blockTimestamp.add(ttl)
     return undefined
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockTimestamp, chainId, ttl])
 }

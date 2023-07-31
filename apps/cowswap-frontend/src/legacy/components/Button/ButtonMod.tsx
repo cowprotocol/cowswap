@@ -3,9 +3,9 @@ import { Check, ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from '../Row'
-import useTheme from '../../hooks/useTheme'
-import { ButtonSize } from '../../theme/enum'
+import { RowBetween } from 'legacy/components/Row'
+import useTheme from 'legacy/hooks/useTheme'
+import { ButtonSize } from 'legacy/theme/enum'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 

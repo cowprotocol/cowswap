@@ -67,8 +67,7 @@ describe('batchExpireOrdersPopup', () => {
   it('should not trigger pop up if there are no pending orders', () => {
     when(payloadMock.ids).thenReturn(['0x000'])
 
-    // @ts-ignore
-    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     verify(storeMock.dispatch(anything())).never()
   })
@@ -76,8 +75,7 @@ describe('batchExpireOrdersPopup', () => {
   it('should not trigger pop up if there are no visible orders', () => {
     when(payloadMock.ids).thenReturn(['0x003'])
 
-    // @ts-ignore
-    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     verify(storeMock.dispatch(anything())).never()
   })
@@ -85,8 +83,7 @@ describe('batchExpireOrdersPopup', () => {
   it('should trigger pop ups if there are pending orders', () => {
     when(payloadMock.ids).thenReturn(['0x001', '0x002'])
 
-    // @ts-ignore
-    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchExpireOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 

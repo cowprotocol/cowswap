@@ -1,16 +1,21 @@
 // ***********************************************************
-// This file is processed and loaded automatically before your test files.
+// This example support/index.js is processed and
+// loaded automatically before your test files.
+//
+// This is a great place to put global configuration and
+// behavior that modifies Cypress.
+//
+// You can change the location of this file or turn off
+// automatically serving support files with the
+// 'supportFile' configuration option.
 //
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.ts using ES2015 syntax:
-import assert = require('assert')
-
+// Import commands.js using ES2015 syntax:
+import './commands';
 import { injected } from './ethereum'
-
-const chainName = 'goerli' // Mod
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -24,27 +29,10 @@ declare global {
   }
 }
 
-// sets up the injected provider to be a mock ethereum provider with the given mnemonic/index
-// eslint-disable-next-line no-undef
-Cypress.Commands.overwrite(
-  'visit',
-  (original, url: string | Partial<Cypress.VisitOptions>, options?: Partial<Cypress.VisitOptions>) => {
-    assert(typeof url === 'string')
-
-    cy.intercept('/service-worker.js', options?.serviceWorker ? undefined : { statusCode: 404 }).then(() => {
-      original({
-        ...options,
-        url:
-          (url.startsWith('/') && url.length > 2 && !url.startsWith('/#') ? `/#${url}` : url) + `?chain=${chainName}`,
-        onBeforeLoad(win) {
-          options?.onBeforeLoad?.(win)
-          win.localStorage.clear()
-          win.ethereum = injected
-        },
-      })
-    })
-  }
-)
+Cypress.on('window:before:load', win => {
+  win.localStorage.clear()
+  win.ethereum = injected
+});
 
 beforeEach(() => {
   // Infura security policies are based on Origin headers.
@@ -53,10 +41,4 @@ beforeEach(() => {
     res.headers['origin'] = 'http://localhost:3000'
     res.continue()
   })
-})
-
-Cypress.on('uncaught:exception', (_err, _runnable) => {
-  // returning false here prevents Cypress from
-  // failing the test
-  return false
 })

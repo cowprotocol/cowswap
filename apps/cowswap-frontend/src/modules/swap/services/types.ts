@@ -1,18 +1,18 @@
-import { Erc20, Weth } from '@cowprotocol/abis'
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowswap/abis'
+import { Erc20, Weth } from '@cowswap/abis'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { AppDispatch } from '../../../legacy/state'
-import { useTransactionAdder } from '../../../legacy/state/enhancedTransactions/hooks'
-import { AddOrderCallback } from '../../../legacy/state/orders/hooks'
-import TradeGp from '../../../legacy/state/swap/TradeGp'
-import { PostOrderParams } from '../../../legacy/utils/trade'
+import { AppDispatch } from 'legacy/state'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { AddOrderCallback } from 'legacy/state/orders/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { PostOrderParams } from 'legacy/utils/trade'
 
-import { AppDataInfo } from '../../appData'
-import { SwapConfirmManager } from '../hooks/useSwapConfirmManager'
-import { SwapFlowAnalyticsContext } from '../../trade/utils/analytics'
+import { AppDataInfo } from 'modules/appData'
+import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { FlowType } from '../hooks/useFlowContext'
 

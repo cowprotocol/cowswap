@@ -1,6 +1,6 @@
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
-import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from '../../advancedOrders/const'
+import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
 
 import { getSignatureVerifierContract } from './getSignatureVerifierContract'
 

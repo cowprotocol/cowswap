@@ -1,6 +1,6 @@
-import { useIsBundlingSupported } from '../../../modules/wallet'
+import { useIsBundlingSupported } from 'modules/wallet'
 
-import { useFeatureFlags } from './useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 export function useIsEthFlowBundlingEnabled(): boolean {
   const isBundlingSupported = useIsBundlingSupported()

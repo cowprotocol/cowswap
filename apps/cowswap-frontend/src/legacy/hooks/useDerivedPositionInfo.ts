@@ -1,7 +1,7 @@
 import { Pool, Position } from '@uniswap/v3-sdk'
 
-import { usePool } from './usePools'
-import { PositionDetails } from '../types/position'
+import { usePool } from 'legacy/hooks/usePools'
+import { PositionDetails } from 'legacy/types/position'
 
 import { useCurrency } from './Tokens'
 

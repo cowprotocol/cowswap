@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
-import { useWalletInfo } from '../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useProxyTokens } from '../../api/proxy'
+import { useProxyTokens } from 'api/proxy'
 
 export function useExternalTokenSearch(query: string, existingTokens: Map<string, boolean>): Token[] {
   const { chainId: currentChainId } = useWalletInfo()

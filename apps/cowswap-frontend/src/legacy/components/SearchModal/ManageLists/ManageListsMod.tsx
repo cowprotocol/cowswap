@@ -7,29 +7,29 @@ import { CheckCircle, Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '../../analytics'
-import { ButtonEmpty, ButtonPrimary } from '../../Button'
-import Column, { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import Row, { RowBetween, RowFixed } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../styleds'
-import Toggle from '../../Toggle'
-import { useListColor } from '../../../hooks/useColor'
-import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
-import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
-import useTheme from '../../../hooks/useTheme'
-import useToggle from '../../../hooks/useToggle'
-import { useAppDispatch, useAppSelector } from '../../../state/hooks'
-import { useActiveListUrls, useAllLists, useIsListActive } from '../../../state/lists/hooks'
-import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from '../../../theme'
-import listVersionLabel from '../../../utils/listVersionLabel'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
+import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
+import Column, { AutoColumn } from 'legacy/components/Column'
+import ListLogo from 'legacy/components/ListLogo'
+import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
+import Toggle from 'legacy/components/Toggle'
+import { useListColor } from 'legacy/hooks/useColor'
+import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
+import useTheme from 'legacy/hooks/useTheme'
+import useToggle from 'legacy/hooks/useToggle'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
+import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
+import listVersionLabel from 'legacy/utils/listVersionLabel'
 
-import { useWalletInfo } from '../../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useConfirmationRequest } from '../../../../common/hooks/useConfirmationRequest'
-import parseENSAddress from '../../../../lib/utils/parseENSAddress'
-import uriToHttp from '../../../../lib/utils/uriToHttp'
+import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
+import parseENSAddress from 'lib/utils/parseENSAddress'
+import uriToHttp from 'lib/utils/uriToHttp'
 
 import { ListRowProps, RowWrapper, Card } from './index'
 
@@ -317,7 +317,7 @@ export function ManageLists({
       return sortedLists.filter((listUrl) => {
         // only show loaded lists, hide unsupported lists
         // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
-        return Boolean(lists[listUrl]?.current) && !Boolean(unsupportedListUrls.includes(listUrl))
+        return Boolean(lists[listUrl]?.current) && !unsupportedListUrls.includes(listUrl)
       })
     },
     // [lists, activeListUrls, tokenCountByListName]

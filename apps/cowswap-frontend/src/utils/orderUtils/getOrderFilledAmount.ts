@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 
-import { ZERO_BIG_NUMBER } from '../../legacy/constants'
-import { Order } from '../../legacy/state/orders/actions'
+import { ZERO_BIG_NUMBER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 
 /**
  * Get order filled amount, both as raw amount (in atoms) and as percentage (from 0 to 1)

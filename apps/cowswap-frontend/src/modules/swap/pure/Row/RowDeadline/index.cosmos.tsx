@@ -1,6 +1,6 @@
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '../../../../../legacy/constants'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
 
-import { RowDeadlineContent, RowDeadlineProps } from './index'
+import { RowDeadlineContent, RowDeadlineProps } from '.'
 
 const defaultProps: RowDeadlineProps = {
   toggleSettings: console.log,

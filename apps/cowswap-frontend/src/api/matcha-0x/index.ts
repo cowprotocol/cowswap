@@ -1,14 +1,13 @@
 import { OrderKind } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { NetworkID } from 'paraswap'
-import { PriceInformation } from '../../types'
+import { PriceInformation } from 'types'
 
-import { getTokensFromMarket } from '../../legacy/utils/misc'
-import { getValidParams } from '../../legacy/utils/price'
+import { getTokensFromMarket } from 'legacy/utils/misc'
+import { getValidParams } from 'legacy/utils/price'
 
-import { LegacyPriceQuoteParams } from '../gnosisProtocol/legacy/types'
-import { fetchWithRateLimit } from '../../common/utils/fetch'
+import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { fetchWithRateLimit } from 'common/utils/fetch'
 
 // copy/pasting as the library types correspond to the internal types, not API response
 // e.g "price: BigNumber" when we want the API response type: "price: string"
@@ -45,7 +44,7 @@ export interface MatchaPriceQuote extends MatchaBaseQuote {
   gas: string
 }
 
-function getMatchaChainId(chainId: ChainId): NetworkID | null {
+function getMatchaChainId(chainId: ChainId): number | null {
   if (!ENABLED) {
     return null
   }

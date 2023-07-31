@@ -3,14 +3,14 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { CHAIN_INFO } from '../../../../../legacy/constants/chainInfo'
-import { WRAPPED_NATIVE_CURRENCY } from '../../../../../legacy/constants/tokens'
-import { WrappedTokenInfo } from '../../../../../legacy/state/lists/wrappedTokenInfo'
+import { CHAIN_INFO } from 'legacy/constants/chainInfo'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-import * as styledEl from './styled'
+import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 
-import { CurrencyLogo } from '../../../../../common/pure/CurrencyLogo'
-import { TokenAmount } from '../../../../../common/pure/TokenAmount'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
   filter: invert(1);

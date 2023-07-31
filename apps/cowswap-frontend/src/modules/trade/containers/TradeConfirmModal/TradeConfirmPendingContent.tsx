@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { useWalletDisplayedAddress } from '../../../wallet'
+import { useWalletDisplayedAddress } from 'modules/wallet'
 
-import { useWalletStatusIcon } from '../../../../common/hooks/useWalletStatusIcon'
-import { ConfirmationPendingContent } from '../../../../common/pure/ConfirmationPendingContent'
-import { TokenAmount } from '../../../../common/pure/TokenAmount'
+import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
+import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { TradeAmounts } from '../../types/TradeAmounts'
 

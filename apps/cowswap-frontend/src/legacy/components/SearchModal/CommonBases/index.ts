@@ -3,10 +3,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { AutoColumn as AutoColumnUni } from '../../Column'
-import { AutoRow } from '../../Row'
-
-import { BaseWrapperMod } from './CommonBasesMod'
+import { AutoColumn as AutoColumnUni } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
 
 export { default } from './CommonBasesMod'
 
@@ -71,6 +69,30 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
   overflow-y: overlay;
   max-height: 135px;
   padding-bottom: 20px;
+`
+
+export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
+  border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
+  border-radius: 10px;
+  display: flex;
+  padding: 6px;
+
+  align-items: center;
+  :hover {
+    cursor: ${({ disable }) => !disable && 'pointer'};
+    background-color: ${({ theme, disable }) => !disable && theme.bg4};
+  }
+
+  color: ${({ theme, disable }) => disable && theme.text3};
+  background-color: ${({ theme, disable }) => disable && theme.bg3};
+  filter: ${({ disable }) => disable && 'grayscale(1)'};
+
+  flex: 0 0 calc(33% - 8px);
+  justify-content: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex: auto;
+  `}
 `
 
 export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`

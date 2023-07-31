@@ -3,11 +3,11 @@ import { useCallback } from 'react'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
 
-import { orderBookApi } from '../../../cowSdk'
+import { orderBookApi } from 'cowSdk'
 
-import { useWalletInfo } from '../../../modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { CancellableOrder, isOrderCancellable } from '../../utils/isOrderCancellable'
+import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promise<void> {
   const { provider } = useWeb3React()

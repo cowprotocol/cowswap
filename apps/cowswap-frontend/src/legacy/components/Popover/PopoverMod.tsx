@@ -6,7 +6,7 @@ import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
-import useInterval from '../../../lib/hooks/useInterval'
+import useInterval from 'lib/hooks/useInterval'
 
 // MOD imports
 
@@ -81,7 +81,7 @@ export const Arrow = styled.div`
   }
 `
 
-export interface PopoverProps extends PopoverContainerProps, React.HTMLAttributes<HTMLDivElement> {
+export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
   content: React.ReactNode
   // show: boolean
   children: React.ReactNode

@@ -1,6 +1,6 @@
-import { TradeUrlParams } from '../types/TradeRawState'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { RoutesValues } from '../../../common/constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 /**
  * When input currency is not set and user select output currency, we build a link like:

@@ -1,13 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect, useState } from 'react'
 
-import { Writeable } from '../../../../types'
+import { Writeable } from 'types'
 
-import usePrevious from '../../../../legacy/hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 
-import { useGetInitialPrice } from '../../hooks/useGetInitialPrice'
-import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
-import { LimitRateState, updateLimitRateAtom } from '../../state/limitRateAtom'
+import { useGetInitialPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
+import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
+import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 

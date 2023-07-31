@@ -1,4 +1,4 @@
-import { Identicon } from '../../../modules/wallet'
+import { Identicon } from 'modules/wallet'
 
 import { ConfirmationPendingContent } from './ConfirmationPendingContent'
 

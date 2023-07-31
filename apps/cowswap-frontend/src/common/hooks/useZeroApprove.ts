@@ -5,13 +5,13 @@ import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useIsActiveWallet } from '../../legacy/hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { useIsSafeWallet } from '../../modules/wallet'
-import { walletConnectConnection } from '../../modules/wallet/web3-react/connection/walletConnect'
+import { useIsSafeWallet } from 'modules/wallet'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 
-import { useSafeApiKit } from '../../api/gnosisSafe/hooks/useSafeApiKit'
-import { pollUntil } from '../utils/pollUntil'
+import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
+import { pollUntil } from 'common/utils/pollUntil'
 
 import { useApproveCallback } from './useApproveCallback'
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'

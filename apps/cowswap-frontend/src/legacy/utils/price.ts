@@ -3,15 +3,15 @@ import { Percent } from '@uniswap/sdk-core'
 
 import BigNumberJs from 'bignumber.js'
 import useSWR, { SWRConfiguration } from 'swr'
-import { FeeInformation, PriceInformation } from '../../types'
+import { FeeInformation, PriceInformation } from 'types'
 
-import { SWR_OPTIONS } from '../constants'
-import { getUsdQuoteValidTo } from '../hooks/useStablecoinPrice'
-import { GpPriceStrategy } from '../state/gas/atoms'
-import { toErc20Address } from './tokens'
+import { SWR_OPTIONS } from 'legacy/constants'
+import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
+import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { toErc20Address } from 'legacy/utils/tokens'
 
-import { getQuote } from '../../api/gnosisProtocol'
-import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from '../../api/gnosisProtocol/legacy/types'
+import { getQuote } from 'api/gnosisProtocol'
+import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -58,7 +58,7 @@ export async function getBestQuote({
   } else {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')
 
-    const { getBestQuoteLegacy } = await import('./priceLegacy')
+    const { getBestQuoteLegacy } = await import('legacy/utils/priceLegacy')
 
     return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
   }
@@ -119,7 +119,7 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
       quoteToken: quoteParams.sellToken,
     }
 
-    const { getBestPrice } = await import('./priceLegacy')
+    const { getBestPrice } = await import('legacy/utils/priceLegacy')
 
     const quote = await getBestPrice(legacyParams)
 

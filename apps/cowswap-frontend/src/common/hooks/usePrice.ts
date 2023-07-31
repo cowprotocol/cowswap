@@ -1,10 +1,10 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { Nullish } from '../../types'
+import { Nullish } from 'types'
 
-import { buildPriceFromCurrencyAmounts } from '../../modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
+import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
 
-import { useSafeMemo } from './useSafeMemo'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 export function usePrice(
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,

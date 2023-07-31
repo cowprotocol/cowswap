@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { namehash } from '@ethersproject/hash'
 
-import { useSingleCallResult } from '../../lib/hooks/multicall'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 import useDebounce from './useDebounce'
@@ -31,7 +31,7 @@ export default function useENSName(address?: string): { ENSName: string | null; 
   const nameCallRes = useSingleCallResult(resolverContract, 'name', ensNodeArgument)
   const name = nameCallRes.result?.[0]
 
-  /* ENS does not enforce that an address owns a .eth domain before setting it as a reverse proxy
+  /* ENS does not enforce that an address owns a .eth domain before setting it as a reverse proxy 
      and recommends that you perform a match on the forward resolution
      see: https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution
   */

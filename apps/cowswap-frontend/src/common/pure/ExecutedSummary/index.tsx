@@ -1,6 +1,6 @@
-import { useGetSurplusData } from '../../hooks/useGetSurplusFiatValue'
-import { getExecutedSummaryData } from '../../../utils/getExecutedSummaryData'
-import { ParsedOrder } from '../../../utils/orderUtils/parseOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 

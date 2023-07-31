@@ -3,10 +3,10 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { updateLimitOrdersRawStateAtom } from '../index'
-import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
-import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../state/limitRateAtom'
+import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
 type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl'>
 

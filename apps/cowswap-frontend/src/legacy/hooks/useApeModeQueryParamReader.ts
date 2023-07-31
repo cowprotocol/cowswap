@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useAppDispatch } from '../state/hooks'
+import { useAppDispatch } from 'legacy/state/hooks'
 
 import useParsedQueryString from './useParsedQueryString'
 

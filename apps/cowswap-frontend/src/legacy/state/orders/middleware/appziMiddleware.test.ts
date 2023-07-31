@@ -3,7 +3,7 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from '../../../utils/appzi'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
 
 import { appziMiddleware } from './appziMiddleware'
 
@@ -42,6 +42,8 @@ const BASE_LIMIT_ORDER = {
 
 describe('appziMiddleware', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
+
     resetCalls(actionMock)
     resetCalls(mockStore)
     when(mockStore.getState()).thenReturn({

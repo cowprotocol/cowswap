@@ -6,5 +6,5 @@ export default {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/src/libs/abis',
+  coverageDirectory: '../../../coverage/libs/abis',
 }

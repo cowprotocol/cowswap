@@ -4,10 +4,10 @@ import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { ButtonError } from '../../Button'
-import { AutoRow, RowBetween, RowFixed } from '../../Row'
-import { SwapCallbackError } from '../styleds'
-import { ButtonSize } from '../../../theme/enum'
+import { ButtonError } from 'legacy/components/Button'
+import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
+import { SwapCallbackError } from 'legacy/components/swap/styleds'
+import { ButtonSize } from 'legacy/theme/enum'
 
 const Wrapper = styled.div`
   ${RowBetween} > div,

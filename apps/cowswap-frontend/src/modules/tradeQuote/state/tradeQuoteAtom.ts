@@ -3,7 +3,7 @@ import { atomWithReset } from 'jotai/utils'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
-import GpQuoteError from '../../../api/gnosisProtocol/errors/QuoteError'
+import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 
 export const DEFAULT_QUOTE_RESPONSE = {
   response: null,

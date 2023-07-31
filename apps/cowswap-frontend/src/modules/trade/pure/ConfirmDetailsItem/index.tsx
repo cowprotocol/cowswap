@@ -2,10 +2,10 @@ import { ReactNode } from 'react'
 
 import { CornerDownRight } from 'react-feather'
 
-import { InfoIcon } from '../../../../legacy/components/InfoIcon'
-import { RowFixed } from '../../../../legacy/components/Row'
+import { InfoIcon } from 'legacy/components/InfoIcon'
+import { RowFixed } from 'legacy/components/Row'
 
-import { TextWrapper } from '../../../swap/pure/Row/styled'
+import { TextWrapper } from 'modules/swap/pure/Row/styled'
 
 import { Content, Row, Wrapper } from './styled'
 
@@ -25,16 +25,14 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
       {withArrow && <CornerDownRight size={14} />}
 
       {label ? (
-        <>
-          <Row>
-            <RowFixed>
-              {label && <TextWrapper>{label}</TextWrapper>}
-              {tooltip && <InfoIcon content={tooltip} />}
-            </RowFixed>
+        <Row>
+          <RowFixed>
+            {label && <TextWrapper>{label}</TextWrapper>}
+            {tooltip && <InfoIcon content={tooltip} />}
+          </RowFixed>
 
-            <Content>{children}</Content>
-          </Row>
-        </>
+          <Content>{children}</Content>
+        </Row>
       ) : (
         children
       )}

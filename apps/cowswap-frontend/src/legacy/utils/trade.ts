@@ -10,19 +10,19 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { orderBookApi } from '../../cowSdk'
+import { orderBookApi } from 'cowSdk'
 
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from '../constants'
-import { ChangeOrderStatusParams, Order, OrderStatus } from '../state/orders/actions'
-import { AddUnserialisedPendingOrderParams } from '../state/orders/hooks'
-import { isAddress, shortenAddress } from './index'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
+import { isAddress, shortenAddress } from 'legacy/utils/index'
 
-import { AppDataInfo } from '../../modules/appData'
+import { AppDataInfo } from 'modules/appData'
 
-import { getTrades, OrderID } from '../../api/gnosisProtocol'
-import { getProfileData } from '../../api/gnosisProtocol/api'
-import { formatTokenAmount } from '../../utils/amountFormat'
-import { formatSymbol } from '../../utils/format'
+import { getTrades, OrderID } from 'api/gnosisProtocol'
+import { getProfileData } from 'api/gnosisProtocol/api'
+import { formatTokenAmount } from 'utils/amountFormat'
+import { formatSymbol } from 'utils/format'
 
 export type PostOrderParams = {
   account: string

@@ -5,33 +5,33 @@ import React, { useCallback, useEffect } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-import { Nullish } from '../../../../types'
+import { Nullish } from 'types'
 
-import { PriceImpact } from '../../../../legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
-import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { useRateImpact } from '../../hooks/useRateImpact'
-import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
-} from '../../state/limitOrdersWarningsAtom'
-import { NoImpactWarning } from '../../../trade/pure/NoImpactWarning'
-import { TradeFormValidation, useGetTradeFormValidation } from '../../../tradeFormValidation'
-import { useTradeQuote } from '../../../tradeQuote'
-import { useIsSafeViaWc, useWalletInfo } from '../../../wallet'
+} from 'modules/limitOrders/state/limitOrdersWarningsAtom'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
-import { HIGH_FEE_WARNING_PERCENTAGE } from '../../../../common/constants/common'
-import { useShouldZeroApprove } from '../../../../common/hooks/useShouldZeroApprove'
+import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
   SmallVolumeWarningBanner,
-} from '../../../../common/pure/InlineBanner/banners'
-import { ZeroApprovalWarning } from '../../../../common/pure/ZeroApprovalWarning'
-import { isFractionFalsy } from '../../../../utils/isFractionFalsy'
-import { calculatePercentageInRelationToReference } from '../../../../utils/orderUtils/calculatePercentageInRelationToReference'
+} from 'common/pure/InlineBanner/banners'
+import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
+import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 

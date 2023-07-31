@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { WRAPPED_NATIVE_CURRENCY } from '../../../legacy/constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 
-import { useWalletInfo } from '../../wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { doesTokenMatchSymbolOrAddress } from '../../../utils/doesTokenMatchSymbolOrAddress'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 import { useTradeState } from './useTradeState'
 

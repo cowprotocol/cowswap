@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ExplorerLink } from '../ExplorerLink'
-import { HashType } from '../../state/enhancedTransactions/reducer'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { SafeWalletLink } from '../../../common/pure/SafeWalletLink'
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 interface Props {
   chainId: SupportedChainId

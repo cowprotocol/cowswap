@@ -4,24 +4,24 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { GP_VAULT_RELAYER } from '../../../../legacy/constants'
-import { Order } from '../../../../legacy/state/orders/actions'
+import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 
-import { pendingOrdersPricesAtom } from '../../../orders/state/pendingOrdersPricesAtom'
-import { useGetSpotPrice } from '../../../orders/state/spotPricesAtom'
-import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
-import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
-import { OrdersReceiptModal } from '../OrdersReceiptModal'
-import { useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
-import { OrderActions } from '../../pure/OrdersTableContainer/types'
-import { buildOrdersTableUrl, parseOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
-import { useBalancesAndAllowances } from '../../../tokens'
-import { useWalletDetails, useWalletInfo } from '../../../wallet'
+import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import { OPEN_TAB, ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
+import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
+import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
+import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
+import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
+import { useBalancesAndAllowances } from 'modules/tokens'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
-import { useCancelOrder } from '../../../../common/hooks/useCancelOrder'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from '../../../../common/hooks/useMultipleOrdersCancellation/state'
-import { CancellableOrder } from '../../../../common/utils/isOrderCancellable'
-import { ParsedOrder } from '../../../../utils/orderUtils/parseOrder'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
@@ -64,6 +64,7 @@ export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableW
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
+  const isSafeViaWc = useIsSafeViaWc()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -142,6 +143,7 @@ export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableW
           chainId={chainId}
           tabs={tabs}
           orders={orders}
+          isSafeViaWc={isSafeViaWc}
           isOpenOrdersTab={isOpenOrdersTab}
           currentPageNumber={currentPageNumber}
           pendingOrdersPrices={pendingOrdersPrices}

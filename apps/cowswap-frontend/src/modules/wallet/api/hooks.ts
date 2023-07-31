@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { GnosisSafeInfo, useIsSafeApp, WalletDetails, WalletInfo } from '../index'
+import { GnosisSafeInfo, useIsSafeApp, WalletDetails, WalletInfo } from 'modules/wallet'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 

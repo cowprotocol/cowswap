@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CowIcon from '../../assets/cow-swap/cowprotocol.svg'
+import CowIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
 
 export const LoadingWrapper = styled.div`
   display: flex;
