@@ -50,6 +50,7 @@ const orderActions: OrderActions = {
 
 export default (
   <OrdersTableContainer
+    displayOrdersOnlyForSafeApp={false}
     pendingOrdersPrices={{}}
     chainId={1}
     currentPageNumber={1}
