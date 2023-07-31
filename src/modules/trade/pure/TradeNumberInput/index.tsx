@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import SVG from 'react-inlinesvg'
+
+import carretDown from 'legacy/assets/cow-swap/carret-down.svg'
+
 import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
 
-import { NumericalInput, Suffix } from './styled'
+import { NumericalInput, Suffix, ArrowsWrapper, InputWrapper } from './styled'
 
 export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   value: number | null
@@ -13,7 +17,27 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   max?: number
   step?: number
   placeholder?: string
+  showUpDownArrows?: boolean
+  upDownArrowsLeftAlign?: boolean
   prefixComponent?: React.ReactElement
+}
+
+export function InputArrows() {
+  return (
+    <ArrowsWrapper>
+      <span role="button" aria-label="Increase Value" aria-disabled="false">
+        <span role="img" aria-label="up">
+          <SVG src={carretDown} />
+        </span>
+      </span>
+      
+      <span role="button" aria-label="Decrease Value" aria-disabled="false">
+        <span role="img" aria-label="down">
+          <SVG src={carretDown} />
+        </span>
+      </span>
+    </ArrowsWrapper>
+  )
 }
 
 export function TradeNumberInput(props: TradeNumberInputProps) {
@@ -27,6 +51,8 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     max = 100_000,
     step = 1,
     prefixComponent,
+    showUpDownArrows = false,
+    upDownArrowsLeftAlign = false,
   } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
@@ -70,19 +96,19 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     <TradeWidgetField {...props} hasPrefix={!!prefixComponent}>
       <>
         {prefixComponent}
-        <span>
+        <InputWrapper showUpDownArrows={showUpDownArrows} upDownArrowsLeftAlign={upDownArrowsLeftAlign}>
           <NumericalInput
             placeholder={placeholder}
             value={displayedValue}
             onBlur={(e) => validateInput(e.target.value)}
             onUserInput={(value) => setDisplayedValue(value)}
-            type="number"
             min={min}
             max={max}
             step={step}
           />
+          {showUpDownArrows && <InputArrows />}
           {suffix && <Suffix>{suffix}</Suffix>}
-        </span>
+        </InputWrapper>
       </>
     </TradeWidgetField>
   )
