@@ -199,7 +199,7 @@ export function OrdersTableContainer({
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No history orders'}</Trans>
           </h3>
           <p>
             {isSafeViaWc ? (
