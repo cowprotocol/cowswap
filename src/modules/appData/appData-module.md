@@ -23,4 +23,4 @@ This module will expose:
 
 - `useAppData()`: Exposes the app hash and the document associated to it.
 - `AppDataUpdater`: Component that makes sure the appData has the right content, required for `useAppData` hook to work
-- `useUploadAppData()`: Returns a function which can be invoked when an `appData` should be uploaded. This will be uploaded to IPFS. In case of errors, it will keep re-attempting.
+- `useUploadAppData()`: Returns a function which can be invoked when an `appData` should be uploaded. In case of errors, it will keep re-attempting.
