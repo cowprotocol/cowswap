@@ -20,7 +20,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { getAddress } from 'utils/getAddress'
 
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
 import { QuoteInformationObject } from './reducer'
@@ -123,10 +122,8 @@ export default function FeesUpdater(): null {
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {
     currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
+    currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
   } = useDerivedSwapInfo()
-
-  const sellCurrencyId = getAddress(sellCurrency)?.toLowerCase()
-  const buyCurrencyId = getAddress(buyCurrency)?.toLowerCase()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient

@@ -283,6 +283,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     [inputCurrency, outputCurrency]
   )
 
+  // TODO: be careful! For native tokens we use symbol instead of address
   const currenciesIds: { [field in Field]?: string | null } = useMemo(
     () => ({
       [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
