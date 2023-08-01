@@ -90,7 +90,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boole
 
   const balanceAmount = isNativeCurrency ? nativeBalance : balance || undefined
   const enoughBalance = isEnoughAmount(amount, balanceAmount)
-  const enoughAllowance = (allowance && isEnoughAmount(amount, allowance)) || false
+  const enoughAllowance = !allowances || isNativeCurrency || (allowance && isEnoughAmount(amount, allowance)) || false
 
-  return enoughBalance && (allowances === undefined || enoughAllowance)
+  return enoughBalance && enoughAllowance
 }
