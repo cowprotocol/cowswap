@@ -213,7 +213,7 @@ jobs:
           start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
-          working-directory: apps/cowswap-frontend/e2e
+          working-directory: apps/cowswap-frontend-e2e
         env:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
           CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
