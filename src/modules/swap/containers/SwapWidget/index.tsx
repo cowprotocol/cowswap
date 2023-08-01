@@ -7,6 +7,7 @@ import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
+import { useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/swap/actions'
 import {
   useDerivedSwapInfo,
@@ -76,6 +77,7 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
+  const isBestQuoteLoading = useIsBestQuoteLoading()
 
   const priceImpactParams = useTradePriceImpact()
 
@@ -188,6 +190,7 @@ export function SwapWidget() {
     // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
     hideUnknownImpactWarning: !trade || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
+    isBestQuoteLoading,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
