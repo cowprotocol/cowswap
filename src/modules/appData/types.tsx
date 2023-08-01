@@ -21,3 +21,11 @@ export type AppDataKeyParams = {
 export type AppDataRecord = AppDataInfo & AppDataUploadStatus & AppDataKeyParams
 
 export type AppDataOrderClass = Parameters<typeof createOrderClassMetadata>[0]['orderClass']
+
+export type AppDataPendingToUpload = Array<AppDataRecord>
+
+export type UploadAppDataParams = AppDataKeyParams & {
+  appData: AppDataInfo
+}
+export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>
+export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams

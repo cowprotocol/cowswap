@@ -75,6 +75,7 @@ export const tradeContextMock: TradeFlowContext = {
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
   isGnosisSafeWallet: false,
+  uploadAppData: () => void 0,
 }
 
 export const priceImpactMock: PriceImpact = {

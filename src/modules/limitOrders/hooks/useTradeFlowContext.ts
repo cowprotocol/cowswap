@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux'
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { AppDispatch } from 'legacy/state'
 
-import { useAppData } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -29,6 +29,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
+  const uploadAppData = useUploadAppData()
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
@@ -66,6 +67,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
+    uploadAppData,
     appData,
     rateImpact,
     postOrderParams: {

@@ -178,7 +178,16 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, balances, updatePendingOrderPrices])
+  }, [
+    account,
+    chainId,
+    strategy,
+    updateIsUnfillableFlag,
+    isWindowVisible,
+    balances,
+    updatePendingOrderPrices,
+    verifiedQuotesEnabled,
+  ])
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
