@@ -31,12 +31,14 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
+import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
+  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
@@ -144,7 +146,7 @@ export function UnfillableOrdersUpdater(): null {
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
 
-        _getOrderPrice(chainId, order, enoughBalance, strategy)
+        _getOrderPrice(chainId, order, enoughBalance && verifiedQuotesEnabled, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
@@ -196,7 +198,7 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order, enoughBalance: boolean, strategy: GpPriceStrategy) {
+async function _getOrderPrice(chainId: ChainId, order: Order, verifyQuote: boolean, strategy: GpPriceStrategy) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)
@@ -237,7 +239,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, enoughBalance: boo
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
-    priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
+    priceQuality: getPriceQuality({ verifyQuote }),
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
