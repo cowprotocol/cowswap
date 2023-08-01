@@ -1,7 +1,7 @@
 import { EthereumProvider } from '../types'
 
 export function ProviderMode(init: (ethereum?: EthereumProvider) => void) {
-  const injectedProvider = (window as any)['ethereum'] as EthereumProvider
+  const injectedProvider = (window as never)['ethereum'] as EthereumProvider
 
   const connectedProviderButton = document.getElementById('connectedProviderButton') as HTMLButtonElement
   const standaloneModeButton = document.getElementById('standaloneModeButton') as HTMLButtonElement

@@ -1,14 +1,19 @@
 {
-  "name": "@cowprotocol/cowswap",
-  "version": "1.43.0",
+  "name": "cowswap",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "scripts": {
+    "test": "nx run-many -t test",
+    "e2e": "nx run-many -t e2e",
+    "lint": "nx run-many -t lint",
+    "start": "nx run cowswap-frontend:cosmos:serve",
+    "build": "nx run cowswap-frontend:build:production",
     "cosmos:export": "nx run cowswap-frontend:cosmos:export",
-    "build": "nx run cowswap-frontend:build",
-    "postbuild": "mkdir build && mv dist/apps/cowswap-frontend/* build"
+    "postbuild": "mkdir build && mv dist/apps/cowswap-frontend/* build",
+    "prepare": "husky install",
+    "postinstall": "yarn run patch-package"
   },
   "browser": {
     "crypto": false
@@ -162,6 +167,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
     "@lingui/swc-plugin": "^4.0.4",
     "@lingui/vite-plugin": "^4.3.0",
     "@nx/cypress": "16.4.0",
@@ -213,12 +220,14 @@
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-unused-imports": "^3.0.0",
+    "husky": "^8.0.0",
     "isomorphic-fetch": "^3.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.1.1",
     "jsdom": "~22.1.0",
     "nx": "16.4.0",
     "nx-cloud": "latest",
+    "patch-package": "^8.0.0",
     "prettier": "^2.6.2",
     "react-cosmos": "^6.0.0-beta.6",
     "react-cosmos-plugin-vite": "^6.0.0-beta.6",

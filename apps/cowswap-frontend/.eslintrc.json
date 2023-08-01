@@ -1,6 +1,6 @@
 {
   "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["!**/*", "public/cosmos/*", "dev-dist/*"],
   "plugins": ["unused-imports"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
