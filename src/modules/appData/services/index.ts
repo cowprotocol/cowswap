@@ -1,9 +1,17 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { orderBookApi } from 'cowSdk'
 
 /**
  * Interface to upload appData document
  */
-export type UploadAppDataDoc = (appDataKeccak256: string, fullAppData: string) => Promise<void>
+export type UploadAppDataDoc = (props: UploadAppDataProps) => Promise<void>
+
+export interface UploadAppDataProps {
+  appDataKeccak256: string
+  fullAppData: string
+  chainId: SupportedChainId
+}
 
 /**
  * Upload appData document to orderbook API
@@ -14,6 +22,10 @@ export type UploadAppDataDoc = (appDataKeccak256: string, fullAppData: string) =
  * @throws Throws in case the fullAppData and the appDataKeccak256 don't match
 
  */
-export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (appDataKeccak256, fullAppData) => {
-  orderBookApi.uploadAppData(appDataKeccak256, fullAppData)
+export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (props) => {
+  const { appDataKeccak256, fullAppData, chainId } = props
+  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, {
+    chainId,
+    env: 'prod', // Upload the appData to production always, since WatchTower will create the orders there
+  })
 }
