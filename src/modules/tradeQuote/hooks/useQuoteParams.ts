@@ -9,10 +9,13 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null) {
   const { chainId, account } = useWalletInfo()
+  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
+
   const { state } = useDerivedTradeState()
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
@@ -40,7 +43,18 @@ export function useQuoteParams(amount: string | null) {
       toDecimals,
       fromDecimals,
       isEthFlow: false,
-      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
     }
-  }, [amount, account, chainId, orderKind, enoughBalance, buyToken, fromDecimals, sellToken, toDecimals])
+  }, [
+    amount,
+    account,
+    chainId,
+    orderKind,
+    enoughBalance,
+    buyToken,
+    fromDecimals,
+    sellToken,
+    toDecimals,
+    verifiedQuotesEnabled,
+  ])
 }

@@ -21,6 +21,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
@@ -120,6 +121,7 @@ function isRefetchQuoteRequired(
 
 export default function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
+  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {
@@ -205,7 +207,7 @@ export default function FeesUpdater(): null {
       userAddress: account,
       validTo,
       isEthFlow,
-      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
     }
 
     // Don't refetch if offline.
@@ -277,6 +279,7 @@ export default function FeesUpdater(): null {
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
     enoughBalance,
+    verifiedQuotesEnabled,
   ])
 
   return null
