@@ -99,12 +99,13 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
 
       <FeatureGuard featureFlag="advancedOrdersEnabled">
         <TwapSuggestionBanner
-        chainId={chainId}
-        priceImpact={priceImpact}
-        buyingFiatAmount={buyingFiatAmount}
-        tradeUrlParams={tradeUrlParams}
-        sellAmount={trade?.inputAmount.toFixed(trade?.inputAmount?.currency?.decimals || 18)}
-      /></FeatureGuard>
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+          sellAmount={trade?.inputAmount.toFixed(trade?.inputAmount?.currency?.decimals || 18)}
+        />
+      </FeatureGuard>
     </>
   )
 }, genericPropsChecker)
