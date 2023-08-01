@@ -201,18 +201,17 @@ jobs:
         if: steps.cypress-deps.outcome == 'failure'
         run: npx cypress install
 
+      - name: Start server in the background
+        run: yarn start &
+
       # Actually run tests, building repo
       - name: Cypress run
         id: cypress-run
-        uses: cypress-io/github-action@v5.0.5
+        uses: cypress-io/github-action@v5.8.3
         with:
-          # Uncomment to test the production release. Right now, it doens't work the automatic "connection"
-          #   very likely it's related to Web3StatusMod!
-          #   when un-commenting this, we need to uncomment also the "Download website" I added in this PR and prevent cypres from buildig the project again
-          # start: yarn serve:ci
-          start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
+          install: false
           working-directory: apps/cowswap-frontend-e2e
         env:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
