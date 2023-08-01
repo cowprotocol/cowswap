@@ -7,7 +7,7 @@ export default defineConfig({
       bundler: 'vite',
     }),
     specPattern: ['src/**/*.test.{js,jsx,ts,tsx}'],
-    baseUrl: 'http://localhost:3000/#/',
+    baseUrl: 'http://localhost:3000',
     supportFile: 'src/support/index.ts',
     video: false,
     screenshotOnRunFailure: false,
