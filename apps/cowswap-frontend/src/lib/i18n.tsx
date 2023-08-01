@@ -81,14 +81,14 @@ const plurals: LocalePlural = {
 export async function dynamicActivate(locale: SupportedLocale) {
   i18n.loadLocaleData(locale, { plurals: plurals[locale] })
   try {
-    const catalog = await import(`../locales/${locale}.po`)
+    const catalog = await import(`../locales/${locale}.js?lingui`)
     // Bundlers will either export it as default or as a named export named default.
     i18n.load(locale, catalog.messages || catalog.default.messages)
+    i18n.activate(locale)
   } catch (error) {
     // Do nothing
     console.error('Could not load locale file: ' + locale, error)
   }
-  i18n.activate(locale)
 }
 
 interface ProviderProps {
