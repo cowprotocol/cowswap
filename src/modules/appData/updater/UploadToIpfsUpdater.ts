@@ -97,7 +97,7 @@ async function _actuallyUploadToIpfs(
   updatePending({ chainId, orderId, uploading: true })
 
   try {
-    await uploadAppDataDocOrderbookApi(appDataKeccak256, fullAppData)
+    await uploadAppDataDocOrderbookApi({ appDataKeccak256, fullAppData, chainId })
     removePending({ chainId, orderId })
   } catch (e: any) {
     console.error(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, e, fullAppData)
