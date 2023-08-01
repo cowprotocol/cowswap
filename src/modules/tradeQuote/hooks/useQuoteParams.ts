@@ -1,10 +1,14 @@
 import { useMemo } from 'react'
 
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null) {
@@ -17,6 +21,11 @@ export function useQuoteParams(amount: string | null) {
   const buyToken = outputCurrency?.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
+
+  const enoughBalance = useEnoughBalanceAndAllowance({
+    account,
+    amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
+  })
 
   return useMemo(() => {
     if (!sellToken || !buyToken || !amount) return
@@ -31,6 +40,7 @@ export function useQuoteParams(amount: string | null) {
       toDecimals,
       fromDecimals,
       isEthFlow: false,
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
     }
-  }, [sellToken, buyToken, toDecimals, fromDecimals, amount, account, chainId, orderKind])
+  }, [amount, account, chainId, orderKind, enoughBalance, buyToken, fromDecimals, sellToken, toDecimals])
 }

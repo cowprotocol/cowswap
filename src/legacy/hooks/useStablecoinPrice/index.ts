@@ -15,6 +15,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
@@ -63,6 +64,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       userAddress: account,
       validTo: getUsdQuoteValidTo(),
       isEthFlow: false,
+      priceQuality: getPriceQuality({ verifyQuote: false }), // No need to verify the quote, estimation is good enough for COW USD estimate
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, chainId])
 

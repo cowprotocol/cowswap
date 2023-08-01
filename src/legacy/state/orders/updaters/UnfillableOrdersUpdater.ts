@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -8,7 +8,7 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { FeeInformation, PriceInformation } from 'types'
 
 import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
@@ -26,61 +26,11 @@ import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { hasEnoughBalanceAndAllowance, useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
-
-/**
- * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
- */
-async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
-  let baseToken, quoteToken
-
-  const amount = getRemainderAmount(order.kind, order)
-
-  if (order.kind === 'sell') {
-    // this order sell amount is sellAmountAfterFees
-    // this is an issue as it will be adjusted again in the backend
-    // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
-    // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
-    // e.g so here we need to pass the sellAmountBeforeFees
-    baseToken = order.sellToken
-    quoteToken = order.buyToken
-  } else {
-    baseToken = order.buyToken
-    quoteToken = order.sellToken
-  }
-
-  const isEthFlow = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
-  if (isEthFlow) {
-    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
-  }
-
-  const quoteParams = {
-    chainId,
-    amount,
-    kind: order.kind,
-    // we need to get wrapped token quotes (native quotes will fail)
-    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
-    buyToken: order.buyToken,
-    baseToken,
-    quoteToken,
-    fromDecimals: order.inputToken.decimals,
-    toDecimals: order.outputToken.decimals,
-    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
-    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
-    validTo:
-      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
-    userAddress: order.owner,
-    receiver: order.receiver,
-    isEthFlow,
-  }
-  try {
-    return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
-  } catch (e: any) {
-    return null
-  }
-}
 
 /**
  * Updater that checks whether pending orders are still "fillable"
@@ -93,6 +43,16 @@ export function UnfillableOrdersUpdater(): null {
   const pending = useOnlyPendingOrders(chainId, OrderClass.LIMIT)
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
+
+  const tokens = useMemo(() => {
+    return pending.map((order) => order.inputToken)
+  }, [pending])
+
+  const { balances } = useBalancesAndAllowances({
+    account,
+    spender: chainId ? GP_VAULT_RELAYER[chainId] : undefined,
+    tokens: tokens,
+  })
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -180,7 +140,11 @@ export function UnfillableOrdersUpdater(): null {
 
       pending.forEach((order, index) => {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
-        _getOrderPrice(chainId, order, strategy)
+
+        const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
+        const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
+
+        _getOrderPrice(chainId, order, enoughBalance, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
@@ -212,7 +176,7 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, balances, updatePendingOrderPrices])
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
@@ -227,4 +191,57 @@ export function UnfillableOrdersUpdater(): null {
   }, [updatePending, chainId, account, isWindowVisible])
 
   return null
+}
+
+/**
+ * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
+ */
+async function _getOrderPrice(chainId: ChainId, order: Order, enoughBalance: boolean, strategy: GpPriceStrategy) {
+  let baseToken, quoteToken
+
+  const amount = getRemainderAmount(order.kind, order)
+
+  if (order.kind === 'sell') {
+    // this order sell amount is sellAmountAfterFees
+    // this is an issue as it will be adjusted again in the backend
+    // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
+    // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
+    // e.g so here we need to pass the sellAmountBeforeFees
+    baseToken = order.sellToken
+    quoteToken = order.buyToken
+  } else {
+    baseToken = order.buyToken
+    quoteToken = order.sellToken
+  }
+
+  const isEthFlow = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
+  if (isEthFlow) {
+    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
+  }
+
+  const quoteParams = {
+    chainId,
+    amount,
+    kind: order.kind,
+    // we need to get wrapped token quotes (native quotes will fail)
+    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
+    buyToken: order.buyToken,
+    baseToken,
+    quoteToken,
+    fromDecimals: order.inputToken.decimals,
+    toDecimals: order.outputToken.decimals,
+    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
+    validTo:
+      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
+    userAddress: order.owner,
+    receiver: order.receiver,
+    isEthFlow,
+    priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
+  }
+  try {
+    return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
+  } catch (e: any) {
+    return null
+  }
 }

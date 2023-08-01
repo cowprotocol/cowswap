@@ -8,10 +8,10 @@ import {
   OrderQuoteRequest,
   OrderQuoteResponse,
   PartialApiContext,
-  PriceQuality,
   SigningScheme,
   SupportedChainId as ChainId,
   Trade,
+  PriceQuality,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -112,7 +112,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     appData: getAppData().appDataKeccak256,
     validTo,
     partiallyFillable: false,
-    priceQuality: priceQuality ? (priceQuality as PriceQuality) : undefined,
+    priceQuality,
   }
 
   if (isEthFlow) {
@@ -250,4 +250,17 @@ function getBaseUrl(): string {
 
   // Production, staging, ens, ...
   return 'https://api.cow.fi/'
+}
+
+export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): PriceQuality {
+  const { fast = false, verifyQuote } = props
+  if (fast) {
+    return PriceQuality.FAST
+  }
+
+  if (verifyQuote) {
+    return PriceQuality.VERIFIED
+  }
+
+  return PriceQuality.OPTIMAL
 }
