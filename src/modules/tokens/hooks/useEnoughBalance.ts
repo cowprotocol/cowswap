@@ -81,18 +81,16 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boole
   const token = amount?.currency.wrapped
   const tokenAddress = getAddress(token)
 
-  const balance = tokenAddress && balances[tokenAddress]?.value
-  const allowance = tokenAddress && allowances && allowances[tokenAddress]?.value
+  const balance = tokenAddress ? balances[tokenAddress]?.value : undefined
+  const allowance = (tokenAddress && allowances && allowances[tokenAddress]?.value) || undefined
 
   if (!account || !amount) {
     return false
   }
 
-  const balanceAmount = isNativeCurrency
-    ? nativeBalance
-    : (balance && typeof balance !== 'string' && balance) || undefined
+  const balanceAmount = isNativeCurrency ? nativeBalance : balance || undefined
   const enoughBalance = isEnoughAmount(amount, balanceAmount)
-  const enoughAllowance = (allowance && typeof allowance !== 'string' && isEnoughAmount(amount, allowance)) || false
+  const enoughAllowance = !allowances || isNativeCurrency || (allowance && isEnoughAmount(amount, allowance)) || false
 
-  return enoughBalance && (allowances === undefined || enoughAllowance)
+  return enoughBalance && enoughAllowance
 }
