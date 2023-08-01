@@ -86,15 +86,12 @@ export async function tradeFlow(
       )
     }
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: add app data to upload queue')
-    params.uploadAppData({ chainId: params.chainId, orderId, appData: params.appData })
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

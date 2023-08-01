@@ -22,7 +22,6 @@ export async function ethFlow(
     swapConfirmManager,
     contract,
     callbacks,
-    appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
     checkInFlightOrderIdExists,
@@ -66,14 +65,11 @@ export async function ethFlow(
     // TODO: maybe move this into addPendingOrderStep?
     ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
-    logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
-
-    logTradeFlow('ETH FLOW', 'STEP 6: show UI of the successfully sent transaction', orderId)
+    logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
   } catch (error: any) {
-    logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
+    logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
