@@ -3,15 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
     "declaration": true,
-    "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "@cowswap/abis": ["../../libs/abis/src/index.ts"],
-      "@cowswap/ui": ["../../libs/ui/src/index.ts"],
-      "@cowswap/ui-utils": ["../../libs/ui-utils/src/index.ts"],
-      "@cowswap/widget-lib": ["../../libs/widget-lib/src/index.ts"],
-      "@cowswap/widget-react": ["../../libs/widget-react/src/index.ts"]
-    }
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]

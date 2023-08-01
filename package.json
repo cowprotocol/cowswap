@@ -4,12 +4,15 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
+  "config": {
+    "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
+  },
   "scripts": {
-    "test": "nx run-many -t test",
-    "e2e": "nx run-many -t e2e",
-    "lint": "nx run-many -t lint",
-    "start": "nx run cowswap-frontend:cosmos:serve",
-    "build": "nx run cowswap-frontend:build:production",
+    "start": "nx run cowswap-frontend:serve",
+    "test": "nx run-many -t test -p $npm_package_config_enabledApps",
+    "e2e": "nx run-many -t e2e -p $npm_package_config_enabledApps",
+    "lint": "nx run-many -t lint -p $npm_package_config_enabledApps",
+    "build": "nx run-many -t build -p $npm_package_config_enabledApps",
     "cosmos:export": "nx run cowswap-frontend:cosmos:export",
     "postbuild": "mkdir build && mv dist/apps/cowswap-frontend/* build",
     "prepare": "husky install",
