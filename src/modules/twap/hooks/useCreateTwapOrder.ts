@@ -127,7 +127,14 @@ export function useCreateTwapOrder() {
         getCowSoundSend().play()
         dispatchPresignedOrderPosted(store, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
-        uploadAppData({ chainId, orderId, appData: appDataInfo })
+        uploadAppData({
+          chainId,
+          orderId,
+          appData: {
+            ...appDataInfo,
+            env: 'prod', // Upload the appData to production always, since WatchTower will create the orders there
+          },
+        })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)

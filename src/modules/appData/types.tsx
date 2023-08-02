@@ -1,10 +1,11 @@
 import { LatestAppDataDocVersion, createOrderClassMetadata } from '@cowprotocol/app-data'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type AppDataInfo = {
   doc: LatestAppDataDocVersion
   fullAppData: string
   appDataKeccak256: string
+  env?: CowEnv
 }
 
 type AppDataUploadStatus = {
