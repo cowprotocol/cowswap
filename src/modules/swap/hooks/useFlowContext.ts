@@ -20,8 +20,8 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { useAppData } from 'modules/appData'
-import type { AppDataInfo } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
+import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
@@ -78,6 +78,7 @@ interface BaseFlowContextSetup {
   swapConfirmManager: SwapConfirmManager
   flowType: FlowType
   closeModals: () => void
+  uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
 }
@@ -92,6 +93,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
 
   const appData = useAppData()
   const closeModals = useCloseModals()
+  const uploadAppData = useUploadAppData()
   const addOrderCallback = useAddPendingOrder()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -127,6 +129,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     ensRecipientAddress,
     allowsOffchainSigning,
     swapConfirmManager,
+    uploadAppData,
     flowType,
     closeModals,
     addOrderCallback,
@@ -173,6 +176,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     swapConfirmManager,
     closeModals,
     addOrderCallback,
+    uploadAppData,
     dispatch,
     flowType,
   } = baseProps
@@ -252,6 +256,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     callbacks: {
       closeModals,
       addOrderCallback,
+      uploadAppData,
     },
     dispatch,
     swapFlowAnalyticsContext,
