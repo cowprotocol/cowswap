@@ -7,7 +7,7 @@ function unlock() {
 }
 
 function navigate(path = '', unlockLimitOrders = true) {
-  cy.visit(`/#/${CHAIN_ID}/limit-orders${path ? '/' + path : ''}`)
+  cy.visit(`/#/${CHAIN_ID}/limit-orders${path}`)
 
   if (unlockLimitOrders) {
     unlock()
@@ -46,17 +46,17 @@ describe('Limit orders', () => {
 
   describe('url params', () => {
     it('should accept sellAmount url param', () => {
-      navigate(`${SELL_TOKEN}?sellAmount=0.1`)
+      navigate(`/${SELL_TOKEN}?sellAmount=0.1`)
       getInputToken().should('have.value', '0.1')
     })
 
     it('should not accept sellAmount when there is no sell token', () => {
-      navigate(`_/${BUY_TOKEN}?sellAmount=0.1`)
+      navigate(`/_/${BUY_TOKEN}?sellAmount=0.1`)
       getInputToken().should('have.value', '')
     })
 
     it('should accept buyAmount url param', () => {
-      navigate(`_/${BUY_TOKEN}?buyAmount=0.1`)
+      navigate(`/_/${BUY_TOKEN}?buyAmount=0.1`)
       getOutputToken().should('have.value', '0.1')
     })
 
@@ -66,13 +66,13 @@ describe('Limit orders', () => {
     })
 
     it('should accept both sellAmount and buyAmount url params', () => {
-      navigate(`${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.1&buyAmount=0.2`)
+      navigate(`/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.1&buyAmount=0.2`)
       getInputToken().should('have.value', '0.1')
       getOutputToken().should('have.value', '0.2')
     })
 
     it('should ignore invalid sellAmount and buyAmount url params', () => {
-      navigate(`${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=rwe&buyAmount=aaa`)
+      navigate(`/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=rwe&buyAmount=aaa`)
       getInputToken().should('have.value', '')
       getOutputToken().should('have.value', '')
     })
