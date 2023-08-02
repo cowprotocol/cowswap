@@ -69,7 +69,7 @@
     "@cowprotocol/app-data": "v0.2.7",
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "^2.0.4",
+    "@cowprotocol/cow-sdk": "^2.3.0",
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@ethersproject/bignumber": "^5.7.0",

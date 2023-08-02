@@ -78,6 +78,7 @@ export default function useFallbackPriceImpact({
     amountAtoms: parsedAmount?.quotient.toString(),
     loading,
     setLoading,
+    verifyQuote: false,
   })
 
   // Calculate BA trade
