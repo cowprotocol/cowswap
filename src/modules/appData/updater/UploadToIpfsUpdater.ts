@@ -89,7 +89,7 @@ async function _actuallyUploadToIpfs(
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
-  const { fullAppData, appDataKeccak256, chainId, orderId, failedAttempts } = appDataRecord
+  const { fullAppData, appDataKeccak256, chainId, orderId, failedAttempts, env } = appDataRecord
 
   if (!fullAppData || !appDataKeccak256) return
 
@@ -97,7 +97,7 @@ async function _actuallyUploadToIpfs(
   updatePending({ chainId, orderId, uploading: true })
 
   try {
-    await uploadAppDataDocOrderbookApi({ appDataKeccak256, fullAppData, chainId })
+    await uploadAppDataDocOrderbookApi({ appDataKeccak256, fullAppData, chainId, env })
     removePending({ chainId, orderId })
   } catch (e: any) {
     console.error(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, e, fullAppData)

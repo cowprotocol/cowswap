@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
 
@@ -11,6 +11,7 @@ export interface UploadAppDataProps {
   appDataKeccak256: string
   fullAppData: string
   chainId: SupportedChainId
+  env?: CowEnv
 }
 
 /**
@@ -23,9 +24,6 @@ export interface UploadAppDataProps {
 
  */
 export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (props) => {
-  const { appDataKeccak256, fullAppData, chainId } = props
-  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, {
-    chainId,
-    env: 'prod', // Upload the appData to production always, since WatchTower will create the orders there
-  })
+  const { appDataKeccak256, fullAppData, chainId, env } = props
+  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, { chainId, env })
 }
