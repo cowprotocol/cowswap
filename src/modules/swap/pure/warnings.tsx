@@ -27,7 +27,6 @@ export interface SwapWarningsTopProps {
   impactWarningAccepted: boolean
   hideUnknownImpactWarning: boolean
   isExpertMode: boolean
-  isBestQuoteLoading: boolean
   showApprovalBundlingBanner: boolean
   showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
@@ -60,7 +59,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     feeWarningAccepted,
     impactWarningAccepted,
     isExpertMode,
-    isBestQuoteLoading,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
@@ -99,16 +97,14 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      {!isBestQuoteLoading && (
-        <FeatureGuard featureFlag="advancedOrdersEnabled">
-          <TwapSuggestionBanner
-            chainId={chainId}
-            priceImpact={priceImpact}
-            buyingFiatAmount={buyingFiatAmount}
-            tradeUrlParams={tradeUrlParams}
-          />
-        </FeatureGuard>
-      )}
+      <FeatureGuard featureFlag="advancedOrdersEnabled">
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+        />
+      </FeatureGuard>
     </>
   )
 }, genericPropsChecker)
