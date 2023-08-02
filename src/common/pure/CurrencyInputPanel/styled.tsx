@@ -79,7 +79,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   }
 
   &[disabled]::selection {
-    background: transparent;
+    // background: transparent;
   }
 
   &::placeholder {
