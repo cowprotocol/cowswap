@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UtmParams } from 'modules/utm'
 
@@ -43,7 +43,7 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
         const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
         console.debug(`[useAppData] appDataInfo`, fullAppData)
 
-        setAppDataInfo({ doc, fullAppData, appDataKeccak256 })
+        setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
       } catch (e: any) {
         console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
         setAppDataInfo(getAppData())
@@ -52,4 +52,11 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
 
     updateAppData()
   }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm])
+}
+function getEnvByClass(orderClass: string): CowEnv | undefined {
+  if (orderClass === 'twap') {
+    return 'prod' // Upload the appData to production always, since WatchTower will create the orders there
+  }
+
+  return undefined
 }

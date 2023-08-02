@@ -24,6 +24,6 @@ export interface UploadAppDataProps {
 
  */
 export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (props) => {
-  const { appDataKeccak256, fullAppData, chainId } = props
-  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, { chainId })
+  const { appDataKeccak256, fullAppData, chainId, env } = props
+  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, { chainId, env })
 }
