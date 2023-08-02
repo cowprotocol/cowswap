@@ -60,7 +60,7 @@ describe('Limit orders', () => {
       getOutputToken().should('have.value', '0.1')
     })
 
-    it.only('should not accept buyAmount when there is no buy token', () => {
+    it('should not accept buyAmount when there is no buy token', () => {
       navigate(`?buyAmount=0.1`)
       getOutputToken().should('have.value', '')
     })

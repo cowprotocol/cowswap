@@ -21,7 +21,7 @@ export default defineConfig({
   screenshotsFolder: 'cypress-custom/screenshots',
   videosFolder: 'cypress-custom/videos',
   downloadsFolder: 'cypress-custom/downloads',
-  video: false,
+  video: true,
   fixturesFolder: false,
   chromeWebSecurity: false,
   e2e: {
