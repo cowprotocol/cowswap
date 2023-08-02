@@ -22,7 +22,7 @@ describe('getTwapOrderStatus()', () => {
       const execution: TwapOrdersExecution = {
         confirmedPartsCount: orderStruct.n,
         info: {
-          executedSellAmount: (BigInt(orderStruct.partSellAmount) * BigInt(orderStruct.n)).toString(),
+          executedSellAmount: (BigInt(orderStruct.partSellAmount) * BigInt(orderStruct.n)).toString(), // <----
           executedBuyAmount: '0',
           executedFeeAmount: '0',
         },
@@ -39,7 +39,7 @@ describe('getTwapOrderStatus()', () => {
       const execution: TwapOrdersExecution = {
         confirmedPartsCount: 2,
         info: {
-          executedSellAmount: '0x2',
+          executedSellAmount: '0x2', // <----
           executedBuyAmount: '0',
           executedFeeAmount: '0',
         },
@@ -51,10 +51,10 @@ describe('getTwapOrderStatus()', () => {
     })
   })
 
-  describe('When count of confirmed parts equals to total parts count', () => {
+  describe('When count of confirmed parts equals to the total parts count', () => {
     it('Then an order status is Expired', () => {
       const execution: TwapOrdersExecution = {
-        confirmedPartsCount: orderStruct.n,
+        confirmedPartsCount: orderStruct.n, // <----
         info: {
           executedSellAmount: '0',
           executedBuyAmount: '0',
