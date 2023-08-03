@@ -33,7 +33,7 @@ import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
-import { parseTwapErrorMessage } from '../utils/parseTwapError'
+import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 export function useCreateTwapOrder() {
@@ -133,7 +133,8 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
       } catch (error) {
-        const errorMessage = parseTwapErrorMessage(error)
+        console.error('[useCreateTwapOrder] error', error)
+        const errorMessage = getErrorMessage(error)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
