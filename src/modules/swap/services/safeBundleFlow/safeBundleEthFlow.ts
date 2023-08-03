@@ -124,13 +124,10 @@ export async function safeBundleEthFlow(
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
-    logTradeFlow(LOG_PREFIX, 'STEP 8: add app data to upload queue')
-    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
-
-    logTradeFlow(LOG_PREFIX, 'STEP 9: show UI of the successfully sent transaction')
+    logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     swapConfirmManager.transactionSent(orderId)
   } catch (error) {
-    logTradeFlow(LOG_PREFIX, 'STEP 10: error', error)
+    logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
