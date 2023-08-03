@@ -8,7 +8,7 @@ import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
 
-import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { TokensByAddress, tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
@@ -54,7 +54,7 @@ export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: bo
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
 
-export function useAllTokens(): { [address: string]: Token } {
+export function useAllTokens(): TokensByAddress {
   return useAtomValue(tokensByAddressAtom)
 }
 

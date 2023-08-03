@@ -8,13 +8,14 @@ import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
-import { emulatedPartOrdersAtom } from '../state/emulatedPartOrdersAtom'
+import { useEmulatedPartOrders } from './useEmulatedPartOrders'
+
 import { emulatedTwapOrdersAtom } from '../state/emulatedTwapOrdersAtom'
 
 export function useEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
   const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const emulatedPartOrders = useAtomValue(emulatedPartOrdersAtom)
+  const emulatedPartOrders = useEmulatedPartOrders()
   const isSafeApp = useIsSafeApp()
 
   const limitOrders = useOrders(chainId, account, OrderClass.LIMIT)
