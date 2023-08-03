@@ -1,7 +1,9 @@
 import { atom } from 'jotai'
 
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 export interface TradeQuoteParamsState {
-  amount: string | null
+  amount: CurrencyAmount<Currency> | null
 }
 
 export const tradeQuoteParamsAtom = atom<TradeQuoteParamsState>({ amount: null })

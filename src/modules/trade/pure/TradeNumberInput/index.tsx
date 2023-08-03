@@ -30,6 +30,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
   } = props
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
+  const [isFocused, setIsFocused] = useState(false)
 
   const validateInput = useCallback(
     (newValue: string) => {
@@ -62,9 +63,10 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   // Initial setup of value
   useEffect(() => {
-    validateInput(value ? value.toString() : '')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (isFocused) return
+
+    validateInput(value !== null ? value.toString() : '')
+  }, [value, validateInput, isFocused])
 
   return (
     <TradeWidgetField {...props} hasPrefix={!!prefixComponent}>
@@ -74,8 +76,14 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
           <NumericalInput
             placeholder={placeholder}
             value={displayedValue}
-            onBlur={(e) => validateInput(e.target.value)}
-            onUserInput={(value) => setDisplayedValue(value)}
+            onBlur={(e) => {
+              validateInput(e.target.value)
+              setIsFocused(false)
+            }}
+            onFocus={() => setIsFocused(true)}
+            onUserInput={(value) => {
+              setDisplayedValue(value)
+            }}
             type="number"
             min={min}
             max={max}

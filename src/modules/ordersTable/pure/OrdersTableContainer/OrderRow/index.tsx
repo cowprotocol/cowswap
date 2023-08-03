@@ -180,6 +180,7 @@ export function OrderRow({
   const theme = useContext(ThemeContext)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
+  const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
@@ -214,7 +215,7 @@ export function OrderRow({
   return (
     <TableRow
       data-id={order.id}
-      isChildOrder={isOpenOrdersTab && isChild}
+      isChildOrder={isChild}
       isOpenOrdersTab={isOpenOrdersTab}
       isRowSelectable={isRowSelectable}
     >
@@ -320,7 +321,7 @@ export function OrderRow({
       {isOpenOrdersTab && (
         <styledEl.CellElement doubleRow>
           <b>{expirationTimeAgo}</b>
-          <i>{creationTimeAgo}</i>
+          <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
         </styledEl.CellElement>
       )}
 

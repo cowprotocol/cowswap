@@ -1,8 +1,11 @@
-import { useSetAtom } from 'jotai'
-import { useLayoutEffect } from 'react'
+import { useSetAtom, useAtomValue } from 'jotai'
+import { useLayoutEffect, useMemo } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
+import ms from 'ms.macro'
+
+import useDebounce from 'legacy/hooks/useDebounce'
 import { useIsUnsupportedTokens } from 'legacy/state/lists/hooks'
 import { onlyResolvesLast } from 'legacy/utils/async'
 
@@ -15,15 +18,22 @@ import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/Quote
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
 
+import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000
+const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
 
 // Solves the problem of multiple requests
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
-  // TODO: add throttling
-  const quoteParams = useQuoteParams()
+  const { amount } = useAtomValue(tradeQuoteParamsAtom)
+  const amountStr = useDebounce(
+    useMemo(() => amount?.quotient.toString() || null, [amount]),
+    AMOUNT_CHANGE_DEBOUNCE_TIME
+  )
+  const quoteParams = useQuoteParams(amountStr)
 
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()

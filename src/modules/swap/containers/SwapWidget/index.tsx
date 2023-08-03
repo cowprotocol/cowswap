@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
@@ -24,7 +24,6 @@ import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
@@ -38,7 +37,8 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { TradeWidget, TradeWidgetContainer, useSetupTradeState, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -56,9 +56,6 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
 export function SwapWidget() {
-  useSetupTradeState()
-  useSetupSwapAmountsFromUrl()
-
   const { chainId, account } = useWalletInfo()
   const {
     slippageAdjustedSellAmount,
@@ -90,6 +87,7 @@ export function SwapWidget() {
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
+  const isSellTrade = independentField === Field.INPUT
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
@@ -97,21 +95,26 @@ export function SwapWidget() {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
     amount: parsedAmounts.INPUT || null,
-    isIndependent: independentField === Field.INPUT,
+    isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
-    receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
     amount: parsedAmounts.OUTPUT || null,
-    isIndependent: independentField === Field.OUTPUT,
+    isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
-    receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
+
+  const buyingFiatAmount = useMemo(
+    () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
+    [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]
+  )
 
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
@@ -128,6 +131,8 @@ export function SwapWidget() {
     openNativeWrapModal,
     priceImpactParams,
   })
+
+  const tradeUrlParams = useTradeRouteContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
@@ -175,6 +180,7 @@ export function SwapWidget() {
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
+    chainId,
     trade,
     account,
     feeWarningAccepted,
@@ -190,6 +196,9 @@ export function SwapWidget() {
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
+    buyingFiatAmount,
+    priceImpact: priceImpactParams.priceImpact,
+    tradeUrlParams,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

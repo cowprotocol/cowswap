@@ -4,7 +4,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ExternalLink } from 'legacy/theme'
 import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
-import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -22,16 +21,12 @@ interface PropsWithId extends PropsBase {
   id: string
 }
 
-interface PropsWithoutId extends PropsBase {
-  type: 'cow-explorer-home'
-}
-
 interface PropsComposableOrder extends PropsBase {
   type: 'composable-order'
   id: string
 }
 
-export type Props = PropsWithId | PropsWithoutId | PropsComposableOrder
+export type Props = PropsWithId | PropsComposableOrder
 
 /**
  * Creates a link to the relevant explorer: Etherscan, GP Explorer or Blockscout
@@ -59,10 +54,6 @@ export function ExplorerLink(props: Props) {
 function getUrl(chainId: SupportedChainId, account: string, props: Props) {
   const { type } = props
 
-  if (type === 'cow-explorer-home') {
-    return getExplorerBaseUrl(chainId)
-  }
-
   if (type === 'composable-order') {
     return getSafeWebUrl(chainId, account, props.id)
   }
@@ -74,9 +65,7 @@ function getUrl(chainId: SupportedChainId, account: string, props: Props) {
 function getLabel(chainId: SupportedChainId, props: Props) {
   const { label, type } = props
 
-  const id = type !== 'cow-explorer-home' ? props.id : undefined
-
-  return label || getExplorerLabel(chainId, type, id)
+  return label || getExplorerLabel(chainId, type, props.id)
 }
 function getContent(chainId: SupportedChainId, props: Props) {
   if (props.children) {

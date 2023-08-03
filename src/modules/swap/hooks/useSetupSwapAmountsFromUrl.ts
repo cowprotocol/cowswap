@@ -36,9 +36,9 @@ export function useSetupSwapAmountsFromUrl() {
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
 
-    if (sellAmount) {
+    if (sellAmount && +sellAmount >= 0) {
       onUserInput(Field.INPUT, sellAmount)
-    } else if (buyAmount) {
+    } else if (buyAmount && +buyAmount >= 0) {
       onUserInput(Field.OUTPUT, buyAmount)
     }
 

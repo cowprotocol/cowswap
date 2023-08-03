@@ -1,33 +1,37 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
+
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
+import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 import { getAddress } from 'utils/getAddress'
 
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
-
-export function useQuoteParams() {
+export function useQuoteParams(amount: string | null) {
   const { chainId, account } = useWalletInfo()
+  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
+
   const { state } = useDerivedTradeState()
-  const { amount } = useAtomValue(tradeQuoteParamsAtom)
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
+  const sellToken = getAddress(inputCurrency)
+  const buyToken = outputCurrency?.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
+  const fromDecimals = inputCurrency?.decimals
+  const toDecimals = outputCurrency?.decimals
+
+  const enoughBalance = useEnoughBalanceAndAllowance({
+    account,
+    amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
+  })
+
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !amount) {
-      return
-    }
-
-    const sellToken = getAddress(inputCurrency)
-    const buyToken = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
-    const fromDecimals = inputCurrency?.decimals
-    const toDecimals = outputCurrency?.decimals
-
-    if (!sellToken || !buyToken) return
+    if (!sellToken || !buyToken || !amount) return
 
     return {
       sellToken,
@@ -39,6 +43,18 @@ export function useQuoteParams() {
       toDecimals,
       fromDecimals,
       isEthFlow: false,
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
     }
-  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
+  }, [
+    amount,
+    account,
+    chainId,
+    orderKind,
+    enoughBalance,
+    buyToken,
+    fromDecimals,
+    sellToken,
+    toDecimals,
+    verifiedQuotesEnabled,
+  ])
 }

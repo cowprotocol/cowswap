@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { Currency } from '@uniswap/sdk-core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -9,12 +10,17 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
+import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
+
 export interface SwapWarningsTopProps {
+  chainId: SupportedChainId
   trade: TradeGp | undefined
   account: string | undefined
   feeWarningAccepted: boolean
@@ -27,6 +33,9 @@ export interface SwapWarningsTopProps {
   showSafeWcBundlingBanner: boolean
   nativeCurrencySymbol: string
   wrappedCurrencySymbol: string
+  buyingFiatAmount: CurrencyAmount<Currency> | null
+  priceImpact: Percent | undefined
+  tradeUrlParams: TradeUrlParams
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -44,6 +53,7 @@ const StyledNoImpactWarning = styled(NoImpactWarning)`
 
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
   const {
+    chainId,
     trade,
     account,
     feeWarningAccepted,
@@ -58,6 +68,9 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
+    buyingFiatAmount,
+    priceImpact,
+    tradeUrlParams,
   } = props
 
   console.debug('SWAP WARNING RENDER TOP: ', props)
@@ -83,6 +96,15 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       {showSafeWcBundlingBanner && (
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
+
+      <FeatureGuard featureFlag="advancedOrdersEnabled">
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+        />
+      </FeatureGuard>
     </>
   )
 }, genericPropsChecker)

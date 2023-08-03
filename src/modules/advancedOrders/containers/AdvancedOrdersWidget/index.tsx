@@ -6,14 +6,10 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Field } from 'legacy/state/swap/actions'
 
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
-import {
-  useAdvancedOrdersDerivedState,
-  useFillAdvancedOrdersDerivedState,
-} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { useSetupTradeState, useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
-import { useDisableNativeTokenSelling } from 'modules/trade/hooks/useDisableNativeTokenSelling'
+import { useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
@@ -39,10 +35,6 @@ const UNLOCK_SCREEN = {
 }
 
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
-  useSetupTradeState()
-  useFillAdvancedOrdersDerivedState()
-  useDisableNativeTokenSelling()
-
   const {
     inputCurrency,
     outputCurrency,
@@ -103,6 +95,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const params = {
     recipient,
     compactView: true,
+    disableNativeSelling: true,
     showRecipient,
     isTradePriceUpdating,
     priceImpact,

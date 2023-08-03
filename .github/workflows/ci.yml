@@ -227,6 +227,16 @@ jobs:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
           CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
 
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: cypress-videos
+      #     path: |
+      #       cypress-custom/videos
+      #       cypress-custom/screenshots
+
+          
+
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
 #      - name: Setup tmate session

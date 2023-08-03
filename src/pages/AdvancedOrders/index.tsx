@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import { Navigate } from 'react-router-dom'
 
-import { AdvancedOrdersWidget, advancedOrdersAtom } from 'modules/advancedOrders'
+import { AdvancedOrdersWidget, advancedOrdersAtom, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
@@ -20,6 +20,10 @@ export default function AdvancedOrdersPage() {
 
   const allEmulatedOrders = useEmulatedOrders()
 
+  if (isAdvancedOrdersEnabled === undefined) {
+    return null
+  }
+
   if (!isAdvancedOrdersEnabled) {
     // To prevent direct access when the flag is off
     return <Navigate to={parameterizeTradeRoute(tradeContext, RoutesEnum.SWAP)} />
@@ -28,6 +32,7 @@ export default function AdvancedOrdersPage() {
   return (
     <>
       <CreatedInOrderBookOrdersUpdater />
+      <FillAdvancedOrdersDerivedStateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget>
@@ -37,7 +42,11 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} orders={allEmulatedOrders} />
+          <OrdersTableWidget
+            displayOrdersOnlyForSafeApp={true}
+            orderType={TabOrderTypes.ADVANCED}
+            orders={allEmulatedOrders}
+          />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
