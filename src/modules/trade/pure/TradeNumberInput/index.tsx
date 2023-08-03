@@ -75,13 +75,13 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
       const adjustedValue = quotient + filteredDecimals
       const parsedValue = adjustedValue ? parseFloat(adjustedValue) : null
 
-      if (parsedValue && max !== 0 && parsedValue > max) {
+      if (parsedValue && max !== undefined && parsedValue > max) {
         setDisplayedValue(max.toString())
         onUserInput(max)
         return
       }
 
-      if (min && (!parsedValue || parsedValue < min)) {
+      if (min !== undefined && (!parsedValue || parsedValue < min)) {
         setDisplayedValue(min.toString())
         onUserInput(min)
         return
