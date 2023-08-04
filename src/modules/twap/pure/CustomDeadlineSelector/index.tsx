@@ -49,6 +49,12 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
     })
   }
 
+  const _onDismiss = useCallback(() => {
+    setHoursValue(hours || 0)
+    setMinutesValue(minutes || 0)
+    onDismiss()
+  }, [hours, minutes, onDismiss])
+
   useEffect(() => {
     const totalTime = ms(`${hoursValue}h`) + ms(`${minutesValue}m`)
 
@@ -60,13 +66,13 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   }, [hoursValue, minutesValue])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Modal isOpen={isOpen} onDismiss={_onDismiss}>
       <styledEl.ModalWrapper>
         <styledEl.ModalHeader>
           <h3>
             <Trans>Define custom total time</Trans>
           </h3>
-          <styledEl.CloseIcon onClick={onDismiss} />
+          <styledEl.CloseIcon onClick={_onDismiss} />
         </styledEl.ModalHeader>
 
         <styledEl.ModalContent>
@@ -91,7 +97,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
 
         <styledEl.ModalFooter>
-          <styledEl.CancelButton onClick={onDismiss}>
+          <styledEl.CancelButton onClick={_onDismiss}>
             <Trans>Cancel</Trans>
           </styledEl.CancelButton>
           <ButtonPrimary disabled={isDisabled} onClick={onApply}>
