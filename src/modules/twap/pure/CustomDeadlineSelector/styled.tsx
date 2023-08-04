@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 
 import { ButtonSecondary } from 'legacy/components/Button'
 
-import { NumericalInput } from '../../../trade/pure/TradeNumberInput'
+import { NumericalInput } from 'modules/trade/pure/TradeNumberInput'
 
 export const ModalWrapper = styled.div`
   display: flex;
@@ -72,6 +72,7 @@ export const CancelButton = styled(ButtonSecondary)`
   }
 `
 
+// TODO: remove
 export const FieldWrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
   border-radius: 12px;
@@ -81,8 +82,11 @@ export const FieldWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `
+// TODO: remove
 
 export const FieldLabel = styled.span``
+
+// TODO: remove
 export const Input = styled(NumericalInput)`
   max-width: 100px;
 `
