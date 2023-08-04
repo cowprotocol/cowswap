@@ -32,11 +32,11 @@ export function useRateInfoParams(
 
   const activeRateFiatAmount = useHigherUSDValue(
     tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined)
-  )
+  ).value
 
   const invertedActiveRateFiatAmount = useHigherUSDValue(
     tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined)
-  )
+  ).value
 
   return useSafeMemoObject({
     chainId,
