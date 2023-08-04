@@ -34,7 +34,6 @@ export async function safeBundleEthFlow(
     spender,
     context,
     callbacks,
-    appDataInfo,
     swapConfirmManager,
     dispatch,
     orderParams,
