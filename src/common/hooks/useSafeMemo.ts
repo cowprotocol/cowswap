@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
 
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
@@ -10,6 +10,7 @@ export function useSafeDeps(deps: unknown[]): unknown[] {
     if (dep instanceof Token) return dep.address.toLowerCase()
     if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.isNative
     if (dep instanceof WrappedTokenInfo) return dep.address
+    if (dep instanceof Percent) return dep.toFixed(6)
 
     return dep
   })
