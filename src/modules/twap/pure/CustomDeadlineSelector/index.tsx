@@ -5,6 +5,8 @@ import ms from 'ms'
 
 import { ButtonPrimary } from 'legacy/components/Button'
 
+import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
+
 import { CowModal as Modal } from 'common/pure/Modal'
 
 import * as styledEl from './styled'
@@ -33,8 +35,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const [error, setError] = useState<string | null>(null)
 
-  const onHoursChange = (v: string) => setHoursValue(Number(v.replace(/\./g, '')))
-  const onMinutesChange = (v: string) => setMinutesValue(Number(v.replace(/\./g, '')))
+  const onHoursChange = (v: number | null) => setHoursValue(Number(v?.toString().replace(/\./g, '')))
+  const onMinutesChange = (v: number | null) => setMinutesValue(Number(v?.toString().replace(/\./g, '')))
 
   const noValues = !hoursValue && !minutesValue
   const isDisabled = !!error || noValues
@@ -68,15 +70,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         </styledEl.ModalHeader>
 
         <styledEl.ModalContent>
-          <styledEl.FieldWrapper>
-            <styledEl.FieldLabel>Hours</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onHoursChange} value={hoursValue} type="number" />
-          </styledEl.FieldWrapper>
-
-          <styledEl.FieldWrapper>
-            <styledEl.FieldLabel>Minutes</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onMinutesChange} value={minutesValue} type="number" />
-          </styledEl.FieldWrapper>
+          <TradeNumberInput label="Hours" onUserInput={onHoursChange} value={hoursValue} showUpDownArrows min={0} />
+          <TradeNumberInput label="Minutes" onUserInput={onMinutesChange} value={hoursValue} showUpDownArrows min={0} />
         </styledEl.ModalContent>
 
         {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
