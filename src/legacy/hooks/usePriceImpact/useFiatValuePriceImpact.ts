@@ -5,9 +5,9 @@ import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceI
 import { ParsedAmounts } from './types'
 
 export default function useFiatValuePriceImpact(parsedAmounts: ParsedAmounts) {
-  const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
+  const { value: fiatValueInput, isLoading: inputIsLoading } = useHigherUSDValue(parsedAmounts[Field.INPUT])
+  const { value: fiatValueOutput, isLoading: outputIsLoading } = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
   const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
 
-  return priceImpact
+  return { priceImpact, isLoading: inputIsLoading || outputIsLoading }
 }
