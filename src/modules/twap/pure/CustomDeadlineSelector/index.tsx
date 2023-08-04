@@ -70,8 +70,22 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         </styledEl.ModalHeader>
 
         <styledEl.ModalContent>
-          <TradeNumberInput label="Hours" onUserInput={onHoursChange} value={hoursValue} showUpDownArrows min={0} />
-          <TradeNumberInput label="Minutes" onUserInput={onMinutesChange} value={hoursValue} showUpDownArrows min={0} />
+          <TradeNumberInput
+            label="Hours"
+            onUserInput={onHoursChange}
+            value={hoursValue}
+            showUpDownArrows
+            min={0}
+            max={null}
+          />
+          <TradeNumberInput
+            label="Minutes"
+            onUserInput={onMinutesChange}
+            value={hoursValue}
+            showUpDownArrows
+            min={0}
+            max={null}
+          />
         </styledEl.ModalContent>
 
         {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
