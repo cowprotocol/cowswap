@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { EffectCallback, useEffect, useMemo } from 'react'
 
 import { CurrencyAmount, NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
 
@@ -27,4 +27,8 @@ export function useSafeMemo<T>(memoCall: () => T, deps: unknown[]): T {
 
 export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj: T): typeof depsObj {
   return useSafeMemo<typeof depsObj>(() => depsObj, Object.values(depsObj))
+}
+
+export function useSafeEffect(memoCall: EffectCallback, deps: unknown[]): void {
+  useEffect(memoCall, useSafeDeps(deps))
 }
