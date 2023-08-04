@@ -4,7 +4,7 @@ import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
 
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-export function useSafeMemoDeps(deps: unknown[]): unknown[] {
+export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return dep.symbol
     if (dep instanceof Token) return dep.address.toLowerCase()
@@ -21,7 +21,7 @@ export function useSafeMemoDeps(deps: unknown[]): unknown[] {
  */
 export function useSafeMemo<T>(memoCall: () => T, deps: unknown[]): T {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(memoCall, useSafeMemoDeps(deps))
+  return useMemo(memoCall, useSafeDeps(deps))
 }
 
 export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj: T): typeof depsObj {
