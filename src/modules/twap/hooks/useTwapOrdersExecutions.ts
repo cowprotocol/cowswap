@@ -91,7 +91,7 @@ function sumChildrenAmount(children: Order[], key: keyof OrderInfoApi): BigInt {
  */
 function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Order[]): number {
   const { executionDate } = twapOrderInfo.safeData.safeTxParams
-  const { t: timeInterval } = twapOrderInfo.orderStruct
+  const { t: timeInterval, n: numOfParts } = twapOrderInfo.orderStruct
 
   if (!executionDate) return 0
 
@@ -104,9 +104,8 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
    * 4. So, 11-10 = 1 hour passed (60 mins)
    * 5. 60 mins / 20 mins = 3 parts passed
    */
-  const now = Date.now()
-  const startTime = new Date(executionDate).getTime()
-  const startTimeTimestamp = Math.ceil(startTime / 1000)
+  const now = Math.ceil(Date.now() / 1000)
+  const startTime = Math.ceil(new Date(executionDate).getTime() / 1000)
   const timePassed = now - startTime
   const partsPassed = Math.floor(timePassed / timeInterval)
 
@@ -128,7 +127,7 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
 
   if (!lastOrderValidTo) return partsPassed
 
-  const lastOrderIndex = Math.ceil(lastOrderValidTo - startTimeTimestamp / timeInterval)
+  const lastOrderIndex = Math.ceil((lastOrderValidTo - startTime) / timeInterval)
 
-  return Math.max(lastOrderIndex, partsPassed)
+  return Math.min(Math.max(lastOrderIndex, partsPassed), numOfParts)
 }
