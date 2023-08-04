@@ -81,7 +81,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           <TradeNumberInput
             label="Minutes"
             onUserInput={onMinutesChange}
-            value={hoursValue}
+            value={minutesValue}
             showUpDownArrows
             min={0}
             max={null}
