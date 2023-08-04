@@ -42,6 +42,8 @@ export function computeOrderSummary({
       const { inputToken, outputToken, status, kind } = orderFromStore
       const isFulfilled = status === OrderStatus.FULFILLED
 
+      if (!inputToken || !outputToken) return undefined
+
       // don't show amounts in atoms
       const inputAmount = isFulfilled
         ? stringToCurrency(executedSellAmount, inputToken)

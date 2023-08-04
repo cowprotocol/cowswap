@@ -48,11 +48,16 @@ const ContentWrapper = styled.div`
 `
 
 export interface OrdersTableWidgetProps {
+  displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
 }
 
-export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableWidgetProps) {
+export function OrdersTableWidget({
+  orders: allOrders,
+  orderType,
+  displayOrdersOnlyForSafeApp,
+}: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
@@ -143,6 +148,7 @@ export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableW
           chainId={chainId}
           tabs={tabs}
           orders={orders}
+          displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
           isSafeViaWc={isSafeViaWc}
           isOpenOrdersTab={isOpenOrdersTab}
           currentPageNumber={currentPageNumber}

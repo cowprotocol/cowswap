@@ -12,7 +12,7 @@ import { ExternalLink } from 'legacy/theme'
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
 
-import { SAFE_COW_APP_LINK } from 'common/constants/common'
+import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
@@ -35,7 +35,6 @@ const Content = styled.div`
   min-height: 490px;
   padding: 0;
 
-  // Icon
   > span {
     --size: 130px;
     width: var(--size);
@@ -144,6 +143,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
   isSafeViaWc: boolean
+  displayOrdersOnlyForSafeApp: boolean
   children?: ReactNode
   orderType: TabOrderTypes
 }
@@ -159,6 +159,7 @@ export function OrdersTableContainer({
   tabs,
   isWalletConnected,
   isSafeViaWc,
+  displayOrdersOnlyForSafeApp,
   selectedOrders,
   isOpenOrdersTab,
   allowsOffchainSigning,
@@ -199,13 +200,12 @@ export function OrdersTableContainer({
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
           </h3>
           <p>
-            {isSafeViaWc ? (
+            {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
               <Trans>
-                Use the <ExternalLink href={SAFE_COW_APP_LINK}>Safe web app</ExternalLink> to see{' '}
-                {isOpenOrdersTab ? 'open' : 'history'} orders
+                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
               </Trans>
             ) : (
               <Trans>

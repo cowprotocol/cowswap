@@ -28,8 +28,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const [hoursValue, setHoursValue] = useState(hours)
   const [minutesValue, setMinutesValue] = useState(minutes)
 
-  useEffect(() => setHoursValue(hours), [hours])
-  useEffect(() => setMinutesValue(minutes), [minutes])
+  useEffect(() => setHoursValue(hours), [hours, isOpen])
+  useEffect(() => setMinutesValue(minutes), [minutes, isOpen])
 
   const [error, setError] = useState<string | null>(null)
 

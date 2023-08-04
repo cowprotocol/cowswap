@@ -126,14 +126,12 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           ]
         }
 
-        if (showTradeFormWarnings) {
-          return [
-            isPriceProtectionNotEnough(deadline, slippage) ? <SmallPriceProtectionWarning /> : null,
-            swapPriceDifferenceWarning,
-          ]
-        }
-
-        return null
+        return [
+          showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) ? (
+            <SmallPriceProtectionWarning />
+          ) : null,
+          swapPriceDifferenceWarning,
+        ]
       })()}
     </>
   )

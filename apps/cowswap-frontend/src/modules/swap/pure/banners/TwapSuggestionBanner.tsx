@@ -51,9 +51,10 @@ export function TwapSuggestionBanner({
 
   return (
     <InlineBanner type="alert">
+      <strong>Minimize price impact with TWAP</strong>
       <p>
-        The price impact is {+priceImpact.toFixed(2)}%. Consider breaking up your order using{' '}
-        <StyledNavLink to={routePath}>TWAP order</StyledNavLink>
+        The price impact is <b>{+priceImpact.toFixed(2)}%</b>. Consider breaking up your order using a{' '}
+        <StyledNavLink to={routePath}>TWAP order</StyledNavLink> and possibly get a better rate.
       </p>
     </InlineBanner>
   )
