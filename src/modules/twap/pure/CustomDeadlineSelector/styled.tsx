@@ -3,7 +3,8 @@ import styled from 'styled-components/macro'
 
 import { ButtonSecondary } from 'legacy/components/Button'
 
-import { NumericalInput } from '../../../trade/pure/TradeNumberInput'
+import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
+import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'
 
 export const ModalWrapper = styled.div`
   display: flex;
@@ -39,9 +40,22 @@ export const ModalFooter = styled.div`
 `
 
 export const ModalContent = styled.div`
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
   grid-gap: 6px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+      grid-template-columns: repeat(1, 1fr);
+    `};
+
+  > ${TradeWidgetFieldBox} {
+    flex-flow: row nowrap;
+  }
+
+  > ${TradeWidgetFieldBox} ${NumericalInput} {
+    width: 100%;
+  }
 `
 
 export const CloseIcon = styled(X)`
@@ -70,21 +84,6 @@ export const CancelButton = styled(ButtonSecondary)`
     color: ${({ theme }) => theme.text1};
     border: 1px solid ${({ theme }) => theme.text1};
   }
-`
-
-export const FieldWrapper = styled.div`
-  background: ${({ theme }) => theme.grey1};
-  border-radius: 12px;
-  padding: 16px;
-  flex: 1;
-  width: auto;
-  display: flex;
-  justify-content: space-between;
-`
-
-export const FieldLabel = styled.span``
-export const Input = styled(NumericalInput)`
-  max-width: 100px;
 `
 
 export const ErrorText = styled.div`
