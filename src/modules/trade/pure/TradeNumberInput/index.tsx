@@ -110,6 +110,17 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     validateInput(decreaseValue(displayedValue, step, min))
   }, [displayedValue, min, step, validateInput])
 
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'ArrowUp') {
+        onClickUp()
+      } else if (e.key === 'ArrowDown') {
+        onClickDown()
+      }
+    },
+    [onClickDown, onClickUp]
+  )
+
   return (
     <TradeWidgetField {...props} hasPrefix={!!prefixComponent}>
       <>
@@ -120,6 +131,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
             value={displayedValue}
             onBlur={(e) => validateInput(e.target.value)}
             onUserInput={(value) => setDisplayedValue(value)}
+            onKeyDown={onKeyDown}
             min={min}
             max={max}
             step={step}
