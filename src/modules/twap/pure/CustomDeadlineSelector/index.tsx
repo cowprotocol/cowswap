@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms'
@@ -35,8 +35,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const [error, setError] = useState<string | null>(null)
 
-  const onHoursChange = (v: number | null) => setHoursValue(Number(v?.toString().replace(/\./g, '')))
-  const onMinutesChange = (v: number | null) => setMinutesValue(Number(v?.toString().replace(/\./g, '')))
+  const onHoursChange = useCallback((v: number | null) => setHoursValue(!v ? 0 : Math.round(v)), [])
+  const onMinutesChange = useCallback((v: number | null) => setMinutesValue(!v ? 0 : Math.round(v)), [])
 
   const noValues = !hoursValue && !minutesValue
   const isDisabled = !!error || noValues
