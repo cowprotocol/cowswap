@@ -45,7 +45,7 @@ export const ModalContent = styled.div`
   width: 100%;
   grid-gap: 6px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
       grid-template-columns: repeat(1, 1fr);
     `};
 
