@@ -28,7 +28,7 @@ describe('Limit orders', () => {
     const rate = 2000000000000
     const outputAmount = inputAmount * rate
 
-    navigate()
+    navigate('')
 
     cy.limitPickToken('USDC', 'output')
 

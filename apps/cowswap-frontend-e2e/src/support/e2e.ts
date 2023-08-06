@@ -29,12 +29,12 @@ declare global {
   }
 }
 
-Cypress.on('window:before:load', win => {
-  win.localStorage.clear()
-  win.ethereum = injected
-});
-
 beforeEach(() => {
+  cy.on('window:load', win => {
+    win.localStorage.clear()
+    win.ethereum = injected
+  });
+
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
   cy.intercept(/infura.io/, (res) => {

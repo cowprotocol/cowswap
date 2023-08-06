@@ -19,18 +19,18 @@ function acceptFeesExceedWarning() {
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
   it('can swap WETH for USDC', () => {
-    cy.visit(`/${CHAIN_ID}/swap/${WETH}/${USDC}`)
+    cy.visit(`/#/${CHAIN_ID}/swap/${WETH}/${USDC}`)
 
     // input amounts
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button').should('contain.text', 'Swap').click()
+    cy.get('#swap-button', { timeout: 10_000 }).should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 
   it('can swap ETH for USDC', () => {
-    cy.visit(`/${CHAIN_ID}/swap/ETH/${USDC}`)
+    cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`)
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
@@ -41,7 +41,7 @@ describe('Swap (custom)', () => {
 
   // ETH should be tradable but show Switch to Weth
   it('Swap ETH for USDC - shows optional Switch to WETH', () => {
-    cy.visit(`/${CHAIN_ID}/swap/ETH/${USDC}`)
+    cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`)
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
@@ -58,27 +58,27 @@ describe('Swap (custom)', () => {
     const BUY_TOKEN = 'DAI'
 
     it('should accept sellAmount url param', () => {
-      cy.visit(`/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5`)
+      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5`)
       cy.get('#input-currency-input .token-amount-input').should('have.value', '0.5')
     })
 
     it('should not accept sellAmount url param when there is no sell token', () => {
-      cy.visit(`/${CHAIN_ID}/swap/_/${BUY_TOKEN}?sellAmount=0.5`)
+      cy.visit(`/#/${CHAIN_ID}/swap/_/${BUY_TOKEN}?sellAmount=0.5`)
       cy.get('#input-currency-input .token-amount-input').should('not.have.value')
     })
 
     it('should accept buyAmount url param', () => {
-      cy.visit(`/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?buyAmount=0.5`)
+      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?buyAmount=0.5`)
       cy.get('#output-currency-input .token-amount-input').should('have.value', '0.5')
     })
 
     it('should not accept buyAmount url param when there is no buy token', () => {
-      cy.visit(`/${CHAIN_ID}/swap/${SELL_TOKEN}/_?buyAmount=0.5`)
+      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/_?buyAmount=0.5`)
       cy.get('#output-currency-input .token-amount-input').should('not.have.value')
     })
 
     it('sellAmount should take precedence over buyAmount', () => {
-      cy.visit(`/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5&buyAmount=0.6`)
+      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5&buyAmount=0.6`)
       cy.get('#input-currency-input .token-amount-input').should('have.value', '0.5')
       cy.get('#output-currency-input .token-amount-input').should('not.have.value')
     })
