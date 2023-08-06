@@ -25,7 +25,7 @@ describe('Swap (custom)', () => {
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button', { timeout: 10_000 }).should('contain.text', 'Swap').click()
+    cy.get('#swap-button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 

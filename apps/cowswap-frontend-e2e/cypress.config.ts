@@ -11,5 +11,6 @@ export default defineConfig({
     supportFile: 'src/support/index.ts',
     video: false,
     screenshotOnRunFailure: false,
+    defaultCommandTimeout: 10_000
   },
 })

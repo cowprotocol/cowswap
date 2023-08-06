@@ -3,7 +3,7 @@ const SELL_TOKEN = 'WETH'
 const BUY_TOKEN = 'DAI'
 
 function unlock() {
-  cy.get('#unlock-limit-orders-btn', { timeout: 10_000 }).click()
+  cy.get('#unlock-limit-orders-btn').click()
 }
 
 function navigate(path = '', unlockLimitOrders = true) {
