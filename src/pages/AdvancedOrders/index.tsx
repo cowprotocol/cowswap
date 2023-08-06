@@ -8,7 +8,7 @@ import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget, useAllEmulatedOrders, CreatedInOrderBookOrdersUpdater } from 'modules/twap'
+import { TwapFormWidget, useAllEmulatedOrders, TwapUpdaters } from 'modules/twap'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
@@ -27,11 +27,10 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
-      <CreatedInOrderBookOrdersUpdater />
       <FillAdvancedOrdersDerivedStateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
-          <AdvancedOrdersWidget>
+          <AdvancedOrdersWidget updaters={<TwapUpdaters />}>
             {/*TODO: conditionally display a widget for current advanced order type*/}
             <TwapFormWidget />
           </AdvancedOrdersWidget>

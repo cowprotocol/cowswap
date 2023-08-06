@@ -54,6 +54,7 @@ export interface TradeWidgetSlots {
   lockScreen?: JSX.Element
   middleContent?: JSX.Element
   bottomContent?: JSX.Element
+  updaters?: JSX.Element
 }
 
 export interface TradeWidgetProps {
@@ -70,7 +71,7 @@ export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
-  const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
+  const { settingsWidget, lockScreen, middleContent, bottomContent, updaters } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
   const {
@@ -131,6 +132,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeFormValidationUpdater isExpertMode={isExpertMode} />
       <CommonTradeUpdater />
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
+      {updaters}
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
