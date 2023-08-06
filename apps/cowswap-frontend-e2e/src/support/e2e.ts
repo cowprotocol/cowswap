@@ -29,6 +29,23 @@ declare global {
   }
 }
 
+Cypress.Commands.overwrite(
+  'visit',
+  (original, url: string | Partial<Cypress.VisitOptions>, options?: Partial<Cypress.VisitOptions>) => {
+    assert(typeof url === 'string')
+
+    original({
+      ...options,
+      url: url.toString(),
+      onBeforeLoad(win) {
+        options?.onBeforeLoad?.(win)
+        win.localStorage.clear()
+        win.ethereum = injected
+      },
+    })
+  }
+)
+
 beforeEach(() => {
   cy.on('window:load', win => {
     win.localStorage.clear()
