@@ -13,6 +13,8 @@ import {
   Trade,
   PriceQuality,
   TotalSurplus,
+  OrderQuoteSideKindBuy,
+  OrderQuoteSideKindSell
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -124,12 +126,12 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     return {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
-      kind: OrderKind.SELL as string as OrderQuoteRequest['kind'],
+      kind: OrderQuoteSideKindSell.SELL,
       sellAmountBeforeFee: amount.toString(),
     }
   } else {
     return {
-      kind: OrderKind.BUY as string as OrderQuoteRequest['kind'],
+      kind: OrderQuoteSideKindBuy.BUY,
       buyAmountAfterFee: amount.toString(),
       ...baseParams,
     }
