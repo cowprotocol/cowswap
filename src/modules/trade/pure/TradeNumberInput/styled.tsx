@@ -24,6 +24,7 @@ export const ArrowsWrapper = styled.div`
   width: 28px;
   gap: 3px;
   margin: 0 -16px 0 0;
+  user-select: all; // Fix for preventing text selection on double click
 
   > span,
   > span > span {
