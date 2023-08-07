@@ -78,7 +78,6 @@ export function TwapOrdersUpdater(props: {
       twapOrderExecutions.current
     )
 
-    console.debug('[TwapOrdersUpdater] Update TWAP orders', items)
     ordersToDelete.forEach((id) => {
       delete items[id]
     })
