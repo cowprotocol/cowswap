@@ -3,11 +3,11 @@ import { useMemo } from 'react'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { useRecentActivity, TransactionAndOrder } from 'legacy/hooks/useRecentActivity'
-import { CONFIRMED_STATES, PENDING_STATES } from 'legacy/state/orders/actions'
+import { PENDING_STATES } from 'legacy/state/orders/actions'
+
+import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
-
-const isConfirmed = (data: TransactionAndOrder) => CONFIRMED_STATES.includes(data.status)
 
 export function useCategorizeRecentActivity() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
@@ -22,7 +22,7 @@ export function useCategorizeRecentActivity() {
           if (!activity.class || activity.class === OrderClass.MARKET) {
             if (isPending(activity)) {
               acc[0].push(activity.id)
-            } else if (isConfirmed(activity)) {
+            } else if (getIsFinalizedOrder(activity)) {
               acc[1].push(activity.id)
             }
           }
