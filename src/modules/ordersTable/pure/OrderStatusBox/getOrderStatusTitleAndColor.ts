@@ -1,7 +1,8 @@
 import { DefaultTheme } from 'styled-components/macro'
 
-import { CONFIRMED_STATES, OrderStatus } from 'legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -25,7 +26,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTh
     }
   }
 
-  if (CONFIRMED_STATES.includes(order.status)) {
+  if (getIsFinalizedOrder(order)) {
     // Partially filled is also not a real status
     if (order.executionData.partiallyFilled) {
       return {
