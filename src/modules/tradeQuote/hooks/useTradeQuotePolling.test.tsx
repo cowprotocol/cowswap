@@ -74,15 +74,18 @@ const Wrapper =
     )
 
 describe('useTradeQuotePolling()', () => {
+  beforeEach(() => {
+    getQuoteMock.mockReturnValue(new Promise(() => void 0))
+    useTradeTypeInfoMock.mockReturnValue({
+      tradeType: TradeType.LIMIT_ORDER,
+      route: Routes.LIMIT_ORDER,
+    })
+    useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
+  })
+
   describe('When wallet is connected', () => {
     it('Then should put account address into "useAddress" field in the quote request', () => {
       // Arrange
-      getQuoteMock.mockReturnValue(new Promise(() => void 0))
-      useTradeTypeInfoMock.mockReturnValue({
-        tradeType: TradeType.LIMIT_ORDER,
-        route: Routes.LIMIT_ORDER,
-      })
-      useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
       const mocks = [...jotaiMock, [walletInfoAtom, walletInfoMock]]
 
       // Act
@@ -100,12 +103,6 @@ describe('useTradeQuotePolling()', () => {
   describe('When wallet is NOT connected', () => {
     it('Then  the "useAddress" field in the quote request should be 0x000...0000', () => {
       // Arrange
-      getQuoteMock.mockReturnValue(new Promise(() => void 0))
-      useTradeTypeInfoMock.mockReturnValue({
-        tradeType: TradeType.LIMIT_ORDER,
-        route: Routes.LIMIT_ORDER,
-      })
-      useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
       // Act
