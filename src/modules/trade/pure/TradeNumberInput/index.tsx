@@ -19,7 +19,12 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   suffix?: string
   decimalsPlaces?: number
   min?: number
-  max?: number
+  /**
+   * max === undefined => use the default
+   * max === null => no max
+   * max === number => max value
+   */
+  max?: number | null
   step?: number
   placeholder?: string
   showUpDownArrows?: boolean
@@ -58,12 +63,14 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     placeholder = '0',
     decimalsPlaces = 0,
     min,
-    max = 100_000,
+    max: inputMax,
     step = 1,
     prefixComponent,
     showUpDownArrows = false,
     upDownArrowsLeftAlign = false,
   } = props
+
+  const max = inputMax === undefined ? 100_000 : inputMax
 
   const [displayedValue, setDisplayedValue] = useState(value === null ? '' : value.toString())
   const [isFocused, setIsFocused] = useState(false)
@@ -76,7 +83,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
       const adjustedValue = quotient + filteredDecimals
       const parsedValue = adjustedValue ? parseFloat(adjustedValue) : null
 
-      if (parsedValue && max !== undefined && parsedValue > max) {
+      if (parsedValue && max !== null && parsedValue > max) {
         setDisplayedValue(max.toString())
         onUserInput(max)
         return
@@ -136,12 +143,10 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
               setIsFocused(false)
             }}
             onFocus={() => setIsFocused(true)}
-            onUserInput={(value) => {
-              setDisplayedValue(value)
-            }}
+            onUserInput={setDisplayedValue}
             onKeyDown={onKeyDown}
             min={min}
-            max={max}
+            max={max || undefined}
             step={step}
           />
           {showUpDownArrows && <InputArrows onClickUp={onClickUp} onClickDown={onClickDown} />}
