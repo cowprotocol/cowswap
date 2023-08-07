@@ -46,6 +46,7 @@ const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." charact
 
 export const Input = React.memo(function InnerInput({
   value,
+  readOnly,
   onUserInput,
   placeholder,
   prependSymbol,
@@ -54,6 +55,7 @@ export const Input = React.memo(function InnerInput({
   ...rest
 }: {
   value: string | number
+  readOnly?: boolean
   onUserInput: (input: string) => void
   error?: boolean
   fontSize?: string
@@ -70,6 +72,7 @@ export const Input = React.memo(function InnerInput({
     <StyledInput
       {...rest}
       value={prependSymbol && value ? prependSymbol + value : value}
+      readOnly={readOnly}
       onFocus={(event) => {
         autofocus(event)
         onFocus?.(event)

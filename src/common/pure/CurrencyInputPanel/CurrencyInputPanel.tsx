@@ -119,7 +119,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     <styledEl.NumericalInput
       className="token-amount-input"
       value={isChainIdUnsupported ? '' : typedValue}
-      disabled={inputDisabled}
+      readOnly={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />
@@ -131,8 +131,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         id={id}
         className={className}
         withReceiveAmountInfo={!!receiveAmountInfo}
-        disabled={disabled}
-        inputDisabled={inputDisabled}
+        pointerDisabled={disabled}
+        readOnly={inputDisabled}
       >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
