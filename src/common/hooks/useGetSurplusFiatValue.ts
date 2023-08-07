@@ -53,10 +53,10 @@ function shouldShowSurplus(
 ): boolean | null {
   if (fiatAmount) {
     // When there's a fiat amount, use that to decide whether to display the modal
-    return Number(fiatAmount.toFixed(3)) > MIN_FIAT_SURPLUS_VALUE_MODAL
+    return Number(fiatAmount.toFixed(fiatAmount.currency.decimals)) > MIN_FIAT_SURPLUS_VALUE_MODAL
   } else if (surplusAmount) {
     // If no fiat value, check whether surplus units are > MIN_SURPLUS_UNITS
-    return Number(surplusAmount.toFixed(3)) > MIN_SURPLUS_UNITS
+    return Number(surplusAmount.toFixed(surplusAmount.currency.decimals)) > MIN_SURPLUS_UNITS
   }
 
   // Otherwise, we don't know whether surplus should, return `null` to indicate that
