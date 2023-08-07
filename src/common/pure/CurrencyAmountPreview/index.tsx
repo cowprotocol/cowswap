@@ -40,8 +40,8 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
         id={id}
         className={className}
         withReceiveAmountInfo={false}
-        disabled={false}
-        inputDisabled={false}
+        pointerDisabled={false}
+        readOnly={false}
       >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 

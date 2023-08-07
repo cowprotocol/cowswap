@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
@@ -7,7 +7,7 @@ import { useIsSafeApp } from 'modules/wallet'
 
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
-import { appDataInfoAtom } from './state/atoms'
+import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
 
 import { injectedWidgetMetaDataAtom } from '../injectedWidget/state/injectedWidgetMetaDataAtom'
@@ -34,4 +34,8 @@ export function useAppCode(): string | null {
 
     return isSafeApp ? SAFE_APP_CODE : DEFAULT_APP_CODE
   }, [isSafeApp, injectedWidgetMetaData])
+}
+
+export function useUploadAppData() {
+  return useSetAtom(addAppDataToUploadQueueAtom)
 }

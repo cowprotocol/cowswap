@@ -23,10 +23,14 @@ const MAX_DEADLINE_ERROR = 'Twap order deadline cannot be longer then 6 months'
 
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
-  const { hours, minutes } = customDeadline
+  const { hours = 0, minutes = 0 } = customDeadline
 
-  const [hoursValue, setHoursValue] = useState(hours || 0)
-  const [minutesValue, setMinutesValue] = useState(minutes || 0)
+  const [hoursValue, setHoursValue] = useState(hours)
+  const [minutesValue, setMinutesValue] = useState(minutes)
+
+  useEffect(() => setHoursValue(hours), [hours, isOpen])
+  useEffect(() => setMinutesValue(minutes), [minutes, isOpen])
+
   const [error, setError] = useState<string | null>(null)
 
   const onHoursChange = (v: string) => setHoursValue(Number(v.replace(/\./g, '')))

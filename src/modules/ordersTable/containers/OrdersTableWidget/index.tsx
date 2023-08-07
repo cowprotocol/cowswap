@@ -16,7 +16,7 @@ import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersRece
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { useBalancesAndAllowances } from 'modules/tokens'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
@@ -48,11 +48,16 @@ const ContentWrapper = styled.div`
 `
 
 export interface OrdersTableWidgetProps {
+  displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
 }
 
-export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableWidgetProps) {
+export function OrdersTableWidget({
+  orders: allOrders,
+  orderType,
+  displayOrdersOnlyForSafeApp,
+}: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
@@ -64,6 +69,7 @@ export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableW
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
+  const isSafeViaWc = useIsSafeViaWc()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -142,6 +148,8 @@ export function OrdersTableWidget({ orders: allOrders, orderType }: OrdersTableW
           chainId={chainId}
           tabs={tabs}
           orders={orders}
+          displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
+          isSafeViaWc={isSafeViaWc}
           isOpenOrdersTab={isOpenOrdersTab}
           currentPageNumber={currentPageNumber}
           pendingOrdersPrices={pendingOrdersPrices}

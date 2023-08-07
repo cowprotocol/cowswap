@@ -53,7 +53,13 @@ export async function getBestQuote({
         '] - trying back up price sources...'
       )
       // ATTEMPT LEGACY CALL
-      return getBestQuote({ strategy: 'LEGACY', quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+      return getBestQuote({
+        strategy: 'LEGACY',
+        quoteParams,
+        fetchFee,
+        previousFee,
+        isPriceRefresh: false,
+      })
     })
   } else {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')

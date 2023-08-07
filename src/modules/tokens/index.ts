@@ -6,3 +6,4 @@ export type { OnchainAllowancesParams } from './hooks/useOnchainBalances'
 
 // Exported for all other cases, when we need the effective balance (i.e. )
 export * from './hooks/useBalancesAndAllowances'
+export * from './hooks/useEnoughBalance'

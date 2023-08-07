@@ -12,6 +12,7 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
@@ -96,12 +97,14 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      <TwapSuggestionBanner
-        chainId={chainId}
-        priceImpact={priceImpact}
-        buyingFiatAmount={buyingFiatAmount}
-        tradeUrlParams={tradeUrlParams}
-      />
+      <FeatureGuard featureFlag="advancedOrdersEnabled">
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+        />
+      </FeatureGuard>
     </>
   )
 }, genericPropsChecker)

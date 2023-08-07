@@ -1,26 +1,17 @@
-enum TwapErrorCodes {
-  INVALID_ARGUMENT = 'INVALID_ARGUMENT',
-}
+const DEFAULT_ERROR_MESSAGE = 'Something went wrong creating your order'
 
-const TwapErrorMessages = {
-  DEFAULT: 'Something went wrong creating your order',
-}
+function getIvalidArgumentError(error: any): string | undefined {
+  if (error && error.message && error.message.includes('INVALID_ARGUMENT')) {
+    const matches = error.message.match(/argument="([^"]+)"/)
+    const invalidArgument = matches?.length ? matches[1] : ''
 
-function parseInvalidArgumentError(error: any) {
-  const regex = /(?<=\(argument=")[^"]+(?=",)/g
-  const matches = error.message.match(regex)
-  const invalidArgument = matches?.length ? matches[1] : ''
-  const str = invalidArgument ? `"${invalidArgument}" ` : ''
-
-  return `Invalid argument ${str}provided`
-}
-
-export function parseTwapErrorMessage(error: any) {
-  switch (error.code) {
-    case TwapErrorCodes.INVALID_ARGUMENT:
-      return parseInvalidArgumentError(error)
-
-    default:
-      return error.message || TwapErrorMessages.DEFAULT
+    if (invalidArgument) {
+      return `Invalid argument "${invalidArgument}" provided`
+    }
   }
+  return undefined
+}
+
+export function getErrorMessage(error: any): string {
+  return getIvalidArgumentError(error) || error.message || DEFAULT_ERROR_MESSAGE
 }

@@ -50,11 +50,13 @@ const orderActions: OrderActions = {
 
 export default (
   <OrdersTableContainer
+    displayOrdersOnlyForSafeApp={false}
     pendingOrdersPrices={{}}
     chainId={1}
     currentPageNumber={1}
     orders={ordersMock}
     tabs={tabs}
+    isSafeViaWc={false}
     allowsOffchainSigning={true}
     isOpenOrdersTab={true}
     isWalletConnected={true}

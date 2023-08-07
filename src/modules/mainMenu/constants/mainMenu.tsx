@@ -1,5 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { Globe } from 'react-feather'
 
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
@@ -13,22 +11,24 @@ import IMAGE_PIE from 'legacy/assets/cow-swap/pie.svg'
 import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
-import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+import { ExternalLink } from 'legacy/theme'
+import { getExplorerBaseUrl } from 'legacy/utils/explorer'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 
-import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
-
-export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
-  return !!(item.title && item.url)
-}
+import { InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 function ExplorerMenuLink() {
+  const { chainId } = useWalletInfo()
+  const url = getExplorerBaseUrl(chainId)
+
   return (
-    <ExplorerLink type="cow-explorer-home" defaultChain={SupportedChainId.MAINNET}>
+    <ExternalLink href={url}>
       <Globe /> CoW Explorer
-    </ExplorerLink>
+    </ExternalLink>
   )
 }
 

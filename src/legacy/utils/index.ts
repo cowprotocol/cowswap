@@ -79,7 +79,6 @@ export type BlockExplorerLinkType =
   | 'address'
   | 'block'
   | 'token-transfer'
-  | 'cow-explorer-home'
   | 'composable-order'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
@@ -129,7 +128,7 @@ export function getEtherscanLink(chainId: ChainId, type: BlockExplorerLinkType, 
 }
 
 export function getExplorerLabel(chainId: ChainId, type: BlockExplorerLinkType, data?: string): string {
-  if (isCowOrder(type, data) || type === 'cow-explorer-home') {
+  if (isCowOrder(type, data)) {
     return 'View on Explorer'
   } else if (chainId === ChainId.GNOSIS_CHAIN) {
     return 'View on Gnosisscan'

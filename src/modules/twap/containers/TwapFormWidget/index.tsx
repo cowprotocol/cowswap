@@ -123,11 +123,13 @@ export function TwapFormWidget() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
-      <FallbackHandlerVerificationUpdater />
-      <PartOrdersUpdater />
-      <FullAmountQuoteUpdater />
       {shouldLoadTwapOrders && (
-        <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        <>
+          <FullAmountQuoteUpdater />
+          <FallbackHandlerVerificationUpdater />
+          <PartOrdersUpdater />
+          <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+        </>
       )}
       <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 
@@ -166,9 +168,9 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(value: number | null) =>
+          onUserInput={(value: number | null) => {
             updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
-          }
+          }}
           min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}

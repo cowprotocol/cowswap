@@ -2302,14 +2302,16 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.0.4.tgz#8844c9508facb5ec7b05299e046513f4803e7eff"
-  integrity sha512-U46rpteCIqYuvjMRc/xs0kWO81Vq5y03ykuTuM7nb058sQV+jQ58IIFGT6NQk1CcaJeeZWA9+nhmlOo9KmhsZA==
+"@cowprotocol/cow-sdk@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.3.0.tgz#9e6bd0871364e8d5962e97cf52d067479fd171b1"
+  integrity sha512-wuG8vTbA9eCjLtLFc39O8OT9CpJrD0GJraJknHh5JJgxDnHeYHngb8FjHzZ8QnQkYOCUaBrbhYhOUzOpHlkqVQ==
   dependencies:
     "@cowprotocol/contracts" "^1.4.0"
     "@ethersproject/abstract-signer" "^5.7.0"
+    cross-fetch "^3.1.5"
     exponential-backoff "^3.1.1"
+    graphql-request "^4.3.0"
     limiter "^2.1.0"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
@@ -14107,6 +14109,15 @@ graphql-request@^3.4.0:
   integrity sha512-dw5PxHCgBneN2DDNqpWu8QkbbJ07oOziy8z+bK/TAXufsOLaETuVO4GkXrbs0WjhdKhBMN3BkpN/RIvUHkmNUQ==
   dependencies:
     cross-fetch "^3.0.6"
+    extract-files "^9.0.0"
+    form-data "^3.0.0"
+
+graphql-request@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-4.3.0.tgz#b934e08fcae764aa2cdc697d3c821f046cb5dbf2"
+  integrity sha512-2v6hQViJvSsifK606AliqiNiijb1uwWp6Re7o0RTyH+uRTv/u7Uqm2g4Fjq/LgZIzARB38RZEvVBFOQOVdlBow==
+  dependencies:
+    cross-fetch "^3.1.5"
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
