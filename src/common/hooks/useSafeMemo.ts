@@ -30,5 +30,6 @@ export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj:
 }
 
 export function useSafeEffect(memoCall: EffectCallback, deps: unknown[]): void {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(memoCall, useSafeDeps(deps))
 }
