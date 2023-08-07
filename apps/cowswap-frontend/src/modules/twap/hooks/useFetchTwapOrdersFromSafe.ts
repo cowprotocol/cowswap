@@ -9,7 +9,7 @@ import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
 
-const PENDING_TWAP_UPDATE_INTERVAL = ms`10s`
+const PENDING_TWAP_UPDATE_INTERVAL = ms`15s`
 
 export function useFetchTwapOrdersFromSafe({
   safeAddress,
