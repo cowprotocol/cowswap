@@ -27,11 +27,11 @@ export interface PriceImpact {
  * The hook cannot be used more the once in the same page
  */
 export function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
-  const { priceImpact: fiatPriceImpact, isLoading } = useFiatValuePriceImpact(parsedAmounts)
+  const { priceImpact: fiatPriceImpact, isLoading: isFiatLoading } = useFiatValuePriceImpact(parsedAmounts)
   const {
     impact: fallbackPriceImpact,
     error,
-    loading,
+    loading: isFallbackLoading,
   } = useFallbackPriceImpact({
     sellToken: getAddress(parsedAmounts.INPUT?.currency),
     buyToken: getAddress(parsedAmounts.OUTPUT?.currency),
@@ -40,8 +40,9 @@ export function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpa
   })
 
   const priceImpact = fiatPriceImpact || fallbackPriceImpact
+  const loading = isFiatLoading || isFallbackLoading
 
   return useMemo(() => {
-    return { priceImpact, error: fiatPriceImpact ? undefined : error, loading: isLoading }
+    return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
   }, [priceImpact, fiatPriceImpact, error, loading])
 }
