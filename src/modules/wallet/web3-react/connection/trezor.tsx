@@ -20,6 +20,7 @@ import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import type { EthereumTransaction } from '@trezor/connect'
 import type transformTypedData from '@trezor/connect-plugin-ethereum'
 
+import { hwAccountIndexAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
 
 import type { TrezorConnect } from '@trezor/connect-web'
@@ -35,8 +36,13 @@ const BASE_PROPS = {
 
 const defaultChainId = getCurrentChainIdFromUrl()
 
-// TODO: add support for multiple accounts
-const defaultAccountPath = "m/44'/60'/0'/0/0"
+const getCurrentAccountIndex = () => jotaiStore.get(hwAccountIndexAtom)
+
+const getAccountPath = (): string => {
+  const index = getCurrentAccountIndex()
+
+  return `m/44'/60'/0'/0/${index}`
+}
 
 const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
   env: 'web',
@@ -50,7 +56,7 @@ const DEFAULT_GOERLI_GAS_PRICE = `0x${(40 * 10 ** 9).toString(16)}` // 40 GWEI
 
 async function getTrezorAccount(trezorConnect: TrezorConnect): Promise<string> {
   const accountResult = await trezorConnect.ethereumGetAddress({
-    path: defaultAccountPath,
+    path: getAccountPath(),
     showOnTrezor: false,
   })
 
@@ -81,7 +87,7 @@ async function _signTypedData(
   if (!message_hash) throw new Error('Trezor sign typed data no message hash: ' + JSON.stringify(eip712Data))
 
   const result = await trezorConnect.ethereumSignTypedData({
-    path: defaultAccountPath,
+    path: getAccountPath(),
     data: eip712Data,
     metamask_v4_compat: true,
     // These are optional, but required for T1 compatibility
@@ -99,9 +105,9 @@ async function _signTypedData(
 class TrezorProvider extends JsonRpcProvider {
   constructor(
     url: string,
-    private account: string,
-    private trezorConnect: TrezorConnect,
-    private _transformTypedData: typeof transformTypedData
+    public readonly account: string,
+    public readonly trezorConnect: TrezorConnect,
+    public readonly _transformTypedData: typeof transformTypedData
   ) {
     super(url)
   }
@@ -136,7 +142,7 @@ class TrezorProvider extends JsonRpcProvider {
       }
 
       const { success, payload } = await this.trezorConnect.ethereumSignTransaction({
-        path: defaultAccountPath,
+        path: getAccountPath(),
         transaction,
       })
 
@@ -165,6 +171,8 @@ let activatedNetwork: SupportedChainId | null = null
 class TrezorConnector extends Connector {
   public customProvider?: TrezorProvider
 
+  private currentAccountIndex = 0
+
   constructor(actions: Actions) {
     super(actions)
   }
@@ -173,10 +181,17 @@ class TrezorConnector extends Connector {
     return this.activate(args[0] as SupportedChainId)
   }
 
-  async activate(chainId?: SupportedChainId | { chainId: SupportedChainId }): Promise<void> {
-    const desiredChainId = typeof chainId === 'object' ? chainId.chainId : chainId || defaultChainId
+  async activate(
+    chainId: SupportedChainId | { chainId: SupportedChainId } = defaultChainId,
+    indexChanged = false
+  ): Promise<void> {
+    const desiredChainId = typeof chainId === 'object' ? chainId.chainId : chainId
 
-    if (activatedNetwork === desiredChainId) return
+    if (indexChanged) {
+      if (this.currentAccountIndex === getCurrentAccountIndex()) return
+    }
+
+    if (activatedNetwork === desiredChainId && !indexChanged) return
 
     const { default: trezorConnect } = await import('@trezor/connect-web')
     const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
@@ -202,6 +217,7 @@ class TrezorConnector extends Connector {
       const network = await customProvider.getNetwork()
       const { chainId } = network
 
+      this.currentAccountIndex = getCurrentAccountIndex()
       this.actions.update({ accounts: [account], chainId })
     }
 
@@ -224,6 +240,10 @@ class TrezorConnector extends Connector {
     } catch (error) {
       handleError(error)
     }
+  }
+
+  deactivate(): Promise<void> | void {
+    return this.customProvider?.trezorConnect.dispose()
   }
 }
 

@@ -38,6 +38,7 @@ import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { HwAccountIndexSelector } from './HwAccountIndexSelector'
 import {
   AccountControl,
   AccountGroupingRow,
@@ -208,6 +209,8 @@ export function AccountDetails({
                 </Copy>
               )}
             </WalletWrapper>
+
+            <HwAccountIndexSelector />
 
             <WalletActions>
               {' '}

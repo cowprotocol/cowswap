@@ -80,6 +80,9 @@ const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = 
 
 const CONNECTIONS: Web3ReactConnection[] = Object.values(connectionTypeToConnection)
 
+// TODO: add others
+export const HARDWARE_WALLETS: ConnectionType[] = [ConnectionType.TREZOR]
+
 export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3ReactConnection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find((connection) => connection.connector === c)
