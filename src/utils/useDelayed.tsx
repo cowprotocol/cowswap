@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
 type Props = {
   children: React.ReactNode
-  waitBeforeShow?: number;
-};
+  waitBeforeShow?: number
+}
 
 export const Delayed = ({ children, waitBeforeShow = 1500 }: Props) => {
-  const [isShown, setIsShown] = useState(false);
+  const [isShown, setIsShown] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsShown(true);
-    }, waitBeforeShow);
-    return () => clearTimeout(timer);
-  }, [waitBeforeShow]);
+      setIsShown(true)
+    }, waitBeforeShow)
+    return () => clearTimeout(timer)
+  }, [waitBeforeShow])
 
   console.log('isShown', isShown)
 
-  return isShown ? <>{children}</> : null;
-};
+  return isShown ? <>{children}</> : null
+}
 
-export default Delayed;
+export default Delayed
