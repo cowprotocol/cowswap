@@ -15,7 +15,7 @@
     "build": "nx run-many -t build -p $npm_package_config_enabledApps",
     "cosmos:export": "nx run cowswap-frontend:cosmos:export",
     "prebuild": "nx run cowswap-frontend:i18n",
-    "postbuild": "mkdir build && mv dist/apps/cowswap-frontend/* build",
+    "postbuild": "rm -rf build && mkdir build && mv dist/apps/cowswap-frontend/* build",
     "prepare": "husky install",
     "postinstall": "yarn run patch-package"
   },

@@ -65,6 +65,7 @@ export default defineConfig(({ mode }) => {
       }),
       svgr(),
       VitePWA({
+        mode: mode.startsWith('dev') ? 'development' : 'production',
         registerType: 'autoUpdate',
         injectRegister: 'auto',
       }),
