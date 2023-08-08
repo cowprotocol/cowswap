@@ -160,7 +160,7 @@ class TrezorProvider extends JsonRpcProvider {
   }
 }
 
-let isActivated = false
+let activatedNetwork: SupportedChainId | null = null
 
 class TrezorConnector extends Connector {
   public customProvider?: TrezorProvider
@@ -173,19 +173,26 @@ class TrezorConnector extends Connector {
     return this.activate(args[0] as SupportedChainId)
   }
 
-  async activate(desiredChainId: SupportedChainId = defaultChainId): Promise<void> {
-    if (isActivated) return
+  async activate(chainId?: SupportedChainId | { chainId: SupportedChainId }): Promise<void> {
+    const desiredChainId = typeof chainId === 'object' ? chainId.chainId : chainId || defaultChainId
 
-    isActivated = true
+    if (activatedNetwork === desiredChainId) return
 
     const { default: trezorConnect } = await import('@trezor/connect-web')
     const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
-    const cancelActivation = this.actions.startActivation()
     const url = RPC_URLS[desiredChainId]
+    let cancelActivation: () => void = () => void 0
 
-    try {
-      await trezorConnect.init(trezorConfig)
+    const handleError = (error: Error) => {
+      alert(error.message)
 
+      activatedNetwork = null
+      cancelActivation()
+
+      throw error
+    }
+
+    const installProvider = async () => {
       const account = await getTrezorAccount(trezorConnect)
 
       const customProvider = new TrezorProvider(url, account, trezorConnect, transformTypedData)
@@ -196,13 +203,26 @@ class TrezorConnector extends Connector {
       const { chainId } = network
 
       this.actions.update({ accounts: [account], chainId })
+    }
+
+    if (activatedNetwork !== null) {
+      try {
+        return installProvider()
+      } catch (error) {
+        handleError(error)
+      }
+    }
+
+    activatedNetwork = desiredChainId
+
+    cancelActivation = this.actions.startActivation()
+
+    try {
+      await trezorConnect.init(trezorConfig)
+
+      await installProvider()
     } catch (error) {
-      alert(error.message)
-
-      isActivated = false
-      cancelActivation()
-
-      throw error
+      handleError(error)
     }
   }
 }

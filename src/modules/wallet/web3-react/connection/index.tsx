@@ -30,29 +30,33 @@ import { trustWalletConnection, TrustWalletOption } from './trust'
 import { walletConnectConnection, WalletConnectOption } from './walletConnect'
 import { walletConnectConnectionV2, WalletConnectV2Option } from './walletConnectV2'
 
-// import { ZengoOption } from './zengo'
 import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
 
+const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
+  [ConnectionType.FORTMATIC]: [SupportedChainId.MAINNET],
+  [ConnectionType.INJECTED]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.INJECTED_WIDGET]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.COINBASE_WALLET]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.WALLET_CONNECT]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.WALLET_CONNECT_V2]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.NETWORK]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TALLY]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TRUST]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.LEDGER]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.KEYSTONE]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.ALPHA]: [],
+  [ConnectionType.AMBIRE]: [],
+  [ConnectionType.AMBIRE]: [],
+  [ConnectionType.ZENGO]: [],
+}
+
 export function isChainAllowed(connector: Connector, chainId: number): boolean {
-  switch (connector) {
-    case fortmaticConnection.connector:
-      return chainId === SupportedChainId.MAINNET
-    case injectedConnection.connector:
-    case coinbaseWalletConnection.connector:
-    case walletConnectConnection.connector:
-    case networkConnection.connector:
-    case gnosisSafeConnection.connector:
-    case tallyWalletConnection.connector:
-    case trustWalletConnection.connector:
-    case injectedWidgetConnection.connector:
-    case ledgerConnection.connector:
-    case keystoneConnection.connector:
-    case walletConnectConnectionV2.connector:
-      return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
-    default:
-      return false
-  }
+  const connection = getWeb3ReactConnection(connector)
+
+  return allowedChainsByWallet[connection.type].includes(chainId)
 }
 
 const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = {
