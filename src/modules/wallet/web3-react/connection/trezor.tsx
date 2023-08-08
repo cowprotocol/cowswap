@@ -4,8 +4,6 @@ import { serialize } from '@ethersproject/transactions'
 import { initializeConnector } from '@web3-react/core'
 import { Actions, Connector } from '@web3-react/types'
 
-import { joinSignature } from 'ethers/lib/utils'
-
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
@@ -65,30 +63,25 @@ class TrezorProvider extends JsonRpcProvider {
         chainId,
       }
 
-      return this.trezorConnect
-        .ethereumSignTransaction({
-          path: defaultAccountPath,
-          transaction,
-        })
-        .then((result) => {
-          if (!result.success) throw new Error(result.payload.error)
+      const { success, payload } = await this.trezorConnect.ethereumSignTransaction({
+        path: defaultAccountPath,
+        transaction,
+      })
 
-          const tx = joinSignature({
-            ...result.payload,
-            v: +result.payload.v,
-          })
+      if (!success) {
+        console.error('Trezor tx signing error: ', payload)
+        throw new Error(payload.error)
+      }
 
-          const serialized = serialize(
-            { ...transaction, nonce: +transaction.nonce },
-            {
-              ...result.payload,
-              v: +result.payload.v,
-            }
-          )
+      const serialized = serialize(
+        { ...transaction, nonce: +transaction.nonce },
+        {
+          ...payload,
+          v: +payload.v,
+        }
+      )
 
-          // TODO: process errors
-          return super.send('eth_sendRawTransaction', [serialized])
-        })
+      return super.send('eth_sendRawTransaction', [serialized])
     }
 
     return super.send(method, params)
