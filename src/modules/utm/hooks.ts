@@ -55,7 +55,8 @@ export function useInitializeUtm(): void {
 
   useEffect(
     () => {
-      const searchParams = new URLSearchParams(search)
+      const hasQueryParamsOutOfHashbang = !search && window.location.search
+      const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
       if (utm.utmSource || utm.utmMedium || utm.utmCampaign || utm.utmContent || utm.utmTerm) {
         // Only overrides the UTM if the URL includes at least one UTM param
@@ -65,7 +66,12 @@ export function useInitializeUtm(): void {
       // Clear params from URL and redirect
       const cleanedParams = cleanUpParams(searchParams)
       if (cleanedParams) {
-        navigate({ pathname, search: searchParams.toString() }, { replace: true })
+        const newSearch = searchParams.toString()
+        if (hasQueryParamsOutOfHashbang) {
+          window.location.replace(newSearch ? `${pathname}?${newSearch}` : '/')
+        } else {
+          navigate({ pathname, search: newSearch }, { replace: true })
+        }
       }
     },
     // No dependencies: It only needs to be initialized once
