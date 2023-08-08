@@ -22,8 +22,9 @@ import { Tag as TagMod } from './styled'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
-    name: t`Unsupported`,
-    description: t`This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.`,
+    name: 'Unsupported',
+    description:
+      'This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.',
     id: '0',
   },
 ]
