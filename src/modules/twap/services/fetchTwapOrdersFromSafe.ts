@@ -1,8 +1,11 @@
 import { ComposableCoW } from '@cowprotocol/abis'
 import type SafeApiKit from '@safe-global/api-kit'
+import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
-import { isTruthy } from 'legacy/utils/misc'
+import ms from 'ms.macro'
+
+import { delay, isTruthy } from 'legacy/utils/misc'
 
 import { SafeTransactionParams } from 'common/types'
 
@@ -10,15 +13,64 @@ import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
+// Each page contains 20 transactions by default, so we need to fetch 10 pages to get 200 transactions
+const SAFE_TX_HISTORY_DEPTH = 10
+// Just in case, make a short delay between requests
+const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
 export async function fetchTwapOrdersFromSafe(
   safeAddress: string,
   safeApiKit: SafeApiKit,
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCoW,
+  /**
+   * Example of the second chunk url:
+   * https://safe-transaction-goerli.safe.global/api/v1/safes/0xe9B79591E270B3bCd0CC7e84f7B7De74BA3D0E2F/all-transactions/?executed=false&limit=20&offset=40&queued=true&trusted=true
+   */
+  nextUrl?: string,
+  accumulator: TwapOrdersSafeData[][] = []
 ): Promise<TwapOrdersSafeData[]> {
-  const allTxs = await safeApiKit.getAllTransactions(safeAddress)
-  const results = allTxs?.results || []
+  const response = await fetchSafeTransactionsChunk(safeAddress, safeApiKit, nextUrl)
 
+  const results = response?.results || []
+  const parsedResults = parseSafeTranasctionsResult(safeAddress, composableCowContract, results)
+
+  accumulator.push(parsedResults)
+
+  // Exit from the recursion if we have enough transactions or there is no next page
+  if (accumulator.length >= SAFE_TX_HISTORY_DEPTH || !response?.next) {
+    return accumulator.flat()
+  }
+
+  return fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract, response.next, accumulator)
+}
+
+async function fetchSafeTransactionsChunk(
+  safeAddress: string,
+  safeApiKit: SafeApiKit,
+  nextUrl?: string
+): Promise<AllTransactionsListResponse> {
+  if (nextUrl) {
+    try {
+      const response: AllTransactionsListResponse = await fetch(nextUrl).then((res) => res.json())
+
+      await delay(SAFE_TX_REQUEST_DELAY)
+
+      return response
+    } catch (error) {
+      console.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
+
+      return { results: [], count: 0 }
+    }
+  }
+
+  return safeApiKit.getAllTransactions(safeAddress)
+}
+
+function parseSafeTranasctionsResult(
+  safeAddress: string,
+  composableCowContract: ComposableCoW,
+  results: AllTransactionsListResponse['results']
+): TwapOrdersSafeData[] {
   return results
     .map<TwapOrdersSafeData | null>((result) => {
       if (!result.data || !isSafeMultisigTransactionListResponse(result)) return null

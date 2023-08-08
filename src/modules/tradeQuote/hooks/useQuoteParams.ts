@@ -38,6 +38,8 @@ export function useQuoteParams(amount: string | null) {
       buyToken,
       amount,
       chainId,
+      // The field is used in _mapNewToLegacyParams()
+      userAddress: account,
       receiver: account,
       kind: orderKind,
       toDecimals,

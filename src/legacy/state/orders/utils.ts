@@ -61,9 +61,9 @@ export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'in
  * The buffer is used to take into account race conditions where a solver might
  * execute a transaction after the backend changed the order status.
  */
-export function isOrderExpired(order: Pick<EnrichedOrder, 'validTo'>): boolean {
+export function isOrderExpired(order: Pick<EnrichedOrder, 'validTo'>, threshold = PENDING_ORDERS_BUFFER): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
-  return Date.now() - validToTime > PENDING_ORDERS_BUFFER
+  return Date.now() - validToTime > threshold
 }
 
 function isPresignPending(order: Pick<EnrichedOrder, 'status'>): boolean {
