@@ -1,3 +1,5 @@
+import { Provider as JotaiProvider } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
@@ -79,3 +81,14 @@ export function WithMockedWeb3({ children }: { children?: ReactNode }) {
     </HashRouter>
   )
 }
+
+const HydrateAtoms = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => {
+  useHydrateAtoms(initialValues)
+  return <>{children}</>
+}
+
+export const JotaiTestProvider = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => (
+  <JotaiProvider>
+    <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
+  </JotaiProvider>
+)

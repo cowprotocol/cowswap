@@ -183,7 +183,9 @@ function _checkFeeErrorForData(error: GpQuoteError) {
   }
 }
 
-function formatAtoms(amount: string, decimals: number): string {
+function formatAtoms(amount: string, decimals: number | undefined): string {
+  if (typeof decimals !== 'number') return amount
+
   return BigNumberJs(amount)
     .div(10 ** decimals)
     .toString()
