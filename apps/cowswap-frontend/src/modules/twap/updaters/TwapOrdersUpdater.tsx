@@ -38,9 +38,8 @@ export function TwapOrdersUpdater(props: {
 
   const allOrdersInfo = useMemo(() => parseOrdersSafeData(ordersSafeData), [ordersSafeData])
 
-  const ordersIds = useMemo(() => allOrdersInfo.map((item) => item.id), [allOrdersInfo])
+  const _twapOrderExecutions = useTwapOrdersExecutions(allOrdersInfo)
 
-  const _twapOrderExecutions = useTwapOrdersExecutions(ordersIds)
   const twapOrderExecutions = useRef(_twapOrderExecutions)
   twapOrderExecutions.current = _twapOrderExecutions
 

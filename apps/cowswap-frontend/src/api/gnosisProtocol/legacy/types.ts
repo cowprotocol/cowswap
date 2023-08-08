@@ -5,11 +5,11 @@ import { FeeInformation, PriceInformation } from 'types'
 
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
-type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
+interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> {
   amount: string
   userAddress?: string | null
   receiver?: string | null
-  validTo: number
+  validTo?: number
 }
 
 export interface LegacyQuoteParams {
@@ -31,9 +31,9 @@ export class LegacyPriceQuoteError extends Error {
   }
 }
 
-export type LegacyFeeQuoteParams = FeeQuoteParams & {
-  fromDecimals: number
-  toDecimals: number
+export interface LegacyFeeQuoteParams extends FeeQuoteParams {
+  fromDecimals?: number
+  toDecimals?: number
   chainId: ChainId
   priceQuality: PriceQuality
   isBestQuote?: boolean

@@ -1,5 +1,4 @@
-import { useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import {
@@ -9,16 +8,13 @@ import {
 import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
-import { AppDataUpdater } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
-import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
-import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -43,11 +39,6 @@ import {
   twapOrdersSettingsAtom,
   updateTwapOrdersSettingsAtom,
 } from '../../state/twapOrdersSettingsAtom'
-import { FallbackHandlerVerificationUpdater } from '../../updaters/FallbackHandlerVerificationUpdater'
-import { FullAmountQuoteUpdater } from '../../updaters/FullAmountQuoteUpdater'
-import { PartOrdersUpdater } from '../../updaters/PartOrdersUpdater'
-import { QuoteParamsUpdater } from '../../updaters/QuoteParamsUpdater'
-import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
@@ -56,8 +47,7 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 export function TwapFormWidget() {
-  const { chainId, account } = useWalletInfo()
-  const isSafeApp = useIsSafeApp()
+  const { account } = useWalletInfo()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
   const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
@@ -78,8 +68,6 @@ export function TwapFormWidget() {
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const composableCowContract = useComposableCowContract()
-
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
@@ -89,8 +77,6 @@ export function TwapFormWidget() {
     customDeadline,
     isCustomDeadline,
   }
-
-  const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
   useEffect(() => {
@@ -121,17 +107,6 @@ export function TwapFormWidget() {
 
   return (
     <>
-      <QuoteParamsUpdater />
-      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
-      <QuoteObserverUpdater />
-      {shouldLoadTwapOrders && (
-        <>
-          <FullAmountQuoteUpdater />
-          <FallbackHandlerVerificationUpdater />
-          <PartOrdersUpdater />
-          <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
-        </>
-      )}
       <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
 
       {!isWrapOrUnwrap && (
@@ -148,9 +123,12 @@ export function TwapFormWidget() {
         onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
         decimalsPlaces={2}
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
+        min={0}
         max={MAX_TWAP_SLIPPAGE}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+        showUpDownArrows={true}
+        upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
             {limitPrice ? (
@@ -172,6 +150,7 @@ export function TwapFormWidget() {
           min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
+          showUpDownArrows={true}
         />
       </styledEl.Row>
 

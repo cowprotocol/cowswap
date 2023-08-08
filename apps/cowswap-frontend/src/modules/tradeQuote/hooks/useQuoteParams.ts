@@ -9,10 +9,11 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 import { getAddress } from 'utils/getAddress'
 
-export function useQuoteParams(amount: string | null) {
+export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 
@@ -31,14 +32,13 @@ export function useQuoteParams(amount: string | null) {
   })
 
   return useMemo(() => {
-    if (!sellToken || !buyToken || !amount) return
+    if (!sellToken || !buyToken || !amount || !orderKind) return
 
-    return {
+    const params: LegacyFeeQuoteParams = {
       sellToken,
       buyToken,
       amount,
       chainId,
-      // The field is used in _mapNewToLegacyParams()
       userAddress: account,
       receiver: account,
       kind: orderKind,
@@ -47,6 +47,8 @@ export function useQuoteParams(amount: string | null) {
       isEthFlow: false,
       priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
     }
+
+    return params
   }, [
     amount,
     account,

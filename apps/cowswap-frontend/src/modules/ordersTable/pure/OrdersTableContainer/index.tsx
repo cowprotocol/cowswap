@@ -210,7 +210,7 @@ export function OrdersTableContainer({
             ) : (
               <Trans>
                 You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
-                Create one for free! {/* TODO: add link for Advanced orders also */}
+                Time to create a new one! {/* TODO: add link for Advanced orders also */}
                 {orderType === TabOrderTypes.LIMIT ? (
                   <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
                     Learn more

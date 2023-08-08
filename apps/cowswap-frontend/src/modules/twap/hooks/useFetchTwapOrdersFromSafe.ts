@@ -24,7 +24,6 @@ export function useFetchTwapOrdersFromSafe({
   useEffect(() => {
     if (!safeApiKit) return
 
-    // TODO: now it fetches only last N transactions, should take into account the pagination
     const persistOrders = () => {
       fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }
