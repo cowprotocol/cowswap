@@ -8,9 +8,11 @@ import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { COW } from 'legacy/constants/tokens'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
-import { limitOrdersDerivedStateAtom } from 'modules/limitOrders'
+import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { DEFAULT_TRADE_DERIVED_STATE, TradeType, useTradeTypeInfo } from 'modules/trade'
+import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
+import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
+import { WalletInfo } from 'modules/wallet'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { getQuote } from 'api/gnosisProtocol/api'
@@ -45,12 +47,12 @@ const useEnoughBalanceAndAllowanceMock = jest.mocked(useEnoughBalanceAndAllowanc
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_GOERLI, 10_000_000)
 const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[5], 2_000_000)
 
-const walletInfoMock = {
+const walletInfoMock: WalletInfo = {
   chainId: 1,
   account: '0x333333f332a06ecb5d20d35da44ba07986d6e203',
   active: true,
 }
-const limitOrdersDerivedStateMock = {
+const limitOrdersDerivedStateMock: LimitOrdersDerivedState = {
   ...DEFAULT_TRADE_DERIVED_STATE,
   inputCurrency: inputCurrencyAmount.currency,
   outputCurrency: outputCurrencyAmount.currency,
