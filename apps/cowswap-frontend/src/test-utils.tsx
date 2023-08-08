@@ -18,7 +18,6 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { theme } from 'legacy/theme'
 
 import { LanguageProvider } from './i18n'
-import { jotaiStore } from './jotaiStore'
 
 const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{children}</I18nProvider>
 
@@ -76,12 +75,12 @@ export function WithMockedWeb3({ children }: { children?: ReactNode }) {
 }
 
 const HydrateAtoms = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => {
-  useHydrateAtoms(initialValues, { store: jotaiStore })
+  useHydrateAtoms(initialValues)
   return <>{children}</>
 }
 
 export const JotaiTestProvider = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => (
-  <JotaiProvider store={jotaiStore}>
+  <JotaiProvider>
     <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
   </JotaiProvider>
 )
