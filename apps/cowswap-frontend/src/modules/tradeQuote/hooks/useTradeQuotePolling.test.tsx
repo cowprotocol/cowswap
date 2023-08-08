@@ -77,6 +77,8 @@ const Wrapper =
 
 describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
+
     getQuoteMock.mockReturnValue(new Promise(() => void 0))
     useTradeTypeInfoMock.mockReturnValue({
       tradeType: TradeType.LIMIT_ORDER,
