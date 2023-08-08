@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, PropsWithChildren } from 'react'
 
 type Props = {
-  children: React.ReactNode
   waitBeforeShow?: number
 }
 
-export const Delayed = ({ children, waitBeforeShow = 1500 }: Props) => {
+export const Delayed = ({ children, waitBeforeShow = 1500 }: PropsWithChildren<Props>) => {
   const [isShown, setIsShown] = useState(false)
 
   useEffect(() => {
