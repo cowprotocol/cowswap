@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { serialize } from '@ethersproject/transactions'
 import { initializeConnector } from '@web3-react/core'
 import { Actions, Connector } from '@web3-react/types'
 
@@ -10,22 +9,20 @@ import { jotaiStore } from 'jotaiStore'
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { gasPriceAtom } from 'modules/gasPirce'
-
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { default as TrezorImage } from '../../api/assets/trezor.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { hwAccountIndexAtom } from '../../api/state'
 
-import type { EthereumTransaction } from '@trezor/connect'
 import type transformTypedData from '@trezor/connect-plugin-ethereum'
 
-import { hwAccountIndexAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
 
 import type { TrezorConnect } from '@trezor/connect-web'
 
 import { getConnectionName } from '../../api/utils/connection'
+import { sendTransactionHandler } from '../connectors/TrezorConnector/sendTransactionHandler'
 import { Web3ReactConnection } from '../types'
 
 const BASE_PROPS = {
@@ -51,8 +48,6 @@ const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
     appUrl: 'https://cow.fi',
   },
 }
-
-const DEFAULT_GOERLI_GAS_PRICE = `0x${(40 * 10 ** 9).toString(16)}` // 40 GWEI
 
 async function getTrezorAccount(trezorConnect: TrezorConnect): Promise<string> {
   const accountResult = await trezorConnect.ethereumGetAddress({
@@ -123,43 +118,7 @@ class TrezorProvider extends JsonRpcProvider {
     }
 
     if (method === 'eth_sendTransaction') {
-      const { chainId } = await this.getNetwork()
-      const nonce = await this.send('eth_getTransactionCount', [this.account, 'latest'])
-
-      const originalTx = params[0]
-      const estimation = await this.estimateGas(originalTx)
-      const gasPrice =
-        chainId === SupportedChainId.GOERLI ? DEFAULT_GOERLI_GAS_PRICE : jotaiStore.get(gasPriceAtom)?.fast
-
-      const transaction: EthereumTransaction = {
-        to: originalTx.to,
-        value: originalTx.value || '0x0',
-        data: originalTx.data || '0x',
-        gasPrice: gasPrice || '0x0',
-        gasLimit: estimation.toHexString(),
-        nonce,
-        chainId,
-      }
-
-      const { success, payload } = await this.trezorConnect.ethereumSignTransaction({
-        path: getAccountPath(),
-        transaction,
-      })
-
-      if (!success) {
-        console.error('Trezor tx signing error: ', payload)
-        throw new Error(payload.error)
-      }
-
-      const serialized = serialize(
-        { ...transaction, nonce: +transaction.nonce },
-        {
-          ...payload,
-          v: +payload.v,
-        }
-      )
-
-      return super.send('eth_sendRawTransaction', [serialized])
+      return sendTransactionHandler(params, this.account, this, this.trezorConnect)
     }
 
     return super.send(method, params)
