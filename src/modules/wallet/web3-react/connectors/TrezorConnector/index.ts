@@ -55,15 +55,15 @@ export class TrezorConnector extends Connector {
       return
     }
 
-    const { default: trezorConnect } = await import('@trezor/connect-web')
-    const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
-
-    this.trezorConnect = trezorConnect
-
     const url = RPC_URLS[desiredChainId]
     const initialConnect = this.activatedNetwork === null
 
     this.activatedNetwork = desiredChainId
+
+    const { default: trezorConnect } = await import('@trezor/connect-web')
+    const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
+
+    this.trezorConnect = trezorConnect
 
     try {
       if (initialConnect) {
