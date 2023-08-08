@@ -4,8 +4,12 @@ import { serialize } from '@ethersproject/transactions'
 import { initializeConnector } from '@web3-react/core'
 import { Actions, Connector } from '@web3-react/types'
 
+import { jotaiStore } from 'jotaiStore'
+
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
+import { gasPriceAtom } from 'modules/gasPirce'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
@@ -40,6 +44,8 @@ const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
   },
 }
 
+const DEFAULT_GOERLI_GAS_PRICE = `0x${(40 * 10 ** 9).toString(16)}` // 40 GWEI
+
 class TrezorProvider extends JsonRpcProvider {
   constructor(url: string, private account: string, private trezorConnect: TrezorConnect) {
     super(url)
@@ -52,14 +58,16 @@ class TrezorProvider extends JsonRpcProvider {
 
       const originalTx = params[0]
       const estimation = await this.estimateGas(originalTx)
+      const gasPrice =
+        chainId === SupportedChainId.GOERLI ? DEFAULT_GOERLI_GAS_PRICE : jotaiStore.get(gasPriceAtom)?.fast
 
       const transaction: EthereumTransaction = {
         to: originalTx.to,
         value: originalTx.value || '0x0',
-        gasPrice: originalTx.gasPrice || originalTx.gas,
-        gasLimit: estimation.toHexString(),
         data: originalTx.data || '0x',
-        nonce: nonce,
+        gasPrice: gasPrice || '0x0',
+        gasLimit: estimation.toHexString(),
+        nonce,
         chainId,
       }
 
