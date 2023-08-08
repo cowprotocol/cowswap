@@ -1,4 +1,4 @@
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect, useMemo } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
@@ -54,7 +54,7 @@ export function useTradeQuotePolling() {
     }
 
     const fetchQuote = () => {
-      updateQuoteState({ isLoading: true, error: null })
+      updateQuoteState({ isLoading: true })
 
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {

@@ -27,8 +27,8 @@ export function useFillSwapDerivedState() {
   const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee) || null
   const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee) || null
 
-  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
-  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
+  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined).value
+  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined).value
 
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 

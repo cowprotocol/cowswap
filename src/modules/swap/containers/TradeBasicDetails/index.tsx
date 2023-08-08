@@ -29,7 +29,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
   // trades are null when there is a fee quote error e.g
   // so we can take both
-  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
+  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee).value
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 

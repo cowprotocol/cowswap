@@ -97,7 +97,7 @@ export function SwapWidget() {
     amount: parsedAmounts.INPUT || null,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
+    fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee).value,
     receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
@@ -107,7 +107,7 @@ export function SwapWidget() {
     amount: parsedAmounts.OUTPUT || null,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
+    fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee).value,
     receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 
