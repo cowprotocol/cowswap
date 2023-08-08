@@ -208,16 +208,16 @@ export function OrdersTableContainer({
                 Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
               </Trans>
             ) : (
-              <Trans>
-                You don't have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
-                Time to create a new one! {/* TODO: add link for Advanced orders also */}
+              <>
+                <Trans>You don't have any {isOpenOrdersTab ? 'open' : ''} orders at the moment.</Trans> <br />
+                <Trans>Time to create a new one!</Trans> {/* TODO: add link for Advanced orders also */}
                 {orderType === TabOrderTypes.LIMIT ? (
                   <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                    Learn more
+                    <Trans>Learn more</Trans>
                     <ExternalArrow />
                   </ExternalLink>
                 ) : null}
-              </Trans>
+              </>
             )}
           </p>
         </Content>
