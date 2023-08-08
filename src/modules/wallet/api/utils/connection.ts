@@ -20,7 +20,7 @@ const connectionTypeToName: Record<ConnectionType, string> = {
 }
 
 export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean): string {
-  if (isMetaMask) return 'MetaMask'
+  if (connectionType === ConnectionType.INJECTED && isMetaMask) return 'MetaMask'
 
   return connectionTypeToName[connectionType]
 }

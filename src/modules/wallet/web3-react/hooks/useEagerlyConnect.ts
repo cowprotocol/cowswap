@@ -18,7 +18,7 @@ async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
   try {
     if (connector.connectEagerly) {
-      await connector.connectEagerly()
+      await connector.connectEagerly(chainId)
     } else {
       await connector.activate(chainId)
     }
