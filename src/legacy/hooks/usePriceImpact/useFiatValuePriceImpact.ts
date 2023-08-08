@@ -1,6 +1,8 @@
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
 import { ParsedAmounts } from './types'
 
 export default function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts) {
@@ -19,5 +21,5 @@ export default function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts
 
   const isLoading = areBothValuesPresent && (inputIsLoading || outputIsLoading)
 
-  return { priceImpact, isLoading }
+  return useSafeMemo(() => ({ priceImpact, isLoading }), [priceImpact, isLoading])
 }
