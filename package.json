@@ -49,6 +49,7 @@
     "@cowprotocol/cow-sdk": "^2.3.0",
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/experimental": "^5.7.0",
     "@ethvault/iframe-provider": "^0.1.10",
