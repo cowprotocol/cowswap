@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
 import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig, loadEnv, searchForWorkspaceRoot } from 'vite'
@@ -53,22 +52,6 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    // https://stackoverflow.com/questions/70714690/buffer-is-not-defined-in-react-vite
-    optimizeDeps: {
-      esbuildOptions: {
-        // Node.js global to browser globalThis
-        define: {
-          global: 'globalThis'
-        },
-        // Enable esbuild polyfill plugins
-        plugins: [
-          NodeGlobalsPolyfillPlugin({
-            buffer: true
-          })
-        ]
-      }
-    },
-
     plugins: [
       react({
         plugins: [['@lingui/swc-plugin', {}]],
@@ -83,7 +66,7 @@ export default defineConfig(({ mode }) => {
       svgr(),
       VitePWA({
         registerType: 'autoUpdate',
-        injectRegister: 'auto'
+        injectRegister: 'auto',
       }),
     ],
 
