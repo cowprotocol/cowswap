@@ -16,6 +16,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
@@ -261,5 +262,8 @@ export function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currenc
     )
   } */
 
-  return { value: coingeckoUsdPrice || gpUsdPrice, isLoading: isUsdcLoading || isCoingeckoLoading }
+  const value = coingeckoUsdPrice || gpUsdPrice
+  const isLoading = isUsdcLoading || isCoingeckoLoading
+
+  return useSafeMemo(() => ({ value, isLoading }), [value, isLoading])
 }
