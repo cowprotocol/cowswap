@@ -12,7 +12,7 @@ import { getHwAccount } from '../../../api/utils/getHwAccount'
 import type { TrezorConnect } from '@trezor/connect-web'
 
 // TODO: use API or Oracle for gas price
-const DEFAULT_GOERLI_GAS_PRICE = `0x${(40 * 10 ** 9).toString(16)}` // 40 GWEI
+const DEFAULT_GOERLI_GAS_PRICE = 40 * 10 ** 9 // 40 GWEI
 
 export async function sendTransactionHandler(
   params: Array<any>,
@@ -31,7 +31,7 @@ export async function sendTransactionHandler(
     to: originalTx.to,
     value: originalTx.value || '0x0',
     data: originalTx.data || '0x',
-    gasPrice: gasPrice || '0x0',
+    gasPrice: gasPrice ? `0x${BigInt(gasPrice).toString(16)}` : '0x0',
     gasLimit: estimation.toHexString(),
     nonce,
     chainId,
