@@ -103,6 +103,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
           priceImpact={priceImpact}
           buyingFiatAmount={buyingFiatAmount}
           tradeUrlParams={tradeUrlParams}
+          sellAmount={trade?.inputAmount.toFixed(trade?.inputAmount?.currency?.decimals || 18)}
         />
       </FeatureGuard>
     </>
