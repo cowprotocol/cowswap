@@ -1,12 +1,11 @@
-import { lazy, Suspense } from 'react'
-import { ReactNode } from 'react'
+import { lazy, ReactNode, Suspense } from 'react'
 
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import Loader from 'legacy/components/Loader'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
-import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
+import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
@@ -54,7 +53,9 @@ function LazyRoute({ route, element, key }: LazyRouteProps) {
 
 const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
+  { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <About /> },
   { route: RoutesEnum.FAQ, element: <Faq /> },
   { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },

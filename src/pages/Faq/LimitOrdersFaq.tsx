@@ -2,11 +2,11 @@ import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
+import { Content, Page } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { ExternalLinkFaq, Wrapper } from './styled'
+import { ExternalLinkFaq, InternalLinkFaq, Wrapper } from './styled'
 
 import { Footer } from '.'
 
@@ -176,10 +176,8 @@ export default function LimitOrderFAQ() {
             </p>
             <p>
               If you miss the MOOOO sound, you can always check your order history in{' '}
-              <ExternalLinkFaq href="https://swap.cow.fi/#/1/limit-orders/WETH?tab=history&page=1">
-                CoW Swap
-              </ExternalLinkFaq>{' '}
-              and in the <ExternalLinkFaq href="https://explorer.cow.fi">CoW Explorer</ExternalLinkFaq>.
+              <InternalLinkFaq to="/limit">CoW Swap</InternalLinkFaq> and in the{' '}
+              <ExternalLinkFaq href="https://explorer.cow.fi">CoW Explorer</ExternalLinkFaq>.
             </p>
 
             <h3 id="why-isnt-my-order-getting-filled">

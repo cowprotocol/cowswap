@@ -7,7 +7,7 @@ function unlock() {
 }
 
 function navigate(path = '', unlockLimitOrders = true) {
-  cy.visit(`/#/${CHAIN_ID}/limit-orders${path}`)
+  cy.visit(`/#/${CHAIN_ID}/limit${path}`)
 
   if (unlockLimitOrders) {
     unlock()

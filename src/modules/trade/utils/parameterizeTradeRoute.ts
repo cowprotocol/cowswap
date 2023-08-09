@@ -4,7 +4,7 @@ import { RoutesValues } from 'common/constants/routes'
 
 /**
  * When input currency is not set and user select output currency, we build a link like:
- * /limit-orders/_/DAI
+ * /limit/_/DAI
  */
 export function parameterizeTradeRoute(
   { chainId, inputCurrencyId, outputCurrencyId }: TradeUrlParams,
