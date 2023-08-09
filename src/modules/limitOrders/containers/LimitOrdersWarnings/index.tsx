@@ -32,6 +32,7 @@ import {
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
+import { Delayed } from 'utils/useDelayed'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
@@ -130,28 +131,32 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
-      {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
+      {showZeroApprovalWarning && <Delayed><ZeroApprovalWarning currency={inputCurrency} /></Delayed>}
       {showPriceImpactWarning && (
-        <StyledNoImpactWarning
-          withoutAccepting={isConfirmScreen}
-          isAccepted={isPriceImpactAccepted}
-          acceptCallback={onAcceptPriceImpact}
-        />
+        <Delayed>
+          <StyledNoImpactWarning
+            withoutAccepting={isConfirmScreen}
+            isAccepted={isPriceImpactAccepted}
+            acceptCallback={onAcceptPriceImpact}
+          />
+        </Delayed>
       )}
       {showRateImpactWarning && (
-        <StyledRateImpactWarning
-          withAcknowledge={isConfirmScreen}
-          isAccepted={isRateImpactAccepted}
-          rateImpact={rateImpact}
-          inputCurrency={inputCurrency}
-          onAcknowledgeChange={onAcceptRateImpact}
-        />
+        <Delayed>
+          <StyledRateImpactWarning
+            withAcknowledge={isConfirmScreen}
+            isAccepted={isRateImpactAccepted}
+            rateImpact={rateImpact}
+            inputCurrency={inputCurrency}
+            onAcknowledgeChange={onAcceptRateImpact}
+          />
+        </Delayed>
       )}
 
       {/*// TODO: must be replaced by <NotificationBanner>*/}
-      {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
-      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
+      {showHighFeeWarning && <Delayed><SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} /></Delayed>}
+      {showApprovalBundlingBanner && <Delayed><BundleTxApprovalBanner /></Delayed>}
+      {showSafeWcBundlingBanner && <Delayed><BundleTxSafeWcBanner /></Delayed>}
     </Wrapper>
   ) : null
 }
