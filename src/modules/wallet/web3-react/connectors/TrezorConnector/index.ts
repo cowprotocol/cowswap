@@ -118,6 +118,13 @@ export class TrezorConnector extends Connector {
     const network = await customProvider.getNetwork()
     const { chainId } = network
 
+    trezorConnect.on('DEVICE_EVENT', (event) => {
+      if (event.type === 'device-disconnect') {
+        this.actions.resetState()
+        this.deactivate()
+      }
+    })
+
     this.currentAccountIndex = getHwAccount().index
     this.actions.update({ accounts: [account], chainId })
   }
