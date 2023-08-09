@@ -73,12 +73,13 @@ export class TrezorConnector extends Connector {
 
       await this.installProvider(url, trezorConnect, transformTypedData)
     } catch (error) {
+      await this.deactivate()
       this.handleActivationError(error)
     }
   }
 
   deactivate(): Promise<void> | void {
-    return this.customProvider?.trezorConnect.dispose()
+    return this.trezorConnect?.dispose()
   }
 
   private async getAccount(): Promise<string> {
