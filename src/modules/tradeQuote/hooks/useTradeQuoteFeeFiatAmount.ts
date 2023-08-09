@@ -21,5 +21,5 @@ export function useTradeQuoteFeeFiatAmount(): CurrencyAmount<Token> | null {
     return CurrencyAmount.fromRawAmount(amount?.currency, feeAmountStr)
   }, [amount, feeAmountStr])
 
-  return useHigherUSDValue(feeAmount)
+  return useHigherUSDValue(feeAmount).value
 }

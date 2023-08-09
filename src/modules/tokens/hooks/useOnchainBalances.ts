@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Erc20Interface, Erc20Abi } from '@cowprotocol/abis'
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'

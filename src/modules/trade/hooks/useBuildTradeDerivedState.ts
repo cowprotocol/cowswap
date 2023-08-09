@@ -24,8 +24,8 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, rawState.outputCurrencyAmount)
   const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
   const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
-  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
-  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
+  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined).value
+  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined).value
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount
 

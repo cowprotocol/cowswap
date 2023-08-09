@@ -42,7 +42,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
   const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
-  const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
+  const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount).value
 
   // Limit price is the same for all parts
   const limitPrice = usePrice(inputCurrencyAmount, minReceiveAmount)

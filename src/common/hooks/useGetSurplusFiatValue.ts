@@ -33,7 +33,7 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(order)])
 
-  const surplusFiatValue = useCoingeckoUsdValue(surplusAmount)
+  const surplusFiatValue = useCoingeckoUsdValue(surplusAmount).value
   const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
 
   const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)
