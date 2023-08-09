@@ -58,14 +58,14 @@ export class TrezorConnector extends Connector {
     const url = RPC_URLS[desiredChainId]
     const initialConnect = this.activatedNetwork === null
 
-    this.activatedNetwork = desiredChainId
-
-    const { default: trezorConnect } = await import('@trezor/connect-web')
-    const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
-
-    this.trezorConnect = trezorConnect
-
     try {
+      this.activatedNetwork = desiredChainId
+
+      const { default: trezorConnect } = await import('@trezor/connect-web')
+      const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
+
+      this.trezorConnect = trezorConnect
+
       if (initialConnect) {
         this.cancelActivation = this.actions.startActivation()
         await trezorConnect.init(trezorConfig)
@@ -97,8 +97,6 @@ export class TrezorConnector extends Connector {
   }
 
   private handleActivationError(error: Error) {
-    alert(error.message)
-
     this.activatedNetwork = null
     this.cancelActivation()
 

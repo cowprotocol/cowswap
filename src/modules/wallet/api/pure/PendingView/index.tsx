@@ -1,4 +1,5 @@
 import { Trans } from '@lingui/macro'
+import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
@@ -45,12 +46,21 @@ const LoadingWrapper = styled.div`
   justify-content: center;
 `
 
+const WalletError = styled.div`
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 12px;
+  background: ${({ theme }) => transparentize(0.7, theme.disabled)};
+  margin: -15px 0 20px 0;
+`
+
 export function PendingView({
-  error = false,
+  error,
   tryConnection,
   openOptions,
 }: {
-  error?: boolean
+  error: string | undefined
   tryConnection: () => void
   openOptions: () => void
 }) {
@@ -68,6 +78,9 @@ export function PendingView({
                   The connection attempt failed. Please click try again and follow the steps to connect in your wallet.
                 </Trans>
               </ThemedText.Body>
+              <WalletError>
+                <span>{error}</span>
+              </WalletError>
               <ButtonPrimary $borderRadius="12px" padding="12px" onClick={tryConnection}>
                 <Trans>Try Again</Trans>
               </ButtonPrimary>
