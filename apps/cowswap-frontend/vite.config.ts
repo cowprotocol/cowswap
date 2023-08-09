@@ -1,11 +1,26 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
-import { defineConfig, loadEnv, searchForWorkspaceRoot } from 'vite'
+import { defineConfig, loadEnv, searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+
+const coreDeps = [
+  'node_modules/react',
+  'node_modules/redux',
+  'node_modules/styled-components',
+  'node_modules/swr',
+  'node_modules/react-router-dom',
+  'node_modules/jotai',
+  'node_modules/@cowprotocol/',
+  'node_modules/@uniswap/',
+  'node_modules/@safe-global/',
+  'node_modules/@web3-react/',
+  'node_modules/@lingui/',
+  'node_modules/@sentry/',
+]
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
@@ -52,7 +67,24 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (coreDeps.some((dep) => id.includes(dep))) {
+              return 'core-vendor'
+            }
+
+            if (id.includes('node_modules')) {
+              return 'vendor'
+            }
+          },
+        },
+      },
+    },
+
     plugins: [
+      splitVendorChunkPlugin(),
       react({
         plugins: [['@lingui/swc-plugin', {}]],
       }),
