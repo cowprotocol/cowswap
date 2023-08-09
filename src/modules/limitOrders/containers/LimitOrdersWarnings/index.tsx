@@ -131,7 +131,11 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
-      {showZeroApprovalWarning && <Delayed><ZeroApprovalWarning currency={inputCurrency} /></Delayed>}
+      {showZeroApprovalWarning && (
+        <Delayed>
+          <ZeroApprovalWarning currency={inputCurrency} />
+        </Delayed>
+      )}
       {showPriceImpactWarning && (
         <Delayed>
           <StyledNoImpactWarning
@@ -154,9 +158,21 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       )}
 
       {/*// TODO: must be replaced by <NotificationBanner>*/}
-      {showHighFeeWarning && <Delayed><SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} /></Delayed>}
-      {showApprovalBundlingBanner && <Delayed><BundleTxApprovalBanner /></Delayed>}
-      {showSafeWcBundlingBanner && <Delayed><BundleTxSafeWcBanner /></Delayed>}
+      {showHighFeeWarning && (
+        <Delayed>
+          <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />
+        </Delayed>
+      )}
+      {showApprovalBundlingBanner && (
+        <Delayed>
+          <BundleTxApprovalBanner />
+        </Delayed>
+      )}
+      {showSafeWcBundlingBanner && (
+        <Delayed>
+          <BundleTxSafeWcBanner />
+        </Delayed>
+      )}
     </Wrapper>
   ) : null
 }

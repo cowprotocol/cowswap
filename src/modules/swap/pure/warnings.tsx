@@ -78,24 +78,43 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
 
   return (
     <>
-      {shouldZeroApprove && <Delayed><ZeroApprovalWarning currency={trade?.inputAmount.currency} /></Delayed>}
-      <Delayed><HighFeeWarning
-        trade={trade}
-        acceptedStatus={feeWarningAccepted}
-        acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-      /></Delayed>
-      {!hideUnknownImpactWarning && (
-        <Delayed><StyledNoImpactWarning
-          isAccepted={impactWarningAccepted}
-          acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
-        /></Delayed>
+      {shouldZeroApprove && (
+        <Delayed>
+          <ZeroApprovalWarning currency={trade?.inputAmount.currency} />
+        </Delayed>
       )}
-      {showApprovalBundlingBanner && <Delayed><BundleTxApprovalBanner /></Delayed>}
+      <Delayed>
+        <HighFeeWarning
+          trade={trade}
+          acceptedStatus={feeWarningAccepted}
+          acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+        />
+      </Delayed>
+      {!hideUnknownImpactWarning && (
+        <Delayed>
+          <StyledNoImpactWarning
+            isAccepted={impactWarningAccepted}
+            acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+          />
+        </Delayed>
+      )}
+      {showApprovalBundlingBanner && (
+        <Delayed>
+          <BundleTxApprovalBanner />
+        </Delayed>
+      )}
       {showWrapBundlingBanner && (
-        <Delayed><BundleTxWrapBanner nativeCurrencySymbol={nativeCurrencySymbol} wrappedCurrencySymbol={wrappedCurrencySymbol} /></Delayed>
+        <Delayed>
+          <BundleTxWrapBanner
+            nativeCurrencySymbol={nativeCurrencySymbol}
+            wrappedCurrencySymbol={wrappedCurrencySymbol}
+          />
+        </Delayed>
       )}
       {showSafeWcBundlingBanner && (
-        <Delayed><BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping /></Delayed>
+        <Delayed>
+          <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
+        </Delayed>
       )}
 
       <Delayed>
