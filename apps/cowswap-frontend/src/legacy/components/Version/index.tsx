@@ -10,7 +10,8 @@ import { getEtherscanLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import pkg from '../../../../package.json'
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import pkg from '../../../../../../package.json'
 
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]

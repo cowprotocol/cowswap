@@ -5,7 +5,8 @@ import { environmentName } from 'legacy/utils/environments'
 
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
-import pkg from '../../package.json'
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import pkg from '../../../../package.json'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
