@@ -1,15 +1,16 @@
-import { useMemo } from 'react'
+import { EffectCallback, useEffect, useMemo } from 'react'
 
-import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
 
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-export function useSafeMemoDeps(deps: unknown[]): unknown[] {
+export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return dep.symbol
     if (dep instanceof Token) return dep.address.toLowerCase()
     if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.isNative
     if (dep instanceof WrappedTokenInfo) return dep.address
+    if (dep instanceof Percent) return dep.toFixed(6)
 
     return dep
   })
@@ -21,9 +22,14 @@ export function useSafeMemoDeps(deps: unknown[]): unknown[] {
  */
 export function useSafeMemo<T>(memoCall: () => T, deps: unknown[]): T {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(memoCall, useSafeMemoDeps(deps))
+  return useMemo(memoCall, useSafeDeps(deps))
 }
 
 export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj: T): typeof depsObj {
   return useSafeMemo<typeof depsObj>(() => depsObj, Object.values(depsObj))
+}
+
+export function useSafeEffect(memoCall: EffectCallback, deps: unknown[]): void {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(memoCall, useSafeDeps(deps))
 }

@@ -14,7 +14,7 @@ import { getCowSoundSend } from 'legacy/utils/sound'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useAppData } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { useWalletInfo } from 'modules/wallet'
@@ -33,7 +33,7 @@ import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
-import { parseTwapErrorMessage } from '../utils/parseTwapError'
+import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 export function useCreateTwapOrder() {
@@ -51,6 +51,7 @@ export function useCreateTwapOrder() {
   const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
 
   const tradeConfirmActions = useTradeConfirmActions()
+  const uploadAppData = useUploadAppData()
 
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
@@ -126,12 +127,14 @@ export function useCreateTwapOrder() {
         getCowSoundSend().play()
         dispatchPresignedOrderPosted(store, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
+        uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
       } catch (error) {
-        const errorMessage = parseTwapErrorMessage(error)
+        console.error('[useCreateTwapOrder] error', error)
+        const errorMessage = getErrorMessage(error)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
@@ -149,6 +152,7 @@ export function useCreateTwapOrder() {
       twapOrder,
       confirmPriceImpactWithoutFee,
       priceImpact,
+      uploadAppData,
       tradeConfirmActions,
       addTwapOrderToList,
       recipient,

@@ -20,6 +20,10 @@ export default function AdvancedOrdersPage() {
 
   const allEmulatedOrders = useEmulatedOrders()
 
+  if (isAdvancedOrdersEnabled === undefined) {
+    return null
+  }
+
   if (!isAdvancedOrdersEnabled) {
     // To prevent direct access when the flag is off
     return <Navigate to={parameterizeTradeRoute(tradeContext, RoutesEnum.SWAP)} />

@@ -44,7 +44,6 @@ interface TradeWidgetParams {
   isTradePriceUpdating: boolean
   isExpertMode: boolean
   priceImpact: PriceImpact
-  isRateLoading?: boolean
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
 }
@@ -77,7 +76,6 @@ export function TradeWidget(props: TradeWidgetProps) {
     compactView,
     showRecipient,
     isTradePriceUpdating,
-    isRateLoading,
     isEoaEthFlow = false,
     disableNonToken = false,
     priceImpact,
@@ -173,7 +171,6 @@ export function TradeWidget(props: TradeWidgetProps) {
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                       : undefined
                   }
-                  isRateLoading={isRateLoading}
                   currencyInfo={
                     isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
                   }

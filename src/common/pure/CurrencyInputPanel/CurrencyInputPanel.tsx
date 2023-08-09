@@ -34,7 +34,6 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   disabled?: boolean
   inputDisabled?: boolean
   inputTooltip?: string
-  isRateLoading?: boolean
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
   disableNonToken?: boolean
@@ -70,7 +69,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       },
     },
     topLabel,
-    isRateLoading,
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
@@ -119,7 +117,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     <styledEl.NumericalInput
       className="token-amount-input"
       value={isChainIdUnsupported ? '' : typedValue}
-      disabled={inputDisabled}
+      readOnly={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />
@@ -131,8 +129,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         id={id}
         className={className}
         withReceiveAmountInfo={!!receiveAmountInfo}
-        disabled={disabled}
-        inputDisabled={inputDisabled}
+        pointerDisabled={disabled}
+        readOnly={inputDisabled}
       >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
@@ -165,7 +163,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           </div>
           <div>
             <styledEl.FiatAmountText>
-              <FiatValue priceImpactParams={priceImpactParams} fiatValue={isRateLoading ? null : fiatAmount} />
+              <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
             </styledEl.FiatAmountText>
           </div>
         </styledEl.CurrencyInputBox>

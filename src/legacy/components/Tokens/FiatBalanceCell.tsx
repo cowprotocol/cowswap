@@ -1,4 +1,4 @@
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -7,7 +7,7 @@ import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 
-import { BalanceValue, InfoCircle, FiatValue } from './styled'
+import { BalanceValue, FiatValue, InfoCircle } from './styled'
 
 type FiatBalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined
@@ -15,7 +15,7 @@ type FiatBalanceCellProps = {
 
 export default function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   const hasBalance = balance?.greaterThan(0)
-  const fiatValue = useHigherUSDValue(balance)
+  const fiatValue = useHigherUSDValue(balance).value
 
   return (
     <BalanceValue hasBalance={!!hasBalance}>

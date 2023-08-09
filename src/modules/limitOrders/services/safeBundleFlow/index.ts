@@ -134,7 +134,6 @@ export async function safeBundleFlow(
       },
       dispatch
     )
-
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId

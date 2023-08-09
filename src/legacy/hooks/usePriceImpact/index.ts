@@ -1,9 +1,8 @@
-import { useMemo } from 'react'
-
 import { Percent } from '@uniswap/sdk-core'
 
 import { QuoteError } from 'legacy/state/price/actions'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getAddress } from 'utils/getAddress'
 
 import { ParsedAmounts, PriceImpactTrade } from './types'
@@ -27,11 +26,11 @@ export interface PriceImpact {
  * The hook cannot be used more the once in the same page
  */
 export function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
-  const fiatPriceImpact = useFiatValuePriceImpact(parsedAmounts)
+  const { priceImpact: fiatPriceImpact, isLoading: isFiatLoading } = useFiatValuePriceImpact(parsedAmounts)
   const {
     impact: fallbackPriceImpact,
     error,
-    loading,
+    loading: isFallbackLoading,
   } = useFallbackPriceImpact({
     sellToken: getAddress(parsedAmounts.INPUT?.currency),
     buyToken: getAddress(parsedAmounts.OUTPUT?.currency),
@@ -40,8 +39,8 @@ export function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpa
   })
 
   const priceImpact = fiatPriceImpact || fallbackPriceImpact
+  const loading = isFiatLoading || isFallbackLoading
+  const _error = fiatPriceImpact ? undefined : error
 
-  return useMemo(() => {
-    return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
-  }, [priceImpact, fiatPriceImpact, error, loading])
+  return useSafeMemo(() => ({ priceImpact, error: _error, loading }), [priceImpact, _error, loading])
 }
