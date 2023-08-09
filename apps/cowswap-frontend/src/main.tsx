@@ -1,2 +1,2 @@
-import './init'
+import './polyfills'
 import './cow-react'

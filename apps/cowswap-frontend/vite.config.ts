@@ -7,21 +7,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-const coreDeps = [
-  'node_modules/react',
-  'node_modules/redux',
-  'node_modules/styled-components',
-  'node_modules/swr',
-  'node_modules/react-router-dom',
-  'node_modules/jotai',
-  'node_modules/@cowprotocol/',
-  'node_modules/@uniswap/',
-  'node_modules/@safe-global/',
-  'node_modules/@web3-react/',
-  'node_modules/@lingui/',
-  'node_modules/@sentry/',
-]
-
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
 
@@ -71,11 +56,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (coreDeps.some((dep) => id.includes(dep))) {
-              return 'core-vendor'
-            }
+            const isPolyfill = id.includes('src/polyfills')
 
-            if (id.includes('node_modules')) {
+            if (id.includes('node_modules') || isPolyfill) {
               return 'vendor'
             }
           },
