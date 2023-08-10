@@ -1,0 +1,8 @@
+{
+  "name": "@cowprotocol/cowswap-e2e",
+  "version": "0.0.1",
+  "description": "CoW Swap e2e tests",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
+}

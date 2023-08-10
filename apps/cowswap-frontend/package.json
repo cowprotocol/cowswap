@@ -1,0 +1,44 @@
+{
+  "name": "@cowprotocol/cowswap",
+  "description": "CoW Swap",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "ipfs:build": "nx exec -- cross-env PUBLIC_URL=\".\" yarn build",
+    "ipfs:publish": "nx exec -- ipfs-deploy build -p pinata -O",
+    "patch-package": "nx exec -- patch-package",
+    "i18n": "nx exec -- yarn i18n:compile",
+    "i18n:compile": "yarn i18n:extract && lingui compile",
+    "i18n:extract": "cross-env NODE_ENV=development lingui extract --locale en-US",
+    "i18n:pseudo": "lingui extract --locale pseudo && lingui compile",
+    "postinstall": "yarn i18n",
+    "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
+    "cosmos:run": "nx exec -- yarn _cosmos:run ",
+    "cosmos:export": "nx exec -- cross-env NODE_ENV=development cosmos-export",
+    "_cosmos:run": "yarn cosmos:clear && cosmos"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "nx": {}
+}
