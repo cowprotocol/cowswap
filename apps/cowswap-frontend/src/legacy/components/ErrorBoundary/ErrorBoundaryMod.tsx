@@ -141,6 +141,9 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
     document.body.classList.remove('noScroll') // mod
     const { error } = this.state
 
+    const isChunkLoadError =
+      error?.name === 'ChunkLoadError' || error?.message.includes('Failed to fetch dynamically imported module')
+
     if (error !== null) {
       return (
         // TODO: the strcture changed in the original file. We might want to re-use some stuff
@@ -154,9 +157,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
               </a>
             </HeaderRow>
           </HeaderWrapper>
-          <Wrapper>
-            {error?.name === 'ChunkLoadError' ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}
-          </Wrapper>
+          <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
           <FooterWrapper>
             <Footer />
           </FooterWrapper>
