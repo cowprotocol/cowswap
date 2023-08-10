@@ -3,7 +3,6 @@ import 'inter-ui'
 
 import 'legacy/components/analytics'
 import 'utils/sentry'
-
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
@@ -11,6 +10,7 @@ import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
+import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { Popups } from 'legacy/components/Popups'
@@ -70,3 +70,7 @@ root.render(
     </Provider>
   </StrictMode>
 )
+
+if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
+  serviceWorkerRegistration.register()
+}

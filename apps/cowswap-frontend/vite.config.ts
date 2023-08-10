@@ -94,9 +94,14 @@ export default defineConfig(({ mode }) => {
       }),
       svgr(),
       VitePWA({
-        mode: mode.startsWith('dev') ? 'development' : 'production',
-        registerType: 'autoUpdate',
-        injectRegister: 'auto',
+        injectRegister: null,
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'service-worker.ts',
+        minify: true,
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
+        },
       }),
     ],
 
