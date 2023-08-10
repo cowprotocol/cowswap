@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.44.2](https://github.com/cowprotocol/cowswap/compare/v1.44.1...v1.44.2) (2023-08-10)
+
+
+### Features
+
+* enhance input arrows ([69cb56a](https://github.com/cowprotocol/cowswap/commit/69cb56accda4e5a53fd460910b8c3097b31d42e4))
+* fix styles custom deadline twap ([#3006](https://github.com/cowprotocol/cowswap/issues/3006)) ([e948bdd](https://github.com/cowprotocol/cowswap/commit/e948bddc57d5481627610f18f7115ca715a09a6b))
+
+
+### Bug Fixes
+
+* **twap:** don't crash app while swap amount diff calculation ([#3033](https://github.com/cowprotocol/cowswap/issues/3033)) ([950d766](https://github.com/cowprotocol/cowswap/commit/950d7661e2c73df45b7c4c6ee1323928cc0d8d5c))
+
 ## [1.44.1](https://github.com/cowprotocol/cowswap/compare/v1.44.0...v1.44.1) (2023-08-10)
 
 
