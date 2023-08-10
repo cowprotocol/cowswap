@@ -145,6 +145,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
             onFocus={() => setIsFocused(true)}
             onUserInput={setDisplayedValue}
             onKeyDown={onKeyDown}
+            type="number"
             min={min}
             max={max || undefined}
             step={step}

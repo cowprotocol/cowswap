@@ -25,8 +25,8 @@ function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {
 
 export function useTradeTypeInfo(): TradeTypeInfo | null {
   const swapMatch = useMatchTradeRoute('swap')
-  const limitOrderMatch = useMatchTradeRoute('limit-orders')
-  const advancedOrdersMatch = useMatchTradeRoute('advanced-orders')
+  const limitOrderMatch = useMatchTradeRoute('limit')
+  const advancedOrdersMatch = useMatchTradeRoute('advanced')
 
   return useMemo(() => {
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }

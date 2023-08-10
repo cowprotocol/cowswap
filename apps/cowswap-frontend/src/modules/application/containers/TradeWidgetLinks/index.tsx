@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
 
@@ -16,7 +18,7 @@ interface MenuItemConfig {
   onClick?: () => void
 }
 
-const menuItems: MenuItemConfig[] = [
+const MENU_ITEMS: MenuItemConfig[] = [
   { route: Routes.SWAP, label: 'Swap' },
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
   {
@@ -30,24 +32,26 @@ export function TradeWidgetLinks() {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
 
-  return (
-    <styledEl.Wrapper>
-      {menuItems.map((item) => {
-        const routePath = parameterizeTradeRoute(tradeContext, item.route)
-        const isActive = !!matchPath(location.pathname, routePath)
+  const buildMenuItem = useCallback(
+    (item: MenuItemConfig) => {
+      const routePath = parameterizeTradeRoute(tradeContext, item.route)
 
-        const menuItem = <MenuItem key={item.label} routePath={routePath} item={item} isActive={isActive} />
+      const isActive = !!matchPath(location.pathname, routePath)
 
-        return item.featureGuard ? (
-          <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
-            {menuItem}
-          </FeatureGuard>
-        ) : (
-          menuItem
-        )
-      })}
-    </styledEl.Wrapper>
+      const menuItem = <MenuItem key={item.label} routePath={routePath} item={item} isActive={isActive} />
+
+      return item.featureGuard ? (
+        <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
+          {menuItem}
+        </FeatureGuard>
+      ) : (
+        menuItem
+      )
+    },
+    [location.pathname, tradeContext]
   )
+
+  return <styledEl.Wrapper>{MENU_ITEMS.map(buildMenuItem)}</styledEl.Wrapper>
 }
 
 const MenuItem = ({ routePath, item, isActive }: { routePath: string; item: MenuItemConfig; isActive: boolean }) => (

@@ -16,7 +16,7 @@ export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 
   const showSurplusAmount = surplusAmount && surplusAmount.greaterThan(0)
-  const surplusUsdAmount = useHigherUSDValue(showSurplusAmount ? surplusAmount : undefined)
+  const surplusUsdAmount = useHigherUSDValue(showSurplusAmount ? surplusAmount : undefined).value
   const nativeSymbol = useNativeCurrency()?.symbol || 'ETH'
 
   const Wrapper = styled.div`

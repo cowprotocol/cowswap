@@ -19,7 +19,7 @@ import { getIntOrFloat } from 'utils/getIntOrFloat'
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget
  * Example:
- * /#/1/limit-orders/WETH/COW?sellAmount=4&buyAmount=360000
+ * /#/1/limit/WETH/COW?sellAmount=4&buyAmount=360000
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */

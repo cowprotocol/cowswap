@@ -16,6 +16,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
@@ -69,7 +70,11 @@ export default function useCowUsdPrice(currency?: Currency) {
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, chainId])
 
   // get SWR cached usd price
-  const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
+  const {
+    data: quote,
+    error: errorResponse,
+    isLoading,
+  } = useGetGpUsdcPrice({
     strategy,
     quoteParams,
   })
@@ -116,26 +121,30 @@ export default function useCowUsdPrice(currency?: Currency) {
     }
   }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote, strategy])
 
-  return { price: bestUsdPrice, error }
+  return { price: bestUsdPrice, error, isLoading }
 }
 
 interface GetPriceQuoteParams {
   currencyAmount: Nullish<CurrencyAmount<Currency>>
   error: Error | null
   price: Price<Token, Currency> | null
+  isLoading: boolean
 }
 
 // common logic for returning price quotes
-function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams) {
+function useGetPriceQuote({ price, error, currencyAmount, isLoading }: GetPriceQuoteParams): {
+  value: CurrencyAmount<Token> | null
+  isLoading: boolean
+} {
   return useMemo(() => {
-    if (!price || error || !currencyAmount) return null
+    if (!price || error || !currencyAmount) return { value: null, isLoading }
 
     try {
-      return price.invert().quote(currencyAmount)
+      return { value: price.invert().quote(currencyAmount), isLoading }
     } catch (error: any) {
-      return null
+      return { value: null, isLoading }
     }
-  }, [currencyAmount, error, price])
+  }, [currencyAmount, error, isLoading, price])
 }
 
 /**
@@ -165,7 +174,11 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const tokenAddress = currency?.wrapped.address
 
   // get SWR cached coingecko usd price
-  const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
+  const {
+    data: priceResponse,
+    error: errorResponse,
+    isLoading,
+  } = useGetCoingeckoUsdPrice({
     chainId,
     tokenAddress,
     isNative,
@@ -222,7 +235,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
     // don't depend on Currency (deep nested object)
   }, [chainId, blockNumber, tokenAddress, priceResponse, errorResponse, isNative])
 
-  return { price, error }
+  return { price, error, isLoading }
 }
 
 export function useCoingeckoUsdValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
@@ -235,8 +248,8 @@ export function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currenc
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const checkedCurrencyAmount = isWrapOrUnwrap ? undefined : currencyAmount
   // if iswrap or unwrap use undefined values to not run expensive calculation
-  const gpUsdPrice = useUSDCValue(checkedCurrencyAmount)
-  const coingeckoUsdPrice = useCoingeckoUsdValue(checkedCurrencyAmount)
+  const { value: gpUsdPrice, isLoading: isUsdcLoading } = useUSDCValue(checkedCurrencyAmount)
+  const { value: coingeckoUsdPrice, isLoading: isCoingeckoLoading } = useCoingeckoUsdValue(checkedCurrencyAmount)
 
   /* TODO: review this capturing - it's super noisy in sentry
   if (!!currencyAmount) {
@@ -249,5 +262,8 @@ export function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currenc
     )
   } */
 
-  return coingeckoUsdPrice || gpUsdPrice
+  const value = coingeckoUsdPrice || gpUsdPrice
+  const isLoading = isUsdcLoading || isCoingeckoLoading
+
+  return useSafeMemo(() => ({ value, isLoading }), [value, isLoading])
 }

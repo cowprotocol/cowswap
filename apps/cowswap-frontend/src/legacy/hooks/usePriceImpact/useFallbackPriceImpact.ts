@@ -55,7 +55,8 @@ export default function useFallbackPriceImpact({
   const isWindowVisible = useIsWindowVisible()
 
   // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
-  const shouldCalculate = !!abTrade && !isWrapping && isWindowVisible
+  const shouldCalculate =
+    !!abTrade && !isWrapping && isWindowVisible && !!abTrade?.inputAmount && !!abTrade?.outputAmount
 
   // to bail out early
   useEffect(() => {

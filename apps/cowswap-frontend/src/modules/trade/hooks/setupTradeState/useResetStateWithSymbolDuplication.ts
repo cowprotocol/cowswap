@@ -16,12 +16,12 @@ Please select the token you need from the UI or use the address of the token ins
 
 /**
  * Case: when user opened a link with a token symbol and there are more than one token with the same symbol
- * Example: /limit-orders/UST/WETH
+ * Example: /limit/UST/WETH
  * https://etherscan.io/token/0xa47c8bf37f92abed4a126bda807a7b7498661acd - Symbol: UST
  * https://etherscan.io/token/0xa693b19d2931d498c5b318df961919bb4aee87a5 - Symbol: UST
  * In this case we just reset state to default, because:
  * if user selected a token with symbol duplication from cowswap Dapp, then Dapp puts a token address in the URL
- * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
+ * Example: /limit/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
 export function useResetStateWithSymbolDuplication(state: TradeRawState | null): void {
