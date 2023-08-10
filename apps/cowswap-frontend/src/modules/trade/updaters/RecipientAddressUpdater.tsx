@@ -9,8 +9,10 @@ export function RecipientAddressUpdater() {
   const { address: recipientAddress } = useENSAddress(state?.recipient)
 
   useEffect(() => {
-    updateState?.({ ...state, recipientAddress })
-  }, [recipientAddress, state, updateState])
+    if (state?.recipientAddress !== recipientAddress) {
+      updateState?.({ recipientAddress })
+    }
+  }, [recipientAddress, state?.recipientAddress, updateState])
 
   return null
 }

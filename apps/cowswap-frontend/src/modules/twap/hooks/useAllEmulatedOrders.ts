@@ -9,11 +9,13 @@ import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { useEmulatedPartOrders } from './useEmulatedPartOrders'
 import { useEmulatedTwapOrders } from './useEmulatedTwapOrders'
+import { useTwapOrdersTokens } from './useTwapOrdersTokens'
 
 export function useAllEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
-  const emulatedTwapOrders = useEmulatedTwapOrders()
-  const emulatedPartOrders = useEmulatedPartOrders()
+  const twapOrdersTokens = useTwapOrdersTokens()
+  const emulatedTwapOrders = useEmulatedTwapOrders(twapOrdersTokens)
+  const emulatedPartOrders = useEmulatedPartOrders(twapOrdersTokens)
   const isSafeApp = useIsSafeApp()
 
   const limitOrders = useOrders(chainId, account, OrderClass.LIMIT)

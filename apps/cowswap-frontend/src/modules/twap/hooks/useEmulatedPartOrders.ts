@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 
 import ms from 'ms.macro'
 
-import { useAllTokens } from 'legacy/hooks/Tokens'
 import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import { Order } from 'legacy/state/orders/actions'
 
@@ -16,8 +15,7 @@ import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
-export function useEmulatedPartOrders(): Order[] {
-  const tokensByAddress = useAllTokens()
+export function useEmulatedPartOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
   const twapOrders = useAtomValue(twapOrdersAtom)
   const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
   // Update emulated part orders every 5 seconds to recalculate expired state
@@ -26,6 +24,7 @@ export function useEmulatedPartOrders(): Order[] {
   return useMemo(() => {
     // It's not possible, just to prevent react-hooks/exhaustive-deps errors
     if (!refresher) return []
+    if (!tokensByAddress) return []
 
     return emulatePartOrders(twapParticleOrders, twapOrders, tokensByAddress)
   }, [twapParticleOrders, twapOrders, tokensByAddress, refresher])
