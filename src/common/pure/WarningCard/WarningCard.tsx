@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'
 
+import Delayed from 'utils/useDelayed'
+
 const Wrapper = styled(Card)`
   background: linear-gradient(0deg, rgba(255, 233, 194, 0.8), rgba(255, 233, 194, 0.8)), #ffffff;
   flex-direction: row;
@@ -38,11 +40,13 @@ const WarningIcon = styled(AlertCircle)`
 
 export function WarningCard({ children }: PropsWithChildren) {
   return (
-    <Wrapper>
-      <LeftContainer>
-        <WarningIcon />
-      </LeftContainer>
-      <RightContainer>{children}</RightContainer>
-    </Wrapper>
+    <Delayed>
+      <Wrapper>
+        <LeftContainer>
+          <WarningIcon />
+        </LeftContainer>
+        <RightContainer>{children}</RightContainer>
+      </Wrapper>
+    </Delayed>
   )
 }

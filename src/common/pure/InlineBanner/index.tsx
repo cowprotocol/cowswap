@@ -9,6 +9,8 @@ import iconAlert from 'legacy/assets/cow-swap/alert.svg'
 import iconDanger from 'legacy/assets/cow-swap/alert.svg'
 import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
+import { Delayed } from 'utils/useDelayed'
+
 type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface BannerConfig {
@@ -124,12 +126,14 @@ export function InlineBanner({ children, className, hideIcon, type = 'alert' }: 
   const color = theme[config.colorKey]
 
   return (
-    <Wrapper className={className} color={color}>
-      <span>
-        {!hideIcon && config.icon && <SVG src={config.icon} description={type} />}
-        {!hideIcon && config.iconText && <i>{config.iconText}</i>}
-        {children}
-      </span>
-    </Wrapper>
+    <Delayed>
+      <Wrapper className={className} color={color}>
+        <span>
+          {!hideIcon && config.icon && <SVG src={config.icon} description={type} />}
+          {!hideIcon && config.iconText && <i>{config.iconText}</i>}
+          {children}
+        </span>
+      </Wrapper>
+    </Delayed>
   )
 }

@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 
+import Delayed from 'utils/useDelayed'
+
 import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,
   DetailsFooter,
@@ -46,14 +48,16 @@ export default function UnsupportedCurrencyFooter({
   ...props
 }: Props) {
   return (
-    <Wrapper>
-      <UnsupportedCurrencyFooterMod
-        {...props}
-        detailsText={detailsText}
-        detailsTitle={detailsTitle}
-        showDetailsText={showDetailsText}
-        currencies={currencies}
-      />
-    </Wrapper>
+    <Delayed>
+      <Wrapper>
+        <UnsupportedCurrencyFooterMod
+          {...props}
+          detailsText={detailsText}
+          detailsTitle={detailsTitle}
+          showDetailsText={showDetailsText}
+          currencies={currencies}
+        />
+      </Wrapper>
+    </Delayed>
   )
 }

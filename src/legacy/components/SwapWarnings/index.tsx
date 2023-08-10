@@ -12,6 +12,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
+import Delayed from 'utils/useDelayed'
+
 import { AuxInformationContainer } from '../swap/styleds'
 
 interface HighFeeContainerProps {
@@ -155,26 +157,28 @@ export const HighFeeWarning = (props: WarningProps) => {
   if (!isHighFee) return null
 
   return (
-    <WarningContainer {...props} level={level} isDarkMode={darkMode}>
-      <div>
-        <AlertTriangle size={24} />
-        Fees exceed {level}% of the swap amount!{' '}
-        <MouseoverTooltipContent
-          bgColor={theme.bg3}
-          color={theme.text1}
-          wrap
-          content={<HighFeeWarningMessage feePercentage={feePercentage} />}
-        >
-          <ErrorStyledInfoIcon />
-        </MouseoverTooltipContent>{' '}
-      </div>
+    <Delayed>
+      <WarningContainer {...props} level={level} isDarkMode={darkMode}>
+        <div>
+          <AlertTriangle size={24} />
+          Fees exceed {level}% of the swap amount!{' '}
+          <MouseoverTooltipContent
+            bgColor={theme.bg3}
+            color={theme.text1}
+            wrap
+            content={<HighFeeWarningMessage feePercentage={feePercentage} />}
+          >
+            <ErrorStyledInfoIcon />
+          </MouseoverTooltipContent>{' '}
+        </div>
 
-      {acceptWarningCb && (
-        <WarningCheckboxContainer>
-          <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
-          anyway
-        </WarningCheckboxContainer>
-      )}
-    </WarningContainer>
+        {acceptWarningCb && (
+          <WarningCheckboxContainer>
+            <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
+            anyway
+          </WarningCheckboxContainer>
+        )}
+      </WarningContainer>
+    </Delayed>
   )
 }

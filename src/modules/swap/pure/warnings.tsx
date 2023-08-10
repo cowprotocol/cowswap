@@ -16,7 +16,6 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
-import { Delayed } from 'utils/useDelayed'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
@@ -79,54 +78,40 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
   return (
     <>
       {shouldZeroApprove && (
-        <Delayed>
-          <ZeroApprovalWarning currency={trade?.inputAmount.currency} />
-        </Delayed>
+        <ZeroApprovalWarning currency={trade?.inputAmount.currency} />
       )}
-      <Delayed>
-        <HighFeeWarning
-          trade={trade}
-          acceptedStatus={feeWarningAccepted}
-          acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-        />
-      </Delayed>
+      <HighFeeWarning
+        trade={trade}
+        acceptedStatus={feeWarningAccepted}
+        acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+      />
       {!hideUnknownImpactWarning && (
-        <Delayed>
-          <StyledNoImpactWarning
-            isAccepted={impactWarningAccepted}
-            acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
-          />
-        </Delayed>
+        <StyledNoImpactWarning
+          isAccepted={impactWarningAccepted}
+          acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+        />
       )}
       {showApprovalBundlingBanner && (
-        <Delayed>
-          <BundleTxApprovalBanner />
-        </Delayed>
+        <BundleTxApprovalBanner />
       )}
       {showWrapBundlingBanner && (
-        <Delayed>
-          <BundleTxWrapBanner
-            nativeCurrencySymbol={nativeCurrencySymbol}
-            wrappedCurrencySymbol={wrappedCurrencySymbol}
-          />
-        </Delayed>
+        <BundleTxWrapBanner
+          nativeCurrencySymbol={nativeCurrencySymbol}
+          wrappedCurrencySymbol={wrappedCurrencySymbol}
+        />
       )}
       {showSafeWcBundlingBanner && (
-        <Delayed>
-          <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
-        </Delayed>
+        <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
-
-      <Delayed>
-        <FeatureGuard featureFlag="advancedOrdersEnabled">
-          <TwapSuggestionBanner
-            chainId={chainId}
-            priceImpact={priceImpact}
-            buyingFiatAmount={buyingFiatAmount}
-            tradeUrlParams={tradeUrlParams}
-          />
-        </FeatureGuard>
-      </Delayed>
+      
+      <FeatureGuard featureFlag="advancedOrdersEnabled">
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+        />
+      </FeatureGuard>
     </>
   )
 }, genericPropsChecker)
@@ -139,13 +124,11 @@ export const SwapWarningsBottom = React.memo(function (props: SwapWarningsBottom
   return (
     <>
       {currencyIn && currencyOut && swapIsUnsupported && (
-        <Delayed>
-          <CompatibilityIssuesWarning
-            currencyIn={currencyIn}
-            currencyOut={currencyOut}
-            isSupportedWallet={isSupportedWallet}
-          />
-        </Delayed>
+        <CompatibilityIssuesWarning
+          currencyIn={currencyIn}
+          currencyOut={currencyOut}
+          isSupportedWallet={isSupportedWallet}
+        />
       )}
     </>
   )

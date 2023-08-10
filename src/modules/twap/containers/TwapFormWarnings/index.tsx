@@ -12,7 +12,6 @@ import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { Delayed } from 'utils/useDelayed'
 
 import {
   FallbackHandlerWarning,
@@ -84,80 +83,62 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   if (walletIsNotConnected) return null
 
   const swapPriceDifferenceWarning = swapAmountDifference ? (
-    <Delayed>
-      <SwapPriceDifferenceWarning
-        tradeUrlParams={tradeUrlParams}
-        feeFiatAmount={tradeQuoteFeeFiatAmount}
-        swapAmountDifference={swapAmountDifference}
-      />
-    </Delayed>
+    <SwapPriceDifferenceWarning
+      tradeUrlParams={tradeUrlParams}
+      feeFiatAmount={tradeQuoteFeeFiatAmount}
+      swapAmountDifference={swapAmountDifference}
+    />
   ) : null
 
   return (
     <>
       {showZeroApprovalWarning && (
-        <Delayed>
-          <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />
-        </Delayed>
+        <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />
       )}
       {showApprovalBundlingBanner && (
-        <Delayed>
-          <BundleTxApprovalBanner />
-        </Delayed>
+        <BundleTxApprovalBanner />
       )}
 
       {!isConfirmationModal && showPriceImpactWarning && (
-        <Delayed>
-          <NoImpactWarning
-            withoutAccepting={false}
-            isAccepted={isPriceImpactAccepted}
-            acceptCallback={() => setIsPriceImpactAccepted()}
-          />
-        </Delayed>
+        <NoImpactWarning
+          withoutAccepting={false}
+          isAccepted={isPriceImpactAccepted}
+          acceptCallback={() => setIsPriceImpactAccepted()}
+        />
       )}
 
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
           return (
-            <Delayed>
-              <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
-            </Delayed>
+            <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
           )
         }
 
         if (chainId && localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
           return (
-            <Delayed>
-              <SmallPartVolumeWarning chainId={chainId} />
-            </Delayed>
+            <SmallPartVolumeWarning chainId={chainId} />
           )
         }
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
           return (
-            <Delayed>
-              <SmallPartTimeWarning />
-            </Delayed>
+            <SmallPartTimeWarning />
           )
         }
 
         if (showFallbackHandlerWarning) {
           return [
             isFallbackHandlerSetupAccepted ? swapPriceDifferenceWarning : null,
-            <Delayed>
-              <FallbackHandlerWarning
-                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-              />
-            </Delayed>,
+            <FallbackHandlerWarning
+              isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+              toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+            />,
           ]
         }
 
         return [
           showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) ? (
-            <Delayed>
-              <SmallPriceProtectionWarning />
-            </Delayed>
+            <SmallPriceProtectionWarning />
           ) : null,
           swapPriceDifferenceWarning,
         ]

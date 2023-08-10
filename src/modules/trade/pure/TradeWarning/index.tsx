@@ -6,6 +6,9 @@ import styled from 'styled-components/macro'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
+import Delayed from 'utils/useDelayed'
+
+
 export enum TradeWarningType {
   LOW,
   MEDIUM,
@@ -86,28 +89,30 @@ export function TradeWarning(props: TradeWarningProps) {
   const color = warningColorMap[type]
 
   return (
-    <WarningBox color={color} className={className}>
-      <InfoBox withoutAccepting={!!withoutAccepting}>
-        <AlertIcon size={18} />
-        <span>{text}</span>
-        <StyledInfoIcon content={tooltipContent} />
-      </InfoBox>
-      {!withoutAccepting && (
-        <div>
-          <AcceptBox>
-            <input
-              type="checkbox"
-              checked={isAccepted}
-              onChange={(event) => {
-                acceptCallback?.(event.target.checked)
-              }}
-            />
-            <span>
-              <Trans>{acceptLabel}</Trans>
-            </span>
-          </AcceptBox>
-        </div>
-      )}
-    </WarningBox>
+    <Delayed>
+      <WarningBox color={color} className={className}>
+        <InfoBox withoutAccepting={!!withoutAccepting}>
+          <AlertIcon size={18} />
+          <span>{text}</span>
+          <StyledInfoIcon content={tooltipContent} />
+        </InfoBox>
+        {!withoutAccepting && (
+          <div>
+            <AcceptBox>
+              <input
+                type="checkbox"
+                checked={isAccepted}
+                onChange={(event) => {
+                  acceptCallback?.(event.target.checked)
+                }}
+              />
+              <span>
+                <Trans>{acceptLabel}</Trans>
+              </span>
+            </AcceptBox>
+          </div>
+        )}
+      </WarningBox>
+    </Delayed>
   )
 }
