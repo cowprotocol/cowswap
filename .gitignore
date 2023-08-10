@@ -1,60 +1,40 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# generated contract types
-/src/lib/locales/**/*.js
-/src/lib/locales/**/en-US.po
-/src/lib/locales/**/pseudo.po
-/src/locales/**/*.js
-/src/locales/**/*.ts
-/src/locales/**/*.json
-/src/locales/**/en-US.po
-/src/locales/**/pseudo.po
+# compiled output
+dist
+tmp
+/out-tsc
 
 # dependencies
 node_modules
 
-# testing
-/coverage
-cypress.env.json
+# IDEs and editors
+/.idea
+.swc
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# builds
-/build
-/dts
-/public/cosmos
-/dist
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-/.netlify
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-notes.txt
-.idea/
-
-.vscode/
-
-package-lock.json
-
-cypress/videos
-cypress/screenshots
-cypress/fixtures/example.json
-cypress-custom/videos
-cypress-custom/screenshots
-cypress-custom/fixtures/example.json
-
-.yalc*
-yalc.lock
-
-# public
-public/version.json
-
-# vercel
-.vercel
+Thumbs.db

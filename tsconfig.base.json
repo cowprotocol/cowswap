@@ -1,13 +1,21 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "src",
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
     "allowJs": true,
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "module": "esnext",
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
@@ -17,19 +25,18 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "useUnknownInCatchVariables": false,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["react-spring", "jest"],
+    "baseUrl": ".",
     "paths": {
-      "@cowprotocol/ui": ["libs/ui/src/index.ts"],
-      "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"],
-      "@cowprotocol/widget-lib": ["libs/widget-lib/src/index.ts"],
-      "@cowprotocol/widget-react": ["libs/widget-react/src/index.ts"],
-      "@cowprotocol/abis": ["libs/abis/src/index.ts"]
+      "@cowswap/abis": ["libs/abis/src/index.ts"],
+      "@cowswap/ui": ["libs/ui/src/index.ts"],
+      "@cowswap/ui-utils": ["libs/ui-utils/src/index.ts"],
+      "@cowswap/widget-lib": ["libs/widget-lib/src/index.ts"],
+      "@cowswap/widget-react": ["libs/widget-react/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "cypress"]
+  "exclude": ["node_modules", "tmp"]
 }

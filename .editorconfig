@@ -1,4 +1,4 @@
-# Editor configuration, see https://editorconfig.org
+# Editor configuration, see http://editorconfig.org
 root = true
 
 [*]
@@ -8,6 +8,10 @@ indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 end_of_line = lf
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
 
 [{*.ts,*.tsx}]
 ij_typescript_force_quote_style = true
