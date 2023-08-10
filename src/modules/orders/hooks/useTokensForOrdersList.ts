@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react'
 
-import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { useAllTokens } from 'legacy/hooks/Tokens'
@@ -11,7 +10,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
-export function useTokensForOrdersList(): (orders: EnrichedOrder[]) => Promise<TokensByAddress> {
+export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const getToken = useTokenLazy()
@@ -23,9 +22,18 @@ export function useTokensForOrdersList(): (orders: EnrichedOrder[]) => Promise<T
   allTokensRef.current = allTokens
 
   return useCallback(
-    async (orders: EnrichedOrder[]) => {
+    async (_tokensToFetch: string[]) => {
       const tokens = allTokensRef.current
-      const tokensToFetch = _getMissingTokensAddresses(orders, tokens, chainId)
+
+      const tokensToFetch = _tokensToFetch.reduce<string[]>((acc, token) => {
+        const tokenLowercase = token.toLowerCase()
+
+        if (!getTokenFromMapping(tokenLowercase, chainId, tokens)) {
+          acc.push(tokenLowercase)
+        }
+        return acc
+      }, [])
+
       const fetchedTokens = await _fetchTokens(tokensToFetch, getToken)
 
       // Merge fetched tokens with what's currently loaded
@@ -33,22 +41,6 @@ export function useTokensForOrdersList(): (orders: EnrichedOrder[]) => Promise<T
     },
     [chainId, getToken]
   )
-}
-
-function _getMissingTokensAddresses(
-  orders: EnrichedOrder[],
-  tokens: Record<string, Token>,
-  chainId: SupportedChainId
-): string[] {
-  const tokensToFetch = new Set<string>()
-
-  // Find out which tokens are not yet loaded in the UI
-  orders.forEach(({ sellToken, buyToken }) => {
-    if (!getTokenFromMapping(sellToken, chainId, tokens)) tokensToFetch.add(sellToken)
-    if (!getTokenFromMapping(buyToken, chainId, tokens)) tokensToFetch.add(buyToken)
-  })
-
-  return Array.from(tokensToFetch)
 }
 
 async function _fetchTokens(
@@ -65,8 +57,9 @@ async function _fetchTokens(
   return settledPromises.reduce<TokensByAddress>((acc, promiseResult) => {
     if (promiseResult.status === 'fulfilled' && promiseResult.value) {
       const { chainId, address, decimals, symbol, name } = promiseResult.value
+      const addressLowercase = address.toLowerCase()
 
-      acc[promiseResult.value.address] = new TokenWithLogo(undefined, chainId, address, decimals, symbol, name)
+      acc[addressLowercase] = new TokenWithLogo(undefined, chainId, addressLowercase, decimals, symbol, name)
     }
     return acc
   }, {})

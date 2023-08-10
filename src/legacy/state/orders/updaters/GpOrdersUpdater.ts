@@ -11,7 +11,7 @@ import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders
 import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { useTokensForOrdersList } from 'modules/orders'
+import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -159,8 +159,9 @@ export function GpOrdersUpdater(): null {
           return
         }
 
+        const tokensToFetch = getTokensListFromOrders(gpOrders)
         // Merge fetched tokens with what's currently loaded
-        const reallyAllTokens = await getTokensForOrdersList(gpOrders)
+        const reallyAllTokens = await getTokensForOrdersList(tokensToFetch)
 
         // Build store order objects, for all orders which we found both input/output tokens
         // Don't add order for those we didn't
