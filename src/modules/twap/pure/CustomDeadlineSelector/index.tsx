@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms'
 
 import { ButtonPrimary } from 'legacy/components/Button'
+
+import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
 import { CowModal as Modal } from 'common/pure/Modal'
 
@@ -33,8 +35,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const [error, setError] = useState<string | null>(null)
 
-  const onHoursChange = (v: string) => setHoursValue(Number(v.replace(/\./g, '')))
-  const onMinutesChange = (v: string) => setMinutesValue(Number(v.replace(/\./g, '')))
+  const onHoursChange = useCallback((v: number | null) => setHoursValue(!v ? 0 : Math.round(v)), [])
+  const onMinutesChange = useCallback((v: number | null) => setMinutesValue(!v ? 0 : Math.round(v)), [])
 
   const noValues = !hoursValue && !minutesValue
   const isDisabled = !!error || noValues
@@ -47,6 +49,12 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
     })
   }
 
+  const _onDismiss = useCallback(() => {
+    setHoursValue(hours || 0)
+    setMinutesValue(minutes || 0)
+    onDismiss()
+  }, [hours, minutes, onDismiss])
+
   useEffect(() => {
     const totalTime = ms(`${hoursValue}h`) + ms(`${minutesValue}m`)
 
@@ -58,31 +66,38 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   }, [hoursValue, minutesValue])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Modal isOpen={isOpen} onDismiss={_onDismiss}>
       <styledEl.ModalWrapper>
         <styledEl.ModalHeader>
           <h3>
             <Trans>Define custom total time</Trans>
           </h3>
-          <styledEl.CloseIcon onClick={onDismiss} />
+          <styledEl.CloseIcon onClick={_onDismiss} />
         </styledEl.ModalHeader>
 
         <styledEl.ModalContent>
-          <styledEl.FieldWrapper>
-            <styledEl.FieldLabel>Hours</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onHoursChange} value={hoursValue} type="number" />
-          </styledEl.FieldWrapper>
-
-          <styledEl.FieldWrapper>
-            <styledEl.FieldLabel>Minutes</styledEl.FieldLabel>
-            <styledEl.Input onUserInput={onMinutesChange} value={minutesValue} type="number" />
-          </styledEl.FieldWrapper>
+          <TradeNumberInput
+            label="Hours"
+            onUserInput={onHoursChange}
+            value={hoursValue}
+            showUpDownArrows
+            min={0}
+            max={null}
+          />
+          <TradeNumberInput
+            label="Minutes"
+            onUserInput={onMinutesChange}
+            value={minutesValue}
+            showUpDownArrows
+            min={0}
+            max={null}
+          />
         </styledEl.ModalContent>
 
         {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
 
         <styledEl.ModalFooter>
-          <styledEl.CancelButton onClick={onDismiss}>
+          <styledEl.CancelButton onClick={_onDismiss}>
             <Trans>Cancel</Trans>
           </styledEl.CancelButton>
           <ButtonPrimary disabled={isDisabled} onClick={onApply}>
