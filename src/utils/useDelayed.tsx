@@ -7,8 +7,6 @@ type Props = {
 export const Delayed = ({ children, waitBeforeShow = 1500 }: PropsWithChildren<Props>) => {
   const [isShown, setIsShown] = useState(false)
 
-  console.log('DELAYED RENDER: ', children)
-  console.log('waitBeforeShow: ', waitBeforeShow)
 
   useEffect(() => {
     const timer = setTimeout(() => {
