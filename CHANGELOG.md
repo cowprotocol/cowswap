@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.44.1](https://github.com/cowprotocol/cowswap/compare/v1.44.0...v1.44.1) (2023-08-10)
+
+
+### Features
+
+* enhance input arrows ([e1aa378](https://github.com/cowprotocol/cowswap/commit/e1aa3781f2b512b39615b720aca37b4fa83e55b9))
+* fix text selection prevention ([6e4e180](https://github.com/cowprotocol/cowswap/commit/6e4e1803415519341c5667d56b1a8c9d6776c25d))
+* **number-input-arrows:** re-applying the squashed commit ([#2970](https://github.com/cowprotocol/cowswap/issues/2970)) ([e1aa378](https://github.com/cowprotocol/cowswap/commit/e1aa3781f2b512b39615b720aca37b4fa83e55b9))
+* text change ([#3019](https://github.com/cowprotocol/cowswap/issues/3019)) ([3c9c09f](https://github.com/cowprotocol/cowswap/commit/3c9c09f7b1628dbd0c712f50e19c6bee9f30687e))
+
+
+### Bug Fixes
+
+* **price-impact:** improve price impact loading ([#3014](https://github.com/cowprotocol/cowswap/issues/3014)) ([29763f4](https://github.com/cowprotocol/cowswap/commit/29763f4a5336cc96ef3fe05bcb66d2241216012e))
+* **twap:** fix Fulfilled status detection ([#2987](https://github.com/cowprotocol/cowswap/issues/2987)) ([f7631f4](https://github.com/cowprotocol/cowswap/commit/f7631f4b35b32209433a6ea43a6f54188967eee3))
+* **twap:** load unknown tokens from blockchain ([#3028](https://github.com/cowprotocol/cowswap/issues/3028)) ([6002ee3](https://github.com/cowprotocol/cowswap/commit/6002ee3be769de4a0963d77be74118a43ae661f1))
+
 ## [1.44.0](https://github.com/cowprotocol/cowswap/compare/v1.43.0...v1.44.0) (2023-08-07)
 
 
