@@ -34,7 +34,7 @@ const UNLOCK_SCREEN = {
   buttonLink: TWAP_LEARN_MORE_LINK,
 }
 
-export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
+export function AdvancedOrdersWidget({ children, updaters }: { children: JSX.Element; updaters?: JSX.Element }) {
   const {
     inputCurrency,
     outputCurrency,
@@ -78,6 +78,7 @@ export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
     bottomContent: children,
+    updaters,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
         id="advanced-orders"

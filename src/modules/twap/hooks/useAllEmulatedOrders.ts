@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
@@ -8,13 +7,13 @@ import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
-import { emulatedPartOrdersAtom } from '../state/emulatedPartOrdersAtom'
-import { emulatedTwapOrdersAtom } from '../state/emulatedTwapOrdersAtom'
+import { useEmulatedPartOrders } from './useEmulatedPartOrders'
+import { useEmulatedTwapOrders } from './useEmulatedTwapOrders'
 
-export function useEmulatedOrders(): Order[] {
+export function useAllEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
-  const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const emulatedPartOrders = useAtomValue(emulatedPartOrdersAtom)
+  const emulatedTwapOrders = useEmulatedTwapOrders()
+  const emulatedPartOrders = useEmulatedPartOrders()
   const isSafeApp = useIsSafeApp()
 
   const limitOrders = useOrders(chainId, account, OrderClass.LIMIT)
