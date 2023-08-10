@@ -2,16 +2,25 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Order } from 'legacy/state/orders/actions'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+
+import { useAsyncMemo } from 'use-async-memo'
+
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
-import { useSWRProdOrders } from 'modules/orders/hooks/useSWRProdOrders'
-import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapOrderItem } from '../types'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+
+interface TwapOrderInfo {
+  item: TwapPartOrderItem
+  parent: TwapOrderItem
+  order: EnrichedOrder
+}
 
 const isVirtualPart = false
 
@@ -23,7 +32,7 @@ const isVirtualPart = false
 export function CreatedInOrderBookOrdersUpdater() {
   const { chainId } = useWalletInfo()
   const prodOrders = useSWRProdOrders()
-  const tokensByAddress = useAtomValue(tokensByAddressAtom)
+  const getTokensForOrdersList = useTokensForOrdersList()
   const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
@@ -37,20 +46,32 @@ export function CreatedInOrderBookOrdersUpdater() {
   }, [twapPartOrdersList])
 
   // Take only orders related to TWAP from prod API response
-  const partOrdersFromProd = useMemo(() => {
-    return prodOrders.reduce<Order[]>((acc, enrichedOrder) => {
-      const item = twapPartOrdersMap[enrichedOrder.uid]
-      const parent = twapOrders[item?.twapOrderId]
+  const partOrdersFromProd = useAsyncMemo(
+    async () => {
+      const ordersInfo = prodOrders.reduce<TwapOrderInfo[]>((acc, order) => {
+        const item = twapPartOrdersMap[order.uid]
+        const parent = twapOrders[item?.twapOrderId]
 
-      if (parent) {
-        const storeOrder = mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+        if (parent) {
+          acc.push({
+            item,
+            parent,
+            order,
+          })
+        }
 
-        acc.push(storeOrder)
-      }
+        return acc
+      }, [])
 
-      return acc
-    }, [])
-  }, [prodOrders, twapPartOrdersMap, tokensByAddress, twapOrders])
+      const allTokens = await getTokensForOrdersList(getTokensListFromOrders(ordersInfo))
+
+      return ordersInfo.map(({ item, parent, order }) => {
+        return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
+      })
+    },
+    [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
+    []
+  )
 
   useEffect(() => {
     if (!partOrdersFromProd.length) return

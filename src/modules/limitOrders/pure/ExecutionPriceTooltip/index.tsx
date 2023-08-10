@@ -42,7 +42,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
   const currentCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
 
-  const feeUsdValue = useHigherUSDValue(formattedFeeAmount || undefined)
+  const feeUsdValue = useHigherUSDValue(formattedFeeAmount || undefined).value
 
   return (
     <styledEl.FeeTooltipWrapper>

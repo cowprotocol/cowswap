@@ -19,5 +19,5 @@ export function useExecutionPriceFiat(
 ): CurrencyAmount<Currency> | null {
   const amount = executionPrice ? getPriceQuoteAmount(executionPrice, isInverted) : undefined
 
-  return useHigherUSDValue(amount)
+  return useHigherUSDValue(amount).value
 }

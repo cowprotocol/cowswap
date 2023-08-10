@@ -29,7 +29,7 @@ export function useAdvancedOrdersActions() {
       // Reset the output field until we fetch quote for new selected token
       // This is to avoid displaying wrong amounts in output field
       updateCurrencyAmount({
-        amount: { isTyped: true, value: '' },
+        amount: { isTyped: false, value: '' },
         field: Field.OUTPUT,
         currency,
       })

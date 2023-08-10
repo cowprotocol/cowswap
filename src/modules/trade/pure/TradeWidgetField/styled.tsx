@@ -85,6 +85,7 @@ ${({ hasPrefix }) =>
 
     ${NumericalInput} {
       max-width: 200px;
+      appearance: textfield;
     };
     
     ${({ hasPrefix }) =>
@@ -133,7 +134,7 @@ ${({ hasPrefix }) =>
 
           > ${NumericalInput} {
             font-size: 18px;
-            width: 62px;
+            width: 56px;
           }
         `}
   }

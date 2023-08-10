@@ -100,8 +100,8 @@ export default function SwapModalHeader({
 
   const theme = useContext(ThemeContext)
 
-  const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee)
-  const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee)
+  const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee).value
+  const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee).value
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],

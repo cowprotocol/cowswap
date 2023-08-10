@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -235,7 +234,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
-    isRateLoading,
   }
 
   return (

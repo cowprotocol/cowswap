@@ -44,7 +44,6 @@ interface TradeWidgetParams {
   isTradePriceUpdating: boolean
   isExpertMode: boolean
   priceImpact: PriceImpact
-  isRateLoading?: boolean
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
 }
@@ -54,6 +53,7 @@ export interface TradeWidgetSlots {
   lockScreen?: JSX.Element
   middleContent?: JSX.Element
   bottomContent?: JSX.Element
+  updaters?: JSX.Element
 }
 
 export interface TradeWidgetProps {
@@ -70,14 +70,13 @@ export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
-  const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
+  const { settingsWidget, lockScreen, middleContent, bottomContent, updaters } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
   const {
     compactView,
     showRecipient,
     isTradePriceUpdating,
-    isRateLoading,
     isEoaEthFlow = false,
     disableNonToken = false,
     priceImpact,
@@ -131,6 +130,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeFormValidationUpdater isExpertMode={isExpertMode} />
       <CommonTradeUpdater />
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
+      {updaters}
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
@@ -173,7 +173,6 @@ export function TradeWidget(props: TradeWidgetProps) {
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                       : undefined
                   }
-                  isRateLoading={isRateLoading}
                   currencyInfo={
                     isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
                   }
