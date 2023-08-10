@@ -2,6 +2,8 @@ import { atom } from 'jotai'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { isFractionFalsy } from 'utils/isFractionFalsy'
+
 import { fullAmountQuoteAtom } from './fullAmountQuoteAtom'
 import { partsStateAtom } from './partsStateAtom'
 
@@ -14,7 +16,7 @@ export const swapAmountDifferenceAtom = atom<SwapAmountDifference | null>((get) 
   const fullAmountQuote = get(fullAmountQuoteAtom)
   const { numberOfPartsValue, outputPartAmount } = get(partsStateAtom)
 
-  if (!outputPartAmount) return null
+  if (!outputPartAmount || isFractionFalsy(outputPartAmount)) return null
 
   const fullQuoteBuyAmountStr = fullAmountQuote?.quote.buyAmount
 
