@@ -3,10 +3,10 @@ import { useMemo } from 'react'
 
 import ms from 'ms.macro'
 
-import { useAllTokens } from 'legacy/hooks/Tokens'
 import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import { Order } from 'legacy/state/orders/actions'
 
+import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
@@ -14,8 +14,7 @@ import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
-export function useEmulatedTwapOrders(): Order[] {
-  const tokensByAddress = useAllTokens()
+export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
   const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
   // Update emulated twap orders every 5 seconds to recalculate expired state
@@ -26,6 +25,7 @@ export function useEmulatedTwapOrders(): Order[] {
   return useMemo(() => {
     // It's not possible, just to prevent react-hooks/exhaustive-deps errors
     if (!refresher) return []
+    if (!tokensByAddress) return []
 
     return allTwapOrders
       .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
