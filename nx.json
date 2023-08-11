@@ -1,59 +1,76 @@
 {
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*"],
-    "production": [
-      "!{projectRoot}/**/*.test.tsx",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s"
-    ]
-  },
-  "targetDefaults": {
-    "build": {
-      "inputs": ["production", "^production"],
-      "dependsOn": ["^build"],
-      "outputs": ["{projectRoot}/build"]
-    },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/package.json", "{workspaceRoot}/jest.preset.js"]
-    }
-  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx-cloud",
+      "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": [
           "build",
-          "build:analyze",
-          "ipfs:build",
-          "contracts:add:export",
-          "contracts:compile:abi",
-          "contracts:compile:abi-ethflow",
-          "contracts:compile:abi-uniswap",
-          "contracts:compile:v3",
-          "contracts:compile",
-          "optimize-bundle",
-          "i18n:extract",
-          "i18n",
-          "i18n:pseudo",
-          "cosmos:export",
-          "sitemap",
-          "writeVersion"
+          "lint",
+          "test",
+          "e2e"
         ],
-        "accessToken": "MTEyNmY3NzgtMGUzMy00NGI1LTk4NzEtZTIzNzBiMjRjZGY3fHJlYWQtd3JpdGU="
+        "accessToken": "YmVmZTg2ZTQtOGNjMi00ZjQzLTk1Y2EtZTA0MDNjY2ExNDZifHJlYWQtd3JpdGU="
       }
     }
   },
-  "affected": {
-    "defaultBase": "develop"
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
+    },
+    "e2e": {
+      "inputs": [
+        "default",
+        "^production"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production"
+      ]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore"
+      ]
+    }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/.eslintrc.json"
+    ],
+    "sharedGlobals": []
   },
   "generators": {
     "@nx/react": {
       "application": {
+        "style": "styled-components",
+        "linter": "eslint",
+        "bundler": "vite",
         "babel": true
       },
+      "component": {
+        "style": "styled-components"
+      },
       "library": {
-        "unitTestRunner": "jest"
+        "style": "styled-components",
+        "linter": "eslint"
       }
     }
   }
