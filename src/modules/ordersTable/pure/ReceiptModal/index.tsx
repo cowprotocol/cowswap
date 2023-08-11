@@ -56,6 +56,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
+  RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
     "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
   ORDER_TYPE: (
@@ -120,9 +121,14 @@ export function ReceiptModal({
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
           <styledEl.FieldsWrapper>
+            <styledEl.Field>
+              <FieldLabel label="Status" />
+              <StatusField order={order} />
+            </styledEl.Field>
+
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label="Reciever" />
+                <FieldLabel label="Reciever" tooltip={tooltips.RECEIVER} />
                 <div>
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {shortenAddress(order.receiver)}
@@ -130,10 +136,6 @@ export function ReceiptModal({
                 </div>
               </styledEl.Field>
             )}
-            <styledEl.Field>
-              <FieldLabel label="Status" />
-              <StatusField order={order} />
-            </styledEl.Field>
 
             <styledEl.Field>
               <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
