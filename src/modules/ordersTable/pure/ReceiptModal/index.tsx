@@ -122,7 +122,7 @@ export function ReceiptModal({
           <styledEl.FieldsWrapper>
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label="Recipient" />
+                <FieldLabel label="Reciever" />
                 <div>
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {shortenAddress(order.receiver)}
