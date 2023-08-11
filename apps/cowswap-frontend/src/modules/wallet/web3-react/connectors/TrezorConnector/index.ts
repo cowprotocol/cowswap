@@ -79,7 +79,7 @@ export class TrezorConnector extends Connector {
   }
 
   deactivate(): Promise<void> | void {
-    return this.trezorConnect?.dispose()
+    return undefined
   }
 
   private async getAccount(): Promise<string> {
