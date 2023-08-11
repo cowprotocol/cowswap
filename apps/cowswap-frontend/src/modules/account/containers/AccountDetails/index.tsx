@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -31,7 +31,7 @@ import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
 import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection, HARDWARE_WALLETS } from 'modules/wallet/web3-react/connection'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
@@ -171,12 +171,13 @@ export function AccountDetails({
   const isCoinbaseWallet = getIsCoinbaseWallet()
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
+  const connectionType = useMemo(() => getWeb3ReactConnection(connector), [connector])
+
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const connectionType = getWeb3ReactConnection(connector)
     const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
     const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
@@ -195,6 +196,8 @@ export function AccountDetails({
 
   const networkLabel = NETWORK_LABELS[chainId]
 
+  const isHardWareWallet = HARDWARE_WALLETS.includes(connectionType.type)
+
   return (
     <Wrapper>
       <InfoCard>
@@ -210,7 +213,7 @@ export function AccountDetails({
               )}
             </WalletWrapper>
 
-            <HwAccountIndexSelector />
+            {isHardWareWallet && <HwAccountIndexSelector />}
 
             <WalletActions>
               {' '}
