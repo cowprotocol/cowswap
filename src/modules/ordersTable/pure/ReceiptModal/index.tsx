@@ -2,7 +2,9 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { CloseIcon } from 'legacy/theme'
+import { CloseIcon, ExternalLink } from 'legacy/theme'
+import { shortenAddress } from 'legacy/utils'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { TwapOrderItem } from 'modules/twap/types'
 
@@ -118,6 +120,16 @@ export function ReceiptModal({
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
           <styledEl.FieldsWrapper>
+            {order.receiver && (
+              <styledEl.Field>
+                <FieldLabel label="Recipient" />
+                <div>
+                  <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
+                    {shortenAddress(order.receiver)}
+                  </ExternalLink>
+                </div>
+              </styledEl.Field>
+            )}
             <styledEl.Field>
               <FieldLabel label="Status" />
               <StatusField order={order} />
