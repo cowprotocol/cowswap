@@ -79,7 +79,7 @@ export class TrezorConnector extends Connector {
   }
 
   deactivate(): Promise<void> | void {
-    return undefined
+    return this.trezorConnect?.dispose()
   }
 
   private async getAccount(): Promise<string> {
@@ -100,6 +100,8 @@ export class TrezorConnector extends Connector {
   private handleActivationError(error: Error) {
     this.activatedNetwork = null
     this.cancelActivation()
+
+    console.error('Trezor activation error:', error)
 
     throw error
   }
