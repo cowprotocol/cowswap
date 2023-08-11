@@ -2,7 +2,9 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { CloseIcon } from 'legacy/theme'
+import { CloseIcon, ExternalLink } from 'legacy/theme'
+import { shortenAddress } from 'legacy/utils'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { TwapOrderItem } from 'modules/twap/types'
 
@@ -27,6 +29,7 @@ import { SurplusField } from './SurplusField'
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
+  receiverEnsName: string | null
   twapOrder: TwapOrderItem | null
   isTwapPartOrder: boolean
   chainId: SupportedChainId
@@ -54,6 +57,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
+  RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
     "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
   ORDER_TYPE: (
@@ -82,6 +86,7 @@ export function ReceiptModal({
   limitPrice,
   executionPrice,
   estimatedExecutionPrice,
+  receiverEnsName,
 }: ReceiptProps) {
   if (!order || !chainId) {
     return null
@@ -122,6 +127,17 @@ export function ReceiptModal({
               <FieldLabel label="Status" />
               <StatusField order={order} />
             </styledEl.Field>
+
+            {order.receiver && (
+              <styledEl.Field>
+                <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
+                <div>
+                  <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
+                    {receiverEnsName || shortenAddress(order.receiver)}
+                  </ExternalLink>
+                </div>
+              </styledEl.Field>
+            )}
 
             <styledEl.Field>
               <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
