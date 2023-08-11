@@ -1,7 +1,9 @@
 import { atom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
 
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { getJotaiIsolatedStorage } from 'jotaiStore'
 
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
@@ -27,12 +29,7 @@ export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null):
 export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersRawState>(
   'advanced-orders-atom:v1',
   getDefaultAdvancedOrdersState(null),
-  /**
-   * atomWithStorage() has build-in feature to persist state between all tabs
-   * To disable this feature we pass our own instance of storage
-   * https://github.com/pmndrs/jotai/pull/1004/files
-   */
-  createJSONStorage(() => localStorage)
+  getJotaiIsolatedStorage()
 )
 
 export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersRawState>) => {
