@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
+
+import { getJotaiIsolatedStorage } from 'jotaiStore'
 
 import store from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
@@ -14,11 +16,7 @@ import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersAtom = atomWithStorage<TwapOrdersList>(
-  'twap-orders-list:v1',
-  {},
-  createJSONStorage(() => localStorage)
-)
+export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v1', {}, getJotaiIsolatedStorage())
 
 export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
