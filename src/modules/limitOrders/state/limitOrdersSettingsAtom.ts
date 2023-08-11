@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getJotaiIsolatedStorage } from 'jotaiStore'
 import { Milliseconds, Timestamp } from 'types'
 
 import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
@@ -24,7 +25,8 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
 
 export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
   'limit-orders-settings-atom:v2',
-  defaultLimitOrdersSettings
+  defaultLimitOrdersSettings,
+  getJotaiIsolatedStorage()
 )
 
 export const updateLimitOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<LimitOrdersSettingsState>) => {
