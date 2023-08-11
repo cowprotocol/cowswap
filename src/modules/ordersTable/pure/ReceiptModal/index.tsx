@@ -29,6 +29,7 @@ import { SurplusField } from './SurplusField'
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
+  receiverEnsName: string | null
   twapOrder: TwapOrderItem | null
   isTwapPartOrder: boolean
   chainId: SupportedChainId
@@ -85,6 +86,7 @@ export function ReceiptModal({
   limitPrice,
   executionPrice,
   estimatedExecutionPrice,
+  receiverEnsName,
 }: ReceiptProps) {
   if (!order || !chainId) {
     return null
@@ -128,10 +130,10 @@ export function ReceiptModal({
 
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label="Reciever" tooltip={tooltips.RECEIVER} />
+                <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
                 <div>
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
-                    {shortenAddress(order.receiver)}
+                    {receiverEnsName || shortenAddress(order.receiver)}
                   </ExternalLink>
                 </div>
               </styledEl.Field>
