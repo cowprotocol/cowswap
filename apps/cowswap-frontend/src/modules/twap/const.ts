@@ -27,7 +27,7 @@ export const ORDER_DEADLINES: OrderDeadline[] = [
 export const TWAP_ORDER_STRUCT =
   'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'
 
-const twapHandlerAddress = '0x910d00a310f7Dc5B29FE73458F47f519be547D3d'
+const twapHandlerAddress = '0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5'
 export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
   1: twapHandlerAddress,
   100: twapHandlerAddress,
