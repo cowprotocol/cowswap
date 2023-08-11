@@ -74,7 +74,10 @@ export class TrezorConnector extends Connector {
       await this.installProvider(url, trezorConnect, transformTypedData)
     } catch (error) {
       await this.deactivate()
-      this.handleActivationError(error)
+
+      console.error('Trezor activation error:', error)
+
+      throw error
     }
   }
 
@@ -98,14 +101,6 @@ export class TrezorConnector extends Connector {
     }
 
     return accountResult.payload.address
-  }
-
-  private handleActivationError(error: Error) {
-    this.deactivate()
-
-    console.error('Trezor activation error:', error)
-
-    throw error
   }
 
   private async installProvider(
