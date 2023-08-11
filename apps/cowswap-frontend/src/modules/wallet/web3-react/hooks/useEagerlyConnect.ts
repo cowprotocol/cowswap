@@ -36,6 +36,7 @@ export function useEagerlyConnect() {
       connect(injectedWidgetConnection.connector)
     }
 
+    // Try to connect to Gnosis Safe only when the app is opened in an iframe
     if (window.top !== window.self) {
       connect(gnosisSafeConnection.connector)
     }

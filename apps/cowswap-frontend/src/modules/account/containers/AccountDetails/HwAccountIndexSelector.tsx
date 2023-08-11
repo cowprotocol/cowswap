@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai/index'
-import { FormEvent, useCallback, useRef } from 'react'
+import { FormEvent, useCallback } from 'react'
 
 import styled from 'styled-components/macro'
 
@@ -10,16 +10,20 @@ const Wrapper = styled.form`
   margin: 10px 0;
 `
 
+const indexFieldName = 'index'
+
 // TODO: add styles
 export function HwAccountIndexSelector() {
-  const accountIndexRef = useRef<HTMLInputElement>(null)
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
 
   const onHwAccountIndexChange = useCallback(
-    (event: FormEvent) => {
+    (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
-      setHwAccountIndex(+(accountIndexRef.current?.value || 0))
+      const formData = new FormData(event.target as HTMLFormElement)
+      const index = +(formData.get(indexFieldName) || 0)
+
+      setHwAccountIndex(index)
     },
     [setHwAccountIndex]
   )
@@ -27,7 +31,7 @@ export function HwAccountIndexSelector() {
   return (
     <Wrapper onSubmit={(event) => onHwAccountIndexChange(event)}>
       <p>Hardware account index:</p>
-      <input ref={accountIndexRef} placeholder={hwAccountIndex.toString()} type="number" step={1} />
+      <input name={indexFieldName} placeholder={hwAccountIndex.toString()} type="number" step={1} />
       <button>Update</button>
     </Wrapper>
   )

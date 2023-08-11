@@ -15,7 +15,7 @@ import type { TrezorConnect } from '@trezor/connect-web'
 const DEFAULT_GOERLI_GAS_PRICE = 40 * 10 ** 9 // 40 GWEI
 
 export async function sendTransactionHandler(
-  params: Array<any>,
+  params: [{ to: string; value: string | undefined; data: string | undefined }],
   account: string,
   provider: JsonRpcProvider,
   trezorConnect: TrezorConnect

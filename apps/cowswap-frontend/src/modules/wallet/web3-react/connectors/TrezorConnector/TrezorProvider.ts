@@ -28,7 +28,12 @@ export class TrezorProvider extends JsonRpcProvider {
     }
 
     if (method === 'eth_sendTransaction') {
-      return sendTransactionHandler(params, this.account, this, this.trezorConnect)
+      return sendTransactionHandler(
+        params as Parameters<typeof sendTransactionHandler>[0],
+        this.account,
+        this,
+        this.trezorConnect
+      )
     }
 
     return super.send(method, params)
