@@ -49,7 +49,6 @@ const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
   [ConnectionType.KEYSTONE]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.ALPHA]: [],
   [ConnectionType.AMBIRE]: [],
-  [ConnectionType.AMBIRE]: [],
   [ConnectionType.ZENGO]: [],
 }
 
