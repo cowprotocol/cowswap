@@ -23,8 +23,7 @@ const KLEROS_LIST = 't2crtokens.eth'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Goerli Default
-// TODO: change develop -> main after release
-const GOERLI_LIST = RAW_CODE_LINK + '/develop/src/tokens/goerli-token-list.json'
+const GOERLI_LIST = RAW_CODE_LINK + '/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
