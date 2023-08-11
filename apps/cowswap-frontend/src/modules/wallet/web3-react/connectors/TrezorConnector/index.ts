@@ -79,6 +79,9 @@ export class TrezorConnector extends Connector {
   }
 
   deactivate(): Promise<void> | void {
+    this.activatedNetwork = null
+    this.cancelActivation()
+
     return this.trezorConnect?.dispose()
   }
 
@@ -98,8 +101,7 @@ export class TrezorConnector extends Connector {
   }
 
   private handleActivationError(error: Error) {
-    this.activatedNetwork = null
-    this.cancelActivation()
+    this.deactivate()
 
     console.error('Trezor activation error:', error)
 
