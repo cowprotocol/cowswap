@@ -93,7 +93,6 @@ const walletIcons: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.ALPHA]: IDENTICON_KEY,
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
   [ConnectionType.FORTMATIC]: FortmaticIcon,
-  [ConnectionType.TALLY]: TallyIcon,
   [ConnectionType.TRUST]: TrustIcon,
   [ConnectionType.TALLY]: TallyIcon,
   [ConnectionType.LEDGER]: LedgerIcon,
