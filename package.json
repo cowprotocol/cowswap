@@ -236,6 +236,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.1.1",
     "jsdom": "~22.1.0",
+    "node-stdlib-browser": "^1.2.0",
     "nx": "16.4.0",
     "nx-cloud": "latest",
     "patch-package": "^8.0.0",
