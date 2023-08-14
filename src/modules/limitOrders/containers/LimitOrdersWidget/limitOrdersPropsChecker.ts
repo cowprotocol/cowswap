@@ -6,14 +6,15 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidgetActions } from 'modules/trade'
+import { TradeFormValidation } from 'modules/tradeFormValidation'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { areFractionsEqual } from 'utils/areFractionsEqual'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { getAddress } from 'utils/getAddress'
+
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { TradeFormValidation } from '../../../tradeFormValidation'
 
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo

@@ -12,6 +12,7 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
@@ -23,6 +24,7 @@ import * as styledEl from './styled'
 
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
+import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -31,8 +33,6 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
-import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
