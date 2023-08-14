@@ -5,6 +5,10 @@ import { useWeb3React } from '@web3-react/core'
 
 import styled from 'styled-components/macro'
 
+import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+
 import { getWeb3ReactConnection, HardWareWallet } from '../../web3-react/connection'
 import { trezorConnection } from '../../web3-react/connection/trezor'
 import { hwAccountIndexAtom } from '../state'
@@ -32,6 +36,8 @@ export function HwAccountIndexSelector() {
     return loader()
   }, [connector])
 
+  const balances = useNativeCurrencyBalances(accountsList || undefined, true)
+
   const onHwAccountIndexChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
       event.preventDefault()
@@ -48,9 +54,12 @@ export function HwAccountIndexSelector() {
       <p>Hardware account index:</p>
       <select onChange={(event) => onHwAccountIndexChange(event)}>
         {accountsList?.map((account, index) => {
+          const balance = balances[account]
+
           return (
-            <option value={index} selected={index === hwAccountIndex}>
-              {index}. {account}
+            <option key={account} value={index} selected={index === hwAccountIndex}>
+              {index}. {account}{' '}
+              {balance ? <TokenAmount amount={balance} tokenSymbol={{ symbol: balance.currency.symbol }} /> : null}
             </option>
           )
         })}
