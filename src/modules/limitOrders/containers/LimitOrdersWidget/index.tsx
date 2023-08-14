@@ -31,6 +31,8 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
@@ -111,6 +113,9 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: null,
   }
 
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
+
   const props: LimitOrdersProps = {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -127,6 +132,8 @@ export function LimitOrdersWidget() {
     settingsState,
     feeAmount,
     widgetActions,
+    localFormValidation,
+    primaryFormValidation,
   }
 
   return <LimitOrders {...props} />
@@ -149,6 +156,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     tradeContext,
     settingsState,
     feeAmount,
+    localFormValidation,
+    primaryFormValidation,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -225,6 +234,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     ),
   }
 
+  const disablePriceImpact =
+    localFormValidation === LimitOrdersFormState.FeeExceedsFrom ||
+    primaryFormValidation === TradeFormValidation.QuoteErrors ||
+    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
+
   const params = {
     disableNonToken: false,
     compactView: false,
@@ -234,6 +249,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
+    disablePriceImpact,
   }
 
   return (

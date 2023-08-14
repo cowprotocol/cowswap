@@ -1,5 +1,5 @@
-import { useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
@@ -9,7 +9,7 @@ import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvanc
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { useTradePriceImpact, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
@@ -34,7 +34,18 @@ const UNLOCK_SCREEN = {
   buttonLink: TWAP_LEARN_MORE_LINK,
 }
 
-export function AdvancedOrdersWidget({ children, updaters }: { children: JSX.Element; updaters?: JSX.Element }) {
+export type AdvancedOrdersWidgetParams = {
+  disablePriceImpact: boolean
+}
+
+export type AdvancedOrdersWidgetProps = PropsWithChildren<{
+  updaters?: ReactNode
+  params: AdvancedOrdersWidgetParams
+}>
+
+export function AdvancedOrdersWidget({ children, updaters, params }: AdvancedOrdersWidgetProps) {
+  const { disablePriceImpact } = params
+
   const {
     inputCurrency,
     outputCurrency,
@@ -93,7 +104,7 @@ export function AdvancedOrdersWidget({ children, updaters }: { children: JSX.Ele
     ),
   }
 
-  const params = {
+  const tradeWidgetParams = {
     recipient,
     compactView: true,
     disableNativeSelling: true,
@@ -101,6 +112,7 @@ export function AdvancedOrdersWidget({ children, updaters }: { children: JSX.Ele
     isTradePriceUpdating,
     priceImpact,
     isExpertMode: false, // TODO: bind value
+    disablePriceImpact,
   }
 
   return (
@@ -110,7 +122,7 @@ export function AdvancedOrdersWidget({ children, updaters }: { children: JSX.Ele
         disableOutput={true}
         slots={slots}
         actions={actions}
-        params={params}
+        params={tradeWidgetParams}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
       />

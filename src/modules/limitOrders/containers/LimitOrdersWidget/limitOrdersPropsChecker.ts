@@ -12,6 +12,8 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { areFractionsEqual } from 'utils/areFractionsEqual'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { getAddress } from 'utils/getAddress'
+import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+import { TradeFormValidation } from '../../../tradeFormValidation'
 
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo
@@ -32,6 +34,9 @@ export interface LimitOrdersProps {
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
   widgetActions: TradeWidgetActions
+
+  localFormValidation: LimitOrdersFormState | null
+  primaryFormValidation: TradeFormValidation | null
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -49,7 +54,9 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&
-    checkCurrencyAmount(a.feeAmount, b.feeAmount)
+    checkCurrencyAmount(a.feeAmount, b.feeAmount) &&
+    a.localFormValidation === b.localFormValidation &&
+    a.primaryFormValidation === b.primaryFormValidation
   )
 }
 

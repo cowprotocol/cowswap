@@ -2,16 +2,19 @@ import { useAtomValue } from 'jotai'
 
 import { Navigate } from 'react-router-dom'
 
-import { AdvancedOrdersWidget, advancedOrdersAtom, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
+import { advancedOrdersAtom, AdvancedOrdersWidget, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { TwapFormWidget, useAllEmulatedOrders, TwapUpdaters } from 'modules/twap'
+import { TwapFormWidget, TwapUpdaters, useAllEmulatedOrders } from 'modules/twap'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTwapFormState } from 'modules/twap/hooks/useTwapFormState'
+import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()
@@ -19,6 +22,9 @@ export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
+
+  const primaryFormValidation = useGetTradeFormValidation()
+  const twapFormValidation = useTwapFormState()
 
   if (isAdvancedOrdersEnabled === undefined) {
     return null
@@ -29,12 +35,20 @@ export default function AdvancedOrdersPage() {
     return <Navigate to={parameterizeTradeRoute(tradeContext, RoutesEnum.SWAP)} />
   }
 
+  const disablePriceImpact =
+    primaryFormValidation === TradeFormValidation.QuoteErrors ||
+    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow ||
+    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+
+  const advancedWidgetParams = { disablePriceImpact }
+
   return (
     <>
       <FillAdvancedOrdersDerivedStateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
-          <AdvancedOrdersWidget updaters={<TwapUpdaters />}>
+          <AdvancedOrdersWidget updaters={<TwapUpdaters />} params={advancedWidgetParams}>
             {/*TODO: conditionally display a widget for current advanced order type*/}
             <TwapFormWidget />
           </AdvancedOrdersWidget>
