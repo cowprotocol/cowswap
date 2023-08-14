@@ -28,7 +28,7 @@ describe('verifyExtensibleFallback', () => {
           // domainVerifiers()
           if (method === 'eth_call' && params?.[0]?.data?.startsWith('0x51cad5ee')) {
             //Composable cow address
-            return Promise.resolve('0x000000000000000000000000F487887DA5a4b4e3eC114FDAd97dc0F785d72738')
+            return Promise.resolve('0x000000000000000000000000fdaFc9d1902f4e0b84f65F49f244b32b31013b74')
           }
 
           return defaultJsonRpcHandler(method)
