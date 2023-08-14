@@ -13,8 +13,9 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
+import { ConnectionType, useWalletInfo } from 'modules/wallet'
 import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
@@ -158,7 +159,7 @@ const NetworkAlertLabel = styled.div`
 `
 
 export function NetworkSelector() {
-  const { provider } = useWeb3React()
+  const { provider, connector } = useWeb3React()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
@@ -169,14 +170,16 @@ export function NetworkSelector() {
   const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
+  const connection = getWeb3ReactConnection(connector)
   const info = getChainInfo(chainId)
+  const isWalletConnect = [ConnectionType.WALLET_CONNECT, ConnectionType.WALLET_CONNECT_V2].includes(connection.type)
 
   const onSelectChain = useOnSelectNetwork()
 
   // Mod: Detect viewport changes and set isUpToMedium
   const isUpToMedium = useMediaQuery(upToMedium)
 
-  if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
+  if (!chainId || !provider || isSmartContractWallet || isTallyWallet || isWalletConnect) {
     return null
   }
 

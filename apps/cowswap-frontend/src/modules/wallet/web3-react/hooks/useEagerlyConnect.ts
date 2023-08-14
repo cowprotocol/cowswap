@@ -7,6 +7,7 @@ import { useAppSelector } from 'legacy/state/hooks'
 import { BACKFILLABLE_WALLETS } from 'modules/wallet/api/types'
 
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { getWeb3ReactConnection } from '../connection'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
@@ -14,11 +15,13 @@ import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
 
 async function connect(connector: Connector) {
+  const chainId = getCurrentChainIdFromUrl()
+
   try {
     if (connector.connectEagerly) {
-      await connector.connectEagerly()
+      await connector.connectEagerly(chainId)
     } else {
-      await connector.activate()
+      await connector.activate(chainId)
     }
   } catch (error: any) {
     console.debug(`web3-react eager connection error: ${error}`)

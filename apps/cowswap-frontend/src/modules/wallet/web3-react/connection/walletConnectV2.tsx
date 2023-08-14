@@ -15,6 +15,8 @@ import {
 } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
+
 import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
@@ -32,8 +34,6 @@ export const walletConnectV2Option = {
   id: 'wallet-connect-v2',
 }
 
-const [mainnet, ...optionalChains] = Object.keys(RPC_URLS).map(Number)
-
 const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<AsyncConnector>(
   (actions) =>
     new AsyncConnector(
@@ -44,9 +44,9 @@ const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<Asyn
               actions,
               options: {
                 projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
-                chains: [mainnet],
-                optionalChains,
+                chains: [getCurrentChainIdFromUrl()],
                 showQrModal: true,
+                rpcMap: RPC_URLS,
               },
               onError,
             })

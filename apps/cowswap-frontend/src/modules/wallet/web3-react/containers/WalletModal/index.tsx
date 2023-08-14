@@ -14,7 +14,8 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { ConnectionType, useWalletInfo } from 'modules/wallet'
 import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()
@@ -86,10 +87,12 @@ export function WalletModal() {
         setWalletView('pending')
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
-        await connector.activate()
+        await connector.activate(getCurrentChainIdFromUrl())
+
+        const connection = getWeb3ReactConnection(connector)
 
         // Important for balances to load when connected to Gnosis-chain via WalletConnect
-        if (getWeb3ReactConnection(connector) === walletConnectConnection) {
+        if (connection.type === ConnectionType.WALLET_CONNECT) {
           const provider: any = connector.provider
 
           if (provider && provider.isWalletConnect) {
