@@ -31,6 +31,8 @@ export class TrezorConnector extends Connector {
 
   private trezorConnect: TrezorConnect | null = null
 
+  private accounts: string[] | null = null
+
   private cancelActivation: () => void = () => void 0
 
   connectEagerly(...args: unknown[]) {
@@ -48,6 +50,10 @@ export class TrezorConnector extends Connector {
       if (this.currentAccountIndex === getHwAccount().index) {
         return
       }
+
+      const account = this.getCurrentAccount()
+      this.actions.update({ accounts: [account] })
+      return
     }
 
     // Skip when wallet already on the requested network
@@ -88,19 +94,19 @@ export class TrezorConnector extends Connector {
     return this.trezorConnect?.dispose()
   }
 
-  private async getAccount(): Promise<string> {
-    if (!this.trezorConnect) return ''
-
-    const accountResult = await this.trezorConnect.ethereumGetAddress({
-      path: getHwAccount().path,
-      showOnTrezor: false,
-    })
-
-    if (!accountResult.success) {
-      throw new Error(accountResult.payload.error)
+  private getCurrentAccount(): string {
+    if (!this.accounts) {
+      throw new Error('Cannot load Trezor accounts')
     }
 
-    return accountResult.payload.address
+    const currentAccountIndex = getHwAccount().index
+    const account = this.accounts[currentAccountIndex]
+
+    if (!account) {
+      throw new Error('Current Trezor account index is out of bounds')
+    }
+
+    return account
   }
 
   private async installProvider(
@@ -108,9 +114,10 @@ export class TrezorConnector extends Connector {
     trezorConnect: TrezorConnect,
     _transformTypedData: typeof transformTypedData
   ) {
-    const account = await this.getAccount()
+    this.accounts = await import('./getAccountsList').then((module) => module.getAccountsAsync(trezorConnect))
 
-    const customProvider = new TrezorProvider(url, account, trezorConnect, _transformTypedData)
+    const account = this.getCurrentAccount()
+    const customProvider = new TrezorProvider(url, this.accounts!, trezorConnect, _transformTypedData)
 
     this.customProvider = customProvider
 

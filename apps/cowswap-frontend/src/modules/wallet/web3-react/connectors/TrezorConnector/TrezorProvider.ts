@@ -3,13 +3,15 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { sendTransactionHandler } from './sendTransactionHandler'
 import { signTypedDataHandler } from './signTypedDataHandler'
 
+import { getHwAccount } from '../../../api/utils/getHwAccount'
+
 import type transformTypedData from '@trezor/connect-plugin-ethereum'
 import type { TrezorConnect } from '@trezor/connect-web'
 
 export class TrezorProvider extends JsonRpcProvider {
   constructor(
     url: string,
-    public readonly account: string,
+    public readonly accounts: string[],
     public readonly trezorConnect: TrezorConnect,
     public readonly _transformTypedData: typeof transformTypedData
   ) {
@@ -18,7 +20,7 @@ export class TrezorProvider extends JsonRpcProvider {
 
   async send(method: string, params: Array<any>): Promise<any> {
     if (method === 'eth_accounts') {
-      return [this.account]
+      return [this.getCurrentAccount()]
     }
 
     if (method.startsWith('eth_signTypedData')) {
@@ -30,12 +32,18 @@ export class TrezorProvider extends JsonRpcProvider {
     if (method === 'eth_sendTransaction') {
       return sendTransactionHandler(
         params as Parameters<typeof sendTransactionHandler>[0],
-        this.account,
+        this.getCurrentAccount(),
         this,
         this.trezorConnect
       )
     }
 
     return super.send(method, params)
+  }
+
+  private getCurrentAccount(): string {
+    const currentAccountIndex = getHwAccount().index
+
+    return this.accounts[currentAccountIndex]
   }
 }
