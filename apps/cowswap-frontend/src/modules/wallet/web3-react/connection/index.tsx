@@ -156,10 +156,9 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {injectedOption}
       <FeatureGuard featureFlag="walletConnectV1Enabled">{walletConnectionOption}</FeatureGuard>
       <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
-      <FeatureGuard featureFlag="trezorEnabled">{trezorOption}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
-      {trezorOption}
+      <FeatureGuard featureFlag="trezorEnabled">{trezorOption}</FeatureGuard>
       {/*{zengoOption}*/}
       {ambireOption}
       {alphaOption}
