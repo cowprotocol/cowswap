@@ -18,7 +18,7 @@ const BASE_PROPS = {
 
 const [trezor, trezorHooks] = initializeConnector<TrezorConnector>((actions) => new TrezorConnector(actions))
 
-export const trezorConnection: Web3ReactConnection = {
+export const trezorConnection: Web3ReactConnection<TrezorConnector> = {
   connector: trezor,
   hooks: trezorHooks,
   type: ConnectionType.TREZOR,

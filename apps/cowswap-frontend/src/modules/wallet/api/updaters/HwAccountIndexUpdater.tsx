@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { getWeb3ReactConnection, HARDWARE_WALLETS } from '../../web3-react/connection'
+import { getIsHardWareWallet, getWeb3ReactConnection } from '../../web3-react/connection'
 import { useWalletInfo } from '../hooks'
 import { hwAccountIndexAtom } from '../state'
 
@@ -33,7 +33,7 @@ export function HwAccountIndexUpdater() {
   useEffect(() => {
     if (!isActive) return
 
-    const isHardWare = HARDWARE_WALLETS.includes(connectionType)
+    const isHardWare = getIsHardWareWallet(connectionType)
 
     if (!isHardWare) return
 

@@ -39,6 +39,10 @@ export class TrezorConnector extends Connector {
     return this.activate(args[0] as SupportedChainId)
   }
 
+  getAccounts(): string[] | null {
+    return this.accounts
+  }
+
   async activate(
     chainId: SupportedChainId | { chainId: SupportedChainId } = defaultChainId,
     indexChanged = false
