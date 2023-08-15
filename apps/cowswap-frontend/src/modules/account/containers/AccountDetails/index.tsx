@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -44,7 +44,6 @@ import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
 import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
 import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -70,6 +69,7 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useIsWalletConnect } from '../../../wallet/web3-react/hooks/useIsWalletConnect'
 import { CreationDateText } from '../Transaction/styled'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -134,7 +134,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
         <img src={TallyIcon} alt={'Tally logo'} />
       </IconWrapper>
     )
-  } else if (connectionType === trustWalletConnection || getIsTrustWallet(null, walletDetails?.walletName)) {
+  } else if (connectionType === trustWalletConnection || getIsTrustWallet(walletDetails?.walletName)) {
     return (
       <IconWrapper size={16}>
         <img src={TrustIcon} alt={'Trust logo'} />
@@ -185,7 +185,6 @@ export function AccountDetails({
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
-  const connection = getWeb3ReactConnection(connector)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -197,8 +196,10 @@ export function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const isWalletConnect = useIsWalletConnect()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
+  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   function formatConnectorName() {
@@ -206,8 +207,7 @@ export function AccountDetails({
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const connectionType = getWeb3ReactConnection(connector)
-    const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
+
     const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
     return (
