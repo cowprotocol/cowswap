@@ -9,9 +9,11 @@ export * from './web3-react/hooks/useOrderedConnections'
 
 // Updater
 export * from './web3-react/updater'
+export * from './api/updaters/HwAccountIndexUpdater'
 
 // Components
 export * from './web3-react/containers/Web3Status'
 export * from './web3-react/containers/WalletModal'
 export * from './api/container/Identicon'
 export * from './web3-react/containers/AddToMetamask'
+export * from './api/container/HwAccountIndexSelector'

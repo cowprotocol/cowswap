@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { shortenAddress } from 'legacy/utils'
 
@@ -30,3 +31,5 @@ export const walletDisplayedAddress = atom((get) => {
 
   return ensName || (account ? shortenAddress(account) : '')
 })
+
+export const hwAccountIndexAtom = atomWithStorage<number>('hw-account-index:v1', 0)

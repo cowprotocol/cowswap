@@ -105,7 +105,15 @@ export function WalletModal() {
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
         dispatch(updateSelectedWallet({ wallet: undefined }))
-        dispatch(updateConnectionError({ connectionType, error: error.message }))
+        dispatch(
+          updateConnectionError({
+            connectionType,
+            error:
+              typeof error === 'string'
+                ? error
+                : error.message || (typeof error === 'object' ? JSON.stringify(error) : error.toString()),
+          })
+        )
       }
     },
     [dispatch, toggleWalletModal]
