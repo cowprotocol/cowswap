@@ -17,10 +17,12 @@ import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
+import { networkConnection } from '../../connection/network'
+
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()
-  const { account, active: isActive } = useWalletInfo()
+  const { chainId, account, active: isActive } = useWalletInfo()
 
   const [walletView, setWalletView] = useState<WalletModalView>('account')
 
@@ -49,6 +51,13 @@ export function WalletModal() {
     }
   }, [pendingConnector, walletView])
 
+  // Keep the network connector in sync with any active user connector to prevent chain-switching on wallet disconnection.
+  useEffect(() => {
+    if (chainId && connector !== networkConnection.connector) {
+      networkConnection.connector.activate(chainId)
+    }
+  }, [chainId, connector])
+
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
@@ -72,7 +81,12 @@ export function WalletModal() {
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
-      const connectionType = getWeb3ReactConnection(connector).type
+      const connection = getWeb3ReactConnection(connector)
+      const connectionType = connection.type
+
+      // Skips wallet connection if the connection should override the default
+      // behavior, i.e. install MetaMask or launch Coinbase app
+      if (connection.overrideActivate?.(chainId)) return
 
       changeWalletAnalytics('Todo: wallet name')
 
@@ -119,7 +133,7 @@ export function WalletModal() {
         )
       }
     },
-    [dispatch, toggleWalletModal]
+    [chainId, dispatch, toggleWalletModal]
   )
 
   return (

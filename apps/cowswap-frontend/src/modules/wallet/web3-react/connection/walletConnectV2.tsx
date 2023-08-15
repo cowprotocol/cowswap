@@ -1,4 +1,8 @@
-import { initializeConnector } from '@web3-react/core'
+import { useSyncExternalStore } from 'react'
+
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
+import { Web3ReactStore } from '@web3-react/types'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
@@ -34,10 +38,12 @@ export const walletConnectV2Option = {
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
 
-function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
-  const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<WalletConnectV2Connector>(
+function createWalletConnectV2Connector(
+  chainId: SupportedChainId
+): [WalletConnectV2Connector, Web3ReactHooks, Web3ReactStore] {
+  return initializeConnector<WalletConnectV2Connector>(
     (actions) =>
-      new WalletConnectV2Connector(chainId, {
+      new WalletConnectV2Connector({
         actions,
         onError(error) {
           console.error('WalletConnect2 ERROR:', error)
@@ -45,16 +51,66 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
         options: {
           projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
           chains: [chainId],
+          optionalChains: ALL_SUPPORTED_CHAIN_IDS,
           showQrModal: true,
           rpcMap: RPC_URLS,
         },
       })
   )
+}
+
+function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
+  let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
+
+  let onActivate: (() => void) | undefined
+
+  const proxyConnector = new Proxy(
+    {},
+    {
+      get: (target, p, receiver) => Reflect.get(web3WalletConnectV2, p, receiver),
+      getOwnPropertyDescriptor: (target, p) => Reflect.getOwnPropertyDescriptor(web3WalletConnectV2, p),
+      getPrototypeOf: () => WalletConnectV2Connector.prototype,
+      set: (target, p, receiver) => Reflect.set(web3WalletConnectV2, p, receiver),
+    }
+  ) as typeof web3WalletConnectV2
+
+  const proxyHooks = new Proxy(
+    {},
+    {
+      get: (target, p, receiver) => {
+        return () => {
+          // Because our connectors are referentially stable (through proxying), we need a way to trigger React renders
+          // from outside of the React lifecycle when our connector is re-initialized. This is done via 'change' events
+          // with `useSyncExternalStore`:
+          const hooks = useSyncExternalStore(
+            (onChange) => {
+              onActivate = onChange
+              return () => (onActivate = undefined)
+            },
+            () => web3WalletConnectV2Hooks
+          )
+          return Reflect.get(hooks, p, receiver)()
+        }
+      },
+    }
+  ) as typeof web3WalletConnectV2Hooks
 
   return {
-    connector: web3WalletConnectV2,
-    hooks: web3WalletConnectV2Hooks,
+    get connector() {
+      return proxyConnector
+    },
+    get hooks() {
+      return proxyHooks
+    },
     type: ConnectionType.WALLET_CONNECT_V2,
+    overrideActivate(chainId: SupportedChainId) {
+      const update = createWalletConnectV2Connector(chainId)
+      web3WalletConnectV2 = update[0]
+      web3WalletConnectV2Hooks = update[1]
+
+      onActivate?.()
+      return false
+    },
   }
 }
 
