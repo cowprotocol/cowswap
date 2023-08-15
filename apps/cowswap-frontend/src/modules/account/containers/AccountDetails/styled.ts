@@ -59,8 +59,10 @@ export const WalletAction = styled(ButtonSecondary)`
 
 export const WalletActions = styled.div`
   display: flex;
-  flex-flow: row wrap;
   margin: 10px 0 0;
+  flex-flow: column wrap;
+  gap: 10px;
+  align-items: flex-start;
 `
 
 export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
@@ -203,10 +205,6 @@ export const Wrapper = styled.div`
       &:hover {
         cursor: pointer;
       }
-    }
-
-    > a:not(:last-child) {
-      margin: 0 0 5px;
     }
   }
 
@@ -555,5 +553,29 @@ export const SurplusCardWrapper = styled.div`
     &:hover {
       opacity: 1;
     }
+  }
+`
+
+export const WalletIconWrapper = styled.div`
+  --size: 12px;
+  display: flex;
+  width: var(--size);
+  height: var(--size);
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  margin: 0 0 0 5px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  > svg > path {
+    --color: var(--cow-color-text1);
+    fill: var(--color);
+    stroke: var(--color);
+    stroke-width: 0.5px;
   }
 `

@@ -1,6 +1,8 @@
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
+import trezorLogo from 'assets/trezor.svg'
+import SVG from 'react-inlinesvg'
 
 import { LightCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
@@ -9,12 +11,14 @@ import { ThemedText } from 'legacy/theme'
 import { StyledInternalLink } from 'legacy/theme/components'
 
 import { PendingView } from 'modules/wallet/api/pure/PendingView'
+import { TrezorAccountSelect } from 'modules/wallet/api/pure/TrezorAccountSelect'
 import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
 
 import { Routes } from 'common/constants/routes'
 import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'common/pure/Modal'
 
-import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
+import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper, IconWrapper } from './styled'
+
 
 export type WalletModalView = 'options' | 'account' | 'pending'
 
@@ -46,6 +50,7 @@ export function WalletModal(props: WalletModalProps) {
   } = props
 
   const isPending = view === 'pending'
+  const isTrezor = true // TODO: Add condition for Trezor
   // const isOptions = view === 'options'
   // const showZengoBanner = !account && !window.ethereum && isOptions
 
@@ -63,8 +68,22 @@ export function WalletModal(props: WalletModalProps) {
               </HoverText>
             </HeaderRow>
           )}
+          {!isPending && isTrezor && (
+            <HeaderRow>
+              <HoverText>
+                <IconWrapper>
+                  <SVG src={trezorLogo} />
+                </IconWrapper>
+                  <Trans>Select Trezor Account</Trans>
+              </HoverText>
+            </HeaderRow>
+          )}
           <ContentWrapper>
             <AutoColumn gap="16px">
+              {/* Trezor account (hardware index) select */}
+              {/* Todo: Add condition for Trezor */}
+              {!isPending && isTrezor && <TrezorAccountSelect />}
+
               {isPending && pendingConnector && (
                 <PendingView openOptions={openOptions} error={pendingError} tryConnection={tryConnection} />
               )}

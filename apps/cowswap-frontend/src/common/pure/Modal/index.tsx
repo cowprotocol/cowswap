@@ -136,7 +136,7 @@ export const CowModal = styled(Modal)<{
 
     ${ContentWrapper} {
       ${({ theme }) => theme.mediaWidth.upToSmall`
-        margin: 62px auto 0;
+        margin: 82px auto 0;
       `}
     }
   }
