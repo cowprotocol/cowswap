@@ -3,8 +3,8 @@ import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from 'modules/wallet'
 
-export interface Web3ReactConnection {
-  connector: Connector
+export interface Web3ReactConnection<T = Connector> {
+  connector: T
   hooks: Web3ReactHooks
   type: ConnectionType
 }

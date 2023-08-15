@@ -20,30 +20,20 @@ import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
+import { HwAccountIndexSelector } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
 import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
 import LedgerIcon from 'modules/wallet/api/assets/ledger.svg'
 import TallyIcon from 'modules/wallet/api/assets/tally.svg'
+import TrezorIcon from 'modules/wallet/api/assets/trezor.svg'
 import TrustIcon from 'modules/wallet/api/assets/trust.svg'
 import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
-import {
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
-  getIsTrustWallet,
-} from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { coinbaseWalletConnection } from 'modules/wallet/web3-react/connection/coinbase'
-import { fortmaticConnection } from 'modules/wallet/web3-react/connection/formatic'
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
-import { keystoneConnection } from 'modules/wallet/web3-react/connection/keystone'
-import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
-import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
-import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
+import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'modules/wallet/api/utils/connection'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -69,7 +59,6 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useIsWalletConnect } from '../../../wallet/web3-react/hooks/useIsWalletConnect'
 import { CreationDateText } from '../Transaction/styled'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -91,11 +80,28 @@ export function renderActivities(activities: ActivityDescriptors[]) {
   )
 }
 
-export function getStatusIcon(connector?: Connector | ConnectionType, walletDetails?: WalletDetails, size?: number) {
-  if (!connector) {
-    return null
-  }
+const IDENTICON_KEY = 'Identicon'
 
+const walletIcons: Record<ConnectionType, 'Identicon' | string> = {
+  [ConnectionType.INJECTED]: IDENTICON_KEY,
+  [ConnectionType.INJECTED_WIDGET]: IDENTICON_KEY,
+  [ConnectionType.GNOSIS_SAFE]: IDENTICON_KEY,
+  [ConnectionType.NETWORK]: IDENTICON_KEY,
+  [ConnectionType.ZENGO]: IDENTICON_KEY,
+  [ConnectionType.AMBIRE]: IDENTICON_KEY,
+  [ConnectionType.ALPHA]: IDENTICON_KEY,
+  [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
+  [ConnectionType.FORTMATIC]: FortmaticIcon,
+  [ConnectionType.TRUST]: TrustIcon,
+  [ConnectionType.TALLY]: TallyIcon,
+  [ConnectionType.LEDGER]: LedgerIcon,
+  [ConnectionType.TREZOR]: TrezorIcon,
+  [ConnectionType.KEYSTONE]: KeystoneImage,
+  [ConnectionType.WALLET_CONNECT]: WalletConnectIcon,
+  [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
+}
+
+export function getStatusIcon(connector: Connector, walletDetails?: WalletDetails, size?: number) {
   const connectionType = getWeb3ReactConnection(connector)
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
@@ -108,64 +114,26 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
       </MouseoverTooltip>
     )
     /* eslint-enable jsx-a11y/accessible-emoji */
-  } else if (walletDetails?.icon) {
+  }
+  if (walletDetails?.icon) {
     return (
       <IconWrapper size={16}>
         <img src={walletDetails.icon} alt={`${walletDetails?.walletName || 'wallet'} logo`} />
       </IconWrapper>
     )
-  } else if (connectionType === injectedConnection) {
-    return <Identicon size={size} />
-  } else if (connectionType === coinbaseWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={CoinbaseWalletIcon} alt={'Coinbase wallet logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === fortmaticConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={FortmaticIcon} alt={'Fortmatic logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === tallyWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TallyIcon} alt={'Tally logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === trustWalletConnection || getIsTrustWallet(walletDetails?.walletName)) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TrustIcon} alt={'Trust logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === tallyWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TallyIcon} alt={'tally logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === ledgerConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={LedgerIcon} alt={'Ledger logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === keystoneConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={KeystoneImage} alt={'Keystone logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === walletConnectConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'Wallet connect logo'} />
-      </IconWrapper>
-    )
   }
-  return null
+
+  const icon = walletIcons[connectionType.type]
+
+  if (icon === IDENTICON_KEY) {
+    return <Identicon size={size} />
+  }
+
+  return (
+    <IconWrapper size={16}>
+      <img src={icon} alt={`${connectionType.type} logo`} />
+    </IconWrapper>
+  )
 }
 
 export interface AccountDetailsProps {
@@ -225,6 +193,8 @@ export function AccountDetails({
 
   const networkLabel = NETWORK_LABELS[chainId]
 
+  const isHardWareWallet = getIsHardWareWallet(connection.type)
+
   return (
     <Wrapper>
       <InfoCard>
@@ -239,6 +209,8 @@ export function AccountDetails({
                 </Copy>
               )}
             </WalletWrapper>
+
+            {isHardWareWallet && <HwAccountIndexSelector />}
 
             <WalletActions>
               {' '}

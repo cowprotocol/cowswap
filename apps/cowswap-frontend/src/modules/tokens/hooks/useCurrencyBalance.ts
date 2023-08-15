@@ -20,7 +20,10 @@ import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefined)[]): {
+export function useNativeCurrencyBalances(
+  uncheckedAddresses?: (string | undefined)[],
+  lowerCaseAddress = false
+): {
   [address: string]: CurrencyAmount<Currency> | undefined
 } {
   const { chainId } = useWalletInfo()
@@ -45,10 +48,13 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
       validAddressInputs.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, [address], i) => {
         const value = results?.[i]?.result?.[0]
         if (value && chainId)
-          memo[address] = CurrencyAmount.fromRawAmount(nativeOnChain(chainId), JSBI.BigInt(value.toString()))
+          memo[lowerCaseAddress ? address.toLowerCase() : address] = CurrencyAmount.fromRawAmount(
+            nativeOnChain(chainId),
+            JSBI.BigInt(value.toString())
+          )
         return memo
       }, {}),
-    [validAddressInputs, chainId, results]
+    [validAddressInputs, chainId, results, lowerCaseAddress]
   )
 }
 

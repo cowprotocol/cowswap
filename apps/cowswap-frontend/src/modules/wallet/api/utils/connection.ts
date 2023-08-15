@@ -1,38 +1,28 @@
 import { ConnectionType } from '../types'
 
-export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean) {
-  switch (connectionType) {
-    case ConnectionType.INJECTED:
-      return isMetaMask ? 'MetaMask' : 'Injected'
-    case ConnectionType.COINBASE_WALLET:
-      return 'Coinbase Wallet'
-    case ConnectionType.WALLET_CONNECT:
-      return 'WalletConnect'
-    case ConnectionType.WALLET_CONNECT_V2:
-      return 'WalletConnect v2'
-    case ConnectionType.FORTMATIC:
-      return 'Fortmatic'
-    case ConnectionType.NETWORK:
-      return 'Network'
-    case ConnectionType.GNOSIS_SAFE:
-      return 'Safe'
-    case ConnectionType.ZENGO:
-      return 'Zengo'
-    case ConnectionType.AMBIRE:
-      return 'Ambire'
-    case ConnectionType.ALPHA:
-      return 'Alpha'
-    case ConnectionType.TALLY:
-      return 'Tally'
-    case ConnectionType.TRUST:
-      return 'Trust'
-    case ConnectionType.LEDGER:
-      return 'Ledger'
-    case ConnectionType.KEYSTONE:
-      return 'Keystone'
-    case ConnectionType.INJECTED_WIDGET:
-      return 'CowSwap widget'
-  }
+const connectionTypeToName: Record<ConnectionType, string> = {
+  [ConnectionType.INJECTED]: 'injected',
+  [ConnectionType.INJECTED_WIDGET]: 'CowSwap widget',
+  [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
+  [ConnectionType.WALLET_CONNECT]: 'WalletConnect',
+  [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect v2',
+  [ConnectionType.FORTMATIC]: 'Fortmatic',
+  [ConnectionType.NETWORK]: 'Network',
+  [ConnectionType.GNOSIS_SAFE]: 'Safe',
+  [ConnectionType.ZENGO]: 'Zengo',
+  [ConnectionType.AMBIRE]: 'Ambire',
+  [ConnectionType.ALPHA]: 'Alpha',
+  [ConnectionType.TALLY]: 'Tally',
+  [ConnectionType.TRUST]: 'Trust',
+  [ConnectionType.LEDGER]: 'Ledger',
+  [ConnectionType.KEYSTONE]: 'Keystone',
+  [ConnectionType.TREZOR]: 'Trezor',
+}
+
+export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean): string {
+  if (connectionType === ConnectionType.INJECTED && isMetaMask) return 'MetaMask'
+
+  return connectionTypeToName[connectionType]
 }
 
 export function getIsInjected(): boolean {

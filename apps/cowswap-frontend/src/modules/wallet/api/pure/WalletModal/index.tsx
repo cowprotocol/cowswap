@@ -66,7 +66,7 @@ export function WalletModal(props: WalletModalProps) {
           <ContentWrapper>
             <AutoColumn gap="16px">
               {isPending && pendingConnector && (
-                <PendingView openOptions={openOptions} error={!!pendingError} tryConnection={tryConnection} />
+                <PendingView openOptions={openOptions} error={pendingError} tryConnection={tryConnection} />
               )}
               {!isPending && (
                 <OptionGrid data-testid="option-grid">
