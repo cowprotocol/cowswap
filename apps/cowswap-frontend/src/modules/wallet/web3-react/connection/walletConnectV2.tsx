@@ -1,5 +1,4 @@
 import { initializeConnector } from '@web3-react/core'
-import { WalletConnect } from '@web3-react/walletconnect-v2'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
@@ -18,6 +17,7 @@ import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
+import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { Web3ReactConnection } from '../types'
 
 import { TryActivation } from '.'
@@ -35,9 +35,9 @@ const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
 
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
-  const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<WalletConnect>(
+  const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<WalletConnectV2Connector>(
     (actions) =>
-      new WalletConnect({
+      new WalletConnectV2Connector(chainId, {
         actions,
         onError(error) {
           console.error('WalletConnect2 ERROR:', error)
