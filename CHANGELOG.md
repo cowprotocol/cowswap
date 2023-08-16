@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.45.0](https://github.com/cowprotocol/cowswap/compare/v1.44.3...v1.45.0) (2023-08-16)
+
+
+### Features
+
+* **orders-table:** display order receiver address ([#3042](https://github.com/cowprotocol/cowswap/issues/3042)) ([948c46d](https://github.com/cowprotocol/cowswap/commit/948c46dd6072efb7324b53b4a29a2c9cca268b9f))
+
+
+### Bug Fixes
+
+* disable limit orders state sync between tabs ([#3041](https://github.com/cowprotocol/cowswap/issues/3041)) ([2ac7b1a](https://github.com/cowprotocol/cowswap/commit/2ac7b1abe0104997d3bd914ad4b359f18682a91e))
+
 ## [1.44.3](https://github.com/cowprotocol/cowswap/compare/v1.44.2...v1.44.3) (2023-08-11)
 
 
