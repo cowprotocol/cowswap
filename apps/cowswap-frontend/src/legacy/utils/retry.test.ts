@@ -42,7 +42,7 @@ describe('retry', () => {
     await expect(promise).resolves.toEqual('abc')
   })
 
-  async function checkTime(fn: () => Promise<any>, min: number) {
+  async function checkMinTime(fn: () => Promise<any>, min: number) {
     const time = new Date().getTime()
     await fn()
     const diff = new Date().getTime() - time
@@ -53,7 +53,7 @@ describe('retry', () => {
     const promises = []
     for (let i = 0; i < 10; i++) {
       promises.push(
-        checkTime(
+        checkMinTime(
           () => expect(retry(makeFn(4, 'abc'), { n: 3, maxWait: 100, minWait: 50 }).promise).rejects.toThrow('failure'),
           150
         )
