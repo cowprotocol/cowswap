@@ -603,7 +603,6 @@ describe('list reducer', () => {
         // this is ok.
         Object.keys(byUrl).forEach((url) => {
           if (url !== 'https://unpkg.com/@uniswap/default-token-list@latest/uniswap-default.tokenlist.json') {
-            // eslint-disable-next-line jest/no-conditional-expect
             expect(byUrl[url]).toEqual({
               error: null,
               current: null,
