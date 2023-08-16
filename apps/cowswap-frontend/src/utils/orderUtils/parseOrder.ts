@@ -34,6 +34,7 @@ export interface ParsedOrderExecutionData {
 export interface ParsedOrder {
   id: string
   isCancelling: boolean | undefined
+  receiver: string | undefined
   inputToken: Token
   outputToken: Token
   kind: OrderKind
@@ -104,6 +105,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     status: order.status,
     partiallyFillable: order.partiallyFillable,
     composableCowInfo: order.composableCowInfo,
+    receiver: order.receiver || undefined,
     creationTime,
     expirationTime,
     executionData,

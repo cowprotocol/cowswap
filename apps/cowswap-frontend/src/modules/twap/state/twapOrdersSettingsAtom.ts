@@ -1,8 +1,9 @@
 import { atom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
 
 import { Percent } from '@uniswap/sdk-core'
 
+import { getJotaiIsolatedStorage } from 'jotaiStore'
 import { Milliseconds } from 'types'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_ORDER_DEADLINE, DEFAULT_TWAP_SLIPPAGE } from '../const'
@@ -43,7 +44,7 @@ export const defaultTwapOrdersSettings: TwapOrdersSettingsState = {
 export const twapOrdersSettingsAtom = atomWithStorage<TwapOrdersSettingsState>(
   'twap-orders-settings-atom:v1',
   defaultTwapOrdersSettings,
-  createJSONStorage(() => localStorage)
+  getJotaiIsolatedStorage()
 )
 
 export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<TwapOrdersSettingsState>) => {
