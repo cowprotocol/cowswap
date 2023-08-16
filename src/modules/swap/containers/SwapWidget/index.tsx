@@ -232,6 +232,8 @@ export function SwapWidget() {
     ),
   }
 
+  const disablePriceImpact = isFeeGreater
+
   const params = {
     isEoaEthFlow,
     compactView: true,
@@ -241,6 +243,7 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     isExpertMode,
+    disablePriceImpact,
   }
 
   return (
