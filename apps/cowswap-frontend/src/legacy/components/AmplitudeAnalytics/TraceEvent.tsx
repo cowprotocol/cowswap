@@ -53,7 +53,7 @@ function getEventHandlers(
   name: EventName,
   properties?: Record<string, unknown>
 ) {
-  const eventHandlers: Partial<Record<Event, (e: SyntheticEvent<Element, Event>) => void>> = {}
+  const eventHandlers: Partial<Record<Event, (_e: SyntheticEvent<Element, Event>) => void>> = {}
 
   for (const event of events) {
     eventHandlers[event] = (eventHandlerArgs: unknown) => {
