@@ -1,7 +1,9 @@
 import { atom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
 
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { getJotaiIsolatedStorage } from 'jotaiStore'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
@@ -26,7 +28,7 @@ const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isC
 export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
   'twap-part-orders-list:v1',
   {},
-  createJSONStorage(() => localStorage)
+  getJotaiIsolatedStorage()
 )
 
 /**
