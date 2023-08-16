@@ -8,7 +8,7 @@ const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<
   | {
       value?: number
-      fastForward(block: number): void
+      fastForward(_block: number): void
     }
   | typeof MISSING_PROVIDER
 >(MISSING_PROVIDER)

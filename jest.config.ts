@@ -1,5 +1,7 @@
 import { getJestProjects } from '@nx/jest'
 
-export default {
+const jestConfig = {
   projects: getJestProjects(),
 }
+
+export default jestConfig
