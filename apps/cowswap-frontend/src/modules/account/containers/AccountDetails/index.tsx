@@ -22,6 +22,7 @@ import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
+import { HwAccountIndexSelector } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
 import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
@@ -33,10 +34,7 @@ import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
 import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import {
-  // getIsHardWareWallet, // TODO: enable when done testing!
-  getWeb3ReactConnection
-} from 'modules/wallet/web3-react/connection'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
@@ -202,8 +200,8 @@ export function AccountDetails({
 
   const networkLabel = NETWORK_LABELS[chainId]
 
-  // const isHardWareWallet = getIsHardWareWallet(connectionType.type)
-  const isHardWareWallet = true // TODO: Remove when done testing
+  // TODO: Remove when done testing
+  const isHardWareWallet = 1 < 2 ? true : getIsHardWareWallet(connectionType.type)
 
   return (
     <Wrapper>
@@ -219,6 +217,8 @@ export function AccountDetails({
                 </Copy>
               )}
             </WalletWrapper>
+
+            {isHardWareWallet && <HwAccountIndexSelector />}
 
             <WalletActions>
               {' '}
