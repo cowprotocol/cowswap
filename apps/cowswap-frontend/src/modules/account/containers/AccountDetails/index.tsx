@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
-import TREZOR_ICON_IMAGE from 'assets/trezor.svg'
 import SVG from 'react-inlinesvg'
 
 import Copy from 'legacy/components/Copy'
@@ -62,8 +61,6 @@ import {
   Wrapper,
 } from './styled'
 import { SurplusCard } from './SurplusCard'
-
-
 
 import { CreationDateText } from '../Transaction/styled'
 
@@ -200,8 +197,7 @@ export function AccountDetails({
 
   const networkLabel = NETWORK_LABELS[chainId]
 
-  // TODO: Remove when done testing
-  const isHardWareWallet = 1 < 2 ? true : getIsHardWareWallet(connectionType.type)
+  const isHardWareWallet = getIsHardWareWallet(connectionType.type)
 
   return (
     <Wrapper>
@@ -249,7 +245,7 @@ export function AccountDetails({
                     <WalletAction onClick={toggleWalletModal}>
                       <Trans>Change Trezor Account</Trans>
                       <WalletIconWrapper>
-                        <SVG src={TREZOR_ICON_IMAGE} />
+                        <SVG src={TrezorIcon} />
                       </WalletIconWrapper>
                     </WalletAction>
                   )}

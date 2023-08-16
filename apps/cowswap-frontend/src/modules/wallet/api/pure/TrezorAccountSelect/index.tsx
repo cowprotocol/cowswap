@@ -5,8 +5,8 @@ import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
 import { ThemedText } from 'legacy/theme'
 
-import { ButtonSecondary } from 'modules/button'
-import { SelectDropdown } from 'modules/selectDropdown'
+import { ButtonSecondary } from 'common/pure/ButtonSecondary'
+import { SelectDropdown } from 'common/pure/SelectDropdown'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -46,7 +46,7 @@ const SelectWrapper = styled.div`
   margin: 8px 0 0;
   gap: 8px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
       flex-flow: column wrap;
 
       ${ButtonSecondary} {
@@ -67,16 +67,16 @@ const TextWrapper = styled.div`
 // DEMO
 const loadingAccounts = false
 const TREZOR_ACCOUNTS = [
-  { id: "0", address: "0x1234567890123456789012345678901234567890", value: "3.45" },
-  { id: "1", address: "0x0987654321098765432109876543210987654321", value: "1.12" },
-  { id: "2", address: "0x9876543210987654321098765432109876543212", value: "6.78" },
-  { id: "3", address: "0x8765432109876543210987654321098765432109", value: "0.09" },
-  { id: "4", address: "0x7654321098765432109876543210987654321098", value: "7.65" },
-  { id: "5", address: "0x6543210987654321098765432109876543210987", value: "2.34" },
-  { id: "6", address: "0x5432109876543210987654321098765432109876", value: "5.43" },
-  { id: "7", address: "0x4321098765432109876543210987654321098765", value: "9.87" },
-  { id: "8", address: "0x3210987654321098765432109876543210987654", value: "4.32" },
-  { id: "9", address: "0x2109876543210987654321098765432109876543", value: "8.76" }
+  { id: '0', address: '0x1234567890123456789012345678901234567890', value: '3.45' },
+  { id: '1', address: '0x0987654321098765432109876543210987654321', value: '1.12' },
+  { id: '2', address: '0x9876543210987654321098765432109876543212', value: '6.78' },
+  { id: '3', address: '0x8765432109876543210987654321098765432109', value: '0.09' },
+  { id: '4', address: '0x7654321098765432109876543210987654321098', value: '7.65' },
+  { id: '5', address: '0x6543210987654321098765432109876543210987', value: '2.34' },
+  { id: '6', address: '0x5432109876543210987654321098765432109876', value: '5.43' },
+  { id: '7', address: '0x4321098765432109876543210987654321098765', value: '9.87' },
+  { id: '8', address: '0x3210987654321098765432109876543210987654', value: '4.32' },
+  { id: '9', address: '0x2109876543210987654321098765432109876543', value: '8.76' },
 ]
 
 export function TrezorAccountSelect() {
@@ -99,16 +99,16 @@ export function TrezorAccountSelect() {
 
                 <ButtonSecondary onClick={undefined}>
                   {!loadingAccounts && <Trans>Load more</Trans>}
-                  {loadingAccounts && <>
-                    <LoaderContainer>
-                      <Loader stroke="currentColor" size="32px" />
-                    </LoaderContainer>
-                    <Trans>Loading...</Trans>
-                  </>
-                  }
+                  {loadingAccounts && (
+                    <>
+                      <LoaderContainer>
+                        <Loader stroke="currentColor" size="32px" />
+                      </LoaderContainer>
+                      <Trans>Loading...</Trans>
+                    </>
+                  )}
                 </ButtonSecondary>
               </SelectWrapper>
-
             </TextWrapper>
 
             <ButtonPrimary $borderRadius="12px" padding="12px" onClick={undefined}>
