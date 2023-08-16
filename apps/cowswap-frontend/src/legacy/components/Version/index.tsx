@@ -23,7 +23,7 @@ const VERSIONS: Record<
   string,
   {
     version: string
-    href: (chainId: ChainId) => string
+    href: (_chainId: ChainId) => string
     // | { github: string; etherscan: string }
   }
 > = {

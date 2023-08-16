@@ -7,7 +7,6 @@ import { Content, Page } from 'modules/application/pure/Page'
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, InternalLinkFaq, Wrapper } from './styled'
-
 import ToC from './ToC'
 
 import { Footer } from '.'
