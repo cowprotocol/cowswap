@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.5](https://github.com/cowprotocol/cowswap/compare/v1.44.4...v1.44.5) (2023-08-16)
+
+
+### Bug Fixes
+
+* **twap:** update links to blog ([#3054](https://github.com/cowprotocol/cowswap/issues/3054)) ([f39ee10](https://github.com/cowprotocol/cowswap/commit/f39ee10b9fe1a7c227f149f7ea8a97da3bf70075))
+
 ## [1.44.4](https://github.com/cowprotocol/cowswap/compare/v1.44.3...v1.44.4) (2023-08-16)
 
 
