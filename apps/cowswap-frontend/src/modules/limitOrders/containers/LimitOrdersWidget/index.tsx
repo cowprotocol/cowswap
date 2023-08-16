@@ -12,6 +12,7 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
@@ -23,6 +24,7 @@ import * as styledEl from './styled'
 
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
+import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -111,6 +113,9 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: null,
   }
 
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
+
   const props: LimitOrdersProps = {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -127,6 +132,8 @@ export function LimitOrdersWidget() {
     settingsState,
     feeAmount,
     widgetActions,
+    localFormValidation,
+    primaryFormValidation,
   }
 
   return <LimitOrders {...props} />
@@ -149,6 +156,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     tradeContext,
     settingsState,
     feeAmount,
+    localFormValidation,
+    primaryFormValidation,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -225,6 +234,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     ),
   }
 
+  const disablePriceImpact =
+    localFormValidation === LimitOrdersFormState.FeeExceedsFrom ||
+    primaryFormValidation === TradeFormValidation.QuoteErrors ||
+    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
+
   const params = {
     disableNonToken: false,
     compactView: false,
@@ -234,6 +249,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
+    disablePriceImpact,
   }
 
   return (
