@@ -53,6 +53,7 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
+  WalletSelector,
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
@@ -206,12 +207,19 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletDetails, 24)}
+              <WalletSelector
+                isHardWareWallet={isHardWareWallet}
+                {...(isHardWareWallet ? { onClick: toggleAccountSelectorModal } : {})}
+              >
+                {getStatusIcon(connector, walletDetails, 24)}
+                {(ENSName || account) && (
+                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                )}
+
+              </WalletSelector>
 
               {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
-                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
-                </Copy>
+                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
               )}
             </WalletWrapper>
 
@@ -237,12 +245,6 @@ export function AccountDetails({
                     >
                       {explorerLabel} ↗
                     </AddressLink>
-                  )}
-
-                  {isHardWareWallet && (
-                    <WalletAction onClick={toggleAccountSelectorModal}>
-                      <Trans>Change Account</Trans>
-                    </WalletAction>
                   )}
 
                   {connection.type !== ConnectionType.GNOSIS_SAFE && (
