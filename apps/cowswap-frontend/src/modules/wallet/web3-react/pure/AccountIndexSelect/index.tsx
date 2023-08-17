@@ -21,15 +21,23 @@ export interface AccountIndexSelectProps {
   loadMoreAccounts(): Promise<void>
 }
 
+const ACCOUNT_SET_TIMEOUT = 2000
+
 export function AccountIndexSelect(props: AccountIndexSelectProps) {
   const { currentIndex, accountsList, balances, onAccountIndexChange, loadMoreAccounts } = props
   const selectRef = useRef<HTMLSelectElement>(null)
   const [loadingAccounts, setLoadingAccounts] = useState(false)
+  const [isAccountSet, setIsAccountSet] = useState(false)
 
   const onAccountIndexChangeCallback = useCallback(() => {
     const index = +(selectRef.current?.value || 0)
 
     onAccountIndexChange(index)
+    setIsAccountSet(true)
+
+    setTimeout(() => {
+      setIsAccountSet(false)
+    }, ACCOUNT_SET_TIMEOUT)
   }, [onAccountIndexChange])
 
   const loadMoreAccountsCallback = useCallback(async () => {
@@ -84,8 +92,13 @@ export function AccountIndexSelect(props: AccountIndexSelectProps) {
               </styledEl.SelectWrapper>
             </styledEl.TextWrapper>
 
-            <ButtonPrimary $borderRadius="12px" padding="12px" onClick={onAccountIndexChangeCallback}>
-              <Trans>Connect selected account</Trans>
+            <ButtonPrimary
+              disabled={isAccountSet}
+              $borderRadius="12px"
+              padding="12px"
+              onClick={onAccountIndexChangeCallback}
+            >
+              <Trans>{isAccountSet ? 'Account changed' : 'Connect selected account'}</Trans>
             </ButtonPrimary>
 
             {/*TODO: Why do we need this?*/}
