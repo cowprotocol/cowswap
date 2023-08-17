@@ -35,7 +35,8 @@
       "@cowswap/ui": ["libs/ui/src/index.ts"],
       "@cowswap/ui-utils": ["libs/ui-utils/src/index.ts"],
       "@cowswap/widget-lib": ["libs/widget-lib/src/index.ts"],
-      "@cowswap/widget-react": ["libs/widget-react/src/index.ts"]
+      "@cowswap/widget-react": ["libs/widget-react/src/index.ts"],
+      "@cowswap/snackbars": ["libs/snackbars/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,7 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useAddSnackbar } from '@cowswap/snackbars'
 import { useWeb3React } from '@web3-react/core'
+
+import { Trans } from '@lingui/macro'
 
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 
@@ -12,6 +15,7 @@ import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './stat
 import * as styledEl from './styled'
 
 import { hwAccountIndexAtom } from '../../../api/state'
+import { getConnectionName } from '../../../api/utils/connection'
 import { getWeb3ReactConnection, HardWareWallet } from '../../connection'
 import { AccountIndexSelect } from '../../pure/AccountIndexSelect'
 
@@ -21,10 +25,13 @@ export function AccountSelectorModal() {
 
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const { connector } = useWeb3React()
+  const addSnackbar = useAddSnackbar()
 
-  const accountsLoader = useMemo(() => {
-    return accountsLoaders[getWeb3ReactConnection(connector).type as HardWareWallet]
-  }, [connector])
+  const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
+
+  const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
+
+  const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 
@@ -37,6 +44,16 @@ export function AccountSelectorModal() {
       setAccountsList(accountsLoader.getAccounts())
     })
   }, [accountsLoader])
+
+  const onAccountIndexChange = useCallback(
+    (index: number) => {
+      setHwAccountIndex(index)
+      closeModal()
+
+      addSnackbar({ content: <Trans>{walletName} account changed</Trans>, id: 'account-changed', icon: 'success' })
+    },
+    [walletName, addSnackbar, setHwAccountIndex, closeModal]
+  )
 
   useEffect(() => {
     setAccountsList(accountsLoader?.getAccounts() || null)
@@ -54,7 +71,7 @@ export function AccountSelectorModal() {
         <AccountIndexSelect
           balances={balances}
           currentIndex={hwAccountIndex}
-          onAccountIndexChange={setHwAccountIndex}
+          onAccountIndexChange={onAccountIndexChange}
           accountsList={accountsList}
           loadMoreAccounts={loadMoreAccounts}
         />
