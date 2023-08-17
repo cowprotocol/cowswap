@@ -10,10 +10,9 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { IsTokenPermittableResult } from 'modules/permit'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-
-import { IsTokenPermittableResult } from 'common/hooks/useIsTokenPermittable'
 
 import { FlowType } from '../hooks/useFlowContext'
 

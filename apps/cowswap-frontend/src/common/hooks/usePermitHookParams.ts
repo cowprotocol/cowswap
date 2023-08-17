@@ -5,11 +5,10 @@ import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
+import { useIsTokenPermittable } from 'modules/permit'
 import { useWalletInfo } from 'modules/wallet'
 
 import { PermitHookParams } from 'utils/generatePermitHook'
-
-import { useIsTokenPermittable } from './useIsTokenPermittable'
 
 export function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHookParams | undefined {
   const { chainId, account } = useWalletInfo()

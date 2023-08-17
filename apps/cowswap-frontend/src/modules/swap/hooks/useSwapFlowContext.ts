@@ -3,10 +3,9 @@ import { TradeType } from '@uniswap/sdk-core'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
+import { useIsTokenPermittable } from 'modules/permit'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { SwapFlowContext } from 'modules/swap/services/types'
-
-import { useIsTokenPermittable } from 'common/hooks/useIsTokenPermittable'
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
