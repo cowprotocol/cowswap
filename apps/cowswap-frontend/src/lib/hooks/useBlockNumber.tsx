@@ -1,9 +1,8 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { useWeb3React } from '@web3-react/core'
 
-import { useWalletInfo } from 'modules/wallet'
-import { networkConnection } from 'modules/wallet/web3-react/connection/network'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 
 const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<
@@ -27,12 +26,14 @@ export default function useBlockNumber(): number | undefined {
   return useBlockNumberContext().value
 }
 
-type BlockInfo = { chainId?: number; block?: number }
+export function useFastForwardBlockNumber(): (block: number) => void {
+  return useBlockNumberContext().fastForward
+}
 
 export function BlockNumberProvider({ children }: { children: ReactNode }) {
-  const { chainId: activeChainId } = useWalletInfo()
-  const provider = networkConnection.hooks.useProvider(activeChainId)
-  const [{ chainId, block }, setChainBlock] = useState<BlockInfo>({ chainId: activeChainId })
+  const { provider, chainId: activeChainId } = useWeb3React()
+  const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
+
   const onBlock = useCallback(
     (block: number) => {
       setChainBlock((chainBlock) => {
@@ -48,7 +49,6 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
   )
 
   const windowVisible = useIsWindowVisible()
-
   useEffect(() => {
     let stale = false
 
@@ -74,7 +74,7 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
     }
 
     return void 0
-  }, [activeChainId, provider, onBlock, windowVisible, setChainBlock])
+  }, [activeChainId, provider, onBlock, setChainBlock, windowVisible])
 
   const value = useMemo(
     () => ({

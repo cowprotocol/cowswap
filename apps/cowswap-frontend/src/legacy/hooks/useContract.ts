@@ -42,7 +42,6 @@ import { getContract } from 'legacy/utils'
 import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 
 import { useWalletInfo } from 'modules/wallet'
-import { networkConnection } from 'modules/wallet/web3-react/connection/network'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 
@@ -50,13 +49,10 @@ const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
-  withSignerIfPossible = true,
-  readonlyProvider?: boolean
+  withSignerIfPossible = true
 ): T | null {
-  const { provider: defaultProvider } = useWeb3React()
+  const { provider } = useWeb3React()
   const { account, chainId } = useWalletInfo()
-  const networkProvider = networkConnection.hooks.useProvider(chainId)
-  const provider = readonlyProvider ? networkProvider : defaultProvider
 
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
@@ -115,12 +111,7 @@ export function useEIP2612Contract(tokenAddress?: string): Contract | null {
 }
 
 export function useInterfaceMulticall() {
-  return useContract<UniswapInterfaceMulticall>(
-    MULTICALL_ADDRESS,
-    MulticallABI,
-    false,
-    true
-  ) as UniswapInterfaceMulticall
+  return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, MulticallABI, false) as UniswapInterfaceMulticall
 }
 
 const COWSWAP_ETHFLOW_ABI = CoWSwapEthFlowJson.abi
