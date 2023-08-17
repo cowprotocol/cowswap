@@ -17,8 +17,6 @@ import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
-import { networkConnection } from '../../connection/network'
-
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()
@@ -50,13 +48,6 @@ export function WalletModal() {
       setPendingConnector(undefined)
     }
   }, [pendingConnector, walletView])
-
-  // Keep the network connector in sync with any active user connector to prevent chain-switching on wallet disconnection.
-  useEffect(() => {
-    if (chainId && connector !== networkConnection.connector) {
-      networkConnection.connector.activate(chainId)
-    }
-  }, [chainId, connector])
 
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
