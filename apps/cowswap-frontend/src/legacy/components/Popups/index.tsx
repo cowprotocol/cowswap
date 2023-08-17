@@ -74,6 +74,9 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
   }
 `
 
+/**
+ * @deprecated use @cowswap/snackbars instead
+ */
 export function Popups() {
   // get all popups
   const activePopups = useActivePopups()

@@ -45,15 +45,25 @@ export const TransactionListWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
 `
 
+export const WalletIconSmall = styled.img`
+  width: 16px;
+  height: 16px;
+`
+
 export const WalletAction = styled(ButtonSecondary)`
   width: fit-content;
   font-weight: 400;
   margin-left: 8px;
   font-size: 0.825rem;
   padding: 4px 6px;
+
   :hover {
     cursor: pointer;
     text-decoration: underline;
+  }
+
+  ${WalletIconSmall} {
+    margin-left: 5px;
   }
 `
 

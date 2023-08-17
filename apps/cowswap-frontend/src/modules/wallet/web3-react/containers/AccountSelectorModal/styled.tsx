@@ -21,6 +21,8 @@ export const Header = styled.div`
   margin-bottom: 20px;
 
   h3 {
+    display: flex;
+    gap: 10px;
     margin: 0;
   }
 `
@@ -28,4 +30,9 @@ export const Header = styled.div`
 export const Wrapper = styled.div`
   padding: 20px;
   width: 100%;
+`
+
+export const WalletIcon = styled.img`
+  width: 24px;
+  height: 24px;
 `
