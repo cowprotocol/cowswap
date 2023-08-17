@@ -6,6 +6,7 @@ import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
+import { shortenAddress } from 'legacy/utils'
 
 import { SelectDropdown } from 'common/pure/SelectDropdown'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -58,9 +59,12 @@ export function AccountIndexSelect(props: AccountIndexSelectProps) {
 
                     return (
                       <option key={index} value={index}>
-                        #{index} - {address} -{' '}
+                        #{index} - {shortenAddress(address, 8)}
                         {balance ? (
-                          <TokenAmount amount={balance} tokenSymbol={{ symbol: balance.currency.symbol }} />
+                          <>
+                            {' - '}
+                            <TokenAmount amount={balance} tokenSymbol={{ symbol: balance.currency.symbol }} />
+                          </>
                         ) : null}
                       </option>
                     )

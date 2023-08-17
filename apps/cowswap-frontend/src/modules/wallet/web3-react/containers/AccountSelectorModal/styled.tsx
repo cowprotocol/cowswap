@@ -27,4 +27,5 @@ export const Header = styled.div`
 
 export const Wrapper = styled.div`
   padding: 20px;
+  width: 100%;
 `
