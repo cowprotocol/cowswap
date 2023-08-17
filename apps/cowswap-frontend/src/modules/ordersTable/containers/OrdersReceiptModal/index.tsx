@@ -2,6 +2,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
+import useENS from 'legacy/hooks/useENS'
+
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
 import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
@@ -20,6 +22,8 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const order = useSelectedOrder()
   const { chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
+  const { name: receiverEnsName } = useENS(order?.receiver)
+
   const twapOrderById = useTwapOrderById(order?.id)
   const twapOrderByChildId = useTwapOrderByChildId(order?.id)
   const twapOrder = twapOrderById || twapOrderByChildId
@@ -58,6 +62,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
 
   return (
     <ReceiptModal
+      receiverEnsName={receiverEnsName}
       sellAmount={sellAmountCurrency}
       buyAmount={buyAmountCurrency}
       limitPrice={limitPrice}

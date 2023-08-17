@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { t } from '@lingui/macro'
 
@@ -46,14 +46,15 @@ interface TradeWidgetParams {
   priceImpact: PriceImpact
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
+  disablePriceImpact: boolean
 }
 
 export interface TradeWidgetSlots {
-  settingsWidget: JSX.Element
-  lockScreen?: JSX.Element
-  middleContent?: JSX.Element
-  bottomContent?: JSX.Element
-  updaters?: JSX.Element
+  settingsWidget: ReactNode
+  lockScreen?: ReactNode
+  middleContent?: ReactNode
+  bottomContent?: ReactNode
+  updaters?: ReactNode
 }
 
 export interface TradeWidgetProps {
@@ -84,6 +85,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     disableQuotePolling = false,
     isExpertMode,
     disableNativeSelling = false,
+    disablePriceImpact,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -176,7 +178,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   currencyInfo={
                     isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
                   }
-                  priceImpactParams={priceImpact}
+                  priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                   topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                   {...currencyInputCommonProps}
                 />
