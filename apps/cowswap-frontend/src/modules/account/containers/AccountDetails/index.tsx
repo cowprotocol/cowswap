@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
-import SVG from 'react-inlinesvg'
 
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
@@ -21,7 +20,6 @@ import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { HwAccountIndexSelector } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
 import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
@@ -44,7 +42,6 @@ import {
   AccountControl,
   AccountGroupingRow,
   AddressLink,
-  WalletIconWrapper,
   IconWrapper,
   InfoCard,
   LowerSection,
@@ -143,7 +140,9 @@ export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
+  forceHardwareWallet?: boolean
   toggleWalletModal: () => void
+  toggleAccountSelectorModal: () => void
   handleCloseOrdersPanel: () => void
 }
 
@@ -152,7 +151,9 @@ export function AccountDetails({
   confirmedTransactions = [],
   ENSName,
   toggleWalletModal,
+  toggleAccountSelectorModal,
   handleCloseOrdersPanel,
+  forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
@@ -197,7 +198,7 @@ export function AccountDetails({
 
   const networkLabel = NETWORK_LABELS[chainId]
 
-  const isHardWareWallet = getIsHardWareWallet(connectionType.type)
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType.type)
 
   return (
     <Wrapper>
@@ -213,8 +214,6 @@ export function AccountDetails({
                 </Copy>
               )}
             </WalletWrapper>
-
-            {isHardWareWallet && <HwAccountIndexSelector />}
 
             <WalletActions>
               {' '}
@@ -240,13 +239,9 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {/* // TODO: Check if isHardWareWallet + is Trezor */}
-                  {connection.type !== ConnectionType.GNOSIS_SAFE && isHardWareWallet && (
-                    <WalletAction onClick={toggleWalletModal}>
-                      <Trans>Change Trezor Account</Trans>
-                      <WalletIconWrapper>
-                        <SVG src={TrezorIcon} />
-                      </WalletIconWrapper>
+                  {isHardWareWallet && (
+                    <WalletAction onClick={toggleAccountSelectorModal}>
+                      <Trans>Change Account</Trans>
                     </WalletAction>
                   )}
 

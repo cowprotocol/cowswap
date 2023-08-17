@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
@@ -11,9 +12,9 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { ConnectionType, useWalletInfo } from 'modules/wallet'
+import { ConnectionType, toggleAccountSelectorModalAtom, useWalletInfo } from 'modules/wallet'
 import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 
 export function WalletModal() {
@@ -30,6 +31,7 @@ export function WalletModal() {
 
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
   const toggleWalletModal = useToggleWalletModal()
+  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const openOptions = useCallback(() => {
     setWalletView('options')
@@ -72,6 +74,7 @@ export function WalletModal() {
   const tryActivation = useCallback(
     async (connector: Connector) => {
       const connectionType = getWeb3ReactConnection(connector).type
+      const isHardWareWallet = getIsHardWareWallet(connectionType)
 
       changeWalletAnalytics('Todo: wallet name')
 
@@ -102,6 +105,10 @@ export function WalletModal() {
         }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
+
+        if (isHardWareWallet) {
+          toggleAccountSelectorModal()
+        }
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
         dispatch(updateSelectedWallet({ wallet: undefined }))
@@ -116,7 +123,7 @@ export function WalletModal() {
         )
       }
     },
-    [dispatch, toggleWalletModal]
+    [dispatch, toggleWalletModal, toggleAccountSelectorModal]
   )
 
   return (

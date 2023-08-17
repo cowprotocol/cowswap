@@ -1,5 +1,7 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import styled from 'styled-components/macro'
+
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { AccountIndexSelect } from './index'
@@ -18,14 +20,30 @@ const balances = {
   '0xefcce23bfbef24cc4fb2dcb2bbc4f6f83c6bda98': CurrencyAmount.fromRawAmount(WETH_GOERLI, 40_000_000),
 }
 
+const Wrapper = styled.div`
+  width: 500px;
+  margin: 100px auto;
+  padding: 20px;
+
+  background: ${({ theme }) => theme.bg1};
+`
+
 const Fixtures = {
   default: (
-    <AccountIndexSelect
-      accountsList={accountsList}
-      balances={balances}
-      currentIndex={0}
-      onAccountIndexChange={(index) => console.log('onAccountIndexChange', index)}
-    />
+    <Wrapper>
+      <AccountIndexSelect
+        accountsList={accountsList}
+        balances={balances}
+        currentIndex={0}
+        onAccountIndexChange={(index) => console.log('onAccountIndexChange', index)}
+        loadMoreAccounts={() => {
+          return new Promise((resolve) => {
+            console.log('loadMoreAccounts')
+            setTimeout(resolve, 2000)
+          })
+        }}
+      />
+    </Wrapper>
   ),
 }
 
