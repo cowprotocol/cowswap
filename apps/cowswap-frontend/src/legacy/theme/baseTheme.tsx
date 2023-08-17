@@ -388,6 +388,8 @@ export const UniThemedGlobalStyle = css`
   :root {
     // CSS Variables
     --cow-color-text1: ${({ theme }) => theme.text1};
+    --cow-color-text1-opacity-25: ${({ theme }) => theme.text1 + '40'};
+    --cow-color-white: ${({ theme }) => theme.white};
     --cow-color-blue: ${({ theme }) => theme.bg2};
     --cow-color-border: ${({ theme }) => theme.grey1};
     --cow-color-lightBlue: ${({ theme }) => theme.information};
