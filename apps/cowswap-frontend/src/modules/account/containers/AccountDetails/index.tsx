@@ -48,7 +48,6 @@ import {
   UnsupportedWalletBox,
   WalletAction,
   WalletActions,
-  WalletIconSmall,
   WalletName,
   WalletNameAddress,
   WalletSelector,
@@ -153,9 +152,6 @@ export function AccountDetails({
 
   const connectionType = useMemo(() => getWeb3ReactConnection(connector), [connector])
 
-  const walletIcon = useMemo(() => getConnectionIcon(connectionType.type), [connectionType])
-  const walletName = useMemo(() => getConnectionName(connectionType.type, getIsMetaMask()), [connectionType])
-
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -178,7 +174,6 @@ export function AccountDetails({
   }
 
   const networkLabel = NETWORK_LABELS[chainId]
-
   const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType.type)
 
   return (
@@ -189,13 +184,16 @@ export function AccountDetails({
             <WalletWrapper>
               <WalletSelector
                 isHardWareWallet={isHardWareWallet}
-                {...(isHardWareWallet ? { onClick: toggleAccountSelectorModal } : {})}
+                onClick={() => {
+                  if (isHardWareWallet) {
+                    toggleAccountSelectorModal()
+                  }
+                }}
               >
                 {getStatusIcon(connector, walletDetails, 24)}
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
                 )}
-
               </WalletSelector>
 
               {(ENSName || account) && (
