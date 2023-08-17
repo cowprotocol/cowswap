@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useAddSnackbar } from '@cowswap/snackbars'
 import { useWeb3React } from '@web3-react/core'
@@ -15,7 +15,7 @@ import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './stat
 import * as styledEl from './styled'
 
 import { hwAccountIndexAtom } from '../../../api/state'
-import { getConnectionName } from '../../../api/utils/connection'
+import { getConnectionIcon, getConnectionName } from '../../../api/utils/connection'
 import { getWeb3ReactConnection, HardWareWallet } from '../../connection'
 import { AccountIndexSelect } from '../../pure/AccountIndexSelect'
 
@@ -29,6 +29,7 @@ export function AccountSelectorModal() {
 
   const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
 
+  const walletIcon = useMemo(() => getConnectionIcon(connectionType), [connectionType])
   const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
 
   const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
@@ -65,7 +66,9 @@ export function AccountSelectorModal() {
     <CowModal maxWidth={600} isOpen={isOpen} onDismiss={closeModal} minHeight={false} maxHeight={90}>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <h3>Select account</h3>
+          <h3>
+            <styledEl.WalletIcon src={walletIcon} alt={walletName} /> <Trans>Select {walletName} Account</Trans>
+          </h3>
           <styledEl.CloseIcon onClick={closeModal} />
         </styledEl.Header>
         <AccountIndexSelect
