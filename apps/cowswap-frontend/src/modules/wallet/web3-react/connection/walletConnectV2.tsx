@@ -59,6 +59,21 @@ function createWalletConnectV2Connector(
   )
 }
 
+/**
+ * Copy-pasted solution from https://github.com/Uniswap/interface/blob/main/src/connection/index.ts#L85
+ *
+ * Why do we need this:
+ * WC2 connector can be created once per network
+ *
+ * Let's consider the case:
+ *
+ *  - Connect via WC2 to Mainnet
+ *  - Disconnect
+ *  - Try to connect to Gnosis Chain via WC2
+ *
+ * In this case, the connection won't be established, because at step 1 the WC2 connector was created for chainId=1.
+ * To overcome this problem we proxy WC2 connection and change it's implementation on flight on network changes.
+ */
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
   let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
 
