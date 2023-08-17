@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 1`] = `
-Object {
+{
   "amount": CurrencyAmount {
     "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
@@ -26,14 +26,14 @@ Object {
 `;
 
 exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 2`] = `
-Object {
+{
   "amount": null,
   "defaultValue": "0",
 }
 `;
 
 exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 3`] = `
-Object {
+{
   "amount": CurrencyAmount {
     "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
@@ -62,7 +62,7 @@ Object {
 `;
 
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 1`] = `
-Object {
+{
   "amount": CurrencyAmount {
     "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
@@ -91,7 +91,7 @@ Object {
 `;
 
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 2`] = `
-Object {
+{
   "amount": CurrencyAmount {
     "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
@@ -120,7 +120,7 @@ Object {
 `;
 
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 3`] = `
-Object {
+{
   "amount": CurrencyAmount {
     "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
