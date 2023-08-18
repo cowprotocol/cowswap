@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getJotaiIsolatedStorage } from 'jotaiStore'
+
 export interface AdvancedOrdersSettingsState {
   readonly showRecipient: boolean
 }
@@ -11,7 +13,8 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
   'advanced-orders-settings-atom:v0',
-  defaultAdvancedOrdersSettings
+  defaultAdvancedOrdersSettings,
+  getJotaiIsolatedStorage()
 )
 
 export const updateAdvancedOrdersSettingsAtom = atom(
