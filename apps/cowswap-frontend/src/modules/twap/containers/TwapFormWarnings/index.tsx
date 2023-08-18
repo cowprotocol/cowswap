@@ -108,7 +108,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
         }
 
-        if (chainId && localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+        if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
           return <SmallPartVolumeWarning chainId={chainId} />
         }
 
