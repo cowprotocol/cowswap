@@ -9,4 +9,4 @@ type FallbackVerificationsState = {
 }
 
 export const { atom: fallbackHandlerVerificationAtom, updateAtom: updateFallbackHandlerVerificationAtom } =
-  atomWithPartialUpdate(atomWithStorage<FallbackVerificationsState>('fallbackHandlerVerification:v1', {}))
+  atomWithPartialUpdate(atomWithStorage<FallbackVerificationsState>('fallbackHandlerVerification:v2', {}))
