@@ -23,7 +23,7 @@ interface WalletModalProps {
   toggleModal: () => void
   view: WalletModalView
   openOptions: () => void
-  tryConnection: () => void // () => tryActivation(connector)
+  tryConnection: () => void
   pendingError: string | undefined
 
   // TODO: Remove dependency web3-react
@@ -33,21 +33,9 @@ interface WalletModalProps {
 }
 
 export function WalletModal(props: WalletModalProps) {
-  const {
-    isOpen,
-    toggleModal,
-    view,
-    openOptions,
-    pendingError,
-    tryActivation,
-    tryConnection,
-    pendingConnector,
-    // account,
-  } = props
+  const { isOpen, toggleModal, view, openOptions, pendingError, tryActivation, tryConnection, pendingConnector } = props
 
   const isPending = view === 'pending'
-  // const isOptions = view === 'options'
-  // const showZengoBanner = !account && !window.ethereum && isOptions
 
   return (
     <CowModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
@@ -73,7 +61,6 @@ export function WalletModal(props: WalletModalProps) {
                   <ConnectWalletOptions tryActivation={tryActivation} />
                 </OptionGrid>
               )}
-              {/*{showZengoBanner && <ZengoBanner />}*/}
               {!pendingError && (
                 <LightCard>
                   <AutoRow style={{ flexWrap: 'nowrap' }}>

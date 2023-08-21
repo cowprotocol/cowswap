@@ -20,18 +20,14 @@ import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { HwAccountIndexSelector } from 'modules/wallet'
-import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
-import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
-import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
-import LedgerIcon from 'modules/wallet/api/assets/ledger.svg'
-import TallyIcon from 'modules/wallet/api/assets/tally.svg'
-import TrezorIcon from 'modules/wallet/api/assets/trezor.svg'
-import TrustIcon from 'modules/wallet/api/assets/trust.svg'
-import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
-import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'modules/wallet/api/utils/connection'
+import {
+  getConnectionIcon,
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+} from 'modules/wallet/api/utils/connection'
 import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
@@ -54,6 +50,7 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
+  WalletSelector,
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
@@ -81,27 +78,6 @@ export function renderActivities(activities: ActivityDescriptors[]) {
   )
 }
 
-const IDENTICON_KEY = 'Identicon'
-
-const walletIcons: Record<ConnectionType, 'Identicon' | string> = {
-  [ConnectionType.INJECTED]: IDENTICON_KEY,
-  [ConnectionType.INJECTED_WIDGET]: IDENTICON_KEY,
-  [ConnectionType.GNOSIS_SAFE]: IDENTICON_KEY,
-  [ConnectionType.NETWORK]: IDENTICON_KEY,
-  [ConnectionType.ZENGO]: IDENTICON_KEY,
-  [ConnectionType.AMBIRE]: IDENTICON_KEY,
-  [ConnectionType.ALPHA]: IDENTICON_KEY,
-  [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
-  [ConnectionType.FORTMATIC]: FortmaticIcon,
-  [ConnectionType.TRUST]: TrustIcon,
-  [ConnectionType.TALLY]: TallyIcon,
-  [ConnectionType.LEDGER]: LedgerIcon,
-  [ConnectionType.TREZOR]: TrezorIcon,
-  [ConnectionType.KEYSTONE]: KeystoneImage,
-  [ConnectionType.WALLET_CONNECT]: WalletConnectIcon,
-  [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
-}
-
 export function getStatusIcon(connector: Connector, walletDetails?: WalletDetails, size?: number) {
   const connectionType = getWeb3ReactConnection(connector)
 
@@ -124,9 +100,9 @@ export function getStatusIcon(connector: Connector, walletDetails?: WalletDetail
     )
   }
 
-  const icon = walletIcons[connectionType.type]
+  const icon = getConnectionIcon(connectionType.type)
 
-  if (icon === IDENTICON_KEY) {
+  if (icon === 'Identicon') {
     return <Identicon size={size} />
   }
 
@@ -141,7 +117,9 @@ export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
+  forceHardwareWallet?: boolean
   toggleWalletModal: () => void
+  toggleAccountSelectorModal: () => void
   handleCloseOrdersPanel: () => void
 }
 
@@ -150,7 +128,9 @@ export function AccountDetails({
   confirmedTransactions = [],
   ENSName,
   toggleWalletModal,
+  toggleAccountSelectorModal,
   handleCloseOrdersPanel,
+  forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
@@ -194,8 +174,7 @@ export function AccountDetails({
   }
 
   const networkLabel = NETWORK_LABELS[chainId]
-
-  const isHardWareWallet = getIsHardWareWallet(connectionType.type)
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType.type)
 
   return (
     <Wrapper>
@@ -203,16 +182,24 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletDetails, 24)}
+              <WalletSelector
+                isHardWareWallet={isHardWareWallet}
+                onClick={() => {
+                  if (isHardWareWallet) {
+                    toggleAccountSelectorModal()
+                  }
+                }}
+              >
+                {getStatusIcon(connector, walletDetails, 24)}
+                {(ENSName || account) && (
+                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                )}
+              </WalletSelector>
 
               {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
-                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
-                </Copy>
+                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
               )}
             </WalletWrapper>
-
-            {isHardWareWallet && <HwAccountIndexSelector />}
 
             <WalletActions>
               {' '}
@@ -228,26 +215,26 @@ export function AccountDetails({
             <WalletSecondaryActions>
               {!isInjectedMobileBrowser && (
                 <>
-                  <WalletAction onClick={handleDisconnectClick}>
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
+                  {account && !isChainIdUnsupported && (
+                    <AddressLink
+                      hasENS={!!ENSName}
+                      isENS={!!ENSName}
+                      href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
+                    >
+                      {explorerLabel} ↗
+                    </AddressLink>
+                  )}
 
                   {connection.type !== ConnectionType.GNOSIS_SAFE && (
                     <WalletAction onClick={toggleWalletModal}>
                       <Trans>Change Wallet</Trans>
                     </WalletAction>
                   )}
-                </>
-              )}
 
-              {account && !isChainIdUnsupported && (
-                <AddressLink
-                  hasENS={!!ENSName}
-                  isENS={!!ENSName}
-                  href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
-                >
-                  {explorerLabel} ↗
-                </AddressLink>
+                  <WalletAction onClick={handleDisconnectClick}>
+                    <Trans>Disconnect</Trans>
+                  </WalletAction>
+                </>
               )}
             </WalletSecondaryActions>
           </AccountControl>

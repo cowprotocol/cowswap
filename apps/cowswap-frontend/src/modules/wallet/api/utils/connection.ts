@@ -1,3 +1,11 @@
+import CoinbaseWalletIcon from '../assets/coinbase.svg'
+import FortmaticIcon from '../assets/formatic.png'
+import KeystoneImage from '../assets/keystone.svg'
+import LedgerIcon from '../assets/ledger.svg'
+import TallyIcon from '../assets/tally.svg'
+import TrezorIcon from '../assets/trezor.svg'
+import TrustIcon from '../assets/trust.svg'
+import WalletConnectIcon from '../assets/walletConnectIcon.svg'
 import { ConnectionType } from '../types'
 
 const connectionTypeToName: Record<ConnectionType, string> = {
@@ -19,6 +27,30 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.TREZOR]: 'Trezor',
 }
 
+const IDENTICON_KEY = 'Identicon'
+
+const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
+  [ConnectionType.INJECTED]: IDENTICON_KEY,
+  [ConnectionType.INJECTED_WIDGET]: IDENTICON_KEY,
+  [ConnectionType.GNOSIS_SAFE]: IDENTICON_KEY,
+  [ConnectionType.NETWORK]: IDENTICON_KEY,
+  [ConnectionType.ZENGO]: IDENTICON_KEY,
+  [ConnectionType.AMBIRE]: IDENTICON_KEY,
+  [ConnectionType.ALPHA]: IDENTICON_KEY,
+  [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
+  [ConnectionType.FORTMATIC]: FortmaticIcon,
+  [ConnectionType.TRUST]: TrustIcon,
+  [ConnectionType.TALLY]: TallyIcon,
+  [ConnectionType.LEDGER]: LedgerIcon,
+  [ConnectionType.TREZOR]: TrezorIcon,
+  [ConnectionType.KEYSTONE]: KeystoneImage,
+  [ConnectionType.WALLET_CONNECT]: WalletConnectIcon,
+  [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
+}
+
+export function getConnectionIcon(connectionType: ConnectionType): string {
+  return connectionTypeToIcon[connectionType]
+}
 export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean): string {
   if (connectionType === ConnectionType.INJECTED && isMetaMask) return 'MetaMask'
 

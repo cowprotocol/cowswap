@@ -22,6 +22,8 @@ const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
   },
 }
 
+const ACCOUNTS_LIMIT = 100
+
 export class TrezorConnector extends Connector {
   public customProvider?: TrezorProvider
 
@@ -32,6 +34,8 @@ export class TrezorConnector extends Connector {
   private trezorConnect: TrezorConnect | null = null
 
   private accounts: string[] | null = null
+
+  private accountsOffset = 0
 
   private cancelActivation: () => void = () => void 0
 
@@ -93,9 +97,24 @@ export class TrezorConnector extends Connector {
 
   deactivate(): Promise<void> | void {
     this.activatedNetwork = null
+    this.accountsOffset = 0
     this.cancelActivation()
 
     return this.trezorConnect?.dispose()
+  }
+
+  async loadMoreAccounts(): Promise<void> {
+    await this.loadAccounts(this.accountsOffset + ACCOUNTS_LIMIT)
+  }
+
+  async loadAccounts(offset: number): Promise<void> {
+    this.accountsOffset = offset
+
+    const accounts = await import('./getAccountsList').then((module) =>
+      module.getAccountsList(this.trezorConnect!, offset, ACCOUNTS_LIMIT)
+    )
+
+    this.accounts = (this.accounts || []).concat(accounts || [])
   }
 
   private getCurrentAccount(): string {
@@ -118,7 +137,7 @@ export class TrezorConnector extends Connector {
     trezorConnect: TrezorConnect,
     _transformTypedData: typeof transformTypedData
   ) {
-    this.accounts = await import('./getAccountsList').then((module) => module.getAccountsAsync(trezorConnect))
+    await this.loadAccounts(0)
 
     const account = this.getCurrentAccount()
     const customProvider = new TrezorProvider(url, this.accounts!, trezorConnect, _transformTypedData)

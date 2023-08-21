@@ -9,12 +9,12 @@ import type { TrezorConnect } from '@trezor/connect-web'
  * This file contains cherry-picked code from import { TrezorSubprovider } from '@0x/subproviders'
  */
 
-export async function getAccountsAsync(trezorConnect: TrezorConnect, numberOfAccounts = 100): Promise<string[] | null> {
+export async function getAccountsList(trezorConnect: TrezorConnect, offset = 0, limit = 100): Promise<string[] | null> {
   const initialDerivedKeyInfo = await initialDerivedKeyInfoAsync(trezorConnect)
 
   if (!initialDerivedKeyInfo) return null
 
-  const derivedKeyInfos = calculateDerivedHDKeyInfos(initialDerivedKeyInfo, numberOfAccounts)
+  const derivedKeyInfos = calculateDerivedHDKeyInfos(initialDerivedKeyInfo, offset, limit)
 
   return derivedKeyInfos.map((k) => k.address)
 }
@@ -29,10 +29,10 @@ interface DerivedHDKeyInfo {
 class DerivedHDKeyInfoIterator {
   private index = 0
 
-  constructor(private parentDerivedKeyInfo: DerivedHDKeyInfo, private searchLimit = 1000) {}
+  constructor(private parentDerivedKeyInfo: DerivedHDKeyInfo, private offset = 0, private limit = 100) {}
   next() {
     const baseDerivationPath = this.parentDerivedKeyInfo.baseDerivationPath
-    const derivationIndex = this.index
+    const derivationIndex = this.offset + this.index
     const fullDerivationPath = `m/${baseDerivationPath}/${derivationIndex}`
     const path = `m/${derivationIndex}`
     const hdKey = this.parentDerivedKeyInfo.hdKey.derive(path)
@@ -43,7 +43,7 @@ class DerivedHDKeyInfoIterator {
       baseDerivationPath,
       derivationPath: fullDerivationPath,
     }
-    const isDone = this.index === this.searchLimit
+    const isDone = this.index === this.limit
     this.index++
     return {
       done: isDone,
@@ -55,7 +55,13 @@ class DerivedHDKeyInfoIterator {
   }
 }
 
+const derivedKeyInfoCache = new Map<TrezorConnect, DerivedHDKeyInfo>()
+
 async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise<DerivedHDKeyInfo | null> {
+  if (derivedKeyInfoCache.has(trezorConnect)) {
+    return derivedKeyInfoCache.get(trezorConnect) || null
+  }
+
   const response = await trezorConnect.getPublicKey({
     path: TREZOR_DERIVATION_PATH,
   })
@@ -68,17 +74,25 @@ async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise
   hdKey.chainCode = new Buffer(payload.chainCode, 'hex')
   const address = addressOfHDKey(hdKey)
 
-  return {
+  const info: DerivedHDKeyInfo = {
     hdKey,
     address,
     derivationPath: TREZOR_DERIVATION_PATH,
     baseDerivationPath: TREZOR_DERIVATION_PATH.slice(2),
   }
+
+  derivedKeyInfoCache.set(trezorConnect, info)
+
+  return info
 }
 
-function calculateDerivedHDKeyInfos(parentDerivedKeyInfo: DerivedHDKeyInfo, numberOfKeys: number): DerivedHDKeyInfo[] {
+function calculateDerivedHDKeyInfos(
+  parentDerivedKeyInfo: DerivedHDKeyInfo,
+  offset: number,
+  limit: number
+): DerivedHDKeyInfo[] {
   const derivedKeys: DerivedHDKeyInfo[] = []
-  const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, numberOfKeys)
+  const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, offset, limit)
 
   for (const key of derivedKeyIterator) {
     derivedKeys.push(key)
