@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "types": ["node", "vite/client"],
+    "baseUrl": "src",
+    "paths": {
+      "@cowswap/abis": ["../../../libs/abis/src/index.ts"],
+      "@cowswap/ui": ["../../../libs/ui/src/index.ts"],
+      "@cowswap/ui-utils": ["../../../libs/ui-utils/src/index.ts"],
+      "@cowswap/widget-lib": ["../../../libs/widget-lib/src/index.ts"],
+      "@cowswap/widget-react": ["../../../libs/widget-react/src/index.ts"]
+    }
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

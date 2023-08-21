@@ -20,7 +20,7 @@ Please see the:
 - [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
 - [CoW Protocol: Services](https://github.com/cowprotocol/services)
 
-You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
+You can block an entire list of tokens by passing in a tokenlist like [here](apps/cowswap-frontend/src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](apps/cowswap-frontend/src/constants/tokenLists/unsupported.tokenlist.json).
 
 ### Install Dependencies
 
@@ -176,7 +176,7 @@ To update its content:
 
 ## Service worker
 
-In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)
+In case of problems with the service worker cache you force a reset using [emergency.js](apps/cowswap-frontend/public/emergency.js)
 The plan:
 
 1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
@@ -197,5 +197,5 @@ REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
 ## Documentation
 
 1. [Oveall Architecture](docs/architecture-overview.md)
-2. [Amounts formatting](src/utils/amountFormat/README.md)
-3. [ABIs](src/libs/abis/README.md)
+2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
+3. [ABIs](libs/abis/README.md)

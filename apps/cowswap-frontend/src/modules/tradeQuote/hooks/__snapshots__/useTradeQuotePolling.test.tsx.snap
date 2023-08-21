@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useTradeQuotePolling() When wallet is NOT connected Then  the "useAddress" field in the quote request should be 0x000...0000 1`] = `
+Object {
+  "amount": "10000000",
+  "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
+  "chainId": 1,
+  "fromDecimals": 18,
+  "isEthFlow": false,
+  "kind": "sell",
+  "priceQuality": "optimal",
+  "receiver": undefined,
+  "sellToken": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+  "toDecimals": 18,
+  "userAddress": undefined,
+}
+`;
+
+exports[`useTradeQuotePolling() When wallet is connected Then should put account address into "useAddress" field in the quote request 1`] = `
+Object {
+  "amount": "10000000",
+  "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
+  "chainId": 1,
+  "fromDecimals": 18,
+  "isEthFlow": false,
+  "kind": "sell",
+  "priceQuality": "optimal",
+  "receiver": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
+  "sellToken": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+  "toDecimals": 18,
+  "userAddress": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
+}
+`;
