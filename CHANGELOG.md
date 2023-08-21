@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.45.0](https://github.com/cowprotocol/cowswap/compare/v1.44.7...v1.45.0) (2023-08-21)
+
+
+### Features
+
+* nx workspaces migration ([#2965](https://github.com/cowprotocol/cowswap/issues/2965)) ([f6f4e4d](https://github.com/cowprotocol/cowswap/commit/f6f4e4d0b143c4ecb056269facf2f26bce638b19))
+
+
+### Bug Fixes
+
+* **twap:** display "Minimum sell size" banner only when there is a buy amount ([#3064](https://github.com/cowprotocol/cowswap/issues/3064)) ([60c7e36](https://github.com/cowprotocol/cowswap/commit/60c7e36452b923242771f4b28f065625b60b5911))
+
 ## [1.44.7](https://github.com/cowprotocol/cowswap/compare/v1.44.6...v1.44.7) (2023-08-16)
 
 
