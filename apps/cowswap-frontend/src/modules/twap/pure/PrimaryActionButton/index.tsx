@@ -9,7 +9,7 @@ export interface PrimaryActionButtonContext {
   confirmTrade(): void
 }
 
-const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) => JSX.Element> = {
+const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => JSX.Element> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Loading...
