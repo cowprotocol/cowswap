@@ -58,8 +58,6 @@ import {
   setClaimsCount,
 } from '../actions'
 
-export { useUserClaimData, useUserHasAvailableClaim } from './hooksUni'
-
 const CLAIMS_REPO_BRANCH = 'main'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/cowprotocol/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
