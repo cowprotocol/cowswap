@@ -11,8 +11,6 @@ import ToC from './ToC'
 
 import { Footer } from '.'
 
-// AmplitudeAnalytics
-
 export default function LimitOrderFAQ() {
   const { toc, faqRef } = useToC()
 

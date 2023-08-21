@@ -3,6 +3,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { isFractionFalsy } from 'utils/isFractionFalsy'
+
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
 import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooShort'
@@ -25,13 +27,13 @@ export enum TwapFormState {
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
+  const { twapOrder, isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
 
   if (!isSafeApp) return TwapFormState.NOT_SAFE
 
   if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 
-  if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
+  if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL
   }
 

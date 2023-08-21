@@ -1,10 +1,12 @@
+import { useSetAtom } from 'jotai'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { toggleAccountSelectorModalAtom, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
@@ -126,6 +128,7 @@ export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
   const { active } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const toggleWalletModal = useToggleWalletModal()
+  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
@@ -150,6 +153,7 @@ export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
             toggleWalletModal={toggleWalletModal}
+            toggleAccountSelectorModal={toggleAccountSelectorModal}
             handleCloseOrdersPanel={handleCloseOrdersPanel}
           />
         </Wrapper>

@@ -11,6 +11,9 @@ import { PopupContent } from 'legacy/state/application/reducer'
 import { AnimatedFader, PopupWrapper, StyledClose } from './styled'
 import { TransactionPopup } from './TransactionPopup'
 
+/**
+ * @deprecated use @cowswap/snackbars instead
+ */
 export function PopupItem({
   removeAfterMs,
   content,

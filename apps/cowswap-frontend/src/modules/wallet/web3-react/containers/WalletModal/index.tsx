@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
@@ -11,9 +12,9 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { ConnectionType, useWalletInfo } from 'modules/wallet'
+import { ConnectionType, toggleAccountSelectorModalAtom, useWalletInfo } from 'modules/wallet'
 import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
@@ -31,6 +32,7 @@ export function WalletModal() {
 
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
   const toggleWalletModal = useToggleWalletModal()
+  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const openOptions = useCallback(() => {
     setWalletView('options')
@@ -74,6 +76,7 @@ export function WalletModal() {
     async (connector: Connector) => {
       const connection = getWeb3ReactConnection(connector)
       const connectionType = connection.type
+      const isHardWareWallet = getIsHardWareWallet(connectionType)
 
       // Skips wallet connection if the connection should override the default
       // behavior, i.e. install MetaMask or launch Coinbase app
@@ -110,6 +113,10 @@ export function WalletModal() {
         }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
+
+        if (isHardWareWallet) {
+          toggleAccountSelectorModal()
+        }
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
         dispatch(updateSelectedWallet({ wallet: undefined }))
@@ -124,7 +131,7 @@ export function WalletModal() {
         )
       }
     },
-    [chainId, dispatch, toggleWalletModal]
+    [chainId, dispatch, toggleWalletModal, toggleAccountSelectorModal]
   )
 
   return (

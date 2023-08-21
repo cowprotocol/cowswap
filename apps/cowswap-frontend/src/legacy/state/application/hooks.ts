@@ -65,7 +65,9 @@ export function useTogglePrivacyPolicy(): () => void {
   return useToggleModal(ApplicationModal.PRIVACY_POLICY)
 }
 
-// returns a function that allows removing a popup via its key
+/**
+ * @deprecated use @cowswap/snackbars instead
+ */
 export function useRemovePopup(): (key: string) => void {
   const dispatch = useAppDispatch()
   return useCallback(
@@ -76,7 +78,9 @@ export function useRemovePopup(): (key: string) => void {
   )
 }
 
-// get the list of active popups
+/**
+ * @deprecated use @cowswap/snackbars instead
+ */
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useAppSelector((state: AppState) => state.application.popupList)
   return useMemo(() => list.filter((item) => item.show), [list])
@@ -97,8 +101,9 @@ export function useCloseModals(): () => void {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-// mod: add removeAfterMs change
-// returns a function that allows adding a popup
+/**
+ * @deprecated use @cowswap/snackbars instead
+ */
 export function useAddPopup(): (content: PopupContent, key?: string, removeAfterMs?: number | null) => void {
   const dispatch = useAppDispatch()
 
