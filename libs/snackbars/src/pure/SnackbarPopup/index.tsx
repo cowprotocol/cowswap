@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   position: relative;
   border-radius: 10px;
   padding: 20px 40px 20px 20px;
+  margin-bottom: 20px;
   overflow: hidden;
   border: 2px solid ${({ theme }) => theme.black};
   box-shadow: 2px 2px 0 ${({ theme }) => theme.black};

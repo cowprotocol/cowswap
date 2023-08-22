@@ -26,9 +26,8 @@ const List = styled.div`
 
 const Host = styled.div`
   position: fixed;
-  top: 0;
-  right: 0;
-  padding: 20px;
+  top: 80px;
+  right: 20px;
   z-index: 6;
   min-width: 300px;
   max-width: 800px;
@@ -75,7 +74,7 @@ export function SnackbarsWidget() {
   )
 
   return (
-    <Host onClick={resetSnackbarsState}>
+    <Host>
       <List>
         {snackbars.map((snackbar) => {
           const icon = snackbar.icon
@@ -93,7 +92,7 @@ export function SnackbarsWidget() {
           )
         })}
       </List>
-      {snackbars.length > 0 && <Overlay />}
+      {snackbars.length > 0 && <Overlay onClick={resetSnackbarsState} />}
     </Host>
   )
 }
