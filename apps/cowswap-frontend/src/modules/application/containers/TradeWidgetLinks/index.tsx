@@ -59,8 +59,8 @@ const MenuItem = ({ routePath, item, isActive }: { routePath: string; item: Menu
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {item.featureGuard && (
-        <styledEl.Badge>
-          <Trans>Beta</Trans>
+        <styledEl.Badge type={'success'}>
+          <Trans>NEW!</Trans>
         </styledEl.Badge>
       )}
     </styledEl.Link>
