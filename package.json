@@ -14,7 +14,7 @@
     "test": "nx run-many -t test -p $npm_package_config_enabledApps",
     "e2e": "nx run-many -t e2e -p $npm_package_config_enabledApps",
     "lint": "nx run-many -t lint -p $npm_package_config_enabledApps",
-    "build": "nx run cowswap-frontend:build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:build",
     "cosmos:export": "nx run cowswap-frontend:cosmos:export",
     "prebuild": "nx run cowswap-frontend:i18n",
     "postbuild": "rm -rf build && mkdir build && mv dist/apps/cowswap-frontend/* build",
