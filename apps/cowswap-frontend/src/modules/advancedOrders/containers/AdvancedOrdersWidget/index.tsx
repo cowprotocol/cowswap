@@ -26,7 +26,7 @@ export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
 ]
 
 const UNLOCK_SCREEN = {
-  title: 'Unlock the Power of Advanced Orders',
+  title: 'Unlock the Power of TWAP Orders',
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
   buttonText: 'Unlock TWAP orders (BETA)',

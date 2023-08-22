@@ -23,7 +23,7 @@ const MENU_ITEMS: MenuItemConfig[] = [
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
   {
     route: Routes.ADVANCED_ORDERS,
-    label: 'Advanced',
+    label: 'TWAP',
     featureGuard: 'advancedOrdersEnabled',
   },
 ]
