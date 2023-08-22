@@ -15,7 +15,7 @@
     "postinstall": "yarn i18n",
     "cosmos:clear": "nx exec -- rm -rf ./public/cosmos",
     "cosmos:run": "nx exec -- yarn _cosmos:run ",
-    "cosmos:export": "nx exec -- cross-env NODE_ENV=development cosmos-export",
+    "cosmos:export": "nx exec -- cross-env NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 cosmos-export",
     "_cosmos:run": "yarn cosmos:clear && cosmos"
   },
   "browser": {
