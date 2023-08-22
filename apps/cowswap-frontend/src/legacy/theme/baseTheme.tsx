@@ -35,7 +35,8 @@ export function colors(darkMode: boolean): Colors {
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#ED6237' : '#D94719',
-    alert: darkMode ? '#DB971E' : '#DB971E',
+    alert: '#DB971E',
+    alert2: '#F8D06B',
     information: darkMode ? '#428dff' : '#0d5ed9',
     success: darkMode ? '#00D897' : '#007B28',
     pending: '#43758C', // deprecate
@@ -390,12 +391,13 @@ export const UniThemedGlobalStyle = css`
 
     // Colors
     --cow-color-white: ${({ theme }) => theme.white};
-    --cow-color-blue: ${({ theme }) => theme.bg2};
+    --cow-color-blue: ${({ theme }) => theme.blueDark2};
     --cow-color-border: ${({ theme }) => theme.grey1};
     --cow-color-lightBlue: ${({ theme }) => theme.information};
     --cow-color-lightBlue-opacity-90: ${({ theme }) => transparentize(0.1, theme.information)}; // 90% opacity
     --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
     --cow-color-yellow: ${({ theme }) => theme.alert};
+    --cow-color-yellow-light: ${({ theme }) => theme.alert2};
 
     // States
     --cow-color-information: var(--cow-color-lightBlue);
@@ -405,6 +407,10 @@ export const UniThemedGlobalStyle = css`
     --cow-color-alert: ${({ theme }) => theme.alert};
     --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
     --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
+
+    --cow-color-alert2: var(--cow-color-yellow-light);
+    --cow-color-alert2-bg: var(--cow-color-alert2);
+    --cow-color-alert2-text: var(--cow-color-blue);
 
     --cow-color-success: ${({ theme }) => theme.success};
     --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};

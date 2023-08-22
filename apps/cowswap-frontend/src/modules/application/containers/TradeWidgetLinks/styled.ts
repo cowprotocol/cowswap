@@ -2,11 +2,12 @@ import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-type BadgeType = 'information' | 'success' | 'alert' | 'default';
+import { BadgeType } from '.'
 
 const badgeBackgrounds: Record<BadgeType, string> = {
   information: 'var(--cow-color-information-bg)',
   alert: 'var(--cow-color-alert-bg)',
+  alert2: 'var(--cow-color-alert2-bg)',
   success: 'var(--cow-color-success-bg)',
   default: 'transparent', // text only
 };
@@ -14,6 +15,7 @@ const badgeBackgrounds: Record<BadgeType, string> = {
 const badgeColors: Record<BadgeType, string> = {
   information: 'var(--cow-color-information-text)',
   alert: 'var(--cow-color-alert-text)',
+  alert2: 'var(--cow-color-alert2-text)',
   success: 'var(--cow-color-success-text)',
   default: 'var(--cow-color-text1-inactive)', // text only
 };
@@ -37,6 +39,10 @@ export const Badge = styled.div<{ type?: BadgeType }>`
     color: ${({ type }) => badgeColors[type || 'default']};
   }
 `
+
+Badge.defaultProps = {
+  type: 'default'
+};
 
 export const Link = styled(NavLink)`
   display: flex;
