@@ -59,7 +59,7 @@ const MenuItem = ({ routePath, item, isActive }: { routePath: string; item: Menu
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {item.featureGuard && (
-        <styledEl.Badge type={'success'}>
+        <styledEl.Badge>
           <Trans>NEW!</Trans>
         </styledEl.Badge>
       )}

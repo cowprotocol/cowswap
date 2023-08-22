@@ -27,7 +27,7 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   font-size: 9px;
   font-weight: inherit;
   text-transform: uppercase;
-  padding: ${({ type }) => (type === 'default' ? '0' : '4px 6px')};
+  padding: ${({ type }) => (!type || type === 'default' ? '0' : '4px 6px')};
   letter-spacing: 0.2px;
   font-weight: 600;
   transition: color 0.15s ease-in-out;
