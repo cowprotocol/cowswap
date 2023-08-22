@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 
-import { usePriceImpact } from 'legacy/hooks/usePriceImpact'
+import { useFiatValuePriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
@@ -10,11 +10,11 @@ import { priceImpactAtom } from '../state/priceImpactAtom'
 export function PriceImpactUpdater() {
   const updatePriceImpact = useSetAtom(priceImpactAtom)
   const params = useTradePriceImpactParams()
-  const { error, loading, priceImpact } = usePriceImpact(params)
+  const { isLoading, priceImpact } = useFiatValuePriceImpact(params)
 
   useSafeEffect(() => {
-    updatePriceImpact({ error, loading, priceImpact })
-  }, [error, loading, updatePriceImpact, priceImpact])
+    updatePriceImpact({ error: undefined, loading: isLoading, priceImpact })
+  }, [isLoading, updatePriceImpact, priceImpact])
 
   return null
 }
