@@ -4,8 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'

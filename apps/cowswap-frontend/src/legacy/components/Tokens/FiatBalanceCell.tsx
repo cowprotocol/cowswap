@@ -3,7 +3,8 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
+import { useHigherUSDValue } from 'modules/fiatAmount'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 

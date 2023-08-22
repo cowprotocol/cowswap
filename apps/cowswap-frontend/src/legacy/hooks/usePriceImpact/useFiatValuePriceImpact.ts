@@ -1,5 +1,6 @@
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
+
+import { useHigherUSDValue } from 'modules/fiatAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
