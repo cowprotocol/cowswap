@@ -63,7 +63,7 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: TryActiv
     !getIsZengoWallet(walletName) &&
     !getIsAmbireWallet(walletName) &&
     !getIsAlphaWallet(walletName) &&
-    !getIsTrustWallet(null, walletName)
+    !getIsTrustWallet(walletName)
 
   const tooltipText = useMemo(() => {
     if (isDeprecated) {

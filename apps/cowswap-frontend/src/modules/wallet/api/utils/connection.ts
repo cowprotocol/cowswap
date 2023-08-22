@@ -81,8 +81,8 @@ export function getIsAlphaWallet(name: string | undefined): boolean {
   return name?.toLocaleLowerCase().includes('alpha') || false
 }
 
-export function getIsTrustWallet(provider: any, name?: string): boolean {
-  return provider?.isTrust || name?.toLocaleLowerCase().includes('trust') || false
+export function getIsTrustWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('trust') || false
 }
 
 export function getIsTallyWallet(provider: any, name?: string): boolean {

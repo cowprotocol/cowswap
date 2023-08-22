@@ -16,6 +16,7 @@ import { gnosisSafeConnection } from '../connection/safe'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
+
   try {
     if (connector.connectEagerly) {
       await connector.connectEagerly(chainId)

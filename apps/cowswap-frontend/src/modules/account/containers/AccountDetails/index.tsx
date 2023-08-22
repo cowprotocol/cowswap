@@ -22,6 +22,7 @@ import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
+import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
 import {
   getConnectionIcon,
   getConnectionName,
@@ -29,8 +30,6 @@ import {
   getIsMetaMask,
 } from 'modules/wallet/api/utils/connection'
 import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -134,7 +133,6 @@ export function AccountDetails({
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
-  const connection = getWeb3ReactConnection(connector)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -146,18 +144,18 @@ export function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const isWalletConnect = useIsWalletConnect()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
+  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
-
-  const connectionType = useMemo(() => getWeb3ReactConnection(connector), [connector])
 
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
+
     const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
     return (
@@ -174,7 +172,7 @@ export function AccountDetails({
   }
 
   const networkLabel = NETWORK_LABELS[chainId]
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType.type)
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
 
   return (
     <Wrapper>

@@ -4,10 +4,10 @@ import { Connector } from '@web3-react/types'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { RPC_URLS } from 'legacy/constants/networks'
 
-import { networkConnection } from 'modules/wallet/web3-react/connection/network'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { getIsWalletConnect } from './useIsWalletConnect'
 
-import { isChainAllowed } from '../connection'
+import { ConnectionType } from '../../api/types'
+import { getWeb3ReactConnection, isChainAllowed } from '../connection'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {
@@ -25,7 +25,13 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {
   if (!isChainAllowed(connector, chainId)) {
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
-  } else if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
+  }
+
+  const connection = getWeb3ReactConnection(connector)
+  const isNetworkConnection = connection.type === ConnectionType.NETWORK
+  const isWalletConnect = getIsWalletConnect(connector)
+
+  if (isNetworkConnection || isWalletConnect) {
     await connector.activate(chainId)
   } else {
     const info = getChainInfo(chainId)

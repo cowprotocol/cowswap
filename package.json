@@ -106,7 +106,7 @@
     "@web3-react/types": "^8.2.0",
     "@web3-react/url": "^8.2.0",
     "@web3-react/walletconnect": "^8.2.0",
-    "@web3-react/walletconnect-v2": "^8.3.6",
+    "@web3-react/walletconnect-v2": "^8.3.7",
     "bnc-sdk": "^4.6.0",
     "buffer": "^6.0.3",
     "cids": "^1.0.0",
