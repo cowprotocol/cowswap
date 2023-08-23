@@ -1,15 +1,15 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
 // import ReactGA from 'react-ga4'
+import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-
 // import { UniIcon, LogoImage } from '../Header'
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import Footer from 'legacy/components/Footer'
-import { UniIcon, LogoImage, HeaderRow } from 'legacy/components/Header/styled' // mod
+import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled' // mod
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { Page } from 'modules/application/pure/Page'
@@ -146,22 +146,26 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
 
     if (error !== null) {
       return (
-        // TODO: the strcture changed in the original file. We might want to re-use some stuff
-        <AppWrapper>
-          <HeaderWrapper>
-            <HeaderRow marginRight="0">
-              <a href={Routes.HOME}>
-                <UniIcon>
-                  <LogoImage />
-                </UniIcon>
-              </a>
-            </HeaderRow>
-          </HeaderWrapper>
-          <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
-          <FooterWrapper>
-            <Footer />
-          </FooterWrapper>
-        </AppWrapper>
+        <Sentry.ErrorBoundary
+          fallback={
+            // TODO: the strcture changed in the original file. We might want to re-use some stuff
+            <AppWrapper>
+              <HeaderWrapper>
+                <HeaderRow marginRight="0">
+                  <a href={Routes.HOME}>
+                    <UniIcon>
+                      <LogoImage />
+                    </UniIcon>
+                  </a>
+                </HeaderRow>
+              </HeaderWrapper>
+              <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
+              <FooterWrapper>
+                <Footer />
+              </FooterWrapper>
+            </AppWrapper>
+          }
+        />
       )
     }
     return this.props.children
