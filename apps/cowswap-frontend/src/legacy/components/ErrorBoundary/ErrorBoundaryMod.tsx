@@ -138,17 +138,18 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
   }
 
   render() {
-    document.body.classList.remove('noScroll') // mod
-    const { error } = this.state
+    return (
+      <Sentry.ErrorBoundary
+        showDialog={false}
+        fallback={({ error: sentryError }) => {
+          document.body.classList.remove('noScroll') // mod
+          const { error: localError } = this.state
+          const error = localError || sentryError
 
-    const isChunkLoadError =
-      error?.name === 'ChunkLoadError' || error?.message.includes('Failed to fetch dynamically imported module')
+          const isChunkLoadError =
+            error?.name === 'ChunkLoadError' || error?.message.includes('Failed to fetch dynamically imported module')
 
-    if (error !== null) {
-      return (
-        <Sentry.ErrorBoundary
-          fallback={
-            // TODO: the strcture changed in the original file. We might want to re-use some stuff
+          return (
             <AppWrapper>
               <HeaderWrapper>
                 <HeaderRow marginRight="0">
@@ -164,10 +165,11 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
                 <Footer />
               </FooterWrapper>
             </AppWrapper>
-          }
-        />
-      )
-    }
-    return this.props.children
+          )
+        }}
+      >
+        {this.props.children}
+      </Sentry.ErrorBoundary>
+    )
   }
 }
