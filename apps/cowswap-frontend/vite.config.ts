@@ -125,6 +125,7 @@ export default defineConfig(({ mode }) => {
         authToken: process.env.REACT_APP_SENTRY_AUTH_TOKEN,
         org: 'cowprotocol',
         project: 'cowswap',
+        telemetry: false,
       }),
     ],
 
