@@ -398,13 +398,14 @@ export const UniThemedGlobalStyle = css`
     --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
     --cow-color-yellow: ${({ theme }) => theme.alert};
     --cow-color-yellow-light: ${({ theme }) => theme.alert2};
+    --cow-color-green: ${({ theme }) => theme.success};
 
     // States
     --cow-color-information: var(--cow-color-lightBlue);
     --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
     --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
 
-    --cow-color-alert: ${({ theme }) => theme.alert};
+    --cow-color-alert: var(--cow-color-yellow);
     --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
     --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
 
@@ -412,7 +413,7 @@ export const UniThemedGlobalStyle = css`
     --cow-color-alert2-bg: var(--cow-color-alert2);
     --cow-color-alert2-text: var(--cow-color-blue);
 
-    --cow-color-success: ${({ theme }) => theme.success};
+    --cow-color-success: var(--cow-color-green);
     --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
     --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
 

@@ -20,7 +20,6 @@ interface MenuItemConfig {
   badgeType?: BadgeType;
 }
 
-
 export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default';
 
 const MENU_ITEMS: MenuItemConfig[] = [
@@ -34,7 +33,6 @@ const MENU_ITEMS: MenuItemConfig[] = [
     badgeType: 'alert2'
   },
 ]
-
 
 interface TradeWidgetLinksProps {
   highlightedBadgeText?: string;
@@ -86,7 +84,7 @@ const MenuItem = ({ routePath, item, isActive, badgeText, badgeType }: {
   <styledEl.MenuItem isActive={isActive}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {badgeText && (
+      {item.featureGuard && badgeText && (
         <styledEl.Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
         </styledEl.Badge>

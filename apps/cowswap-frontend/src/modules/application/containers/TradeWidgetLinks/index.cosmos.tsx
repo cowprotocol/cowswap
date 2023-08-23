@@ -2,7 +2,6 @@ import { Widget } from 'modules/application/pure/Widget'
 
 import { TradeWidgetLinks, BadgeType } from '.';
 
-
 type BadgeInfo = {
   text: string;
   type: BadgeType;
@@ -30,7 +29,6 @@ const BadgeFixtures = BADGES.reduce<Fixtures>((fixtures, badge) => {
     </Widget>
   );
 
-  // Set the badge text as the key for the Fixture in the fixtures object
   fixtures[`Badge - ${badge.text} (${badge.type})`] = Fixture;
   return fixtures;
 }, {});
