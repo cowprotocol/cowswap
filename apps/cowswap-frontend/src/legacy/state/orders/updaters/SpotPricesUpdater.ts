@@ -55,18 +55,25 @@ function useMarkets(chainId: SupportedChainId, account: string | undefined): Mar
 }
 
 interface UseUpdatePendingProps {
+  isWindowVisibleRef: React.MutableRefObject<boolean>
   isUpdating: React.MutableRefObject<boolean>
   markets: MarketRecord
   updateSpotPrices: (update: UpdateSpotPriceAtom) => void
 }
 
 function useUpdatePending(props: UseUpdatePendingProps) {
-  const { isUpdating, markets, updateSpotPrices } = props
+  const { isWindowVisibleRef, isUpdating, markets, updateSpotPrices } = props
+
   return useCallback(async () => {
     if (isUpdating.current) {
       console.debug('[SpotPricesUpdater] Update in progress, skipping')
       return
     }
+
+    if (!isWindowVisibleRef.current) {
+      return
+    }
+
     console.debug('[SpotPricesUpdater] Starting update')
 
     // Lock updates
@@ -118,20 +125,18 @@ export function SpotPricesUpdater(): null {
   const { chainId, account } = useWalletInfo()
 
   const isWindowVisible = useIsWindowVisible()
+  const isWindowVisibleRef = useRef(isWindowVisible)
+
   const updateSpotPrices = useSetAtom(updateSpotPricesAtom)
   const markets = useMarkets(chainId, account)
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
-  const updatePending = useUpdatePending({ isUpdating, markets, updateSpotPrices })
+  const updatePending = useUpdatePending({ isWindowVisibleRef, isUpdating, markets, updateSpotPrices })
+
+  isWindowVisibleRef.current = isWindowVisible
 
   useEffect(() => {
-    if (!chainId || !isWindowVisible) {
-      console.debug('[SpotPricesUpdater] No need to update spot prices')
-      return
-    }
-
-    console.debug('[SpotPricesUpdater] Periodically check spot prices')
-
     updatePending()
+
     const interval = setInterval(updatePending, SPOT_PRICE_CHECK_POLL_INTERVAL)
 
     return () => clearInterval(interval)
