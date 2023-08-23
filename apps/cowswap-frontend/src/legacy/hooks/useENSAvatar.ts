@@ -12,7 +12,7 @@ import { fetchWithBackoff } from 'common/utils/fetch'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import uriToHttp from 'lib/utils/uriToHttp'
 
-import { useENSRegistrarContract, useENSResolverContract, useERC721Contract, useERC1155Contract } from './useContract'
+import { useENSRegistrarContract, useENSResolverContract, useERC1155Contract, useERC721Contract } from './useContract'
 import useDebounce from './useDebounce'
 import useENSName from './useENSName'
 
@@ -144,7 +144,7 @@ function useERC1155Uri(
   const uri = useSingleCallResult(contract, 'uri', idArgument)
   // ERC-1155 allows a generic {id} in the URL, so prepare to replace if relevant,
   //   in lowercase hexadecimal (with no 0x prefix) and leading zero padded to 64 hex characters.
-  const idHex = id ? hexZeroPad(BigNumber.from(id).toHexString(), 32).substring(2) : id
+  const idHex = getIdHex(id)
   return useMemo(
     () => ({
       uri: !enforceOwnership || balance.result?.[0] > 0 ? uri.result?.[0]?.replaceAll('{id}', idHex) : undefined,
@@ -152,4 +152,14 @@ function useERC1155Uri(
     }),
     [balance.loading, balance.result, enforceOwnership, uri.loading, uri.result, idHex]
   )
+}
+
+function getIdHex(id: string | undefined): string | undefined {
+  try {
+    return id ? hexZeroPad(BigNumber.from(id).toHexString(), 32).substring(2) : id
+  } catch (e) {
+    console.log(`Couldn't get id hex from id: ${id}`, e)
+
+    return undefined
+  }
 }
