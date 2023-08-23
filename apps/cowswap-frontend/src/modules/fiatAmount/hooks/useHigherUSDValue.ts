@@ -60,8 +60,6 @@ function useCoingeckoUsdPrice(currency?: Currency) {
   currencyRef.current = currency
 
   const isNative = !!currency?.isNative
-  // use wrapped address equivalent if native (DONT USE "ETH" or "XDAI")
-  const tokenAddress = currency?.wrapped.address
 
   // get SWR cached coingecko usd price
   const {
@@ -70,7 +68,7 @@ function useCoingeckoUsdPrice(currency?: Currency) {
     isLoading,
   } = useGetCoingeckoUsdPrice({
     chainId,
-    tokenAddress,
+    currency,
     isNative,
   })
 
@@ -114,7 +112,7 @@ function useCoingeckoUsdPrice(currency?: Currency) {
     } catch (error: any) {
       console.error(
         '[useStablecoinPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
-        tokenAddress,
+        currencyRef.current?.symbol,
         error
       )
       return batchedUpdate(() => {
@@ -123,7 +121,7 @@ function useCoingeckoUsdPrice(currency?: Currency) {
       })
     }
     // don't depend on Currency (deep nested object)
-  }, [chainId, blockNumber, tokenAddress, priceResponse, errorResponse, isNative])
+  }, [chainId, blockNumber, priceResponse, errorResponse, isNative])
 
   return { price, error, isLoading }
 }
