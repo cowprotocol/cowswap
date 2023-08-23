@@ -24,15 +24,15 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "cowswap-frontend:build"
+        "buildTarget": "cowswap-frontend:build --verbose"
       },
       "configurations": {
         "development": {
-          "buildTarget": "cowswap-frontend:build:development",
+          "buildTarget": "cowswap-frontend:build:development --verbose",
           "hmr": true
         },
         "production": {
-          "buildTarget": "cowswap-frontend:build:production",
+          "buildTarget": "cowswap-frontend:build:production --verbose",
           "hmr": false
         }
       }
