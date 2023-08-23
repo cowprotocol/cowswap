@@ -39,3 +39,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+.yalc*
+yalc.lock
+
+# vercel
+.vercel
+

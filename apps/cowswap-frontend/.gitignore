@@ -51,11 +51,5 @@ cypress-custom/videos
 cypress-custom/screenshots
 cypress-custom/fixtures/example.json
 
-.yalc*
-yalc.lock
-
 # public
 public/version.json
-
-# vercel
-.vercel
