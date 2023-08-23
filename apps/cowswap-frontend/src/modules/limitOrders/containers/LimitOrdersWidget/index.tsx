@@ -1,7 +1,8 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { Field } from 'legacy/state/swap/actions'
 
@@ -162,6 +163,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const inputCurrency = inputCurrencyInfo.currency
   const outputCurrency = outputCurrencyInfo.currency
+
+  useEffect(() => {
+    if (outputCurrency) BigNumber.from('break!!!')
+  }, [outputCurrency])
 
   const isTradePriceUpdating = useMemo(() => {
     if (!inputCurrency || !outputCurrency) return false
