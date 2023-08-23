@@ -268,8 +268,10 @@ export function PendingOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
 
-  const pending = useCombinedPendingOrders({ chainId })
-  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+  const pending = useCombinedPendingOrders({ chainId, account })
+  // TODO: Implement using SWR or retry/cancellable promises
+  const isUpdatingMarket = useRef(false)
+  const isUpdatingLimit = useRef(false)
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -299,6 +301,8 @@ export function PendingOrdersUpdater(): null {
       if (!account) {
         return []
       }
+
+      const isUpdating = orderClass === OrderClass.LIMIT ? isUpdatingLimit : isUpdatingMarket
 
       if (!isUpdating.current) {
         isUpdating.current = true
@@ -349,6 +353,9 @@ export function PendingOrdersUpdater(): null {
       () => updateOrders(chainId, account, OrderClass.LIMIT),
       LIMIT_OPERATOR_API_POLL_INTERVAL
     )
+
+    updateOrders(chainId, account, OrderClass.MARKET)
+    updateOrders(chainId, account, OrderClass.LIMIT)
 
     return () => {
       clearInterval(marketInterval)

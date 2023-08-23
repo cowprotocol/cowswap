@@ -25,8 +25,8 @@ type MarketRecord = Record<
   }
 >
 
-function useMarkets(chainId: SupportedChainId): MarketRecord {
-  const pending = useCombinedPendingOrders({ chainId })
+function useMarkets(chainId: SupportedChainId, account: string | undefined): MarketRecord {
+  const pending = useCombinedPendingOrders({ chainId, account })
 
   return useSafeMemo(() => {
     return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(
@@ -115,11 +115,11 @@ function useUpdatePending(props: UseUpdatePendingProps) {
  * Queries the spot price for given markets at every SPOT_PRICE_CHECK_POLL_INTERVAL
  */
 export function SpotPricesUpdater(): null {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
 
   const isWindowVisible = useIsWindowVisible()
   const updateSpotPrices = useSetAtom(updateSpotPricesAtom)
-  const markets = useMarkets(chainId)
+  const markets = useMarkets(chainId, account)
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   const updatePending = useUpdatePending({ isUpdating, markets, updateSpotPrices })
 
