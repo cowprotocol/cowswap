@@ -6,9 +6,9 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
-import { useHigherUSDValue } from 'modules/fiatAmount'
+import { useTradeUSDValues } from 'modules/fiatAmount'
 
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
@@ -25,19 +25,25 @@ export function useFillSwapDerivedState() {
   const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
-  const inputCurrencyAmount = (isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee) || null
-  const outputCurrencyAmount = (!isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee) || null
+  const inputCurrencyAmount = isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee
+  const outputCurrencyAmount = !isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee
 
-  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined).value
-  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined).value
+  const tradeAmounts = useSafeMemo(
+    () => ({ inputAmount: inputCurrencyAmount, outputAmount: outputCurrencyAmount }),
+    [inputCurrencyAmount, outputCurrencyAmount]
+  )
+  const {
+    inputAmount: { value: inputCurrencyFiatAmount },
+    outputAmount: { value: outputCurrencyFiatAmount },
+  } = useTradeUSDValues(tradeAmounts)
 
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 
   const state = useSafeMemoObject({
     inputCurrency,
     outputCurrency,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
+    inputCurrencyAmount: inputCurrencyAmount || null,
+    outputCurrencyAmount: outputCurrencyAmount || null,
     slippageAdjustedSellAmount,
     inputCurrencyBalance,
     outputCurrencyBalance,

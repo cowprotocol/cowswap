@@ -4,11 +4,11 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useHigherUSDValue } from 'modules/fiatAmount'
+import { useTradeUSDValues } from 'modules/fiatAmount'
 import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
@@ -29,13 +29,18 @@ export function useRateInfoParams(
     [activeRate]
   )
 
-  const activeRateFiatAmount = useHigherUSDValue(
-    tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined)
-  ).value
+  const tradeAmounts = useSafeMemo(
+    () => ({
+      inputAmount: tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined),
+      outputAmount: tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined),
+    }),
+    [inputCurrencyAmount, outputCurrencyAmount]
+  )
 
-  const invertedActiveRateFiatAmount = useHigherUSDValue(
-    tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined)
-  ).value
+  const {
+    inputAmount: { value: invertedActiveRateFiatAmount },
+    outputAmount: { value: activeRateFiatAmount },
+  } = useTradeUSDValues(tradeAmounts)
 
   return useSafeMemoObject({
     chainId,

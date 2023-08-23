@@ -1,1 +1,1 @@
-export { useHigherUSDValue, useCoingeckoUsdValue } from './hooks/useHigherUSDValue'
+export { useCoingeckoUsdValue, useTradeUSDValues } from './hooks/useHigherUSDValue'

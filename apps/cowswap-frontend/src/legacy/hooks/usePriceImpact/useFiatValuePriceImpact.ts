@@ -1,6 +1,6 @@
 import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
 
-import { useHigherUSDValue } from 'modules/fiatAmount'
+import { useTradeUSDValues } from 'modules/fiatAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -12,8 +12,11 @@ export function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts) {
   const input = areBothValuesPresent ? INPUT : undefined
   const output = areBothValuesPresent ? OUTPUT : undefined
 
-  const { value: fiatValueInput, isLoading: inputIsLoading } = useHigherUSDValue(input)
-  const { value: fiatValueOutput, isLoading: outputIsLoading } = useHigherUSDValue(output)
+  const tradeAmounts = useSafeMemo(() => ({ inputAmount: input, outputAmount: output }), [input, output])
+  const {
+    inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
+    outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
+  } = useTradeUSDValues(tradeAmounts)
 
   // Only compute price impact after BOTH finished loading
   // This prevents the impact look like it's ready but still loading

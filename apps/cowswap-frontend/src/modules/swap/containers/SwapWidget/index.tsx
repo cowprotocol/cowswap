@@ -17,7 +17,7 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { useHigherUSDValue } from 'modules/fiatAmount'
+import { useTradeUSDValues } from 'modules/fiatAmount'
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -43,6 +43,7 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -89,6 +90,15 @@ export function SwapWidget() {
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
   const isSellTrade = independentField === Field.INPUT
 
+  const tradeAmounts = useSafeMemo(
+    () => ({ inputAmount: trade?.inputAmountWithoutFee, outputAmount: trade?.outputAmountWithoutFee }),
+    [trade]
+  )
+  const {
+    inputAmount: { value: inputUsdValue },
+    outputAmount: { value: outputUsdValue },
+  } = useTradeUSDValues(tradeAmounts)
+
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
   const inputCurrencyInfo: CurrencyInfo = {
@@ -97,7 +107,7 @@ export function SwapWidget() {
     amount: parsedAmounts.INPUT || null,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee).value,
+    fiatAmount: inputUsdValue,
     receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
@@ -107,7 +117,7 @@ export function SwapWidget() {
     amount: parsedAmounts.OUTPUT || null,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee).value,
+    fiatAmount: outputUsdValue,
     receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 

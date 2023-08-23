@@ -12,8 +12,10 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { TradeAmounts } from 'common/types'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 interface GetPriceQuoteParams {
   currencyAmount: Nullish<CurrencyAmount<Currency>>
@@ -22,11 +24,18 @@ interface GetPriceQuoteParams {
   isLoading: boolean
 }
 
-// common logic for returning price quotes
-function useGetPriceQuote({ price, error, currencyAmount, isLoading }: GetPriceQuoteParams): {
+interface UsdAmountInfo {
   value: CurrencyAmount<Token> | null
   isLoading: boolean
-} {
+}
+
+export interface TradeUSDAmounts {
+  inputAmount: UsdAmountInfo
+  outputAmount: UsdAmountInfo
+}
+
+// common logic for returning price quotes
+function useGetPriceQuote({ price, error, currencyAmount, isLoading }: GetPriceQuoteParams): UsdAmountInfo {
   return useMemo(() => {
     if (!price || error || !currencyAmount) return { value: null, isLoading }
 
@@ -119,17 +128,27 @@ function useCoingeckoUsdPrice(currency?: Currency) {
   return { price, error, isLoading }
 }
 
-export function useCoingeckoUsdValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
+export function useCoingeckoUsdValue(currencyAmount: Nullish<CurrencyAmount<Currency>>): UsdAmountInfo {
   const coingeckoUsdPrice = useCoingeckoUsdPrice(currencyAmount?.currency)
 
   return useGetPriceQuote({ ...coingeckoUsdPrice, currencyAmount })
 }
 
-export function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
+function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currency>>): UsdAmountInfo {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const checkedCurrencyAmount = isWrapOrUnwrap ? undefined : currencyAmount
 
   const { value, isLoading } = useCoingeckoUsdValue(checkedCurrencyAmount)
 
   return useSafeMemo(() => ({ value, isLoading }), [value, isLoading])
+}
+
+export function useTradeUSDValues({ inputAmount, outputAmount }: Partial<TradeAmounts>): TradeUSDAmounts {
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const isTradeReady = !isWrapOrUnwrap && !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
+
+  return {
+    inputAmount: useHigherUSDValue(isTradeReady ? inputAmount : null),
+    outputAmount: useHigherUSDValue(isTradeReady ? outputAmount : null),
+  }
 }

@@ -1,5 +1,7 @@
 import { useSetAtom } from 'jotai'
 
+import { TradeAmounts } from 'common/types'
+
 import {
   setCloseTradeConfirmAtom,
   setErrorTradeConfirmAtom,
@@ -7,7 +9,6 @@ import {
   setPendingTradeConfirmAtom,
   setTxHashTradeConfirmAtom,
 } from '../state/tradeConfirmStateAtom'
-import { TradeAmounts } from '../types/TradeAmounts'
 
 export interface TradeConfirmActions {
   onSign(pendingTrade: TradeAmounts): void
