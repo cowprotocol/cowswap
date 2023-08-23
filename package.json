@@ -8,9 +8,6 @@
   "config": {
     "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
   },
-  "engines": {
-    "node": "18.x"
-  },
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
     "preview": "nx run cowswap-frontend:preview",
