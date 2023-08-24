@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 
 import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 
@@ -19,5 +19,5 @@ export function useExecutionPriceFiat(
 ): CurrencyAmount<Currency> | null {
   const amount = executionPrice ? getPriceQuoteAmount(executionPrice, isInverted) : undefined
 
-  return useCoingeckoUsdValue(amount).value
+  return useFiatAmount(amount).value
 }

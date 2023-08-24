@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
@@ -42,7 +42,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
   const currentCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
 
-  const feeUsdValue = useCoingeckoUsdValue(formattedFeeAmount || undefined).value
+  const feeUsdValue = useFiatAmount(formattedFeeAmount || undefined).value
 
   return (
     <styledEl.FeeTooltipWrapper>

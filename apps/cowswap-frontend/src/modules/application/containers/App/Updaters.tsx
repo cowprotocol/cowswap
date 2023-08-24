@@ -17,6 +17,7 @@ import SentryUpdater from 'legacy/state/sentry/updater'
 import UserUpdater from 'legacy/state/user/updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
+import { FiatPricesUpdater } from 'modules/fiatAmount'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
@@ -54,6 +55,7 @@ export function Updaters() {
       <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
       <TotalSurplusUpdater />
+      <FiatPricesUpdater />
     </>
   )
 }

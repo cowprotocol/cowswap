@@ -1,14 +1,13 @@
+import { useAtomValue, useSetAtom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import {
-  useSetAtom,
-  useAtomValue,
   handleFollowPendingTxPopupAtom,
   handleHidePopupPermanentlyAtom,
   showFollowTxPopupAtom,
   followPendingTxPopupAtom,
-  selectAtom,
   handleCloseOrderPopupAtom,
 } from 'legacy/state/application/atoms'
 import { Order } from 'legacy/state/orders/actions'

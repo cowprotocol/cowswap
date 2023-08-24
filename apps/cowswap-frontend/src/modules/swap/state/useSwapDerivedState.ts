@@ -6,7 +6,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
-import { useTradeUSDValues } from 'modules/fiatAmount'
+import { useTradeFiatAmounts } from 'modules/fiatAmount'
 
 import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
@@ -35,7 +35,7 @@ export function useFillSwapDerivedState() {
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeUSDValues(tradeAmounts)
+  } = useTradeFiatAmounts(tradeAmounts)
 
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 

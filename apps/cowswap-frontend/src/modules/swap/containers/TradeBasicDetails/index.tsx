@@ -5,7 +5,7 @@ import { BoxProps } from 'rebass'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 import { RowFee } from 'modules/swap/containers/Row/RowFee'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
@@ -29,7 +29,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
   // trades are null when there is a fee quote error e.g
   // so we can take both
-  const feeFiatValue = useCoingeckoUsdValue(fee).value
+  const feeFiatValue = useFiatAmount(fee).value
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 

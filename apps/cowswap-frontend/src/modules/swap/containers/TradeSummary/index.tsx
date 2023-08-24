@@ -2,7 +2,7 @@ import { Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 import { TradeSummaryContent } from 'modules/swap/pure/TradeSummary'
 import { useWalletDetails } from 'modules/wallet'
 
@@ -17,7 +17,7 @@ export type TradeSummaryProps = {
 
 export function TradeSummary({ trade, ...restProps }: TradeSummaryProps) {
   const { allowsOffchainSigning } = useWalletDetails()
-  const feeFiatValue = useCoingeckoUsdValue(trade.fee.feeAsCurrency).value
+  const feeFiatValue = useFiatAmount(trade.fee.feeAsCurrency).value
 
   return (
     <TradeSummaryContent

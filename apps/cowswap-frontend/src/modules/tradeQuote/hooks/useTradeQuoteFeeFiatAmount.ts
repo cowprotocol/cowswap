@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 
 import { useTradeQuote } from './useTradeQuote'
 
@@ -21,5 +21,5 @@ export function useTradeQuoteFeeFiatAmount(): CurrencyAmount<Token> | null {
     return CurrencyAmount.fromRawAmount(amount?.currency, feeAmountStr)
   }, [amount, feeAmountStr])
 
-  return useCoingeckoUsdValue(feeAmount).value
+  return useFiatAmount(feeAmount).value
 }

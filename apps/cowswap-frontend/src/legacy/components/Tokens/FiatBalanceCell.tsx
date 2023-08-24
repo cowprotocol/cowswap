@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useFiatAmount } from 'modules/fiatAmount'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 
@@ -16,7 +16,7 @@ type FiatBalanceCellProps = {
 
 export function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   const hasBalance = balance?.greaterThan(0)
-  const fiatValue = useCoingeckoUsdValue(balance).value
+  const fiatValue = useFiatAmount(balance).value
 
   return (
     <BalanceValue hasBalance={!!hasBalance}>
