@@ -75,7 +75,7 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
-      sourcemap: true,
+      // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
         output: {
           manualChunks(id) {
