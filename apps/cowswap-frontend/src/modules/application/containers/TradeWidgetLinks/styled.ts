@@ -2,21 +2,47 @@ import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-export const Badge = styled.div`
-  background: transparent;
-  color: ${({ theme }) => transparentize(0.4, theme.text1)};
+import { BadgeType } from '.'
+
+const badgeBackgrounds: Record<BadgeType, string> = {
+  information: 'var(--cow-color-information-bg)',
+  alert: 'var(--cow-color-alert-bg)',
+  alert2: 'var(--cow-color-alert2-bg)',
+  success: 'var(--cow-color-success-bg)',
+  default: 'transparent', // text only
+};
+
+const badgeColors: Record<BadgeType, string> = {
+  information: 'var(--cow-color-information-text)',
+  alert: 'var(--cow-color-alert-text)',
+  alert2: 'var(--cow-color-alert2-text)',
+  success: 'var(--cow-color-success-text)',
+  default: 'var(--cow-color-text1-inactive)', // text only
+};
+
+export const Badge = styled.div<{ type?: BadgeType }>`
+  background: ${({ type }) => badgeBackgrounds[type || 'default']};
+  color: ${({ type }) => badgeColors[type || 'default']};
   border: 0;
   cursor: pointer;
   border-radius: 16px;
   font-size: 9px;
   font-weight: inherit;
   text-transform: uppercase;
-  padding: 0;
+  padding: ${({ type }) => (!type || type === 'default' ? '0' : '4px 6px')};
   letter-spacing: 0.2px;
   font-weight: 600;
   transition: color 0.15s ease-in-out;
   margin: -8px 0 0 0;
+
+  a & {
+    color: ${({ type }) => badgeColors[type || 'default']};
+  }
 `
+
+Badge.defaultProps = {
+  type: 'default'
+};
 
 export const Link = styled(NavLink)`
   display: flex;
@@ -28,9 +54,8 @@ export const Link = styled(NavLink)`
   line-height: 1;
   transition: color 0.15s ease-in-out;
 
-  &:hover,
-  &:hover > ${Badge} {
-    color: ${({ theme }) => theme.text1};
+  &:hover {
+    color: inherit;
   }
 `
 
@@ -67,7 +92,7 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
       }
 
       ${Link} > ${Badge} {
-        margin: 0 0 0 3px;
+        display: none;
       }
     `}
 `

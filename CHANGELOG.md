@@ -1,5 +1,58 @@
 # Changelog
 
+## [1.45.1](https://github.com/cowprotocol/cowswap/compare/v1.45.0...v1.45.1) (2023-08-23)
+
+
+### Bug Fixes
+
+* handle error in case erc1155 id cannot be converted to BigNumber ([#3073](https://github.com/cowprotocol/cowswap/issues/3073)) ([82a549d](https://github.com/cowprotocol/cowswap/commit/82a549d54b427a5555eb6ddc93135798908c0714))
+
+## [1.45.0](https://github.com/cowprotocol/cowswap/compare/v1.44.7...v1.45.0) (2023-08-21)
+
+
+### Features
+
+* nx workspaces migration ([#2965](https://github.com/cowprotocol/cowswap/issues/2965)) ([f6f4e4d](https://github.com/cowprotocol/cowswap/commit/f6f4e4d0b143c4ecb056269facf2f26bce638b19))
+
+
+### Bug Fixes
+
+* **twap:** display "Minimum sell size" banner only when there is a buy amount ([#3064](https://github.com/cowprotocol/cowswap/issues/3064)) ([60c7e36](https://github.com/cowprotocol/cowswap/commit/60c7e36452b923242771f4b28f065625b60b5911))
+
+## [1.44.7](https://github.com/cowprotocol/cowswap/compare/v1.44.6...v1.44.7) (2023-08-16)
+
+
+### Bug Fixes
+
+* version the storage name for the fallback handler ([#3061](https://github.com/cowprotocol/cowswap/issues/3061)) ([ac63cbf](https://github.com/cowprotocol/cowswap/commit/ac63cbfaf20b2e6d31561ad84f67b936f681d366))
+
+## [1.44.6](https://github.com/cowprotocol/cowswap/compare/v1.44.5...v1.44.6) (2023-08-16)
+
+
+### Bug Fixes
+
+* fix lint issues ([#3056](https://github.com/cowprotocol/cowswap/issues/3056)) ([9daa175](https://github.com/cowprotocol/cowswap/commit/9daa1756355a297cb2e9090b4a144ae0e862fbab))
+
+## [1.44.5](https://github.com/cowprotocol/cowswap/compare/v1.44.4...v1.44.5) (2023-08-16)
+
+
+### Bug Fixes
+
+* **twap:** update links to blog ([#3054](https://github.com/cowprotocol/cowswap/issues/3054)) ([f39ee10](https://github.com/cowprotocol/cowswap/commit/f39ee10b9fe1a7c227f149f7ea8a97da3bf70075))
+
+## [1.44.4](https://github.com/cowprotocol/cowswap/compare/v1.44.3...v1.44.4) (2023-08-16)
+
+
+### Features
+
+* **orders-table:** display order receiver address ([#3042](https://github.com/cowprotocol/cowswap/issues/3042)) ([948c46d](https://github.com/cowprotocol/cowswap/commit/948c46dd6072efb7324b53b4a29a2c9cca268b9f))
+
+
+### Bug Fixes
+
+* correct version ([4f170ac](https://github.com/cowprotocol/cowswap/commit/4f170ace726efcdb9ea56cf09eac4364ae38b15d))
+* disable limit orders state sync between tabs ([#3041](https://github.com/cowprotocol/cowswap/issues/3041)) ([2ac7b1a](https://github.com/cowprotocol/cowswap/commit/2ac7b1abe0104997d3bd914ad4b359f18682a91e))
+
 ## [1.44.3](https://github.com/cowprotocol/cowswap/compare/v1.44.2...v1.44.3) (2023-08-11)
 
 

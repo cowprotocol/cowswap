@@ -1,4 +1,5 @@
 import '@reach/dialog/styles.css'
+import './polyfills'
 
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
@@ -21,6 +22,8 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme
 import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
+
+import { WalletUpdater } from './modules/wallet'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -102,6 +105,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
             <LanguageProvider>
               <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
                 <BlockNumberProvider>
+                  <WalletUpdater />
                   <Wrapper>
                     <DarkModeToggle>
                       <WrapperInner>{children}</WrapperInner>

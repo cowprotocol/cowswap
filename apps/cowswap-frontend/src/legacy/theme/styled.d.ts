@@ -88,9 +88,9 @@ export interface Colors extends ColorsUniswap {
   info: Color
   information: Color
   warning: Color
-  alert: Color
   danger: Color
   alert: Color
+  alert2: Color
   error: Color
   infoText: Color
   warningText: Color

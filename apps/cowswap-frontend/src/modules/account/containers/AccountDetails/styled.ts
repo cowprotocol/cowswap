@@ -45,22 +45,34 @@ export const TransactionListWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
 `
 
+export const WalletIconSmall = styled.img`
+  width: 16px;
+  height: 16px;
+`
+
 export const WalletAction = styled(ButtonSecondary)`
   width: fit-content;
   font-weight: 400;
   margin-left: 8px;
   font-size: 0.825rem;
   padding: 4px 6px;
+
   :hover {
     cursor: pointer;
     text-decoration: underline;
+  }
+
+  ${WalletIconSmall} {
+    margin-left: 5px;
   }
 `
 
 export const WalletActions = styled.div`
   display: flex;
-  flex-flow: row wrap;
   margin: 10px 0 0;
+  flex-flow: column wrap;
+  gap: 10px;
+  align-items: flex-start;
 `
 
 export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
@@ -107,7 +119,7 @@ export const WalletSecondaryActions = styled.div``
 
 export const WalletNameAddress = styled.div`
   width: 100%;
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 500;
   margin: 0 0 0 8px;
 `
@@ -132,7 +144,7 @@ export const Wrapper = styled.div`
     color: ${({ theme }) => theme.text1};
     opacity: 0.85;
     transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-    margin: 0;
+    margin: auto;
     padding: 0;
     border: 0;
     font-size: 14px;
@@ -199,14 +211,11 @@ export const Wrapper = styled.div`
       min-height: initial;
       cursor: pointer;
       animation: none;
+      margin: 0;
 
       &:hover {
         cursor: pointer;
       }
-    }
-
-    > a:not(:last-child) {
-      margin: 0 0 5px;
     }
   }
 
@@ -443,7 +452,7 @@ export const NetworkCard = styled(NetworkCardUni)`
   color: ${({ theme }) => theme.text1};
   padding: 6px 8px;
   font-size: 13px;
-  margin: 0 8px 0 0;
+  margin: 0;
   letter-spacing: 0.7px;
   min-width: initial;
   flex: 0 0 fit-content;
@@ -556,4 +565,71 @@ export const SurplusCardWrapper = styled.div`
       opacity: 1;
     }
   }
+`
+
+export const WalletIconWrapper = styled.div`
+  --size: 12px;
+  display: flex;
+  width: var(--size);
+  height: var(--size);
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  margin: 0 0 0 5px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  > svg > path {
+    --color: var(--cow-color-text1);
+    fill: var(--color);
+    stroke: var(--color);
+    stroke-width: 0.5px;
+  }
+`
+
+interface WalletSelectorProps {
+  isHardWareWallet?: boolean;
+  onClick?: () => void;
+}
+
+export const WalletSelector = styled.div<WalletSelectorProps>`
+  display: flex;
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease-in-out;
+
+  ${({ isHardWareWallet }) =>
+    isHardWareWallet &&
+    `
+    cursor: pointer; 
+    border: 1px solid var(--cow-color-text1-opacity-25);
+    background: transparent;
+    padding: 6px 10px;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid var(--cow-color-text1);
+      margin-left: 8px;
+      opacity: 0.5;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    &:hover {
+      background: var(--cow-color-text1-opacity-25);
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+  `}
 `

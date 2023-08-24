@@ -6,6 +6,8 @@ import 'utils/sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
+import { SnackbarsWidget } from '@cowswap/snackbars'
+
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
@@ -58,6 +60,7 @@ root.render(
                       <FortuneWidget />
                     </FeatureGuard>
                     <Popups />
+                    <SnackbarsWidget />
                     <AppziButton />
                     <App />
                   </WithLDProvider>

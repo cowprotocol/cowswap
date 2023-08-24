@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -20,31 +20,16 @@ import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
-import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
-import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
-import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
-import LedgerIcon from 'modules/wallet/api/assets/ledger.svg'
-import TallyIcon from 'modules/wallet/api/assets/tally.svg'
-import TrustIcon from 'modules/wallet/api/assets/trust.svg'
-import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
+import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
 import {
+  getConnectionIcon,
   getConnectionName,
   getIsCoinbaseWallet,
   getIsMetaMask,
-  getIsTrustWallet,
 } from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { coinbaseWalletConnection } from 'modules/wallet/web3-react/connection/coinbase'
-import { fortmaticConnection } from 'modules/wallet/web3-react/connection/formatic'
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
-import { keystoneConnection } from 'modules/wallet/web3-react/connection/keystone'
-import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
-import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
-import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -64,6 +49,7 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
+  WalletSelector,
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
@@ -91,11 +77,7 @@ export function renderActivities(activities: ActivityDescriptors[]) {
   )
 }
 
-export function getStatusIcon(connector?: Connector | ConnectionType, walletDetails?: WalletDetails, size?: number) {
-  if (!connector) {
-    return null
-  }
-
+export function getStatusIcon(connector: Connector, walletDetails?: WalletDetails, size?: number) {
   const connectionType = getWeb3ReactConnection(connector)
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
@@ -108,71 +90,35 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
       </MouseoverTooltip>
     )
     /* eslint-enable jsx-a11y/accessible-emoji */
-  } else if (walletDetails?.icon) {
+  }
+  if (walletDetails?.icon) {
     return (
       <IconWrapper size={16}>
         <img src={walletDetails.icon} alt={`${walletDetails?.walletName || 'wallet'} logo`} />
       </IconWrapper>
     )
-  } else if (connectionType === injectedConnection) {
-    return <Identicon size={size} />
-  } else if (connectionType === coinbaseWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={CoinbaseWalletIcon} alt={'Coinbase wallet logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === fortmaticConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={FortmaticIcon} alt={'Fortmatic logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === tallyWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TallyIcon} alt={'Tally logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === trustWalletConnection || getIsTrustWallet(null, walletDetails?.walletName)) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TrustIcon} alt={'Trust logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === tallyWalletConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={TallyIcon} alt={'tally logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === ledgerConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={LedgerIcon} alt={'Ledger logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === keystoneConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={KeystoneImage} alt={'Keystone logo'} />
-      </IconWrapper>
-    )
-  } else if (connectionType === walletConnectConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'Wallet connect logo'} />
-      </IconWrapper>
-    )
   }
-  return null
+
+  const icon = getConnectionIcon(connectionType.type)
+
+  if (icon === 'Identicon') {
+    return <Identicon size={size} />
+  }
+
+  return (
+    <IconWrapper size={16}>
+      <img src={icon} alt={`${connectionType.type} logo`} />
+    </IconWrapper>
+  )
 }
 
 export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
+  forceHardwareWallet?: boolean
   toggleWalletModal: () => void
+  toggleAccountSelectorModal: () => void
   handleCloseOrdersPanel: () => void
 }
 
@@ -181,11 +127,12 @@ export function AccountDetails({
   confirmedTransactions = [],
   ENSName,
   toggleWalletModal,
+  toggleAccountSelectorModal,
   handleCloseOrdersPanel,
+  forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
-  const connection = getWeb3ReactConnection(connector)
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -197,8 +144,10 @@ export function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const isWalletConnect = useIsWalletConnect()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
+  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   function formatConnectorName() {
@@ -206,8 +155,7 @@ export function AccountDetails({
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
-    const connectionType = getWeb3ReactConnection(connector)
-    const isWalletConnect = connectionType === walletConnectConnection || connectionType === walletConnectConnectionV2
+
     const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
     return (
@@ -224,6 +172,7 @@ export function AccountDetails({
   }
 
   const networkLabel = NETWORK_LABELS[chainId]
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
 
   return (
     <Wrapper>
@@ -231,12 +180,22 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletDetails, 24)}
+              <WalletSelector
+                isHardWareWallet={isHardWareWallet}
+                onClick={() => {
+                  if (isHardWareWallet) {
+                    toggleAccountSelectorModal()
+                  }
+                }}
+              >
+                {getStatusIcon(connector, walletDetails, 24)}
+                {(ENSName || account) && (
+                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                )}
+              </WalletSelector>
 
               {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
-                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
-                </Copy>
+                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
               )}
             </WalletWrapper>
 
@@ -254,26 +213,26 @@ export function AccountDetails({
             <WalletSecondaryActions>
               {!isInjectedMobileBrowser && (
                 <>
-                  <WalletAction onClick={handleDisconnectClick}>
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
+                  {account && !isChainIdUnsupported && (
+                    <AddressLink
+                      hasENS={!!ENSName}
+                      isENS={!!ENSName}
+                      href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
+                    >
+                      {explorerLabel} ↗
+                    </AddressLink>
+                  )}
 
                   {connection.type !== ConnectionType.GNOSIS_SAFE && (
                     <WalletAction onClick={toggleWalletModal}>
                       <Trans>Change Wallet</Trans>
                     </WalletAction>
                   )}
-                </>
-              )}
 
-              {account && !isChainIdUnsupported && (
-                <AddressLink
-                  hasENS={!!ENSName}
-                  isENS={!!ENSName}
-                  href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
-                >
-                  {explorerLabel} ↗
-                </AddressLink>
+                  <WalletAction onClick={handleDisconnectClick}>
+                    <Trans>Disconnect</Trans>
+                  </WalletAction>
+                </>
               )}
             </WalletSecondaryActions>
           </AccountControl>

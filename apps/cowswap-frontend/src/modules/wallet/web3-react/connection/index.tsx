@@ -25,49 +25,67 @@ import { ledgerConnection, LedgerOption } from './ledger'
 import { networkConnection } from './network'
 import { gnosisSafeConnection } from './safe'
 import { tallyWalletConnection } from './tally'
+import { trezorConnection, TrezorOption } from './trezor'
 import { trustWalletConnection, TrustWalletOption } from './trust'
 import { walletConnectConnection, WalletConnectOption } from './walletConnect'
 import { walletConnectConnectionV2, WalletConnectV2Option } from './walletConnectV2'
 
-// import { ZengoOption } from './zengo'
 import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
 
-const CONNECTIONS: Web3ReactConnection[] = [
-  gnosisSafeConnection,
-  injectedConnection,
-  coinbaseWalletConnection,
-  walletConnectConnection,
-  walletConnectConnectionV2,
-  fortmaticConnection,
-  networkConnection,
-  tallyWalletConnection,
-  trustWalletConnection,
-  ledgerConnection,
-  keystoneConnection,
-  injectedWidgetConnection,
-]
-
-export function isChainAllowed(connector: Connector, chainId: number) {
-  switch (connector) {
-    case fortmaticConnection.connector:
-      return chainId === SupportedChainId.MAINNET
-    case injectedConnection.connector:
-    case coinbaseWalletConnection.connector:
-    case walletConnectConnection.connector:
-    case networkConnection.connector:
-    case gnosisSafeConnection.connector:
-    case tallyWalletConnection.connector:
-    case trustWalletConnection.connector:
-    case injectedWidgetConnection.connector:
-    case ledgerConnection.connector:
-    case keystoneConnection.connector:
-    case walletConnectConnectionV2.connector:
-      return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
-    default:
-      return false
-  }
+const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
+  [ConnectionType.FORTMATIC]: [SupportedChainId.MAINNET],
+  [ConnectionType.INJECTED]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.INJECTED_WIDGET]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.COINBASE_WALLET]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.WALLET_CONNECT]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.WALLET_CONNECT_V2]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.NETWORK]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TALLY]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TRUST]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.LEDGER]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.KEYSTONE]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.ALPHA]: [],
+  [ConnectionType.AMBIRE]: [],
+  [ConnectionType.ZENGO]: [],
 }
+
+export function isChainAllowed(connector: Connector, chainId: number): boolean {
+  const connection = getWeb3ReactConnection(connector)
+
+  return allowedChainsByWallet[connection.type].includes(chainId)
+}
+
+const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = {
+  [ConnectionType.INJECTED]: injectedConnection,
+  [ConnectionType.COINBASE_WALLET]: coinbaseWalletConnection,
+  [ConnectionType.WALLET_CONNECT]: walletConnectConnection,
+  [ConnectionType.WALLET_CONNECT_V2]: walletConnectConnectionV2,
+  [ConnectionType.ZENGO]: walletConnectConnection,
+  [ConnectionType.FORTMATIC]: fortmaticConnection,
+  [ConnectionType.NETWORK]: networkConnection,
+  [ConnectionType.GNOSIS_SAFE]: gnosisSafeConnection,
+  [ConnectionType.AMBIRE]: walletConnectConnection,
+  [ConnectionType.ALPHA]: walletConnectConnection,
+  [ConnectionType.TALLY]: tallyWalletConnection,
+  [ConnectionType.TRUST]: trustWalletConnection,
+  [ConnectionType.LEDGER]: ledgerConnection,
+  [ConnectionType.KEYSTONE]: keystoneConnection,
+  [ConnectionType.INJECTED_WIDGET]: injectedWidgetConnection,
+  [ConnectionType.TREZOR]: trezorConnection,
+}
+
+const CONNECTIONS: Web3ReactConnection[] = Object.values(connectionTypeToConnection)
+
+// TODO: add others
+export const HARDWARE_WALLETS = [ConnectionType.TREZOR] as const
+
+export type HardWareWallet = (typeof HARDWARE_WALLETS)[number]
+
+export const getIsHardWareWallet = (connectionType: ConnectionType) =>
+  HARDWARE_WALLETS.includes(connectionType as HardWareWallet)
 
 export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3ReactConnection {
   if (c instanceof Connector) {
@@ -76,40 +94,9 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
       throw Error('unsupported connector')
     }
     return connection
-  } else {
-    switch (c) {
-      case ConnectionType.INJECTED:
-        return injectedConnection
-      case ConnectionType.COINBASE_WALLET:
-        return coinbaseWalletConnection
-      case ConnectionType.WALLET_CONNECT:
-        return walletConnectConnection
-      case ConnectionType.WALLET_CONNECT_V2:
-        return walletConnectConnectionV2
-      case ConnectionType.ZENGO:
-        return walletConnectConnection
-      case ConnectionType.FORTMATIC:
-        return fortmaticConnection
-      case ConnectionType.NETWORK:
-        return networkConnection
-      case ConnectionType.GNOSIS_SAFE:
-        return gnosisSafeConnection
-      case ConnectionType.AMBIRE:
-        return walletConnectConnection
-      case ConnectionType.ALPHA:
-        return walletConnectConnection
-      case ConnectionType.TALLY:
-        return tallyWalletConnection
-      case ConnectionType.TRUST:
-        return trustWalletConnection
-      case ConnectionType.LEDGER:
-        return ledgerConnection
-      case ConnectionType.KEYSTONE:
-        return keystoneConnection
-      case ConnectionType.INJECTED_WIDGET:
-        return injectedWidgetConnection
-    }
   }
+
+  return connectionTypeToConnection[c]
 }
 
 export type TryActivation = (connector: Connector) => void
@@ -156,6 +143,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption tryActivation={tryActivation} />) ?? null
+  const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption tryActivation={tryActivation} />) ?? null
   const keystoneOption =
     (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
 
@@ -170,6 +158,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
+      <FeatureGuard featureFlag="trezorEnabled">{trezorOption}</FeatureGuard>
       {/*{zengoOption}*/}
       {ambireOption}
       {alphaOption}

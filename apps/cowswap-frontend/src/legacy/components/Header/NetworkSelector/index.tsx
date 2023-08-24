@@ -168,7 +168,6 @@ export function NetworkSelector() {
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-
   const info = getChainInfo(chainId)
 
   const onSelectChain = useOnSelectNetwork()
