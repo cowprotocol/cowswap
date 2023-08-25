@@ -18,7 +18,6 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils/index'
 
 import { AppDataInfo } from 'modules/appData'
-import { toKeccak256 } from 'modules/appData/utils/buildAppData'
 
 import { getTrades, OrderID } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
@@ -202,19 +201,12 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
   }
 }
 
-export async function signAndPostOrder(
-  params: PostOrderParams,
-  newAppData?: string | null
-): Promise<AddUnserialisedPendingOrderParams> {
+export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const { chainId, account, signer, allowsOffchainSigning, appData } = params
 
   // Prepare order
   const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
   const receiver = unsignedOrder.receiver
-
-  if (newAppData) {
-    unsignedOrder.appData = toKeccak256(newAppData)
-  }
 
   let signingScheme: SigningScheme
   let signature: string | undefined
@@ -231,7 +223,6 @@ export async function signAndPostOrder(
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  console.log('newAppData', newAppData)
   // Call API
   const orderId = await orderBookApi.sendOrder(
     {
@@ -242,8 +233,8 @@ export async function signAndPostOrder(
       // Include the signature
       signature,
       quoteId,
-      appData: newAppData || appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-      appDataHash: unsignedOrder.appData,
+      appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
+      appDataHash: appData.appDataKeccak256,
     } as any,
     { chainId }
   )
