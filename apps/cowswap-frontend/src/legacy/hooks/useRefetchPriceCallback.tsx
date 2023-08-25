@@ -238,15 +238,8 @@ export function useRefetchQuoteCallback() {
         quoteParams: {
           ...quoteParams,
           priceQuality: PriceQuality.FAST,
-          permitHookParams: params.permitHookParams,
         },
       }
-
-      // Register get best and fast quote methods on window
-      // registerOnWindow({
-      //   getBestQuote: async () => getBestQuoteResolveOnlyLastCall(bestQuoteParams),
-      //   getFastQuote: async () => getFastQuoteResolveOnlyLastCall(fastQuoteParams),
-      // })
 
       // Get the fast quote
       if (!isPriceRefresh) {

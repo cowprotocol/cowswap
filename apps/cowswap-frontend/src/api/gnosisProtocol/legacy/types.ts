@@ -12,7 +12,6 @@ interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 
 }
 
 export interface LegacyQuoteParams {
-  // permitHookParams?: PermitHookParams
   quoteParams: LegacyFeeQuoteParams
   strategy: GpPriceStrategy
   fetchFee: boolean

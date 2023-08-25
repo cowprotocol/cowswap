@@ -246,7 +246,6 @@ export default function FeesUpdater(): null {
           fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
           previousFee: quoteInfo?.fee,
           isPriceRefresh,
-          permitHookParams,
         }).catch((error) => console.error('Error re-fetching the quote', error))
       }
     }
@@ -284,7 +283,6 @@ export default function FeesUpdater(): null {
     sellTokenAddressInvalid,
     enoughBalance,
     verifiedQuotesEnabled,
-    permitHookParams,
   ])
 
   return null
