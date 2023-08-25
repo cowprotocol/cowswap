@@ -36,3 +36,5 @@ export type AppDataHooks = latest.OrderInteractionHooks
 export type PreHooks = latest.PreHooks
 
 export type PostHooks = latest.PostHooks
+
+export type AppDataRootSchema = latest.AppDataRootSchema
