@@ -5,6 +5,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { addHooksToAppData, buildAppDataHooks } from 'modules/appData'
 import { generateQuotePermitHook } from 'modules/permit/utils/generatePermitHook'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -25,18 +26,20 @@ export async function swapFlow(
     return
   }
 
-  let newAppData = null
-
   if (input.permitInfo) {
     // TODO: maybe we need a modal to inform the user what they need to sign?
-    // TODO: merge with existing app data rather than replacing it
-    newAppData = await generatePermitHook({
+    const permitDataString = await generateQuotePermitHook({
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
       account: input.orderParams.account,
       chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
     })
+    const permitData = JSON.parse(permitDataString)
+
+    const hooks = buildAppDataHooks([permitData], [])
+
+    input.orderParams.appData = addHooksToAppData(input.orderParams.appData, hooks)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
@@ -45,7 +48,7 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 3: sign and post order')
-    const { id: orderId, order } = await signAndPostOrder(input.orderParams, newAppData).finally(() => {
+    const { id: orderId, order } = await signAndPostOrder(input.orderParams).finally(() => {
       input.callbacks.closeModals()
     })
 
