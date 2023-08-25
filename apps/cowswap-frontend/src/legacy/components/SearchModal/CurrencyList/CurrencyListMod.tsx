@@ -344,6 +344,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
+      const isPermitCompatible = false // TODO: Make dynamic 
 
       if (isLoading) {
         return (
@@ -369,7 +370,7 @@ export default function CurrencyList({
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
             isUnsupported={isUnsupported}
-            isPermitCompatible={true}
+            isPermitCompatible={isPermitCompatible} // gp-swap added
             showCurrencyAmount={showCurrencyAmount}
             eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />

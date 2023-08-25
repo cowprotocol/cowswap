@@ -61,11 +61,6 @@ const Tag = styled(TagMod)<{ tag?: TagInfo }>`
 `
 
 const TagLink = styled(Tag)`
-  display: flex;
-  align-items: center;
-  font-size: inherit;
-  font-weight: inherit;
-
   a {
     color: inherit;
     font-weight: inherit;
