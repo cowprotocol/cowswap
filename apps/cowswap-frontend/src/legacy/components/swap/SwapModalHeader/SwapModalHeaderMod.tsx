@@ -169,10 +169,7 @@ export default function SwapModalHeader({
               <Trans>To</Trans>
             </ThemedText.Body>
             <ThemedText.Body fontSize={14} color={theme.text3}>
-              <FiatValue
-                fiatValue={fiatValueOutput}
-                priceImpactParams={{ priceImpact, error: undefined, loading: false }}
-              />
+              <FiatValue fiatValue={fiatValueOutput} priceImpactParams={{ priceImpact, loading: false }} />
             </ThemedText.Body>
           </RowBetween>
           <RowBetween align="flex-end">
