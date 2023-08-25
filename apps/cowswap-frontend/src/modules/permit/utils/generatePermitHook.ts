@@ -1,20 +1,13 @@
-import { Erc20Abi } from '@cowswap/abis'
 import { MaxUint256 } from '@ethersproject/constants'
 
-import {
-  daiPermitModelFields,
-  eip2612PermitModelFields,
-  Eip2612PermitUtils,
-} from '@1inch/permit-signed-approvals-utils'
-import { splitSignature } from 'ethers/lib/utils'
+import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { getContract } from 'legacy/utils'
 
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
 import { FAKE_SIGNER } from '../const'
-import { OrderPermitHookParams, QuotePermitHookParams } from '../types'
+import { PermitHookParams } from '../types'
 
 const cachePrefix = 'permitCache-'
 const pendingRequests: { [permitKey: string]: Promise<string> | undefined } = {}
@@ -25,7 +18,7 @@ function getDeadline() {
   return Math.ceil(Date.now() / 1000) + FIVE_YEARS_IN_SECONDS
 }
 
-export async function generateQuotePermitHook(params: QuotePermitHookParams): Promise<string> {
+export async function generateQuotePermitHook(params: PermitHookParams): Promise<string> {
   const { inputToken, chainId, permitInfo, provider, account } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
@@ -105,140 +98,4 @@ export async function generateQuotePermitHook(params: QuotePermitHookParams): Pr
   pendingRequests[permitKey] = request
 
   return request
-}
-
-export async function generatePermitHook(params: OrderPermitHookParams): Promise<string> {
-  const { inputToken, chainId, account, provider, permitInfo } = params
-  const permitKey = `${cachePrefix}${inputToken.address.toLowerCase()}-${account}-${chainId}`
-
-  if (localStorage.getItem(permitKey)) return localStorage.getItem(permitKey)!
-  if (pendingRequests[permitKey]) return pendingRequests[permitKey]!
-
-  const request = new Promise<string>(async (resolve) => {
-    const sellTokenContract = getContract(inputToken.address, Erc20Abi, provider, account)
-
-    const nonce = (await sellTokenContract?.nonces(account))?.toString() || '0'
-
-    const generatePermitHookData = permitInfo.type === 'dai' ? generateDaiPermitData : generatePermitPermitData
-
-    const permitHookData = await generatePermitHookData({ ...params, nonce })
-
-    const permitHook = JSON.stringify(permitHookData)
-
-    console.log('permitHook', { permitHook })
-    localStorage.setItem(permitKey, permitHook)
-
-    resolve(permitHook)
-  })
-
-  pendingRequests[permitKey] = request
-
-  return request
-}
-
-type GeneratePermitDataParams = OrderPermitHookParams & { nonce: string }
-
-async function generatePermitPermitData(params: GeneratePermitDataParams) {
-  const {
-    inputToken,
-    chainId,
-    account,
-    provider,
-    nonce,
-    permitInfo: { gasLimit },
-  } = params
-
-  // TODO: use https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L37
-  // to handle this part
-  const sellTokenContract = getContract(inputToken.address, Erc20Abi, provider, account)
-
-  const permit = {
-    owner: account,
-    spender: GP_VAULT_RELAYER[chainId],
-    value: MaxUint256.toString(),
-    nonce,
-    deadline: getDeadline(),
-  }
-  const permitSignature = splitSignature(
-    await provider.getSigner()._signTypedData(
-      {
-        name: inputToken.name,
-        chainId,
-        verifyingContract: inputToken.address,
-      },
-      {
-        Permit: eip2612PermitModelFields,
-      },
-      permit
-    )
-  )
-
-  const permitParams = [
-    permit.owner,
-    permit.spender,
-    permit.value,
-    permit.deadline,
-    permitSignature.v,
-    permitSignature.r,
-    permitSignature.s,
-  ]
-
-  return {
-    target: inputToken.address,
-    callData: sellTokenContract.interface.encodeFunctionData('permit', permitParams as any),
-    gasLimit: gasLimit.toString(),
-  }
-}
-
-async function generateDaiPermitData(params: GeneratePermitDataParams) {
-  const {
-    inputToken,
-    chainId,
-    account,
-    provider,
-    nonce,
-    permitInfo: { gasLimit },
-  } = params
-
-  // TODO: use https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L37
-  // to handle this part
-  const sellTokenContract = getContract(inputToken.address, Erc20Abi, provider, account)
-
-  const permit = {
-    holder: account,
-    allowed: true,
-    spender: GP_VAULT_RELAYER[chainId],
-    value: MaxUint256.toString(),
-    nonce,
-    deadline: getDeadline(),
-  }
-  const permitSignature = splitSignature(
-    await provider.getSigner()._signTypedData(
-      {
-        name: inputToken.name,
-        chainId,
-        verifyingContract: inputToken.address,
-      },
-      {
-        Permit: daiPermitModelFields,
-      },
-      permit
-    )
-  )
-
-  const permitParams = [
-    permit.holder,
-    permit.spender,
-    permit.value,
-    permit.deadline,
-    permitSignature.v,
-    permitSignature.r,
-    permitSignature.s,
-  ]
-
-  return {
-    target: inputToken.address,
-    callData: sellTokenContract.interface.encodeFunctionData('permit', permitParams as any),
-    gasLimit: gasLimit.toString(),
-  }
 }

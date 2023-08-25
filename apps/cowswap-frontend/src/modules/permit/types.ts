@@ -20,16 +20,12 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
-export type QuotePermitHookParams = {
+export type PermitHookParams = {
   inputToken: Token
   chainId: SupportedChainId
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
   account?: string
-}
-
-export type OrderPermitHookParams = QuotePermitHookParams & {
-  account: string
 }
 
 export type PermitHookData = latest.CoWHook | undefined

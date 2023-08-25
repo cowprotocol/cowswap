@@ -10,7 +10,7 @@ import { Nullish } from 'types'
 import { useWalletInfo } from 'modules/wallet'
 
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
-import { IsTokenPermittableResult, PermitHookData, PermitInfo, QuotePermitHookParams } from './types'
+import { IsTokenPermittableResult, PermitHookData, PermitHookParams, PermitInfo } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
 import { generateQuotePermitHook } from './utils/generatePermitHook'
 
@@ -96,7 +96,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   return permitInfo
 }
 
-export function usePermitHookParams(sellCurrency: Nullish<Currency>): QuotePermitHookParams | undefined {
+export function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHookParams | undefined {
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
@@ -114,7 +114,7 @@ export function usePermitHookParams(sellCurrency: Nullish<Currency>): QuotePermi
   }, [sellCurrency, provider, permitInfo, chainId])
 }
 
-export function usePermitHookData(params?: QuotePermitHookParams): PermitHookData | undefined {
+export function usePermitHookData(params?: PermitHookParams): PermitHookData | undefined {
   const [data, setData] = useState<string | undefined>(undefined)
 
   useEffect(() => {
