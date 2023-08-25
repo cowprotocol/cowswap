@@ -38,7 +38,6 @@ const mockUseIsTxBundlingEnabled = useIsTxBundlingEnabled as jest.MockedFunction
 const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
-  error: undefined,
   loading: false,
 }
 const recipient = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'

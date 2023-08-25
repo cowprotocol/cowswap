@@ -91,7 +91,7 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
 }
 
 function checkPriceImpact(a: PriceImpact, b: PriceImpact): boolean {
-  return a.error === b.error && a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
+  return a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
 }
 
 function checkTradeFlowContext(a: TradeFlowContext | null, b: TradeFlowContext | null): boolean {

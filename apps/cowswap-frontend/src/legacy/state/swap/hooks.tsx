@@ -202,7 +202,7 @@ function _computeFeeWarningAcceptedState({
   }
 }
 
-export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
+export function useUnknownImpactWarning() {
   const isExpertMode = useIsExpertMode()
   const { INPUT, OUTPUT, independentField } = useSwapState()
 
@@ -215,7 +215,6 @@ export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
 
   return {
     impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
-      priceImpactParams,
       impactWarningAccepted,
       isExpertMode,
     }),
@@ -225,7 +224,6 @@ export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
 
 function _computeUnknownPriceImpactAcceptedState({
   impactWarningAccepted,
-  priceImpactParams,
   isExpertMode,
 }: {
   impactWarningAccepted: boolean
@@ -233,11 +231,6 @@ function _computeUnknownPriceImpactAcceptedState({
   isExpertMode: boolean
 }) {
   if (isExpertMode || impactWarningAccepted) return true
-  else {
-    if (priceImpactParams?.error) {
-      return impactWarningAccepted
-    }
-  }
 
   return true
 }
