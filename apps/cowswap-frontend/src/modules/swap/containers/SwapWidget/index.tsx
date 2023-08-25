@@ -130,7 +130,7 @@ export function SwapWidget() {
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
-  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
+  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
 
   const openNativeWrapModal = () => setOpenNativeWrapModal(true)
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
@@ -196,7 +196,7 @@ export function SwapWidget() {
     feeWarningAccepted,
     impactWarningAccepted,
     // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-    hideUnknownImpactWarning: !trade || !priceImpactParams.error || priceImpactParams.loading,
+    hideUnknownImpactWarning: !trade || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,

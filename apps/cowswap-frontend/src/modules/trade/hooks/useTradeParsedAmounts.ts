@@ -10,7 +10,7 @@ const emptyState = {
   outputCurrencyAmount: null,
 }
 
-export function useTradePriceImpactParams(): ParsedAmounts {
+export function useTradeParsedAmounts(): ParsedAmounts {
   const { state } = useDerivedTradeState()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { inputCurrencyAmount, outputCurrencyAmount } = state || emptyState

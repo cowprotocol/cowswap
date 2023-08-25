@@ -47,7 +47,6 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
 
   const priceImpactParams: PriceImpact = {
     priceImpact,
-    error: priceImpactError,
     loading: useValue('priceImpactParams.loading', { defaultValue: false })[0],
   }
 
