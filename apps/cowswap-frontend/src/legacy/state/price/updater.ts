@@ -15,6 +15,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
+import { useAppData, useUpdateAppDataHooks } from 'modules/appData'
 import { usePermitHookData, usePermitHookParams } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
@@ -152,6 +153,9 @@ export default function FeesUpdater(): null {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
   const permitHookParams = usePermitHookParams(sellCurrency)
+  const permitHookData = usePermitHookData(permitHookParams)
+  useUpdateAppDataHooks(permitHookData ? { pre: [permitHookData] } : undefined)
+  const appData = useAppData()
 
   const refetchQuote = useRefetchQuoteCallback()
   const setQuoteError = useSetQuoteError()
@@ -211,6 +215,8 @@ export default function FeesUpdater(): null {
       validTo,
       isEthFlow,
       priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
+      appData: appData?.fullAppData,
+      appDataHash: appData?.appDataKeccak256,
     }
 
     // Don't refetch if offline.
@@ -283,6 +289,8 @@ export default function FeesUpdater(): null {
     sellTokenAddressInvalid,
     enoughBalance,
     verifiedQuotesEnabled,
+    appData?.fullAppData,
+    appData?.appDataKeccak256,
   ])
 
   return null
