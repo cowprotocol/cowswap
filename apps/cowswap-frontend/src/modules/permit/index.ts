@@ -1,2 +1,2 @@
-export { useIsTokenPermittable } from './hooks'
+export { useIsTokenPermittable, usePermitHookData, usePermitHookParams } from './hooks'
 export * from './types'

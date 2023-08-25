@@ -2,16 +2,15 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
 import { useWalletInfo } from 'modules/wallet'
 
-
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
-import { IsTokenPermittableResult, PermitInfo } from './types'
+import { IsTokenPermittableResult, PermitHookData, PermitInfo, QuotePermitHookParams } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
 
 /**
@@ -95,3 +94,22 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
 
   return permitInfo
 }
+
+export function usePermitHookParams(sellCurrency: Nullish<Currency>): QuotePermitHookParams | undefined {
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
+
+  const permitInfo = useIsTokenPermittable(sellCurrency)
+
+  return useMemo(() => {
+    console.debug(`bug--usePermitHookParams-useEffect`, chainId, sellCurrency, provider, permitInfo)
+    if (!sellCurrency || !provider || !permitInfo) return undefined
+    return {
+      chainId,
+      provider,
+      inputToken: sellCurrency as Token,
+      permitInfo,
+    }
+  }, [sellCurrency, provider, permitInfo, chainId])
+}
+
