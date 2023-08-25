@@ -4,8 +4,6 @@ import { FeeInformation, PriceInformation } from 'types'
 
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
-import { PermitHookParams } from 'utils/generatePermitHook'
-
 interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> {
   amount: string
   userAddress?: string | null
@@ -14,7 +12,7 @@ interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 
 }
 
 export interface LegacyQuoteParams {
-  permitHookParams?: PermitHookParams
+  // permitHookParams?: PermitHookParams
   quoteParams: LegacyFeeQuoteParams
   strategy: GpPriceStrategy
   fetchFee: boolean

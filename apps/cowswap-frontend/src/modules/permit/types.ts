@@ -1,4 +1,7 @@
+import { latest } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Web3Provider } from '@ethersproject/providers'
+import { Token } from '@uniswap/sdk-core'
 
 export type SupportedPermitInfo = {
   type: 'dai' | 'permit'
@@ -16,6 +19,20 @@ export type AddPermitTokenParams = {
   tokenAddress: string
   permitInfo: PermitInfo
 }
+
+export type QuotePermitHookParams = {
+  inputToken: Token
+  chainId: SupportedChainId
+  permitInfo: SupportedPermitInfo
+  provider: Web3Provider
+  account?: string
+}
+
+export type OrderPermitHookParams = QuotePermitHookParams & {
+  account: string
+}
+
+export type PermitHookData = latest.CoWHook | undefined
 
 export type EstimatePermitResult =
   // When it's a permittable token:

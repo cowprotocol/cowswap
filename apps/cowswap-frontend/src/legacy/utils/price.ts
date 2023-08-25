@@ -10,11 +10,8 @@ import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { toErc20Address } from 'legacy/utils/tokens'
 
-import { toKeccak256 } from 'modules/appData/utils/buildAppData'
-
 import { getQuote } from 'api/gnosisProtocol'
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
-import { generatePermitHook, PermitHookParams } from 'utils/generatePermitHook'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -25,16 +22,16 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
  */
 export async function getFullQuote({
   quoteParams,
-  permitHookParams,
-}: {
+}: // permitHookParams,
+{
   quoteParams: LegacyFeeQuoteParams
-  permitHookParams?: PermitHookParams
+  // permitHookParams?: PermitHookParams
 }): Promise<QuoteResult> {
-  if (permitHookParams) {
-    console.debug(`bug--getFullQuote--permitHookParams`, permitHookParams)
-    // TODO: merge with existing appData rather than replacing it
-    quoteParams.appData = toKeccak256(await generatePermitHook(permitHookParams))
-  }
+  // if (permitHookParams) {
+  //   console.debug(`bug--getFullQuote--permitHookParams`, permitHookParams)
+  //   // TODO: merge with existing appData rather than replacing it
+  //   quoteParams.appData = toKeccak256(await generatePermitHook(permitHookParams))
+  // }
 
   const { kind } = quoteParams
   const { quote, expiration: expirationDate, id: quoteId } = await getQuote(quoteParams)

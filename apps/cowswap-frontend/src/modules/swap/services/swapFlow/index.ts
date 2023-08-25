@@ -5,12 +5,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { generateQuotePermitHook } from 'modules/permit/utils/generatePermitHook'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { generatePermitHook } from 'utils/generatePermitHook'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 

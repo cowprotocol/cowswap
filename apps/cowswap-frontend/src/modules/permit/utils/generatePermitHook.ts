@@ -1,33 +1,113 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowswap/abis'
-import { Web3Provider } from '@ethersproject/providers'
-import { MaxUint256, Token } from '@uniswap/sdk-core'
+import { MaxUint256 } from '@ethersproject/constants'
 
-import { daiPermitModelFields, eip2612PermitModelFields } from '@1inch/permit-signed-approvals-utils'
+import {
+  daiPermitModelFields,
+  eip2612PermitModelFields,
+  Eip2612PermitUtils,
+} from '@1inch/permit-signed-approvals-utils'
 import { splitSignature } from 'ethers/lib/utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { getContract } from 'legacy/utils'
 
-import { toKeccak256 } from '../modules/appData/utils/buildAppData'
+import { Web3ProviderConnector } from './Web3ProviderConnector'
 
-export interface PermitHookParams {
-  inputToken: Token
-  provider: Web3Provider
-  account: string
-  chainId: SupportedChainId
-  permitInfo: PermitInfo
-}
-
-export type PermitInfo = {
-  type: 'dai' | 'permit'
-  gasLimit: number
-}
+import { FAKE_SIGNER } from '../const'
+import { OrderPermitHookParams, QuotePermitHookParams } from '../types'
 
 const cachePrefix = 'permitCache-'
 const pendingRequests: { [permitKey: string]: Promise<string> | undefined } = {}
 
-export async function generatePermitHook(params: PermitHookParams): Promise<string> {
+const FIVE_YEARS_IN_SECONDS = 5 * 365 * 24 * 60 * 60
+
+function getDeadline() {
+  return Math.ceil(Date.now() / 1000) + FIVE_YEARS_IN_SECONDS
+}
+
+export async function generateQuotePermitHook(params: QuotePermitHookParams): Promise<string> {
+  const { inputToken, chainId, permitInfo, provider, account } = params
+  const tokenAddress = inputToken.address
+  const tokenName = inputToken.name || tokenAddress
+  const permitKey = `${cachePrefix}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
+
+  if (localStorage.getItem(permitKey)) return localStorage.getItem(permitKey)!
+  if (pendingRequests[permitKey]) return pendingRequests[permitKey]!
+
+  const web3ProviderConnector = new Web3ProviderConnector(provider, account ? undefined : FAKE_SIGNER)
+  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
+
+  const owner = account || FAKE_SIGNER.address
+
+  // TODO: check whether cached permit nonce matches current nonce and update it in case it doesnt
+
+  const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
+
+  const request = new Promise<string>(async (resolve) => {
+    const spender = GP_VAULT_RELAYER[chainId]
+    const deadline = getDeadline()
+
+    console.log('bug--generateQuotePermitHook--will start', { owner, spender, nonce, chainId, tokenName, tokenAddress })
+
+    let callData
+    try {
+      if (permitInfo.type === 'permit') {
+        callData = (
+          await eip2612PermitUtils.buildPermitCallData(
+            {
+              owner,
+              spender,
+              value: MaxUint256.toString(),
+              nonce,
+              deadline,
+            },
+            chainId as number,
+            tokenName,
+            tokenAddress
+          )
+        ).replace('0x', '0xd505accf')
+      } else {
+        callData = (
+          await eip2612PermitUtils.buildDaiLikePermitCallData(
+            {
+              holder: owner,
+              spender,
+              allowed: true,
+              value: MaxUint256.toString(),
+              nonce,
+              expiry: deadline,
+            },
+            chainId as number,
+            tokenName,
+            tokenAddress
+          )
+        ).replace('0x', '0x8fcbaf0c')
+      }
+
+      const permitHookData = {
+        target: tokenAddress,
+        callData,
+        gasLimit: permitInfo.gasLimit.toString(),
+      }
+
+      const permitHook = JSON.stringify(permitHookData)
+
+      console.log('bug--generateQuotePermitHook--done', { permitHook })
+      localStorage.setItem(permitKey, permitHook)
+
+      resolve(permitHook)
+    } catch (e) {
+      console.error(`bug--generateQuotePermitHook--error`, e)
+      return Promise.reject(e.message)
+    }
+  })
+
+  pendingRequests[permitKey] = request
+
+  return request
+}
+
+export async function generatePermitHook(params: OrderPermitHookParams): Promise<string> {
   const { inputToken, chainId, account, provider, permitInfo } = params
   const permitKey = `${cachePrefix}${inputToken.address.toLowerCase()}-${account}-${chainId}`
 
@@ -43,17 +123,9 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
 
     const permitHookData = await generatePermitHookData({ ...params, nonce })
 
-    const permitHook = JSON.stringify({
-      backend: {
-        hooks: {
-          pre: [permitHookData],
-          post: [],
-        },
-      },
-    })
+    const permitHook = JSON.stringify(permitHookData)
 
-    const permitHookHash = toKeccak256(permitHook)
-    console.log('permitHook', { permitHookHash, permitHook })
+    console.log('permitHook', { permitHook })
     localStorage.setItem(permitKey, permitHook)
 
     resolve(permitHook)
@@ -64,7 +136,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
   return request
 }
 
-type GeneratePermitDataParams = PermitHookParams & { nonce: string }
+type GeneratePermitDataParams = OrderPermitHookParams & { nonce: string }
 
 async function generatePermitPermitData(params: GeneratePermitDataParams) {
   const {
@@ -85,13 +157,13 @@ async function generatePermitPermitData(params: GeneratePermitDataParams) {
     spender: GP_VAULT_RELAYER[chainId],
     value: MaxUint256.toString(),
     nonce,
-    deadline: MaxUint256.toString(),
+    deadline: getDeadline(),
   }
   const permitSignature = splitSignature(
     await provider.getSigner()._signTypedData(
       {
         name: inputToken.name,
-        chainId: inputToken.chainId,
+        chainId,
         verifyingContract: inputToken.address,
       },
       {
@@ -138,13 +210,13 @@ async function generateDaiPermitData(params: GeneratePermitDataParams) {
     spender: GP_VAULT_RELAYER[chainId],
     value: MaxUint256.toString(),
     nonce,
-    deadline: MaxUint256.toString(),
+    deadline: getDeadline(),
   }
   const permitSignature = splitSignature(
     await provider.getSigner()._signTypedData(
       {
         name: inputToken.name,
-        chainId: inputToken.chainId,
+        chainId,
         verifyingContract: inputToken.address,
       },
       {
