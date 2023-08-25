@@ -2,10 +2,9 @@ import { Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { TradeSummaryContent } from 'modules/swap/pure/TradeSummary'
 import { useWalletDetails } from 'modules/wallet'
-
-import { useHigherUSDValue } from '../../../fiatAmount/hooks/useHigherUSDValue'
 
 // Sub-components
 
