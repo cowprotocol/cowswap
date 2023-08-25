@@ -1,20 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
-import { TypedDataField } from '@ethersproject/abstract-signer'
 import type { Web3Provider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
 
-import {
-  AbiItem,
-  DAI_LIKE_PERMIT_TYPEHASH,
-  Eip2612PermitUtils,
-  EIP712TypedData,
-  ProviderConnector,
-} from '@1inch/permit-signed-approvals-utils'
-import { AbiInput } from 'web3-utils'
+import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from '../legacy/constants'
-import { getContract } from '../legacy/utils'
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+
+import { Web3ProviderConnector } from './Web3ProviderConnector'
+
+import { FAKE_SIGNER } from '../const'
+import { EstimatePermitResult } from '../types'
 
 const permitGasLimitMin: Record<SupportedChainId, number> = {
   1: 55_000,
@@ -34,20 +28,7 @@ const daiLikePermitParams = {
   expiry: Math.ceil(Date.now() / 1000) + 50_000,
 }
 
-export type EstimatePermitResult =
-  // When it's a permittable token:
-  | {
-      type: 'dai' | 'permit'
-      gasLimit: number
-    }
-  // When something failed:
-  | { error: string }
-  // When it's not permittable:
-  | null
-
-const FAKE_SIGNER = buildFakeSigner()
-
-export async function estimatePermit(
+export async function checkIsTokenPermittable(
   tokenAddress: string,
   tokenName: string,
   chainId: SupportedChainId,
@@ -88,7 +69,9 @@ export async function estimatePermit(
 
     const gasLimit = estimatedGas.toNumber()
 
-    // TODO: I'm not sure why this is needed, check with Sasha
+    // Sometimes tokens implement the permit interface but don't actually implement it
+    // This check filters out possible cases where that happened by excluding
+    // gas limit which are bellow a minimum threshold
     return gasLimit > permitGasLimitMin[chainId]
       ? {
           type: 'permit',
@@ -152,50 +135,4 @@ function estimateDaiLikeToken(
           })
       : null
   })
-}
-
-export class Web3ProviderConnector implements ProviderConnector {
-  constructor(private provider: Web3Provider, private walletSigner?: Wallet | undefined) {}
-
-  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
-    const contract = getContract(address || '', abi, this.provider)
-
-    return contract.interface.encodeFunctionData(methodName, methodParams)
-  }
-
-  signTypedData(_walletAddress: string, typedData: EIP712TypedData, _typedDataHash: string): Promise<string> {
-    // Removes `EIP712Domain` as it's already part of EIP712 (see https://ethereum.stackexchange.com/a/151930/55204)
-    // and EthersJS complains when a type is not needed (see https://github.com/ethers-io/ethers.js/discussions/4000)
-    const types = Object.keys(typedData.types).reduce<Record<string, TypedDataField[]>>((acc, type) => {
-      if (type !== 'EIP712Domain') {
-        acc[type] = typedData.types[type]
-      }
-      return acc
-    }, {})
-
-    const signer = this.walletSigner || this.provider.getSigner()
-
-    return signer._signTypedData(typedData.domain, types, typedData.message)
-  }
-
-  ethCall(contractAddress: string, callData: string): Promise<string> {
-    return this.provider.call({
-      to: contractAddress,
-      data: callData,
-    })
-  }
-
-  decodeABIParameter<T>(type: string, hex: string): T {
-    return defaultAbiCoder.decode([type], hex)[0]
-  }
-  decodeABIParameters<T>(types: AbiInput[], hex: string): T {
-    return defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
-  }
-}
-
-/**
- * Builds a fake EthersJS Wallet signer to use with EIP2612 Permit
- */
-export function buildFakeSigner(): Wallet {
-  return Wallet.createRandom()
 }

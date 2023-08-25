@@ -9,10 +9,10 @@ import { Nullish } from 'types'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { estimatePermit } from 'utils/permitTokenChecker'
 
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
 import { IsTokenPermittableResult, PermitInfo } from './types'
+import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
 
 /**
  * Returns a callback for adding PermitInfo for a given token
@@ -73,7 +73,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
       return
     }
 
-    estimatePermit(lowerCaseAddress, tokenName, chainId, provider).then((result) => {
+    checkIsTokenPermittable(lowerCaseAddress, tokenName, chainId, provider).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
         addPermitInfo(chainId, lowerCaseAddress, false)

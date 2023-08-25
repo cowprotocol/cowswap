@@ -16,3 +16,14 @@ export type AddPermitTokenParams = {
   tokenAddress: string
   permitInfo: PermitInfo
 }
+
+export type EstimatePermitResult =
+  // When it's a permittable token:
+  | {
+      type: 'dai' | 'permit'
+      gasLimit: number
+    }
+  // When something failed:
+  | { error: string }
+  // When it's not permittable:
+  | null
