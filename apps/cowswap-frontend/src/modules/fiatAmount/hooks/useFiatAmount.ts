@@ -22,13 +22,11 @@ export function useFiatAmount(_amount: Nullish<CurrencyAmount<Currency>>): FiatA
   return useMemo(() => {
     if (!usdcPrice || !amount) return defaultFiatAmountState
 
-    if (usdcPrice.price === null) {
-      return { value: usdcPrice.price, isLoading: usdcPrice.isLoading }
-    }
+    const { price, isLoading } = usdcPrice
 
     return {
-      value: usdcPrice.price.quote(amount),
-      isLoading: false,
+      value: price === null ? null : price.quote(amount),
+      isLoading,
     }
   }, [usdcPrice, amount])
 }
