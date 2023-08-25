@@ -4,12 +4,12 @@ import { useFiatValuePriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
-import { useTradePriceImpactParams } from '../hooks/useTradePriceImpactParams'
+import { useTradeParsedAmounts } from '../hooks/useTradeParsedAmounts'
 import { priceImpactAtom } from '../state/priceImpactAtom'
 
 export function PriceImpactUpdater() {
   const updatePriceImpact = useSetAtom(priceImpactAtom)
-  const params = useTradePriceImpactParams()
+  const params = useTradeParsedAmounts()
   const { isLoading, priceImpact } = useFiatValuePriceImpact(params)
 
   useSafeEffect(() => {
