@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -12,6 +12,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
 import { IsTokenPermittableResult, PermitHookData, PermitInfo, QuotePermitHookParams } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
+import { generateQuotePermitHook } from './utils/generatePermitHook'
 
 /**
  * Returns a callback for adding PermitInfo for a given token
@@ -113,3 +114,14 @@ export function usePermitHookParams(sellCurrency: Nullish<Currency>): QuotePermi
   }, [sellCurrency, provider, permitInfo, chainId])
 }
 
+export function usePermitHookData(params?: QuotePermitHookParams): PermitHookData | undefined {
+  const [data, setData] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (!params) return
+
+    generateQuotePermitHook(params).then(setData)
+  }, [params])
+
+  return data ? JSON.parse(data) : undefined
+}
