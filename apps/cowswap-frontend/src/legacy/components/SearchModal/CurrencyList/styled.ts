@@ -1,15 +1,15 @@
 import styled from 'styled-components/macro'
 
 export const Tag = styled.div`
-  background-color: ${({ theme }) => theme.bg3};
+  /* background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text2};
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: var(--cow-font-weight-medium);
   border-radius: 4px;
-  padding: 0.25rem 0.3rem 0.25rem 0.3rem;
-  max-width: 6rem;
+  padding: 4px 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   justify-self: flex-end;
-  margin-right: 4px;
+  margin: 0 4px 0 0; */
 `

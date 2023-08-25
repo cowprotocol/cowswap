@@ -392,7 +392,7 @@ export const UniThemedGlobalStyle = css`
     // Colors
     --cow-color-white: ${({ theme }) => theme.white};
     --cow-color-blue: ${({ theme }) => theme.blueDark2};
-    --cow-color-border: ${({ theme }) => theme.grey1};
+    --cow-color-grey: ${({ theme }) => theme.grey1};
     --cow-color-lightBlue: ${({ theme }) => theme.information};
     --cow-color-lightBlue-opacity-90: ${({ theme }) => transparentize(0.1, theme.information)}; // 90% opacity
     --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
@@ -400,27 +400,43 @@ export const UniThemedGlobalStyle = css`
     --cow-color-yellow-light: ${({ theme }) => theme.alert2};
     --cow-color-green: ${({ theme }) => theme.success};
 
-    // States
+    // States ===============================
+
+    // Information (light blue)
     --cow-color-information: var(--cow-color-lightBlue);
     --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
     --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
 
+    // Alert (yellow)
     --cow-color-alert: var(--cow-color-yellow);
     --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
     --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
 
+    // Alert2 (yellow light)
     --cow-color-alert2: var(--cow-color-yellow-light);
     --cow-color-alert2-bg: var(--cow-color-alert2);
     --cow-color-alert2-text: var(--cow-color-blue);
 
+    // Success (green)
     --cow-color-success: var(--cow-color-green);
     --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
     --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
 
-    // Text
+    // Danger (red)
+    --cow-color-danger: ${({ theme }) => theme.danger};
+    --cow-color-danger-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger))};
+    --cow-color-danger-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger))};
+
+    // Text ===============================
     --cow-color-text1: ${({ theme }) => theme.text1};
     --cow-color-text1-inactive: ${({ theme }) => transparentize(0.4, theme.text1)};
     --cow-color-text1-opacity-25: ${({ theme }) => transparentize(0.75, theme.text1)};
+    --cow-font-weight-normal: 400;
+    --cow-font-weight-medium: 500;
+    --cow-font-weight-bold: 600;
+
+    // Attributes
+    --cow-color-border: var(--cow-color-grey);
   }
 
   html {
