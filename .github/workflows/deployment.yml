@@ -7,18 +7,6 @@ on:
     tags: [v*]
   workflow_dispatch: # Manually trigger it via UI/CLI/API
 
-env:
-  REPO_NAME_SLUG: cowswap
-  PR_NUMBER: ${{ github.event.number }}
-  NODE_VERSION: lts/gallium
-  REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-  REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
-  REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
-  REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-  REACT_APP_AMPLITUDE_KEY: ${{ secrets.REACT_APP_AMPLITUDE_KEY }}
-
 jobs:
 
   vercel-dev:
