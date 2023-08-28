@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
-import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
@@ -9,7 +8,6 @@ import { shallowEqual } from 'react-redux'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { SupportedLocale } from 'legacy/constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
@@ -18,29 +16,20 @@ import { useWalletInfo } from 'modules/wallet'
 import { calculateValidTo } from 'utils/time'
 
 import {
-  addSerializedPair,
   addSerializedToken,
   initFavouriteTokens,
   removeAllFavouriteTokens,
   removeSerializedToken,
   toggleFavouriteToken,
-  toggleURLWarning,
-  updateHideClosedPositions,
   updateRecipientToggleVisible,
-  updateShowDonationLink,
-  updateShowSurveyPopup,
-  updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
 } from './reducer'
-import { SerializedPair, SerializedToken } from './types'
+import { SerializedToken } from './types'
 
-import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
-import { useAllTokens } from '../../hooks/Tokens'
 import { useSwapActionHandlers } from '../swap/hooks'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
@@ -109,18 +98,6 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-export function useShowSurveyPopup(): [boolean | undefined, (showPopup: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const showSurveyPopup = useAppSelector((state) => state.user.showSurveyPopup)
-  const toggleShowSurveyPopup = useCallback(
-    (showPopup: boolean) => {
-      dispatch(updateShowSurveyPopup({ showSurveyPopup: showPopup }))
-    },
-    [dispatch]
-  )
-  return [showSurveyPopup, toggleShowSurveyPopup]
-}
-
 // TODO: mod, move to mod file
 export function useIsRecipientToggleVisible(): boolean {
   return useAppSelector((state) => state.user.recipientToggleVisible)
@@ -144,41 +121,6 @@ export function useRecipientToggleManager(): [boolean, (value?: boolean) => void
   )
 
   return [isVisible, toggleVisibility]
-}
-
-const DONATION_END_TIMESTAMP = 1646864954 // Jan 15th
-
-export function useShowDonationLink(): [boolean | undefined, (showDonationLink: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const showDonationLink = useAppSelector((state) => state.user.showDonationLink)
-
-  const toggleShowDonationLink = useCallback(
-    (showPopup: boolean) => {
-      dispatch(updateShowDonationLink({ showDonationLink: showPopup }))
-    },
-    [dispatch]
-  )
-
-  const timestamp = useCurrentBlockTimestamp()
-  const durationOver = timestamp ? timestamp.toNumber() > DONATION_END_TIMESTAMP : false
-  const donationVisible = showDonationLink !== false && !durationOver
-
-  return [donationVisible, toggleShowDonationLink]
-}
-
-export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {
-  const dispatch = useAppDispatch()
-
-  const clientSideRouter = useAppSelector((state) => Boolean(state.user.userClientSideRouter))
-
-  const setClientSideRouter = useCallback(
-    (newClientSideRouter: boolean) => {
-      dispatch(updateUserClientSideRouter({ userClientSideRouter: newClientSideRouter }))
-    },
-    [dispatch]
-  )
-
-  return [clientSideRouter, setClientSideRouter]
 }
 
 export function useSetUserSlippageTolerance(): (slippageTolerance: Percent | 'auto') => void {
@@ -215,21 +157,6 @@ export function useUserSlippageTolerance(): Percent | 'auto' {
     () => (userSlippageTolerance === 'auto' ? 'auto' : new Percent(userSlippageTolerance, 10_000)),
     [userSlippageTolerance]
   )
-}
-
-export function useUserHideClosedPositions(): [boolean, (newHideClosedPositions: boolean) => void] {
-  const dispatch = useAppDispatch()
-
-  const hideClosedPositions = useAppSelector((state) => state.user.userHideClosedPositions)
-
-  const setHideClosedPositions = useCallback(
-    (newHideClosedPositions: boolean) => {
-      dispatch(updateHideClosedPositions({ userHideClosedPositions: newHideClosedPositions }))
-    },
-    [dispatch]
-  )
-
-  return [hideClosedPositions, setHideClosedPositions]
 }
 
 /**
@@ -293,117 +220,8 @@ export function useUserAddedTokens(): Token[] {
   }, [serializedTokensMap, chainId])
 }
 
-function serializePair(pair: Pair): SerializedPair {
-  return {
-    token0: serializeToken(pair.token0),
-    token1: serializeToken(pair.token1),
-  }
-}
-
-export function usePairAdder(): (pair: Pair) => void {
-  const dispatch = useAppDispatch()
-
-  return useCallback(
-    (pair: Pair) => {
-      dispatch(addSerializedPair({ serializedPair: serializePair(pair) }))
-    },
-    [dispatch]
-  )
-}
-
 export function useURLWarningVisible(): boolean {
   return useAppSelector((state: AppState) => state.user.URLWarningVisible)
-}
-
-/**
- * Given two tokens return the liquidity token that represents its liquidity shares
- * @param tokenA one of the two tokens
- * @param tokenB the other token
- */
-export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
-  if (tokenA.chainId !== tokenB.chainId) throw new Error('Not matching chain IDs')
-  if (tokenA.equals(tokenB)) throw new Error('Tokens cannot be equal')
-  if (!V2_FACTORY_ADDRESSES[tokenA.chainId]) throw new Error('No V2 factory address on this chain')
-
-  return new Token(
-    tokenA.chainId,
-    computePairAddress({ factoryAddress: V2_FACTORY_ADDRESSES[tokenA.chainId], tokenA, tokenB }),
-    18,
-    'UNI-V2',
-    'Uniswap V2'
-  )
-}
-
-/**
- * Returns all the pairs of tokens that are tracked by the user for the current chain ID.
- */
-export function useTrackedTokenPairs(): [Token, Token][] {
-  const { chainId } = useWalletInfo()
-  const tokens = useAllTokens()
-
-  // pinned pairs
-  const pinnedPairs = useMemo(() => (chainId ? PINNED_PAIRS[chainId] ?? [] : []), [chainId])
-
-  // pairs for every token against every base
-  const generatedPairs: [Token, Token][] = useMemo(
-    () =>
-      chainId
-        ? Object.keys(tokens).flatMap((tokenAddress) => {
-            const token = tokens[tokenAddress]
-            // for each token on the current chain,
-            return (
-              // loop though all bases on the current chain
-              (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
-                // to construct pairs of the given token with each base
-                .map((base) => {
-                  if (base.address === token.address) {
-                    return null
-                  } else {
-                    return [base, token]
-                  }
-                })
-                .filter((p): p is [Token, Token] => p !== null)
-            )
-          })
-        : [],
-    [tokens, chainId]
-  )
-
-  // pairs saved by users
-  const savedSerializedPairs = useAppSelector(({ user: { pairs } }) => pairs)
-
-  const userPairs: [Token, Token][] = useMemo(() => {
-    if (!chainId || !savedSerializedPairs) return []
-    const forChain = savedSerializedPairs[chainId]
-    if (!forChain) return []
-
-    return Object.keys(forChain).map((pairId) => {
-      return [deserializeToken(forChain[pairId].token0), deserializeToken(forChain[pairId].token1)]
-    })
-  }, [savedSerializedPairs, chainId])
-
-  const combinedList = useMemo(
-    () => userPairs.concat(generatedPairs).concat(pinnedPairs),
-    [generatedPairs, pinnedPairs, userPairs]
-  )
-
-  return useMemo(() => {
-    // dedupes pairs of tokens in the combined list
-    const keyed = combinedList.reduce<{ [key: string]: [Token, Token] }>((memo, [tokenA, tokenB]) => {
-      const sorted = tokenA.sortsBefore(tokenB)
-      const key = sorted ? `${tokenA.address}:${tokenB.address}` : `${tokenB.address}:${tokenA.address}`
-      if (memo[key]) return memo
-      memo[key] = sorted ? [tokenA, tokenB] : [tokenB, tokenA]
-      return memo
-    }, {})
-
-    return Object.keys(keyed).map((key) => keyed[key])
-  }, [combinedList])
-}
-
-export function useURLWarningToggle(): () => void {
-  const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
 }
 
 export function useOrderValidTo() {

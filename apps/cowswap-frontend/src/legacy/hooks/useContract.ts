@@ -21,6 +21,7 @@ import {
   WethAbi,
   GPv2Settlement,
   GPv2SettlementAbi,
+  UniswapInterfaceMulticallAbi,
   VCow,
   CoWSwapEthFlow,
   vCowAbi,
@@ -28,7 +29,6 @@ import {
 } from '@cowswap/abis'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
-import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import { useWeb3React } from '@web3-react/core'
 
 import {
@@ -43,7 +43,7 @@ import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 
 import { useWalletInfo } from 'modules/wallet'
 
-const { abi: MulticallABI } = UniswapInterfaceMulticallJson
+const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
