@@ -17,7 +17,10 @@ let coingeckoRateLimitHitTimestamp: null | number = null
  * CowProtocol is used as a fallback
  * When coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
-export function fetchCurrencyFiatPrice(currency: Token, usdcPrice$: Promise<number | null>): Promise<number | null> {
+export function fetchCurrencyFiatPrice(
+  currency: Token,
+  usdcPricePromise: Promise<number | null>
+): Promise<number | null> {
   const shouldSkipCoingecko =
     !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
 
@@ -26,7 +29,7 @@ export function fetchCurrencyFiatPrice(currency: Token, usdcPrice$: Promise<numb
   }
 
   const request = shouldSkipCoingecko
-    ? getCowProtocolFiatPrice(currency, usdcPrice$)
+    ? getCowProtocolFiatPrice(currency, usdcPricePromise)
     : getCoingeckoPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
@@ -35,7 +38,7 @@ export function fetchCurrencyFiatPrice(currency: Token, usdcPrice$: Promise<numb
           console.error('Cannot fetch coingecko price', error)
         }
 
-        return getCowProtocolFiatPrice(currency, usdcPrice$)
+        return getCowProtocolFiatPrice(currency, usdcPricePromise)
       })
 
   return request
