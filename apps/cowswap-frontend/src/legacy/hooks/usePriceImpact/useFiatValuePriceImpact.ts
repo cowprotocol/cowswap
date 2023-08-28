@@ -7,17 +7,21 @@ import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import useDebounce from 'legacy/hooks/useDebounce'
 
 import { useTradeFiatAmounts } from 'modules/fiatAmount'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
-import { ParsedAmounts } from './types'
+const FIAT_VALUE_LOADING_THRESHOLD = ms`0.2s`
 
-const FIAT_VALUE_LOADING_THRESHOLD = ms`5s`
+export function useFiatValuePriceImpact() {
+  const { state } = useDerivedTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
-export function useFiatValuePriceImpact({ INPUT: inputAmount, OUTPUT: outputAmount }: ParsedAmounts) {
-  const areBothValuesPresent = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
-  const tradeAmounts = useSafeMemo(() => ({ inputAmount, outputAmount }), [inputAmount, outputAmount])
+  const isTradeSetUp = !!inputCurrency && !!outputCurrency
+  const tradeAmounts = useSafeMemo(
+    () => ({ inputAmount: inputCurrencyAmount || undefined, outputAmount: outputCurrencyAmount || undefined }),
+    [inputCurrencyAmount, outputCurrencyAmount]
+  )
   const {
     inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
@@ -27,10 +31,7 @@ export function useFiatValuePriceImpact({ INPUT: inputAmount, OUTPUT: outputAmou
 
   // Consider the price impact loading if either the input or output amount is falsy
   // Debounce the loading state to prevent the price impact from flashing
-  const isLoading = useDebounce(
-    areBothValuesPresent ? inputIsLoading || outputIsLoading : true,
-    FIAT_VALUE_LOADING_THRESHOLD
-  )
+  const isLoading = useDebounce(isTradeSetUp ? inputIsLoading || outputIsLoading : false, FIAT_VALUE_LOADING_THRESHOLD)
 
   return useSafeMemo(() => ({ priceImpact, isLoading }), [priceImpact, isLoading])
 }

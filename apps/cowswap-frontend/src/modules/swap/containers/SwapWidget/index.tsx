@@ -47,6 +47,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 
@@ -189,15 +190,21 @@ export function SwapWidget() {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
+  // Hide the price impact warning when there is priceImpact value or when it's loading
+  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
+  const hideUnknownImpactWarning =
+    isFractionFalsy(parsedAmounts.INPUT) ||
+    isFractionFalsy(parsedAmounts.OUTPUT) ||
+    !!priceImpactParams.priceImpact ||
+    priceImpactParams.loading
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
     account,
     feeWarningAccepted,
     impactWarningAccepted,
-    // Hide the price impact warning when there is priceImpact value or when it's loading
-    // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
-    hideUnknownImpactWarning: !!priceImpactParams.priceImpact || priceImpactParams.loading,
+    hideUnknownImpactWarning,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
