@@ -11,7 +11,7 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-const FIAT_VALUE_LOADING_THRESHOLD = ms`0.2s`
+const FIAT_VALUE_LOADING_THRESHOLD = ms`0.1s`
 
 export function useFiatValuePriceImpact() {
   const { state } = useDerivedTradeState()

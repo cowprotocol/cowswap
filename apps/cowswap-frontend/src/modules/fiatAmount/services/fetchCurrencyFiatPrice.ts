@@ -52,7 +52,7 @@ export function fetchCurrencyFiatPrice(
   return request
     .catch((error) => {
       console.error('Cannot fetch fiat price', { error })
-      return null
+      return Promise.reject(error)
     })
     .then((result) => {
       return result === null ? result : +result.toFixed(LONG_PRECISION)
