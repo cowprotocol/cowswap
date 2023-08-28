@@ -13,14 +13,14 @@ export interface FiatAmountInfo {
   isLoading: boolean
 }
 
-const defaultFiatAmountState = { value: null, isLoading: false }
+const DEFAULT_FIAT_AMOUNT_STATE = { value: null, isLoading: true }
 
 export function useFiatAmount(_amount: Nullish<CurrencyAmount<Currency>>): FiatAmountInfo {
   const amount = currencyAmountToTokenAmount(_amount)
   const usdcPrice = useUsdcPrice(amount?.currency)
 
   return useMemo(() => {
-    if (!usdcPrice || !amount) return defaultFiatAmountState
+    if (!usdcPrice || !amount) return DEFAULT_FIAT_AMOUNT_STATE
 
     const { price, isLoading } = usdcPrice
 
