@@ -1,19 +1,25 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { LONG_PRECISION } from 'legacy/constants'
 
 import {
+  COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
   getCoingeckoPrice,
-  UnsupporedCoingeckoPlatformError,
 } from '../apis/getCoingeckoPrice'
 import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 
-const getShouldSkipCoingecko = () =>
-  !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+function getShouldSkipCoingecko(currency: Token): boolean {
+  const chainId = currency.chainId as SupportedChainId
+
+  if (!COINGECK_PLATFORMS[chainId]) return true
+
+  return !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+}
 
 /**
  * Fetches fiat price for a given currency from coingecko or CowProtocol
@@ -24,7 +30,7 @@ export function fetchCurrencyFiatPrice(
   currency: Token,
   usdcPricePromise: Promise<number | null>
 ): Promise<number | null> {
-  const shouldSkipCoingecko = getShouldSkipCoingecko()
+  const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
 
   if (coingeckoRateLimitHitTimestamp && !shouldSkipCoingecko) {
     coingeckoRateLimitHitTimestamp = null
@@ -36,7 +42,7 @@ export function fetchCurrencyFiatPrice(
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
-        } else if (!(error instanceof UnsupporedCoingeckoPlatformError)) {
+        } else {
           console.error('Cannot fetch coingecko price', error)
         }
 
