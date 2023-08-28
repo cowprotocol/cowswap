@@ -12,6 +12,9 @@ import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 
+const getShouldSkipCoingecko = () =>
+  !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+
 /**
  * Fetches fiat price for a given currency from coingecko or CowProtocol
  * CowProtocol is used as a fallback
@@ -21,8 +24,7 @@ export function fetchCurrencyFiatPrice(
   currency: Token,
   usdcPricePromise: Promise<number | null>
 ): Promise<number | null> {
-  const shouldSkipCoingecko =
-    !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+  const shouldSkipCoingecko = getShouldSkipCoingecko()
 
   if (coingeckoRateLimitHitTimestamp && !shouldSkipCoingecko) {
     coingeckoRateLimitHitTimestamp = null
