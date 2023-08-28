@@ -39,7 +39,7 @@ export function FiatPricesUpdater() {
   const queue = useMemo(() => Object.values(currenciesFiatPriceQueue), [currenciesFiatPriceQueue])
 
   const swrResponse = useSWR<FiatPrices | null>(
-    ['FiatPricesUpdater', queue],
+    ['FiatPricesUpdater', queue, chainId],
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 

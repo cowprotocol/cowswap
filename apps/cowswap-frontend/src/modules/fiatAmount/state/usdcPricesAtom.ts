@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { Price, Token } from '@uniswap/sdk-core'
 
 import { USDC } from 'legacy/constants/tokens'
 
@@ -33,7 +33,7 @@ export const usdcPricesAtom = atom((get) => {
 function calculatePrice(currency: Token, price: number): Price<Token, Token> {
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
-  const baseAmount = CurrencyAmount.fromRawAmount(currency, 1)
+  const baseAmount = tryParseCurrencyAmount('1', currency)
   const quoteAmount = tryParseCurrencyAmount(price.toString(), usdcToken)
 
   return new Price({
