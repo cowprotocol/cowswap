@@ -17,6 +17,7 @@ import {
   FiatPrices,
   fiatPricesAtom,
   FiatPriceState,
+  resetFiatPricesAtom,
   setFiatPricesLoadingAtom,
 } from '../state/fiatPricesAtom'
 
@@ -31,6 +32,7 @@ export function FiatPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setFiatPrices = useSetAtom(fiatPricesAtom)
   const setFiatPricesLoading = useSetAtom(setFiatPricesLoadingAtom)
+  const resetFiatPrices = useSetAtom(resetFiatPricesAtom)
   const currenciesFiatPriceQueue = useAtomValue(currenciesFiatPriceQueueAtom)
 
   const queue = useMemo(() => Object.values(currenciesFiatPriceQueue), [currenciesFiatPriceQueue])
@@ -42,7 +44,11 @@ export function FiatPricesUpdater() {
 
       setFiatPricesLoading(queue)
 
-      return processQueue(queue, usdcPrice$)
+      return processQueue(queue, usdcPrice$).catch((error) => {
+        resetFiatPrices(queue)
+
+        return Promise.reject(error)
+      })
     },
     swrOptions
   )

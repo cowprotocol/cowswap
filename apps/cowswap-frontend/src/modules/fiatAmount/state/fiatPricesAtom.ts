@@ -58,3 +58,20 @@ export const setFiatPricesLoadingAtom = atom(null, (get, set, currencies: Token[
     set(fiatPricesAtom, newState)
   }
 })
+
+export const resetFiatPricesAtom = atom(null, (get, set, currencies: Token[]) => {
+  const currentState = get(fiatPricesAtom)
+  const isLoading = false
+
+  const newState = currencies.reduce<FiatPrices>((acc, token) => {
+    const tokenAddress = token.address.toLowerCase()
+
+    acc[tokenAddress] = { currency: token, isLoading, price: null }
+
+    return acc
+  }, {})
+
+  if (!deepEqual(currentState, newState)) {
+    set(fiatPricesAtom, newState)
+  }
+})

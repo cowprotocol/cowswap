@@ -195,8 +195,9 @@ export function SwapWidget() {
     account,
     feeWarningAccepted,
     impactWarningAccepted,
-    // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-    hideUnknownImpactWarning: !trade || priceImpactParams.loading,
+    // Hide the price impact warning when there is priceImpact value or when it's loading
+    // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
+    hideUnknownImpactWarning: !!priceImpactParams.priceImpact || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,

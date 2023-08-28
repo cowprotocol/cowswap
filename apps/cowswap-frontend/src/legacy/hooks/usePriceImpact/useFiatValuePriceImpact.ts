@@ -1,29 +1,49 @@
-import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import JSBI from 'jsbi'
+import ms from 'ms.macro'
+
+import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
+import useDebounce from 'legacy/hooks/useDebounce'
 
 import { useTradeFiatAmounts } from 'modules/fiatAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { ParsedAmounts } from './types'
 
-export function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts) {
-  const areBothValuesPresent = !!INPUT && !!OUTPUT
-  // prevent querying any fiat estimation unless both values are filled in
-  const input = areBothValuesPresent ? INPUT : undefined
-  const output = areBothValuesPresent ? OUTPUT : undefined
+const FIAT_VALUE_LOADING_THRESHOLD = ms`5s`
 
-  const tradeAmounts = useSafeMemo(() => ({ inputAmount: input, outputAmount: output }), [input, output])
+export function useFiatValuePriceImpact({ INPUT: inputAmount, OUTPUT: outputAmount }: ParsedAmounts) {
+  const areBothValuesPresent = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
+  const tradeAmounts = useSafeMemo(() => ({ inputAmount, outputAmount }), [inputAmount, outputAmount])
   const {
     inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeFiatAmounts(tradeAmounts)
 
-  // Only compute price impact after BOTH finished loading
-  // This prevents the impact look like it's ready but still loading
-  const priceImpact =
-    !inputIsLoading && !outputIsLoading ? computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput) : undefined
+  const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
 
-  const isLoading = areBothValuesPresent && (inputIsLoading || outputIsLoading)
+  // Consider the price impact loading if either the input or output amount is falsy
+  // Debounce the loading state to prevent the price impact from flashing
+  const isLoading = useDebounce(
+    areBothValuesPresent ? inputIsLoading || outputIsLoading : true,
+    FIAT_VALUE_LOADING_THRESHOLD
+  )
 
   return useSafeMemo(() => ({ priceImpact, isLoading }), [priceImpact, isLoading])
+}
+
+function computeFiatValuePriceImpact(
+  fiatValueInput: CurrencyAmount<Currency> | undefined | null,
+  fiatValueOutput: CurrencyAmount<Currency> | undefined | null
+): Percent | undefined {
+  if (!fiatValueOutput || !fiatValueInput) return undefined
+  if (!fiatValueInput.currency.equals(fiatValueOutput.currency)) return undefined
+  if (JSBI.equal(fiatValueInput.quotient, JSBI.BigInt(0))) return undefined
+
+  const pct = ONE_HUNDRED_PERCENT.subtract(fiatValueOutput.divide(fiatValueInput))
+
+  return new Percent(pct.numerator, pct.denominator)
 }
