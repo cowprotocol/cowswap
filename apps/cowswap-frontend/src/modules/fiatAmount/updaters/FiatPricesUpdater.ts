@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -40,11 +41,11 @@ export function FiatPricesUpdater() {
   const swrResponse = useSWR<FiatPrices | null>(
     ['FiatPricesUpdater', queue],
     () => {
-      const usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
+      const getUsdcPrice = usdcPriceLoader(chainId)
 
       setFiatPricesLoading(queue)
 
-      return processQueue(queue, usdcPricePromise).catch((error) => {
+      return processQueue(queue, getUsdcPrice).catch((error) => {
         resetFiatPrices(queue)
 
         return Promise.reject(error)
@@ -71,10 +72,23 @@ export function FiatPricesUpdater() {
   return null
 }
 
-async function processQueue(queue: Token[], usdcPricePromise: Promise<number | null>): Promise<FiatPrices> {
+function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null> {
+  let usdcPricePromise: Promise<number | null> | null = null
+
+  return () => {
+    // Cache the result to avoid fetching it multiple times
+    if (!usdcPricePromise) {
+      usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
+    }
+
+    return usdcPricePromise
+  }
+}
+
+async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<FiatPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
-      return fetchCurrencyFiatPrice(currency, usdcPricePromise).then((price) => {
+      return fetchCurrencyFiatPrice(currency, getUsdcPrice).then((price) => {
         if (typeof price !== 'number') {
           return null
         }

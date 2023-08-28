@@ -28,7 +28,7 @@ function getShouldSkipCoingecko(currency: Token): boolean {
  */
 export function fetchCurrencyFiatPrice(
   currency: Token,
-  usdcPricePromise: Promise<number | null>
+  getUsdcPrice: () => Promise<number | null>
 ): Promise<number | null> {
   const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
 
@@ -37,7 +37,7 @@ export function fetchCurrencyFiatPrice(
   }
 
   const request = shouldSkipCoingecko
-    ? getCowProtocolFiatPrice(currency, usdcPricePromise)
+    ? getCowProtocolFiatPrice(currency, getUsdcPrice)
     : getCoingeckoPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
@@ -46,7 +46,7 @@ export function fetchCurrencyFiatPrice(
           console.error('Cannot fetch coingecko price', error)
         }
 
-        return getCowProtocolFiatPrice(currency, usdcPricePromise)
+        return getCowProtocolFiatPrice(currency, getUsdcPrice)
       })
 
   return request
