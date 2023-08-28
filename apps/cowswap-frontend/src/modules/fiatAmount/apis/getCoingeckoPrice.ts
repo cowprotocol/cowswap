@@ -9,7 +9,7 @@ export interface CoinGeckoUsdQuote {
   }
 }
 
-const platforms: Record<SupportedChainId, string | null> = {
+export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.GOERLI]: null,
@@ -25,12 +25,6 @@ const FAILED_FETCH_ERROR = 'Failed to fetch'
 
 export const COINGECKO_RATE_LIMIT_TIMEOUT = ms`1m`
 
-export class UnsupporedCoingeckoPlatformError extends Error {
-  constructor() {
-    super('UnsupporedCoingeckoPlatformError')
-  }
-}
-
 export class CoingeckoRateLimitError extends Error {
   constructor() {
     super('CoingeckoRateLimitError')
@@ -38,9 +32,9 @@ export class CoingeckoRateLimitError extends Error {
 }
 
 export async function getCoingeckoPrice(currency: Token): Promise<number | null> {
-  const platform = platforms[currency.chainId as SupportedChainId]
+  const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
-  if (!platform) throw new UnsupporedCoingeckoPlatformError()
+  if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
 
   const params = {
     contract_addresses: currency.address,

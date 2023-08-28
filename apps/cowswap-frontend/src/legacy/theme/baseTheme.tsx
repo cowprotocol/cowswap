@@ -1,4 +1,4 @@
-import { transparentize, lighten } from 'polished'
+import { transparentize, lighten, darken } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
@@ -35,7 +35,8 @@ export function colors(darkMode: boolean): Colors {
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#ED6237' : '#D94719',
-    alert: darkMode ? '#DB971E' : '#DB971E',
+    alert: '#DB971E',
+    alert2: '#F8D06B',
     information: darkMode ? '#428dff' : '#0d5ed9',
     success: darkMode ? '#00D897' : '#007B28',
     pending: '#43758C', // deprecate
@@ -386,15 +387,40 @@ export const UniFixedGlobalStyle = css`
 
 export const UniThemedGlobalStyle = css`
   :root {
-    // CSS Variables
-    --cow-color-text1: ${({ theme }) => theme.text1};
-    --cow-color-text1-opacity-25: ${({ theme }) => theme.text1 + '40'};
+    // CSS Variables ===============================
+
+    // Colors
     --cow-color-white: ${({ theme }) => theme.white};
-    --cow-color-blue: ${({ theme }) => theme.bg2};
+    --cow-color-blue: ${({ theme }) => theme.blueDark2};
     --cow-color-border: ${({ theme }) => theme.grey1};
     --cow-color-lightBlue: ${({ theme }) => theme.information};
-    --cow-color-lightBlue-opacity-90: ${({ theme }) => transparentize(0.9, theme.information)};
-    --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.8, theme.information)};
+    --cow-color-lightBlue-opacity-90: ${({ theme }) => transparentize(0.1, theme.information)}; // 90% opacity
+    --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
+    --cow-color-yellow: ${({ theme }) => theme.alert};
+    --cow-color-yellow-light: ${({ theme }) => theme.alert2};
+    --cow-color-green: ${({ theme }) => theme.success};
+
+    // States
+    --cow-color-information: var(--cow-color-lightBlue);
+    --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
+    --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+
+    --cow-color-alert: var(--cow-color-yellow);
+    --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
+
+    --cow-color-alert2: var(--cow-color-yellow-light);
+    --cow-color-alert2-bg: var(--cow-color-alert2);
+    --cow-color-alert2-text: var(--cow-color-blue);
+
+    --cow-color-success: var(--cow-color-green);
+    --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
+    --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
+
+    // Text
+    --cow-color-text1: ${({ theme }) => theme.text1};
+    --cow-color-text1-inactive: ${({ theme }) => transparentize(0.4, theme.text1)};
+    --cow-color-text1-opacity-25: ${({ theme }) => transparentize(0.75, theme.text1)};
   }
 
   html {

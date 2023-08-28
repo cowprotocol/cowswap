@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.1](https://github.com/cowprotocol/cowswap/compare/v1.45.0...v1.45.1) (2023-08-23)
+
+
+### Bug Fixes
+
+* handle error in case erc1155 id cannot be converted to BigNumber ([#3073](https://github.com/cowprotocol/cowswap/issues/3073)) ([82a549d](https://github.com/cowprotocol/cowswap/commit/82a549d54b427a5555eb6ddc93135798908c0714))
+
 ## [1.45.0](https://github.com/cowprotocol/cowswap/compare/v1.44.7...v1.45.0) (2023-08-21)
 
 

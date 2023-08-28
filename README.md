@@ -121,7 +121,6 @@ All price feeds are enabled by default, but they can be individually disabled by
 | **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
 | **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`     | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.                               |
 | **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
-| **Coingecko**    | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
 
 ### Metadata attached to orders (AppData)
 

@@ -1,41 +1,52 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { LONG_PRECISION } from 'legacy/constants'
 
 import {
+  COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
   getCoingeckoPrice,
-  UnsupporedCoingeckoPlatformError,
 } from '../apis/getCoingeckoPrice'
 import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
+
+function getShouldSkipCoingecko(currency: Token): boolean {
+  const chainId = currency.chainId as SupportedChainId
+
+  if (!COINGECK_PLATFORMS[chainId]) return true
+
+  return !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+}
 
 /**
  * Fetches fiat price for a given currency from coingecko or CowProtocol
  * CowProtocol is used as a fallback
  * When coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
-export function fetchCurrencyFiatPrice(currency: Token, usdcPrice$: Promise<number | null>): Promise<number | null> {
-  const shouldSkipCoingecko =
-    !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+export function fetchCurrencyFiatPrice(
+  currency: Token,
+  getUsdcPrice: () => Promise<number | null>
+): Promise<number | null> {
+  const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
 
   if (coingeckoRateLimitHitTimestamp && !shouldSkipCoingecko) {
     coingeckoRateLimitHitTimestamp = null
   }
 
   const request = shouldSkipCoingecko
-    ? getCowProtocolFiatPrice(currency, usdcPrice$)
+    ? getCowProtocolFiatPrice(currency, getUsdcPrice)
     : getCoingeckoPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
-        } else if (!(error instanceof UnsupporedCoingeckoPlatformError)) {
+        } else {
           console.error('Cannot fetch coingecko price', error)
         }
 
-        return getCowProtocolFiatPrice(currency, usdcPrice$)
+        return getCowProtocolFiatPrice(currency, getUsdcPrice)
       })
 
   return request
