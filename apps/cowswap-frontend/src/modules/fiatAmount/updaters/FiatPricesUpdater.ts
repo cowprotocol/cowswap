@@ -40,11 +40,11 @@ export function FiatPricesUpdater() {
   const swrResponse = useSWR<FiatPrices | null>(
     ['FiatPricesUpdater', queue],
     () => {
-      const usdcPrice$ = getCowProtocolNativePrice(USDC[chainId])
+      const usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
 
       setFiatPricesLoading(queue)
 
-      return processQueue(queue, usdcPrice$).catch((error) => {
+      return processQueue(queue, usdcPricePromise).catch((error) => {
         resetFiatPrices(queue)
 
         return Promise.reject(error)
@@ -71,10 +71,10 @@ export function FiatPricesUpdater() {
   return null
 }
 
-async function processQueue(queue: Token[], usdcPrice$: Promise<number | null>): Promise<FiatPrices> {
+async function processQueue(queue: Token[], usdcPricePromise: Promise<number | null>): Promise<FiatPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
-      return fetchCurrencyFiatPrice(currency, usdcPrice$).then((price) => {
+      return fetchCurrencyFiatPrice(currency, usdcPricePromise).then((price) => {
         if (typeof price !== 'number') {
           return null
         }
