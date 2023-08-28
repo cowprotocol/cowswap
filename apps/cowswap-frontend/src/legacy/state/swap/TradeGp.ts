@@ -1,5 +1,4 @@
 import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
-import { Trade } from '@uniswap/v2-sdk'
 
 import { FeeInformation, PriceInformation } from 'types'
 
@@ -7,12 +6,6 @@ import { ONE_FRACTION } from 'legacy/constants/misc'
 import { CanonicalMarketParams, getCanonicalMarket } from 'legacy/utils/misc'
 
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
-
-export type TradeWithFee = Omit<Trade<Currency, Currency, TradeType>, 'nextMidPrice' | 'exactIn' | 'exactOut'> & {
-  inputAmountWithFee: CurrencyAmount<Currency>
-  outputAmountWithoutFee?: CurrencyAmount<Currency>
-  fee: FeeForTrade
-}
 
 type TradeExecutionPrice = CanonicalMarketParams<CurrencyAmount<Currency> | undefined> & { price?: PriceInformation }
 

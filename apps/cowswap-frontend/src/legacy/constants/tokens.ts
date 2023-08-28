@@ -17,8 +17,6 @@ import {
 } from 'legacy/utils/gnosis_chain/constants'
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
-import { UNI_ADDRESS } from './addresses'
-
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -129,11 +127,6 @@ export const SWISE = new Token(
   'SWISE',
   'StakeWise'
 )
-
-export const UNI: { [chainId: number]: Token } = {
-  [SupportedChainId.MAINNET]: new Token(SupportedChainId.MAINNET, UNI_ADDRESS[1], 18, 'UNI', 'Uniswap'),
-  [SupportedChainId.GOERLI]: new Token(SupportedChainId.GOERLI, UNI_ADDRESS[5], 18, 'UNI', 'Uniswap'),
-}
 
 export const WRAPPED_NATIVE_CURRENCY: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: WETH9[SupportedChainId.MAINNET],
