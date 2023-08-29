@@ -27,13 +27,15 @@ export function useFiatValuePriceImpact() {
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeFiatAmounts(tradeAmounts)
 
-  const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
-
   // Consider the price impact loading if either the input or output amount is falsy
   // Debounce the loading state to prevent the price impact from flashing
   const isLoading = useDebounce(isTradeSetUp ? inputIsLoading || outputIsLoading : false, FIAT_VALUE_LOADING_THRESHOLD)
 
-  return useSafeMemo(() => ({ priceImpact, isLoading }), [priceImpact, isLoading])
+  return useSafeMemo(() => {
+    const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
+
+    return { priceImpact, isLoading }
+  }, [fiatValueInput, fiatValueOutput, isLoading])
 }
 
 function computeFiatValuePriceImpact(
