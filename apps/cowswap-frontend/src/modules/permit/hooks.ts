@@ -9,6 +9,8 @@ import { Nullish } from 'types'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
 import { IsTokenPermittableResult, PermitHookData, PermitHookParams, PermitInfo } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
@@ -95,24 +97,18 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   return permitInfo
 }
 
-export function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHookParams | undefined {
-  const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
+/**
+ * Returns PermitHookData using a fake signer if given currency is permittable
+ *
+ * Internally checks whether the token is permittable
+ *
+ * If not permittable or not able to tell, returns undefined
+ *
+ * @param sellCurrency
+ */
+export function useFakePermitHookData(sellCurrency: Nullish<Currency>): PermitHookData | undefined {
+  const params = usePermitHookParams(sellCurrency)
 
-  const permitInfo = useIsTokenPermittable(sellCurrency)
-
-  return useMemo(() => {
-    if (!sellCurrency || !provider || !permitInfo) return undefined
-    return {
-      chainId,
-      provider,
-      inputToken: sellCurrency as Token,
-      permitInfo,
-    }
-  }, [sellCurrency, provider, permitInfo, chainId])
-}
-
-export function usePermitHookData(params?: PermitHookParams): PermitHookData | undefined {
   const [data, setData] = useState<string | undefined>(undefined)
 
   useEffect(() => {
@@ -122,4 +118,21 @@ export function usePermitHookData(params?: PermitHookParams): PermitHookData | u
   }, [params])
 
   return data ? JSON.parse(data) : undefined
+}
+
+function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHookParams | undefined {
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
+
+  const permitInfo = useIsTokenPermittable(sellCurrency)
+
+  return useSafeMemo(() => {
+    if (!sellCurrency || !provider || !permitInfo) return undefined
+    return {
+      chainId,
+      provider,
+      inputToken: sellCurrency as Token,
+      permitInfo,
+    }
+  }, [sellCurrency, provider, permitInfo, chainId])
 }

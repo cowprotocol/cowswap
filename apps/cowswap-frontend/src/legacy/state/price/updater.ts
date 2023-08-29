@@ -16,7 +16,7 @@ import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
 import { useAppData, useUpdateAppDataHooks } from 'modules/appData'
-import { usePermitHookData, usePermitHookParams } from 'modules/permit'
+import { useFakePermitHookData } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
@@ -152,8 +152,7 @@ export default function FeesUpdater(): null {
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
-  const permitHookParams = usePermitHookParams(sellCurrency)
-  const permitHookData = usePermitHookData(permitHookParams)
+  const permitHookData = useFakePermitHookData(sellCurrency)
   useUpdateAppDataHooks(permitHookData ? { pre: [permitHookData] } : undefined)
   const appData = useAppData()
 
