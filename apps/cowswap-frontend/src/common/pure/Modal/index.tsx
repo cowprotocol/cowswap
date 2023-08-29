@@ -2,11 +2,15 @@ import React from 'react'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
+import CLOSE_ICON from 'assets/icon/x.svg'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { isMobile } from 'legacy/utils/userAgent'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
+
+
 
 export * from './styled'
 
@@ -61,9 +65,9 @@ export function Modal({
               <StyledDialogContent
                 {...(isMobile
                   ? {
-                      ...bind(),
-                      style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
-                    }
+                    ...bind(),
+                    style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
+                  }
                   : {})}
                 aria-label="dialog content"
                 $minHeight={minHeight}
@@ -83,7 +87,7 @@ export function Modal({
   )
 }
 
-export const CowModal = styled(Modal)<{
+export const CowModal = styled(Modal) <{
   maxWidth?: number | string
   backgroundColor?: string
   border?: string
@@ -141,3 +145,131 @@ export const CowModal = styled(Modal)<{
     }
   }
 `
+
+// New Modal to be used going forward =================================
+const ModalInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  margin: auto;
+  background: var(--cow-container-bg-01);
+  border-radius: var(--cow-border-radius-normal);
+  box-shadow: var(--cow-box-shadow-normal);
+  padding: 0;
+`
+
+const NewCowModal = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  background: var(--cow-modal-backdrop);
+  overflow-y: auto;
+
+  ${ModalInner} {
+    max-width: ${({ maxWidth }) => maxWidth ? `${maxWidth}px` : '100%'};
+    min-height: ${({ minHeight }) => minHeight ? `${minHeight}px` : '100%'};
+  }
+`
+
+const Heading = styled.h2`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  padding: 18px;
+  margin: 0;
+  font-size: var(--cow-font-size-normal);
+`
+
+const IconX = styled.div`
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
+  margin: 0 0 0 auto;
+
+  > svg {
+    width: var(--cow-icon-size-normal);
+    height: var(--cow-icon-size-normal);
+    fill: var(--cow-icon-color-normal);
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
+const NewModalContent = styled.div<{ paddingTop?: number}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column wrap;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--cow-padding-normal) var(--cow-padding-normal);
+
+  h1, 
+  h2, 
+  h3 {
+    width: 100%;
+    font-size: var(--cow-font-size-large);
+    font-weight: var(--cow-font-weight-bold);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: var(--cow-font-size-small);
+    font-weight: var(--cow-font-weight-normal);
+    color: var(--cow-color-text2);
+  }
+`
+
+export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 auto;
+  padding: ${({ paddingTop = 0 }) => `${paddingTop}px`} 0 0;
+  gap: 10px;
+`
+
+export const NewModalContentBottom = styled(NewModalContentTop)`
+  margin: auto 0 0;
+`
+interface NewModalProps {
+  maxWidth?: number
+  minHeight?: number
+  title?: string
+  children?: React.ReactNode
+}
+
+export function NewModal({
+  maxWidth = 500,
+  minHeight = 500,
+  title,
+  children,
+}: NewModalProps) {
+
+  return (
+    <NewCowModal maxWidth={maxWidth} minHeight={minHeight}>
+
+      <ModalInner>
+        {title && <Heading>{title}</Heading>}
+        <NewModalContent>
+          {children}
+        </NewModalContent>
+      </ModalInner>
+
+      <IconX><SVG src={CLOSE_ICON} onClick={() => console.log("Close Modal")} /></IconX>
+
+    </NewCowModal>
+  )
+}

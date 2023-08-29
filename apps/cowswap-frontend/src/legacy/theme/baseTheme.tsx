@@ -400,6 +400,18 @@ export const UniThemedGlobalStyle = css`
     --cow-color-yellow-light: ${({ theme }) => theme.alert2};
     --cow-color-green: ${({ theme }) => theme.success};
 
+    // Base
+    --cow-color-border: var(--cow-color-grey);
+    --cow-container-bg-01: ${({ theme }) => theme.bg1};
+    --cow-modal-backdrop: var(--cow-color-text1-opacity-25);
+    --cow-border-radius-normal: 24px;
+    --cow-padding-normal: 24px;
+    --cow-box-shadow-normal: box-shadow: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
+    
+    // Icons
+    --cow-icon-size-normal: 24px;
+    --cow-icon-color-normal: var(--cow-color-text1);
+
     // States ===============================
 
     // Information (light blue)
@@ -431,12 +443,17 @@ export const UniThemedGlobalStyle = css`
     --cow-color-text1: ${({ theme }) => theme.text1};
     --cow-color-text1-inactive: ${({ theme }) => transparentize(0.4, theme.text1)};
     --cow-color-text1-opacity-25: ${({ theme }) => transparentize(0.75, theme.text1)};
+    --cow-color-text2: ${({ theme }) => transparentize(0.3, theme.text1)};
+    --cow-color-link: ${({ theme }) => theme.text3};
+    --cow-color-link-opacity-10: ${({ theme }) => transparentize(0.9, theme.text3)};
     --cow-font-weight-normal: 400;
     --cow-font-weight-medium: 500;
     --cow-font-weight-bold: 600;
-
-    // Attributes
-    --cow-color-border: var(--cow-color-grey);
+    --cow-font-size-smaller: 12px;
+    --cow-font-size-small: 14px;
+    --cow-font-size-normal: 16px;
+    --cow-font-size-medium: 18px;
+    --cow-font-size-large: 20px;
   }
 
   html {
