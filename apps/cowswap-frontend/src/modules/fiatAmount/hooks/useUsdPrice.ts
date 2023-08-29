@@ -4,7 +4,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { addCurrencyToFiatPriceQueue, removeCurrencyToFiatPriceFromQueue } from '../state/fiatPricesAtom'
 import { usdPricesAtom, UsdPriceState } from '../state/usdPricesAtom'
@@ -28,9 +28,7 @@ export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
     }
   }, [currency])
 
-  return useSafeMemo(() => {
-    if (!currencyAddress) return null
+  if (!currencyAddress) return null
 
-    return usdPrices[currencyAddress] || null
-  }, [usdPrices, currencyAddress])
+  return usdPrices[currencyAddress] || null
 }
