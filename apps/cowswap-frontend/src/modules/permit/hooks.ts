@@ -7,6 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
+import { useDerivedTradeState } from 'modules/trade'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -89,16 +90,14 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
 }
 
 /**
- * Returns PermitHookData using a fake signer if given currency is permittable
+ * Returns PermitHookData using a fake signer if inputCurrency is permittable
  *
  * Internally checks whether the token is permittable
  *
  * If not permittable or not able to tell, returns undefined
- *
- * @param sellCurrency
  */
-export function useFakePermitHookData(sellCurrency: Nullish<Currency>): PermitHookData | undefined {
-  const params = usePermitHookParams(sellCurrency)
+export function useFakePermitHookData(): PermitHookData | undefined {
+  const params = usePermitHookParams()
 
   const [data, setData] = useState<string | undefined>(undefined)
 
@@ -111,19 +110,22 @@ export function useFakePermitHookData(sellCurrency: Nullish<Currency>): PermitHo
   return data ? JSON.parse(data) : undefined
 }
 
-function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHookParams | undefined {
+function usePermitHookParams(): PermitHookParams | undefined {
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
-  const permitInfo = useIsTokenPermittable(sellCurrency)
+  const { state } = useDerivedTradeState()
+  const { inputCurrency } = state || {}
+
+  const permitInfo = useIsTokenPermittable(inputCurrency)
 
   return useSafeMemo(() => {
-    if (!sellCurrency || !provider || !permitInfo) return undefined
+    if (!inputCurrency || !provider || !permitInfo) return undefined
     return {
       chainId,
       provider,
-      inputToken: sellCurrency as Token,
+      inputToken: inputCurrency as Token,
       permitInfo,
     }
-  }, [sellCurrency, provider, permitInfo, chainId])
+  }, [inputCurrency, provider, permitInfo, chainId])
 }

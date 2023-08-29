@@ -152,7 +152,7 @@ export default function FeesUpdater(): null {
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
-  const permitHookData = useFakePermitHookData(sellCurrency)
+  const permitHookData = useFakePermitHookData()
   useUpdateAppDataHooks(permitHookData ? { pre: [permitHookData] } : undefined)
   const appData = useAppData()
 
