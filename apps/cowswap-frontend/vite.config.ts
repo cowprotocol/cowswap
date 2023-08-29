@@ -1,13 +1,21 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
+import stdLibBrowser from 'node-stdlib-browser'
 import { defineConfig, loadEnv, searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
+import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
+
+const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
+
+// Trezor getAccountsAsync() requires crypto and stream (the module is lazy-loaded)
+const nodeDepsToInclude = ['crypto', 'stream']
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
@@ -67,6 +75,7 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
+      // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
         output: {
           manualChunks(id) {
@@ -81,6 +90,15 @@ export default defineConfig(({ mode }) => {
     },
 
     plugins: [
+      nodePolyfills({
+        exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
+        globals: {
+          Buffer: true,
+          global: true,
+          process: true,
+        },
+        protocolImports: true,
+      }),
       splitVendorChunkPlugin(),
       react({
         plugins: [['@lingui/swc-plugin', {}]],
@@ -102,6 +120,12 @@ export default defineConfig(({ mode }) => {
         injectManifest: {
           globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
         },
+      }),
+      sentryVitePlugin({
+        authToken: process.env.REACT_APP_SENTRY_AUTH_TOKEN,
+        org: 'cowprotocol',
+        project: 'cowswap',
+        telemetry: false,
       }),
     ],
 

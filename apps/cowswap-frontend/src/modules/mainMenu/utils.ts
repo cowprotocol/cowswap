@@ -5,7 +5,7 @@ import { Routes } from 'common/constants/routes'
 import { MAIN_MENU } from './constants/mainMenu'
 import { DropDownItem, MainMenuItemId, MenuItemKind, MenuTreeItem } from './types'
 
-const ADVANCED_ORDERS_MENU_TITLE = 'Advanced orders'
+const ADVANCED_ORDERS_MENU_TITLE = 'TWAP orders'
 
 export type BuildMainMenuTreeItemsParams = {
   isAdvancedOrdersEnabled: boolean

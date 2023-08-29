@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
@@ -11,15 +12,16 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { ConnectionType, useWalletInfo } from 'modules/wallet'
+import { ConnectionType, toggleAccountSelectorModalAtom, useWalletInfo } from 'modules/wallet'
 import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()
-  const { account, active: isActive } = useWalletInfo()
+  const { chainId, account, active: isActive } = useWalletInfo()
 
   const [walletView, setWalletView] = useState<WalletModalView>('account')
 
@@ -30,6 +32,7 @@ export function WalletModal() {
 
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
   const toggleWalletModal = useToggleWalletModal()
+  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const openOptions = useCallback(() => {
     setWalletView('options')
@@ -71,7 +74,13 @@ export function WalletModal() {
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
-      const connectionType = getWeb3ReactConnection(connector).type
+      const connection = getWeb3ReactConnection(connector)
+      const connectionType = connection.type
+      const isHardWareWallet = getIsHardWareWallet(connectionType)
+
+      // Skips wallet connection if the connection should override the default
+      // behavior, i.e. install MetaMask or launch Coinbase app
+      if (connection.overrideActivate?.(chainId)) return
 
       changeWalletAnalytics('Todo: wallet name')
 
@@ -86,10 +95,12 @@ export function WalletModal() {
         setWalletView('pending')
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
-        await connector.activate()
+        await connector.activate(getCurrentChainIdFromUrl())
+
+        const connection = getWeb3ReactConnection(connector)
 
         // Important for balances to load when connected to Gnosis-chain via WalletConnect
-        if (getWeb3ReactConnection(connector) === walletConnectConnection) {
+        if (connection.type === ConnectionType.WALLET_CONNECT) {
           const provider: any = connector.provider
 
           if (provider && provider.isWalletConnect) {
@@ -102,13 +113,25 @@ export function WalletModal() {
         }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
+
+        if (isHardWareWallet) {
+          toggleAccountSelectorModal()
+        }
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
         dispatch(updateSelectedWallet({ wallet: undefined }))
-        dispatch(updateConnectionError({ connectionType, error: error.message }))
+        dispatch(
+          updateConnectionError({
+            connectionType,
+            error:
+              typeof error === 'string'
+                ? error
+                : error.message || (typeof error === 'object' ? JSON.stringify(error) : error.toString()),
+          })
+        )
       }
     },
-    [dispatch, toggleWalletModal]
+    [chainId, dispatch, toggleWalletModal, toggleAccountSelectorModal]
   )
 
   return (

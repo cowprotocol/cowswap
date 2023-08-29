@@ -17,7 +17,7 @@ import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
 
 import {
   ApproveComparison,
@@ -144,7 +144,7 @@ export function LegacyConfirmationPendingContent({
     operationType === ConfirmOperationType.APPROVE_TOKEN &&
     isMetaMask &&
     isNotMobile &&
-    connectionType !== walletConnectConnection
+    connectionType === injectedConnection
 
   return (
     <Wrapper>

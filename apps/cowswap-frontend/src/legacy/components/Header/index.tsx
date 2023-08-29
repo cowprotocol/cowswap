@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
@@ -22,12 +21,9 @@ import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { useDisconnectWallet, useWalletInfo, Web3Status } from 'modules/wallet'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
+import { useWalletInfo, Web3Status } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
@@ -56,10 +52,6 @@ export default function Header() {
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
-  const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
-  const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
-  const isWalletConnectV2 = useIsActiveWallet(walletConnectConnectionV2)
-  const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
@@ -129,16 +121,6 @@ export default function Header() {
   useEffect(() => {
     isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
-
-  // Disconnect wallet if its wallet-connect v1 and v1 flag is disabled
-  useEffect(() => {
-    if (
-      (walletConnectV1Enabled === false && isWalletConnectV1) ||
-      (walletConnectV2Enabled === false && isWalletConnectV2)
-    ) {
-      disconnectWallet()
-    }
-  }, [walletConnectV1Enabled, isWalletConnectV1, disconnectWallet, walletConnectV2Enabled, isWalletConnectV2])
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>

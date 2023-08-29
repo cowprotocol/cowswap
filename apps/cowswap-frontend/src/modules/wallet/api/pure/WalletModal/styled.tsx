@@ -66,3 +66,28 @@ export const OptionGrid = styled.div`
         grid-template-columns: repeat(2, 1fr);
   `}
 `
+
+export const IconWrapper = styled.div`
+  --size: 42px;
+  display: flex;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--cow-color-border);
+  padding: 8px;
+  margin: 0 12px 0 0;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  > svg > path {
+    --color: var(--cow-color-text1);
+    fill: var(--color);
+    stroke: var(--color);
+  }
+`
