@@ -1,9 +1,8 @@
-import { useMemo } from 'react'
-
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { currencyAmountToTokenAmount } from 'utils/currencyAmountToTokenAmount'
 
 import { useUsdPrice } from './useUsdPrice'
@@ -19,7 +18,7 @@ export function useUsdAmount(_amount: Nullish<CurrencyAmount<Currency>>): UsdAmo
   const amount = currencyAmountToTokenAmount(_amount)
   const usdcPrice = useUsdPrice(amount?.currency)
 
-  return useMemo(() => {
+  return useSafeMemo(() => {
     if (!usdcPrice || !amount) return DEFAULT_USD_AMOUNT_STATE
 
     const { price, isLoading } = usdcPrice

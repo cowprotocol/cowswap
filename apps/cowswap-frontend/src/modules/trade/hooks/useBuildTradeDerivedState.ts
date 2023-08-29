@@ -5,7 +5,7 @@ import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useWalletInfo } from 'modules/wallet'
 
-import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import { tryParseFractionalAmount } from 'utils/tryParseFractionalAmount'
 
@@ -24,14 +24,10 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
   const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
 
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: inputCurrencyAmount || undefined, outputAmount: outputCurrencyAmount || undefined }),
-    [inputCurrencyAmount, outputCurrencyAmount]
-  )
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeUsdAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount
