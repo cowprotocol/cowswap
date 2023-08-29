@@ -7,8 +7,8 @@ import {
   COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
-  getCoingeckoPrice,
-} from '../apis/getCoingeckoPrice'
+  getCoingeckoFiatPrice,
+} from '../apis/getCoingeckoFiatPrice'
 import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
@@ -38,7 +38,7 @@ export function fetchCurrencyFiatPrice(
 
   const request = shouldSkipCoingecko
     ? getCowProtocolFiatPrice(currency, getUsdcPrice)
-    : getCoingeckoPrice(currency).catch((error) => {
+    : getCoingeckoFiatPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
