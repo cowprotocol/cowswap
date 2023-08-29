@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.46.0](https://github.com/cowprotocol/cowswap/compare/v1.45.1...v1.46.0) (2023-08-29)
+
+
+### Features
+
+* add badges color functionality ([#3072](https://github.com/cowprotocol/cowswap/issues/3072)) ([8282850](https://github.com/cowprotocol/cowswap/commit/8282850ccb78a61822fde9cda4b006057fb04d3a))
+
+
+### Bug Fixes
+
+* **deployment-script:** fix deployment workflow ([#3084](https://github.com/cowprotocol/cowswap/issues/3084)) ([7b9d07e](https://github.com/cowprotocol/cowswap/commit/7b9d07ef7b5cec51f97e29f948b84e88f3e8fae6))
+* **number-inputs:** remove default browser number arrows ([db4e9f4](https://github.com/cowprotocol/cowswap/commit/db4e9f4e46c40432735a22add89e9d371bbd939f))
+* **number-inputs:** remove default browser number arrows ([1ccbfac](https://github.com/cowprotocol/cowswap/commit/1ccbfac1378f64e069f85bd5437a139c679d0c3e))
+* **sentry:** log error boundary errors to Sentry ([#3077](https://github.com/cowprotocol/cowswap/issues/3077)) ([8c5518b](https://github.com/cowprotocol/cowswap/commit/8c5518b15a69a3049de19972a35b928625170439))
+
 ## [1.45.1](https://github.com/cowprotocol/cowswap/compare/v1.45.0...v1.45.1) (2023-08-23)
 
 
