@@ -8,7 +8,7 @@ import { AbiInput } from 'web3-utils'
 
 import { getContract } from 'legacy/utils'
 
-export class Web3ProviderConnector implements ProviderConnector {
+export class PermitProviderConnector implements ProviderConnector {
   constructor(private provider: Web3Provider, private walletSigner?: Wallet | undefined) {}
 
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {

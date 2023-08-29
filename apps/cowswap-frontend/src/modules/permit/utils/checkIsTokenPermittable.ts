@@ -5,9 +5,10 @@ import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-sign
 
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
+import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
+
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
-import { Web3ProviderConnector } from './Web3ProviderConnector'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
 import { EstimatePermitResult } from '../types'
@@ -37,7 +38,7 @@ export async function checkIsTokenPermittable(
 
   const spender = GP_VAULT_RELAYER[chainId]
 
-  const web3ProviderConnector = new Web3ProviderConnector(provider, PERMIT_SIGNER)
+  const web3ProviderConnector = new PermitProviderConnector(provider, PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
   const owner = PERMIT_SIGNER.address

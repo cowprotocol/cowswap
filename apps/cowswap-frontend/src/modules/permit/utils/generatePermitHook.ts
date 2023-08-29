@@ -2,9 +2,10 @@ import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 
+import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
+
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
-import { Web3ProviderConnector } from './Web3ProviderConnector'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookParams } from '../types'
@@ -21,7 +22,7 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
   if (localStorage.getItem(permitKey)) return localStorage.getItem(permitKey)!
   if (pendingRequests[permitKey]) return pendingRequests[permitKey]!
 
-  const web3ProviderConnector = new Web3ProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
+  const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
   const owner = account || PERMIT_SIGNER.address
