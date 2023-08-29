@@ -12,13 +12,13 @@ import { Web3ProviderConnector } from './Web3ProviderConnector'
 import { DEFAULT_PERMIT_VALUE, FAKE_SIGNER, PERMIT_GAS_LIMIT_MIN } from '../const'
 import { EstimatePermitResult } from '../types'
 
-const permitParams = {
+const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
   nonce: 0,
   deadline: getPermitDeadline(),
 }
 
-const daiLikePermitParams = {
+const DAI_LIKE_PERMIT_PARAMS = {
   allowed: true,
   nonce: 0,
   expiry: getPermitDeadline(),
@@ -49,7 +49,7 @@ export async function checkIsTokenPermittable(
       eip2162Utils: eip2612PermitUtils,
       callDataParams: [
         {
-          ...permitParams,
+          ...EIP_2162_PERMIT_PARAMS,
           owner,
           spender,
           nonce,
@@ -86,6 +86,7 @@ export async function checkIsTokenPermittable(
   }
 }
 
+// TODO: refactor and make DAI like tokens work
 function estimateDaiLikeToken(
   tokenAddress: string,
   tokenName: string,
@@ -104,7 +105,7 @@ function estimateDaiLikeToken(
               eip2162Utils: eip2612PermitUtils,
               callDataParams: [
                 {
-                  ...daiLikePermitParams,
+                  ...DAI_LIKE_PERMIT_PARAMS,
                   holder: walletAddress,
                   spender,
                   nonce,
