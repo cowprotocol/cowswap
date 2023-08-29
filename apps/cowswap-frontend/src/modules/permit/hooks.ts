@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -12,7 +12,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
-import { IsTokenPermittableResult, PermitHookData, PermitHookParams, PermitInfo } from './types'
+import { IsTokenPermittableResult, PermitHookData, PermitHookParams } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
 import { generatePermitHook } from './utils/generatePermitHook'
 
@@ -20,14 +20,7 @@ import { generatePermitHook } from './utils/generatePermitHook'
  * Returns a callback for adding PermitInfo for a given token
  */
 function useAddPermitInfo() {
-  const addPermitInfoForToken = useSetAtom(addPermitInfoForTokenAtom)
-
-  return useCallback(
-    (chainId: SupportedChainId, tokenAddress: string, permitInfo: PermitInfo) => {
-      addPermitInfoForToken({ chainId, tokenAddress, permitInfo })
-    },
-    [addPermitInfoForToken]
-  )
+  return useSetAtom(addPermitInfoForTokenAtom)
 }
 
 /**
@@ -36,8 +29,6 @@ function useAddPermitInfo() {
  * When it is, returned type is `{type: 'dai'|'permit', gasLimit: number}`
  * When it is not, returned type is `false`
  * When it is unknown, returned type is `undefined`
- *
- * @param tokenAddress
  */
 function usePermitInfo(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
   const permittableTokens = useAtomValue(permittableTokensAtom)
@@ -77,7 +68,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
     checkIsTokenPermittable(lowerCaseAddress, tokenName, chainId, provider).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
-        addPermitInfo(chainId, lowerCaseAddress, false)
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })
       } else if ('error' in result) {
         // When error, we don't know. Log and don't cache.
         console.debug(
@@ -85,7 +76,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
         )
       } else {
         // Otherwise, we know it is permittable. Cache it.
-        addPermitInfo(chainId, lowerCaseAddress, result)
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
     })
   }, [addPermitInfo, chainId, isNative, lowerCaseAddress, permitInfo, provider, tokenName])
