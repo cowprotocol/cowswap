@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
@@ -40,7 +40,7 @@ export function useRateInfoParams(
   const {
     inputAmount: { value: invertedActiveRateFiatAmount },
     outputAmount: { value: activeRateFiatAmount },
-  } = useTradeFiatAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(tradeAmounts)
 
   return useSafeMemoObject({
     chainId,

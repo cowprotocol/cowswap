@@ -22,7 +22,7 @@ function getShouldSkipCoingecko(currency: Token): boolean {
 }
 
 /**
- * Fetches fiat price for a given currency from coingecko or CowProtocol
+ * Fetches USD price for a given currency from coingecko or CowProtocol
  * CoW Protocol Orderbook API is used as a fallback
  * When Coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
@@ -51,7 +51,7 @@ export function fetchCurrencyUsdPrice(
 
   return request
     .catch((error) => {
-      console.error('Cannot fetch fiat price', { error })
+      console.error('Cannot fetch USD price', { error })
       return Promise.reject(error)
     })
     .then((result) => {
