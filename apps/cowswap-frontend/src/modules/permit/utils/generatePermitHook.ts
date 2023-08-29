@@ -1,23 +1,16 @@
-import { MaxUint256 } from '@ethersproject/constants'
-
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
+import { getPermitDeadline } from './getPermitDeadline'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
-import { FAKE_SIGNER } from '../const'
+import { DEFAULT_PERMIT_VALUE, FAKE_SIGNER } from '../const'
 import { PermitHookParams } from '../types'
 
 const cachePrefix = 'permitCache-'
 const pendingRequests: { [permitKey: string]: Promise<string> | undefined } = {}
-
-const FIVE_YEARS_IN_SECONDS = 5 * 365 * 24 * 60 * 60
-
-function getDeadline() {
-  return Math.ceil(Date.now() / 1000) + FIVE_YEARS_IN_SECONDS
-}
 
 export async function generateQuotePermitHook(params: PermitHookParams): Promise<string> {
   const { inputToken, chainId, permitInfo, provider, account } = params
@@ -39,8 +32,8 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
 
   const request = new Promise<string>(async (resolve) => {
     const spender = GP_VAULT_RELAYER[chainId]
-    const deadline = getDeadline()
-    const value = MaxUint256.toString()
+    const deadline = getPermitDeadline()
+    const value = DEFAULT_PERMIT_VALUE
 
     const callDataPromise =
       permitInfo.type === 'eip-2612'

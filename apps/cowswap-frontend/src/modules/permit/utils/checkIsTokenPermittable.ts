@@ -6,27 +6,22 @@ import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-sign
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
+import { getPermitDeadline } from './getPermitDeadline'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
-import { FAKE_SIGNER } from '../const'
+import { DEFAULT_PERMIT_VALUE, FAKE_SIGNER, PERMIT_GAS_LIMIT_MIN } from '../const'
 import { EstimatePermitResult } from '../types'
 
-const permitGasLimitMin: Record<SupportedChainId, number> = {
-  1: 55_000,
-  100: 55_000,
-  5: 55_000,
-}
-
 const permitParams = {
-  value: '985090000000000000',
+  value: DEFAULT_PERMIT_VALUE,
   nonce: 0,
-  deadline: Math.ceil(Date.now() / 1000) + 50_000,
+  deadline: getPermitDeadline(),
 }
 
 const daiLikePermitParams = {
   allowed: true,
   nonce: 0,
-  expiry: Math.ceil(Date.now() / 1000) + 50_000,
+  expiry: getPermitDeadline(),
 }
 
 export async function checkIsTokenPermittable(
@@ -76,7 +71,7 @@ export async function checkIsTokenPermittable(
     // Sometimes tokens implement the permit interface but don't actually implement it
     // This check filters out possible cases where that happened by excluding
     // gas limit which are bellow a minimum threshold
-    return gasLimit > permitGasLimitMin[chainId]
+    return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
       ? {
           type: 'eip-2612',
           gasLimit,
@@ -130,7 +125,7 @@ function estimateDaiLikeToken(
           .then((res) => {
             const gasLimit = res.toNumber()
 
-            return gasLimit > permitGasLimitMin[chainId]
+            return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
               ? {
                   gasLimit,
                   type: 'dai-like',
