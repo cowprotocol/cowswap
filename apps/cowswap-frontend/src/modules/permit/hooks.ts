@@ -68,7 +68,6 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   const permitInfo = usePermitInfo(chainId, lowerCaseAddress)
 
   useEffect(() => {
-    console.debug(`bug--useIsTokenPermittable--useEffect`, chainId, lowerCaseAddress, tokenName, permitInfo)
     if (!chainId || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
       return
     }
@@ -103,7 +102,6 @@ export function usePermitHookParams(sellCurrency: Nullish<Currency>): PermitHook
   const permitInfo = useIsTokenPermittable(sellCurrency)
 
   return useMemo(() => {
-    console.debug(`bug--usePermitHookParams-useEffect`, chainId, sellCurrency, provider, permitInfo)
     if (!sellCurrency || !provider || !permitInfo) return undefined
     return {
       chainId,

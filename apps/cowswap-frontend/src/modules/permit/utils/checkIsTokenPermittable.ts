@@ -79,11 +79,9 @@ export async function checkIsTokenPermittable(
         }
       : false
   } catch (e) {
-    console.debug(`bug--estimatePermit--error1`, e)
     try {
       return await estimateDaiLikeToken(tokenAddress, tokenName, chainId, owner, spender, provider, eip2612PermitUtils)
     } catch (e) {
-      console.debug(`bug--estimatePermit--error2`, e)
       return { error: e.toString() }
     }
   }

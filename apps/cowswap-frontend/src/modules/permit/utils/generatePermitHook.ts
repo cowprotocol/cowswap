@@ -40,8 +40,6 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
     const spender = GP_VAULT_RELAYER[chainId]
     const deadline = getDeadline()
 
-    console.log('bug--generateQuotePermitHook--will start', { owner, spender, nonce, chainId, tokenName, tokenAddress })
-
     let callData
     try {
       if (permitInfo.type === 'eip-2612') {
@@ -85,12 +83,10 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
 
       const permitHook = JSON.stringify(permitHookData)
 
-      console.log('bug--generateQuotePermitHook--done', { permitHook })
       localStorage.setItem(permitKey, permitHook)
 
       resolve(permitHook)
     } catch (e) {
-      console.error(`bug--generateQuotePermitHook--error`, e)
       return Promise.reject(e.message)
     }
   })
