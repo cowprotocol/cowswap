@@ -9,7 +9,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
-import { DEFAULT_PERMIT_VALUE, FAKE_SIGNER, PERMIT_GAS_LIMIT_MIN } from '../const'
+import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
 import { EstimatePermitResult } from '../types'
 
 const EIP_2162_PERMIT_PARAMS = {
@@ -37,10 +37,10 @@ export async function checkIsTokenPermittable(
 
   const spender = GP_VAULT_RELAYER[chainId]
 
-  const web3ProviderConnector = new Web3ProviderConnector(provider, FAKE_SIGNER)
+  const web3ProviderConnector = new Web3ProviderConnector(provider, PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
-  const owner = FAKE_SIGNER.address
+  const owner = PERMIT_SIGNER.address
 
   try {
     const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)

@@ -6,7 +6,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
-import { DEFAULT_PERMIT_VALUE, FAKE_SIGNER } from '../const'
+import { DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookParams } from '../types'
 
 const cachePrefix = 'permitCache-'
@@ -21,10 +21,10 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
   if (localStorage.getItem(permitKey)) return localStorage.getItem(permitKey)!
   if (pendingRequests[permitKey]) return pendingRequests[permitKey]!
 
-  const web3ProviderConnector = new Web3ProviderConnector(provider, account ? undefined : FAKE_SIGNER)
+  const web3ProviderConnector = new Web3ProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
-  const owner = account || FAKE_SIGNER.address
+  const owner = account || PERMIT_SIGNER.address
 
   // TODO: check whether cached permit nonce matches current nonce and update it in case it doesnt
 
