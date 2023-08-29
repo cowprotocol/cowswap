@@ -44,7 +44,7 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
 
     let callData
     try {
-      if (permitInfo.type === 'permit') {
+      if (permitInfo.type === 'eip-2612') {
         callData = (
           await eip2612PermitUtils.buildPermitCallData(
             {

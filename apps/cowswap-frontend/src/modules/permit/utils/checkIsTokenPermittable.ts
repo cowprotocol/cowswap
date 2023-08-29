@@ -36,7 +36,7 @@ export async function checkIsTokenPermittable(
 ): Promise<EstimatePermitResult> {
   if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
     // We shouldn't call this for the native token, but just in case
-    return null
+    return false
   }
 
   const spender = GP_VAULT_RELAYER[chainId]
@@ -74,10 +74,10 @@ export async function checkIsTokenPermittable(
     // gas limit which are bellow a minimum threshold
     return gasLimit > permitGasLimitMin[chainId]
       ? {
-          type: 'permit',
+          type: 'eip-2612',
           gasLimit,
         }
-      : null
+      : false
   } catch (e) {
     console.debug(`bug--estimatePermit--error1`, e)
     try {
@@ -129,10 +129,10 @@ function estimateDaiLikeToken(
             return gasLimit > permitGasLimitMin[chainId]
               ? {
                   gasLimit,
-                  type: 'dai',
+                  type: 'dai-like',
                 }
-              : null
+              : false
           })
-      : null
+      : false
   })
 }

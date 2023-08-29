@@ -3,8 +3,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 
+type permitType = 'dai-like' | 'eip-2612'
+
 export type SupportedPermitInfo = {
-  type: 'dai' | 'permit'
+  type: permitType
   gasLimit: number
 }
 type UnsupportedPermitInfo = false
@@ -28,15 +30,14 @@ export type PermitHookParams = {
   account?: string
 }
 
-export type PermitHookData = latest.CoWHook | undefined
+export type PermitHookData = latest.CoWHook
+
+type FailedToIdentify = { error: string }
 
 export type EstimatePermitResult =
   // When it's a permittable token:
-  | {
-      type: 'dai' | 'permit'
-      gasLimit: number
-    }
+  | SupportedPermitInfo
   // When something failed:
-  | { error: string }
+  | FailedToIdentify
   // When it's not permittable:
-  | null
+  | UnsupportedPermitInfo
