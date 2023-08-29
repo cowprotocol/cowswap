@@ -86,7 +86,7 @@ export async function checkIsTokenPermittable(
     try {
       return await estimateDaiLikeToken(tokenAddress, tokenName, chainId, owner, spender, provider, eip2612PermitUtils)
     } catch (e) {
-      return { error: e.toString() }
+      return { error: e.message || e.toString() }
     }
   }
 }
