@@ -9,16 +9,16 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 import { fiatPricesAtom, FiatPriceState } from './fiatPricesAtom'
 
-export interface UsdcPriceState extends Omit<FiatPriceState, 'price'> {
+export interface UsdPriceState extends Omit<FiatPriceState, 'price'> {
   price: Price<Token, Token> | null
 }
 
-export type UsdcPrices = { [tokenAddress: string]: UsdcPriceState }
+export type UsdPrices = { [tokenAddress: string]: UsdPriceState }
 
-export const usdcPricesAtom = atom((get) => {
+export const usdPricesAtom = atom((get) => {
   const fiatPrices = get(fiatPricesAtom)
 
-  return Object.keys(fiatPrices).reduce<UsdcPrices>((acc, tokenAddress) => {
+  return Object.keys(fiatPrices).reduce<UsdPrices>((acc, tokenAddress) => {
     const fiatPrice = fiatPrices[tokenAddress]
 
     acc[tokenAddress] = {

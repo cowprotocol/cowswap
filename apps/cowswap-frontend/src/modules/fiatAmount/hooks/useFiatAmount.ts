@@ -6,7 +6,7 @@ import { Nullish } from 'types'
 
 import { currencyAmountToTokenAmount } from 'utils/currencyAmountToTokenAmount'
 
-import { useUsdcPrice } from './useUsdcPrice'
+import { useUsdPrice } from './useUsdPrice'
 
 export interface FiatAmountInfo {
   value: CurrencyAmount<Token> | null
@@ -17,7 +17,7 @@ const DEFAULT_FIAT_AMOUNT_STATE = { value: null, isLoading: true }
 
 export function useFiatAmount(_amount: Nullish<CurrencyAmount<Currency>>): FiatAmountInfo {
   const amount = currencyAmountToTokenAmount(_amount)
-  const usdcPrice = useUsdcPrice(amount?.currency)
+  const usdcPrice = useUsdPrice(amount?.currency)
 
   return useMemo(() => {
     if (!usdcPrice || !amount) return DEFAULT_FIAT_AMOUNT_STATE

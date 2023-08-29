@@ -7,12 +7,12 @@ import { Nullish } from 'types'
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { addCurrencyToFiatPriceQueue, removeCurrencyToFiatPriceFromQueue } from '../state/fiatPricesAtom'
-import { usdcPricesAtom, UsdcPriceState } from '../state/usdcPricesAtom'
+import { usdPricesAtom, UsdPriceState } from '../state/usdPricesAtom'
 
-export function useUsdcPrice(currency: Nullish<Token>): UsdcPriceState | null {
+export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
   const currencyAddress = currency?.address?.toLowerCase()
 
-  const usdcPrices = useAtomValue(usdcPricesAtom)
+  const usdPrices = useAtomValue(usdPricesAtom)
   const addCurrencyToFiatPrice = useSetAtom(addCurrencyToFiatPriceQueue)
   const removeCurrencyToFiatPrice = useSetAtom(removeCurrencyToFiatPriceFromQueue)
 
@@ -31,6 +31,6 @@ export function useUsdcPrice(currency: Nullish<Token>): UsdcPriceState | null {
   return useSafeMemo(() => {
     if (!currencyAddress) return null
 
-    return usdcPrices[currencyAddress] || null
-  }, [usdcPrices, currencyAddress])
+    return usdPrices[currencyAddress] || null
+  }, [usdPrices, currencyAddress])
 }
