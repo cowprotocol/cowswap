@@ -7,6 +7,7 @@ import { percentToBips } from 'legacy/utils/misc'
 import { useUtm } from 'modules/utm'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useAppDataHooksUpdater } from './useAppDataHooksUpdater'
 import { UseAppDataParams, useAppDataUpdater } from './useAppDataUpdater'
 
 import { useAppDataHooks } from '../hooks'
@@ -32,6 +33,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
 })
 
 const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => {
+  useAppDataHooksUpdater()
   useAppDataUpdater(params)
 
   return null

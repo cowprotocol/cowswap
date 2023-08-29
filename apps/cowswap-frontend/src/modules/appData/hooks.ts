@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
 
@@ -8,7 +8,7 @@ import { useIsSafeApp } from 'modules/wallet'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import { addAppDataToUploadQueueAtom, appDataHooksAtom, appDataInfoAtom } from './state/atoms'
-import { AppDataHooks, AppDataInfo } from './types'
+import { AppDataInfo } from './types'
 
 import { injectedWidgetMetaDataAtom } from '../injectedWidget/state/injectedWidgetMetaDataAtom'
 
@@ -40,12 +40,8 @@ export function useUploadAppData() {
   return useSetAtom(addAppDataToUploadQueueAtom)
 }
 
-export function useUpdateAppDataHooks(hooks: AppDataHooks | undefined) {
-  const updateAppDataHooks = useSetAtom(appDataHooksAtom)
-
-  useEffect(() => {
-    updateAppDataHooks(hooks)
-  }, [updateAppDataHooks, hooks])
+export function useUpdateAppDataHooks() {
+  return useSetAtom(appDataHooksAtom)
 }
 
 export function useAppDataHooks() {

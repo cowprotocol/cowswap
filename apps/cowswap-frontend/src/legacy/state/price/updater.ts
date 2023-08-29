@@ -15,8 +15,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
-import { useAppData, useUpdateAppDataHooks } from 'modules/appData'
-import { useFakePermitHookData } from 'modules/permit'
+import { useAppData } from 'modules/appData'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
@@ -152,8 +151,6 @@ export default function FeesUpdater(): null {
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
-  const permitHookData = useFakePermitHookData()
-  useUpdateAppDataHooks(permitHookData ? { pre: [permitHookData] } : undefined)
   const appData = useAppData()
 
   const refetchQuote = useRefetchQuoteCallback()
