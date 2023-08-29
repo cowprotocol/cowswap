@@ -17,6 +17,8 @@ export async function getCowProtocolFiatPrice(
     const usdPrice = invertNativeToTokenPrice(usdNativePrice, usdcToken.decimals)
     const tokenPrice = invertNativeToTokenPrice(tokenNativePrice, currency.decimals)
 
+    if (tokenPrice === 0) return null
+
     return usdPrice / tokenPrice
   }
 
