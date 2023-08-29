@@ -1,8 +1,8 @@
 import { Atom, useAtomValue } from 'jotai'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -31,7 +31,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeFiatAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(tradeAmounts)
 
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount

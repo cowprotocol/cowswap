@@ -3,19 +3,19 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeAmounts } from 'common/types'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 
-import { FiatAmountInfo, useFiatAmount } from './useFiatAmount'
+import { UsdAmountInfo, useUsdAmount } from './useUsdAmount'
 
 export interface TradeUSDAmounts {
-  inputAmount: FiatAmountInfo
-  outputAmount: FiatAmountInfo
+  inputAmount: UsdAmountInfo
+  outputAmount: UsdAmountInfo
 }
 
-export function useTradeFiatAmounts({ inputAmount, outputAmount }: Partial<TradeAmounts>): TradeUSDAmounts {
+export function useTradeUsdAmounts({ inputAmount, outputAmount }: Partial<TradeAmounts>): TradeUSDAmounts {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isTradeReady = !isWrapOrUnwrap && !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
 
   return {
-    inputAmount: useFiatAmount(isTradeReady ? inputAmount : null),
-    outputAmount: useFiatAmount(isTradeReady ? outputAmount : null),
+    inputAmount: useUsdAmount(isTradeReady ? inputAmount : null),
+    outputAmount: useUsdAmount(isTradeReady ? outputAmount : null),
   }
 }

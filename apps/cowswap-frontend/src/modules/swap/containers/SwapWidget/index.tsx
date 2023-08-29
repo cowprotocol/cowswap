@@ -17,7 +17,6 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -40,6 +39,7 @@ import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -98,7 +98,7 @@ export function SwapWidget() {
   const {
     inputAmount: { value: inputUsdValue },
     outputAmount: { value: outputUsdValue },
-  } = useTradeFiatAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(tradeAmounts)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer

@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 
-import { useFiatAmount } from 'modules/fiatAmount'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 
@@ -16,7 +16,7 @@ type FiatBalanceCellProps = {
 
 export function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   const hasBalance = balance?.greaterThan(0)
-  const fiatValue = useFiatAmount(balance).value
+  const fiatValue = useUsdAmount(balance).value
 
   return (
     <BalanceValue hasBalance={!!hasBalance}>

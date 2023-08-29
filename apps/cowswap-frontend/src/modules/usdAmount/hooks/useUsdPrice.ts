@@ -6,24 +6,24 @@ import { Nullish } from 'types'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
-import { addCurrencyToFiatPriceQueue, removeCurrencyToFiatPriceFromQueue } from '../state/fiatPricesAtom'
-import { usdPricesAtom, UsdPriceState } from '../state/usdPricesAtom'
+import { addCurrencyToUsdPriceQueue, removeCurrencyToUsdPriceFromQueue } from '../state/usdRawPricesAtom'
+import { usdTokenPricesAtom, UsdPriceState } from '../state/usdTokenPricesAtom'
 
 export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
   const currencyAddress = currency?.address?.toLowerCase()
 
-  const usdPrices = useAtomValue(usdPricesAtom)
-  const addCurrencyToFiatPrice = useSetAtom(addCurrencyToFiatPriceQueue)
-  const removeCurrencyToFiatPrice = useSetAtom(removeCurrencyToFiatPriceFromQueue)
+  const usdPrices = useAtomValue(usdTokenPricesAtom)
+  const addCurrencyToUsdPrice = useSetAtom(addCurrencyToUsdPriceQueue)
+  const removeCurrencyToUsdPrice = useSetAtom(removeCurrencyToUsdPriceFromQueue)
 
   useSafeEffect(() => {
     if (currency) {
-      addCurrencyToFiatPrice(currency)
+      addCurrencyToUsdPrice(currency)
     }
 
     return () => {
       if (currency) {
-        removeCurrencyToFiatPrice(currency)
+        removeCurrencyToUsdPrice(currency)
       }
     }
   }, [currency])
