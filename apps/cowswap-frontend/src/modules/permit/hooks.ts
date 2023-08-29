@@ -43,7 +43,7 @@ function usePermitInfo(chainId: SupportedChainId, tokenAddress: string | undefin
   const permittableTokens = useAtomValue(permittableTokensAtom)
 
   return useMemo(() => {
-    if (!chainId || !tokenAddress) return undefined
+    if (!tokenAddress) return undefined
 
     return permittableTokens[chainId][tokenAddress.toLowerCase()]
   }, [chainId, permittableTokens, tokenAddress])
