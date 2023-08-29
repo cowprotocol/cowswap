@@ -6,7 +6,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { addHooksToAppData, buildAppDataHooks } from 'modules/appData'
-import { generatePermitHook } from 'modules/permit/utils/generatePermitHook'
+import { generatePermitHook } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
