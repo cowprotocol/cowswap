@@ -1,9 +1,10 @@
 import { MaxUint256 } from '@ethersproject/constants'
 
-import { DAI_PERMIT_SELECTOR, Eip2612PermitUtils, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
+import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
 import { FAKE_SIGNER } from '../const'
@@ -39,41 +40,44 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
   const request = new Promise<string>(async (resolve) => {
     const spender = GP_VAULT_RELAYER[chainId]
     const deadline = getDeadline()
+    const value = MaxUint256.toString()
 
-    let callData
+    const callDataPromise =
+      permitInfo.type === 'eip-2612'
+        ? buildEip2162PermitCallData({
+            eip2162Utils: eip2612PermitUtils,
+            callDataParams: [
+              {
+                owner,
+                spender,
+                value,
+                nonce,
+                deadline,
+              },
+              chainId as number,
+              tokenName,
+              tokenAddress,
+            ],
+          })
+        : buildDaiLikePermitCallData({
+            eip2162Utils: eip2612PermitUtils,
+            callDataParams: [
+              {
+                holder: owner,
+                spender,
+                allowed: true,
+                value,
+                nonce,
+                expiry: deadline,
+              },
+              chainId as number,
+              tokenName,
+              tokenAddress,
+            ],
+          })
+
     try {
-      if (permitInfo.type === 'eip-2612') {
-        callData = (
-          await eip2612PermitUtils.buildPermitCallData(
-            {
-              owner,
-              spender,
-              value: MaxUint256.toString(),
-              nonce,
-              deadline,
-            },
-            chainId as number,
-            tokenName,
-            tokenAddress
-          )
-        ).replace('0x', EIP_2612_PERMIT_SELECTOR)
-      } else {
-        callData = (
-          await eip2612PermitUtils.buildDaiLikePermitCallData(
-            {
-              holder: owner,
-              spender,
-              allowed: true,
-              value: MaxUint256.toString(),
-              nonce,
-              expiry: deadline,
-            },
-            chainId as number,
-            tokenName,
-            tokenAddress
-          )
-        ).replace('0x', DAI_PERMIT_SELECTOR)
-      }
+      const callData = await callDataPromise
 
       const permitHookData = {
         target: tokenAddress,

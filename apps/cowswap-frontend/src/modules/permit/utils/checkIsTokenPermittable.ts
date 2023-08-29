@@ -1,15 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import {
-  DAI_LIKE_PERMIT_TYPEHASH,
-  DAI_PERMIT_SELECTOR,
-  Eip2612PermitUtils,
-  EIP_2612_PERMIT_SELECTOR,
-} from '@1inch/permit-signed-approvals-utils'
+import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { Web3ProviderConnector } from './Web3ProviderConnector'
 
 import { FAKE_SIGNER } from '../const'
@@ -54,20 +50,23 @@ export async function checkIsTokenPermittable(
   try {
     const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
 
-    const permitCallData = await eip2612PermitUtils.buildPermitCallData(
-      {
-        ...permitParams,
-        owner,
-        spender,
-        nonce,
-      },
-      +chainId,
-      tokenName,
-      tokenAddress
-    )
+    const data = await buildEip2162PermitCallData({
+      eip2162Utils: eip2612PermitUtils,
+      callDataParams: [
+        {
+          ...permitParams,
+          owner,
+          spender,
+          nonce,
+        },
+        +chainId,
+        tokenName,
+        tokenAddress,
+      ],
+    })
 
     const estimatedGas = await provider.estimateGas({
-      data: permitCallData.replace('0x', EIP_2612_PERMIT_SELECTOR),
+      data,
       from: owner,
       to: tokenAddress,
     })
@@ -106,21 +105,24 @@ function estimateDaiLikeToken(
       ? eip2612PermitUtils
           .getTokenNonce(tokenAddress, walletAddress)
           .then((nonce) =>
-            eip2612PermitUtils.buildDaiLikePermitCallData(
-              {
-                ...daiLikePermitParams,
-                holder: walletAddress,
-                spender,
-                nonce,
-              },
-              chainId as number,
-              tokenName,
-              tokenAddress
-            )
+            buildDaiLikePermitCallData({
+              eip2162Utils: eip2612PermitUtils,
+              callDataParams: [
+                {
+                  ...daiLikePermitParams,
+                  holder: walletAddress,
+                  spender,
+                  nonce,
+                },
+                chainId as number,
+                tokenName,
+                tokenAddress,
+              ],
+            })
           )
-          .then((daiLikeData) =>
+          .then((data) =>
             provider.estimateGas({
-              data: daiLikeData.replace('0x', DAI_PERMIT_SELECTOR),
+              data,
               from: walletAddress,
               to: tokenAddress,
             })

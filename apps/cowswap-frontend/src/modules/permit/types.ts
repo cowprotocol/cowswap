@@ -3,10 +3,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 
-type permitType = 'dai-like' | 'eip-2612'
+import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+
+export type PermitType = 'dai-like' | 'eip-2612'
 
 export type SupportedPermitInfo = {
-  type: permitType
+  type: PermitType
   gasLimit: number
 }
 type UnsupportedPermitInfo = false
@@ -41,3 +43,13 @@ export type EstimatePermitResult =
   | FailedToIdentify
   // When it's not permittable:
   | UnsupportedPermitInfo
+
+type BasePermitCallDataParams = {
+  eip2162Utils: Eip2612PermitUtils
+}
+export type BuildEip2162PermitCallDataParams = BasePermitCallDataParams & {
+  callDataParams: Parameters<Eip2612PermitUtils['buildPermitCallData']>
+}
+export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
+  callDataParams: Parameters<Eip2612PermitUtils['buildDaiLikePermitCallData']>
+}
