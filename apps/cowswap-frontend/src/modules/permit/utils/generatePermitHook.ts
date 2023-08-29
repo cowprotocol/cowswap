@@ -1,6 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 
-import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import { DAI_PERMIT_SELECTOR, Eip2612PermitUtils, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 
@@ -56,7 +56,7 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
             tokenName,
             tokenAddress
           )
-        ).replace('0x', '0xd505accf')
+        ).replace('0x', EIP_2612_PERMIT_SELECTOR)
       } else {
         callData = (
           await eip2612PermitUtils.buildDaiLikePermitCallData(
@@ -72,7 +72,7 @@ export async function generateQuotePermitHook(params: PermitHookParams): Promise
             tokenName,
             tokenAddress
           )
-        ).replace('0x', '0x8fcbaf0c')
+        ).replace('0x', DAI_PERMIT_SELECTOR)
       }
 
       const permitHookData = {

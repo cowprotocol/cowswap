@@ -1,7 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import {
+  DAI_LIKE_PERMIT_TYPEHASH,
+  DAI_PERMIT_SELECTOR,
+  Eip2612PermitUtils,
+  EIP_2612_PERMIT_SELECTOR,
+} from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
@@ -62,7 +67,7 @@ export async function checkIsTokenPermittable(
     )
 
     const estimatedGas = await provider.estimateGas({
-      data: permitCallData.replace('0x', '0xd505accf'),
+      data: permitCallData.replace('0x', EIP_2612_PERMIT_SELECTOR),
       from: owner,
       to: tokenAddress,
     })
@@ -115,7 +120,7 @@ function estimateDaiLikeToken(
           )
           .then((daiLikeData) =>
             provider.estimateGas({
-              data: daiLikeData.replace('0x', '0x8fcbaf0c'),
+              data: daiLikeData.replace('0x', DAI_PERMIT_SELECTOR),
               from: walletAddress,
               to: tokenAddress,
             })
@@ -123,7 +128,6 @@ function estimateDaiLikeToken(
           .then((res) => {
             const gasLimit = res.toNumber()
 
-            // TODO: I'm not sure why this is needed, check with Sasha
             return gasLimit > permitGasLimitMin[chainId]
               ? {
                   gasLimit,
