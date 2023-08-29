@@ -23,8 +23,8 @@ function getShouldSkipCoingecko(currency: Token): boolean {
 
 /**
  * Fetches fiat price for a given currency from coingecko or CowProtocol
- * CowProtocol is used as a fallback
- * When coingecko rate limit is hit, CowProtocol will be used for 1 minute
+ * CoW Protocol Orderbook API is used as a fallback
+ * When Coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
 export function fetchCurrencyFiatPrice(
   currency: Token,
