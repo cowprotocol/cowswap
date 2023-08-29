@@ -5,7 +5,7 @@ import { USDC } from 'legacy/constants/tokens'
 
 import { getCowProtocolNativePrice } from './getCowProtocolNativePrice'
 
-export async function getCowProtocolFiatPrice(
+export async function getCowProtocolUsdPrice(
   currency: Token,
   getUsdcPrice: () => Promise<number | null>
 ): Promise<number | null> {

@@ -31,7 +31,7 @@ export class CoingeckoRateLimitError extends Error {
   }
 }
 
-export async function getCoingeckoFiatPrice(currency: Token): Promise<number | null> {
+export async function getCoingeckoUsdPrice(currency: Token): Promise<number | null> {
   const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
   if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')

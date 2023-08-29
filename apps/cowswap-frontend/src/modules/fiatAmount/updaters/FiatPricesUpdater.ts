@@ -12,7 +12,7 @@ import { USDC } from 'legacy/constants/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
-import { fetchCurrencyFiatPrice } from '../services/fetchCurrencyFiatPrice'
+import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesFiatPriceQueueAtom,
   FiatPrices,
@@ -88,7 +88,7 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null
 async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<FiatPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
-      return fetchCurrencyFiatPrice(currency, getUsdcPrice).then((price) => {
+      return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {
         if (typeof price !== 'number') {
           return null
         }

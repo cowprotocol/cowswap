@@ -7,9 +7,9 @@ import {
   COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
-  getCoingeckoFiatPrice,
-} from '../apis/getCoingeckoFiatPrice'
-import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
+  getCoingeckoUsdPrice,
+} from '../apis/getCoingeckoUsdPrice'
+import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 
@@ -26,7 +26,7 @@ function getShouldSkipCoingecko(currency: Token): boolean {
  * CoW Protocol Orderbook API is used as a fallback
  * When Coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
-export function fetchCurrencyFiatPrice(
+export function fetchCurrencyUsdPrice(
   currency: Token,
   getUsdcPrice: () => Promise<number | null>
 ): Promise<number | null> {
@@ -37,8 +37,8 @@ export function fetchCurrencyFiatPrice(
   }
 
   const request = shouldSkipCoingecko
-    ? getCowProtocolFiatPrice(currency, getUsdcPrice)
-    : getCoingeckoFiatPrice(currency).catch((error) => {
+    ? getCowProtocolUsdPrice(currency, getUsdcPrice)
+    : getCoingeckoUsdPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
@@ -46,7 +46,7 @@ export function fetchCurrencyFiatPrice(
           console.error('Cannot fetch coingecko price', error)
         }
 
-        return getCowProtocolFiatPrice(currency, getUsdcPrice)
+        return getCowProtocolUsdPrice(currency, getUsdcPrice)
       })
 
   return request
