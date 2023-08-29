@@ -12,7 +12,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from './state/atoms'
 import { IsTokenPermittableResult, PermitHookData, PermitHookParams, PermitInfo } from './types'
 import { checkIsTokenPermittable } from './utils/checkIsTokenPermittable'
-import { generateQuotePermitHook } from './utils/generatePermitHook'
+import { generatePermitHook } from './utils/generatePermitHook'
 
 /**
  * Returns a callback for adding PermitInfo for a given token
@@ -118,7 +118,7 @@ export function usePermitHookData(params?: PermitHookParams): PermitHookData | u
   useEffect(() => {
     if (!params) return
 
-    generateQuotePermitHook(params).then(setData)
+    generatePermitHook(params).then(setData)
   }, [params])
 
   return data ? JSON.parse(data) : undefined

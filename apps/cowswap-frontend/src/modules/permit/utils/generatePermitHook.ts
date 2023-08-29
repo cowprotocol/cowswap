@@ -13,7 +13,7 @@ import { PermitHookParams } from '../types'
 const cachePrefix = 'permitCache-'
 const pendingRequests: { [permitKey: string]: Promise<string> | undefined } = {}
 
-export async function generateQuotePermitHook(params: PermitHookParams): Promise<string> {
+export async function generatePermitHook(params: PermitHookParams): Promise<string> {
   const { inputToken, chainId, permitInfo, provider, account } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress

@@ -6,7 +6,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { addHooksToAppData, buildAppDataHooks } from 'modules/appData'
-import { generateQuotePermitHook } from 'modules/permit/utils/generatePermitHook'
+import { generatePermitHook } from 'modules/permit/utils/generatePermitHook'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -28,7 +28,7 @@ export async function swapFlow(
 
   if (input.permitInfo) {
     // TODO: maybe we need a modal to inform the user what they need to sign?
-    const permitDataString = await generateQuotePermitHook({
+    const permitDataString = await generatePermitHook({
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
       account: input.orderParams.account,
