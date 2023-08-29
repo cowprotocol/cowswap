@@ -37,7 +37,7 @@ export async function swapFlow(
     })
     const permitData = JSON.parse(permitDataString)
 
-    const hooks = buildAppDataHooks([permitData], [])
+    const hooks = buildAppDataHooks([permitData])
 
     input.orderParams.appData = addHooksToAppData(input.orderParams.appData, hooks)
   }

@@ -55,7 +55,11 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks): AppDataInfo {
+export function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): AppDataInfo {
+  if (!hooks) {
+    return appData
+  }
+
   const { doc } = appData
 
   const newDoc = {
