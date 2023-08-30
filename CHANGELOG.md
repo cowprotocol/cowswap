@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.46.0](https://github.com/cowprotocol/cowswap/compare/v1.45.1...v1.46.0) (2023-08-29)
+
+
+### Features
+
+* add badges color functionality ([#3072](https://github.com/cowprotocol/cowswap/issues/3072)) ([8282850](https://github.com/cowprotocol/cowswap/commit/8282850ccb78a61822fde9cda4b006057fb04d3a))
+* **trezor**: control for selecting account ([#3048](https://github.com/cowprotocol/cowswap/issues/3048)) ([e391f96](https://github.com/cowprotocol/cowswap/commit/e391f96a626feb1912a0aebfa5710264631110fe))
+* **wallets**: trezor wallet support ([#3020](https://github.com/cowprotocol/cowswap/issues/3020)) ([40d1d22](https://github.com/cowprotocol/cowswap/commit/40d1d220ccc81cc98adcbd7ed61fb5eeb10ee347))
+
+
+### Bug Fixes
+
+* **deployment-script:** fix deployment workflow ([#3084](https://github.com/cowprotocol/cowswap/issues/3084)) ([7b9d07e](https://github.com/cowprotocol/cowswap/commit/7b9d07ef7b5cec51f97e29f948b84e88f3e8fae6))
+* **number-inputs:** remove default browser number arrows ([db4e9f4](https://github.com/cowprotocol/cowswap/commit/db4e9f4e46c40432735a22add89e9d371bbd939f))
+* **number-inputs:** remove default browser number arrows ([1ccbfac](https://github.com/cowprotocol/cowswap/commit/1ccbfac1378f64e069f85bd5437a139c679d0c3e))
+* **sentry:** log error boundary errors to Sentry ([#3077](https://github.com/cowprotocol/cowswap/issues/3077)) ([8c5518b](https://github.com/cowprotocol/cowswap/commit/8c5518b15a69a3049de19972a35b928625170439))
+* **snackbars**: fix clickable area for closing ([#3068](https://github.com/cowprotocol/cowswap/issues/3068)) ([8dc8e74](https://github.com/cowprotocol/cowswap/commit/8dc8e7477773b1655e5d2359be93d48cff1ec054))
+* **twap**: rename advanced to TWAP ([cb79da9](https://github.com/cowprotocol/cowswap/commit/cb79da9312f32c5f380bea3c3f2ebd6399f60649))
+* **wallets**: walletconnect v2 configuration ([#3047](https://github.com/cowprotocol/cowswap/issues/3047)) ([14f2175](https://github.com/cowprotocol/cowswap/commit/14f21753ce6307d76127fb994dd944e68b2fdfe1))
+
 ## [1.45.1](https://github.com/cowprotocol/cowswap/compare/v1.45.0...v1.45.1) (2023-08-23)
 
 
