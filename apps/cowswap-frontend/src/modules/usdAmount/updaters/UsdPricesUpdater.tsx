@@ -29,8 +29,6 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
-export const USD_PRICES_UPDATER_CACHE_KEY = 'UsdPricesUpdater'
-
 export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
