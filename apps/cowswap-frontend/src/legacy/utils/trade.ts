@@ -235,7 +235,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       quoteId,
       appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
       appDataHash: appData.appDataKeccak256,
-    } as any,
+    },
     { chainId }
   )
 
