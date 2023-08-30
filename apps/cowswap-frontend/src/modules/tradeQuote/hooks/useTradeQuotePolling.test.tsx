@@ -105,7 +105,7 @@ describe('useTradeQuotePolling()', () => {
   })
 
   describe('When wallet is NOT connected', () => {
-    it('Then  the "useAddress" field in the quote request should be 0x000...0000', () => {
+    it('Then the "useAddress" field in the quote request should be 0x000...0000', () => {
       // Arrange
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
