@@ -234,7 +234,13 @@ export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap 
   }, [allOrders, ids])
 }
 
-export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
+export const useCombinedPendingOrders = ({
+  chainId,
+  account,
+}: {
+  chainId: SupportedChainId
+  account: string | undefined
+}): Order[] => {
   const state = useSelector<
     AppState,
     | {
@@ -257,13 +263,15 @@ export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] 
   })
 
   return useMemo(() => {
-    if (!state) return []
+    if (!state || !account) return []
 
     const { pending, presignaturePending, creating } = state
     const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
 
-    return allPending.map(_deserializeOrder).filter(isTruthy)
-  }, [state])
+    return allPending.map(_deserializeOrder).filter((order) => {
+      return order?.owner.toLowerCase() === account.toLowerCase()
+    }) as Order[]
+  }, [state, account])
 }
 
 /**
