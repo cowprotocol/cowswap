@@ -24,7 +24,8 @@ export const permittableTokensAtom = atomWithStorage<PermittableTokens>('permitt
 export const addPermitInfoForTokenAtom = atom(
   null,
   (get, set, { chainId, tokenAddress, permitInfo }: AddPermitTokenParams) => {
-    const permittableTokens = get(permittableTokensAtom)
+    const permittableTokens = { ...get(permittableTokensAtom) }
+
     permittableTokens[chainId][tokenAddress.toLowerCase()] = permitInfo
 
     set(permittableTokensAtom, permittableTokens)
