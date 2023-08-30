@@ -3,6 +3,8 @@ import { Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
+import { fetchWithRateLimit } from 'common/utils/fetch'
+
 export interface CoinGeckoUsdQuote {
   [address: string]: {
     usd: number
@@ -22,6 +24,19 @@ const VS_CURRENCY = 'usd'
  * https://saturncloud.io/blog/catching-javascript-fetch-failing-with-cloudflare-429-missing-cors-header/
  */
 const FAILED_FETCH_ERROR = 'Failed to fetch'
+
+const fetchRateLimitted = fetchWithRateLimit({
+  // Allow 2 requests per second
+  rateLimit: {
+    tokensPerInterval: 2,
+    interval: 'second',
+  },
+  // 2 retry attempts with 100ms delay
+  backoff: {
+    maxDelay: ms`0.1s`,
+    numOfAttempts: 2,
+  },
+})
 
 export const COINGECKO_RATE_LIMIT_TIMEOUT = ms`1m`
 
@@ -43,7 +58,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<number | nu
 
   const url = `${BASE_URL}/${platform}?${new URLSearchParams(params)}`
 
-  return fetch(url)
+  return fetchRateLimitted(url)
     .then((res) => {
       return res.json()
     })
