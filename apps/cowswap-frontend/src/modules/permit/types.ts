@@ -53,3 +53,10 @@ export type BuildEip2162PermitCallDataParams = BasePermitCallDataParams & {
 export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
   callDataParams: Parameters<Eip2612PermitUtils['buildDaiLikePermitCallData']>
 }
+
+export type CheckIsTokenPermittableParams = {
+  tokenAddress: string
+  tokenName: string
+  chainId: SupportedChainId
+  provider: Web3Provider
+}

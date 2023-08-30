@@ -66,7 +66,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
       return
     }
 
-    checkIsTokenPermittable(lowerCaseAddress, tokenName, chainId, provider).then((result) => {
+    checkIsTokenPermittable({ tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })

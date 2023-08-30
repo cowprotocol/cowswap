@@ -11,7 +11,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
-import { EstimatePermitResult } from '../types'
+import { CheckIsTokenPermittableParams, EstimatePermitResult } from '../types'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -25,21 +25,36 @@ const DAI_LIKE_PERMIT_PARAMS = {
   expiry: getPermitDeadline(),
 }
 
-export async function checkIsTokenPermittable(
-  tokenAddress: string,
-  tokenName: string,
-  chainId: SupportedChainId,
-  provider: Web3Provider
-): Promise<EstimatePermitResult> {
+const REQUESTS_CACHE: Record<string, Promise<EstimatePermitResult>> = {}
+
+export async function checkIsTokenPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
+  const { tokenAddress, chainId } = params
   if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
     // We shouldn't call this for the native token, but just in case
     return false
   }
 
+  const key = `${chainId}-${tokenAddress.toLowerCase()}`
+
+  const cached = REQUESTS_CACHE[key]
+
+  if (cached) {
+    return cached
+  }
+
+  const request = actuallyCheckTokenIsPermittable(params)
+
+  REQUESTS_CACHE[key] = request
+
+  return request
+}
+
+async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
+  const { tokenAddress, tokenName, chainId, provider } = params
+
   const spender = GP_VAULT_RELAYER[chainId]
 
-  const web3ProviderConnector = new PermitProviderConnector(provider, PERMIT_SIGNER)
-  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
+  const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
   const owner = PERMIT_SIGNER.address
 
@@ -85,6 +100,23 @@ export async function checkIsTokenPermittable(
       return { error: e.message || e.toString() }
     }
   }
+}
+
+const PERMIT_UTILS_CACHE: Record<number, Eip2612PermitUtils> = {}
+
+function getPermitUtilsInstance(chainId: SupportedChainId, provider: Web3Provider): Eip2612PermitUtils {
+  const cached = PERMIT_UTILS_CACHE[chainId]
+
+  if (cached) {
+    return cached
+  }
+
+  const web3ProviderConnector = new PermitProviderConnector(provider, PERMIT_SIGNER)
+  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
+
+  PERMIT_UTILS_CACHE[chainId] = eip2612PermitUtils
+
+  return eip2612PermitUtils
 }
 
 // TODO: refactor and make DAI like tokens work
