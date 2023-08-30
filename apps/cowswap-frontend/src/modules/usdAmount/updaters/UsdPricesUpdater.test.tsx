@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { act, render, waitFor } from '@testing-library/react'
+import { SWRConfig } from 'swr'
 import { JotaiTestProvider } from 'test-utils'
 
 import { COW as COWS, USDC_MAINNET } from 'legacy/constants/tokens'
@@ -38,9 +39,11 @@ function getWrapper() {
     store,
     TestComponent: function ({ children }: { children: any }) {
       return (
-        <JotaiTestProvider store={store} initialValues={initialValues}>
-          {children}
-        </JotaiTestProvider>
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <JotaiTestProvider store={store} initialValues={initialValues}>
+            {children}
+          </JotaiTestProvider>
+        </SWRConfig>
       )
     },
   }
@@ -63,9 +66,7 @@ async function setupTest(
   }
 
   act(() => {
-    // id - is very important value
-    // it's used to prevent SWR from caching between tests
-    render(<UsdPricesUpdater id={Math.random().toString()} />, { wrapper: TestComponent })
+    render(<UsdPricesUpdater />, { wrapper: TestComponent })
   })
 
   await waitFor(() => resolvesCount === waitForResolvesCount)
