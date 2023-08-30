@@ -10,17 +10,28 @@ import { getPermitDeadline } from './getPermitDeadline'
 import { DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookParams } from '../types'
 
-const cachePrefix = 'permitCache-'
-const pendingRequests: { [permitKey: string]: Promise<string> | undefined } = {}
+const CACHE_PREFIX = 'permitCache:v0-'
+const REQUESTS_CACHE: { [permitKey: string]: Promise<string> } = {}
 
+function getCacheKey(params: PermitHookParams): string {
+  const { inputToken, chainId, account } = params
+
+  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
+}
+
+// TODO: return the de-serialized obj
 export async function generatePermitHook(params: PermitHookParams): Promise<string> {
   const { inputToken, chainId, permitInfo, provider, account } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
-  const permitKey = `${cachePrefix}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
+  const permitKey = getCacheKey(params)
 
-  if (localStorage.getItem(permitKey)) return localStorage.getItem(permitKey)!
-  if (pendingRequests[permitKey]) return pendingRequests[permitKey]!
+  // TODO: verify whether cached result is still valid and renew it if needed
+  const cachedResult = localStorage.getItem(permitKey)
+  if (cachedResult) return cachedResult
+
+  const cachedRequest = REQUESTS_CACHE[permitKey]
+  if (cachedRequest) return cachedRequest
 
   const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
@@ -89,7 +100,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
     }
   })
 
-  pendingRequests[permitKey] = request
+  REQUESTS_CACHE[permitKey] = request
 
   return request
 }
