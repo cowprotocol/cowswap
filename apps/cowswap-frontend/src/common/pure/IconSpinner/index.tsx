@@ -8,13 +8,20 @@ type IconSpinnerProps = {
   currency?: Currency | null;
   image?: string;
   size?: number;
+  children?: React.ReactNode;
+  bgColor?: string;
 };
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number }>`
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string; }>`
+  --bgColor: ${({ bgColor }) => `var(${bgColor})` || 'var(--cow-container-bg-01)'};
   display: flex;
   position: relative;
+  align-items: center;
+  justify-content: center;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
+  min-width: ${({ size }) => size}px;
+  min-height: ${({ size }) => size}px;
   border-radius: ${({ size }) => size}px;
 
   &:before {
@@ -31,13 +38,19 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number }>`
   }
 
   > img,
-  > svg {
+  > svg,
+  > span {
     object-fit: contain;
     z-index: 2;
     position: relative;
     border: ${({ spinnerWidth }) => spinnerWidth}px solid var(--cow-container-bg-01);
     border-radius: ${({ size }) => size}px;
-    background-color: var(--cow-container-bg-01);
+    background-color: var(--bgColor);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   @keyframes spin {
@@ -50,12 +63,23 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number }>`
   }
 `;
 
-export function IconSpinner({ currency, image, size = 24 }: IconSpinnerProps) {
+export function IconSpinner({ currency, image, size = 24, children, bgColor }: IconSpinnerProps) {
   const spinnerWidth = 2;
 
+  let content;
+  if (currency) {
+    content = <CurrencyLogo currency={currency} size="100%" />;
+  } else if (image) {
+    content = <img src={image} alt="Spinning icon" width={size} height={size} />;
+  } else if (children) {
+    content = <span>{children}</span>;
+  } else {
+    content = <span />;
+  }
+
   return (
-    <Wrapper size={size} spinnerWidth={spinnerWidth}>
-      {currency ? <CurrencyLogo currency={currency} size="100%" /> : <img src={image} alt="Spinning icon" width={size} height={size} />}
+    <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
+      {content}
     </Wrapper>
   );
 }

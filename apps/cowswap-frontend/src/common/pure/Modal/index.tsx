@@ -157,6 +157,14 @@ const ModalInner = styled.div`
   border-radius: var(--cow-border-radius-normal);
   box-shadow: var(--cow-box-shadow-normal);
   padding: 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 8vh 0 0;
+    border-radius: 0;
+    border-top-left-radius: var(--cow-border-radius-normal);
+    border-top-right-radius: var(--cow-border-radius-normal);
+    box-shadow: none;
+  `}
 `
 
 const NewCowModal = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
@@ -170,6 +178,12 @@ const NewCowModal = styled.div<{ maxWidth?: number | string; minHeight?: number 
   ${ModalInner} {
     max-width: ${({ maxWidth }) => maxWidth ? `${maxWidth}px` : '100%'};
     min-height: ${({ minHeight }) => minHeight ? `${minHeight}px` : '100%'};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      max-width: 100%;
+      min-height: initial;
+      height: auto;
+    `}
   }
 `
 
@@ -180,7 +194,12 @@ const Heading = styled.h2`
   height: auto;
   padding: 18px;
   margin: 0;
-  font-size: var(--cow-font-size-normal);
+  font-size: var(--cow-font-size-medium);
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    position: sticky;
+    top: 0;
+  `}
 `
 
 const IconX = styled.div`
@@ -265,14 +284,16 @@ interface NewModalProps {
   maxWidth?: number
   minHeight?: number
   title?: string
+  onDismiss?: () => void
   children?: React.ReactNode
 }
 
 export function NewModal({
   maxWidth = 450,
-  minHeight = 475,
+  minHeight = 450,
   title,
   children,
+  onDismiss,
 }: NewModalProps) {
 
   return (
@@ -285,7 +306,7 @@ export function NewModal({
         </NewModalContent>
       </ModalInner>
 
-      <IconX><SVG src={CLOSE_ICON} onClick={() => console.log("Close Modal")} /></IconX>
+      <IconX onClick={() => onDismiss && onDismiss()}><SVG src={CLOSE_ICON} /></IconX>
 
     </NewCowModal>
   )
