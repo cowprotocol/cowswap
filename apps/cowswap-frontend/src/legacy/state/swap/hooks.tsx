@@ -44,6 +44,10 @@ export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D': true, // v2 router 02
 }
 
+function parseIndependentFieldURLParameter(urlParam: any): Field {
+  return (typeof urlParam === 'string' && urlParam.toLowerCase() === 'output' ? 'OUTPUT' : 'INPUT') as Field
+}
+
 export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam)
@@ -57,10 +61,6 @@ export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): strin
 
 export function parseTokenAmountURLParameter(urlParam: any): string {
   return typeof urlParam === 'string' && !isNaN(parseFloat(urlParam)) ? urlParam : ''
-}
-
-export function parseIndependentFieldURLParameter(urlParam: any): Field {
-  return typeof urlParam === 'string' && urlParam.toLowerCase() === 'output' ? Field.OUTPUT : Field.INPUT
 }
 
 const ENS_NAME_REGEX = /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)?$/
@@ -81,7 +81,7 @@ export function useSwapState(): AppState['swap'] {
 
   return useMemo(() => {
     return isProviderNetworkUnsupported
-      ? { ...state, [Field.INPUT]: { currencyId: undefined }, [Field.OUTPUT]: { currencyId: undefined } }
+      ? { ...state, INPUT: { currencyId: undefined }, OUTPUT: { currencyId: undefined } }
       : state
   }, [isProviderNetworkUnsupported, state])
 }
@@ -242,8 +242,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const {
     independentField,
     typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+    INPUT: { currencyId: inputCurrencyId },
+    OUTPUT: { currencyId: outputCurrencyId },
     recipient,
   } = useSwapState()
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -262,7 +262,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     useMemo(() => [inputCurrency ?? undefined, outputCurrency ?? undefined], [inputCurrency, outputCurrency])
   )
 
-  const isExactIn: boolean = independentField === Field.INPUT
+  const isExactIn: boolean = independentField === 'INPUT'
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined),
     [inputCurrency, isExactIn, outputCurrency, typedValue]
@@ -270,8 +270,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const currencies: { [field in Field]?: Currency | null } = useMemo(
     () => ({
-      [Field.INPUT]: inputCurrency,
-      [Field.OUTPUT]: outputCurrency,
+      INPUT: inputCurrency,
+      OUTPUT: outputCurrency,
     }),
     [inputCurrency, outputCurrency]
   )
@@ -279,10 +279,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // TODO: be careful! For native tokens we use symbol instead of address
   const currenciesIds: { [field in Field]?: string | null } = useMemo(
     () => ({
-      [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
-      [Field.OUTPUT]: currencies.OUTPUT?.isNative
-        ? currencies.OUTPUT.symbol
-        : currencies.OUTPUT?.address?.toLowerCase(),
+      INPUT: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
+      OUTPUT: currencies.OUTPUT?.isNative ? currencies.OUTPUT.symbol : currencies.OUTPUT?.address?.toLowerCase(),
     }),
     [currencies]
   )
@@ -321,8 +319,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const currencyBalances = useMemo(
     () => ({
-      [Field.INPUT]: relevantTokenBalances[0],
-      [Field.OUTPUT]: relevantTokenBalances[1],
+      INPUT: relevantTokenBalances[0],
+      OUTPUT: relevantTokenBalances[1],
     }),
     [relevantTokenBalances]
   )
@@ -341,7 +339,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       inputError = t`Connect Wallet`
     }
 
-    if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
+    if (!currencies.INPUT || !currencies.OUTPUT) {
       inputError = inputError ?? t`Select a token`
     }
 
@@ -360,7 +358,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
     // compare input balance to max input based on version
     // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
-    const balanceIn = currencyBalances[Field.INPUT]
+    const balanceIn = currencyBalances.INPUT
     const amountIn = slippageAdjustedSellAmount
 
     // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
@@ -412,7 +410,7 @@ export function queryParametersToSwapState(
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
 
-  if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
+  if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === 'INPUT') {
     // Defaults to having the wrapped native currency selected
     inputCurrency = defaultInputCurrency // 'ETH' // mod
   } else if (inputCurrency === outputCurrency) {
@@ -425,10 +423,10 @@ export function queryParametersToSwapState(
 
   return {
     chainId: chainId || null,
-    [Field.INPUT]: {
+    INPUT: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
-    [Field.OUTPUT]: {
+    OUTPUT: {
       currencyId: outputCurrency === '' ? null : outputCurrency ?? null,
     },
     typedValue,

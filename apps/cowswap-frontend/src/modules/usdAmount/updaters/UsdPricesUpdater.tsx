@@ -29,7 +29,7 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
-export function UsdPricesUpdater() {
+export function UsdPricesUpdater({ id }: { id?: string }) {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
@@ -39,7 +39,7 @@ export function UsdPricesUpdater() {
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
   const swrResponse = useSWR<UsdRawPrices | null>(
-    ['UsdPricesUpdater', queue, chainId],
+    ['UsdPricesUpdater' + id, queue, chainId],
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 
