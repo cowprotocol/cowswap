@@ -12,6 +12,7 @@ import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { FractionUtils } from 'utils/fractionUtils'
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined
@@ -30,6 +31,10 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   const approvalStateBase = useSafeMemo(() => {
     if (!amountToApprove || !spender || !currentAllowance) {
       return ApprovalState.UNKNOWN
+    }
+
+    if (FractionUtils.gte(currentAllowance, amountToApprove)) {
+      return ApprovalState.APPROVED
     }
 
     if (pendingApproval) {
