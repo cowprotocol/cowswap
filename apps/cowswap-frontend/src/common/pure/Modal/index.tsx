@@ -217,16 +217,19 @@ const NewModalContent = styled.div<{ paddingTop?: number}>`
   h2, 
   h3 {
     width: 100%;
-    font-size: var(--cow-font-size-large);
+    font-size: var(--cow-font-size-larger);
     font-weight: var(--cow-font-weight-bold);
     text-align: center;
     line-height: 1.4;
+    margin: 0 auto;
   }
 
   p {
-    font-size: var(--cow-font-size-small);
+    font-size: var(--cow-font-size-normal);
     font-weight: var(--cow-font-weight-normal);
     color: var(--cow-color-text2);
+    margin: 0 auto;
+    padding: 0;
   }
 `
 
@@ -238,11 +241,25 @@ export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
   width: 100%;
   margin: 0 0 auto;
   padding: ${({ paddingTop = 0 }) => `${paddingTop}px`} 0 0;
-  gap: 10px;
+  gap: 24px;
+
+  > span {
+    gap: 6px;
+    display: flex;
+    flex-flow: column wrap;
+  }
+
+  p {
+    font-size: var(--cow-font-size-medium);
+  }
 `
 
 export const NewModalContentBottom = styled(NewModalContentTop)`
   margin: auto 0 0;
+
+  p {
+    font-size: var(--cow-font-size-normal);
+  }
 `
 interface NewModalProps {
   maxWidth?: number
@@ -252,8 +269,8 @@ interface NewModalProps {
 }
 
 export function NewModal({
-  maxWidth = 500,
-  minHeight = 500,
+  maxWidth = 450,
+  minHeight = 475,
   title,
   children,
 }: NewModalProps) {

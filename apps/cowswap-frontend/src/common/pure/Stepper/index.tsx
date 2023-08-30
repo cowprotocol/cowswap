@@ -8,28 +8,29 @@ interface StepProps {
   stepState: StepState
   stepNumber: number
   label: string
+  dotSize?: number
 }
 
 const stateStyles = {
-  active: { dotBackground: '--cow-color-link', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-link' },
+  active: { dotBackground: '--cow-color-link', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-text1' },
   finished: { dotBackground: '--cow-color-link-opacity-10', dotColor: '--cow-color-link', labelColor: '--cow-color-text1' },
   disabled: { dotBackground: '--cow-color-text1-opacity-25', dotColor: '--cow-color-text1-opacity-25', labelColor: '--cow-color-text1-opacity-25' },
   error: { dotBackground: '--cow-color-danger-bg', dotColor: '--cow-color-danger', labelColor: '--cow-color-danger' },
   loading: { dotBackground: '--cow-color-link-opacity-10', dotColor: '--cow-color-link', labelColor: '--cow-color-text1' },
-  open: { dotBackground: '--cow-color-text1-opacity-25', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-text2' },
+  open: { dotBackground: '--cow-color-text1-opacity-10', dotColor: '--cow-container-text2', labelColor: '--cow-color-text2' },
 }
 
 const Step = styled.div<StepProps>`
-  --dotSize: 18px;
+  --dotSize: ${({ dotSize = 21 }) => `${dotSize}px`};
   display: flex;
   position: relative;
   align-items: center;
   margin: 0;
   padding: 0;
-  font-size: var(--cow-font-size-smaller);
+  font-size: var(--cow-font-size-small);
   background: transparent;
   color: ${({ stepState }) => `var(${stateStyles[stepState].labelColor})`};
-  gap: 6px;
+  gap: 8px;
   flex: 1 0 auto;
 
   > i {
@@ -70,9 +71,7 @@ const Step = styled.div<StepProps>`
     width: 100%;
     height: 1px;
     border: 0;
-    background: ${({ stepState }) => 
-    stepState === 'active' || stepState === 'finished' ? 'var(--cow-color-link)' : 'var(--cow-color-text1-opacity-25)'
-    };
+    background: ${({ stepState }) => stepState === 'finished' ? 'var(--cow-color-link)' : 'var(--cow-color-text1-opacity-25)' };
     flex: 1 0 0;
     border-radius: var(--cow-border-radius-normal);
   }

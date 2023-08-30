@@ -443,17 +443,19 @@ export const UniThemedGlobalStyle = css`
     --cow-color-text1: ${({ theme }) => theme.text1};
     --cow-color-text1-inactive: ${({ theme }) => transparentize(0.4, theme.text1)};
     --cow-color-text1-opacity-25: ${({ theme }) => transparentize(0.75, theme.text1)};
+    --cow-color-text1-opacity-10: ${({ theme }) => transparentize(0.9, theme.text1)};
     --cow-color-text2: ${({ theme }) => transparentize(0.3, theme.text1)};
     --cow-color-link: ${({ theme }) => theme.text3};
     --cow-color-link-opacity-10: ${({ theme }) => transparentize(0.9, theme.text3)};
     --cow-font-weight-normal: 400;
     --cow-font-weight-medium: 500;
     --cow-font-weight-bold: 600;
-    --cow-font-size-smaller: 12px;
-    --cow-font-size-small: 14px;
-    --cow-font-size-normal: 16px;
-    --cow-font-size-medium: 18px;
-    --cow-font-size-large: 20px;
+    --cow-font-size-smaller: 10px;
+    --cow-font-size-small: 12px;
+    --cow-font-size-normal: 14px;
+    --cow-font-size-medium: 16px;
+    --cow-font-size-large: 18px;
+    --cow-font-size-larger: 20px;
   }
 
   html {
