@@ -1,4 +1,5 @@
 import { createStore } from 'jotai/vanilla'
+import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
@@ -37,7 +38,7 @@ function getWrapper() {
 
   return {
     store,
-    TestComponent: function ({ children }: { children: any }) {
+    TestComponent: function ({ children }: { children: ReactNode }) {
       return (
         <SWRConfig value={{ provider: () => new Map() }}>
           <JotaiTestProvider store={store} initialValues={initialValues}>
@@ -49,7 +50,7 @@ function getWrapper() {
   }
 }
 
-async function setupTest(
+async function performTest(
   priceMock: ((currency: Token) => Promise<number>) | null = null,
   waitForResolvesCount = 0
 ): Promise<UsdRawPrices> {
@@ -76,12 +77,11 @@ async function setupTest(
 
 describe('UsdPricesUpdater', () => {
   afterEach(() => {
-    jest.clearAllMocks()
     jest.resetAllMocks()
   })
 
   it('Should mark prices with isLoading=true before fetching', async () => {
-    const state = await setupTest(() => {
+    const state = await performTest(() => {
       // Never resolve price
       return new Promise(() => void 0)
     }, 0)
@@ -91,7 +91,7 @@ describe('UsdPricesUpdater', () => {
   })
 
   it('Should reset isLoading and value fields on fetching error', async () => {
-    const state = await setupTest(() => {
+    const state = await performTest(() => {
       // Always throw error on fetching try
       return new Promise((resolve, reject) => {
         reject(new Error('Server error'))
@@ -106,7 +106,7 @@ describe('UsdPricesUpdater', () => {
     const usdcPrice = 1.0
     const cowPrice = 0.5
 
-    const state = await setupTest((currency: Token) => {
+    const state = await performTest((currency: Token) => {
       // Always return prices
       return new Promise((resolve) => {
         if (currency === USDC) {
@@ -136,7 +136,7 @@ describe('UsdPricesUpdater', () => {
 
     mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.resolve(price))
 
-    const state = await setupTest()
+    const state = await performTest()
 
     expect(state[usdcAddress].price).toBe(price)
     expect(state[cowAddress].price).toBe(price)
@@ -151,7 +151,7 @@ describe('UsdPricesUpdater', () => {
     mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(price))
     mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
 
-    const state = await setupTest()
+    const state = await performTest()
 
     expect(state[usdcAddress].price).toBe(price)
     expect(state[cowAddress].price).toBe(price)
