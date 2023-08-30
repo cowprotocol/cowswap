@@ -26,7 +26,6 @@ export function useFakePermitHookData(): PermitHookData | undefined {
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
-    console.log(`bug--useFakePermitHookData`, params)
     if (!params) return
 
     generatePermitHook(params).then(setData)
@@ -45,8 +44,6 @@ function usePermitHookParams(): PermitHookParams | undefined {
   const permitInfo = useIsTokenPermittable(inputCurrency)
 
   return useSafeMemo(() => {
-    console.log(`bug--usePermitHookParams`, { inputCurrency, provider, permitInfo, chainId })
-
     if (!inputCurrency || !provider || !permitInfo) return undefined
 
     return {

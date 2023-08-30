@@ -34,7 +34,6 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   const permitInfo = usePermitInfo(chainId, lowerCaseAddress)
 
   useEffect(() => {
-    console.log(`bug--useIsTokenPermittable`, { chainId, isNative, lowerCaseAddress, permitInfo, provider, tokenName })
     if (!chainId || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
       return
     }

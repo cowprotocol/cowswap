@@ -18,7 +18,6 @@ export function useAppDataHooksUpdater(): null {
     if (stableRef) {
       const hooks = buildAppDataHooks(ref.current ? [ref.current] : undefined)
       updateAppDataHooks(hooks)
-      console.log(`bug--useAppDataHooksUpdater`, stableRef, ref.current, hooks)
     }
   }, [stableRef, updateAppDataHooks])
 
