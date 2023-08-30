@@ -99,7 +99,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
 export function useFakePermitHookData(): PermitHookData | undefined {
   const params = usePermitHookParams()
 
-  const [data, setData] = useState<string | undefined>(undefined)
+  const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
     if (!params) return
@@ -107,7 +107,7 @@ export function useFakePermitHookData(): PermitHookData | undefined {
     generatePermitHook(params).then(setData)
   }, [params])
 
-  return data ? JSON.parse(data) : undefined
+  return data
 }
 
 function usePermitHookParams(): PermitHookParams | undefined {

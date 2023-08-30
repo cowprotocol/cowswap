@@ -8,10 +8,10 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
-import { PermitHookParams } from '../types'
+import { PermitHookData, PermitHookParams } from '../types'
 
 const CACHE_PREFIX = 'permitCache:v0-'
-const REQUESTS_CACHE: { [permitKey: string]: Promise<string> } = {}
+const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
 
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account } = params
@@ -19,8 +19,7 @@ function getCacheKey(params: PermitHookParams): string {
   return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
 }
 
-// TODO: return the de-serialized obj
-export async function generatePermitHook(params: PermitHookParams): Promise<string> {
+export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData> {
   const { inputToken, chainId, permitInfo, provider, account } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
@@ -28,7 +27,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
 
   // TODO: verify whether cached result is still valid and renew it if needed
   const cachedResult = localStorage.getItem(permitKey)
-  if (cachedResult) return cachedResult
+  if (cachedResult) return JSON.parse(cachedResult)
 
   const cachedRequest = REQUESTS_CACHE[permitKey]
   if (cachedRequest) return cachedRequest
@@ -42,7 +41,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
 
   const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
 
-  const request = new Promise<string>(async (resolve) => {
+  const request = new Promise<PermitHookData>(async (resolve) => {
     const spender = GP_VAULT_RELAYER[chainId]
     const deadline = getPermitDeadline()
     const value = DEFAULT_PERMIT_VALUE
@@ -94,7 +93,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<stri
 
       localStorage.setItem(permitKey, permitHook)
 
-      resolve(permitHook)
+      resolve(permitHookData)
     } catch (e) {
       return Promise.reject(e.message)
     }

@@ -28,14 +28,13 @@ export async function swapFlow(
 
   if (input.permitInfo) {
     // TODO: maybe we need a modal to inform the user what they need to sign?
-    const permitDataString = await generatePermitHook({
+    const permitData = await generatePermitHook({
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
       account: input.orderParams.account,
       chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
     })
-    const permitData = JSON.parse(permitDataString)
 
     const hooks = buildAppDataHooks([permitData])
 
