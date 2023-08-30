@@ -33,11 +33,6 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!@ledgerhq/connect-kit-loader)"
-    ]
-  },
   "dependencies": {},
   "devDependencies": {},
   "nx": {}
