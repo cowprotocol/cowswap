@@ -18,14 +18,11 @@ export function useFiatValuePriceImpact() {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
   const isTradeSetUp = !!inputCurrency && !!outputCurrency
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: inputCurrencyAmount || undefined, outputAmount: outputCurrencyAmount || undefined }),
-    [inputCurrencyAmount, outputCurrencyAmount]
-  )
+
   const {
     inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
-  } = useTradeUsdAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
   // Consider the price impact loading if either the input or output amount is falsy
   // Debounce the loading state to prevent the price impact from flashing

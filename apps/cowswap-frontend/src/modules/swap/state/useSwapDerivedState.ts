@@ -8,7 +8,7 @@ import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
-import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
@@ -28,14 +28,10 @@ export function useFillSwapDerivedState() {
   const inputCurrencyAmount = isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee
   const outputCurrencyAmount = !isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee
 
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: inputCurrencyAmount, outputAmount: outputCurrencyAmount }),
-    [inputCurrencyAmount, outputCurrencyAmount]
-  )
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeUsdAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 

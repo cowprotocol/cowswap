@@ -43,7 +43,6 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -91,14 +90,10 @@ export function SwapWidget() {
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
   const isSellTrade = independentField === Field.INPUT
 
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: trade?.inputAmountWithoutFee, outputAmount: trade?.outputAmountWithoutFee }),
-    [trade]
-  )
   const {
     inputAmount: { value: inputUsdValue },
     outputAmount: { value: outputUsdValue },
-  } = useTradeUsdAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(trade?.inputAmountWithoutFee, trade?.outputAmountWithoutFee)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
