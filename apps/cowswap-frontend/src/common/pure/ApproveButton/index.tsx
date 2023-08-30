@@ -10,7 +10,7 @@ import { ButtonConfirmed } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
 import { AutoRow } from 'legacy/components/Row'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { ButtonSize } from 'legacy/theme/enum'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
