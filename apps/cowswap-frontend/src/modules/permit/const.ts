@@ -18,4 +18,4 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = {
 
 export const DEFAULT_PERMIT_VALUE = MaxUint256.toString()
 
-export const DEFAULT_PERMIT_DEADLINE = ms`5 years`
+export const DEFAULT_PERMIT_DURATION = ms`5 years`

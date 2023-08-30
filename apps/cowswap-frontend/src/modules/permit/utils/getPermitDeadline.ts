@@ -1,5 +1,5 @@
-import { DEFAULT_PERMIT_DEADLINE } from '../const'
+import { DEFAULT_PERMIT_DURATION } from '../const'
 
 export function getPermitDeadline() {
-  return Math.ceil(Date.now() / 1000) + DEFAULT_PERMIT_DEADLINE
+  return Math.ceil(Date.now() / 1000) + DEFAULT_PERMIT_DURATION
 }
