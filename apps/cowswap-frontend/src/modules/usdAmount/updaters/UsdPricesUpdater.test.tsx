@@ -40,6 +40,7 @@ function getWrapper() {
     store,
     TestComponent: function ({ children }: { children: ReactNode }) {
       return (
+        // https://swr.vercel.app/docs/advanced/cache#reset-cache-between-test-cases
         <SWRConfig value={{ provider: () => new Map() }}>
           <JotaiTestProvider store={store} initialValues={initialValues}>
             {children}
