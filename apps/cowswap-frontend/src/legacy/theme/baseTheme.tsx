@@ -406,7 +406,7 @@ export const UniThemedGlobalStyle = css`
     --cow-modal-backdrop: var(--cow-color-text1-opacity-25);
     --cow-border-radius-normal: 24px;
     --cow-padding-normal: 24px;
-    --cow-box-shadow-normal: box-shadow: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
+    --cow-box-shadow-normal: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
     
     // Icons
     --cow-icon-size-normal: 24px;
