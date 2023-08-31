@@ -3,9 +3,9 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { BoxProps } from 'rebass'
 
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { RowFee } from 'modules/swap/containers/Row/RowFee'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'

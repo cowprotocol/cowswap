@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'modules/fiatAmount'
 
 import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 

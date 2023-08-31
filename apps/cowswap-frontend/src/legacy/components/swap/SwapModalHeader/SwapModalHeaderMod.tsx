@@ -14,13 +14,13 @@ import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
 import { AuxInformationContainer, TruncatedText } from 'legacy/components/swap/styleds'
 import { WarningProps } from 'legacy/components/SwapWarnings'
 import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { Field } from 'legacy/state/swap/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { ThemedText } from 'legacy/theme'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
@@ -169,10 +169,7 @@ export default function SwapModalHeader({
               <Trans>To</Trans>
             </ThemedText.Body>
             <ThemedText.Body fontSize={14} color={theme.text3}>
-              <FiatValue
-                fiatValue={fiatValueOutput}
-                priceImpactParams={{ priceImpact, error: undefined, loading: false }}
-              />
+              <FiatValue fiatValue={fiatValueOutput} priceImpactParams={{ priceImpact, loading: false }} />
             </ThemedText.Body>
           </RowBetween>
           <RowBetween align="flex-end">

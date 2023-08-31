@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react'
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
@@ -18,6 +17,7 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -120,7 +120,7 @@ export function SwapWidget() {
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
-  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
+  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
 
   const openNativeWrapModal = () => setOpenNativeWrapModal(true)
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
@@ -186,7 +186,7 @@ export function SwapWidget() {
     feeWarningAccepted,
     impactWarningAccepted,
     // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-    hideUnknownImpactWarning: !trade || !priceImpactParams.error || priceImpactParams.loading,
+    hideUnknownImpactWarning: !trade || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,

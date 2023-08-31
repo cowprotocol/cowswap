@@ -1,7 +1,6 @@
 import { Atom, useAtomValue } from 'jotai'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'

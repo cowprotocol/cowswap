@@ -1,4 +1,4 @@
-import type { PriceImpactParams } from 'legacy/hooks/usePriceImpact'
+import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -10,29 +10,15 @@ const emptyState = {
   outputCurrencyAmount: null,
 }
 
-export function useTradePriceImpactParams(): PriceImpactParams {
+export function useTradeParsedAmounts(): ParsedAmounts {
   const { state } = useDerivedTradeState()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { inputCurrencyAmount, outputCurrencyAmount } = state || emptyState
 
   return useSafeMemo(() => {
-    const abTrade = {
-      inputAmount: inputCurrencyAmount,
-      outputAmount: outputCurrencyAmount,
-      // TODO: before integrating in Swap - specify correct values
-      inputAmountWithoutFee: inputCurrencyAmount || undefined,
-      outputAmountWithoutFee: outputCurrencyAmount || undefined,
-    }
-
-    const parsedAmounts = {
+    return {
       INPUT: inputCurrencyAmount || undefined,
       OUTPUT: outputCurrencyAmount || undefined,
-    }
-
-    return {
-      abTrade,
-      parsedAmounts,
-      isWrapping: isWrapOrUnwrap,
     }
   }, [inputCurrencyAmount, outputCurrencyAmount, isWrapOrUnwrap])
 }

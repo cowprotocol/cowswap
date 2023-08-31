@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'modules/fiatAmount'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { FiatAmount } from 'common/pure/FiatAmount'

@@ -225,7 +225,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           </styledEl.FooterBox>
         )}
 
-        <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
+        <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
           <TradeButtons tradeContext={tradeContext} priceImpact={priceImpact} />

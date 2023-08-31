@@ -1,11 +1,12 @@
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
+
+import { useHigherUSDValue } from 'modules/fiatAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { ParsedAmounts } from './types'
 
-export default function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts) {
+export function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts) {
   const areBothValuesPresent = !!INPUT && !!OUTPUT
   // prevent querying any fiat estimation unless both values are filled in
   const input = areBothValuesPresent ? INPUT : undefined
@@ -17,7 +18,7 @@ export default function useFiatValuePriceImpact({ INPUT, OUTPUT }: ParsedAmounts
   // Only compute price impact after BOTH finished loading
   // This prevents the impact look like it's ready but still loading
   const priceImpact =
-    !inputIsLoading && !outputIsLoading && computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
+    !inputIsLoading && !outputIsLoading ? computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput) : undefined
 
   const isLoading = areBothValuesPresent && (inputIsLoading || outputIsLoading)
 

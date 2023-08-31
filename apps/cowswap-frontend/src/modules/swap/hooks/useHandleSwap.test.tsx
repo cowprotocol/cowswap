@@ -42,7 +42,6 @@ const mockUseSafeBundleEthFlowContext = useSafeBundleEthFlowContext as jest.Mock
 
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
-  error: undefined,
   loading: false,
 }
 describe('useHandleSwapCallback', () => {
