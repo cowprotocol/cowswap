@@ -1,20 +1,20 @@
-import { Currency } from '@uniswap/sdk-core';
+import { Currency } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro';
+import styled from 'styled-components/macro'
 
-import { CurrencyLogo } from 'common/pure/CurrencyLogo';
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
-type IconSpinnerProps = {
-  currency?: Currency | null;
-  image?: string;
-  size?: number;
-  children?: React.ReactNode;
-  bgColor?: string;
-  spinnerWidth?: number;
-};
+interface IconSpinnerProps {
+  currency?: Currency | null
+  image?: string
+  size?: number
+  children?: React.ReactNode
+  bgColor?: string
+  spinnerWidth?: number
+}
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string; }>`
-  --bgColor: ${({ bgColor }) => `var(${bgColor})` || 'var(--cow-container-bg-01)'};
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: string }>`
+  --bgColor: ${({ bgColor }) => `var(${bgColor})`};
   display: flex;
   position: relative;
   align-items: center;
@@ -62,24 +62,28 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: strin
       transform: rotate(360deg);
     }
   }
-`;
+`
 
-export function IconSpinner({ currency, image, size = 24, children, bgColor, spinnerWidth = 2 }: IconSpinnerProps) {
+export function IconSpinner({
+  currency,
+  image,
+  size = 24,
+  children,
+  bgColor = '--cow-container-bg-01',
+  spinnerWidth = 2
+}: IconSpinnerProps) {
 
-  let content;
-  if (currency) {
-    content = <CurrencyLogo currency={currency} size="100%" />;
-  } else if (image) {
-    content = <img src={image} alt="Spinning icon" width={size} height={size} />;
-  } else if (children) {
-    content = <span>{children}</span>;
-  } else {
-    content = <span />;
-  }
+  const content = currency ? (
+    <CurrencyLogo currency={currency} size="100%" />
+  ) : image ? (
+    <img src={image} alt="Spinning icon" width={size} height={size} />
+  ) : (
+    children || <span />
+  );
 
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
       {content}
     </Wrapper>
-  );
+  )
 }
