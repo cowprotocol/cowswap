@@ -34,7 +34,7 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
-import { ApprovalState } from '../../../legacy/hooks/useApproveCallback/useApproveCallbackMod'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { IS_TESTING_ENV } from '../const'
 import {
   InvestAvailableBar,
