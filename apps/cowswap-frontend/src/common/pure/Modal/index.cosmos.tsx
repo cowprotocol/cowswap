@@ -1,5 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 
+import ICON_ARROW from 'assets/icon/arrow.svg'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { IconSpinner } from 'common/pure/IconSpinner'
@@ -20,6 +22,17 @@ const IMAGE_ACCOUNT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABOCAY
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
+`
+
+const ArrowRight = styled(SVG)`
+  --size: 12px;
+  width: var(--size);
+  height: var(--size);
+  margin: auto;
+
+  > path {
+    fill: var(--cow-color-text2);
+  }
 `
 
 const ModalFixtures = {
@@ -73,7 +86,7 @@ const ModalFixtures = {
           <IconSpinner image={IMAGE_ACCOUNT} size={84} />
           <span>
             <h3>Confirm Swap</h3>
-            <p>10 AAVE → 564.7202 DAI</p>
+            <p>10 AAVE <ArrowRight src={ICON_ARROW} /> 564.7202 DAI</p>
           </span>
         </NewModalContentTop>
 
