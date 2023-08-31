@@ -11,6 +11,7 @@ interface StepProps {
   stepNumber: number
   label: string
   dotSize?: number
+  dotBorderColor?: string
 }
 
 const stateStyles = {
@@ -43,6 +44,7 @@ const Step = styled.div<StepProps>`
     max-width: var(--dotSize);
     max-height: var(--dotSize);
     border-radius: var(--dotSize);
+    border: 1px solid ${({ dotBorderColor = '--cow-container-bg-01' }) => `var(${dotBorderColor})`};
     background: ${({ stepState }) => `var(${stateStyles[stepState].dotBackground})`};
     color: ${({ stepState }) => `var(${stateStyles[stepState].dotColor})`};
     flex: 0 0 auto;
@@ -109,7 +111,7 @@ export function Stepper({ steps, maxWidth, dotSize = 21 }: StepperProps) {
       {steps.map((step, index) => (
         <Step key={index} {...step}>
           {step.stepState === 'loading' ? (
-            <IconSpinner size={dotSize} bgColor={stateStyles['loading'].dotBackground}>
+            <IconSpinner spinnerWidth={1} size={dotSize} bgColor={stateStyles['loading'].dotBackground}>
               <i>{step.stepNumber}</i>
             </IconSpinner>
           ) : <i>

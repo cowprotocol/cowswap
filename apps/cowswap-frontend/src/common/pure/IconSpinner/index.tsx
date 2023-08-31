@@ -10,6 +10,7 @@ type IconSpinnerProps = {
   size?: number;
   children?: React.ReactNode;
   bgColor?: string;
+  spinnerWidth?: number;
 };
 
 const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string; }>`
@@ -63,8 +64,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: strin
   }
 `;
 
-export function IconSpinner({ currency, image, size = 24, children, bgColor }: IconSpinnerProps) {
-  const spinnerWidth = 2;
+export function IconSpinner({ currency, image, size = 24, children, bgColor, spinnerWidth = 2 }: IconSpinnerProps) {
 
   let content;
   if (currency) {
