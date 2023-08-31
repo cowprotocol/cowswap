@@ -1,5 +1,5 @@
 export { getAppData } from './utils/fullAppData'
-export { AppDataUpdater } from './updater/AppDataInfoUpdater'
+export * from './updater/AppDataInfoUpdater'
 export { useAppData, useUploadAppData } from './hooks'
 export { addHooksToAppData, buildAppData } from './utils/buildAppData'
 export { buildAppDataHooks } from './utils/buildAppDataHooks'

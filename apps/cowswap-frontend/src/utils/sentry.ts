@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
 
 import { environmentName } from 'legacy/utils/environments'
 
@@ -14,7 +13,7 @@ const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RAT
 if (SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
-    integrations: [new Integrations.BrowserTracing()],
+    integrations: [new Sentry.BrowserTracing()],
     release: 'CowSwap@v' + pkg.version,
     environment: environmentName,
     ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS],

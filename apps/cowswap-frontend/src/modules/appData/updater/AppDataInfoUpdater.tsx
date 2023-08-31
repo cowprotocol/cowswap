@@ -13,7 +13,7 @@ import { UseAppDataParams, useAppDataUpdater } from './useAppDataUpdater'
 import { useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
 
-export interface AppDataUpdaterProps {
+interface AppDataUpdaterProps {
   slippage: Percent
   orderClass: AppDataOrderClass
 }

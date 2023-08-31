@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { QuoteError } from 'legacy/state/price/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
