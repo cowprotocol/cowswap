@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
@@ -15,20 +15,20 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { TokenAmounts } from 'modules/tokens'
 
 import {
-  Label,
-  Wrapper,
-  PageButtons,
   Arrow,
   ArrowButton,
   ClickableText,
-  Table,
-  PaginationText,
   IndexLabel,
-  Row,
-  TableHeader,
+  Label,
   NoResults,
+  PageButtons,
+  PaginationText,
+  Row,
+  Table,
+  TableHeader,
+  Wrapper,
 } from './styled'
-import TokensTableRow from './TokensTableRow'
+import { TokensTableRow } from './TokensTableRow'
 
 const MAX_ITEMS = 20
 

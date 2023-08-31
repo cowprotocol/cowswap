@@ -10,7 +10,6 @@ import EtherscanImage from 'legacy/assets/cow-swap/etherscan-icon.svg'
 import Loader from 'legacy/components/Loader'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { ApprovalState, useApproveCallback } from 'legacy/hooks/useApproveCallback'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import usePrevious from 'legacy/hooks/usePrevious'
 import useTheme from 'legacy/hooks/useTheme'
@@ -40,6 +39,8 @@ import {
   TokenText,
 } from './styled'
 
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback/useApproveCallbackMod'
+
 type DataRowParams = {
   tokenData: Token
   index: number
@@ -49,7 +50,7 @@ type DataRowParams = {
   toggleWalletModal: () => void
 }
 
-const DataRow = ({
+export const TokensTableRow = ({
   tokenData,
   index,
   balance,
@@ -209,5 +210,3 @@ const DataRow = ({
     </>
   )
 }
-
-export default DataRow

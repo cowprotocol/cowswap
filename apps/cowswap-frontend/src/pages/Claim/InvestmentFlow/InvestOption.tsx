@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -17,7 +17,7 @@ import Row from 'legacy/components/Row'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import { ApprovalState, useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
+import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
@@ -34,13 +34,14 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { IS_TESTING_ENV } from '../const'
 import {
+  InvestAvailableBar,
+  InvestInput,
+  InvestSummary,
   InvestTokenGroup,
   TokenLogo,
-  InvestSummary,
-  InvestInput,
-  InvestAvailableBar,
   UnderlineButton,
   UserMessage,
   WarningWrapper,
