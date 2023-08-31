@@ -17,7 +17,6 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { useHigherUSDValue } from 'modules/fiatAmount'
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -40,12 +39,14 @@ import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 
@@ -89,6 +90,11 @@ export function SwapWidget() {
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
   const isSellTrade = independentField === Field.INPUT
 
+  const {
+    inputAmount: { value: inputUsdValue },
+    outputAmount: { value: outputUsdValue },
+  } = useTradeUsdAmounts(trade?.inputAmountWithoutFee, trade?.outputAmountWithoutFee)
+
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
   const inputCurrencyInfo: CurrencyInfo = {
@@ -97,7 +103,7 @@ export function SwapWidget() {
     amount: parsedAmounts.INPUT || null,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee).value,
+    fiatAmount: inputUsdValue,
     receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
@@ -107,7 +113,7 @@ export function SwapWidget() {
     amount: parsedAmounts.OUTPUT || null,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
-    fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee).value,
+    fiatAmount: outputUsdValue,
     receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 
@@ -179,14 +185,21 @@ export function SwapWidget() {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
+  // Hide the price impact warning when there is priceImpact value or when it's loading
+  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
+  const hideUnknownImpactWarning =
+    isFractionFalsy(parsedAmounts.INPUT) ||
+    isFractionFalsy(parsedAmounts.OUTPUT) ||
+    !!priceImpactParams.priceImpact ||
+    priceImpactParams.loading
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
     account,
     feeWarningAccepted,
     impactWarningAccepted,
-    // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-    hideUnknownImpactWarning: !trade || priceImpactParams.loading,
+    hideUnknownImpactWarning,
     isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,

@@ -11,12 +11,12 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
 import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { TradeAmounts } from 'common/types'
 import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 
 import { TradeConfirmActions } from '../../trade'
-import { TradeAmounts } from '../../trade/types/TradeAmounts'
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 

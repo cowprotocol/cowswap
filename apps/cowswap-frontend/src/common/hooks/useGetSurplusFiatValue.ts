@@ -7,7 +7,7 @@ import { Nullish } from 'types'
 import { MIN_FIAT_SURPLUS_VALUE, MIN_FIAT_SURPLUS_VALUE_MODAL, MIN_SURPLUS_UNITS } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
 
-import { useCoingeckoUsdValue } from 'modules/fiatAmount'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -34,7 +34,7 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(order)])
 
-  const surplusFiatValue = useCoingeckoUsdValue(surplusAmount).value
+  const surplusFiatValue = useUsdAmount(surplusAmount).value
   const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
 
   const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)

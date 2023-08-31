@@ -27,7 +27,7 @@ import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import FiatBalanceCell from './FiatBalanceCell'
+import { FiatBalanceCell } from './FiatBalanceCell'
 import {
   ApproveLabel,
   BalanceValue,
