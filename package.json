@@ -240,6 +240,7 @@
     "prettier": "^2.6.2",
     "react-cosmos": "^6.0.0-beta.6",
     "react-cosmos-plugin-vite": "^6.0.0-beta.6",
+    "rollup-plugin-visualizer": "^5.9.2",
     "ts-jest": "^29.1.1",
     "ts-mockito": "^2.6.1",
     "ts-node": "^10.9.1",
