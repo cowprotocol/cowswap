@@ -1,6 +1,5 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -65,12 +64,6 @@ export default defineConfig(({ mode }) => {
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
-    }),
-    sentryVitePlugin({
-      authToken: process.env.REACT_APP_SENTRY_AUTH_TOKEN,
-      org: 'cowprotocol',
-      project: 'cowswap',
-      telemetry: false,
     }),
   ]
 
