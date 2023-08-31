@@ -4,7 +4,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { PluginOption, defineConfig, loadEnv, searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite'
+import { defineConfig, loadEnv, PluginOption, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -45,7 +45,6 @@ export default defineConfig(({ mode }) => {
       },
       protocolImports: true,
     }),
-    splitVendorChunkPlugin(),
     react({
       plugins: [['@lingui/swc-plugin', {}]],
     }),
@@ -138,11 +137,19 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            const isPolyfill = id.includes('src/polyfills')
-
-            if (id.includes('node_modules') || isPolyfill) {
-              return 'vendor'
-            }
+            if (id.includes('@1inch')) return '@1inch'
+            if (id.includes('@amplitude')) return '@amplitude'
+            if (id.includes('@cowprotocol')) return '@cowprotocol'
+            if (id.includes('@ethersproject')) return '@ethersproject'
+            if (id.includes('@metamask')) return '@metamask'
+            if (id.includes('@safe-global')) return '@safe-global'
+            if (id.includes('@sentry')) return '@sentry'
+            if (id.includes('@uniswap')) return '@uniswap'
+            if (id.includes('@walletconnect')) return '@walletconnect'
+            if (id.includes('crypto-es/lib')) return 'crypto-es'
+            if (id.includes('elliptic')) return 'elliptic'
+            if (id.includes('viem')) return 'viem'
+            if (id.includes('web3/dist')) return 'web3'
           },
         },
       },
