@@ -8,8 +8,9 @@ import { Connector } from '@web3-react/types'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
+import { LocationDescriptorObject } from 'history'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import Web3Provider from 'legacy/components/Web3Provider'
@@ -62,15 +63,15 @@ export const [mockedConnector, mockedConnectorHooks] = initializeConnector<Mocke
   (actions) => new MockedConnector(actions)
 )
 
-export function WithMockedWeb3({ children }: { children?: ReactNode }) {
+export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: LocationDescriptorObject }) {
   const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]
 
   return (
-    <HashRouter>
+    <MemoryRouter initialEntries={location ? [location] : undefined}>
       <Provider store={store}>
         <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
       </Provider>
-    </HashRouter>
+    </MemoryRouter>
   )
 }
 
