@@ -135,12 +135,11 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@cowprotocol')) return '@cowprotocol'
             if (id.includes('@ethersproject')) return '@ethersproject'
             if (id.includes('@metamask') || id.includes('elliptic')) return '@metamask'
-            if (id.includes('@safe-global')) return '@safe-global'
+            if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('@walletconnect')) return '@walletconnect'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
-            if (id.includes('viem')) return 'viem'
             if (id.includes('web3/dist')) return 'web3'
           },
         },
