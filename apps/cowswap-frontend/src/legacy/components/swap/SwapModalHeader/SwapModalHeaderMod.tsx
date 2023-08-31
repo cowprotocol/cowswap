@@ -20,10 +20,10 @@ import { ThemedText } from 'legacy/theme'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
@@ -101,14 +101,10 @@ export default function SwapModalHeader({
 
   const theme = useContext(ThemeContext)
 
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: trade.inputAmountWithoutFee, outputAmount: trade.outputAmountWithoutFee }),
-    [trade]
-  )
   const {
     inputAmount: { value: fiatValueInput },
     outputAmount: { value: fiatValueOutput },
-  } = useTradeFiatAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(trade.inputAmountWithoutFee, trade.outputAmountWithoutFee)
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],

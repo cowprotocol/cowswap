@@ -3,6 +3,8 @@ import { Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
+import { fetchWithRateLimit } from 'common/utils/fetch'
+
 export interface CoinGeckoUsdQuote {
   [address: string]: {
     usd: number
@@ -23,6 +25,19 @@ const VS_CURRENCY = 'usd'
  */
 const FAILED_FETCH_ERROR = 'Failed to fetch'
 
+const fetchRateLimitted = fetchWithRateLimit({
+  // Allow 2 requests per second
+  rateLimit: {
+    tokensPerInterval: 2,
+    interval: 'second',
+  },
+  // 2 retry attempts with 100ms delay
+  backoff: {
+    maxDelay: ms`0.1s`,
+    numOfAttempts: 2,
+  },
+})
+
 export const COINGECKO_RATE_LIMIT_TIMEOUT = ms`1m`
 
 export class CoingeckoRateLimitError extends Error {
@@ -31,7 +46,7 @@ export class CoingeckoRateLimitError extends Error {
   }
 }
 
-export async function getCoingeckoPrice(currency: Token): Promise<number | null> {
+export async function getCoingeckoUsdPrice(currency: Token): Promise<number | null> {
   const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
   if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
@@ -43,7 +58,7 @@ export async function getCoingeckoPrice(currency: Token): Promise<number | null>
 
   const url = `${BASE_URL}/${platform}?${new URLSearchParams(params)}`
 
-  return fetch(url)
+  return fetchRateLimitted(url)
     .then((res) => {
       return res.json()
     })

@@ -1,8 +1,7 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { delay } from 'legacy/utils/misc'
 

@@ -59,11 +59,11 @@ export class FractionUtils {
     return new Fraction(JSBI.add(quotient, JSBI.BigInt(remainder.toFixed(0, undefined, rounding))), 1)
   }
 
-  static gte(fraction: Fraction, value: BigintIsh): boolean {
+  static gte(fraction: Fraction, value: Fraction | BigintIsh): boolean {
     return fraction.equalTo(value) || fraction.greaterThan(value)
   }
 
-  static lte(fraction: Fraction, value: BigintIsh): boolean {
+  static lte(fraction: Fraction, value: Fraction | BigintIsh): boolean {
     return fraction.equalTo(value) || fraction.lessThan(value)
   }
 

@@ -12,15 +12,15 @@ import { USDC } from 'legacy/constants/tokens'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
-import { fetchCurrencyFiatPrice } from '../services/fetchCurrencyFiatPrice'
+import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
-  currenciesFiatPriceQueueAtom,
-  FiatPrices,
-  fiatPricesAtom,
-  FiatPriceState,
-  resetFiatPricesAtom,
-  setFiatPricesLoadingAtom,
-} from '../state/fiatPricesAtom'
+  currenciesUsdPriceQueueAtom,
+  UsdRawPrices,
+  usdRawPricesAtom,
+  UsdRawPriceState,
+  resetUsdPricesAtom,
+  setUsdPricesLoadingAtom,
+} from '../state/usdRawPricesAtom'
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: ms`30s`,
@@ -29,24 +29,24 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
-export function FiatPricesUpdater() {
+export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
-  const setFiatPrices = useSetAtom(fiatPricesAtom)
-  const setFiatPricesLoading = useSetAtom(setFiatPricesLoadingAtom)
-  const resetFiatPrices = useSetAtom(resetFiatPricesAtom)
-  const currenciesFiatPriceQueue = useAtomValue(currenciesFiatPriceQueueAtom)
+  const setUsdPrices = useSetAtom(usdRawPricesAtom)
+  const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
+  const resetUsdPrices = useSetAtom(resetUsdPricesAtom)
+  const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
 
-  const queue = useMemo(() => Object.values(currenciesFiatPriceQueue), [currenciesFiatPriceQueue])
+  const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
-  const swrResponse = useSWR<FiatPrices | null>(
-    ['FiatPricesUpdater', queue, chainId],
+  const swrResponse = useSWR<UsdRawPrices | null>(
+    ['UsdPricesUpdater', queue, chainId],
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 
-      setFiatPricesLoading(queue)
+      setUsdPricesLoading(queue)
 
       return processQueue(queue, getUsdcPrice).catch((error) => {
-        resetFiatPrices(queue)
+        resetUsdPrices(queue)
 
         return Promise.reject(error)
       })
@@ -58,7 +58,7 @@ export function FiatPricesUpdater() {
     const { data, isLoading, error } = swrResponse
 
     if (error) {
-      console.error('Error loading fiat prices', error)
+      console.error('Error loading USD prices', error)
       return
     }
 
@@ -66,8 +66,8 @@ export function FiatPricesUpdater() {
       return
     }
 
-    setFiatPrices(data)
-  }, [swrResponse, setFiatPrices])
+    setUsdPrices(data)
+  }, [swrResponse, setUsdPrices])
 
   return null
 }
@@ -85,15 +85,15 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null
   }
 }
 
-async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<FiatPrices> {
+async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<UsdRawPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
-      return fetchCurrencyFiatPrice(currency, getUsdcPrice).then((price) => {
+      return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {
         if (typeof price !== 'number') {
           return null
         }
 
-        const state: FiatPriceState = {
+        const state: UsdRawPriceState = {
           updatedAt: Date.now(),
           price,
           currency,
@@ -105,5 +105,5 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number |
     })
   )
 
-  return results.reduce<FiatPrices>((acc, result) => ({ ...acc, ...result }), {})
+  return results.reduce<UsdRawPrices>((acc, result) => ({ ...acc, ...result }), {})
 }

@@ -5,7 +5,7 @@ import { USDC } from 'legacy/constants/tokens'
 
 import { getCowProtocolNativePrice } from './getCowProtocolNativePrice'
 
-export async function getCowProtocolFiatPrice(
+export async function getCowProtocolUsdPrice(
   currency: Token,
   getUsdcPrice: () => Promise<number | null>
 ): Promise<number | null> {
@@ -16,6 +16,8 @@ export async function getCowProtocolFiatPrice(
   if (usdNativePrice && tokenNativePrice) {
     const usdPrice = invertNativeToTokenPrice(usdNativePrice, usdcToken.decimals)
     const tokenPrice = invertNativeToTokenPrice(tokenNativePrice, currency.decimals)
+
+    if (tokenPrice === 0) return null
 
     return usdPrice / tokenPrice
   }

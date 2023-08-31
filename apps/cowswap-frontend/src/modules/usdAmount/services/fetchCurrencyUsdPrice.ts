@@ -7,9 +7,9 @@ import {
   COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
-  getCoingeckoPrice,
-} from '../apis/getCoingeckoPrice'
-import { getCowProtocolFiatPrice } from '../apis/getCowProtocolFiatPrice'
+  getCoingeckoUsdPrice,
+} from '../apis/getCoingeckoUsdPrice'
+import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 
@@ -22,11 +22,11 @@ function getShouldSkipCoingecko(currency: Token): boolean {
 }
 
 /**
- * Fetches fiat price for a given currency from coingecko or CowProtocol
- * CowProtocol is used as a fallback
- * When coingecko rate limit is hit, CowProtocol will be used for 1 minute
+ * Fetches USD price for a given currency from coingecko or CowProtocol
+ * CoW Protocol Orderbook API is used as a fallback
+ * When Coingecko rate limit is hit, CowProtocol will be used for 1 minute
  */
-export function fetchCurrencyFiatPrice(
+export function fetchCurrencyUsdPrice(
   currency: Token,
   getUsdcPrice: () => Promise<number | null>
 ): Promise<number | null> {
@@ -37,8 +37,8 @@ export function fetchCurrencyFiatPrice(
   }
 
   const request = shouldSkipCoingecko
-    ? getCowProtocolFiatPrice(currency, getUsdcPrice)
-    : getCoingeckoPrice(currency).catch((error) => {
+    ? getCowProtocolUsdPrice(currency, getUsdcPrice)
+    : getCoingeckoUsdPrice(currency).catch((error) => {
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
@@ -46,12 +46,12 @@ export function fetchCurrencyFiatPrice(
           console.error('Cannot fetch coingecko price', error)
         }
 
-        return getCowProtocolFiatPrice(currency, getUsdcPrice)
+        return getCowProtocolUsdPrice(currency, getUsdcPrice)
       })
 
   return request
     .catch((error) => {
-      console.error('Cannot fetch fiat price', { error })
+      console.error('Cannot fetch USD price', { error })
       return Promise.reject(error)
     })
     .then((result) => {

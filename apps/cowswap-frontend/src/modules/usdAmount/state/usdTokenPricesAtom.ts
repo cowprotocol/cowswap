@@ -7,23 +7,23 @@ import { USDC } from 'legacy/constants/tokens'
 
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
-import { fiatPricesAtom, FiatPriceState } from './fiatPricesAtom'
+import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 
-export interface UsdcPriceState extends Omit<FiatPriceState, 'price'> {
+export interface UsdPriceState extends Omit<UsdRawPriceState, 'price'> {
   price: Price<Token, Token> | null
 }
 
-export type UsdcPrices = { [tokenAddress: string]: UsdcPriceState }
+export type UsdPrices = { [tokenAddress: string]: UsdPriceState }
 
-export const usdcPricesAtom = atom((get) => {
-  const fiatPrices = get(fiatPricesAtom)
+export const usdTokenPricesAtom = atom((get) => {
+  const usdPrices = get(usdRawPricesAtom)
 
-  return Object.keys(fiatPrices).reduce<UsdcPrices>((acc, tokenAddress) => {
-    const fiatPrice = fiatPrices[tokenAddress]
+  return Object.keys(usdPrices).reduce<UsdPrices>((acc, tokenAddress) => {
+    const usdPrice = usdPrices[tokenAddress]
 
     acc[tokenAddress] = {
-      ...fiatPrice,
-      price: fiatPrice.price === null ? null : calculatePrice(fiatPrice.currency, fiatPrice.price),
+      ...usdPrice,
+      price: usdPrice.price === null ? null : calculatePrice(usdPrice.currency, usdPrice.price),
     }
 
     return acc

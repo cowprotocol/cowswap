@@ -17,7 +17,6 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -40,10 +39,10 @@ import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -91,14 +90,10 @@ export function SwapWidget() {
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
   const isSellTrade = independentField === Field.INPUT
 
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: trade?.inputAmountWithoutFee, outputAmount: trade?.outputAmountWithoutFee }),
-    [trade]
-  )
   const {
     inputAmount: { value: inputUsdValue },
     outputAmount: { value: outputUsdValue },
-  } = useTradeFiatAmounts(tradeAmounts)
+  } = useTradeUsdAmounts(trade?.inputAmountWithoutFee, trade?.outputAmountWithoutFee)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer

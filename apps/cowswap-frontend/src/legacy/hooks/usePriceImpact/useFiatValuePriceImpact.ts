@@ -6,8 +6,8 @@ import ms from 'ms.macro'
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import useDebounce from 'legacy/hooks/useDebounce'
 
-import { useTradeFiatAmounts } from 'modules/fiatAmount'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -18,22 +18,21 @@ export function useFiatValuePriceImpact() {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
   const isTradeSetUp = !!inputCurrency && !!outputCurrency
-  const tradeAmounts = useSafeMemo(
-    () => ({ inputAmount: inputCurrencyAmount || undefined, outputAmount: outputCurrencyAmount || undefined }),
-    [inputCurrencyAmount, outputCurrencyAmount]
-  )
+
   const {
     inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
-  } = useTradeFiatAmounts(tradeAmounts)
-
-  const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
   // Consider the price impact loading if either the input or output amount is falsy
   // Debounce the loading state to prevent the price impact from flashing
   const isLoading = useDebounce(isTradeSetUp ? inputIsLoading || outputIsLoading : false, FIAT_VALUE_LOADING_THRESHOLD)
 
-  return useSafeMemo(() => ({ priceImpact, isLoading }), [priceImpact, isLoading])
+  return useSafeMemo(() => {
+    const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
+
+    return { priceImpact, isLoading }
+  }, [fiatValueInput, fiatValueOutput, isLoading])
 }
 
 function computeFiatValuePriceImpact(
