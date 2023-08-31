@@ -34,6 +34,16 @@ yarn
 yarn start
 ```
 
+### build
+
+```bash
+yarn build
+
+# Analyze CoW Swap bundle
+#   Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
+ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
+```
+
 ### Unit testing
 
 ```bash
@@ -115,12 +125,12 @@ CoW Swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
-| Name             | Environment variable                     | Type                         | Description                                                                                                        |
-| ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation.                              |
-| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
-| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`     | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.                               |
-| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
+| Name             | Environment variable                    | Type                         | Description                                                                           |
+| ---------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
+| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`       | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation. |
+| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.    |
+| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`    | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.  |
+| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`       | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                |
 
 ### Metadata attached to orders (AppData)
 
