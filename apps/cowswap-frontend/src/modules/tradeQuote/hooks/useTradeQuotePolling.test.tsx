@@ -8,18 +8,16 @@ import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { COW } from 'legacy/constants/tokens'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
-import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders'
+import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
-import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
+import { DEFAULT_TRADE_DERIVED_STATE } from 'modules/trade'
 import { WalletInfo } from 'modules/wallet'
-import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { getQuote } from 'api/gnosisProtocol/api'
-import { Routes } from 'common/constants/routes'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
+import { walletInfoAtom } from '../../wallet/api/state'
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
 jest.mock('common/hooks/useShouldZeroApprove/useShouldZeroApprove')
@@ -30,18 +28,12 @@ jest.mock('api/gnosisProtocol/api', () => ({
   getQuote: jest.fn(),
 }))
 
-jest.mock('modules/trade/hooks/useTradeTypeInfo', () => ({
-  ...jest.requireActual('modules/trade/hooks/useTradeTypeInfo'),
-  useTradeTypeInfo: jest.fn(),
-}))
-
 jest.mock('modules/tokens', () => ({
   ...jest.requireActual('modules/tokens'),
   useEnoughBalanceAndAllowance: jest.fn(),
 }))
 
 const getQuoteMock = jest.mocked(getQuote)
-const useTradeTypeInfoMock = jest.mocked(useTradeTypeInfo)
 const useEnoughBalanceAndAllowanceMock = jest.mocked(useEnoughBalanceAndAllowance)
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_GOERLI, 10_000_000)
@@ -70,7 +62,7 @@ const Wrapper =
   (mocks: any) =>
   ({ children }: { children: ReactNode }) =>
     (
-      <WithMockedWeb3>
+      <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
         <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
       </WithMockedWeb3>
     )
@@ -80,10 +72,6 @@ describe('useTradeQuotePolling()', () => {
     jest.clearAllMocks()
 
     getQuoteMock.mockReturnValue(new Promise(() => void 0))
-    useTradeTypeInfoMock.mockReturnValue({
-      tradeType: TradeType.LIMIT_ORDER,
-      route: Routes.LIMIT_ORDER,
-    })
     useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
   })
 

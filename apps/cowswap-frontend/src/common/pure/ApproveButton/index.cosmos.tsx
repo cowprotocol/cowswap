@@ -4,7 +4,7 @@ import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'
 
 import { COW, GNO } from 'legacy/constants/tokens'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 import { ApproveButton } from '.'
 

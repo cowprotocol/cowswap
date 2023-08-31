@@ -20,6 +20,7 @@ import { ThemedText } from 'legacy/theme'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
+import { useHigherUSDValue } from 'modules/fiatAmount'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
