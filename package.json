@@ -19,7 +19,8 @@
     "prebuild": "nx run cowswap-frontend:i18n",
     "postbuild": "rm -rf build && mkdir build && mv dist/apps/cowswap-frontend/* build",
     "prepare": "husky install",
-    "postinstall": "yarn run patch-package"
+    "postinstall": "yarn run patch-package",
+    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
   "browser": {
     "crypto": false
