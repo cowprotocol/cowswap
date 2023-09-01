@@ -5,7 +5,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { addHooksToAppData, buildAppDataHooks } from 'modules/appData'
+import { buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
 import { generatePermitHook } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -38,7 +38,7 @@ export async function swapFlow(
 
     const hooks = buildAppDataHooks([permitData])
 
-    input.orderParams.appData = await addHooksToAppData(input.orderParams.appData, hooks)
+    input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, hooks)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')

@@ -58,11 +58,7 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export async function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): Promise<AppDataInfo> {
-  if (!hooks) {
-    return appData
-  }
-
+export async function updateHooksOnAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): Promise<AppDataInfo> {
   const { doc } = appData
 
   const newDoc = {
@@ -71,6 +67,10 @@ export async function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHook
       ...doc.metadata,
       hooks,
     },
+  }
+
+  if (!hooks) {
+    delete newDoc.metadata.hooks
   }
 
   const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(newDoc)
