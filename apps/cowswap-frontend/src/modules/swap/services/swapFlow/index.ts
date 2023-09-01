@@ -26,7 +26,9 @@ export async function swapFlow(
     return
   }
 
-  if (input.permitInfo) {
+  if (input.permitInfo && !input.hasEnoughAllowance) {
+    // If token is permittable and there's not enough allowance, get th permit hook
+
     // TODO: maybe we need a modal to inform the user what they need to sign?
     const permitData = await generatePermitHook({
       inputToken: input.context.trade.inputAmount.currency as Token,
@@ -39,6 +41,9 @@ export async function swapFlow(
     const hooks = buildAppDataHooks([permitData])
 
     input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, hooks)
+  } else {
+    // Otherwise, remove hooks (if any) from appData to avoid stale data
+    input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, undefined)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
