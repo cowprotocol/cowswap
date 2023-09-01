@@ -133,7 +133,7 @@ export default function FeesUpdater(): null {
     parsedAmount,
   } = useDerivedSwapInfo()
 
-  const enoughBalance = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
+  const { enoughBalance } = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient

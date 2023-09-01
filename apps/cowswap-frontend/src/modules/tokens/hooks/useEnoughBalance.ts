@@ -26,12 +26,17 @@ export interface UseEnoughBalanceParams {
   checkAllowanceAddress?: string
 }
 
+export type UseEnoughBalanceAndAllowanceResult = {
+  enoughBalance: boolean | undefined
+  enoughAllowance: boolean | undefined
+}
+
 /**
  * Check if the account has enough balance and optionally allowance
- * @param params Parameters to check balance and optionally the allowance
- * @returns true if the account has enough balance (and allowance if it applies)
+ * @param params UseEnoughBalanceParams to check balance and optionally the allowance
+ * @returns UseEnoughBalanceAndAllowanceResult
  */
-export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean | undefined {
+export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
   const { account, amount, checkAllowanceAddress } = params
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped
@@ -75,11 +80,11 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
  * @param params Parameters to check balance and optionally the allowance
  * @returns true if the account has enough balance (and allowance if it applies)
  */
-export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean | undefined {
+export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
   const { account, amount, balances, nativeBalance, allowances } = params
 
   if (!account || !amount) {
-    return undefined
+    return { enoughBalance: undefined, enoughAllowance: undefined }
   }
 
   const isNativeCurrency = amount?.currency.isNative
@@ -89,11 +94,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boole
   const enoughBalance = _enoughBalance(tokenAddress, amount, balances, isNativeCurrency, nativeBalance)
   const enoughAllowance = _enoughAllowance(tokenAddress, amount, allowances, isNativeCurrency)
 
-  if (enoughBalance === undefined || enoughAllowance === undefined) {
-    return undefined
-  }
-
-  return enoughBalance && enoughAllowance
+  return { enoughBalance, enoughAllowance }
 }
 
 function _enoughBalance(
