@@ -2,12 +2,8 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 
 import BigNumberJs from 'bignumber.js'
-import useSWR, { SWRConfiguration } from 'swr'
 import { FeeInformation, PriceInformation } from 'types'
 
-import { SWR_OPTIONS } from 'legacy/constants'
-import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { toErc20Address } from 'legacy/utils/tokens'
 
 import { getQuote } from 'api/gnosisProtocol'
@@ -102,55 +98,4 @@ export function calculateFallbackPriceImpact(initialValue: string, finalValue: s
   console.debug(`[calculateFallbackPriceImpact]::${impact.toSignificant(2)}%`)
 
   return impact
-}
-
-export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuoteParams, 'strategy' | 'quoteParams'>) {
-  if (strategy === 'COWSWAP') {
-    console.debug(
-      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
-    )
-    // we need to explicitly set the validTo time to 10m in future on every call
-    quoteParams.validTo = getUsdQuoteValidTo()
-    const { quote } = await getQuote(quoteParams)
-
-    return quote.sellAmount
-  } else {
-    console.debug(
-      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
-    )
-    // legacy
-    const legacyParams = {
-      ...quoteParams,
-      baseToken: quoteParams.buyToken,
-      quoteToken: quoteParams.sellToken,
-    }
-
-    const { getBestPrice } = await import('legacy/utils/priceLegacy')
-
-    const quote = await getBestPrice(legacyParams)
-
-    return quote.amount
-  }
-}
-
-export function useGetGpUsdcPrice(
-  props: {
-    strategy: GpPriceStrategy
-    quoteParams: LegacyFeeQuoteParams | null
-  },
-  options: SWRConfiguration = SWR_OPTIONS
-) {
-  const { strategy, quoteParams } = props
-
-  return useSWR<string | null>(
-    ['getGpUsdcPrice', strategy, quoteParams],
-    () => {
-      if (strategy && quoteParams) {
-        return getGpUsdcPrice({ strategy, quoteParams })
-      } else {
-        return null
-      }
-    },
-    options
-  )
 }

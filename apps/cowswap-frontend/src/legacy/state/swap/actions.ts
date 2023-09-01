@@ -9,6 +9,8 @@ export interface ReplaceOnlyTradeRawStatePayload {
   readonly chainId: number | null
   readonly inputCurrencyId?: string
   readonly outputCurrencyId?: string
+  readonly inputCurrencyAmount?: string
+  readonly outputCurrencyAmount?: string
   readonly recipient: string | null
   readonly recipientAddress: string | null
 }

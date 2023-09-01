@@ -4,7 +4,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
-import { ParsedQs } from 'qs'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'legacy/components/analytics'
 import { FEE_SIZE_THRESHOLD } from 'legacy/constants'
@@ -34,44 +33,11 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatSymbol } from 'utils/format'
 
 import { Field, setRecipient, switchCurrencies, typeInput } from './actions'
-import { SwapState } from './reducer'
-
-import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
   '0xf164fC0Ec4E93095b804a4795bBe1e041497b92a': true, // v2 router 01
   '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D': true, // v2 router 02
-}
-
-export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
-  if (typeof urlParam === 'string') {
-    const valid = isAddress(urlParam)
-    if (valid) return valid
-    const upper = urlParam.toUpperCase()
-    if (upper === 'ETH') return 'ETH'
-    if (upper in TOKEN_SHORTHANDS) return upper
-  }
-  return ''
-}
-
-export function parseTokenAmountURLParameter(urlParam: any): string {
-  return typeof urlParam === 'string' && !isNaN(parseFloat(urlParam)) ? urlParam : ''
-}
-
-export function parseIndependentFieldURLParameter(urlParam: any): Field {
-  return typeof urlParam === 'string' && urlParam.toLowerCase() === 'output' ? Field.OUTPUT : Field.INPUT
-}
-
-const ENS_NAME_REGEX = /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)?$/
-const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/
-export function validatedRecipient(recipient: any): string | null {
-  if (typeof recipient !== 'string') return null
-  const address = isAddress(recipient)
-  if (address) return address
-  if (ENS_NAME_REGEX.test(recipient)) return recipient
-  if (ADDRESS_REGEX.test(recipient)) return recipient
-  return null
 }
 
 export function useSwapState(): AppState['swap'] {
@@ -202,7 +168,7 @@ function _computeFeeWarningAcceptedState({
   }
 }
 
-export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
+export function useUnknownImpactWarning() {
   const isExpertMode = useIsExpertMode()
   const { INPUT, OUTPUT, independentField } = useSwapState()
 
@@ -215,7 +181,6 @@ export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
 
   return {
     impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
-      priceImpactParams,
       impactWarningAccepted,
       isExpertMode,
     }),
@@ -225,7 +190,6 @@ export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
 
 function _computeUnknownPriceImpactAcceptedState({
   impactWarningAccepted,
-  priceImpactParams,
   isExpertMode,
 }: {
   impactWarningAccepted: boolean
@@ -233,11 +197,6 @@ function _computeUnknownPriceImpactAcceptedState({
   isExpertMode: boolean
 }) {
   if (isExpertMode || impactWarningAccepted) return true
-  else {
-    if (priceImpactParams?.error) {
-      return impactWarningAccepted
-    }
-  }
 
   return true
 }
@@ -407,42 +366,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       slippageAdjustedSellAmount,
     ] // mod
   )
-}
-
-export function queryParametersToSwapState(
-  parsedQs: ParsedQs,
-  defaultInputCurrency = '',
-  chainId: number | null
-): SwapState {
-  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
-  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
-  const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
-
-  if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
-    // Defaults to having the wrapped native currency selected
-    inputCurrency = defaultInputCurrency // 'ETH' // mod
-  } else if (inputCurrency === outputCurrency) {
-    // clear output if identical
-    outputCurrency = ''
-  }
-
-  const recipient = validatedRecipient(parsedQs.recipient)
-  const recipientAddress = validatedRecipient(parsedQs.recipientAddress)
-
-  return {
-    chainId: chainId || null,
-    [Field.INPUT]: {
-      currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
-    },
-    [Field.OUTPUT]: {
-      currencyId: outputCurrency === '' ? null : outputCurrency ?? null,
-    },
-    typedValue,
-    independentField,
-    recipient,
-    recipientAddress,
-  }
 }
 
 export function useIsFeeGreaterThanInput({
