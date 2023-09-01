@@ -12,7 +12,7 @@ export interface UsdAmountInfo {
   isLoading: boolean
 }
 
-const DEFAULT_USD_AMOUNT_STATE = { value: null, isLoading: true }
+const DEFAULT_USD_AMOUNT_STATE = { value: null, isLoading: false }
 
 export function useUsdAmount(_amount: Nullish<CurrencyAmount<Currency>>): UsdAmountInfo {
   const amount = currencyAmountToTokenAmount(_amount)
