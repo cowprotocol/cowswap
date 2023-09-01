@@ -1,19 +1,19 @@
-import { Currency } from '@uniswap/sdk-core';
+import { Currency } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro';
+import styled from 'styled-components/macro'
 
-import { CurrencyLogo } from 'common/pure/CurrencyLogo';
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 type IconSpinnerProps = {
-  currency?: Currency | null;
-  image?: string;
-  size?: number;
-  children?: React.ReactNode;
-  bgColor?: string;
-  spinnerWidth?: number;
-};
+  currency?: Currency | null
+  image?: string
+  size?: number
+  children?: React.ReactNode
+  bgColor?: string
+  spinnerWidth?: number
+}
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string; }>`
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string }>`
   --bgColor: ${({ bgColor }) => `var(${bgColor})` || 'var(--cow-container-bg-01)'};
   display: flex;
   position: relative;
@@ -66,20 +66,18 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: strin
 
 export function IconSpinner({ currency, image, size = 24, children, bgColor, spinnerWidth = 2 }: IconSpinnerProps) {
 
-  let content;
-  if (currency) {
-    content = <CurrencyLogo currency={currency} size="100%" />;
-  } else if (image) {
-    content = <img src={image} alt="Spinning icon" width={size} height={size} />;
-  } else if (children) {
-    content = <span>{children}</span>;
-  } else {
-    content = <span />;
-  }
-
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
-      {content}
+      {(() => {
+        if (currency) {
+          return <CurrencyLogo currency={currency} size="100%" />
+        } else if (image) {
+          return <img src={image} alt="Spinning icon" width={size} height={size} />
+        } else if (children) {
+          return <span>{children}</span>
+        }
+        return <span />
+      })()}
     </Wrapper>
-  );
+  )
 }
