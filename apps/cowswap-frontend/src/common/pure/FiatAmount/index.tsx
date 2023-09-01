@@ -27,7 +27,7 @@ export function FiatAmount({ amount, defaultValue, className, accurate = false }
   const accuracySymbol = accurate ? '' : '≈ '
 
   return (
-    <Wrapper title={title} className={className} highlight={highlight}>
+    <Wrapper title={title} className={(className || '') + ' fiat-amount'} highlight={highlight}>
       {formattedAmount ? accuracySymbol + '$' : ''}
       {formattedAmount || defaultValue}
     </Wrapper>
