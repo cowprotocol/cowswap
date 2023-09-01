@@ -1,5 +1,6 @@
 import { Provider as JotaiProvider } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
+import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
@@ -19,6 +20,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { theme } from 'legacy/theme'
 
 import { LanguageProvider } from './i18n'
+
+type JotaiStore = ReturnType<typeof createStore>
 
 const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{children}</I18nProvider>
 
@@ -75,13 +78,31 @@ export function WithMockedWeb3({ children, location }: { children?: ReactNode; l
   )
 }
 
-const HydrateAtoms = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => {
-  useHydrateAtoms(initialValues)
+const HydrateAtoms = ({
+  initialValues,
+  children,
+  store,
+}: {
+  store?: JotaiStore
+  initialValues: any[]
+  children?: ReactNode
+}) => {
+  useHydrateAtoms(initialValues, { store })
   return <>{children}</>
 }
 
-export const JotaiTestProvider = ({ initialValues, children }: { initialValues: any[]; children?: ReactNode }) => (
-  <JotaiProvider>
-    <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
+export const JotaiTestProvider = ({
+  initialValues,
+  children,
+  store,
+}: {
+  initialValues: any[]
+  children?: ReactNode
+  store?: JotaiStore
+}) => (
+  <JotaiProvider store={store}>
+    <HydrateAtoms initialValues={initialValues} store={store}>
+      {children}
+    </HydrateAtoms>
   </JotaiProvider>
 )
