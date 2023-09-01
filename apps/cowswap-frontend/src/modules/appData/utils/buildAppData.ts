@@ -19,7 +19,7 @@ export type BuildAppDataParams = {
   hooks?: AppDataHooks
 }
 
-function generateAppDataFromDoc(doc: AppDataRootSchema) {
+function generateAppDataFromDoc(doc: AppDataRootSchema): Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'> {
   const fullAppData = JSON.stringify(doc)
   const appDataKeccak256 = toKeccak256(fullAppData)
   return { fullAppData, appDataKeccak256 }
