@@ -4,7 +4,7 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { replaceOnlyTradeRawState, ReplaceOnlyTradeRawStatePayload } from 'legacy/state/swap/actions'
 import { useSwapState } from 'legacy/state/swap/hooks'
 
-import { TradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 export function useSwapRawState(): TradeRawState {
   const swapState = useSwapState()
@@ -17,17 +17,19 @@ export function useSwapRawState(): TradeRawState {
     outputCurrencyId: swapState.OUTPUT.currencyId || null,
   }
 }
-export function useUpdateSwapRawState(): (update: Partial<TradeRawState>) => void {
+export function useUpdateSwapRawState(): (update: Partial<ExtendedTradeRawState>) => void {
   const dispatch = useAppDispatch()
 
   return useCallback(
-    (state: Partial<TradeRawState>) => {
+    (state: Partial<ExtendedTradeRawState>) => {
       const newState: ReplaceOnlyTradeRawStatePayload = {
         chainId: state.chainId ?? null,
         recipient: state.recipient ?? null,
         recipientAddress: state.recipientAddress ?? null,
         inputCurrencyId: state.inputCurrencyId || undefined,
         outputCurrencyId: state.outputCurrencyId || undefined,
+        inputCurrencyAmount: state.inputCurrencyAmount ?? undefined,
+        outputCurrencyAmount: state.outputCurrencyAmount ?? undefined,
       }
 
       dispatch(replaceOnlyTradeRawState(newState))
