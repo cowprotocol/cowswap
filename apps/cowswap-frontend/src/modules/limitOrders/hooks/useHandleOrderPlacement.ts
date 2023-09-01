@@ -13,10 +13,10 @@ import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOr
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
-import { TradeAmounts } from 'modules/trade/types/TradeAmounts'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext | null,

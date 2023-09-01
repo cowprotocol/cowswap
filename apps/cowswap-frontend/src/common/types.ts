@@ -1,3 +1,5 @@
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 /**
  * https://github.com/rndlabs/composable-cow/blob/main/src/ComposableCoW.sol
  * Information about ComposableCoW conditional orders
@@ -20,4 +22,9 @@ export type SafeTransactionParams = {
   confirmationsRequired: number
   confirmations: number
   safeTxHash: string
+}
+
+export interface TradeAmounts {
+  readonly inputAmount: CurrencyAmount<Currency>
+  readonly outputAmount: CurrencyAmount<Currency>
 }

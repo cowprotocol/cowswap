@@ -1,4 +1,5 @@
-import { useAtomValue } from 'legacy/state/application/atoms'
+import { useAtomValue } from 'jotai'
+
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 

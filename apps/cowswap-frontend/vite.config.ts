@@ -3,7 +3,8 @@ import { lingui } from '@lingui/vite-plugin'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
-import { defineConfig, loadEnv, searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { PluginOption, defineConfig, loadEnv, searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -12,10 +13,16 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
 
+// eslint-disable-next-line no-restricted-imports
+import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
+
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
 // Trezor getAccountsAsync() requires crypto and stream (the module is lazy-loaded)
 const nodeDepsToInclude = ['crypto', 'stream']
+
+const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
+const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
@@ -27,6 +34,58 @@ export default defineConfig(({ mode }) => {
       ['process.env.' + key]: JSON.stringify(val),
     }
   }, {})
+
+  const plugins = [
+    nodePolyfills({
+      exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+      protocolImports: true,
+    }),
+    splitVendorChunkPlugin(),
+    react({
+      plugins: [['@lingui/swc-plugin', {}]],
+    }),
+    viteTsConfigPaths({
+      root: '../../',
+    }),
+    macrosPlugin(),
+    lingui({
+      cwd: 'apps/cowswap-frontend',
+    }),
+    svgr(),
+    VitePWA({
+      injectRegister: null,
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'service-worker.ts',
+      minify: true,
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
+      },
+    }),
+    sentryVitePlugin({
+      authToken: process.env.REACT_APP_SENTRY_AUTH_TOKEN,
+      org: 'cowprotocol',
+      project: 'cowswap',
+      telemetry: false,
+    }),
+  ]
+
+  if (analyzeBundle) {
+    plugins.push(
+      visualizer({
+        template: analyzeBundleTemplate,
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        filename: 'analyse.html', // will be saved in project's root
+      }) as PluginOption
+    )
+  }
 
   return {
     define: {
@@ -89,45 +148,7 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    plugins: [
-      nodePolyfills({
-        exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
-        globals: {
-          Buffer: true,
-          global: true,
-          process: true,
-        },
-        protocolImports: true,
-      }),
-      splitVendorChunkPlugin(),
-      react({
-        plugins: [['@lingui/swc-plugin', {}]],
-      }),
-      viteTsConfigPaths({
-        root: '../../',
-      }),
-      macrosPlugin(),
-      lingui({
-        cwd: 'apps/cowswap-frontend',
-      }),
-      svgr(),
-      VitePWA({
-        injectRegister: null,
-        strategies: 'injectManifest',
-        srcDir: 'src',
-        filename: 'service-worker.ts',
-        minify: true,
-        injectManifest: {
-          globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
-        },
-      }),
-      sentryVitePlugin({
-        authToken: process.env.REACT_APP_SENTRY_AUTH_TOKEN,
-        org: 'cowprotocol',
-        project: 'cowswap',
-        telemetry: false,
-      }),
-    ],
+    plugins,
 
     // Uncomment this if you are using workers.
     // worker: {

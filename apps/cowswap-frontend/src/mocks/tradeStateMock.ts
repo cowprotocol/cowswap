@@ -80,5 +80,4 @@ export const tradeContextMock: TradeFlowContext = {
 export const priceImpactMock: PriceImpact = {
   priceImpact: new Percent(20000, 10),
   loading: false,
-  error: undefined,
 }

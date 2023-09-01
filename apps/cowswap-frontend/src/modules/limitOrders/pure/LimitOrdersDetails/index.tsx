@@ -80,7 +80,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
-      {ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
+      {ordersTableFeatures.DISPLAY_EXECUTION_TIME && executionPrice && (
         <styledEl.DetailsRow>
           <div>
             <span>
@@ -101,7 +101,9 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
               />
             </span>
           </div>
-          <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />}</div>
+          <div>
+            <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />
+          </div>
         </styledEl.DetailsRow>
       )}
 

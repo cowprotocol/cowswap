@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'

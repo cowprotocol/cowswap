@@ -84,7 +84,8 @@ export function AddToMetamask(props: AddToMetamaskProps) {
       ) : (
         <RowFixed>
           <CheckCircleCustom size={'16px'} stroke={theme.green1} />
-          Added <TokenSymbol token={currency} />
+          Added &nbsp;
+          <TokenSymbol token={currency} />
         </RowFixed>
       )}
     </ButtonCustom>

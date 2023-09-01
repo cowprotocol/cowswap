@@ -1,9 +1,13 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { ParsedQs } from 'qs'
 
-import TradeGp from './TradeGp'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { isAddress } from 'legacy/utils'
+
+import { Field } from './actions'
+import { SwapState } from './reducer'
 
 export function isWrappingTrade(
   sellCurrency: Currency | null | undefined,
@@ -20,44 +24,69 @@ export function isWrappingTrade(
   )
 }
 
-export function logTradeDetails(trade: TradeGp | undefined, allowedSlippage: Percent) {
-  // don't do anything outside of dev env
-  if (!trade || process.env.NODE_ENV !== 'development') return
+function parseIndependentFieldURLParameter(urlParam: any): Field {
+  return typeof urlParam === 'string' && urlParam.toLowerCase() === 'output' ? Field.OUTPUT : Field.INPUT
+}
 
-  const exactIn = trade.tradeType === TradeType.EXACT_INPUT
+export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
+  if (typeof urlParam === 'string') {
+    const valid = isAddress(urlParam)
+    if (valid) return valid
+    const upper = urlParam.toUpperCase()
+    if (upper === 'ETH') return 'ETH'
+    if (upper in TOKEN_SHORTHANDS) return upper
+  }
+  return ''
+}
 
-  // Log Exact In Trade info
-  if (exactIn) {
-    console.debug(
-      `[SwapMod::[SELL] Trade Constructed]`,
-      `
-      Type: SELL
-      ==========
-      Input Amount:         ${trade.inputAmount.toExact()}
-      Output Amount:        ${trade.outputAmount.toExact()}
-      ==========
-      Fee Amount [as SELL]: ${trade.fee?.feeAsCurrency?.toExact()} ${trade.inputAmount.currency.symbol}
-      Fee Amount [as BUY]:  ${
-        trade.outputAmountWithoutFee && trade.outputAmountWithoutFee.subtract(trade.outputAmount).toExact()
-      } ${trade.outputAmount.currency.symbol}
-      ==========
-      Minimum Received:     ${trade.minimumAmountOut(allowedSlippage).toExact()}
-    `
-    )
-  } else {
-    // Log Exact Out Trade info
-    console.debug(
-      `[SwapMod::[BUY] Trade Constructed]`,
-      `
-      Type: BUY
-      =========
-      Input Amount [w/FEE]: ${trade.inputAmountWithFee.toExact()}
-      Output Amount:        ${trade.outputAmount.toExact()}
-      =========
-      Fee Amount [as SELL]: ${trade.fee?.feeAsCurrency?.toExact()} ${trade.inputAmount.currency.symbol}
-      =========
-      Maximum Sold:         ${trade.fee?.feeAsCurrency && trade.maximumAmountIn(allowedSlippage).toExact()}
-    `
-    )
+export function parseTokenAmountURLParameter(urlParam: any): string {
+  return typeof urlParam === 'string' && !isNaN(parseFloat(urlParam)) ? urlParam : ''
+}
+
+const ENS_NAME_REGEX = /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)?$/
+const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/
+
+export function validatedRecipient(recipient: any): string | null {
+  if (typeof recipient !== 'string') return null
+  const address = isAddress(recipient)
+  if (address) return address
+  if (ENS_NAME_REGEX.test(recipient)) return recipient
+  if (ADDRESS_REGEX.test(recipient)) return recipient
+  return null
+}
+
+export function queryParametersToSwapState(
+  parsedQs: ParsedQs,
+  defaultInputCurrency = '',
+  chainId: number | null
+): SwapState {
+  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
+  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
+  const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
+
+  if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
+    // Defaults to having the wrapped native currency selected
+    inputCurrency = defaultInputCurrency // 'ETH' // mod
+  } else if (inputCurrency === outputCurrency) {
+    // clear output if identical
+    outputCurrency = ''
+  }
+
+  const recipient = validatedRecipient(parsedQs.recipient)
+  const recipientAddress = validatedRecipient(parsedQs.recipientAddress)
+
+  return {
+    chainId: chainId || null,
+    [Field.INPUT]: {
+      currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
+    },
+    [Field.OUTPUT]: {
+      currencyId: outputCurrency === '' ? null : outputCurrency ?? null,
+    },
+    typedValue,
+    independentField,
+    recipient,
+    recipientAddress,
   }
 }

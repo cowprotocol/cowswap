@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { TradeAmounts } from '../types/TradeAmounts'
+import { TradeAmounts } from 'common/types'
 
 interface TradeConfirmModalState {
   isOpen: boolean

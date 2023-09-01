@@ -15,10 +15,11 @@ import {
   switchCurrencies,
   typeInput,
 } from 'legacy/state/swap/actions'
-import { queryParametersToSwapState } from 'legacy/state/swap/hooks'
 
 import { getIsNativeToken } from 'utils/getIsNativeToken'
 import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
+
+import { queryParametersToSwapState } from './utils'
 
 export interface SwapState {
   // Mod: added chainId

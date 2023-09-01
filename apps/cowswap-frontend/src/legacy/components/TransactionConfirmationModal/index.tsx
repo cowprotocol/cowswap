@@ -1,10 +1,11 @@
+import { useSetAtom } from 'jotai'
 import React, { ReactNode, useCallback, useEffect } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { handleFollowPendingTxPopupAtom, useSetAtom } from 'legacy/state/application/atoms'
+import { handleFollowPendingTxPopupAtom } from 'legacy/state/application/atoms'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
 import { useWalletInfo } from 'modules/wallet'
