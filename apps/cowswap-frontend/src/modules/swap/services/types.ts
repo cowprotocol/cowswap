@@ -15,6 +15,7 @@ import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { FlowType } from '../hooks/useFlowContext'
+import { EthFlowOrderExistsCallback } from '../hooks/useIsEthFlowOrderExists'
 
 export interface BaseFlowContext {
   context: {
@@ -47,7 +48,7 @@ export type SwapFlowContext = BaseFlowContext & {
 export type EthFlowContext = BaseFlowContext & {
   contract: CoWSwapEthFlow
   addTransaction: ReturnType<typeof useTransactionAdder>
-  checkInFlightOrderIdExists: (orderId: string) => boolean
+  isEthFlowOrderExists: EthFlowOrderExistsCallback
   addInFlightOrderId: (orderId: string) => void
 }
 
