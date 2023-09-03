@@ -11,6 +11,8 @@ import _MerkleDropAbi from './abis/MerkleDrop.json'
 
 import _TokenDistroAbi from './abis/TokenDistro.json'
 
+import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow.json'
+
 import _ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 
 import _ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
@@ -46,6 +48,7 @@ export const vCowAbi = _vCowAbi
 export const SignatureVerifierMuxerAbi = _SignatureVerifierMuxerAbi
 export const MerkleDropAbi = _MerkleDropAbi
 export const TokenDistroAbi = _TokenDistroAbi
+export const CoWSwapEthFlowAbi = _CoWSwapEthFlowAbi
 
 export * from './generated/custom'
 export type { GPv2Order } from './generated/custom/ComposableCoW'
