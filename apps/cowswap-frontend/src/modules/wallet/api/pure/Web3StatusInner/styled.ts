@@ -92,7 +92,7 @@ export const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: auto;
     height: 100%;
-    margin: 0 0 0 auto;
+    margin: 0 auto;
   `};
 
   button {

@@ -10,7 +10,6 @@ import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
 import { ExternalLink } from 'legacy/theme'
 
 import { Web3Status } from 'modules/wallet'
-import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
@@ -84,10 +83,6 @@ const Content = styled.div`
     font-weight: 400;
     text-align: center;
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
-  }
-
-  ${Web3StatusWrapper} {
-    margin: 0 auto;
   }
 `
 
