@@ -23,6 +23,7 @@ import {
 } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 import { InvestClaim } from 'legacy/state/claim/reducer'
+import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { ExternalLink } from 'legacy/theme'
 
 import { useWalletInfo } from 'modules/wallet'
@@ -42,8 +43,6 @@ import {
 } from 'pages/Claim/styled'
 
 import InvestOption from './InvestOption'
-
-import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 
 const STEPS_DATA = [
   {

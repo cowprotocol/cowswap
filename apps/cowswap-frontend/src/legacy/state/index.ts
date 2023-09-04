@@ -1,7 +1,8 @@
+import { DEFAULT_NETWORK_FOR_LISTS } from '@cowswap/common-const'
+
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import application from 'legacy/state/application/reducer'
 import claim from 'legacy/state/claim/reducer'
 import connection from 'legacy/state/connection/reducer'

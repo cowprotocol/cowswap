@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { isAddress } from '@ethersproject/address'
 
 import { Trans } from '@lingui/macro'
@@ -12,10 +13,7 @@ import {
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
 } from 'legacy/state/claim/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { ClaimCommonTypes } from 'pages/Claim/types'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { ClaimAddressProps } from './ClaimAddress'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'

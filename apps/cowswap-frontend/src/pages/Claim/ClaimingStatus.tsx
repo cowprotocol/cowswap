@@ -17,6 +17,7 @@ import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { V_COW } from 'legacy/constants/tokens'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { ExternalLink } from 'legacy/theme'
 import { shortenAddress } from 'legacy/utils'
@@ -33,8 +34,6 @@ import {
   BannersWrapper,
   SuccessBanner,
 } from 'pages/Claim/styled'
-
-import { ClaimCommonTypes } from './types'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'

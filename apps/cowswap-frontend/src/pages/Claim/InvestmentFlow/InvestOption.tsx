@@ -29,6 +29,7 @@ import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbac
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
+import { EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { ButtonSize } from 'legacy/theme/enum'
 
@@ -47,7 +48,6 @@ import {
   UserMessage,
   WarningWrapper,
 } from '../styled'
-import { EnhancedUserClaimData } from '../types'
 
 import { InvestmentFlowProps } from '.'
 

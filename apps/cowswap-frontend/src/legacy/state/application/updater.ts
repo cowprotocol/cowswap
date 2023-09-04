@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { usePrevious, useIsWindowVisible, useDebounce } from '@cowswap/common-hooks'
+import { useWalletInfo } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import useDebounce from 'legacy/hooks/useDebounce'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import usePrevious from 'legacy/hooks/usePrevious'
-import { useAppDispatch } from 'legacy/state/hooks'
-import { updateSelectedWallet } from 'legacy/state/user/reducer'
-
-import { useWalletInfo } from 'modules/wallet'
-
 import { updateChainId } from './reducer'
+
+import { useAppDispatch } from '../hooks'
+import { updateSelectedWallet } from '../user/reducer'
 
 export default function Updater(): null {
   const { chainId } = useWalletInfo()

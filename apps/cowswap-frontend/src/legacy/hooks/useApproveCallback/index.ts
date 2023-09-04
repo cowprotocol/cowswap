@@ -5,11 +5,10 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { ClaimType } from 'legacy/state/claim/hooks'
-
-import { EnhancedUserClaimData } from 'pages/Claim/types'
-
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
+
+import { ClaimType } from '../../state/claim/hooks/types'
+import { EnhancedUserClaimData } from '../../state/claim/types'
 
 export type OptionalApproveCallbackParams = {
   transactionSummary?: string
