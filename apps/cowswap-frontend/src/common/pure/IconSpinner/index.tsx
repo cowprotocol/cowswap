@@ -4,17 +4,17 @@ import styled from 'styled-components/macro'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
-type IconSpinnerProps = {
+interface IconSpinnerProps {
   currency?: Currency | null
   image?: string
   size?: number
   children?: React.ReactNode
-  bgColor?: string
+  bgColor?: ColorVariables;
   spinnerWidth?: number
 }
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: string }>`
-  --bgColor: ${({ bgColor }) => `var(${bgColor})` || 'var(--cow-container-bg-01)'};
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorVariables }>`
+  --bgColor: ${({ bgColor }) => `var(${bgColor})`};
   display: flex;
   position: relative;
   align-items: center;
@@ -62,9 +62,28 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor?: strin
       transform: rotate(360deg);
     }
   }
-`;
+`
 
-export function IconSpinner({ currency, image, size = 24, children, bgColor, spinnerWidth = 2 }: IconSpinnerProps) {
+enum ColorVariables {
+  CONTAINER_BG_01 = '--cow-container-bg-01',
+}
+
+export function IconSpinner({
+  currency,
+  image,
+  size = 24,
+  children,
+  bgColor = ColorVariables.CONTAINER_BG_01,
+  spinnerWidth = 2
+}: IconSpinnerProps) {
+
+  const content = currency ? (
+    <CurrencyLogo currency={currency} size="100%" />
+  ) : image ? (
+    <img src={image} alt="Spinning icon" width={size} height={size} />
+  ) : (
+    children || <span />
+  );
 
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>

@@ -55,7 +55,6 @@ const StepperFixtures = {
       />
     </Wrapper>
   ),
-  // Add more fixtures as needed
 };
 
 export default StepperFixtures;
