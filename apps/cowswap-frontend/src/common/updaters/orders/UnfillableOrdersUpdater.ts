@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { priceOutOfRangeAnalytics } from '@cowswap/analytics'
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
 import { useIsWindowVisible } from '@cowswap/common-hooks'
 import { getPromiseFulfilledValue } from '@cowswap/common-utils'
@@ -11,7 +12,6 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'
 
-import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'

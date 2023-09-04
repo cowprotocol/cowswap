@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowswap/analytics'
 import { FEE_SIZE_THRESHOLD } from '@cowswap/common-const'
 import { formatSymbol, isAddress, tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { useENS } from '@cowswap/ens'
@@ -9,7 +10,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
-import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'legacy/components/analytics'
 import { useCurrency } from 'legacy/hooks/Tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'

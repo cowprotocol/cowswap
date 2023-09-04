@@ -1,5 +1,6 @@
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { searchByAddressAnalytics } from '@cowswap/analytics'
 import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowswap/common-hooks'
 import { isAddress } from '@cowswap/common-utils'
 import { Row } from '@cowswap/ui'
@@ -14,7 +15,6 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
 import CommonBases from 'legacy/components/SearchModal/CommonBases'
 import CurrencyList from 'legacy/components/SearchModal/CurrencyList'

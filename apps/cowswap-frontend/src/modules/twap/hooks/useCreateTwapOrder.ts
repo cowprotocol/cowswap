@@ -3,13 +3,13 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { twapConversionAnalytics } from '@cowswap/analytics'
 import { getCowSoundSend } from '@cowswap/common-utils'
 import { useWalletInfo, useSafeAppsSdk } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
 import { cowSwapStore } from 'legacy/state'
 import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'

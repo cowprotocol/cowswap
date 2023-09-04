@@ -2,6 +2,10 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
+import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowswap/analytics'
+import { useInterval } from '@cowswap/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowswap/common-utils'
+
 import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -9,10 +13,8 @@ import styled from 'styled-components/macro'
 
 import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
 import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
-import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'legacy/components/analytics/events/cowFortune'
 import Confetti from 'legacy/components/Confetti'
 import { ExternalLink } from 'legacy/theme'
-import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
@@ -23,8 +25,6 @@ import {
 } from 'modules/fortune/state/fortuneStateAtom'
 
 import { SuccessBanner } from 'pages/Claim/styled'
-
-import useInterval from '../../../../../../../libs/common-hooks/src/useInterval'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;

@@ -1,9 +1,9 @@
 import { ErrorInfo } from 'react'
 
+import { debounce } from '@cowswap/common-utils'
+
 import ReactGA from 'react-ga4'
 import { GaOptions, InitOptions, UaEventOptions } from 'react-ga4/types/ga4'
-
-import { debounce } from 'legacy/utils/misc'
 
 import { Dimensions } from '../types'
 

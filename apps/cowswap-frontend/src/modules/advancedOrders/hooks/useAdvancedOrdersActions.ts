@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { changeSwapAmountAnalytics } from '@cowswap/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
-import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { Field } from 'legacy/state/types'
 
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'

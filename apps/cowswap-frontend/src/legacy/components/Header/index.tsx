@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { toggleDarkModeAnalytics } from '@cowswap/analytics'
 import { isInjectedWidget } from '@cowswap/common-utils'
 import { addBodyClass, removeBodyClass } from '@cowswap/common-utils'
 import { TokenAmount } from '@cowswap/ui'
@@ -9,7 +10,6 @@ import { useWalletInfo, Web3Status } from '@cowswap/wallet'
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
 
-import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'

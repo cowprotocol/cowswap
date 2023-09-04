@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 
+import { switchTokensAnalytics } from '@cowswap/analytics'
 import { useWalletInfo } from '@cowswap/wallet'
-
-import { switchTokensAnalytics } from 'legacy/components/analytics'
 
 import { FractionUtils } from 'utils/fractionUtils'
 

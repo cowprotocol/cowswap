@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { claimAnalytics } from '@cowswap/analytics'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -22,7 +23,6 @@ import SVG from 'react-inlinesvg'
 
 import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
 import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import { claimAnalytics } from 'legacy/components/analytics'
 import CopyHelper from 'legacy/components/Copy'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'

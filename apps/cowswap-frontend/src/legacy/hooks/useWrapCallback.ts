@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { wrapAnalytics } from '@cowswap/analytics'
 import { RADIX_HEX } from '@cowswap/common-const'
 import { getChainCurrencySymbols } from '@cowswap/common-const'
 import { calculateGasMargin, formatTokenAmount, isRejectRequestProviderError } from '@cowswap/common-utils'
@@ -7,7 +8,6 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { wrapAnalytics } from 'legacy/components/analytics'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'

@@ -1,10 +1,11 @@
 import React, { HTMLProps } from 'react'
 
+import { externalLinkAnalytics, outboundLink } from '@cowswap/analytics'
+
 import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { externalLinkAnalytics, outboundLink } from 'legacy/components/analytics'
 import { anonymizeLink } from 'legacy/utils/anonymizeLink'
 
 export const ButtonText = styled.button`

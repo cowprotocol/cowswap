@@ -2,9 +2,9 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { changeSwapAmountAnalytics } from '@cowswap/analytics'
 import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 
-import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { Field } from 'legacy/state/types'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'

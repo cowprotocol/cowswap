@@ -1,5 +1,18 @@
 import { useEffect } from 'react'
 
+import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '@cowswap/analytics'
+import { googleAnalytics } from '@cowswap/analytics'
+import {
+  PIXEL_EVENTS,
+  sendFacebookEvent,
+  sendLinkedinEvent,
+  sendMicrosoftEvent,
+  sendPavedEvent,
+  sendRedditEvent,
+  sendTwitterEvent,
+  Dimensions,
+} from '@cowswap/analytics'
+import { usePrevious } from '@cowswap/common-hooks'
 import {
   getWeb3ReactConnection,
   useWalletDetails,
@@ -13,21 +26,7 @@ import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
-// Mod imports
-import usePrevious from 'legacy/hooks/usePrevious'
-
 import { useGetMarketDimension } from './useGetMarketDimension'
-
-import { googleAnalytics } from '../googleAnalytics'
-import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
-import { PIXEL_EVENTS } from '../pixel/constants'
-import { sendFacebookEvent } from '../pixel/facebook'
-import { sendLinkedinEvent } from '../pixel/linkedin'
-import { sendMicrosoftEvent } from '../pixel/microsoft'
-import { sendPavedEvent } from '../pixel/paved'
-import { sendRedditEvent } from '../pixel/reddit'
-import { sendTwitterEvent } from '../pixel/twitter'
-import { Dimensions } from '../types'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)

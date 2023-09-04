@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
 
-import 'legacy/components/analytics'
+import '@cowswap/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'

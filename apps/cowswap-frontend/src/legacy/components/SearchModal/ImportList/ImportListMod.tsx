@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 
+import { addListAnalytics } from '@cowswap/analytics'
 import { ButtonPrimary } from '@cowswap/ui'
 import { AutoRow, RowBetween, RowFixed } from '@cowswap/ui'
 
@@ -8,7 +9,6 @@ import { transparentize } from 'polished'
 import { AlertTriangle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { addListAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'

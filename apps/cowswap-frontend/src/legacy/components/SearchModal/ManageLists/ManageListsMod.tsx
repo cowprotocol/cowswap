@@ -1,5 +1,6 @@
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '@cowswap/analytics'
 import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowswap/common-hooks'
 import { parseENSAddress, uriToHttp } from '@cowswap/common-utils'
 import { ButtonEmpty, ButtonPrimary } from '@cowswap/ui'
@@ -12,7 +13,6 @@ import { CheckCircle, Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
 import Column, { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'

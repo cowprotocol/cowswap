@@ -1,6 +1,6 @@
-import { Middleware, isAnyOf } from '@reduxjs/toolkit'
+import { initialPriceLoadAnalytics } from '@cowswap/analytics'
 
-import { initialPriceLoadAnalytics } from 'legacy/components/analytics'
+import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 
 import * as PriceActions from './actions'
 

@@ -1,12 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
+import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowswap/analytics'
 import { useWalletInfo } from '@cowswap/wallet'
 
-import {
-  openAdvancedOrdersTabAnalytics,
-  twapWalletCompatibilityAnalytics,
-} from 'legacy/components/analytics/events/twapEvents'
 import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'

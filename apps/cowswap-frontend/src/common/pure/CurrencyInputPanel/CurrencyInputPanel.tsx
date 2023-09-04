@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { setMaxSellTokensAnalytics } from '@cowswap/analytics'
 import { formatInputAmount } from '@cowswap/common-utils'
 import { TokenAmount } from '@cowswap/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
 import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'

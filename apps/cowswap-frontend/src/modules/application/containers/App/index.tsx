@@ -1,7 +1,6 @@
 import { isInjectedWidget } from '@cowswap/common-utils'
 
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
-import { useAnalyticsReporter } from 'legacy/components/analytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
 import Header from 'legacy/components/Header'
@@ -15,6 +14,8 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
+
+import { useAnalyticsReporter } from '../../../../common/hooks/useAnalyticsReporter'
 
 export function App() {
   initializeAnalytics()

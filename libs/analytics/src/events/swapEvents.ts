@@ -1,11 +1,9 @@
 import { debounce } from '@cowswap/common-utils'
 
-import { Field } from 'legacy/state/types'
-
 import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
-export function currencySelectAnalytics(field: Field, label: string | undefined) {
+export function currencySelectAnalytics(field: string, label: string | undefined) {
   sendEvent({
     category: Category.CURRENCY_SELECT,
     action: `Change ${field} token`,
@@ -20,7 +18,7 @@ export function setMaxSellTokensAnalytics() {
   })
 }
 
-function _changeSwapAmountAnalytics(field: Field, value: number) {
+function _changeSwapAmountAnalytics(field: string, value: number) {
   sendEvent({
     category: Category.TRADE,
     action: `Change ${field} field amount`,
@@ -28,7 +26,7 @@ function _changeSwapAmountAnalytics(field: Field, value: number) {
   })
 }
 
-export const changeSwapAmountAnalytics = debounce(([field, value]: [Field, number]) => {
+export const changeSwapAmountAnalytics = debounce(([field, value]: [string, number]) => {
   _changeSwapAmountAnalytics(field, value)
 }, 2000)
 

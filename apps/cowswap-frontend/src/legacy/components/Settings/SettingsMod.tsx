@@ -1,5 +1,10 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 
+import {
+  showExpertModeConfirmationAnalytics,
+  toggleExpertModeAnalytics,
+  toggleRecepientAddressAnalytics,
+} from '@cowswap/analytics'
 import { RowBetween, RowFixed } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
@@ -7,11 +12,6 @@ import { Settings } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import {
-  showExpertModeConfirmationAnalytics,
-  toggleExpertModeAnalytics,
-  toggleRecepientAddressAnalytics,
-} from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import Toggle from 'legacy/components/Toggle'
