@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { useDispatch } from 'react-redux'
@@ -7,8 +8,6 @@ import { useDispatch } from 'react-redux'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { enableList as enableListMod, removeList as removeListMod } from 'legacy/state/lists/actions'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { ImportList as ImportListMod } from './ImportListMod'
 

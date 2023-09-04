@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { renderHook } from '@testing-library/react-hooks'
@@ -8,8 +9,6 @@ import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useCo
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 

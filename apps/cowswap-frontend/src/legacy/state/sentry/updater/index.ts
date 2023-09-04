@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 
+import { useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+
 import * as Sentry from '@sentry/browser'
 
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useAppSelector } from 'legacy/state/hooks'
 import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 import { SentryTag } from 'legacy/utils/logging'
-
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 /**
  * _getSentryChainId

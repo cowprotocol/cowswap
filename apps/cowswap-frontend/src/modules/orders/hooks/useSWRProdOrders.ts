@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import useSWR from 'swr'
 
 import { GP_ORDER_UPDATE_INTERVAL } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { getOrders } from 'api/gnosisProtocol'
 

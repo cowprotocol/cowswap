@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useWalletDetails } from '@cowswap/wallet'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -8,7 +10,6 @@ import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { useWalletDetails } from 'modules/wallet'
 
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 

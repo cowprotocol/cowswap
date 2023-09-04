@@ -1,11 +1,11 @@
 import { atom } from 'jotai'
 
+import { walletInfoAtom } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
-import { walletInfoAtom } from 'modules/wallet'
 
 import { twapOrderSlippageAtom, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 

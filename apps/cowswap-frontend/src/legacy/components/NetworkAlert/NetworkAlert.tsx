@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
@@ -10,8 +11,6 @@ import { getChainInfo } from 'legacy/constants/chainInfo'
 import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { ExternalLink, HideSmall } from 'legacy/theme'
-
-import { useWalletInfo } from 'modules/wallet'
 
 const L2Icon = styled.img`
   width: 24px;

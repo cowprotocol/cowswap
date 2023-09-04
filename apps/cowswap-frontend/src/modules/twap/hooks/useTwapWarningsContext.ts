@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useWalletInfo } from 'modules/wallet'
 
 const NOT_BLOCKING_VALIDATIONS = [
   TradeFormValidation.ExpertApproveAndSwap,

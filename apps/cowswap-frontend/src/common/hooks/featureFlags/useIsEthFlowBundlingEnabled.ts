@@ -1,4 +1,4 @@
-import { useIsBundlingSupported } from 'modules/wallet'
+import { useIsBundlingSupported } from '@cowswap/wallet'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 

@@ -2,10 +2,9 @@ import { useSetAtom } from 'jotai'
 import React, { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { walletInfoAtom } from '@cowswap/wallet'
 
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
-
-import { walletInfoAtom } from 'modules/wallet'
 
 import { TradeAmounts } from 'common/types'
 

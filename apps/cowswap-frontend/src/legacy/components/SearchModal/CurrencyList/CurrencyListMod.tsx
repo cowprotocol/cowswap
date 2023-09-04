@@ -1,5 +1,6 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -25,7 +26,6 @@ import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { TokenAmount } from 'common/pure/TokenAmount'

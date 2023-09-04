@@ -1,5 +1,6 @@
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import styled from 'styled-components/macro'
 
@@ -7,8 +8,6 @@ import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'leg
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'

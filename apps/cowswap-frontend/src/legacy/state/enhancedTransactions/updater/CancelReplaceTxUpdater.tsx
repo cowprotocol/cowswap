@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Dispatch } from 'redux'
@@ -8,8 +9,6 @@ import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { sdk } from 'legacy/utils/blocknative'
-
-import { useWalletInfo } from 'modules/wallet'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
   for (const hash of pendingHashes) {

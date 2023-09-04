@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+import { useWalletInfo, getIsTallyWallet } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
@@ -12,8 +13,6 @@ import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
-
-import { useWalletInfo, getIsTallyWallet } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'

@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -28,7 +29,6 @@ import { ThemedText } from 'legacy/theme'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useWalletInfo } from 'modules/wallet'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

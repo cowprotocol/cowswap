@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
@@ -27,7 +28,6 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/app
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'

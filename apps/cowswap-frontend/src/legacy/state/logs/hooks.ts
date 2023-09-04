@@ -1,8 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Filter } from '@ethersproject/providers'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 

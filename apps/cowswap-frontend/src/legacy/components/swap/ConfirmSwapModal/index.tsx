@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { useWalletDetails } from '@cowswap/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -11,7 +12,6 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
-import { useWalletDetails } from 'modules/wallet'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'

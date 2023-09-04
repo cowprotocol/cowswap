@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
+import { useIsSafeViaWc, useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -18,7 +19,6 @@ import {
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'

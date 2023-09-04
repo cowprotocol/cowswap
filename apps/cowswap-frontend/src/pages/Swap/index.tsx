@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
@@ -9,7 +11,6 @@ import { SwapWidget, SwapDerivedStateUpdater, SwapAmountsFromUrlUpdater } from '
 import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 

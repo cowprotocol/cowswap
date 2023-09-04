@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
@@ -10,7 +11,6 @@ import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from 'common/utils/markets'

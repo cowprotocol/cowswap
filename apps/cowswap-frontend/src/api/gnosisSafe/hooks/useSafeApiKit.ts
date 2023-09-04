@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { useIsSafeWallet, useWalletInfo } from '@cowswap/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { useWeb3React } from '@web3-react/core'
-
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
 import { createSafeApiKitInstance } from 'api/gnosisSafe'
 

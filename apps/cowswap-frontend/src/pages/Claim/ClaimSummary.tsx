@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +11,6 @@ import { useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
 

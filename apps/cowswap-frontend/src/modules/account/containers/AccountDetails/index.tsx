@@ -1,6 +1,21 @@
 import { Fragment, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  ConnectionType,
+  useDisconnectWallet,
+  useWalletInfo,
+  WalletDetails,
+  getConnectionIcon,
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+  Identicon,
+  useWalletDetails,
+  useIsWalletConnect,
+  getWeb3ReactConnection,
+  getIsHardWareWallet,
+} from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
@@ -19,21 +34,6 @@ import { getExplorerAddressLink } from 'legacy/utils/explorer'
 import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
-import {
-  ConnectionType,
-  useDisconnectWallet,
-  useWalletInfo,
-  WalletDetails,
-  getConnectionIcon,
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
-  Identicon,
-  useWalletDetails,
-  useIsWalletConnect,
-  getWeb3ReactConnection,
-  getIsHardWareWallet,
-} from 'modules/wallet'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'

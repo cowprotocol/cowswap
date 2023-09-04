@@ -1,11 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useSafeAppsSdk } from '@cowswap/wallet'
+
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
-import { useSafeAppsSdk } from 'modules/wallet'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 

@@ -1,13 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useIsSafeWallet, walletConnectConnection } from '@cowswap/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
-import { useIsSafeWallet, walletConnectConnection } from 'modules/wallet'
 
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 import { pollUntil } from 'common/utils/pollUntil'

@@ -3,10 +3,9 @@ import { useEffect } from 'react'
 
 import { Order } from '@cowprotocol/contracts'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { isTruthy } from 'legacy/utils/misc'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 

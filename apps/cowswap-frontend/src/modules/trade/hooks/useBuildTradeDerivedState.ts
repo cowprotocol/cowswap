@@ -1,9 +1,10 @@
 import { Atom, useAtomValue } from 'jotai'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'

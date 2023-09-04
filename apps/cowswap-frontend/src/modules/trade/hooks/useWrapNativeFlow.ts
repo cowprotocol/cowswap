@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -13,8 +14,6 @@ import {
   WrapUnwrapContext,
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeState } from './useTradeState'

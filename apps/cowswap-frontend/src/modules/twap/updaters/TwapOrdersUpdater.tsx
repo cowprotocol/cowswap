@@ -3,10 +3,9 @@ import { useEffect, useMemo, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW } from '@cowswap/abis'
+import { useGnosisSafeInfo } from '@cowswap/wallet'
 
 import ms from 'ms.macro'
-
-import { useGnosisSafeInfo } from 'modules/wallet'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'

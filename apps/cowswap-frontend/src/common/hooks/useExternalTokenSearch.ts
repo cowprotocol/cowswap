@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useProxyTokens } from 'api/proxy'
 

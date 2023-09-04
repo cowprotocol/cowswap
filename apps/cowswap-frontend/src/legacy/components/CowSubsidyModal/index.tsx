@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Text } from 'rebass'
@@ -13,8 +14,6 @@ import {
   LegacyConfirmationModalContent,
 } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { CowModal } from 'common/pure/Modal'
 

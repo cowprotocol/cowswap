@@ -1,5 +1,7 @@
 import { useContext } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -8,8 +10,6 @@ import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
 import { BlockExplorerLinkType } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

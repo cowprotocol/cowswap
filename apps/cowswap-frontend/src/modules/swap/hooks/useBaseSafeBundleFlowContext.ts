@@ -1,4 +1,5 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { useSafeAppsSdk } from '@cowswap/wallet'
 import { TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
@@ -6,7 +7,6 @@ import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
 import { getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { BaseSafeFlowContext } from 'modules/swap/services/types'
-import { useSafeAppsSdk } from 'modules/wallet'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 

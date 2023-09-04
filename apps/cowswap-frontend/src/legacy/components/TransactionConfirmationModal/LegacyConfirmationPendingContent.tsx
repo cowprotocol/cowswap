@@ -1,5 +1,13 @@
 import React, { ReactNode, useMemo } from 'react'
 
+import {
+  getWeb3ReactConnection,
+  useGnosisSafeInfo,
+  useWalletDetails,
+  useWalletInfo,
+  getIsMetaMask,
+  injectedConnection,
+} from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { t, Trans } from '@lingui/macro'
@@ -14,14 +22,6 @@ import { shortenAddress } from 'legacy/utils'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
-import {
-  getWeb3ReactConnection,
-  useGnosisSafeInfo,
-  useWalletDetails,
-  useWalletInfo,
-  getIsMetaMask,
-  injectedConnection,
-} from 'modules/wallet'
 
 import {
   ApproveComparison,

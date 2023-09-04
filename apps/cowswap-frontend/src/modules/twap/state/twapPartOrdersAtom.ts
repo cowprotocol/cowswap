@@ -2,10 +2,9 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { walletInfoAtom } from '@cowswap/wallet'
 
 import { getJotaiIsolatedStorage } from 'jotaiStore'
-
-import { walletInfoAtom } from 'modules/wallet'
 
 import { deepEqual } from 'utils/deepEqual'
 

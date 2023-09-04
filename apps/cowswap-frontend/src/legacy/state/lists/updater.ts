@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useWeb3React } from '@web3-react/core'
 
@@ -11,8 +12,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { acceptListUpdate } from 'legacy/state/lists/actions'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { useActiveListUrls } from 'legacy/state/lists/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import useInterval from '../../../../../../libs/common-hooks/src/useInterval'
 

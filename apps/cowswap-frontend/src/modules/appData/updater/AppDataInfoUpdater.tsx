@@ -1,11 +1,11 @@
 import React from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { percentToBips } from 'legacy/utils/misc'
 
 import { useUtm } from 'modules/utm'
-import { useWalletInfo } from 'modules/wallet'
 
 import { UseAppDataParams, useAppDataUpdater } from './useAppDataUpdater'
 

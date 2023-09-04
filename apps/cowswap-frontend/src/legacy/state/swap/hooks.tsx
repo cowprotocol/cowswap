@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { tryParseCurrencyAmount } from '@cowswap/common-utils'
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
@@ -25,7 +26,6 @@ import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'

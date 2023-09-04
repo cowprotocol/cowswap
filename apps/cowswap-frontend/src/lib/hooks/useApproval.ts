@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -9,8 +10,6 @@ import { Nullish } from 'types'
 import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-
-import { useWalletInfo } from 'modules/wallet'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

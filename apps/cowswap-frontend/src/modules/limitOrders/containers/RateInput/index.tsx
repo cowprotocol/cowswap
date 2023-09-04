@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { RefreshCw } from 'react-feather'
 
 import Loader from 'legacy/components/Loader'
@@ -14,7 +16,6 @@ import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { useWalletInfo } from 'modules/wallet'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'

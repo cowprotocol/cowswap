@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -17,7 +18,6 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { getBlockExplorerUrl } from 'legacy/utils'
 
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'

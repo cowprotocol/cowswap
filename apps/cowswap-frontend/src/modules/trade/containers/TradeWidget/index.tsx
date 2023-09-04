@@ -1,5 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+
 import { t } from '@lingui/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -11,7 +13,6 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'

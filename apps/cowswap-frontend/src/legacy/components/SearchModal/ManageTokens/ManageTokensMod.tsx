@@ -1,5 +1,6 @@
 import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -16,8 +17,6 @@ import { useRemoveUserAddedToken, useUserAddedTokens } from 'legacy/state/user/h
 import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'legacy/theme'
 import { isAddress } from 'legacy/utils'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { TokenSymbol } from 'common/pure/TokenSymbol'

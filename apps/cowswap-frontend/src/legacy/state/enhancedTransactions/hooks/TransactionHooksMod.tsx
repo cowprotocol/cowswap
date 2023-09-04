@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { useAppSelector } from 'legacy/state/hooks'
+import { useWalletInfo } from '@cowswap/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useAppSelector } from 'legacy/state/hooks'
 
 import { EnhancedTransactionDetails } from '../reducer'
 

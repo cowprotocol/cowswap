@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -10,8 +11,6 @@ import { SupportedLocale } from 'legacy/constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { calculateValidTo } from 'utils/time'
 

@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -12,8 +13,6 @@ import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 

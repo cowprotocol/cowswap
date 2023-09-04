@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowswap/abis'
+import { useWalletInfo } from '@cowswap/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -11,8 +12,6 @@ import { COW as COW_TOKENS } from 'legacy/constants/tokens'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
 import { useContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'
 

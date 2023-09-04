@@ -1,3 +1,5 @@
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { Globe } from 'react-feather'
 
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
@@ -14,8 +16,6 @@ import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { ExternalLink } from 'legacy/theme'
 import { getExplorerBaseUrl } from 'legacy/utils/explorer'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 

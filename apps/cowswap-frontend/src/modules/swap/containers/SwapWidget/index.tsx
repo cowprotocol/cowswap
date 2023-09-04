@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
@@ -40,7 +42,6 @@ import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'

@@ -2,6 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
@@ -10,7 +12,6 @@ import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'

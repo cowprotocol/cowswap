@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
@@ -20,8 +21,6 @@ import {
   RemoveGpUnsupportedTokenParams,
 } from 'legacy/state/lists/actions'
 import sortByListPriority from 'legacy/utils/listSort'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
 import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'

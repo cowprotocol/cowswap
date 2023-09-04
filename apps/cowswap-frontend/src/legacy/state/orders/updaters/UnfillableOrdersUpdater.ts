@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'
@@ -27,7 +28,6 @@ import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { hasEnoughBalanceAndAllowance, useBalancesAndAllowances } from 'modules/tokens'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'

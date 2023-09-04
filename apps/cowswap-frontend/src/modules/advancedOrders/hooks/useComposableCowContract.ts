@@ -1,8 +1,7 @@
 import { ComposableCoW, ComposableCoWAbi } from '@cowswap/abis'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { useContract } from 'legacy/hooks/useContract'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { COMPOSABLE_COW_ADDRESS } from '../const'
 

@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'

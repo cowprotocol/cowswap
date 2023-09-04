@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { transparentize } from 'polished'
@@ -10,8 +11,6 @@ import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchM
 import { TextDot } from 'legacy/components/SearchModal/styleds'
 import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 

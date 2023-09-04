@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { GAS_PRICE_UPDATE_THRESHOLD } from 'legacy/constants'
+import { useWalletInfo } from '@cowswap/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { GAS_PRICE_UPDATE_THRESHOLD } from 'legacy/constants'
 
 import { gasFeeApi } from 'api/gasPrices'
 import useBlockNumber from 'lib/hooks/useBlockNumber'

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'

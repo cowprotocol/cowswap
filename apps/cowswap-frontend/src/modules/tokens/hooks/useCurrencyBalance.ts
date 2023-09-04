@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -12,7 +13,6 @@ import { isAddress } from 'legacy/utils'
 
 import { useOnchainBalances } from 'modules/tokens'
 import { TokenAmounts } from 'modules/tokens'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 

@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -20,8 +21,6 @@ import usePrevious from 'legacy/hooks/usePrevious'
 import { ButtonSize } from 'legacy/theme/enum'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'legacy/utils/misc'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { TokenAmount } from 'common/pure/TokenAmount'

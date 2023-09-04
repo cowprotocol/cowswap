@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
+import { useWalletInfo } from '@cowswap/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 
 export function useSWROrdersRequest(): { owner: string; limit: number } | null {
   const { account } = useWalletInfo()

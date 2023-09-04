@@ -1,5 +1,6 @@
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Weth } from '@cowswap/abis'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -27,7 +28,6 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { calculateValidTo } from 'utils/time'
 

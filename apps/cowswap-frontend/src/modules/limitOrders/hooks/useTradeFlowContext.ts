@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
@@ -14,7 +15,6 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 

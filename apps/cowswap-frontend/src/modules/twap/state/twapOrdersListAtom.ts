@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { walletInfoAtom } from '@cowswap/wallet'
+
 import { getJotaiIsolatedStorage } from 'jotaiStore'
 
 import store from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
-
-import { walletInfoAtom } from 'modules/wallet'
 
 import { deepEqual } from 'utils/deepEqual'
 

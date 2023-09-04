@@ -2,12 +2,13 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useIsSafeViaWc, useWalletInfo } from '@cowswap/wallet'
+
 import { modifySafeHandlerAnalytics } from 'legacy/components/analytics/events/twapEvents'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
-import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'

@@ -1,11 +1,11 @@
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import useSWR from 'swr'
 
 import { GP_ORDER_UPDATE_INTERVAL } from 'legacy/constants'
 
 import { useSWROrdersRequest } from 'modules/orders/hooks/useSWROrdersRequest'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getOrders } from './api'
 

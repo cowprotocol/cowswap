@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { ImportTokenModal } from 'common/containers/ImportTokenModal'
 import { TradeApproveModal } from 'common/containers/TradeApprove'

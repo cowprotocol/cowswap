@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
@@ -13,8 +15,6 @@ import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import useTheme from 'legacy/hooks/useTheme'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 

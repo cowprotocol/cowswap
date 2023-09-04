@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -12,8 +13,6 @@ import { AutoRow, RowBetween } from 'legacy/components/Row'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'

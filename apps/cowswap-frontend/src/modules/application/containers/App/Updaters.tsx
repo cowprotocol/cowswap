@@ -1,3 +1,5 @@
+import { WalletUpdater, HwAccountIndexUpdater } from '@cowswap/wallet'
+
 import ApplicationUpdater from 'legacy/state/application/updater'
 import EnhancedTransactionUpdater from 'legacy/state/enhancedTransactions/updater'
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
@@ -21,7 +23,6 @@ import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { UsdPricesUpdater } from 'modules/usdAmount'
-import { WalletUpdater, HwAccountIndexUpdater } from 'modules/wallet'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'

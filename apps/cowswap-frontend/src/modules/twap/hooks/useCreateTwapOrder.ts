@@ -3,6 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { useWalletInfo, useSafeAppsSdk } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -17,7 +18,6 @@ import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
-import { useWalletInfo, useSafeAppsSdk } from 'modules/wallet'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 

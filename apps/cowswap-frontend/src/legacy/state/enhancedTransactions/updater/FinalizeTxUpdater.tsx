@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 
@@ -16,7 +17,6 @@ import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'

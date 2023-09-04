@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
 

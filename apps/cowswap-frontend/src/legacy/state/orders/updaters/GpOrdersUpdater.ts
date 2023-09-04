@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
@@ -13,7 +14,6 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'

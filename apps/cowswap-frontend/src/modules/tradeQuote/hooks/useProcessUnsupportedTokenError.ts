@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
+import { useWalletInfo } from '@cowswap/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
 
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'

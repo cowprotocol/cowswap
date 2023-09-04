@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -7,8 +8,6 @@ import { Nullish } from 'types'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { FractionUtils } from 'utils/fractionUtils'

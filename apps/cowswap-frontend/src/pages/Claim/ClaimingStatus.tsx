@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo, AddToMetamask } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -21,8 +22,6 @@ import { ClaimCommonTypes } from 'legacy/state/claim/types'
 import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { ExternalLink } from 'legacy/theme'
 import { shortenAddress } from 'legacy/utils'
-
-import { useWalletInfo, AddToMetamask } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 import { TokenAmount } from 'common/pure/TokenAmount'

@@ -2,6 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
+
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/swap/actions'
@@ -9,7 +11,6 @@ import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hoo
 
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { useWalletInfo } from 'modules/wallet'
 
 import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
 

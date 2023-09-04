@@ -1,5 +1,12 @@
 import { useEffect } from 'react'
 
+import {
+  getWeb3ReactConnection,
+  useWalletDetails,
+  useWalletInfo,
+  getConnectionName,
+  getIsMetaMask,
+} from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import ReactGA from 'react-ga4'
@@ -8,14 +15,6 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
 import usePrevious from 'legacy/hooks/usePrevious'
-
-import {
-  getWeb3ReactConnection,
-  useWalletDetails,
-  useWalletInfo,
-  getConnectionName,
-  getIsMetaMask,
-} from 'modules/wallet'
 
 import { useGetMarketDimension } from './useGetMarketDimension'
 

@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ConnectionType } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { createSlice } from '@reduxjs/toolkit'
@@ -8,8 +9,6 @@ import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import { COMMON_BASES } from 'legacy/constants/routing'
 import { updateVersion } from 'legacy/state/global/actions'
 import { SerializedPair, SerializedToken } from 'legacy/state/user/types'
-
-import { ConnectionType } from 'modules/wallet'
 
 // MOD imports
 // import { serializeToken } from './hooks'
