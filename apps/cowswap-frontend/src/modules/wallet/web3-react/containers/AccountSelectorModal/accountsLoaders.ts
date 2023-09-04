@@ -1,6 +1,6 @@
 import { ConnectionType } from '../../../api/types'
-import { HardWareWallet } from '../../connection'
 import { trezorConnection } from '../../connection/trezor'
+import { HardWareWallet } from '../../utils/getIsHardWareWallet'
 
 interface WalletAccountsLoader {
   getAccounts(): string[] | null

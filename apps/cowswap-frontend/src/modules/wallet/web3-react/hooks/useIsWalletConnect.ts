@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '../../api/types'
-import { getWeb3ReactConnection } from '../connection'
+import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 export function useIsWalletConnect(): boolean {
   const { connector } = useWeb3React()

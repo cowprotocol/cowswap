@@ -19,17 +19,21 @@ import { getExplorerAddressLink } from 'legacy/utils/explorer'
 import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
-import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { Identicon } from 'modules/wallet/api/container/Identicon'
-import { useWalletDetails } from 'modules/wallet/api/hooks'
-import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
 import {
+  ConnectionType,
+  useDisconnectWallet,
+  useWalletInfo,
+  WalletDetails,
   getConnectionIcon,
   getConnectionName,
   getIsCoinbaseWallet,
   getIsMetaMask,
-} from 'modules/wallet/api/utils/connection'
-import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+  Identicon,
+  useWalletDetails,
+  useIsWalletConnect,
+  getWeb3ReactConnection,
+  getIsHardWareWallet,
+} from 'modules/wallet'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -194,9 +198,7 @@ export function AccountDetails({
                 )}
               </WalletSelector>
 
-              {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
-              )}
+              {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
 
             <WalletActions>

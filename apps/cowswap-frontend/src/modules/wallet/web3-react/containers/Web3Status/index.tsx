@@ -10,7 +10,7 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 import { useWalletDetails, useWalletInfo } from '../../../api/hooks'
 import { Web3StatusInner } from '../../../api/pure/Web3StatusInner'
 import { Wrapper } from '../../../api/pure/Web3StatusInner/styled'
-import { getWeb3ReactConnection } from '../../connection'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { WalletModal } from '../WalletModal'
 

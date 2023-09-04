@@ -4,7 +4,7 @@ import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { shortenAddress } from 'legacy/utils'
 
-import { Identicon } from 'modules/wallet/api/container/Identicon'
+import { Identicon } from 'modules/wallet'
 
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
 import { ClaimCommonTypes } from './types'

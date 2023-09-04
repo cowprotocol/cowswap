@@ -17,7 +17,8 @@ import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 import { useWalletInfo } from '../../../api/hooks'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
 import { ConnectionType } from '../../../api/types'
-import { getIsHardWareWallet, getWeb3ReactConnection } from '../../connection'
+import { getIsHardWareWallet } from '../../utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
 export function WalletModal() {

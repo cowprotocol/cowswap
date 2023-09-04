@@ -6,6 +6,7 @@ export * from './web3-react/hooks/useDisconnectWallet'
 export * from './web3-react/hooks/useWalletMetadata'
 export * from './web3-react/hooks/useEagerlyConnect'
 export * from './web3-react/hooks/useOrderedConnections'
+export * from './web3-react//hooks/useIsWalletConnect'
 
 // Updater
 export * from './web3-react/updater'
@@ -18,3 +19,9 @@ export * from './web3-react/containers/AccountSelectorModal/state'
 export * from './web3-react/containers/WalletModal'
 export * from './api/container/Identicon'
 export * from './web3-react/containers/AddToMetamask'
+
+// Utils
+export * from './api/utils/connection'
+export { getIsHardWareWallet } from './web3-react/utils/getIsHardWareWallet'
+export { isChainAllowed } from './web3-react/utils/isChainAllowed'
+export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnection'

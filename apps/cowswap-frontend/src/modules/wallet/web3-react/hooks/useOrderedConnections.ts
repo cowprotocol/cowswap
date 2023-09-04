@@ -5,7 +5,7 @@ import { useAppSelector } from 'legacy/state/hooks'
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import { BACKFILLABLE_WALLETS, ConnectionType } from '../../api/types'
-import { getWeb3ReactConnection } from '../connection'
+import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]
 

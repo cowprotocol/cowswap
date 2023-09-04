@@ -5,7 +5,8 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { getIsHardWareWallet, getWeb3ReactConnection } from '../../web3-react/connection'
+import { getIsHardWareWallet } from '../../web3-react/utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../../web3-react/utils/getWeb3ReactConnection'
 import { useWalletInfo } from '../hooks'
 import { hwAccountIndexAtom } from '../state'
 

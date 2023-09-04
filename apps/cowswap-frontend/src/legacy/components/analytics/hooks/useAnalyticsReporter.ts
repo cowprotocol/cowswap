@@ -9,9 +9,8 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 // Mod imports
 import usePrevious from 'legacy/hooks/usePrevious'
 
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { getWeb3ReactConnection, useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { getConnectionName, getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { useGetMarketDimension } from './useGetMarketDimension'
 

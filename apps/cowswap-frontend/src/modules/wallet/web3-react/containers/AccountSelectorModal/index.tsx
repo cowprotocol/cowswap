@@ -16,8 +16,9 @@ import * as styledEl from './styled'
 
 import { hwAccountIndexAtom } from '../../../api/state'
 import { getConnectionIcon, getConnectionName } from '../../../api/utils/connection'
-import { getWeb3ReactConnection, HardWareWallet } from '../../connection'
 import { AccountIndexSelect } from '../../pure/AccountIndexSelect'
+import { HardWareWallet } from '../../utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
 export function AccountSelectorModal() {
   const { isOpen } = useAtomValue(accountSelectorModalAtom)

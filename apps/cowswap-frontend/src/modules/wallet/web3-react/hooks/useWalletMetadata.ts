@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
-import { getWeb3ReactConnection } from '../connection'
+import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
 const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'

@@ -8,10 +8,10 @@ import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { BACKFILLABLE_WALLETS } from '../../api/types'
-import { getWeb3ReactConnection } from '../connection'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
 import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
+import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
