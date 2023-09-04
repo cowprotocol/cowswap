@@ -2,6 +2,12 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  getExplorerOrderLink,
+  isOrderInPendingTooLong,
+  openNpsAppziSometimes,
+  timeSinceInSeconds,
+} from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
@@ -22,17 +28,16 @@ import {
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
-import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
-import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { useTriggerTotalSurplusUpdateCallback } from 'common/state/totalSurplusState'
-import { timeSinceInSeconds } from 'utils/time'
+
+import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
+
+import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
+import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.

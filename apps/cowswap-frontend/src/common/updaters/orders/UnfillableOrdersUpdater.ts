@@ -29,8 +29,9 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { hasEnoughBalanceAndAllowance, useBalancesAndAllowances } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
-import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
+
+import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
+import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 /**
  * Updater that checks whether pending orders are still "fillable"

@@ -6,14 +6,6 @@ import GasUpdater from 'legacy/state/gas/updater'
 import ListsUpdater from 'legacy/state/lists/updater'
 import LogsUpdater from 'legacy/state/logs/updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
-import {
-  CancelledOrdersUpdater,
-  ExpiredOrdersUpdater,
-  GpOrdersUpdater,
-  PendingOrdersUpdater,
-  UnfillableOrdersUpdater,
-} from 'legacy/state/orders/updaters'
-import { SpotPricesUpdater } from 'legacy/state/orders/updaters/SpotPricesUpdater'
 import FeesUpdater from 'legacy/state/price/updater'
 import UserUpdater from 'legacy/state/user/updater'
 
@@ -26,6 +18,14 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
+import {
+  CancelledOrdersUpdater,
+  ExpiredOrdersUpdater,
+  GpOrdersUpdater,
+  PendingOrdersUpdater,
+  UnfillableOrdersUpdater,
+} from 'common/updaters/orders'
+import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 

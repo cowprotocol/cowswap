@@ -2,14 +2,13 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useAllTokens } from 'legacy/hooks/Tokens'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
-import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
@@ -17,6 +16,8 @@ import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
+
+import { computeOrderSummary } from './utils'
 
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {

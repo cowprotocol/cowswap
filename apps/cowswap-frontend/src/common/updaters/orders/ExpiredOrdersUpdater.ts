@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useRef } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EXPIRED_ORDERS_PENDING_TIME } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 
-import { EXPIRED_ORDERS_PENDING_TIME } from 'legacy/constants'
 import { SetIsOrderRefundedBatch } from 'legacy/state/orders/actions'
 import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'legacy/state/orders/hooks'

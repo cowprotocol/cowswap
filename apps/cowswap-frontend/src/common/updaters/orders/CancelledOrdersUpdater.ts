@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { CANCELLED_ORDERS_PENDING_TIME } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 
-import { CANCELLED_ORDERS_PENDING_TIME } from 'legacy/constants'
 import { OrderFulfillmentData } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
-import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
+
+import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
 /**
  * Updater for cancelled orders.

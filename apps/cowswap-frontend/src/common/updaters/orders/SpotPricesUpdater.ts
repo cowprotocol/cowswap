@@ -2,19 +2,19 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useIsWindowVisible } from '@cowswap/common-hooks'
+import { FractionUtils } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { getCanonicalMarketChainKey } from 'common/utils/markets'
-import { FractionUtils } from 'utils/fractionUtils'
+import { useSafeMemo } from '../../hooks/useSafeMemo'
+import { getCanonicalMarketChainKey } from '../../utils/markets'
 
 type MarketRecord = Record<
   string,

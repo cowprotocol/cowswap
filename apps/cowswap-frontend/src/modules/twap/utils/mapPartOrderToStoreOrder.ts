@@ -1,10 +1,11 @@
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 import { Order } from 'legacy/state/orders/actions'
-import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
+
+import { computeOrderSummary } from 'common/updaters/orders/utils'
 
 import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
