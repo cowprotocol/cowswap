@@ -1,8 +1,7 @@
+import { Web3ReactConnection } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
-
-import { Web3ReactConnection } from '@cowswap/wallet'
 
 export const useIsActiveWallet = (connection: Web3ReactConnection) => {
   const { account } = useWeb3React()
