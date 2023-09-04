@@ -2,9 +2,9 @@ import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowswap/wallet'
 
-import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks/index'
-import { useAppDispatch } from 'legacy/state/hooks'
+import { useAllTransactions } from './TransactionHooksMod'
 
+import { useAppDispatch } from '../../hooks'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 

@@ -1,9 +1,8 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { BlockExplorerLinkType } from '@cowswap/common-utils'
 
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
-
-import { BlockExplorerLinkType } from 'legacy/utils'
 
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'

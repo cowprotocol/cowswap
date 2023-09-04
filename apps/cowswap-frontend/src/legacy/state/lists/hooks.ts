@@ -11,17 +11,18 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { shallowEqual } from 'react-redux'
 import { Nullish } from 'types'
 
-import { AppState } from 'legacy/state'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { UnsupportedToken } from 'api/gnosisProtocol'
+import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
+
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
   removeGpUnsupportedToken,
   RemoveGpUnsupportedTokenParams,
-} from 'legacy/state/lists/actions'
+} from './actions'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
-import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
 
 export type TokenAddressMap = ChainTokenMap
 

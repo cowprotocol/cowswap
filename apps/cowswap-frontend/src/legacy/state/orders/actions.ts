@@ -5,9 +5,9 @@ import { Token } from '@uniswap/sdk-core'
 
 import { createAction } from '@reduxjs/toolkit'
 
-import { SerializedToken } from 'legacy/state/user/types'
-
 import { ComposableCowInfo } from 'common/types'
+
+import { SerializedToken } from '../user/types'
 
 export enum OrderStatus {
   PENDING = 'pending',

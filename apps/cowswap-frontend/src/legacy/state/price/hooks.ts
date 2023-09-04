@@ -5,8 +5,6 @@ import { useWalletInfo } from '@cowswap/wallet'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { AppDispatch, AppState } from 'legacy/state'
-
 import { useSwapState } from 'modules/swap/hooks/useSwapState'
 
 import {
@@ -21,6 +19,8 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
+
+import { AppDispatch, AppState } from '../index'
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void

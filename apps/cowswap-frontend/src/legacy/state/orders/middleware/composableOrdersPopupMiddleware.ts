@@ -1,8 +1,8 @@
+import { isTruthy } from '@cowswap/common-utils'
+
 import { isAnyOf } from '@reduxjs/toolkit'
 import { jotaiStore } from 'jotaiStore'
 import { Middleware } from 'redux'
-
-import { isTruthy } from 'legacy/utils/misc'
 
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { setTwapOrderStatusAtom, twapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'

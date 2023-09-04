@@ -5,10 +5,6 @@ import { isTruthy } from '@cowswap/common-utils'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { AppDispatch, AppState } from 'legacy/state'
-import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
-import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
-
 import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
 
 import { OrderID } from 'api/gnosisProtocol'
@@ -46,6 +42,10 @@ import {
   PartialOrdersMap,
   V2OrderObject,
 } from './reducer'
+import { isOrderExpired, partialOrderUpdate } from './utils'
+
+import { AppDispatch, AppState } from '../index'
+import { deserializeToken, serializeToken } from '../user/hooks'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
