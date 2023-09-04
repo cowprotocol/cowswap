@@ -1,12 +1,10 @@
 import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token, Currency } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-import { FractionLike, Nullish } from 'types'
+import { FractionLike, Nullish } from './types'
 
-import { FULL_PRICE_PRECISION } from 'legacy/constants'
-
-import { adjustDecimalsAtoms } from 'utils/orderUtils/calculateAmountForRate'
-import { trimTrailingZeros } from 'utils/trimTrailingZeros'
+import { FULL_PRICE_PRECISION } from '@cowswap/common-const'
+import { trimTrailingZeros } from './trimTrailingZeros'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
@@ -81,7 +79,11 @@ export class FractionUtils {
    */
   static toPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
     // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
-    const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
+    const adjustedFraction = FractionUtils.adjustDecimalsAtoms(
+      fraction,
+      inputCurrency.decimals,
+      outputCurrency.decimals
+    )
 
     return new Price({
       quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
@@ -99,10 +101,25 @@ export class FractionUtils {
    * @returns
    */
   static fromPrice(price: Price<Currency, Currency>): Fraction {
-    return adjustDecimalsAtoms(
+    return FractionUtils.adjustDecimalsAtoms(
       new Fraction(price.numerator, price.denominator),
       price.quoteCurrency.decimals,
       price.baseCurrency.decimals
     )
+  }
+
+  /**
+   * Adjust a fraction defined in units for both token to consider the decimals.
+   * For example, a fraction like 1.1/1 representing the price of USDC, DAI in units, will be turned into
+   * 1.1/1000000000000 in atoms
+   */
+  static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction {
+    if (decimalsA === decimalsB) {
+      return value
+    }
+
+    const decimalsShift = JSBI.BigInt(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(decimalsA - decimalsB))))
+
+    return decimalsA < decimalsB ? value.multiply(decimalsShift) : value.divide(decimalsShift)
   }
 }
