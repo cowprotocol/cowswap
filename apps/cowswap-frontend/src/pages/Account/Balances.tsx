@@ -26,7 +26,7 @@ import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo, AddToMetamask } from 'modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
@@ -42,6 +42,7 @@ import {
   VestingBreakdown,
   CardsLoader,
   CardsSpinner,
+  StyledAddToMetamask,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -284,7 +285,7 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && !isProviderNetworkUnsupported && <AddToMetamask shortLabel currency={currencyCOW} />}
+              {isMetaMask && !isProviderNetworkUnsupported && <StyledAddToMetamask shortLabel currency={currencyCOW} />}
 
               {!isMetaMask && (
                 <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>

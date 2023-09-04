@@ -15,10 +15,11 @@ import { getIsMetaMask } from '../../../api/utils/connection'
 export type AddToMetamaskProps = {
   currency: Nullish<Currency>
   shortLabel?: boolean
+  className?: string
 }
 
 export function AddToMetamask(props: AddToMetamaskProps) {
-  const { currency, shortLabel } = props
+  const { currency, shortLabel, className } = props
   const { connector } = useWeb3React()
   const isMetamask = getIsMetaMask()
 
@@ -50,5 +51,13 @@ export function AddToMetamask(props: AddToMetamaskProps) {
     return null
   }
 
-  return <AddToMetamaskPure success={success} addToken={addToken} currency={currency} shortLabel={shortLabel} />
+  return (
+    <AddToMetamaskPure
+      className={className}
+      success={success}
+      addToken={addToken}
+      currency={currency}
+      shortLabel={shortLabel}
+    />
+  )
 }

@@ -62,14 +62,15 @@ export type AddToMetamaskProps = {
   shortLabel?: boolean
   addToken: () => void
   success?: boolean
+  className?: string
 }
 
 export function AddToMetamask(props: AddToMetamaskProps) {
-  const { currency, shortLabel, addToken, success } = props
+  const { className, currency, shortLabel, addToken, success } = props
   const theme = useContext(ThemeContext)
 
   return (
-    <ButtonCustom onClick={addToken}>
+    <ButtonCustom className={className} onClick={addToken}>
       {!success ? (
         <RowFixed>
           <StyledIcon src={MetaMaskLogo} />{' '}
