@@ -19,7 +19,8 @@
       "@cowswap/assets/*": ["../../../libs/assets/src/*"],
       "@cowswap/common-const": ["../../../libs/common-const/src/index.ts"],
       "@cowswap/common-utils": ["../../../libs/common-utils/src/index.ts"],
-      "@cowswap/common-hooks": ["../../../libs/common-hooks/src/index.ts"]
+      "@cowswap/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
+      "@cowswap/ens": ["../../../libs/ens/src/index.ts"]
     }
   },
   "files": [],

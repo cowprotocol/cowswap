@@ -2,18 +2,12 @@ import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
-  ArgentWalletDetector,
-  EnsPublicResolver,
-  EnsRegistrar,
   Erc20,
   Erc721,
   Erc1155,
   Weth,
   CoWSwapEthFlowJson,
-  ArgentWalletDetectorAbi,
   Eip2612Abi,
-  EnsPublicResolverAbi,
-  EnsAbi,
   Erc20Abi,
   Erc20Bytes32Abi,
   Erc721Abi,
@@ -35,8 +29,6 @@ import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
-  ARGENT_WALLET_DETECTOR_ADDRESS,
-  ENS_REGISTRAR_ADDRESSES,
   MULTICALL_ADDRESS,
   WRAPPED_NATIVE_CURRENCY,
 } from '@cowswap/common-const'
@@ -89,18 +81,6 @@ export function useERC721Contract(nftAddress?: string) {
 
 export function useERC1155Contract(nftAddress?: string) {
   return useContract<Erc1155>(nftAddress, Erc1155Abi, false)
-}
-
-export function useArgentWalletDetectorContract() {
-  return useContract<ArgentWalletDetector>(ARGENT_WALLET_DETECTOR_ADDRESS, ArgentWalletDetectorAbi, false)
-}
-
-export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
-  return useContract<EnsRegistrar>(ENS_REGISTRAR_ADDRESSES, EnsAbi, withSignerIfPossible)
-}
-
-export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean) {
-  return useContract<EnsPublicResolver>(address, EnsPublicResolverAbi, withSignerIfPossible)
 }
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {

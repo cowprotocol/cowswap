@@ -1,9 +1,8 @@
+import { useENS } from '@cowswap/ens'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-
-import useENS from 'legacy/hooks/useENS'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowswap/common-hooks'
 import { getProviderErrorMessage } from '@cowswap/common-utils'
+import { useENS } from '@cowswap/ens'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import Confetti from 'legacy/components/Confetti'
 import Loader from 'legacy/components/Loader'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import useENS from 'legacy/hooks/useENS'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'

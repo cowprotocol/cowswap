@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { tryParseCurrencyAmount } from '@cowswap/common-utils'
+import { FEE_SIZE_THRESHOLD } from '@cowswap/common-const'
+import { formatSymbol, isAddress, tryParseCurrencyAmount } from '@cowswap/common-utils'
+import { useENS } from '@cowswap/ens'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'legacy/components/analytics'
-import { FEE_SIZE_THRESHOLD } from 'legacy/constants'
 import { useCurrency } from 'legacy/hooks/Tokens'
-import useENS from 'legacy/hooks/useENS'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
@@ -19,8 +19,6 @@ import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } fro
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
-import { isAddress } from 'legacy/utils'
-import { registerOnWindow } from 'legacy/utils/misc'
 
 import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -30,7 +28,6 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
-import { formatSymbol } from 'utils/format'
 
 import { Field, setRecipient, switchCurrencies, typeInput } from './actions'
 
@@ -281,9 +278,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   // TODO: rename v2Trade to just "trade" we dont have versions
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
-
-  registerOnWindow({ trade: v2Trade })
-  // -- MOD --
 
   const currencyBalances = useMemo(
     () => ({

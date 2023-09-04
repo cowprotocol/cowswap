@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 
 import { isAddress } from '@cowswap/common-utils'
 
-import useENSAddress from './useENSAddress'
-import useENSName from './useENSName'
+import { useENSAddress } from './useENSAddress'
+import { useENSName } from './useENSName'
 
 /**
  * Given a name or address, does a lookup to resolve to an address and name
  * @param nameOrAddress ENS name or address
  */
-export default function useENS(nameOrAddress?: string | null): {
+export function useENS(nameOrAddress?: string | null): {
   loading: boolean
   address: string | null
   name: string | null

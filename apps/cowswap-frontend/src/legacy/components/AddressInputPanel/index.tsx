@@ -1,5 +1,7 @@
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 
+import { getBlockExplorerUrl as getExplorerLink } from '@cowswap/common-utils'
+import { useENS } from '@cowswap/ens'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { t, Trans } from '@lingui/macro'
@@ -7,9 +9,7 @@ import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
-import useENS from 'legacy/hooks/useENS'
 import { ExternalLink, ThemedText } from 'legacy/theme'
-import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
 import { autofocus } from 'common/utils/autofocus'
 

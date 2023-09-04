@@ -1,5 +1,9 @@
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Weth } from '@cowswap/abis'
+import { GpEther as ETHER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
+import { useWETHContract } from '@cowswap/common-hooks'
+import { calculateValidTo } from '@cowswap/common-utils'
+import { useENSAddress } from '@cowswap/ens'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -8,10 +12,6 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { GpEther as ETHER } from 'legacy/constants/tokens'
-import { useWETHContract } from 'legacy/hooks/useContract'
-import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'legacy/state/orders/hooks'
@@ -28,8 +28,6 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-
-import { calculateValidTo } from 'utils/time'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 

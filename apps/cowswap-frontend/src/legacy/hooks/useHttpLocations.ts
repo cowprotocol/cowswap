@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
 import { contenthashToUri, parseENSAddress, uriToHttp } from '@cowswap/common-utils'
-
-import useENSContentHash from './useENSContentHash'
+import { useENSContentHash } from '@cowswap/ens'
 
 export default function useHttpLocations(uri: string | undefined): string[] {
   const ens = useMemo(() => (uri ? parseENSAddress(uri) : undefined), [uri])

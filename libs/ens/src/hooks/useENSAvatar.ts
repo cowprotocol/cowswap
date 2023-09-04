@@ -1,31 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import {
-  useDebounce,
-  useENSRegistrarContract,
-  useENSResolverContract,
-  useERC1155Contract,
-  useERC721Contract,
-} from '@cowswap/common-hooks'
+import { useDebounce, useERC1155Contract, useERC721Contract } from '@cowswap/common-hooks'
 import { safeNamehash, uriToHttp, isAddress, isZero } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
 
-import { fetchWithBackoff } from 'common/utils/fetch'
-import { useSingleCallResult } from 'lib/hooks/multicall'
-
-import useENSName from './useENSName'
+import { useENSName } from './useENSName'
+import { useENSResolverContract } from './useENSResolverContract'
+import useSWR from 'swr'
+import { useENSResolver } from './useENSResolver'
 
 /**
  * Returns the ENS avatar URI, if available.
  * Spec: https://gist.github.com/Arachnid/9db60bd75277969ee1689c8742b75182.
  */
-export default function useENSAvatar(
-  address?: string,
-  enforceOwnership = true
-): { avatar: string | null; loading: boolean } {
+export function useENSAvatar(address?: string, enforceOwnership = true): { avatar: string | null; loading: boolean } {
   const debouncedAddress = useDebounce(address, 200)
   const node = useMemo(() => {
     if (!debouncedAddress || !isAddress(debouncedAddress)) return undefined
@@ -53,23 +44,24 @@ export default function useENSAvatar(
 }
 
 function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean } {
-  const nodeArgument = useMemo(() => [node], [node])
-  const textArgument = useMemo(() => [node, 'avatar'], [node])
-  const registrarContract = useENSRegistrarContract(false)
-  const resolverAddress = useSingleCallResult(registrarContract, 'resolver', nodeArgument)
-  const resolverAddressResult = resolverAddress.result?.[0]
+  const { data: resolverAddress } = useENSResolver(node)
+
   const resolverContract = useENSResolverContract(
-    resolverAddressResult && !isZero(resolverAddressResult) ? resolverAddressResult : undefined,
-    false
+    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
   )
-  const avatar = useSingleCallResult(resolverContract, 'text', textArgument)
+
+  const { data: avatar, isLoading } = useSWR(['useAvatarFromNode', node], async () => {
+    if (!resolverContract || !node) return undefined
+
+    return resolverContract.callStatic.text(node, 'avatar')
+  })
 
   return useMemo(
     () => ({
-      avatar: avatar.result?.[0],
-      loading: resolverAddress.loading || avatar.loading,
+      avatar: avatar,
+      loading: isLoading,
     }),
-    [avatar.loading, avatar.result, resolverAddress.loading]
+    [avatar, isLoading]
   )
 }
 
@@ -93,7 +85,7 @@ function useAvatarFromNFT(nftUri = '', enforceOwnership: boolean): { avatar?: st
     setAvatar(undefined)
     if (http) {
       setLoading(true)
-      fetchWithBackoff(http)
+      fetch(http)
         .then((res) => res.json())
         .then(({ image }) => {
           setAvatar(image)
@@ -116,17 +108,23 @@ function useERC721Uri(
   id: string | undefined,
   enforceOwnership: boolean
 ): { uri?: string; loading: boolean } {
-  const idArgument = useMemo(() => [id], [id])
   const { account } = useWalletInfo()
   const contract = useERC721Contract(contractAddress)
-  const owner = useSingleCallResult(contract, 'ownerOf', idArgument)
-  const uri = useSingleCallResult(contract, 'tokenURI', idArgument)
+
+  const { data, isLoading } = useSWR(['useERC721Uri', contract, id], async () => {
+    if (!contract || !account || !id) return undefined
+
+    const [owner, uri] = await Promise.all([contract.callStatic.ownerOf(id), contract.callStatic.tokenURI(id)])
+
+    return { owner, uri }
+  })
+
   return useMemo(
     () => ({
-      uri: !enforceOwnership || account === owner.result?.[0] ? uri.result?.[0] : undefined,
-      loading: owner.loading || uri.loading,
+      uri: !enforceOwnership || account === data?.owner ? data?.uri : undefined,
+      loading: isLoading,
     }),
-    [account, enforceOwnership, owner.loading, owner.result, uri.loading, uri.result]
+    [account, enforceOwnership, data, isLoading]
   )
 }
 
@@ -136,21 +134,28 @@ function useERC1155Uri(
   enforceOwnership: boolean
 ): { uri?: string; loading: boolean } {
   const { account } = useWalletInfo()
-  const idArgument = useMemo(() => [id], [id])
-  const accountArgument = useMemo(() => [account || '', id], [account, id])
   const contract = useERC1155Contract(contractAddress)
-  const balance = useSingleCallResult(contract, 'balanceOf', accountArgument)
-  const uri = useSingleCallResult(contract, 'uri', idArgument)
+
+  const { data, isLoading } = useSWR(['useERC1155Uri', contract, id, account], async () => {
+    if (!contract || !account || !id) return undefined
+
+    const [balance, uri] = await Promise.all([contract.callStatic.balanceOf(account, id), contract.callStatic.uri(id)])
+
+    return { balance, uri }
+  })
+
   // ERC-1155 allows a generic {id} in the URL, so prepare to replace if relevant,
   //   in lowercase hexadecimal (with no 0x prefix) and leading zero padded to 64 hex characters.
-  const idHex = getIdHex(id)
-  return useMemo(
-    () => ({
-      uri: !enforceOwnership || balance.result?.[0] > 0 ? uri.result?.[0]?.replaceAll('{id}', idHex) : undefined,
-      loading: balance.loading || uri.loading,
-    }),
-    [balance.loading, balance.result, enforceOwnership, uri.loading, uri.result, idHex]
-  )
+  const idHex = getIdHex(id) || ''
+
+  return useMemo(() => {
+    return {
+      uri:
+        (!enforceOwnership || data?.balance?.gt(0) ? (data?.uri || '').replace(/{id}/g, idHex) : undefined) ||
+        undefined,
+      loading: isLoading,
+    }
+  }, [enforceOwnership, idHex, data, isLoading])
 }
 
 function getIdHex(id: string | undefined): string | undefined {
