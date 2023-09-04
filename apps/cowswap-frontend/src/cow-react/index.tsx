@@ -2,10 +2,11 @@ import '@reach/dialog/styles.css'
 import 'inter-ui'
 
 import 'legacy/components/analytics'
-import 'utils/sentry'
+import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
+import { nodeRemoveChildFix } from '@cowswap/common-utils'
 import { SnackbarsWidget } from '@cowswap/snackbars'
 
 import { LanguageProvider } from 'i18n'
@@ -19,7 +20,6 @@ import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
 import store from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
-import { nodeRemoveChildFix } from 'legacy/utils/node'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'

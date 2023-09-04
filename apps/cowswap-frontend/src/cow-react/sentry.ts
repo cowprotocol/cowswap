@@ -1,6 +1,6 @@
-import * as Sentry from '@sentry/react'
+import { environmentName } from '@cowswap/common-utils'
 
-import { environmentName } from 'legacy/utils/environments'
+import * as Sentry from '@sentry/react'
 
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
