@@ -8,13 +8,14 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
-import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
+import { deserializeToken, useFavouriteTokens, useUserAddedTokens } from 'legacy/state/user/hooks'
 
 import { TokensByAddress, tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from '../../lib/hooks/useCurrency'
+import { TokenAmounts, useOnchainBalances } from '../../modules/tokens'
 import { TokenAddressMap, useUnsupportedTokenList } from '../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
@@ -189,4 +190,32 @@ export function useToken(tokenAddress?: string | null): Token | null | undefined
 export function useCurrency(currencyId?: string | null): Currency | null | undefined {
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
+}
+
+// mimics useAllBalances
+export function useAllTokenBalances(): [TokenAmounts, boolean] {
+  const { account } = useWalletInfo()
+  const allTokens = useAllTokens()
+  // Mod, add favourite tokens to balances
+  const favTokens = useFavouriteTokens()
+
+  const allTokensArray = useMemo(() => {
+    const favTokensObj = favTokens.reduce(
+      (acc, cur: Token) => {
+        acc[cur.address] = cur
+        return acc
+      },
+      {} as {
+        [address: string]: Token
+      }
+    )
+
+    return Object.values({ ...favTokensObj, ...allTokens })
+  }, [allTokens, favTokens])
+
+  const { isLoading, amounts } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
+  return [amounts ?? {}, isLoading]
 }

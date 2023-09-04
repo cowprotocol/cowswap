@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+import { useAllTokenBalances } from 'legacy/hooks/Tokens'
 
 import { TokenAmounts } from 'modules/tokens'
 

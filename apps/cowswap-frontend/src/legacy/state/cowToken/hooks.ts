@@ -1,20 +1,20 @@
 import { useCallback, useMemo } from 'react'
 
+import { COW, V_COW } from '@cowswap/common-const'
+import { useVCowContract } from '@cowswap/common-hooks'
+import { useWalletInfo } from '@cowswap/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { V_COW, COW } from 'legacy/constants/tokens'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { useVCowContract } from 'legacy/hooks/useContract'
 import { AppState } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 

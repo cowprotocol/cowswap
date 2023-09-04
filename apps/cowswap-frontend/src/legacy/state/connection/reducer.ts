@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { ConnectionType } from '@cowswap/wallet'
 
-import { ConnectionType } from 'modules/wallet'
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface ConnectionState {
   errorByConnectionType: Record<ConnectionType, string | undefined>
