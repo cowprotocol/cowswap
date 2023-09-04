@@ -21,6 +21,7 @@
       "@cowswap/common-utils": ["../../../libs/common-utils/src/index.ts"],
       "@cowswap/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
       "@cowswap/ens": ["../../../libs/ens/src/index.ts"],
+      "@cowswap/analytics": ["../../../libs/analytics/src/index.ts"],
       "@cowswap/redux-state": ["../../../libs/redux-state/src/index.ts"]
     }
   },
