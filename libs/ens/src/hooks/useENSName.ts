@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useDebounce } from '@cowswap/common-hooks'
 import { isAddress } from '@cowswap/common-utils'
 import { namehash } from '@ethersproject/hash'
 
@@ -12,12 +11,11 @@ import { useENSResolverMethod } from './useENSResolverMethod'
  * Note this is not the same as looking up an ENS name to find an address.
  */
 export function useENSName(address?: string): { ENSName: string | null; loading: boolean } {
-  const debouncedAddress = useDebounce(address, 200)
   const ensNodeArgument = useMemo(() => {
-    if (!debouncedAddress || !isAddress(debouncedAddress)) return undefined
+    if (!address || !isAddress(address)) return undefined
 
-    return namehash(`${debouncedAddress.toLowerCase().substr(2)}.addr.reverse`)
-  }, [debouncedAddress])
+    return namehash(`${address.toLowerCase().substr(2)}.addr.reverse`)
+  }, [address])
 
   const { data: name, isLoading: nameLoading } = useENSResolverMethod('name', ensNodeArgument)
 
@@ -28,13 +26,11 @@ export function useENSName(address?: string): { ENSName: string | null; loading:
   const fwdAddr = useENSAddress(name)
   const checkedName = address === fwdAddr?.address ? name : null
 
-  const changed = debouncedAddress !== address
-
   return useMemo(
     () => ({
-      ENSName: changed ? null : checkedName ?? null,
-      loading: changed || nameLoading,
+      ENSName: checkedName ?? null,
+      loading: nameLoading,
     }),
-    [changed, checkedName, nameLoading]
+    [checkedName, nameLoading]
   )
 }

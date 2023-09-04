@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import useENSName from 'legacy/hooks/useENSName'
-
 import { getSafeInfo } from 'api/gnosisSafe'
 import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
@@ -17,6 +15,7 @@ import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useENSName } from '@cowswap/ens'
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
