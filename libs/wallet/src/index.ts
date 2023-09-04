@@ -32,6 +32,7 @@ export { switchChain } from './web3-react/utils/switchChain'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
+export { handleFollowPendingTxPopupAtom } from './api/state/followPendingTxPopupAtom'
 
 // Connections
 export { injectedConnection } from './web3-react/connection/injected'

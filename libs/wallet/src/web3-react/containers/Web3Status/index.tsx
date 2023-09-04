@@ -1,6 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
 
-import { useCloseFollowTxPopupIfNotPendingOrder } from 'legacy/components/Popups/FollowPendingTxPopup'
 import { STORAGE_KEY_LAST_PROVIDER } from '@cowswap/common-const'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
@@ -11,6 +10,7 @@ import { Wrapper } from '../../../api/pure/Web3StatusInner/styled'
 import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { WalletModal } from '../WalletModal'
+import { useCloseFollowTxPopupIfNotPendingOrder } from '../../../api/container/FollowPendingTxPopup'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()

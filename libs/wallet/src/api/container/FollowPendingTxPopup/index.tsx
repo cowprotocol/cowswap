@@ -9,11 +9,9 @@ import {
   showFollowTxPopupAtom,
   followPendingTxPopupAtom,
   handleCloseOrderPopupAtom,
-} from 'legacy/state/application/atoms'
+} from '../../state/followPendingTxPopupAtom'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
-
-import { OrderID } from 'api/gnosisProtocol'
 
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
@@ -45,7 +43,7 @@ export function useCloseFollowTxPopupIfNotPendingOrder() {
   }, [lastPendingOrder, onClose, showingPopup])
 }
 
-const useShowingPopupFirstTime = (orderId: OrderID | undefined) => {
+const useShowingPopupFirstTime = (orderId: string | undefined) => {
   const showingPopup = useAtomValue(showFollowTxPopupAtom)
   const _firstTimePopupOrderAppears = useMemo(
     () =>

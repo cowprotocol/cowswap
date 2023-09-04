@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isTruthy } from '@cowswap/common-utils'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
 import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
-import { isTruthy } from 'legacy/utils/misc'
 
 import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
 
