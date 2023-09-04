@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { formatInputAmount } from '@cowswap/common-utils'
+import { TokenAmount } from '@cowswap/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -17,8 +19,6 @@ import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'
 

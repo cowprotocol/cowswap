@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { FiatAmount, TokenAmount, SymbolElement } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
@@ -13,8 +14,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { ExternalLink } from 'legacy/theme'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount, SymbolElement } from 'common/pure/TokenAmount'
 
 import { sendEvent } from '../../../legacy/components/analytics/googleAnalytics'
 

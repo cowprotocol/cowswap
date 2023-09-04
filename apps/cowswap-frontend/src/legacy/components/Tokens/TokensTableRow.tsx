@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { GP_VAULT_RELAYER } from '@cowswap/common-const'
+import { usePrevious, useTheme } from '@cowswap/common-hooks'
+import { getBlockExplorerUrl } from '@cowswap/common-utils'
+import { TokenAmount, TokenSymbol, Loader } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
@@ -8,21 +12,14 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
 import EtherscanImage from 'legacy/assets/cow-swap/etherscan-icon.svg'
-import Loader from 'legacy/components/Loader'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import usePrevious from 'legacy/hooks/usePrevious'
-import useTheme from 'legacy/hooks/useTheme'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { getBlockExplorerUrl } from 'legacy/utils'
 
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

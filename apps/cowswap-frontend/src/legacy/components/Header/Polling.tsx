@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -7,7 +8,6 @@ import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { RowFixed } from 'legacy/components/Row'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'

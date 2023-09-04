@@ -1,8 +1,6 @@
 import { tryParseCurrencyAmount } from '@cowswap/common-utils'
+import { FiatAmount, TokenAmount } from '@cowswap/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
-
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { useExecutionPriceFiat } from './hooks/useExecutionPriceFiat'
 

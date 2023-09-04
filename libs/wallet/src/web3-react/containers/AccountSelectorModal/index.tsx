@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useAddSnackbar } from '@cowswap/wallet'
+import { useAddSnackbar } from '@cowswap/snackbars'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'

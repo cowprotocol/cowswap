@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { Row } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { Text } from 'rebass'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { ExternalLink } from 'legacy/components/Link'
-import Row from 'legacy/components/Row'
 import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
 import {
   ConfirmationModalContentProps,

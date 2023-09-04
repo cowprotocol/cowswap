@@ -4,12 +4,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
-import Loader from 'legacy/components/Loader'
+import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowswap/ui'
 import { shortenAddress } from '@cowswap/common-utils'
-
-import { SelectDropdown } from 'common/pure/SelectDropdown'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 

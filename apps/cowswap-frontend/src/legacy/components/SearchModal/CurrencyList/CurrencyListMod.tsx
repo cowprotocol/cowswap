@@ -1,5 +1,7 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
+import { useTheme } from '@cowswap/common-hooks'
+import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -13,14 +15,11 @@ import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalyt
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import Loader from 'legacy/components/Loader'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { LoadingRows } from 'legacy/components/SearchModal/styleds'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { useAllTokens, useIsUserAddedToken } from 'legacy/hooks/Tokens'
-import useTheme from 'legacy/hooks/useTheme'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
@@ -28,8 +27,6 @@ import { ThemedText } from 'legacy/theme'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { Tag } from './styled' // mod
 

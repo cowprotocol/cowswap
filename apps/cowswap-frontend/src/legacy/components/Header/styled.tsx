@@ -1,5 +1,7 @@
 import { PropsWithChildren } from 'react'
 
+import { Row, RowFixed } from '@cowswap/ui'
+
 import useScrollPosition from '@react-hook/window-scroll'
 import { transparentize, darken } from 'polished'
 import { NavLink } from 'react-router-dom'
@@ -7,7 +9,6 @@ import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
-import Row, { RowFixed } from 'legacy/components/Row'
 
 const activeClassName = 'active'
 

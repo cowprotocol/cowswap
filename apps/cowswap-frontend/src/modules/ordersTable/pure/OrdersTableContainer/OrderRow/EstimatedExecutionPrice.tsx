@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 
+import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowswap/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken, transparentize } from 'polished'
@@ -12,7 +13,6 @@ import { ZERO_FRACTION } from 'legacy/constants'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculateOrderExecutionStatus, ExecuteIndicator } from 'common/pure/OrderExecutionStatusList'
-import { SymbolElement, TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 

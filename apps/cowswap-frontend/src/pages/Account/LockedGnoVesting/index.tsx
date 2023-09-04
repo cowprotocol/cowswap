@@ -1,6 +1,19 @@
 import { useCallback, useState, useEffect } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  LOCKED_GNO_VESTING_START_DATE,
+  MERKLE_DROP_CONTRACT_ADDRESSES,
+  TOKEN_DISTRO_CONTRACT_ADDRESSES,
+} from '@cowswap/common-const'
+import { usePrevious } from '@cowswap/common-hooks'
+import {
+  formatDateWithTimezone,
+  getBlockExplorerUrl,
+  getProviderErrorMessage,
+  isRejectRequestProviderError,
+} from '@cowswap/common-utils'
+import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
@@ -10,22 +23,13 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
 import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import { claimAnalytics } from 'legacy/components/analytics'
-import { ButtonPrimary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { LOCKED_GNO_VESTING_START_DATE } from 'legacy/constants'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import usePrevious from 'legacy/hooks/usePrevious'
-import { ButtonSize } from 'legacy/theme/enum'
-import { getBlockExplorerUrl } from 'legacy/utils'
-import { getProviderErrorMessage, isRejectRequestProviderError } from 'legacy/utils/misc'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
-import { formatDateWithTimezone } from 'utils/time'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 

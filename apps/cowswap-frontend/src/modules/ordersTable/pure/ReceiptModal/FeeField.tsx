@@ -1,6 +1,6 @@
+import { TokenAmount } from '@cowswap/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'

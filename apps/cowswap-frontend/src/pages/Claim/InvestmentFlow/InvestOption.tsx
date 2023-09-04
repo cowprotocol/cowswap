@@ -8,6 +8,7 @@ import {
   formatTokenAmount,
   formatSymbol,
 } from '@cowswap/common-utils'
+import { Loader, loadingOpacityMixin, ButtonSize, TokenAmount, ButtonConfirmed, Row } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -17,12 +18,8 @@ import styled from 'styled-components/macro'
 
 import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
-import { ButtonConfirmed } from 'legacy/components/Button'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import Loader from 'legacy/components/Loader'
-import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
-import Row from 'legacy/components/Row'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
@@ -31,11 +28,8 @@ import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-import { ButtonSize } from 'legacy/theme/enum'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { IS_TESTING_ENV } from '../const'
 import {

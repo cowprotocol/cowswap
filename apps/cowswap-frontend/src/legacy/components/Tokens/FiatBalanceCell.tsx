@@ -1,3 +1,4 @@
+import { FiatAmount } from '@cowswap/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -5,8 +6,6 @@ import { Trans } from '@lingui/macro'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 
 import { useUsdAmount } from 'modules/usdAmount'
-
-import { FiatAmount } from 'common/pure/FiatAmount'
 
 import { BalanceValue, FiatValue, InfoCircle } from './styled'
 

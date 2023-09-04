@@ -1,13 +1,12 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { TokenAmount, TokenSymbol } from '@cowswap/ui'
 import { useWalletDisplayedAddress } from '@cowswap/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { CowModal } from 'common/pure/Modal'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'

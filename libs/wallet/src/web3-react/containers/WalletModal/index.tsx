@@ -5,14 +5,11 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { changeWalletAnalytics } from 'legacy/components/analytics'
-import usePrevious from 'legacy/hooks/usePrevious'
 import { useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { useWalletInfo } from '../../../api/hooks'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
@@ -20,6 +17,8 @@ import { ConnectionType } from '../../../api/types'
 import { getIsHardWareWallet } from '../../utils/getIsHardWareWallet'
 import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
+import { usePrevious } from '@cowswap/common-hooks'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

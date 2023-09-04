@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 
+import { RowBetween, RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -9,7 +10,6 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import {
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,

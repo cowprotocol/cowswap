@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { AutoRow } from '@cowswap/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import CowError from 'legacy/assets/cow-swap/CowError.png'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
 import { CODE_LINK, DISCORD_LINK } from 'legacy/constants'
 import store, { AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'

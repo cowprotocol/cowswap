@@ -1,9 +1,8 @@
+import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowswap/ui'
+
 import styled from 'styled-components/macro'
 
-import { LoadingRows as BaseLoadingRows } from 'legacy/components/Loader/styled'
-
 import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
 
 export const TextDot = styled.div`
   height: 3px;

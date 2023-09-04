@@ -1,3 +1,5 @@
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowswap/common-const'
+import { RowFixed, TokenAmount } from '@cowswap/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 // eslint-disable-next-line no-restricted-imports
@@ -8,14 +10,11 @@ import styled from 'styled-components/macro'
 
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import { RowFixed } from 'legacy/components/Row'
 import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 import { StyledLogo } from 'common/pure/CurrencyLogo'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import CurrencyListMod, { StyledBalanceText, TagContainer } from './CurrencyListMod'
 import { Tag as TagMod } from './styled'

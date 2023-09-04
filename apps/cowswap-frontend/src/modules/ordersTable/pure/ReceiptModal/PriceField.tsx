@@ -1,7 +1,7 @@
+import { TokenAmount } from '@cowswap/ui'
+import { TokenSymbol } from '@cowswap/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'

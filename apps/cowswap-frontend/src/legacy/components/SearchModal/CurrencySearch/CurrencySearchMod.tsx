@@ -2,6 +2,7 @@ import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo,
 
 import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowswap/common-hooks'
 import { isAddress } from '@cowswap/common-utils'
+import { Row } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
@@ -15,7 +16,6 @@ import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/const
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
-import Row from 'legacy/components/Row'
 import CommonBases from 'legacy/components/SearchModal/CommonBases'
 import CurrencyList from 'legacy/components/SearchModal/CurrencyList'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'

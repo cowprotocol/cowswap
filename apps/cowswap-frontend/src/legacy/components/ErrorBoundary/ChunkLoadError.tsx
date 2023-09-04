@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react'
 
+import { ButtonPrimary } from '@cowswap/ui'
+import { AutoRow } from '@cowswap/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import cowNoConnectionIMG from 'legacy/assets/cow-swap/cow-no-connection.png'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
 import { DISCORD_LINK } from 'legacy/constants'
 import { ExternalLink, MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 

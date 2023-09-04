@@ -1,8 +1,8 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
-import styled from 'styled-components/macro'
+import { ButtonError } from '@cowswap/ui'
 
-import { ButtonError } from 'legacy/components/Button'
+import styled from 'styled-components/macro'
 
 const Container = styled.div``
 const Instruction = styled.p`

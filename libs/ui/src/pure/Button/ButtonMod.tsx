@@ -3,9 +3,8 @@ import { Check, ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from 'legacy/components/Row'
-import useTheme from 'legacy/hooks/useTheme'
-import { ButtonSize } from 'legacy/theme/enum'
+import { RowBetween } from '../Row'
+import { ButtonSize } from '../../enum'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 
@@ -337,30 +336,3 @@ const CheckboxWrapper = styled.div`
 const ResponsiveCheck = styled(Check)`
   size: 13px;
 `
-
-export function ButtonRadioChecked({ active = false, children, ...rest }: { active?: boolean } & ButtonProps) {
-  const theme = useTheme()
-
-  if (!active) {
-    return (
-      <ButtonOutlined $borderRadius="12px" padding="12px 8px" {...rest}>
-        {<RowBetween>{children}</RowBetween>}
-      </ButtonOutlined>
-    )
-  } else {
-    return (
-      <ActiveOutlined {...rest} padding="12px 8px" $borderRadius="12px">
-        {
-          <RowBetween>
-            {children}
-            <CheckboxWrapper>
-              <Circle>
-                <ResponsiveCheck size={13} stroke={theme.white} />
-              </Circle>
-            </CheckboxWrapper>
-          </RowBetween>
-        }
-      </ActiveOutlined>
-    )
-  }
-}

@@ -1,15 +1,15 @@
 import { useState } from 'react'
 
+import { ButtonEmpty } from '@cowswap/ui'
+import { AutoRow, RowBetween } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonEmpty } from 'legacy/components/Button'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow, RowBetween } from 'legacy/components/Row'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'

@@ -1,14 +1,12 @@
+import { LONG_PRECISION } from '@cowswap/common-const'
+import { formatTokenAmount, FractionUtils } from '@cowswap/common-utils'
+import { FeatureFlag } from '@cowswap/common-utils'
+
 import { darken, transparentize } from 'polished'
 import styled from 'styled-components/macro'
-import { FractionLike, Nullish } from 'types'
-
-import { LONG_PRECISION } from 'legacy/constants'
-
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'common/constants/featureFlags'
-import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
-import { formatTokenAmount } from 'utils/amountFormat'
-import { FeatureFlag } from 'utils/featureFlags'
-import { FractionUtils } from 'utils/fractionUtils'
+import { FractionLike, Nullish } from '../../types'
+import { TokenSymbol, TokenSymbolProps } from '../TokenSymbol'
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};

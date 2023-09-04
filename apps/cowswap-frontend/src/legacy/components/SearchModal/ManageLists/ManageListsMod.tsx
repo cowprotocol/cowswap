@@ -2,6 +2,8 @@ import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } 
 
 import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowswap/common-hooks'
 import { parseENSAddress, uriToHttp } from '@cowswap/common-utils'
+import { ButtonEmpty, ButtonPrimary } from '@cowswap/ui'
+import { Row, RowBetween, RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList, Version } from '@uniswap/token-lists'
 
@@ -11,10 +13,8 @@ import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
-import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Column, { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
 import Toggle from 'legacy/components/Toggle'

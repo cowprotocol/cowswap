@@ -1,9 +1,9 @@
+import { BaseButton } from '@cowswap/ui'
+
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-
-import { BaseButton } from 'legacy/components/Button'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 

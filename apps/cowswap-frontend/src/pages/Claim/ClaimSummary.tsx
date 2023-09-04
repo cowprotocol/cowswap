@@ -1,3 +1,5 @@
+import { V_COW } from '@cowswap/common-const'
+import { TokenAmount } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 
@@ -5,14 +7,11 @@ import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { V_COW } from 'legacy/constants/tokens'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 

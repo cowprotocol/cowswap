@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AutoRow } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -6,7 +7,6 @@ import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AutoRow } from 'legacy/components/Row'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'

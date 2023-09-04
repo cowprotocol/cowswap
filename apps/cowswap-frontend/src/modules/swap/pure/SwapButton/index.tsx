@@ -1,5 +1,4 @@
-import { ButtonError } from 'legacy/components/Button'
-import { ButtonSize } from 'legacy/theme/enum'
+import { ButtonSize, ButtonError } from '@cowswap/ui'
 
 export interface SwapButtonProps {
   disabled: boolean

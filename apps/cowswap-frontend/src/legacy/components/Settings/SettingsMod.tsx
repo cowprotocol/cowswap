@@ -1,5 +1,7 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 
+import { RowBetween, RowFixed } from '@cowswap/ui'
+
 import { Trans } from '@lingui/macro'
 import { Settings } from 'react-feather'
 import { Text } from 'rebass'
@@ -12,7 +14,6 @@ import {
 } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import Toggle from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
 import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'

@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { TokenAmount } from '@cowswap/ui'
 import { useWalletDisplayedAddress } from '@cowswap/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TradeAmounts } from 'common/types'
 
 const description = `Almost there! \n Follow these steps:`

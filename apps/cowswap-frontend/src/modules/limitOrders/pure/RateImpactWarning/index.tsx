@@ -1,3 +1,4 @@
+import { TokenSymbol } from '@cowswap/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { transparentize, lighten, darken } from 'polished'
@@ -5,8 +6,6 @@ import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean

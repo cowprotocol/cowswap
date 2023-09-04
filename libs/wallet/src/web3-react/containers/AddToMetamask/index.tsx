@@ -3,8 +3,6 @@ import React, { useCallback, useState } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { Nullish } from 'types'
-
 import { addTokenToMetamaskAnalytics } from 'legacy/components/analytics'
 
 import useCurrencyLogoURIs from 'common/pure/CurrencyLogo/hooks/useCurrencyLogoURIs'
@@ -13,7 +11,7 @@ import { AddToMetamask as AddToMetamaskPure } from '../../../api/pure/AddToMetam
 import { getIsMetaMask } from '../../../api/utils/connection'
 
 export type AddToMetamaskProps = {
-  currency: Nullish<Currency>
+  currency: Currency | null | undefined
   shortLabel?: boolean
   className?: string
 }

@@ -1,10 +1,10 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
+import { ButtonStar } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonStar } from 'legacy/components/Button'
 import useTheme from 'legacy/hooks/useTheme'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
 

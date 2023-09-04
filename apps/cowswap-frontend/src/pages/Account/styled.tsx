@@ -1,12 +1,11 @@
+import { Loader as SpinnerLoader, ButtonPrimary } from '@cowswap/ui'
 import { AddToMetamask } from '@cowswap/wallet'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
-import SpinnerLoader from 'legacy/components/Loader'
 import { ExternalLink } from 'legacy/theme'
 
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'

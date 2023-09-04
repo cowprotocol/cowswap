@@ -1,7 +1,7 @@
+import { RowBetween, RowFixed } from '@cowswap/ui'
+
 import { darken } from 'polished'
 import styled from 'styled-components/macro'
-
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 
 import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
 

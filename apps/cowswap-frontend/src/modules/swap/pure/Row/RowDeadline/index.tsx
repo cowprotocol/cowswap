@@ -1,6 +1,7 @@
+import { RowFixed } from '@cowswap/ui'
+
 import { Trans } from '@lingui/macro'
 
-import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
 

@@ -1,11 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { formatInputAmount, getAddress, isFractionFalsy } from '@cowswap/common-utils'
+import { TokenSymbol, Loader } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { RefreshCw } from 'react-feather'
 
-import Loader from 'legacy/components/Loader'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -19,11 +20,7 @@ import { toFraction } from 'modules/limitOrders/utils/toFraction'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-import { formatInputAmount } from 'utils/amountFormat'
-import { getAddress } from 'utils/getAddress'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import * as styledEl from './styled'
 

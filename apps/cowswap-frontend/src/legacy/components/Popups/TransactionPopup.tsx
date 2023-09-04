@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 
+import { AutoRow } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { AlertCircle, CheckCircle } from 'react-feather'
@@ -7,7 +8,6 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
-import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
 import { BlockExplorerLinkType } from 'legacy/utils'
 

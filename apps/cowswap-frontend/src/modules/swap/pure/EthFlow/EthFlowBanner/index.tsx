@@ -1,3 +1,4 @@
+import { ButtonPrimary } from '@cowswap/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -5,7 +6,6 @@ import { ChevronDown, ChevronUp } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
 
 import { EthFlowBannerCallbacks } from 'modules/swap/containers/EthFlow/EthFlowBanner'

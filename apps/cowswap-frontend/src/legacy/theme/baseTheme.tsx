@@ -1,3 +1,5 @@
+import { ButtonSize } from '@cowswap/ui'
+
 import { transparentize, lighten, darken } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
@@ -6,7 +8,6 @@ import Cursor2 from 'legacy/assets/cow-swap/cursor2.gif'
 import Cursor3 from 'legacy/assets/cow-swap/cursor3.gif'
 import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
-import { ButtonSize } from 'legacy/theme/enum'
 import { Colors } from 'legacy/theme/styled'
 
 // TODO: This shouldn't be in the base theme
@@ -402,11 +403,14 @@ export const UniThemedGlobalStyle = css`
 
     // States
     --cow-color-information: var(--cow-color-lightBlue);
-    --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
-    --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+    --cow-color-information-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
+    --cow-color-information-text: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
 
     --cow-color-alert: var(--cow-color-yellow);
-    --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    --cow-color-alert-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
     --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
 
     --cow-color-alert2: var(--cow-color-yellow-light);
@@ -414,8 +418,10 @@ export const UniThemedGlobalStyle = css`
     --cow-color-alert2-text: var(--cow-color-blue);
 
     --cow-color-success: var(--cow-color-green);
-    --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
-    --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
+    --cow-color-success-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success)};
+    --cow-color-success-text: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success)};
 
     // Text
     --cow-color-text1: ${({ theme }) => theme.text1};

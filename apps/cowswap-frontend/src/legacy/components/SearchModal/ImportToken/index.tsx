@@ -1,3 +1,4 @@
+import { RowFixed } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -8,7 +9,6 @@ import styled from 'styled-components/macro'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import { RowFixed } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme/components'

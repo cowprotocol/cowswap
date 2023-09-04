@@ -1,7 +1,8 @@
+import { ButtonSecondary } from '@cowswap/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from 'legacy/components/Button'
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
@@ -592,8 +593,8 @@ export const WalletIconWrapper = styled.div`
 `
 
 interface WalletSelectorProps {
-  isHardWareWallet?: boolean;
-  onClick?: () => void;
+  isHardWareWallet?: boolean
+  onClick?: () => void
 }
 
 export const WalletSelector = styled.div<WalletSelectorProps>`
@@ -606,7 +607,7 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
   ${({ isHardWareWallet }) =>
     isHardWareWallet &&
     `
-    cursor: pointer; 
+    cursor: pointer;
     border: 1px solid var(--cow-color-text1-opacity-25);
     background: transparent;
     padding: 6px 10px;

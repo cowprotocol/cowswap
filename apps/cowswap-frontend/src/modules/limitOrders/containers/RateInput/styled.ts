@@ -1,7 +1,8 @@
+import { Loader } from '@cowswap/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import Loader from 'legacy/components/Loader'
 import Input from 'legacy/components/NumericalInput'
 
 export const Wrapper = styled.div`

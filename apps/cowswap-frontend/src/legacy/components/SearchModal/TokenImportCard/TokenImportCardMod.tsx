@@ -1,3 +1,4 @@
+import { RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
@@ -10,7 +11,6 @@ import styled, { useTheme } from 'styled-components/macro'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 

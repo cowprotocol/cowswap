@@ -1,16 +1,14 @@
+import { getMinimumReceivedTooltip } from '@cowswap/common-utils'
+import { TokenAmount, RowFixed } from '@cowswap/ui'
 import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { getMinimumReceivedTooltip } from 'legacy/utils/tooltips'
 
 import { RowReceivedAfterSlippageProps } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { StyledRowBetween, TextWrapper } from '../styled'
 

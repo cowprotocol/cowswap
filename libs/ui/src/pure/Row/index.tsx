@@ -1,7 +1,7 @@
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-const Row = styled(Box)<{
+export const Row = styled(Box)<{
   width?: string
   align?: string
   justify?: string
@@ -42,5 +42,3 @@ export const RowFixed = styled(Row)<{ gap?: string; justify?: string }>`
   width: fit-content;
   margin: ${({ gap }) => gap && `-${gap}`};
 `
-
-export default Row

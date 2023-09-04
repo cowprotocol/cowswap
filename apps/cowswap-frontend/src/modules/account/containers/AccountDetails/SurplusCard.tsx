@@ -1,3 +1,5 @@
+import { FiatAmount, TokenAmount } from '@cowswap/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -6,8 +8,6 @@ import { ExternalLink } from 'legacy/theme'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

@@ -31,7 +31,6 @@ export const Routes = {
   DOCS: '/docs',
   STATS: '/stats',
   TWITTER: '/twitter',
-  KITCHEN_SINK: '/kitchen-sink',
 } as const
 
 export type RoutesKeys = keyof typeof Routes

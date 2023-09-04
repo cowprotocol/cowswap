@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
+import { ButtonPrimary, ButtonSecondary } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { isAddress } from '@ethersproject/address'
 
 import { Trans } from '@lingui/macro'
 
-import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimDispatchers,

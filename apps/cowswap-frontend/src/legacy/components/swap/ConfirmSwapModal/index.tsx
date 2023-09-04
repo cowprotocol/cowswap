@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { TokenAmount } from '@cowswap/ui'
 import { useWalletDetails } from '@cowswap/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useButtonText } from './hooks'

@@ -5,9 +5,8 @@ import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from 'legacy/components/Row'
-import useTheme from 'legacy/hooks/useTheme'
-import { ButtonSize } from 'legacy/theme/enum'
+import { RowBetween } from '../Row'
+import { ButtonSize } from '../../enum'
 
 import {
   // Import only the basic buttons
@@ -268,10 +267,9 @@ export const ButtonStar = ({
   stroke,
   ...rest
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
-  const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={stroke || theme.text1} fill={fill} size={size} />
+      <Star stroke={stroke} fill={fill} size={size} />
     </HoverIcon>
   )
 }

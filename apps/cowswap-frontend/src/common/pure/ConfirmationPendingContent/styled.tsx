@@ -1,8 +1,9 @@
+import { RowBetween } from '@cowswap/ui'
+
 import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-import { RowBetween } from 'legacy/components/Row'
 import { CloseIcon, ExternalLink } from 'legacy/theme'
 
 export const Wrapper = styled.div`

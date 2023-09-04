@@ -1,7 +1,5 @@
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
-
 import { ConnectWalletOption } from '../../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../../api/types'
 import { getConnectionName } from '../../../api/utils/connection'
@@ -10,6 +8,7 @@ import { TryActivation } from '../../connection'
 import { walletConnectConnection } from '../../connection/walletConnect'
 import { walletConnectConnectionV2 } from '../../connection/walletConnectV2'
 import { useWalletMetaData } from '../../hooks/useWalletMetadata'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
 interface WalletConnectLabeledOptionProps {
   connectionType: ConnectionType
@@ -29,7 +28,7 @@ export function WalletConnectLabeledOption({
   options,
 }: WalletConnectLabeledOptionProps) {
   const { walletName } = useWalletMetaData()
-  const { walletConnectV1Enabled } = useFeatureFlags()
+  const { walletConnectV1Enabled } = useFlags()
 
   const connection = walletConnectV1Enabled ? walletConnectConnection : walletConnectConnectionV2
 

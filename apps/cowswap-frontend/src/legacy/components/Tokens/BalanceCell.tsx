@@ -1,10 +1,8 @@
+import { useTheme } from '@cowswap/common-hooks'
+import { TokenAmount } from '@cowswap/ui'
+import { Loader } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-
-import Loader from 'legacy/components/Loader'
-import useTheme from 'legacy/hooks/useTheme'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { BalanceValue } from './styled'
 

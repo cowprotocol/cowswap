@@ -1,4 +1,5 @@
 import { ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
+import { TokenAmount } from '@cowswap/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -8,7 +9,6 @@ import { ClaimType } from 'legacy/state/claim/hooks/types'
 import { calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { ClaimWithInvestmentData } from 'legacy/state/claim/types'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
 
 export type Props = { claim: ClaimWithInvestmentData }

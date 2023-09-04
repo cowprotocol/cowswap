@@ -1,7 +1,7 @@
+import { RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { RowFixed } from 'legacy/components/Row'
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'

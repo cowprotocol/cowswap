@@ -1,6 +1,6 @@
+import { ButtonSecondary } from '@cowswap/ui'
 import { Identicon } from '@cowswap/wallet'
 
-import { ButtonSecondary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
