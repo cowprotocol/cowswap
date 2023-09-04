@@ -8,8 +8,7 @@ import { Currency, Percent, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
 
-import { AppState } from 'legacy/state'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { useSwapActionHandlers } from 'modules/swap/hooks/useSwapState'
 
 import {
   addSerializedToken,
@@ -26,7 +25,8 @@ import {
 } from './reducer'
 import { SerializedToken } from './types'
 
-import { useSwapActionHandlers } from '../swap/hooks'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(

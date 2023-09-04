@@ -4,13 +4,14 @@ import { useEffect } from 'react'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
+
+import { useDerivedSwapInfo, useSwapState } from '../hooks/useSwapState'
 
 export function useSwapDerivedState(): SwapDerivedState {
   return useAtomValue(swapDerivedStateAtom)

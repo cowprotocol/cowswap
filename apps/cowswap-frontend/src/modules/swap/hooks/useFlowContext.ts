@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'legacy/state/orders/hooks'
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
@@ -30,6 +29,7 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>

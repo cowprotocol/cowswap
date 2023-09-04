@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
+import { isFractionFalsy } from '@cowswap/common-utils'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
@@ -9,14 +10,6 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { Field } from 'legacy/state/swap/actions'
-import {
-  useDerivedSwapInfo,
-  useHighFeeWarning,
-  useIsFeeGreaterThanInput,
-  useSwapActionHandlers,
-  useSwapState,
-  useUnknownImpactWarning,
-} from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
@@ -47,9 +40,16 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import {
+  useDerivedSwapInfo,
+  useHighFeeWarning,
+  useIsFeeGreaterThanInput,
+  useSwapActionHandlers,
+  useSwapState,
+  useUnknownImpactWarning,
+} from '../../hooks/useSwapState'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
   SwapButtonState.ApproveAndSwap,

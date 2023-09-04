@@ -15,12 +15,12 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
+import { Field, setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
 import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
 
-import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
@@ -29,7 +29,7 @@ import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensW
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 
-import { Field, setRecipient, switchCurrencies, typeInput } from './actions'
+import { useSwapSlippage } from './useSwapSlippage'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory

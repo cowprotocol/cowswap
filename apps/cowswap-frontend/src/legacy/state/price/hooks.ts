@@ -6,7 +6,8 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
-import { useSwapState } from 'legacy/state/swap/hooks'
+
+import { useSwapState } from 'modules/swap/hooks/useSwapState'
 
 import {
   updateQuote,

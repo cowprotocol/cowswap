@@ -6,7 +6,6 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -27,6 +26,7 @@ import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthF
 import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
+import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean

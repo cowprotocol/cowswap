@@ -5,8 +5,9 @@ import { Token } from '@uniswap/sdk-core'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import { updateVersion } from 'legacy/state/global/actions'
-import { SerializedPair, SerializedToken } from 'legacy/state/user/types'
+import { SerializedPair, SerializedToken } from './types'
+
+import { updateVersion } from '../global/actions'
 
 // MOD imports
 // import { serializeToken } from './hooks'

@@ -16,7 +16,6 @@ import {
 } from 'legacy/state/orders/updaters'
 import { SpotPricesUpdater } from 'legacy/state/orders/updaters/SpotPricesUpdater'
 import FeesUpdater from 'legacy/state/price/updater'
-import SentryUpdater from 'legacy/state/sentry/updater'
 import UserUpdater from 'legacy/state/user/updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
@@ -26,6 +25,7 @@ import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 export function Updaters() {

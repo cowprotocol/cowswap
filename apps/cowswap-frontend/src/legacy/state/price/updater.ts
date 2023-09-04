@@ -10,11 +10,11 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'

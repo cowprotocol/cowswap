@@ -2,10 +2,11 @@ import { useMemo } from 'react'
 
 import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
 import { Field } from 'legacy/state/swap/actions'
-import { useSwapState } from 'legacy/state/swap/hooks'
-import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+
+import { useSwapState } from './useSwapState'
+import { useDerivedSwapInfo } from './useSwapState'
 
 export function useSwapCurrenciesAmounts(): ParsedAmounts {
   const { independentField } = useSwapState()

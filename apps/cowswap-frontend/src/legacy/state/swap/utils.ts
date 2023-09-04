@@ -1,10 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
+import { isAddress } from '@cowswap/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { ParsedQs } from 'qs'
-
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { isAddress } from 'legacy/utils'
 
 import { Field } from './actions'
 import { SwapState } from './reducer'

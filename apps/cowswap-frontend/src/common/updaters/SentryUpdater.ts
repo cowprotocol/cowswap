@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
 
+import { useIsWindowVisible } from '@cowswap/common-hooks'
+import { SentryTag } from '@cowswap/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 
 import * as Sentry from '@sentry/browser'
 
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useAppSelector } from 'legacy/state/hooks'
-import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
-import { SentryTag } from 'legacy/utils/logging'
+
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
 /**
  * _getSentryChainId
@@ -32,20 +33,16 @@ function _getSentryChainIdAndConnectionStatus(appChainId: number | null, connect
   return sentryChainId?.toString() || SentryTag.DISCONNECTED
 }
 
-export default function Updater(): null {
+export function SentryUpdater(): null {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
   // app chain id maintains state for users disconnected but browsing app
   const disconnectedChainId = useAppSelector((state) => state.application.chainId)
   const windowVisible = useIsWindowVisible()
 
-  const {
-    currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
-    currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
-  } = useDerivedSwapInfo()
+  const { state } = useTradeState()
 
-  const { symbol: buySymbol, name: buyName } = buyCurrency || {}
-  const { symbol: sellSymbol, name: sellName } = sellCurrency || {}
+  const { inputCurrencyId, outputCurrencyId } = state || {}
 
   useEffect(() => {
     if (windowVisible) {
@@ -55,8 +52,8 @@ export default function Updater(): null {
         // setup a context
         scope.setContext('user', {
           user: account || SentryTag.DISCONNECTED,
-          sellToken: `${sellCurrencyId} <${sellSymbol || sellName}>`,
-          buyToken: `${buyCurrencyId} <${buySymbol || buyName}>`,
+          sellToken: inputCurrencyId,
+          buyToken: outputCurrencyId,
         })
         // also set tags for each session
         scope.setTag('chainId', chainId)
@@ -73,12 +70,8 @@ export default function Updater(): null {
     disconnectedChainId,
     walletName,
     // tokens
-    sellSymbol,
-    sellName,
-    buySymbol,
-    buyName,
-    sellCurrencyId,
-    buyCurrencyId,
+    inputCurrencyId,
+    outputCurrencyId,
     // window visibility check
     windowVisible,
   ])
