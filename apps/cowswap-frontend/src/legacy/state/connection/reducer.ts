@@ -14,7 +14,7 @@ export const initialState: ConnectionState = {
 }
 
 const connectionSlice = createSlice({
-  name: 'modules/wallet/web3-react/utils/connection',
+  name: 'wallet-connection',
   initialState,
   reducers: {
     updateConnectionError(
