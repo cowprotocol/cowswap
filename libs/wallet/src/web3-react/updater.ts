@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
 import useENSName from 'legacy/hooks/useENSName'
 
 import { getSafeInfo } from 'api/gnosisSafe'
@@ -18,6 +17,9 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/st
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
+
+// Smart contract wallets are filtered out by default, no need to add them to this list
+const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
 function _checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
