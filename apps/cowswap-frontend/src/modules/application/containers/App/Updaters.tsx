@@ -6,6 +6,7 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 import GasUpdater from 'legacy/state/gas/updater'
 import ListsUpdater from 'legacy/state/lists/updater'
 import LogsUpdater from 'legacy/state/logs/updater'
+import { MulticallUpdater } from 'legacy/state/multicall'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
@@ -26,7 +27,6 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
-import { MulticallUpdater } from 'lib/state/multicall'
 
 export function Updaters() {
   return (
