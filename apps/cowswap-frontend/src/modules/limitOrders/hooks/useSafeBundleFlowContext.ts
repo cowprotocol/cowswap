@@ -1,7 +1,7 @@
 import { useTokenContract } from 'legacy/hooks/useContract'
 
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
+import { useSafeAppsSdk } from 'modules/wallet'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 

@@ -17,8 +17,7 @@ import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
-import { useWalletInfo } from 'modules/wallet'
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
+import { useWalletInfo, useSafeAppsSdk } from 'modules/wallet'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 

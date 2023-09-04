@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
 
-import { walletInfoAtom } from 'modules/wallet/api/state'
+import { walletInfoAtom } from 'modules/wallet'
 
 import { TradeAmounts } from 'common/types'
 

@@ -13,8 +13,7 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
-import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
+import { useWalletInfo, getIsTallyWallet } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'

@@ -5,7 +5,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
-import { walletInfoAtom } from 'modules/wallet/api/state'
+import { walletInfoAtom } from 'modules/wallet'
 
 import { twapOrderSlippageAtom, twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 

@@ -9,7 +9,7 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
 import { getWeb3ReactConnection } from 'modules/wallet'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
+import { switchChain } from 'modules/wallet'
 
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 

@@ -21,8 +21,7 @@ import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/ho
 import { ExternalLink } from 'legacy/theme'
 import { shortenAddress } from 'legacy/utils'
 
-import { useWalletInfo } from 'modules/wallet'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+import { useWalletInfo, AddToMetamask } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 import { TokenAmount } from 'common/pure/TokenAmount'

@@ -15,7 +15,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+import { AddToMetamask } from 'modules/wallet'
 
 import { Routes } from 'common/constants/routes'
 

@@ -1,7 +1,6 @@
-import { useWalletMetaData } from 'modules/wallet'
-import { getIsAmbireWallet } from 'modules/wallet/api/utils/connection'
+import { useWalletMetaData, getIsAmbireWallet } from 'modules/wallet'
 
-export default function useIsAmbireWallet(): boolean {
+export function useIsAmbireWallet(): boolean {
   const { walletName } = useWalletMetaData()
 
   return getIsAmbireWallet(walletName)

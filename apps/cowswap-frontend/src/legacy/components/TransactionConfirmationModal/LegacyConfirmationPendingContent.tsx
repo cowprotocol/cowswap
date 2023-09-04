@@ -14,9 +14,14 @@ import { shortenAddress } from 'legacy/utils'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
-import { getWeb3ReactConnection, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
+import {
+  getWeb3ReactConnection,
+  useGnosisSafeInfo,
+  useWalletDetails,
+  useWalletInfo,
+  getIsMetaMask,
+  injectedConnection,
+} from 'modules/wallet'
 
 import {
   ApproveComparison,

@@ -19,11 +19,9 @@ import store from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
-
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
-import { WalletUpdater } from './modules/wallet'
+import { WalletUpdater, injectedConnection } from './modules/wallet'
 
 const DarkModeToggleButton = styled.button`
   display: flex;

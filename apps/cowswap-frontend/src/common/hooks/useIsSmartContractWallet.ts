@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
 
-import useIsAmbireWallet from 'legacy/hooks/useIsAmbireWallet'
+import { useIsAmbireWallet } from 'legacy/hooks/useIsAmbireWallet'
 import useIsArgentWallet from 'legacy/hooks/useIsArgentWallet'
 
 import { useWalletInfo } from 'modules/wallet'

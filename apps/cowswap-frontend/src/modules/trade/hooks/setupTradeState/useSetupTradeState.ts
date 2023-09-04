@@ -7,8 +7,7 @@ import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { useWalletInfo } from 'modules/wallet'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
+import { useWalletInfo, switchChain } from 'modules/wallet'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'

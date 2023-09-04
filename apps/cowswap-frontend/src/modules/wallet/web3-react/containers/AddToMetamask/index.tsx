@@ -17,7 +17,7 @@ export type AddToMetamaskProps = {
   shortLabel?: boolean
 }
 
-export default function AddToMetamask(props: AddToMetamaskProps) {
+export function AddToMetamask(props: AddToMetamaskProps) {
   const { currency, shortLabel } = props
   const { connector } = useWeb3React()
   const isMetamask = getIsMetaMask()

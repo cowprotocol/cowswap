@@ -5,7 +5,7 @@ import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getJotaiIsolatedStorage } from 'jotaiStore'
 
-import { walletInfoAtom } from 'modules/wallet/api/state'
+import { walletInfoAtom } from 'modules/wallet'
 
 import { deepEqual } from 'utils/deepEqual'
 

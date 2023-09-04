@@ -4,11 +4,11 @@ import { Connector } from '@web3-react/types'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { RPC_URLS } from 'legacy/constants/networks'
 
-import { getIsWalletConnect } from './useIsWalletConnect'
+import { getWeb3ReactConnection } from './getWeb3ReactConnection'
+import { isChainAllowed } from './isChainAllowed'
 
 import { ConnectionType } from '../../api/types'
-import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
-import { isChainAllowed } from '../utils/isChainAllowed'
+import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {

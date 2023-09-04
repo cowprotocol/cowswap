@@ -7,8 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { useIsSafeWallet } from 'modules/wallet'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { useIsSafeWallet, walletConnectConnection } from 'modules/wallet'
 
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 import { pollUntil } from 'common/utils/pollUntil'

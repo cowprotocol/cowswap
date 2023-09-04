@@ -9,8 +9,8 @@ import cowMeditatingV2 from 'legacy/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
 import { ExternalLink } from 'legacy/theme'
 
+import { Web3Status } from 'modules/wallet'
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
-import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
 
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
