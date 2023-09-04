@@ -11,18 +11,21 @@ import ms from 'ms.macro'
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { AppDispatch } from 'legacy/state'
 import { useAddPopup } from 'legacy/state/application/hooks'
+import {
+  checkedTransaction,
+  finalizeTransaction,
+  updateSafeTransaction,
+} from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
+import { CancelOrdersBatchCallback, useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
-import { CancelOrdersBatchCallback, useCancelOrdersBatch } from '../../orders/hooks'
-import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
-import { EnhancedTransactionDetails, HashType } from '../reducer'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
@@ -251,7 +254,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
   })
 }
 
-export default function Updater(): null {
+export function FinalizeTxUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const lastBlockNumber = useBlockNumber()

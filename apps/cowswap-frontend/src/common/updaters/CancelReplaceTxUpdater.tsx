@@ -60,7 +60,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
   }
 }
 
-export default function CancelReplaceTxUpdater(): null {
+export function CancelReplaceTxUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()

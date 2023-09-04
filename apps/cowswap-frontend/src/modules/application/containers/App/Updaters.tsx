@@ -1,7 +1,6 @@
 import { WalletUpdater, HwAccountIndexUpdater } from '@cowswap/wallet'
 
 import ApplicationUpdater from 'legacy/state/application/updater'
-import EnhancedTransactionUpdater from 'legacy/state/enhancedTransactions/updater'
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 import GasUpdater from 'legacy/state/gas/updater'
 import ListsUpdater from 'legacy/state/lists/updater'
@@ -25,6 +24,8 @@ import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
+import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
@@ -37,7 +38,8 @@ export function Updaters() {
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
-      <EnhancedTransactionUpdater />
+      <FinalizeTxUpdater />
+      <CancelReplaceTxUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
