@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import ms from 'ms.macro'
 
-import { getTimeoutAbortController } from 'utils/request'
+import { getTimeoutAbortController } from '@cowswap/common-utils'
 
 const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
 const CONNECTIVITY_CHECK_TIMEOUT = ms`15s`
@@ -37,7 +37,7 @@ export async function hasConnectivity(): Promise<boolean> {
 /**
  * Returns whether the window is currently visible to the user.
  */
-export default function useIsOnline(): boolean {
+export function useIsOnline(): boolean {
   const [online, setOnline] = useState<boolean>(isOnline())
 
   // Double-check if we REALLY don't have connectivity when the browser says so (There's cases where `online = false` flag might be not true)

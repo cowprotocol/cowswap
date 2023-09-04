@@ -7,7 +7,7 @@ import { RetryResult } from 'types'
 
 import { retry, RetryOptions } from 'legacy/utils/retry'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { getSafeTransaction } from 'api/gnosisSafe'
 

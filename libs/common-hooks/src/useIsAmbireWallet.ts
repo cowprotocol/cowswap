@@ -1,4 +1,4 @@
-import { useWalletMetaData, getIsAmbireWallet } from 'modules/wallet'
+import { useWalletMetaData, getIsAmbireWallet } from '@cowswap/wallet'
 
 export function useIsAmbireWallet(): boolean {
   const { walletName } = useWalletMetaData()

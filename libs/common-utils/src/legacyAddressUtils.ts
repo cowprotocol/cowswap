@@ -8,9 +8,9 @@ import { getExplorerOrderLink } from './explorer'
 const ORDER_ID_SHORT_LENGTH = 8
 
 // returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: string): string | false {
+export function isAddress(value: string | undefined | null): string | false {
   try {
-    return getAddress(value)
+    return getAddress(value as never)
   } catch {
     return false
   }

@@ -12,7 +12,7 @@ export function parsedQueryString(search?: string): ParsedQs {
   return search && search.length > 1 ? parse(search, { parseArrays: false, ignoreQueryPrefix: true }) : {}
 }
 
-export default function useParsedQueryString(): ParsedQs {
+export function useParsedQueryString(): ParsedQs {
   const { search } = useLocation()
   return useMemo(() => parsedQueryString(search), [search])
 }

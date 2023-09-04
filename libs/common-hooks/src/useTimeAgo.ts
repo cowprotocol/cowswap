@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import * as timeago from 'timeago.js'
 
-export default function useTimeAgo(value?: string | Date, interval = 1000): string {
+export function useTimeAgo(value?: string | Date, interval = 1000): string {
   const [timeAgoValue, setTimeAgoValue] = useState('')
 
   useEffect(() => {

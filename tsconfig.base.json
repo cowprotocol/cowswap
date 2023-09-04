@@ -37,6 +37,7 @@
       "@cowswap/widget-lib": ["libs/widget-lib/src/index.ts"],
       "@cowswap/widget-react": ["libs/widget-react/src/index.ts"],
       "@cowswap/snackbars": ["libs/snackbars/src/index.ts"],
+      "@cowswap/wallet": ["libs/wallet/src/index.ts"],
       "@cowswap/assets/*": ["libs/assets/src/*"],
       "@cowswap/common-const": ["libs/common-const/src/index.ts"],
       "@cowswap/common-utils": ["libs/common-utils/src/index.ts"],

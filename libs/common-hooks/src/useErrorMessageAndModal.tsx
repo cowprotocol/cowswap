@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { ErrorMessageProps, SwapCallbackError } from 'legacy/components/swap/styleds'
 
-import useTransactionErrorModal from './useTransactionErrorModal'
+import useTransactionErrorModal from '../../../apps/cowswap-frontend/src/legacy/hooks/useTransactionErrorModal'
 
 /**
  * @description hook for getting CoW Swap error and handling them visually

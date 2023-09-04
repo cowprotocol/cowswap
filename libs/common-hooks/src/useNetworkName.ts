@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
-import { CHAIN_INFO } from 'legacy/constants/chainInfo'
+import { CHAIN_INFO } from '@cowswap/common-const'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowswap/wallet'
 
-export default function useNetworkName(): string | undefined {
+export function useNetworkName(): string | undefined {
   const { chainId } = useWalletInfo()
 
   return useMemo(() => {

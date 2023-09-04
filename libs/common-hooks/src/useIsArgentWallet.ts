@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowswap/wallet'
 
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 

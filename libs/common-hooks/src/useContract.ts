@@ -35,13 +35,14 @@ import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
-} from 'legacy/constants'
-import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'legacy/constants/addresses'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { getContract } from 'legacy/utils'
-import { isEns, isProd, isStaging } from 'legacy/utils/environments'
+  ARGENT_WALLET_DETECTOR_ADDRESS,
+  ENS_REGISTRAR_ADDRESSES,
+  MULTICALL_ADDRESS,
+  WRAPPED_NATIVE_CURRENCY,
+} from '@cowswap/common-const'
+import { getContract, isEns, isProd, isStaging } from '@cowswap/common-utils'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowswap/wallet'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 
