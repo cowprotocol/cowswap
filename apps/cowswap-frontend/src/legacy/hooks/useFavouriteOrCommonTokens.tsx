@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 import { COMMON_BASES } from '@cowswap/common-const'
-import { useFavouriteTokens } from 'legacy/state/user/hooks'
-
 import { useWalletInfo } from '@cowswap/wallet'
+
+import { useFavouriteTokens } from 'legacy/state/user/hooks'
 
 export function useFavouriteOrCommonTokens() {
   const { chainId } = useWalletInfo()

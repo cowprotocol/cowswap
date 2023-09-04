@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { useFilterTokens, usePrevious } from '@cowswap/common-hooks'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -7,8 +8,6 @@ import { Trans } from '@lingui/macro'
 import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useFilterTokens from 'legacy/hooks/useFilterTokens'
-import usePrevious from 'legacy/hooks/usePrevious'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 

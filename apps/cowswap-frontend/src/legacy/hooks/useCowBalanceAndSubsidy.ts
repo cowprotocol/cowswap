@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
@@ -7,8 +8,6 @@ import { BigNumber } from 'bignumber.js'
 import { COW_SUBSIDY_DATA } from 'legacy/components/CowSubsidyModal/constants'
 import { getDiscountFromBalance } from 'legacy/components/CowSubsidyModal/utils'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
-
-import { useWalletInfo } from '@cowswap/wallet'
 
 const ZERO_BALANCE_SUBSIDY = { subsidy: { tier: 0, discount: COW_SUBSIDY_DATA[0][1] }, balance: undefined }
 

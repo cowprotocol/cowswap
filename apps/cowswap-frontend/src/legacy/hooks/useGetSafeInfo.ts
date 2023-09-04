@@ -1,13 +1,11 @@
 import { useCallback } from 'react'
 
+import { retry, RetryOptions } from '@cowswap/common-utils'
+import { useWalletInfo } from '@cowswap/wallet'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { useWeb3React } from '@web3-react/core'
 
 import { RetryResult } from 'types'
-
-import { retry, RetryOptions } from 'legacy/utils/retry'
-
-import { useWalletInfo } from '@cowswap/wallet'
 
 import { getSafeTransaction } from 'api/gnosisSafe'
 

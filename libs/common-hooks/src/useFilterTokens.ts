@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
-import { isAddress } from 'legacy/utils'
+import { isAddress } from '@cowswap/common-utils'
 
-export default function useFilterTokens(tokens: Token[], query: string): Token[] {
+export function useFilterTokens(tokens: Token[], query: string): Token[] {
   return useMemo(() => {
     // only calc anything if we actually have more than 1 token in list
     // and the user is actively searching tokens
