@@ -1,16 +1,20 @@
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-import { FractionLike, Nullish } from 'types'
+import { FractionLike, Nullish } from '../types'
 
-import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from 'legacy/constants'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-
-import { INTL_NUMBER_FORMAT } from 'common/constants/intl'
-import { FractionUtils } from 'utils/fractionUtils'
-import { trimTrailingZeros } from 'utils/trimTrailingZeros'
+import {
+  AMOUNT_PRECISION,
+  FIAT_PRECISION,
+  PERCENTAGE_PRECISION,
+  ZERO_FRACTION,
+  INTL_NUMBER_FORMAT,
+} from '@cowswap/common-const'
 
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
+import { trimTrailingZeros } from '../trimTrailingZeros'
+import { FractionUtils } from '../fractionUtils'
+import { maxAmountSpend } from '../maxAmountSpend'
 
 export function formatFiatAmount(amount: Nullish<FractionLike>): string {
   return formatAmountWithPrecision(amount, FIAT_PRECISION)

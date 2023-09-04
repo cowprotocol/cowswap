@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from 'legacy/constants/locales'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@cowswap/common-const'
 
 interface FormatLocaleNumberArgs {
   number: CurrencyAmount<Currency> | Price<Currency, Currency> | number

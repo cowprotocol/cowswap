@@ -1,5 +1,4 @@
-import { PrimitiveAtom, WritableAtom } from 'jotai'
-import { atom } from 'jotai/index'
+import { atom, PrimitiveAtom, WritableAtom } from 'jotai'
 
 export function atomWithPartialUpdate<T>(anyAtom: PrimitiveAtom<T>): {
   atom: typeof anyAtom

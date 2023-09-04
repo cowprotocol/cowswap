@@ -1,6 +1,4 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
-import { OrderID } from 'api/gnosisProtocol'
+import { SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 
 import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
 
@@ -36,7 +34,7 @@ export function getExplorerBaseUrl(chainId: ChainId): string {
   }
 }
 
-export function getExplorerOrderLink(chainId: ChainId, orderId: OrderID): string {
+export function getExplorerOrderLink(chainId: ChainId, orderId: UID): string {
   const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/orders/${orderId}`

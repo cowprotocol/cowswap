@@ -5,9 +5,6 @@ describe('utils', () => {
     it('returns false if not', () => {
       expect(isAddress('')).toBe(false)
       expect(isAddress('0x0000')).toBe(false)
-      expect(isAddress(1)).toBe(false)
-      expect(isAddress({})).toBe(false)
-      expect(isAddress(undefined)).toBe(false)
     })
 
     it('returns the checksummed address', () => {

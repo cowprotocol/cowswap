@@ -2,9 +2,9 @@ import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { DEFAULT_LOCALE, SupportedLocale } from 'legacy/constants/locales'
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowswap/common-const'
 
-import formatLocaleNumber from 'lib/utils/formatLocaleNumber'
+import formatLocaleNumber from './formatLocaleNumber'
 
 export function formatCurrencyAmount(
   amount: CurrencyAmount<Currency> | undefined,

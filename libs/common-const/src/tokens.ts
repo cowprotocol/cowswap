@@ -16,7 +16,7 @@ import {
   XDAI_SYMBOL,
 } from './gnosis_chain/constants'
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from './goerli/constants'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './index'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,

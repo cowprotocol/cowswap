@@ -1,8 +1,5 @@
 import * as Sentry from '@sentry/react'
 
-import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
-import QuoteError from 'api/gnosisProtocol/errors/QuoteError'
-
 type SentryErrorOptions = {
   message: string
   name: string
@@ -12,7 +9,7 @@ type SentryErrorOptions = {
 }
 
 export function constructSentryError(
-  baseError: QuoteError | OperatorError | Error,
+  baseError: Error,
   response: any,
   { message, name, optionalTags = {} }: SentryErrorOptions
 ) {

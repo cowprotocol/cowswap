@@ -1,6 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
-
-import { formatPercent } from 'utils/amountFormat'
+import { formatPercent } from './amountFormat'
 
 export function getMinimumReceivedTooltip(allowedSlippage: Percent, isExactIn: boolean): string {
   return `${
