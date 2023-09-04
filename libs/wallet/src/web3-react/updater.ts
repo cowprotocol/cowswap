@@ -6,7 +6,6 @@ import { useWeb3React } from '@web3-react/core'
 import useENSName from 'legacy/hooks/useENSName'
 
 import { getSafeInfo } from 'api/gnosisSafe'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
@@ -17,6 +16,7 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -27,7 +27,7 @@ function _checkIsSupportedWallet(walletName?: string): boolean {
 
 function _useWalletInfo(): WalletInfo {
   const { account, chainId, isActive: active } = useWeb3React()
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
     () => ({
