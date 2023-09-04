@@ -1,11 +1,9 @@
 import { atom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { USDC } from '@cowswap/common-const'
+import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { Price, Token } from '@uniswap/sdk-core'
-
-import { USDC } from 'legacy/constants/tokens'
-
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 

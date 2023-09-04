@@ -7,11 +7,8 @@ import JSBI from 'jsbi'
  * Parses a CurrencyAmount from the passed string.
  * Returns the CurrencyAmount, or undefined if parsing fails.
  */
-export default function tryParseCurrencyAmount<T extends Currency>(value: string, currency: T): CurrencyAmount<T>
-export default function tryParseCurrencyAmount<T extends Currency>(
-  value?: string,
-  currency?: T
-): CurrencyAmount<T> | undefined
+export function tryParseCurrencyAmount<T extends Currency>(value: string, currency: T): CurrencyAmount<T>
+export function tryParseCurrencyAmount<T extends Currency>(value?: string, currency?: T): CurrencyAmount<T> | undefined
 export default function tryParseCurrencyAmount<T extends Currency>(
   value?: string,
   currency?: T

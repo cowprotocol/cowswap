@@ -14,7 +14,7 @@ import { useActiveListUrls } from 'legacy/state/lists/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import useInterval from 'lib/hooks/useInterval'
+import useInterval from '../../../../../../libs/common-hooks/src/useInterval'
 
 export default function Updater(): null {
   const { provider } = useWeb3React()

@@ -1,8 +1,7 @@
+import { buildPriceFromCurrencyAmounts } from '@cowswap/common-utils'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 

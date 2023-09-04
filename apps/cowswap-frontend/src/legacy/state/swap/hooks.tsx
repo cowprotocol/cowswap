@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
@@ -29,7 +30,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatSymbol } from 'utils/format'
 
 import { Field, setRecipient, switchCurrencies, typeInput } from './actions'

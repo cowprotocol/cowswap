@@ -5,7 +5,6 @@ import Footer from 'legacy/components/Footer'
 import Header from 'legacy/components/Header'
 import URLWarning from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
-import ApeModeQueryParamReader from 'legacy/hooks/useApeModeQueryParamReader'
 import DarkModeQueryParamReader from 'legacy/theme'
 
 import { useInitializeUtm } from 'modules/utm'
@@ -27,7 +26,6 @@ export function App() {
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
       <DarkModeQueryParamReader />
-      <ApeModeQueryParamReader />
 
       <styledEl.AppWrapper>
         <URLWarning />

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
+import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/swap/actions'
 
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 
 type AmountType = {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 
 import { DEFAULT_DECIMALS } from 'legacy/constants'
 import useDebounce from 'legacy/hooks/useDebounce'
@@ -22,7 +23,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
 import { QuoteInformationObject } from './reducer'

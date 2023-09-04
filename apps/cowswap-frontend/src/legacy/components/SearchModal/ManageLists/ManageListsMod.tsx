@@ -1,6 +1,9 @@
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { TokenList } from '@uniswap/token-lists'
+import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowswap/common-hooks'
+import { parseENSAddress, uriToHttp } from '@cowswap/common-utils'
+import { useWalletInfo } from '@cowswap/wallet'
+import { TokenList, Version } from '@uniswap/token-lists'
 
 import { t, Trans } from '@lingui/macro'
 import { CheckCircle, Settings } from 'react-feather'
@@ -15,23 +18,18 @@ import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
 import Toggle from 'legacy/components/Toggle'
-import { useListColor } from 'legacy/hooks/useColor'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
 import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
-import listVersionLabel from 'legacy/utils/listVersionLabel'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
-import parseENSAddress from 'lib/utils/parseENSAddress'
-import uriToHttp from 'lib/utils/uriToHttp'
 
 import { ListRowProps, RowWrapper, Card } from './index'
+
+function listVersionLabel(version: Version): string {
+  return `v${version.major}.${version.minor}.${version.patch}`
+}
 
 const Wrapper = styled(Column)`
   width: 100%;

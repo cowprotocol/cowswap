@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
+import {
+  calculateGasMargin,
+  getProviderErrorMessage,
+  tryParseCurrencyAmount,
+  formatTokenAmount,
+  formatSymbol,
+} from '@cowswap/common-utils'
+import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -15,26 +24,18 @@ import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
 import Row from 'legacy/components/Row'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { ButtonSize } from 'legacy/theme/enum'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { getProviderErrorMessage } from 'legacy/utils/misc'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { formatTokenAmount } from 'utils/amountFormat'
-import { formatSymbol } from 'utils/format'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { IS_TESTING_ENV } from '../const'
 import {
   InvestAvailableBar,

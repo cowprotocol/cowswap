@@ -22,8 +22,9 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import useInterval from 'lib/hooks/useInterval'
 import { SuccessBanner } from 'pages/Claim/styled'
+
+import useInterval from '../../../../../../../libs/common-hooks/src/useInterval'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;

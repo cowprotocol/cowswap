@@ -1,11 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { getChainInfo } from '@cowswap/common-const'
+import { getExplorerBaseUrl } from '@cowswap/common-utils'
 
 import { Trans } from '@lingui/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 import { ExternalLink } from 'legacy/theme'
-import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import * as styledEl from './styled'
 

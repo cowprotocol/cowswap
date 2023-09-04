@@ -1,6 +1,6 @@
-import { SkipFirst } from 'legacy/types/tuple'
+import { useWalletInfo } from '@cowswap/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { SkipFirst } from 'legacy/types/tuple'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import multicall from 'lib/state/multicall'

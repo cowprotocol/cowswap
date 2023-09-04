@@ -11,10 +11,10 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'legacy/state/orders/consts
 import { UpdateOrderParams } from 'legacy/state/orders/hooks'
 import { serializeToken } from 'legacy/state/user/hooks'
 
-import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
-
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
+
+import { buildPriceFromCurrencyAmounts } from '../../../../../../libs/common-utils/src/buildPriceFromCurrencyAmounts'
 
 export type OrderTransitionStatus =
   | 'unknown'

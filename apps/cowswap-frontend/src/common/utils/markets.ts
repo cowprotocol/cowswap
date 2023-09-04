@@ -1,7 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
-
-import invariant from 'tiny-invariant'
 
 /**
  * Convenient method to identify a market so it doesn't matter what is the sell token or buy token.
@@ -50,12 +47,4 @@ export function getCanonicalMarketChainKey(
     marketKey: `${chainId}@${marketKey}`,
     marketInverted,
   }
-}
-
-export function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
-  // Assert I'm comparing apples with apples (prices should refer to market)
-  invariant(
-    price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
-    'Prices are not from the same market'
-  )
 }

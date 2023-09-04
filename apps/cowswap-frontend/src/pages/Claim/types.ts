@@ -1,8 +1,8 @@
 import { SyntheticEvent } from 'react'
 
+import { GpEther } from '@cowswap/common-const'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
-import { GpEther } from 'legacy/constants/tokens'
 import { UserClaimData } from 'legacy/state/claim/hooks'
 
 export type ClaimCommonTypes = {

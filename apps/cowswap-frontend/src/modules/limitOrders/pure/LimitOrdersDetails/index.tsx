@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
+import { DEFAULT_DATE_FORMAT } from '@cowswap/common-const'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -19,7 +20,6 @@ import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/sta
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { DEFAULT_DATE_FORMAT } from 'common/constants/intl'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { formatInputAmount } from 'utils/amountFormat'

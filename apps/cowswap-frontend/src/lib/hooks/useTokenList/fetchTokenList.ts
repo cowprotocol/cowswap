@@ -1,10 +1,10 @@
 import type { TokenList } from '@uniswap/token-lists'
 
-import contenthashToUri from 'lib/utils/contenthashToUri'
-import parseENSAddress from 'lib/utils/parseENSAddress'
-import uriToHttp from 'lib/utils/uriToHttp'
-
 import validateTokenList from './validateTokenList'
+
+import contenthashToUri from '../../../../../../libs/common-utils/src/contenthashToUri'
+import parseENSAddress from '../../../../../../libs/common-utils/src/parseENSAddress'
+import uriToHttp from '../../../../../../libs/common-utils/src/uriToHttp'
 
 export const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
