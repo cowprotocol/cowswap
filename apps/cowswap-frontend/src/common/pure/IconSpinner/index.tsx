@@ -87,7 +87,16 @@ export function IconSpinner({
 
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
-      {content}
+      {(() => {
+        if (currency) {
+          return <CurrencyLogo currency={currency} size="100%" />
+        } else if (image) {
+          return <img src={image} alt="Spinning icon" width={size} height={size} />
+        } else if (children) {
+          return <span>{children}</span>
+        }
+        return <span />
+      })()}
     </Wrapper>
   )
 }

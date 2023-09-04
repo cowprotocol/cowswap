@@ -14,7 +14,13 @@ interface StepProps {
   dotBorderColor?: string
 }
 
-const stateStyles = {
+interface StepStyles {
+  dotBackground: string
+  dotColor: string
+  labelColor: string
+}
+
+const stateStyles: Record<StepState, StepStyles> = {
   active: { dotBackground: '--cow-color-link', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-text1' },
   finished: { dotBackground: '--cow-color-link-opacity-10', dotColor: '--cow-color-link', labelColor: '--cow-color-text1' },
   disabled: { dotBackground: '--cow-color-text1-opacity-25', dotColor: '--cow-color-text1-opacity-25', labelColor: '--cow-color-text1-opacity-25' },
