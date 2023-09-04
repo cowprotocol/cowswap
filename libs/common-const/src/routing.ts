@@ -21,9 +21,10 @@ import {
   USDT,
   WBTC,
   WRAPPED_NATIVE_CURRENCY,
-} from 'legacy/constants/tokens'
-import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
-import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
+} from './tokens'
+
+import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from './gnosis_chain/constants'
+import { DAI_GOERLI, USDC_GOERLI } from './goerli/constants'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]

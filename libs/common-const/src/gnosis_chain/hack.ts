@@ -1,15 +1,18 @@
 // this file essentially provides all the overrides employed in uniswap-xdai-sdk fork
 // + logic for chainId switch to/from xDAI
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
-import { GpEther as ETHER } from 'legacy/constants/tokens'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { XDAI_SYMBOL } from './constants'
 
 const CURRENCY_SYMBOLS_XDAI = { native: XDAI_SYMBOL, wrapped: 'wxDAI' }
 const CURRENCY_SYMBOLS_ETH = { native: 'Ether', wrapped: 'WETH' }
 
-export function getChainCurrencySymbols(chainId?: ChainId): { native: string; wrapped: string } {
+export function getChainCurrencySymbols(chainId?: SupportedChainId): { native: string; wrapped: string } {
   if (!chainId) return CURRENCY_SYMBOLS_ETH
-  return ETHER.onChain(chainId).symbol === XDAI_SYMBOL ? CURRENCY_SYMBOLS_XDAI : CURRENCY_SYMBOLS_ETH
+
+  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
+    return CURRENCY_SYMBOLS_XDAI
+  }
+
+  return CURRENCY_SYMBOLS_ETH
 }

@@ -1,8 +1,18 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { constructSameAddressMap } from '../utils/constructSameAddressMap'
-
 export type AddressMap = { [chainId: number]: string }
+
+const DEFAULT_NETWORKS = [SupportedChainId.MAINNET, SupportedChainId.GOERLI]
+
+function constructSameAddressMap<T extends string>(
+  address: T,
+  additionalNetworks: SupportedChainId[] = []
+): { [chainId: number]: T } {
+  return DEFAULT_NETWORKS.concat(additionalNetworks).reduce<{ [chainId: number]: T }>((memo, chainId) => {
+    memo[chainId] = address
+    return memo
+  }, {})
+}
 
 export const MULTICALL_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x1F98415757620B543A52E61c46B32eB19261F984', []),

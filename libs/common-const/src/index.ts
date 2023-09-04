@@ -6,7 +6,7 @@ import { Fraction, Percent, Token } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'legacy/constants/ipfs'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
 
 // TODO: move those consts to src/constants/common
 
@@ -96,7 +96,6 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
   [ChainId.GNOSIS_CHAIN]: new Token(ChainId.GNOSIS_CHAIN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'xDAI', 'xDAI'),
 }
 
-export const ORDER_ID_SHORT_LENGTH = 8
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
