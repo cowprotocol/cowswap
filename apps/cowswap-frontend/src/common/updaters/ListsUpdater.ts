@@ -1,21 +1,19 @@
 import { useCallback, useEffect } from 'react'
 
+import { UNSUPPORTED_LIST_URLS } from '@cowswap/common-const'
+import { useInterval, useIsWindowVisible } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useWeb3React } from '@web3-react/core'
 
-import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { updateVersion } from 'legacy/state/global/actions'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { acceptListUpdate } from 'legacy/state/lists/actions'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { useActiveListUrls } from 'legacy/state/lists/hooks'
 
-import useInterval from '../../../../../../libs/common-hooks/src/useInterval'
-
-export default function Updater(): null {
+export function ListsUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()

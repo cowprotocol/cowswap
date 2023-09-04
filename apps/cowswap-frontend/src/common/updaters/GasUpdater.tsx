@@ -4,15 +4,15 @@ import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowswap/common-const'
 import { useBlockNumber } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 
-import { gasFeeApi } from 'api/gasPrices'
+import { useGasPrices, useUpdateGasPrices } from 'legacy/state/gas/hooks'
 
-import { useGasPrices, useUpdateGasPrices } from './hooks'
+import { gasFeeApi } from 'api/gasPrices'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold
 }
 
-export default function GasUpdater(): null {
+export function GasUpdater(): null {
   const { chainId } = useWalletInfo()
   const gas = useGasPrices(chainId)
   const updateGasPrices = useUpdateGasPrices()

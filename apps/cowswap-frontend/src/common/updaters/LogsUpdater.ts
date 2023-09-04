@@ -5,12 +5,11 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { Filter } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
-import { fetchedLogs, fetchedLogsError, fetchingLogs } from './slice'
-import { isHistoricalLog, keyToFilter } from './utils'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { fetchedLogs, fetchedLogsError, fetchingLogs } from 'legacy/state/logs/slice'
+import { isHistoricalLog, keyToFilter } from 'legacy/state/logs/utils'
 
-import { useAppDispatch, useAppSelector } from '../hooks'
-
-export default function Updater(): null {
+export function LogsUpdater(): null {
   const dispatch = useAppDispatch()
   const state = useAppSelector((state) => state.logs)
   const { provider } = useWeb3React()

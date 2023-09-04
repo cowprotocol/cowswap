@@ -1,10 +1,6 @@
 import { WalletUpdater, HwAccountIndexUpdater } from '@cowswap/wallet'
 
-import ApplicationUpdater from 'legacy/state/application/updater'
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-import GasUpdater from 'legacy/state/gas/updater'
-import ListsUpdater from 'legacy/state/lists/updater'
-import LogsUpdater from 'legacy/state/logs/updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
@@ -14,9 +10,13 @@ import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
+import { GasUpdater } from 'common/updaters/GasUpdater'
+import { ListsUpdater } from 'common/updaters/ListsUpdater'
+import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
