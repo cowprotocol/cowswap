@@ -1,3 +1,5 @@
+import { isInjectedWidget } from '@cowswap/common-utils'
+
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'legacy/components/analytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -9,7 +11,6 @@ import DarkModeQueryParamReader from 'legacy/theme'
 
 import { useInitializeUtm } from 'modules/utm'
 
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { RoutesApp } from './RoutesApp'

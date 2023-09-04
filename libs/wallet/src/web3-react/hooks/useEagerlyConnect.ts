@@ -4,14 +4,12 @@ import { Connector } from '@web3-react/types'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
 import { BACKFILLABLE_WALLETS } from '../../api/types'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
 import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
+import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowswap/common-utils'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()

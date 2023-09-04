@@ -1,4 +1,4 @@
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+import { isInjectedWidget } from '@cowswap/common-utils'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 

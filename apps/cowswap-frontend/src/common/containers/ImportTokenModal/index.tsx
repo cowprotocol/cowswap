@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isInjectedWidget } from '@cowswap/common-utils'
 import { Token } from '@uniswap/sdk-core'
 
 import TokenWarningModal from 'legacy/components/TokenWarningModal'
@@ -14,8 +15,6 @@ import { useAddUserToken } from 'legacy/state/user/hooks'
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
-
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 export interface ImportTokenModalProps {
   chainId: SupportedChainId

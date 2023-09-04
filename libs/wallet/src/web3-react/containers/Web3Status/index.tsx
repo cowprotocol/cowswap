@@ -1,11 +1,9 @@
 import { useWeb3React } from '@web3-react/core'
 
 import { useCloseFollowTxPopupIfNotPendingOrder } from 'legacy/components/Popups/FollowPendingTxPopup'
-import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
+import { STORAGE_KEY_LAST_PROVIDER } from '@cowswap/common-const'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
-
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { useWalletDetails, useWalletInfo } from '../../../api/hooks'
 import { Web3StatusInner } from '../../../api/pure/Web3StatusInner'
@@ -14,7 +12,7 @@ import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { WalletModal } from '../WalletModal'
 
-export function Web3Status() {
+export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()
   const { account, active, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -29,8 +27,6 @@ export function Web3Status() {
 
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
 
-  const { pendingActivity } = useCategorizeRecentActivity()
-
   if (!active && !latestProvider) {
     return null
   }
@@ -38,7 +34,7 @@ export function Web3Status() {
   return (
     <Wrapper>
       <Web3StatusInner
-        pendingCount={pendingActivity.length}
+        pendingCount={pendingActivities.length}
         account={account}
         chainId={chainId}
         error={error}

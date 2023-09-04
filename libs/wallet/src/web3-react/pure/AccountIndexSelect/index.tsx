@@ -6,7 +6,7 @@ import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
-import { shortenAddress } from 'legacy/utils'
+import { shortenAddress } from '@cowswap/common-utils'
 
 import { SelectDropdown } from 'common/pure/SelectDropdown'
 import { TokenAmount } from 'common/pure/TokenAmount'

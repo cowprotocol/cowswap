@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 import Loader from 'legacy/components/Loader'
 import FollowPendingTxPopup from 'legacy/components/Popups/FollowPendingTxPopup'
 import { RowBetween } from 'legacy/components/Row'
-import { shortenAddress } from 'legacy/utils'
+import { shortenAddress } from '@cowswap/common-utils'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
