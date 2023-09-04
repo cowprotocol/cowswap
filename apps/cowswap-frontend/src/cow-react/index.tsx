@@ -6,6 +6,7 @@ import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
+import { BlockNumberProvider } from '@cowswap/common-hooks'
 import { nodeRemoveChildFix } from '@cowswap/common-utils'
 import { SnackbarsWidget } from '@cowswap/snackbars'
 
@@ -27,7 +28,6 @@ import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
-import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { jotaiStore } from '../jotaiStore'

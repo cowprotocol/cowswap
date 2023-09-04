@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { COW, COW_CONTRACT_ADDRESS, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowswap/common-const'
 import { usePrevious } from '@cowswap/common-hooks'
+import { useBlockNumber } from '@cowswap/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowswap/common-utils'
 import { TokenAmount, ButtonPrimary } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
@@ -28,7 +29,6 @@ import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   ExtLink,

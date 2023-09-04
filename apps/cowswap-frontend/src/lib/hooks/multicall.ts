@@ -1,9 +1,9 @@
+import { useBlockNumber } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { SkipFirst } from 'legacy/types/tuple'
 
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-import multicall from 'lib/state/multicall'
+import { multicall } from 'lib/state/multicall'
 
 export type { CallStateResult } from '@uniswap/redux-multicall' // re-export for convenience
 export { NEVER_RELOAD } from '@uniswap/redux-multicall' // re-export for convenience

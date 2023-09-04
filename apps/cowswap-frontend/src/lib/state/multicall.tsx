@@ -1,17 +1,12 @@
-import { createMulticall /*, ListenerOptions */ } from '@uniswap/redux-multicall'
+import { useInterfaceMulticall, useBlockNumber } from '@cowswap/common-hooks'
+import { createMulticall } from '@uniswap/redux-multicall'
 import { useWeb3React } from '@web3-react/core'
 
 import { combineReducers, createStore } from 'redux'
 
-import { useInterfaceMulticall } from 'legacy/hooks/useContract'
-
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-
-const multicall = createMulticall()
+export const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })
 export const store = createStore(reducer)
-
-export default multicall
 
 export function MulticallUpdater() {
   const { chainId } = useWeb3React()

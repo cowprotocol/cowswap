@@ -3,7 +3,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from '@cowswap/common-const'
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
-import multicall from 'lib/state/multicall'
+import { multicall } from 'lib/state/multicall'
 
 import application from './application/reducer'
 import claim from './claim/reducer'

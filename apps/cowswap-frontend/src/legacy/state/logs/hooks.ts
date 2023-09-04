@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from 'react'
 
+import { useBlockNumber } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Filter } from '@ethersproject/providers'
-
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { addListener, removeListener } from './slice'
 import { filterToKey, isHistoricalLog, Log } from './utils'

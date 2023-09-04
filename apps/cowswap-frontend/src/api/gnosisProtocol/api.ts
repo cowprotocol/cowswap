@@ -14,14 +14,12 @@ import {
   PriceQuality,
   TotalSurplus,
   OrderQuoteSideKindBuy,
-  OrderQuoteSideKindSell
+  OrderQuoteSideKindSell,
 } from '@cowprotocol/cow-sdk'
+import { ZERO_ADDRESS } from '@cowswap/common-const'
+import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from '@cowswap/common-utils'
 
 import { orderBookApi } from 'cowSdk'
-
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
-import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
 
 import { getAppData } from 'modules/appData'
 

@@ -3,6 +3,7 @@ import './polyfills'
 
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
+import { BlockNumberProvider } from '@cowswap/common-hooks'
 import { WalletUpdater, injectedConnection } from '@cowswap/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
@@ -19,8 +20,6 @@ import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
-
-import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 const DarkModeToggleButton = styled.button`
   display: flex;

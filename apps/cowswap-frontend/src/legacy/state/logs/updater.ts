@@ -1,10 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
+import { useBlockNumber } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Filter } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
-
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { fetchedLogs, fetchedLogsError, fetchingLogs } from './slice'
 import { isHistoricalLog, keyToFilter } from './utils'

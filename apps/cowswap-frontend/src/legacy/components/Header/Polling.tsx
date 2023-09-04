@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { getChainInfo } from '@cowswap/common-const'
+import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowswap/common-hooks'
+import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
 import { RowFixed } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
@@ -8,15 +11,9 @@ import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
-import useMachineTimeMs from 'legacy/hooks/useMachineTime'
-import useTheme from 'legacy/hooks/useTheme'
 import { ExternalLink, ThemedText } from 'legacy/theme'
-import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
-
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
