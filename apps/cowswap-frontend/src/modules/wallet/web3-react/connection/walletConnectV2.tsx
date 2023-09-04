@@ -7,21 +7,21 @@ import { Web3ReactStore } from '@web3-react/types'
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType, useWalletMetaData } from 'modules/wallet'
-import { default as WalletConnectV2Image } from 'modules/wallet/api/assets/wallet-connect-v2.png'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
+
+import { default as WalletConnectV2Image } from '../../api/assets/wallet-connect-v2.png'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType } from '../../api/types'
 import {
   getConnectionName,
   getIsAlphaWallet,
   getIsAmbireWallet,
   getIsTrustWallet,
   getIsZengoWallet,
-} from 'modules/wallet/api/utils/connection'
-import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
+} from '../../api/utils/connection'
+import { WC_DISABLED_TEXT } from '../../constants'
 import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
+import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import { Web3ReactConnection } from '../types'
 
 import { TryActivation } from '.'

@@ -7,10 +7,10 @@ import { Nullish } from 'types'
 
 import { addTokenToMetamaskAnalytics } from 'legacy/components/analytics'
 
-import { AddToMetamask as AddToMetamaskPure } from 'modules/wallet/api/pure/AddToMetamask'
-import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
-
 import useCurrencyLogoURIs from 'common/pure/CurrencyLogo/hooks/useCurrencyLogoURIs'
+
+import { AddToMetamask as AddToMetamaskPure } from '../../../api/pure/AddToMetamask'
+import { getIsMetaMask } from '../../../api/utils/connection'
 
 export type AddToMetamaskProps = {
   currency: Nullish<Currency>

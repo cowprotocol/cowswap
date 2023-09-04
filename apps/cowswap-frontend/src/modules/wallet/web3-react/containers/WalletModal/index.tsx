@@ -12,11 +12,13 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { ConnectionType, toggleAccountSelectorModalAtom, useWalletInfo } from 'modules/wallet'
-import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
-import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
+
+import { useWalletInfo } from '../../../api/hooks'
+import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
+import { ConnectionType } from '../../../api/types'
+import { getIsHardWareWallet, getWeb3ReactConnection } from '../../connection'
+import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

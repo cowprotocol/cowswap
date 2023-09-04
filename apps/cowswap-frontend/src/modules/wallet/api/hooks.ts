@@ -1,8 +1,9 @@
 import { useAtomValue } from 'jotai'
 
-import { GnosisSafeInfo, useIsSafeApp, WalletDetails, WalletInfo } from 'modules/wallet'
-
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+
+import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)

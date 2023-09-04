@@ -6,20 +6,20 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType, useWalletMetaData } from 'modules/wallet'
-import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
+import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType } from '../../api/types'
 import {
   getConnectionName,
   getIsAlphaWallet,
   getIsAmbireWallet,
   getIsTrustWallet,
   getIsZengoWallet,
-} from 'modules/wallet/api/utils/connection'
-import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
-
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
-
+} from '../../api/utils/connection'
+import { WC_DISABLED_TEXT } from '../../constants'
+import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import { Web3ReactConnection } from '../types'
 
 import { onError, TryActivation } from '.'

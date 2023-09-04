@@ -1,9 +1,8 @@
 import { initializeConnector } from '@web3-react/core'
 
-import { ConnectionType } from 'modules/wallet'
-
 import { AsyncConnector } from './asyncConnector'
 
+import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
 
 const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<AsyncConnector>(

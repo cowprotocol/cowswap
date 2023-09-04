@@ -4,8 +4,6 @@ import { Connector } from '@web3-react/types'
 import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 import { isMobile } from 'legacy/utils/userAgent'
 
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
-
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { AlphaOption } from './alpha'
@@ -31,6 +29,7 @@ import { walletConnectConnection, WalletConnectOption } from './walletConnect'
 import { walletConnectConnectionV2, WalletConnectV2Option } from './walletConnectV2'
 
 import { ConnectionType } from '../../api/types'
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
 import { Web3ReactConnection } from '../types'
 
 const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {

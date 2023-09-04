@@ -6,18 +6,17 @@ import { useWeb3React } from '@web3-react/core'
 import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
 import useENSName from 'legacy/hooks/useENSName'
 
-import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
-import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
-
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
+import { useIsSafeWallet, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {

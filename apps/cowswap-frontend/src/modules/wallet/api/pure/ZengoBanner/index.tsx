@@ -2,9 +2,9 @@ import { Trans } from '@lingui/macro'
 
 import { ExternalLink } from 'legacy/theme'
 
-import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
-
 import * as styled from './styled'
+
+import { default as ZengoImage } from '../../assets/zengo.svg'
 
 const GET_ZENGO_LINK = 'https://zengo.com/'
 const HOW_TO_USE_ZENGO = 'https://help.zengo.com/en/collections/1646183-how-to-guides'

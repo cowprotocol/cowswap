@@ -4,11 +4,10 @@ import { Connector } from '@web3-react/types'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { BACKFILLABLE_WALLETS } from 'modules/wallet/api/types'
-
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
+import { BACKFILLABLE_WALLETS } from '../../api/types'
 import { getWeb3ReactConnection } from '../connection'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
 import { networkConnection } from '../connection/network'

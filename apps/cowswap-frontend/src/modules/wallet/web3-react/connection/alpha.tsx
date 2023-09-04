@@ -1,7 +1,6 @@
-import { default as AlphaImage } from 'modules/wallet/api/assets/alpha.svg'
-import { getIsAlphaWallet } from 'modules/wallet/api/utils/connection'
-
+import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { ConnectionType } from '../../api/types'
+import { getIsAlphaWallet } from '../../api/utils/connection'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
 
 import { TryActivation } from '.'

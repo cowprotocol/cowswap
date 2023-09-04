@@ -1,7 +1,6 @@
-import { default as AmbireImage } from 'modules/wallet/api/assets/ambire.svg'
-import { getIsAmbireWallet } from 'modules/wallet/api/utils/connection'
-
+import { default as AmbireImage } from '../../api/assets/ambire.svg'
 import { ConnectionType } from '../../api/types'
+import { getIsAmbireWallet } from '../../api/utils/connection'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
 
 import { TryActivation } from '.'

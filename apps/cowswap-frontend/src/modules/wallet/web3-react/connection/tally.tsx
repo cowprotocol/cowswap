@@ -3,12 +3,11 @@ import { Connector } from '@web3-react/types'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { default as TallyImage } from 'modules/wallet/api/assets/tally.svg'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { getConnectionName } from 'modules/wallet/api/utils/connection'
-import { InjectedWallet } from 'modules/wallet/web3-react/connectors/Injected'
-
+import { default as TallyImage } from '../../api/assets/tally.svg'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType } from '../../api/types'
+import { getConnectionName } from '../../api/utils/connection'
+import { InjectedWallet } from '../connectors/Injected'
 import { Web3ReactConnection } from '../types'
 
 const WALLET_LINK = 'https://chrome.google.com/webstore/detail/taho/eajafomhmkipbjmfmhebemolkcicgfmd'

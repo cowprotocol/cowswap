@@ -1,7 +1,7 @@
 import { publicToAddress } from 'ethereumjs-util'
 import HDNode from 'hdkey'
 
-import { TREZOR_DERIVATION_PATH } from 'modules/wallet/api/utils/getHwAccount'
+import { TREZOR_DERIVATION_PATH } from '../../../api/utils/getHwAccount'
 
 import type { TrezorConnect } from '@trezor/connect-web'
 

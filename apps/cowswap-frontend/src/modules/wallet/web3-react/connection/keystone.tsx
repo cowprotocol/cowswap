@@ -3,11 +3,10 @@ import { MetaMask } from '@web3-react/metamask'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
-import { default as KeystoneImage } from 'modules/wallet/api/assets/keystone.svg'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { getConnectionName } from 'modules/wallet/api/utils/connection'
-
+import { default as KeystoneImage } from '../../api/assets/keystone.svg'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType } from '../../api/types'
+import { getConnectionName } from '../../api/utils/connection'
 import { Web3ReactConnection } from '../types'
 
 import { TryActivation, onError } from '.'

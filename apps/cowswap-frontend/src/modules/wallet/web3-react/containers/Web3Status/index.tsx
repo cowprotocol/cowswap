@@ -5,12 +5,14 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { useWalletDetails, useWalletInfo, WalletModal, AccountSelectorModal } from 'modules/wallet'
-import { Web3StatusInner } from 'modules/wallet/api/pure/Web3StatusInner'
-import { Wrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+
+import { useWalletDetails, useWalletInfo } from '../../../api/hooks'
+import { Web3StatusInner } from '../../../api/pure/Web3StatusInner'
+import { Wrapper } from '../../../api/pure/Web3StatusInner/styled'
+import { getWeb3ReactConnection } from '../../connection'
+import { AccountSelectorModal } from '../AccountSelectorModal'
+import { WalletModal } from '../WalletModal'
 
 export function Web3Status() {
   const { connector } = useWeb3React()

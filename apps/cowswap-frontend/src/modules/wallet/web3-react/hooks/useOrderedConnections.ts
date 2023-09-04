@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { BACKFILLABLE_WALLETS, ConnectionType } from 'modules/wallet'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-
 import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+
+import { BACKFILLABLE_WALLETS, ConnectionType } from '../../api/types'
+import { getWeb3ReactConnection } from '../connection'
 
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]
 

@@ -5,10 +5,10 @@ import FollowPendingTxPopup from 'legacy/components/Popups/FollowPendingTxPopup'
 import { RowBetween } from 'legacy/components/Row'
 import { shortenAddress } from 'legacy/utils'
 
-import StatusIcon from 'modules/wallet/api/pure/StatusIcon'
-import { ConnectionType } from 'modules/wallet/api/types'
-
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
+
+import { ConnectionType } from '../../types'
+import StatusIcon from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
   account?: string | null

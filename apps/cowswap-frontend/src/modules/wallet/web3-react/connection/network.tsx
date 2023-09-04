@@ -3,10 +3,9 @@ import { Network } from '@web3-react/network'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 
-import { ConnectionType } from 'modules/wallet'
-
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
+import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
 
 const defaultChainId = getCurrentChainIdFromUrl()
