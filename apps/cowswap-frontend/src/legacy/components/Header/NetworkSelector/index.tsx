@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-import { useWalletInfo, getIsTallyWallet } from '@cowswap/wallet'
+import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
@@ -15,7 +15,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 

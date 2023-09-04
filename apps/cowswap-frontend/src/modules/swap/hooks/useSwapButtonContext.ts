@@ -1,4 +1,4 @@
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { useIsSmartContractWallet, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -25,7 +25,6 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
 import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
 import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 

@@ -7,7 +7,6 @@ import useENSName from 'legacy/hooks/useENSName'
 
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
@@ -17,6 +16,7 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/st
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
+import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])

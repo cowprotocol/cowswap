@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useIsSmartContractWallet } from '@cowswap/wallet'
 
 import { useTransition } from '@react-spring/web'
 import ms from 'ms.macro'
@@ -18,7 +19,6 @@ import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { CancelButton } from 'common/pure/CancelButton'
 
 import {

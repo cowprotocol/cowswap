@@ -9,6 +9,7 @@ export * from './web3-react/hooks/useEagerlyConnect'
 export * from './web3-react/hooks/useOrderedConnections'
 export * from './web3-react/hooks/useIsWalletConnect'
 export * from './web3-react/hooks/useSafeAppsSdk'
+export * from './web3-react/hooks/useIsSmartContractWallet'
 
 // Updater
 export * from './web3-react/updater'
