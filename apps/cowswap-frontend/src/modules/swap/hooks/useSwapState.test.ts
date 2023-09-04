@@ -1,7 +1,7 @@
 import { parse } from 'qs'
 
-import { Field } from 'legacy/state/swap/actions'
 import { queryParametersToSwapState } from 'legacy/state/swap/utils'
+import { Field } from 'legacy/state/types'
 
 jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
 

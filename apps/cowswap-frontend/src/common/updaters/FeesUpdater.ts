@@ -11,8 +11,9 @@ import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
-import { Field } from 'legacy/state/swap/actions'
+import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
+import { Field } from 'legacy/state/types'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -20,7 +21,6 @@ import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapStat
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 
 import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
@@ -29,7 +29,7 @@ const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
 
-type FeeQuoteParams = Omit<LegacyFeeQuoteParamsFull, 'validTo'>
+type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 
 /**
  * Returns if the quote has been recently checked

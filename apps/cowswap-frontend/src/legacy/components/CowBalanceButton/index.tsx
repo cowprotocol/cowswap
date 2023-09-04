@@ -5,7 +5,8 @@ import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
+
+import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { ethFlow } from 'modules/swap/services/ethFlow'

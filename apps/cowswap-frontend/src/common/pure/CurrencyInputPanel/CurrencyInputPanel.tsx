@@ -12,7 +12,7 @@ import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchMod
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 

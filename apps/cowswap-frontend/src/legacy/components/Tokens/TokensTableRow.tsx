@@ -12,7 +12,6 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
 import EtherscanImage from 'legacy/assets/cow-swap/etherscan-icon.svg'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 
@@ -37,6 +36,7 @@ import {
 } from './styled'
 
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback/useApproveCallbackMod'
+import { ConfirmOperationType } from '../../state'
 
 type DataRowParams = {
   tokenData: Token

@@ -5,7 +5,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'

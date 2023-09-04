@@ -1,11 +1,8 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowswap/wallet'
 
 import { useDispatch, useSelector } from 'react-redux'
-
-import { useSwapState } from 'modules/swap/hooks/useSwapState'
 
 import {
   updateQuote,
@@ -75,16 +72,6 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
   const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
 
   return { quote, isGettingNewQuote, isRefreshingQuote }
-}
-
-// syntactic sugar for not needing to pass swapstate
-export function useIsQuoteRefreshing() {
-  const { chainId } = useWalletInfo()
-  const {
-    INPUT: { currencyId },
-  } = useSwapState()
-  const { isRefreshingQuote } = useGetQuoteAndStatus({ token: currencyId, chainId })
-  return isRefreshingQuote
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {

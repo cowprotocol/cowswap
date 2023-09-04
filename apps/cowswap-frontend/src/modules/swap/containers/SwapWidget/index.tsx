@@ -9,7 +9,7 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'

@@ -6,10 +6,10 @@ import { Token } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { TokenAmounts } from 'modules/tokens'
 

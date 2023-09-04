@@ -21,12 +21,12 @@ import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from
 
 import { orderBookApi } from 'cowSdk'
 
+import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/types'
+
 import { getAppData } from 'modules/appData'
 
 import { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-
-import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

@@ -1,4 +1,4 @@
-import { OrdersStateNetwork, PartialOrdersMap } from 'legacy/state/orders/reducer'
+import { OrdersStateNetwork, PartialOrdersMap } from './reducer'
 
 export function flatOrdersStateNetwork(state: OrdersStateNetwork): PartialOrdersMap {
   return {

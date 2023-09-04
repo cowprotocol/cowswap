@@ -1,9 +1,18 @@
 import { SupportedChainId as ChainId, PriceQuality } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
-import { FeeInformation, PriceInformation } from 'types'
+type GpPriceStrategy = 'COWSWAP' | 'LEGACY'
 
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+interface PriceInformation {
+  token: string
+  amount: string | null
+  quoteId?: number
+}
+
+export interface FeeInformation {
+  expirationDate: string
+  amount: string
+}
 
 interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> {
   amount: string

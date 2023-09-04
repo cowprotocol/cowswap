@@ -8,8 +8,6 @@ import { Currency, Percent, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
 
-import { useSwapActionHandlers } from 'modules/swap/hooks/useSwapState'
-
 import {
   addSerializedToken,
   initFavouriteTokens,
@@ -27,6 +25,7 @@ import { SerializedToken } from './types'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { AppState } from '../index'
+import { setRecipient } from '../swap/actions'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
@@ -103,7 +102,12 @@ export function useIsRecipientToggleVisible(): boolean {
 export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
   const dispatch = useAppDispatch()
   const isVisible = useIsRecipientToggleVisible()
-  const { onChangeRecipient } = useSwapActionHandlers()
+  const onChangeRecipient = useCallback(
+    (recipient: string | null) => {
+      dispatch(setRecipient({ recipient }))
+    },
+    [dispatch]
+  )
 
   const toggleVisibility = useCallback(
     (value?: boolean) => {

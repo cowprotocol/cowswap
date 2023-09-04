@@ -5,8 +5,6 @@ import { isTruthy } from '@cowswap/common-utils'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
-
 import { OrderID } from 'api/gnosisProtocol'
 
 import {
@@ -31,6 +29,7 @@ import {
   UpdatePresignGnosisSafeTxParams,
   clearOrdersStorage,
 } from './actions'
+import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
   getDefaultNetworkState,
   ORDER_LIST_KEYS,

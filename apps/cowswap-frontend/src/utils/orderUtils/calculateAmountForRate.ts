@@ -1,7 +1,7 @@
 import { FractionUtils } from '@cowswap/common-utils'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 export type RateCalculationParams = {
   amount: Fraction | null

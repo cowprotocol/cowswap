@@ -12,7 +12,7 @@ import { Text } from 'rebass'
 import { GreyCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'

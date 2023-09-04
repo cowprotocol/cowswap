@@ -4,7 +4,7 @@ import { getIntOrFloat } from '@cowswap/common-utils'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
 

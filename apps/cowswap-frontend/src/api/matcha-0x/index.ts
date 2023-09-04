@@ -3,10 +3,10 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { PriceInformation } from 'types'
 
+import { LegacyPriceQuoteParams } from 'legacy/types'
 import { getTokensFromMarket } from 'legacy/utils/misc'
 import { getValidParams } from 'legacy/utils/price'
 
-import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
 // copy/pasting as the library types correspond to the internal types, not API response

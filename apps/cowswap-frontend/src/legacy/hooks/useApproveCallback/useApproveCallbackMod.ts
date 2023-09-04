@@ -8,10 +8,10 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { ConfirmOperationType } from '../../state'
 import { useCurrency } from '../Tokens'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'

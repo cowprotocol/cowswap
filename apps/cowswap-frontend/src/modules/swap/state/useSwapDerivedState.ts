@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 

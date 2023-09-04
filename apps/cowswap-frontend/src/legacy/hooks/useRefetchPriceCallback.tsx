@@ -23,6 +23,7 @@ import { QuoteError } from 'legacy/state/price/actions'
 import { useQuoteDispatchers } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/types'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -33,7 +34,6 @@ import GpQuoteError, {
   GpQuoteErrorDetails,
   isValidQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
-import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams

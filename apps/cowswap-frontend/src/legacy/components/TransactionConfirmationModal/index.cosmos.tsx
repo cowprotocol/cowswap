@@ -3,8 +3,8 @@ import { COW, GNO } from '@cowswap/common-const'
 
 import styled from 'styled-components/macro'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 

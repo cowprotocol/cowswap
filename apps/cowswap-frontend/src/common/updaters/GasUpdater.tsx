@@ -1,15 +1,35 @@
-import { useEffect } from 'react'
+import { useSetAtom } from 'jotai/index'
+import { useCallback, useEffect } from 'react'
 
 import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowswap/common-const'
 import { useBlockNumber } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 
-import { useGasPrices, useUpdateGasPrices } from 'legacy/state/gas/hooks'
+import { useDispatch } from 'react-redux'
+
+import { AppDispatch } from 'legacy/state'
+import { updateGasPrices, UpdateGasPrices } from 'legacy/state/gas/actions'
+import { useGasPrices } from 'legacy/state/gas/hooks'
+
+import { gasPriceAtom } from 'modules/gasPirce'
 
 import { gasFeeApi } from 'api/gasPrices'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold
+}
+
+function useUpdateGasPrices() {
+  const dispatch = useDispatch<AppDispatch>()
+  const setGasPrice = useSetAtom(gasPriceAtom)
+
+  return useCallback(
+    (gasParams: UpdateGasPrices) => {
+      dispatch(updateGasPrices(gasParams))
+      setGasPrice(gasParams)
+    },
+    [dispatch, setGasPrice]
+  )
 }
 
 export function GasUpdater(): null {

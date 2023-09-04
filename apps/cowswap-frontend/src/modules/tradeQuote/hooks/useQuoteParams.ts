@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
 
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
+import { getAddress } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
-import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()

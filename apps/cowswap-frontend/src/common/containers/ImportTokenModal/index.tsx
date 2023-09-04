@@ -2,14 +2,14 @@ import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
+import { useDebounce } from '@cowswap/common-hooks'
 import { isInjectedWidget } from '@cowswap/common-utils'
 import { Token } from '@uniswap/sdk-core'
 
 import TokenWarningModal from 'legacy/components/TokenWarningModal'
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
-import useDebounce from 'legacy/hooks/useDebounce'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'

@@ -5,8 +5,9 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { ParsedQs } from 'qs'
 
-import { Field } from './actions'
 import { SwapState } from './reducer'
+
+import { Field } from '../types'
 
 export function isWrappingTrade(
   sellCurrency: Currency | null | undefined,

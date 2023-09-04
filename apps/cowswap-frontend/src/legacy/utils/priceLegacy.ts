@@ -15,17 +15,18 @@ import {
 import { getQuote } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import {
+  getPriceQuote as getPriceQuoteMatcha,
+  MatchaPriceQuote,
+  toPriceInformation as toPriceInformationMatcha,
+} from 'api/matcha-0x'
+
+import {
   LegacyPriceInformationWithSource,
   LegacyPriceQuoteError,
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
-} from 'api/gnosisProtocol/legacy/types'
-import {
-  getPriceQuote as getPriceQuoteMatcha,
-  MatchaPriceQuote,
-  toPriceInformation as toPriceInformationMatcha,
-} from 'api/matcha-0x'
+} from '../state/price/types'
 
 /**
  * ************************************************** *
@@ -146,7 +147,7 @@ function _extractPriceAndErrorPromiseValues(
 }
 
 function _checkFeeErrorForData(error: GpQuoteError) {
-  console.warn('[getBestQuote:Legacy]::Fee error', error)
+  console.warn('legacy]::Fee error', error)
 
   const feeAmount = error?.data?.fee_amount || error?.data?.feeAmount
   const feeExpiration = error?.data?.expiration

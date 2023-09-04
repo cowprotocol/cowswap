@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 

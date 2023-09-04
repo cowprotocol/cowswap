@@ -6,7 +6,7 @@ import { WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'

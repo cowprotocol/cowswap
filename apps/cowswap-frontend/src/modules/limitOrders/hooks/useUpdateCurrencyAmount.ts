@@ -2,16 +2,16 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { FractionUtils } from '@cowswap/common-utils'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { Writeable } from 'types'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 
-import { FractionUtils } from 'utils/fractionUtils'
 import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
 
 type CurrencyAmountProps = {

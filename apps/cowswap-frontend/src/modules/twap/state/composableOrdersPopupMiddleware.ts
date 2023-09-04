@@ -4,15 +4,15 @@ import { isAnyOf } from '@reduxjs/toolkit'
 import { jotaiStore } from 'jotaiStore'
 import { Middleware } from 'redux'
 
-import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { setTwapOrderStatusAtom, twapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
-import { TwapOrderStatus } from 'modules/twap/types'
-import { mapTwapOrderToStoreOrder } from 'modules/twap/utils/mapTwapOrderToStoreOrder'
+import { AppState } from 'legacy/state'
+import { cancelOrdersBatch } from 'legacy/state/orders/actions'
+import { batchCancelOrdersPopup } from 'legacy/state/orders/middleware/batchCancelOrdersPopup'
 
-import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
+import { setTwapOrderStatusAtom, twapOrdersAtom } from './twapOrdersListAtom'
 
-import { AppState } from '../../index'
-import { cancelOrdersBatch } from '../actions'
+import { tokensByAddressAtom } from '../../tokensList/state/tokensListAtom'
+import { TwapOrderStatus } from '../types'
+import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
 const isCancelOrdersBatch = isAnyOf(cancelOrdersBatch)
 

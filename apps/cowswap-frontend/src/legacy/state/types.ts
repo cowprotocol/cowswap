@@ -8,3 +8,8 @@ export enum ConfirmOperationType {
   CONVERT_VCOW,
   CLAIM_VESTED_COW,
 }
+
+export enum Field {
+  INPUT = 'INPUT',
+  OUTPUT = 'OUTPUT',
+}

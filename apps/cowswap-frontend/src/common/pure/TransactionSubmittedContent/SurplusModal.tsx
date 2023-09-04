@@ -10,12 +10,11 @@ import styled from 'styled-components/macro'
 import CheckSingular from 'legacy/assets/cow-swap/check-singular.svg'
 import SurplusCow from 'legacy/assets/cow-swap/surplus-cow.svg'
 import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { sendEvent } from 'legacy/components/analytics/googleAnalytics'
 import { Order } from 'legacy/state/orders/actions'
 import { ExternalLink } from 'legacy/theme'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-
-import { sendEvent } from '../../../legacy/components/analytics/googleAnalytics'
 
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'

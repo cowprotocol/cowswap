@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 
 import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'

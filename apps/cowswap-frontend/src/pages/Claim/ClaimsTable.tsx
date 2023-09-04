@@ -10,6 +10,7 @@ import Circle from 'legacy/assets/images/blue-loader.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'
+import { ClaimType } from 'legacy/state/claim/hooks/types'
 import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
 import { ClaimCommonTypes, EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
@@ -18,8 +19,6 @@ import { ExternalLink } from 'legacy/theme'
 
 import { Countdown } from 'pages/Claim/Countdown'
 import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
-
-import { ClaimType } from '../../legacy/state/claim/hooks/types'
 
 export type ClaimsTableProps = Pick<ClaimCommonTypes, 'claims' | 'hasClaims' | 'isAirdropOnly'>
 

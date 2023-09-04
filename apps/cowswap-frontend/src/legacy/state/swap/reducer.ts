@@ -6,7 +6,6 @@ import { getIsNativeToken, getIsWrapOrUnwrap } from '@cowswap/common-utils'
 import { createReducer } from '@reduxjs/toolkit'
 
 import {
-  Field,
   replaceOnlyTradeRawState,
   replaceSwapState,
   selectCurrency,
@@ -16,6 +15,8 @@ import {
   typeInput,
 } from './actions'
 import { queryParametersToSwapState } from './utils'
+
+import { Field } from '../types'
 
 export interface SwapState {
   // Mod: added chainId

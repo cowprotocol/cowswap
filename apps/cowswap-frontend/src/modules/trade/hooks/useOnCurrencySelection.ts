@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'

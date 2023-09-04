@@ -1,16 +1,15 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from '@cowswap/common-utils'
 
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
-
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
 
 import { appziMiddleware } from './appziMiddleware'
 
 import { AppState } from '../../index'
 import { getOrderByIdFromState } from '../helpers'
 
-jest.mock('legacy/utils/appzi')
+jest.mock('@cowswap/common-utils')
 jest.mock('../helpers', () => {
   return {
     ...jest.requireActual('../helpers'),

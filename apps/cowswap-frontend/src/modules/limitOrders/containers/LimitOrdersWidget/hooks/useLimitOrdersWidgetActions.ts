@@ -5,7 +5,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 
 import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'

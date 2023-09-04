@@ -8,9 +8,9 @@ import { Trans } from '@lingui/macro'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
-import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 
@@ -18,6 +18,8 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useButtonText } from './hooks'
+
+import { LegacyConfirmationModalContent } from '../../TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState

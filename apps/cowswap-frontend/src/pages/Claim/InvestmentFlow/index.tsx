@@ -13,7 +13,7 @@ import { BadgeVariant } from 'legacy/components/Badge'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { FaqDrawer } from 'legacy/components/FaqDrawer'
 import { Stepper } from 'legacy/components/Stepper'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/state'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimState,

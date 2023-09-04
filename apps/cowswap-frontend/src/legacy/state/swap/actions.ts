@@ -1,9 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-export enum Field {
-  INPUT = 'INPUT',
-  OUTPUT = 'OUTPUT',
-}
+import { Field } from '../types'
 
 export interface ReplaceOnlyTradeRawStatePayload {
   readonly chainId: number | null

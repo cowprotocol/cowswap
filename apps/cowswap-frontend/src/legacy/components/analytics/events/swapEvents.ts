@@ -1,5 +1,6 @@
-import { Field } from 'legacy/state/swap/actions'
-import { debounce } from 'legacy/utils/misc'
+import { debounce } from '@cowswap/common-utils'
+
+import { Field } from 'legacy/state/types'
 
 import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'

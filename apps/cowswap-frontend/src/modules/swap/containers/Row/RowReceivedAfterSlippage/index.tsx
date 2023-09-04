@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
-import { Field } from 'legacy/state/swap/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { Field } from 'legacy/state/types'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
 import { RowReceivedAfterSlippageContent } from 'modules/swap/pure/Row/RowReceivedAfterSlippageContent'

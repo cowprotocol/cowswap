@@ -9,10 +9,6 @@ import { Text } from 'rebass'
 import { AutoColumn } from 'legacy/components/Column'
 import { ExternalLink } from 'legacy/components/Link'
 import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
-import {
-  ConfirmationModalContentProps,
-  LegacyConfirmationModalContent,
-} from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { CowModal } from 'common/pure/Modal'
@@ -21,6 +17,10 @@ import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'
 
 import CowBalance from '../CowBalance'
+import {
+  ConfirmationModalContentProps,
+  LegacyConfirmationModalContent,
+} from '../TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 export type CowSubsidy = { tier: number; discount: number }
 export interface CowSubsidyInfoProps {

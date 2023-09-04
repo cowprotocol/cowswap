@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo } from 'react'
 
+import { getChainCurrencySymbols } from '@cowswap/common-const'
+import { shortenAddress } from '@cowswap/common-utils'
 import {
   getWeb3ReactConnection,
   useGnosisSafeInfo,
@@ -18,8 +20,6 @@ import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
 import checkImage from 'legacy/assets/cow-swap/check.svg'
 import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { ExternalLink } from 'legacy/theme'
-import { shortenAddress } from 'legacy/utils'
-import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 
@@ -37,7 +37,8 @@ import {
   WalletIcon,
   Wrapper,
 } from './styled'
-import { ConfirmOperationType } from './types'
+
+import { ConfirmOperationType } from '../../state'
 
 enum WalletType {
   SAFE,
