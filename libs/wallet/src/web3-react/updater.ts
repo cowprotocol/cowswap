@@ -8,7 +8,7 @@ import useENSName from 'legacy/hooks/useENSName'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 import { useIsSafeWallet, useWalletMetaData } from './hooks/useWalletMetadata'
