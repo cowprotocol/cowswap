@@ -6,8 +6,6 @@ import GasUpdater from 'legacy/state/gas/updater'
 import ListsUpdater from 'legacy/state/lists/updater'
 import LogsUpdater from 'legacy/state/logs/updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
-import FeesUpdater from 'legacy/state/price/updater'
-import UserUpdater from 'legacy/state/user/updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
@@ -17,6 +15,7 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
+import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import {
   CancelledOrdersUpdater,
@@ -28,6 +27,7 @@ import {
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
+import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   return (

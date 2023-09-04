@@ -9,6 +9,8 @@ import { useWalletInfo } from '@cowswap/wallet'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { Field } from 'legacy/state/swap/actions'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
@@ -19,10 +21,8 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
-import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 
-import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
-import { QuoteInformationObject } from './reducer'
+import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -116,7 +116,7 @@ function isRefetchQuoteRequired(
   return false
 }
 
-export default function FeesUpdater(): null {
+export function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 

@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 
-import { updateMatchesDarkMode } from './reducer'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { updateMatchesDarkMode } from 'legacy/state/user/reducer'
 
-import { useAppDispatch } from '../hooks'
-
-export default function Updater(): null {
+export function UserUpdater(): null {
   const dispatch = useAppDispatch()
 
   // keep dark mode in sync with the system
