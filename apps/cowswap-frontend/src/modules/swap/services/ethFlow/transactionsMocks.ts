@@ -1,4 +1,4 @@
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { addTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
@@ -12,7 +12,7 @@ export const ApproveErrorTxHashMock = '0x138b032570b443508a0a102f1d15949401acf2b
 
 export function mockEthFlowPendingTxs() {
   // Wrap transactions
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: WrapPendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -22,7 +22,7 @@ export function mockEthFlowPendingTxs() {
     })
   )
 
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: WrapSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -31,7 +31,7 @@ export function mockEthFlowPendingTxs() {
       summary: 'Wrap 0.02 WETH to Ether',
     })
   )
-  store.dispatch(
+  cowSwapStore.dispatch(
     finalizeTransaction({
       hash: WrapSuccessfulTxHashMock,
       chainId: 5,
@@ -48,7 +48,7 @@ export function mockEthFlowPendingTxs() {
     })
   )
 
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: WrapErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -57,7 +57,7 @@ export function mockEthFlowPendingTxs() {
       summary: 'Wrap 0.02 WETH to Ether',
     })
   )
-  store.dispatch(
+  cowSwapStore.dispatch(
     finalizeTransaction({
       hash: WrapErrorTxHashMock,
       chainId: 5,
@@ -75,7 +75,7 @@ export function mockEthFlowPendingTxs() {
   )
 
   // Approve transactions
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: ApprovePendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -89,7 +89,7 @@ export function mockEthFlowPendingTxs() {
     })
   )
 
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: ApproveSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -102,7 +102,7 @@ export function mockEthFlowPendingTxs() {
       summary: 'Approve GNO',
     })
   )
-  store.dispatch(
+  cowSwapStore.dispatch(
     finalizeTransaction({
       hash: ApproveSuccessfulTxHashMock,
       chainId: 5,
@@ -119,7 +119,7 @@ export function mockEthFlowPendingTxs() {
     })
   )
 
-  store.dispatch(
+  cowSwapStore.dispatch(
     addTransaction({
       hash: ApproveErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
@@ -132,7 +132,7 @@ export function mockEthFlowPendingTxs() {
       summary: 'Approve GNO',
     })
   )
-  store.dispatch(
+  cowSwapStore.dispatch(
     finalizeTransaction({
       hash: ApproveErrorTxHashMock,
       chainId: 5,

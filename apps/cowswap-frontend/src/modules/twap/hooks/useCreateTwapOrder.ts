@@ -3,15 +3,15 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { getCowSoundSend } from '@cowswap/common-utils'
 import { useWalletInfo, useSafeAppsSdk } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
-import { getCowSoundSend } from 'legacy/utils/sound'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -124,7 +124,7 @@ export function useCreateTwapOrder() {
           feeAmount: undefined,
         })
         getCowSoundSend().play()
-        dispatchPresignedOrderPosted(store, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
+        dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { CODE_LINK, DISCORD_LINK } from '@cowswap/common-const'
+import { userAgent } from '@cowswap/common-utils'
 import { AutoRow } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
@@ -7,11 +9,9 @@ import styled from 'styled-components/macro'
 
 import CowError from 'legacy/assets/cow-swap/CowError.png'
 import { AutoColumn } from 'legacy/components/Column'
-import { CODE_LINK, DISCORD_LINK } from 'legacy/constants'
-import store, { AppState } from 'legacy/state'
+import { cowSwapStore, AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme'
-import { userAgent } from 'legacy/utils/userAgent'
 
 import { Title } from 'modules/application/pure/Page'
 
@@ -144,7 +144,7 @@ ${
     ? `## \`${relevantState}\` state
 
 \`\`\`json
-${JSON.stringify(store.getState()[relevantState], null, 2)}
+${JSON.stringify(cowSwapStore.getState()[relevantState], null, 2)}
 \`\`\`
 `
     : ''

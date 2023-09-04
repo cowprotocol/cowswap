@@ -1,8 +1,8 @@
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { RADIX_DECIMAL } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
 
-import { RADIX_DECIMAL } from 'legacy/constants'
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { serializeToken } from 'legacy/state/user/hooks'
 
 import { Order, OrderStatus, SerializedOrder, addPendingOrder, AddPendingOrderParams } from './actions'
@@ -122,6 +122,6 @@ export const mockOrderDispatches = {
       },
     }
 
-    store.dispatch(addPendingOrder(actionParams))
+    cowSwapStore.dispatch(addPendingOrder(actionParams))
   },
 }

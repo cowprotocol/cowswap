@@ -18,7 +18,7 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import AppziButton from 'legacy/components/AppziButton'
 import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { App } from 'modules/application/containers/App'
@@ -45,7 +45,7 @@ const root = createRoot(document.getElementById('root')!)
 root.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Provider store={store}>
+    <Provider store={cowSwapStore}>
       <AtomProvider store={jotaiStore}>
         <HashRouter>
           <LanguageProvider>

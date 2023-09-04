@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowswap/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowswap/common-hooks'
 
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
 
 /**
@@ -34,7 +34,7 @@ export function navigatorLocale(): SupportedLocale | undefined {
 }
 
 function storeLocale(): SupportedLocale | undefined {
-  return store.getState().user.userLocale ?? undefined
+  return cowSwapStore.getState().user.userLocale ?? undefined
 }
 
 export const initialLocale =

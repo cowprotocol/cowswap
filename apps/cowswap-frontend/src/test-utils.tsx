@@ -15,7 +15,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import Web3Provider from 'legacy/components/Web3Provider'
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { theme } from 'legacy/theme'
 
@@ -37,7 +37,7 @@ const WithProviders = ({ children }: { children?: ReactNode }) => {
   return (
     <LanguageProvider>
       <MockedI18nProvider>
-        <Provider store={store}>
+        <Provider store={cowSwapStore}>
           <Web3Provider>
             <MockThemeProvider>{children}</MockThemeProvider>
           </Web3Provider>
@@ -71,7 +71,7 @@ export function WithMockedWeb3({ children, location }: { children?: ReactNode; l
 
   return (
     <MemoryRouter initialEntries={location ? [location] : undefined}>
-      <Provider store={store}>
+      <Provider store={cowSwapStore}>
         <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
       </Provider>
     </MemoryRouter>
