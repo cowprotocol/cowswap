@@ -41,6 +41,7 @@ function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedC
 }
 
 const currencyLogoCache = new Map<string, Array<string>>()
+
 // TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
   const currencyAddress = currency ? (currency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : currency.address) : null
@@ -48,10 +49,25 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
   const externalLogo = useProxyTokenLogo(currency?.chainId, currencyAddress)
   const cacheKey = `${currencyAddress}|${currency?.chainId}`
   const cached = currencyLogoCache.get(cacheKey)
-
-  if (cached) return cached
-
   const logoURI = currency ? (currency as Currency & { logoURI: string }).logoURI : null
+  const imageOverride = currency?.isToken ? ADDRESS_IMAGE_OVERRIDE[currency.address] : null
+
+  if (cached) {
+    /**
+     * There can be a wrong token icon deriving if tokens in COMMON_BASES
+     * Example: EURE_GNOSIS_CHAIN
+     * This token doesn't have a logo in the const above, but it has it in cowprotocol/token-lists
+     * However, since the token from COMMON_BASES is always used first (because it's hardcoded)
+     * It gets a logo url from getTokenLogoURI() and it's invalid
+     * After loading the tokens list we should update the cache if there is a logoURI and no imageOverride
+     */
+    if (logoURI && !cached.includes(logoURI) && !imageOverride) {
+      cached.unshift(logoURI)
+    }
+
+    return cached
+  }
+
   const logoURIs = logoURI ? uriToHttp(logoURI) : []
 
   if (!currency) {
@@ -64,7 +80,6 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
   } else if (currency.isToken) {
     // mod
     // Explicit overrides should take priority, otherwise append potential other logoURIs to existing candidates
-    const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
     if (imageOverride) {
       // Add image override with higher priority
       logoURIs.unshift(imageOverride)
