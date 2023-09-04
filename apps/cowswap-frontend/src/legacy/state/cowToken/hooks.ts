@@ -8,17 +8,18 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { AppState } from 'legacy/state'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal/types'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
+
+import { APPROVE_GAS_LIMIT_DEFAULT } from '../../hooks/useApproveCallback/useApproveCallbackMod'
+import { useTransactionAdder } from '../enhancedTransactions/hooks'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
