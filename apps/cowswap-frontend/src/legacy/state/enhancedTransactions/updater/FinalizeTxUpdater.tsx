@@ -1,13 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { GetReceipt, useGetReceipt } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
 
-import { GetReceipt, useGetReceipt } from 'legacy/hooks/useGetReceipt'
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { AppDispatch } from 'legacy/state'
 import { useAddPopup } from 'legacy/state/application/hooks'
@@ -260,7 +260,7 @@ export default function Updater(): null {
 
   const dispatch = useAppDispatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
-  const getReceipt = useGetReceipt()
+  const getReceipt = useGetReceipt(chainId)
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)

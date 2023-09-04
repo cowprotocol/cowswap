@@ -1,18 +1,15 @@
 import { useCallback, useMemo } from 'react'
 
+import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCY_BUY_TOKEN, SupportedLocale } from '@cowswap/common-const'
+import { calculateValidTo } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { SupportedLocale } from 'legacy/constants/locales'
-import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-
-import { calculateValidTo } from 'utils/time'
 
 import {
   addSerializedToken,

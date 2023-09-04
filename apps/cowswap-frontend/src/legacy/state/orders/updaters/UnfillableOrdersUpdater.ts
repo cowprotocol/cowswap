@@ -3,16 +3,16 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
+import { useIsWindowVisible } from '@cowswap/common-hooks'
+import { getPromiseFulfilledValue } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'
 
 import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -23,7 +23,6 @@ import {
   getRemainderAmount,
   isOrderUnfillable,
 } from 'legacy/state/orders/utils'
-import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'

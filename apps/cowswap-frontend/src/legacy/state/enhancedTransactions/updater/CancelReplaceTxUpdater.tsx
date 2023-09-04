@@ -8,7 +8,8 @@ import { Dispatch } from 'redux'
 import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
-import { sdk } from 'legacy/utils/blocknative'
+
+import { sdk } from 'api/blocknative'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
   for (const hash of pendingHashes) {
