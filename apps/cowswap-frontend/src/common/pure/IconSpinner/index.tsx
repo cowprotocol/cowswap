@@ -9,11 +9,11 @@ interface IconSpinnerProps {
   image?: string
   size?: number
   children?: React.ReactNode
-  bgColor?: string
+  bgColor?: ColorVariables;
   spinnerWidth?: number
 }
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: string }>`
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorVariables }>`
   --bgColor: ${({ bgColor }) => `var(${bgColor})`};
   display: flex;
   position: relative;
@@ -64,12 +64,16 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: string
   }
 `
 
+enum ColorVariables {
+  CONTAINER_BG_01 = '--cow-container-bg-01',
+}
+
 export function IconSpinner({
   currency,
   image,
   size = 24,
   children,
-  bgColor = '--cow-container-bg-01',
+  bgColor = ColorVariables.CONTAINER_BG_01,
   spinnerWidth = 2
 }: IconSpinnerProps) {
 
