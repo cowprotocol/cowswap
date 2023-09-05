@@ -1,8 +1,8 @@
+import { ButtonSecondary } from '@cowswap/ui'
+
 import { darken } from 'polished'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
-
-import { ButtonSecondary } from 'legacy/components/Button'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 

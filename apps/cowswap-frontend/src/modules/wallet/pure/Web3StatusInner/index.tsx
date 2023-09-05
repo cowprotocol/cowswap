@@ -1,14 +1,13 @@
-import { Trans } from '@lingui/macro'
-
-import Loader from 'legacy/components/Loader'
-import FollowPendingTxPopup from 'legacy/components/Popups/FollowPendingTxPopup'
-import { RowBetween } from 'legacy/components/Row'
 import { shortenAddress } from '@cowswap/common-utils'
+import { Loader, RowBetween } from '@cowswap/ui'
+import { ConnectionType } from '@cowswap/wallet'
+
+import { Trans } from '@lingui/macro'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
-import { ConnectionType } from '../../types'
-import StatusIcon from '../StatusIcon'
+import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
+import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
   account?: string | null

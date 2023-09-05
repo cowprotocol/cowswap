@@ -61,7 +61,7 @@ const useShowingPopupFirstTime = (orderId: string | undefined) => {
   return { showPopup: firstTimePopupOrderAppears && showingPopup, firstTimePopupOrderAppears }
 }
 
-const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
+export const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
   const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
   const setHidePendingTxPopupPermanently = useSetAtom(handleHidePopupPermanentlyAtom)
   const isExpertMode = useIsExpertMode()
@@ -86,5 +86,3 @@ const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.El
     </FollowPendingTxPopupUI>
   )
 }
-
-export default FollowPendingTxPopup
