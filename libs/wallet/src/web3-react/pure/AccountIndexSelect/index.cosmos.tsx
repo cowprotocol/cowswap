@@ -2,9 +2,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
-
 import { AccountIndexSelect } from './index'
+import { WETH_GOERLI } from '@cowswap/common-const'
 
 const accountsList = [
   '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',

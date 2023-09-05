@@ -1,14 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import { RPC_URLS } from 'legacy/constants/networks'
-
 import { getWeb3ReactConnection } from './getWeb3ReactConnection'
 import { isChainAllowed } from './isChainAllowed'
 
 import { ConnectionType } from '../../api/types'
 import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
+import { getChainInfo, RPC_URLS } from '@cowswap/common-const'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {
