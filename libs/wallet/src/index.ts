@@ -3,7 +3,6 @@ export * from './web3-react/types'
 
 // Hooks
 export * from './api/hooks'
-export * from './web3-react/hooks/useDisconnectWallet'
 export * from './web3-react/hooks/useWalletMetadata'
 export * from './web3-react/hooks/useEagerlyConnect'
 export * from './web3-react/hooks/useOrderedConnections'

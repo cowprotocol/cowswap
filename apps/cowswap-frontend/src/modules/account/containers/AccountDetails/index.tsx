@@ -2,8 +2,14 @@ import { Fragment, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
+  getEtherscanLink,
+  getExplorerLabel,
+  shortenAddress,
+  getExplorerAddressLink,
+  isMobile,
+} from '@cowswap/common-utils'
+import {
   ConnectionType,
-  useDisconnectWallet,
   useWalletInfo,
   WalletDetails,
   getConnectionIcon,
@@ -29,9 +35,6 @@ import {
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
 import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
-import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
 
@@ -60,6 +63,7 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
