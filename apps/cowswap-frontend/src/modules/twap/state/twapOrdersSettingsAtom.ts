@@ -1,11 +1,11 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getJotaiIsolatedStorage } from '@cowswap/core'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Milliseconds } from 'types'
 
-import { getJotaiIsolatedStorage } from '../../../../../../libs/core/src/jotaiStore'
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_ORDER_DEADLINE, DEFAULT_TWAP_SLIPPAGE } from '../const'
 
 export interface TwapOrdersDeadline {

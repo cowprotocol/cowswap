@@ -8,6 +8,8 @@ import {
   getExplorerAddressLink,
   isMobile,
 } from '@cowswap/common-utils'
+import { MouseoverTooltip } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 import {
   ConnectionType,
   useWalletInfo,
@@ -28,7 +30,6 @@ import { Connector } from '@web3-react/types'
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
-import { MouseoverTooltip } from '@cowswap/ui'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
@@ -64,7 +65,6 @@ import { SurplusCard } from './SurplusCard'
 
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
-import { ExternalLink } from '../../../../../../../libs/ui/src/pure/ExternalLink'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GOERLI]: 'Görli',

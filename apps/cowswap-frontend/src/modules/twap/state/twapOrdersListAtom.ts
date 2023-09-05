@@ -1,14 +1,13 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { deepEqual } from '@cowswap/common-utils'
+import { getJotaiIsolatedStorage } from '@cowswap/core'
 import { walletInfoAtom } from '@cowswap/wallet'
 
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
 
-import { deepEqual } from 'utils/deepEqual'
-
-import { getJotaiIsolatedStorage } from '../../../../../../libs/core/src/jotaiStore'
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
@@ -54,7 +53,7 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
     delete currentState[id]
   })
 
-  store.dispatch(deleteOrders({ chainId, ids }))
+  cowSwapStore.dispatch(deleteOrders({ chainId, ids }))
 
   set(twapOrdersAtom, currentState)
 })
