@@ -1,11 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { shortenAddress } from 'legacy/utils'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+import { getCurrentChainIdFromUrl, shortenAddress } from '@cowswap/common-utils'
 
 export const walletInfoAtom = atom<WalletInfo>({ chainId: getCurrentChainIdFromUrl() })
 

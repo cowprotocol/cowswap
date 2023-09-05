@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
-import { ExternalLink } from 'legacy/theme/components'
+import { ButtonPrimary, ExternalLink } from '@cowswap/ui'
 
 export const Wrapper = styled.div`
   display: flex;

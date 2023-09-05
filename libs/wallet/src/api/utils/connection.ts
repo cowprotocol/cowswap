@@ -66,7 +66,7 @@ export function getIsMetaMask(): boolean {
 }
 
 export function getIsCoinbaseWallet(): boolean {
-  return window.ethereum?.isCoinbaseWallet ?? false
+  return (window.ethereum as { isCoinbaseWallet: boolean })?.isCoinbaseWallet ?? false
 }
 
 export function getIsAmbireWallet(name: string | undefined): boolean {

@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowswap/ui'
 
 import * as styled from './styled'
 

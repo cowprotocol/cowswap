@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
 import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from 'legacy/constants/networks'
+import { RPC_URLS } from '@cowswap/common-const'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
