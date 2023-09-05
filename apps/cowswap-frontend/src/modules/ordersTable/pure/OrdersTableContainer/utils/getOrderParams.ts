@@ -12,8 +12,8 @@ export interface OrderParams {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   rateInfoParams: RateInfoParams
-  hasEnoughBalance: boolean
-  hasEnoughAllowance: boolean
+  hasEnoughBalance: boolean | undefined
+  hasEnoughAllowance: boolean | undefined
 }
 
 const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
@@ -38,18 +38,20 @@ export function getOrderParams(
   const balance = balances[order.inputToken.address]?.value
   const allowance = allowances[order.inputToken.address]?.value
 
-  let hasEnoughBalance, hasEnoughAllowance
-
-  if (order.partiallyFillable) {
-    // When balance or allowance are undefined (loading state), show as true
-    // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
-    const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
-    hasEnoughBalance = balance === undefined || isEnoughAmount(amount, balance)
-    hasEnoughAllowance = allowance === undefined || isEnoughAmount(amount, allowance)
-  } else {
-    hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-    hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
-  }
+  const [hasEnoughBalance, hasEnoughAllowance] = (() => {
+    if (order.partiallyFillable) {
+      // When balance or allowance are undefined (loading state), show as true
+      // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
+      const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
+      const hasEnoughBalance = isEnoughAmount(amount, balance)
+      const hasEnoughAllowance = isEnoughAmount(amount, allowance)
+      return [hasEnoughBalance, hasEnoughAllowance]
+    } else {
+      const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
+      const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+      return [hasEnoughBalance, hasEnoughAllowance]
+    }
+  })()
 
   return {
     chainId,

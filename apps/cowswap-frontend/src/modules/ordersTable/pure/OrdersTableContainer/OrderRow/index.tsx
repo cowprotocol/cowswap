@@ -174,7 +174,7 @@ export function OrderRow({
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
   const withWarning =
-    (!hasEnoughBalance || !hasEnoughAllowance) &&
+    (hasEnoughBalance === false || hasEnoughAllowance === false) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const theme = useContext(ThemeContext)
@@ -353,10 +353,10 @@ export function OrderRow({
                     bgColor={theme.alert}
                     content={
                       <styledEl.WarningContent>
-                        {!hasEnoughBalance && (
+                        {hasEnoughBalance === false && (
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
-                        {!hasEnoughAllowance && (
+                        {hasEnoughAllowance === false && (
                           <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
                       </styledEl.WarningContent>

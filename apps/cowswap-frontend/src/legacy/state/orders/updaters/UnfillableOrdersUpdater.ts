@@ -145,8 +145,9 @@ export function UnfillableOrdersUpdater(): null {
 
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
+        const verifiedQuote = verifiedQuotesEnabled && enoughBalance === true
 
-        _getOrderPrice(chainId, order, enoughBalance && verifiedQuotesEnabled, strategy)
+        _getOrderPrice(chainId, order, verifiedQuote, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
