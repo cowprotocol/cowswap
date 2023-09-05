@@ -2,7 +2,6 @@ import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '../../api/types'
 import { coinbaseWalletConnection } from '../connection/coinbase'
-import { fortmaticConnection } from '../connection/formatic'
 import { injectedConnection } from '../connection/injected'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
 import { keystoneConnection } from '../connection/keystone'
@@ -22,7 +21,6 @@ const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = 
   [ConnectionType.WALLET_CONNECT]: walletConnectConnection,
   [ConnectionType.WALLET_CONNECT_V2]: walletConnectConnectionV2,
   [ConnectionType.ZENGO]: walletConnectConnection,
-  [ConnectionType.FORTMATIC]: fortmaticConnection,
   [ConnectionType.NETWORK]: networkConnection,
   [ConnectionType.GNOSIS_SAFE]: gnosisSafeConnection,
   [ConnectionType.AMBIRE]: walletConnectConnection,

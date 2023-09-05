@@ -1,14 +1,12 @@
 import { initializeConnector } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { default as TrezorImage } from '../../api/assets/trezor.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { TrezorConnector } from '../connectors/TrezorConnector'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -24,8 +22,8 @@ export const trezorConnection: Web3ReactConnection<TrezorConnector> = {
   type: ConnectionType.TREZOR,
 }
 
-export function TrezorOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = useIsActiveWallet(trezorConnection)
+export function TrezorOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, trezorConnection)
 
   return (
     <ConnectWalletOption

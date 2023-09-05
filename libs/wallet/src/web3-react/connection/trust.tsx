@@ -1,15 +1,14 @@
 import { initializeConnector } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
 import { default as TrustImage } from '../../api/assets/trust.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName, getIsTrustWallet } from '../../api/utils/connection'
 import { InjectedWallet } from '../connectors/Injected'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 
 const WALLET_LINK = 'https://trustwallet.com/'
 const BASE_PROPS = {
@@ -32,8 +31,8 @@ export const trustWalletConnection: Web3ReactConnection = {
   type: ConnectionType.TRUST,
 }
 
-export function TrustWalletInjectedOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = useIsActiveWallet(trustWalletConnection)
+export function TrustWalletInjectedOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, trustWalletConnection)
 
   return (
     <ConnectWalletOption
@@ -45,7 +44,7 @@ export function TrustWalletInjectedOption({ tryActivation }: { tryActivation: (c
   )
 }
 
-export function TrustWalletWCOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export function TrustWalletWCOption({ tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
       options={BASE_PROPS}

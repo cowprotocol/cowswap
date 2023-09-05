@@ -1,14 +1,13 @@
 import { initializeConnector } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
 import { default as TallyImage } from '../../api/assets/tally.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { InjectedWallet } from '../connectors/Injected'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 
 const WALLET_LINK = 'https://chrome.google.com/webstore/detail/taho/eajafomhmkipbjmfmhebemolkcicgfmd'
 const BASE_PROPS = {
@@ -31,8 +30,8 @@ export const tallyWalletConnection: Web3ReactConnection = {
   type: ConnectionType.TALLY,
 }
 
-export function TallyWalletOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = useIsActiveWallet(tallyWalletConnection)
+export function TallyWalletOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, tallyWalletConnection)
 
   return (
     <ConnectWalletOption

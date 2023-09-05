@@ -2,8 +2,7 @@ import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
-
-import { TryActivation } from '.'
+import { ConnectionOptionProps } from '../types'
 
 const alphaOption = {
   color: '#4196FC',
@@ -11,7 +10,7 @@ const alphaOption = {
   id: 'alpha',
 }
 
-export function AlphaOption({ tryActivation }: { tryActivation: TryActivation }) {
+export function AlphaOption({ tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
       options={alphaOption}

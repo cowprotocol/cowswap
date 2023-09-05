@@ -3,18 +3,17 @@ import { MetaMask } from '@web3-react/metamask'
 
 import { Trans } from '@lingui/macro'
 
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import useTheme from 'legacy/hooks/useTheme'
-
 import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
 import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
-import { TryActivation, onError } from '.'
+import { onError } from './onError'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { useTheme } from '@cowswap/common-hooks'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
@@ -70,9 +69,8 @@ export function OpenMetaMaskMobileOption() {
   )
 }
 
-export function MetaMaskOption({ tryActivation }: { tryActivation: TryActivation }) {
-  // const isActive = injectedConnection.hooks.useIsActive()
-  const isActive = useIsActiveWallet(injectedConnection) // MOD
+export function MetaMaskOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, injectedConnection)
 
   return (
     <ConnectWalletOption
@@ -84,11 +82,10 @@ export function MetaMaskOption({ tryActivation }: { tryActivation: TryActivation
   )
 }
 
-export function InjectedOption({ tryActivation }: { tryActivation: TryActivation }) {
-  const { darkMode } = useTheme()
+export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
   const options = darkMode ? injectedOptionDark : injectedOption
 
-  const isActive = useIsActiveWallet(injectedConnection) // MOD
+  const isActive = useIsActiveConnection(selectedWallet, injectedConnection)
 
   return (
     <ConnectWalletOption

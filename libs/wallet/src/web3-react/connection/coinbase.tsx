@@ -3,29 +3,21 @@ import { initializeConnector } from '@web3-react/core'
 
 import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import { RPC_URLS } from '@cowswap/common-const'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { useSelectedWallet } from 'legacy/state/user/hooks'
-
 import { AsyncConnector } from './asyncConnector'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
-import { TryActivation, onError } from '.'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { onError } from './onError'
 
 const coinbaseInjectedOption = {
   color: '#315CF5',
   icon: CoinbaseImage,
   id: 'coinbase-wallet',
-}
-
-const coinbaseMobileOption = {
-  ...coinbaseInjectedOption,
-  header: 'Open in Coinbase Wallet',
-  link: 'https://go.cb-w.com/mtUDhEZPy1',
 }
 
 const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncConnector>(
@@ -56,14 +48,8 @@ export const coinbaseWalletConnection: Web3ReactConnection = {
   type: ConnectionType.COINBASE_WALLET,
 }
 
-export function OpenCoinbaseWalletOption() {
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.COINBASE_WALLET
-  return <ConnectWalletOption {...coinbaseMobileOption} isActive={isActive} />
-}
-
-export function CoinbaseWalletOption({ tryActivation }: { tryActivation: TryActivation }) {
-  const isActive = useIsActiveWallet(coinbaseWalletConnection)
+export function CoinbaseWalletOption({ tryActivation, selectedWallet }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, coinbaseWalletConnection)
 
   return (
     <ConnectWalletOption

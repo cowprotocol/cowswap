@@ -25,6 +25,8 @@ import {
   getIsInjected,
   getIsMetaMask,
 } from '../../../../../../libs/wallet/src/api/utils/connection'
+import { useSelectedWallet } from 'legacy/state/user/hooks'
+import { useTheme } from '@cowswap/common-hooks'
 
 export type TryActivation = (connector: Connector) => void
 
@@ -32,12 +34,16 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isInjected = getIsInjected()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
+  const selectedWallet = useSelectedWallet()
+  const { darkMode } = useTheme()
 
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
   // const isChromeMobile = isMobile && isChrome
   const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
+
+  const connectionProps = { darkMode, selectedWallet, tryActivation }
 
   // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
   // const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
@@ -51,32 +57,30 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     }
   } else {
     if (isMetaMask) {
-      injectedOption = <MetaMaskOption tryActivation={tryActivation} />
+      injectedOption = <MetaMaskOption {...connectionProps} />
     } else {
-      injectedOption = <InjectedOption tryActivation={tryActivation} />
+      injectedOption = <InjectedOption {...connectionProps} />
     }
   }
 
-  const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
+  const coinbaseWalletOption = <CoinbaseWalletOption {...connectionProps} />
 
-  const walletConnectionOption =
-    (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
+  const walletConnectionOption = (!isInjectedMobileBrowser && <WalletConnectOption {...connectionProps} />) ?? null
 
-  const walletConnectionV2Option =
-    (!isInjectedMobileBrowser && <WalletConnectV2Option tryActivation={tryActivation} />) ?? null
+  const walletConnectionV2Option = (!isInjectedMobileBrowser && <WalletConnectV2Option {...connectionProps} />) ?? null
 
   // Wallet-connect based
-  // const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
-  const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
-  const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
-  const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption tryActivation={tryActivation} />) ?? null
-  const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption tryActivation={tryActivation} />) ?? null
+  // const zengoOption = (!isInjectedMobileBrowser && <ZengoOption {...connectionProps} />) ?? null
+  const ambireOption = (!isInjectedMobileBrowser && <AmbireOption {...connectionProps} />) ?? null
+  const alphaOption = (!isInjectedMobileBrowser && <AlphaOption {...connectionProps} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption {...connectionProps} />) ?? null
+  const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
   const keystoneOption =
-    (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
+    (showKeystone && <KeystoneOption {...connectionProps} />) || (!isMobile && <InstallKeystoneOption />)
 
   // Injected
-  // const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
-  const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
+  // const tallyOption = (showTally && <TallyWalletOption {...connectionProps} />) ?? null
+  const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption {...connectionProps} />) ?? null
 
   return (
     <>
@@ -94,8 +98,4 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {keystoneOption}
     </>
   )
-}
-
-export function onError(error: Error) {
-  console.debug(`[web3-react] Error: ${error}`)
 }

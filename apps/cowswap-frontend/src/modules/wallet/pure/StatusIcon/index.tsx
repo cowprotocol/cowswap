@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 
 import CoinbaseWalletIcon from '../../../../../../../libs/wallet/src/api/assets/coinbase.svg'
-import FortmaticIcon from '../../../../../../../libs/wallet/src/api/assets/formatic.png'
 import WalletConnectIcon from '../../../../../../../libs/wallet/src/api/assets/walletConnectIcon.svg'
 import { Identicon } from '../../../../../../../libs/wallet/src/api/container/Identicon'
 import { ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
@@ -36,9 +35,6 @@ export function StatusIcon({ connectionType }: StatusIconProps) {
       break
     case ConnectionType.COINBASE_WALLET:
       image = <img src={CoinbaseWalletIcon} alt="Coinbase Wallet" />
-      break
-    case ConnectionType.FORTMATIC:
-      image = <img src={FortmaticIcon} alt="Fortmatic" />
       break
   }
 

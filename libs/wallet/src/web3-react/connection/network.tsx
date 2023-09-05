@@ -1,12 +1,10 @@
 import { initializeConnector } from '@web3-react/core'
 import { Network } from '@web3-react/network'
 
-import { RPC_URLS } from 'legacy/constants/networks'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
 import { ConnectionType } from '../../api/types'
 import { Web3ReactConnection } from '../types'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
+import { RPC_URLS } from '@cowswap/common-const'
 
 const defaultChainId = getCurrentChainIdFromUrl()
 

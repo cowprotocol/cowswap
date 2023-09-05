@@ -1,8 +1,4 @@
 import { initializeConnector } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
-
-import { RPC_URLS } from 'legacy/constants/networks'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { AsyncConnector } from './asyncConnector'
 
@@ -10,7 +6,9 @@ import { default as LedgerImage } from '../../api/assets/ledger.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { RPC_URLS } from '@cowswap/common-const'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -44,8 +42,8 @@ export const ledgerConnection: Web3ReactConnection = {
   type: ConnectionType.LEDGER,
 }
 
-export function LedgerOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = useIsActiveWallet(ledgerConnection)
+export function LedgerOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
+  const isActive = useIsActiveConnection(selectedWallet, ledgerConnection)
 
   return (
     <ConnectWalletOption

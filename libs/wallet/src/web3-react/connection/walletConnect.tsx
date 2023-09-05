@@ -3,11 +3,6 @@ import { useMemo } from 'react'
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
-import { RPC_URLS } from 'legacy/constants/networks'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
-
 import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
@@ -20,9 +15,12 @@ import {
 } from '../../api/utils/connection'
 import { WC_DISABLED_TEXT } from '../../constants'
 import { useWalletMetaData } from '../hooks/useWalletMetadata'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
-import { onError, TryActivation } from '.'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { RPC_URLS } from '@cowswap/common-const'
+import { onError } from './onError'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
 const WC_SUNSET_LINK =
   'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'
@@ -53,11 +51,11 @@ export const walletConnectConnection: Web3ReactConnection = {
   type: ConnectionType.WALLET_CONNECT,
 }
 
-export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
+export function WalletConnectOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   const { walletName } = useWalletMetaData()
-  const { walletConnectV1Deprecated: isDeprecated } = useFeatureFlags()
+  const { walletConnectV1Deprecated: isDeprecated } = useFlags()
 
-  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnect = useIsActiveConnection(selectedWallet, walletConnectConnection)
   const isActive =
     isWalletConnect &&
     !getIsZengoWallet(walletName) &&

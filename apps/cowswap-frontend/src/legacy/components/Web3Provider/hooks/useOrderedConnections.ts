@@ -6,7 +6,7 @@ import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../../../../../libs/
 import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { isInjectedWidget } from '@cowswap/common-utils'
 
-const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]
+const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS]
 
 // TODO: The logic looks very similar with useEagerlyConnect
 export function useOrderedConnections() {

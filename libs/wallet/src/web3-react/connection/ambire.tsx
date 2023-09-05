@@ -3,7 +3,7 @@ import { ConnectionType } from '../../api/types'
 import { getIsAmbireWallet } from '../../api/utils/connection'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
 
-import { TryActivation } from '.'
+import { ConnectionOptionProps } from '../types'
 
 const ambireOption = {
   color: '#4196FC',
@@ -11,7 +11,7 @@ const ambireOption = {
   id: 'ambire',
 }
 
-export function AmbireOption({ tryActivation }: { tryActivation: TryActivation }) {
+export function AmbireOption({ tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
       options={ambireOption}

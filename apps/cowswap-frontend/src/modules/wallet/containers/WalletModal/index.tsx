@@ -87,12 +87,6 @@ export function WalletModal() {
       changeWalletAnalytics('Todo: wallet name')
 
       try {
-        // Fortmatic opens it's own modal on activation to log in. This modal has a tabIndex
-        // collision into the WalletModal, so we special case by closing the modal.
-        if (connectionType === ConnectionType.FORTMATIC) {
-          toggleWalletModal()
-        }
-
         setPendingConnector(connector)
         setWalletView('pending')
         dispatch(updateConnectionError({ connectionType, error: undefined }))

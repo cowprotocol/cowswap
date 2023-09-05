@@ -10,3 +10,11 @@ export interface Web3ReactConnection<T = Connector> {
   type: ConnectionType
   overrideActivate?: (chainId: SupportedChainId) => boolean
 }
+
+export type TryActivation = (connector: Connector) => void
+
+export interface ConnectionOptionProps {
+  darkMode: boolean
+  selectedWallet: string | undefined
+  tryActivation: TryActivation
+}

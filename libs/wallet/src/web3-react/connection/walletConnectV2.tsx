@@ -4,11 +4,6 @@ import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { Web3ReactStore } from '@web3-react/types'
 
-import { RPC_URLS } from 'legacy/constants/networks'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
 import { default as WalletConnectV2Image } from '../../api/assets/wallet-connect-v2.png'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
@@ -22,9 +17,11 @@ import {
 import { WC_DISABLED_TEXT } from '../../constants'
 import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { useWalletMetaData } from '../hooks/useWalletMetadata'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
-import { TryActivation } from '.'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { RPC_URLS } from '@cowswap/common-const'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 const TOOLTIP_TEXT =
   'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'
@@ -131,10 +128,10 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
 
 export const walletConnectConnectionV2 = createWc2Connection()
 
-export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryActivation }) {
+export function WalletConnectV2Option({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   const { walletName } = useWalletMetaData()
 
-  const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
+  const isWalletConnect = useIsActiveConnection(selectedWallet, walletConnectConnectionV2)
   const isActive =
     isWalletConnect &&
     !getIsZengoWallet(walletName) &&
