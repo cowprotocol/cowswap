@@ -2,8 +2,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
-import Loader from 'legacy/components/Loader'
+import { ButtonEmpty, ButtonPrimary, Loader } from '@cowswap/ui'
 import { ThemedText } from 'legacy/theme'
 
 const PendingSection = styled.div`
