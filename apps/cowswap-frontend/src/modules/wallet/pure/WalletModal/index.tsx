@@ -1,5 +1,4 @@
 import { AutoRow } from '@cowswap/ui'
-import { ConnectWalletOptions, TryActivation } from '@cowswap/wallet'
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
@@ -14,6 +13,7 @@ import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'commo
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
+import { ConnectWalletOptions, TryActivation } from '../../containers/ConnectWalletOptions'
 import { PendingView } from '../PendingView'
 
 export type WalletModalView = 'options' | 'account' | 'pending'

@@ -4,11 +4,13 @@ import { ConnectWalletOption } from '../../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../../api/types'
 import { getConnectionName } from '../../../api/utils/connection'
 import { WC_DISABLED_TEXT } from '../../../constants'
-import { TryActivation } from '../../connection'
 import { walletConnectConnection } from '../../connection/walletConnect'
 import { walletConnectConnectionV2 } from '../../connection/walletConnectV2'
 import { useWalletMetaData } from '../../hooks/useWalletMetadata'
 import { useFlags } from 'launchdarkly-react-client-sdk'
+import { Connector } from '@web3-react/types'
+
+type TryActivation = (connector: Connector) => void
 
 interface WalletConnectLabeledOptionProps {
   connectionType: ConnectionType

@@ -29,6 +29,5 @@ export { switchChain } from './web3-react/utils/switchChain'
 export * from './api/state'
 
 // Connections
-export * from './web3-react/connection/index'
 export { injectedConnection } from './web3-react/connection/injected'
 export { walletConnectConnection } from './web3-react/connection/walletConnect'

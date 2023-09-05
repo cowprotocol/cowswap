@@ -1,21 +1,30 @@
 import { Connector } from '@web3-react/types'
 
-import { isMobile } from 'legacy/utils/userAgent'
+import { isMobile } from '@cowswap/common-utils'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
-import { AlphaOption } from './alpha'
-import { AmbireOption } from './ambire'
-import { CoinbaseWalletOption } from './coinbase'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
-import { InstallKeystoneOption, KeystoneOption } from './keystone'
-import { LedgerOption } from './ledger'
-import { TrezorOption } from './trezor'
-import { TrustWalletOption } from './trust'
-import { WalletConnectOption } from './walletConnect'
-import { WalletConnectV2Option } from './walletConnectV2'
+import { AlphaOption } from '../../../../../../libs/wallet/src/web3-react/connection/alpha'
+import { AmbireOption } from '../../../../../../libs/wallet/src/web3-react/connection/ambire'
+import { CoinbaseWalletOption } from '../../../../../../libs/wallet/src/web3-react/connection/coinbase'
+import {
+  InjectedOption,
+  InstallMetaMaskOption,
+  MetaMaskOption,
+  OpenMetaMaskMobileOption,
+} from '../../../../../../libs/wallet/src/web3-react/connection/injected'
+import { InstallKeystoneOption, KeystoneOption } from '../../../../../../libs/wallet/src/web3-react/connection/keystone'
+import { LedgerOption } from '../../../../../../libs/wallet/src/web3-react/connection/ledger'
+import { TrezorOption } from '../../../../../../libs/wallet/src/web3-react/connection/trezor'
+import { TrustWalletOption } from '../../../../../../libs/wallet/src/web3-react/connection/trust'
+import { WalletConnectOption } from '../../../../../../libs/wallet/src/web3-react/connection/walletConnect'
+import { WalletConnectV2Option } from '../../../../../../libs/wallet/src/web3-react/connection/walletConnectV2'
 
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
+import {
+  getIsCoinbaseWallet,
+  getIsInjected,
+  getIsMetaMask,
+} from '../../../../../../libs/wallet/src/api/utils/connection'
 
 export type TryActivation = (connector: Connector) => void
 
