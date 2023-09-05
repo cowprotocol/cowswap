@@ -1,16 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
-import { RPC_URLS } from 'legacy/constants/networks'
-
-import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
-
 import { TrezorProvider } from './TrezorProvider'
 
 import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type transformTypedData from '@trezor/connect-plugin-ethereum'
 import type { TrezorConnect } from '@trezor/connect-web'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
+import { RPC_URLS } from '@cowswap/common-const'
 
 const defaultChainId = getCurrentChainIdFromUrl()
 
