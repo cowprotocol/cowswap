@@ -1,3 +1,5 @@
+import { useLast } from './useLast'
+
 export * from './useContract'
 export * from './useDebounce'
 export * from './usePrevious'
@@ -18,3 +20,7 @@ export * from './useGetReceipt'
 export * from './useBlockNumber'
 export * from './useMachineTime'
 export * from './useFetchFile'
+export * from './useWindowSize'
+export * from './useCopyClipboard'
+export * from './useLast'
+export * from './useDebouncedChangeHandler'

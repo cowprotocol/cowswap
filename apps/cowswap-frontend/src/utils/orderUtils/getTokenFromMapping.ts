@@ -1,9 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
+import { getIsNativeToken } from '@cowswap/common-utils'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
-
-import { getIsNativeToken } from '../getIsNativeToken'
 
 export function getTokenFromMapping(
   address: string,

@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react'
 
 import IMAGE_CARRET_DOWN from '@cowswap/assets/cow-swap/carret-down.svg'
+import { useOnClickOutside } from '@cowswap/common-hooks'
 
 import SVG from 'react-inlinesvg'
 
 import { useMediaQuery, LargeAndUp } from 'legacy/hooks/useMediaQuery'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 
 import { MenuFlyout, Content } from './styled'
 

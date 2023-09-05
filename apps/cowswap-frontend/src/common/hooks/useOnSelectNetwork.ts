@@ -5,12 +5,12 @@ import { getWeb3ReactConnection } from '@cowswap/wallet'
 import { switchChain } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import { useLegacySetChainIdToUrl } from 'legacySetChainIdToUrl'
-
 import { useAddPopup, useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
+
+import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const { connector } = useWeb3React()

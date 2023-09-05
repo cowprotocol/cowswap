@@ -2,9 +2,8 @@ import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
+import { doesTokenMatchSymbolOrAddress } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
-
-import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 import { useTradeState } from './useTradeState'
 

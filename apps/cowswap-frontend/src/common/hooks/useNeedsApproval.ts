@@ -1,3 +1,4 @@
+import { isEnoughAmount } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -6,7 +7,6 @@ import { Nullish } from 'types'
 import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { isEnoughAmount } from 'utils/isEnoughAmount'
 
 /**
  * Hook to check if a token needs approval

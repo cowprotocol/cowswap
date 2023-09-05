@@ -7,6 +7,7 @@ import ammsGraphEth from '@cowswap/assets/images/amms-graph.svg'
 import cowGraph from '@cowswap/assets/images/cow-graph.svg'
 import cowMeditatingSmooth from '@cowswap/assets/images/cow-meditating-smoooth.svg'
 import cowMeditatingGraph from '@cowswap/assets/images/cow-meditating.svg'
+import { getExplorerOrderLink } from '@cowswap/common-utils'
 import { useIsSmartContractWallet } from '@cowswap/wallet'
 
 import { useTransition } from '@react-spring/web'
@@ -14,7 +15,6 @@ import ms from 'ms.macro'
 
 import { AMMsLogo } from 'legacy/components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from 'legacy/components/OrderProgressBar/utils'
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 

@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { isMobile } from '@cowswap/common-utils'
+
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
-
-import { isMobile } from 'legacy/utils/userAgent'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 

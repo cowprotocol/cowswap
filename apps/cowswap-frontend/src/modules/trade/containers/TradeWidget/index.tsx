@@ -1,11 +1,11 @@
 import { ReactNode, useEffect } from 'react'
 
+import { maxAmountSpend } from '@cowswap/common-utils'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 
 import { t } from '@lingui/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'

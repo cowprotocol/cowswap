@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 
-import { LegacyConfirmationModalContent } from 'legacyConfirmationModalContent'
 import styled from 'styled-components/macro'
+
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'

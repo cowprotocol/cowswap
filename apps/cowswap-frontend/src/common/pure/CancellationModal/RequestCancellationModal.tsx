@@ -4,12 +4,12 @@ import { TokenAmount, ButtonPrimary } from '@cowswap/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 
-import { LegacyConfirmationModalContent } from 'legacyConfirmationModalContent'
 import { ArrowRight, ArrowLeft } from 'react-feather'
 import { NavHashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'

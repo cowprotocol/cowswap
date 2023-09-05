@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { escapeRegExp } from '@cowswap/common-utils'
+
 import styled from 'styled-components/macro'
 
 import { autofocus } from 'common/utils/autofocus'
-
-import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};

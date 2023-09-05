@@ -5,6 +5,7 @@ import {
   toggleExpertModeAnalytics,
   toggleRecepientAddressAnalytics,
 } from '@cowswap/analytics'
+import { useOnClickOutside } from '@cowswap/common-hooks'
 import { RowBetween, RowFixed } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
@@ -16,7 +17,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import Toggle from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'

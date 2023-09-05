@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
+import { getQuoteUnsupportedToken } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
 
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'
 
 export function useProcessUnsupportedTokenError() {
   const { chainId } = useWalletInfo()
