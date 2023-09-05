@@ -10,9 +10,10 @@ const alphaOption = {
   id: 'alpha',
 }
 
-export function AlphaOption({ tryActivation }: ConnectionOptionProps) {
+export function AlphaOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
+      selectedWallet={selectedWallet}
       options={alphaOption}
       checkWalletName={getIsAlphaWallet}
       tryActivation={tryActivation}

@@ -12,10 +12,7 @@ export * from './web3-react/hooks/useIsSmartContractWallet'
 export * from './web3-react/updater'
 
 // Components
-export * from './web3-react/containers/AccountSelectorModal'
-export * from './web3-react/containers/AccountSelectorModal/state'
 export * from './api/container/Identicon'
-export * from './web3-react/containers/AddToMetamask'
 
 // Utils
 export * from './api/utils/connection'

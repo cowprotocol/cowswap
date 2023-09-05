@@ -11,9 +11,10 @@ const ambireOption = {
   id: 'ambire',
 }
 
-export function AmbireOption({ tryActivation }: ConnectionOptionProps) {
+export function AmbireOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
+      selectedWallet={selectedWallet}
       options={ambireOption}
       checkWalletName={getIsAmbireWallet}
       tryActivation={tryActivation}

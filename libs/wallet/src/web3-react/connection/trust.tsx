@@ -44,9 +44,10 @@ export function TrustWalletInjectedOption({ selectedWallet, tryActivation }: Con
   )
 }
 
-export function TrustWalletWCOption({ tryActivation }: ConnectionOptionProps) {
+export function TrustWalletWCOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   return (
     <WalletConnectLabeledOption
+      selectedWallet={selectedWallet}
       options={BASE_PROPS}
       checkWalletName={getIsTrustWallet}
       tryActivation={tryActivation}

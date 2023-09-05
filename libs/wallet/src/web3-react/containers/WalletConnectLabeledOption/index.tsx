@@ -1,5 +1,3 @@
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
 import { ConnectWalletOption } from '../../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../../api/types'
 import { getConnectionName } from '../../../api/utils/connection'
@@ -9,6 +7,7 @@ import { walletConnectConnectionV2 } from '../../connection/walletConnectV2'
 import { useWalletMetaData } from '../../hooks/useWalletMetadata'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Connector } from '@web3-react/types'
+import { useIsActiveConnection } from '../../hooks/useIsActiveConnection'
 
 type TryActivation = (connector: Connector) => void
 
@@ -16,6 +15,7 @@ interface WalletConnectLabeledOptionProps {
   connectionType: ConnectionType
   tryActivation: TryActivation
   checkWalletName(walletName: string | undefined): boolean
+  selectedWallet: string | undefined
   options: {
     color: string
     icon: string
@@ -28,13 +28,14 @@ export function WalletConnectLabeledOption({
   tryActivation,
   checkWalletName,
   options,
+  selectedWallet,
 }: WalletConnectLabeledOptionProps) {
   const { walletName } = useWalletMetaData()
   const { walletConnectV1Enabled } = useFlags()
 
   const connection = walletConnectV1Enabled ? walletConnectConnection : walletConnectConnectionV2
 
-  const isWalletConnect = useIsActiveWallet(connection)
+  const isWalletConnect = useIsActiveConnection(selectedWallet, connection)
   const isActive = isWalletConnect && checkWalletName(walletName)
   const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
 

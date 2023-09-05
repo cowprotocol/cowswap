@@ -13,7 +13,6 @@ import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 import { onError } from './onError'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { useTheme } from '@cowswap/common-hooks'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 

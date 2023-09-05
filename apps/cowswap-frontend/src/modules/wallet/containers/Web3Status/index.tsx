@@ -8,7 +8,7 @@ import { useWalletDetails, useWalletInfo } from '../../../../../../../libs/walle
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
-import { AccountSelectorModal } from '../../../../../../../libs/wallet/src/web3-react/containers/AccountSelectorModal'
+import { AccountSelectorModal } from '../AccountSelectorModal'
 import { WalletModal } from '../WalletModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 

@@ -16,7 +16,7 @@ import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/Wall
 import { ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
 import { getIsHardWareWallet } from '../../../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
 import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
-import { toggleAccountSelectorModalAtom } from '../../../../../../../libs/wallet/src/web3-react/containers/AccountSelectorModal/state'
+import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 import { usePrevious } from '@cowswap/common-hooks'
 import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 

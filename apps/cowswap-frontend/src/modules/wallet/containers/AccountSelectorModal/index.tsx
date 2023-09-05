@@ -14,11 +14,11 @@ import { accountsLoaders } from './accountsLoaders'
 import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './state'
 import * as styledEl from './styled'
 
-import { hwAccountIndexAtom } from '../../../api/state'
-import { getConnectionIcon, getConnectionName } from '../../../api/utils/connection'
-import { AccountIndexSelect } from '../../pure/AccountIndexSelect'
-import { HardWareWallet } from '../../utils/getIsHardWareWallet'
-import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
+import { hwAccountIndexAtom } from '../../../../../../../libs/wallet/src/api/state'
+import { getConnectionIcon, getConnectionName } from '../../../../../../../libs/wallet/src/api/utils/connection'
+import { AccountIndexSelect } from '../../../../../../../libs/wallet/src/web3-react/pure/AccountIndexSelect'
+import { HardWareWallet } from '../../../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 
 export function AccountSelectorModal() {
   const { isOpen } = useAtomValue(accountSelectorModalAtom)
