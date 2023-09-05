@@ -50,6 +50,7 @@ export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
+export * from './api/state'
 
 // Connections
 export { injectedConnection } from './web3-react/connection/injected'

@@ -3,6 +3,8 @@ import './polyfills'
 
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
+import IMAGE_MOON from '@cowswap/assets/cow-swap/moon.svg'
+import IMAGE_SUN from '@cowswap/assets/cow-swap/sun.svg'
 import { BlockNumberProvider } from '@cowswap/common-hooks'
 import { WalletUpdater, injectedConnection } from '@cowswap/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
@@ -15,8 +17,6 @@ import { Flex } from 'rebass'
 import styled from 'styled-components/macro'
 import { ThemeContext } from 'styled-components/macro'
 
-import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
-import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'

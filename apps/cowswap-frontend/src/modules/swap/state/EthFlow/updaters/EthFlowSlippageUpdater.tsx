@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react'
 
 import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@cowswap/common-const'
+import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowswap/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-
-import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 
 import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
 

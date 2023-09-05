@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import ArrowIcon from '@cowswap/assets/cow-swap/arrow.svg'
+import CowImage from '@cowswap/assets/cow-swap/cow_v2.svg'
+import vCOWImage from '@cowswap/assets/cow-swap/vCOW.png'
 import { COW, COW_CONTRACT_ADDRESS, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowswap/common-const'
 import { usePrevious } from '@cowswap/common-hooks'
 import { useBlockNumber } from '@cowswap/common-hooks'
@@ -15,9 +18,6 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
-import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'

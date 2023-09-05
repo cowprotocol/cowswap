@@ -1,9 +1,8 @@
 import { gameAnalytics } from '@cowswap/analytics'
+import ninjaCowImg from '@cowswap/assets/cow-swap/ninja-cow.png'
 import { ButtonPrimary } from '@cowswap/ui'
 
 import styled from 'styled-components/macro'
-
-import ninjaCowImg from 'legacy/assets/cow-swap/ninja-cow.png'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'

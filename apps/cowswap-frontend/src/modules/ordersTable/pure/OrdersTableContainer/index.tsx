@@ -1,14 +1,13 @@
 import { ReactNode } from 'react'
 
+import cowMeditatingV2 from '@cowswap/assets/cow-swap/meditating-cow-v2.svg'
+import imageConnectWallet from '@cowswap/assets/cow-swap/wallet-plus.svg'
 import { ExternalLink } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import cowMeditatingV2 from 'legacy/assets/cow-swap/meditating-cow-v2.svg'
-import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 

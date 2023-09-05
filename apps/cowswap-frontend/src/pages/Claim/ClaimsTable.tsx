@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 
+import CowProtocolImage from '@cowswap/assets/cow-swap/cowprotocol.svg'
+import Circle from '@cowswap/assets/images/blue-loader.svg'
 import { TokenAmount } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
-import Circle from 'legacy/assets/images/blue-loader.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'

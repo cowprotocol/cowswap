@@ -1,3 +1,4 @@
+import { getEtherscanLink as getExplorerLink } from '@cowswap/common-utils'
 import { RowFixed } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
@@ -13,7 +14,6 @@ import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import { ThemedText } from 'legacy/theme'
-import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 

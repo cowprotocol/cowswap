@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
 
+import CowProtocolIcon from '@cowswap/assets/cow-swap/cowprotocol.svg'
+import discordImage from '@cowswap/assets/cow-swap/discord.svg'
+import twitterImage from '@cowswap/assets/cow-swap/twitter.svg'
 import { V_COW } from '@cowswap/common-const'
 import { shortenAddress } from '@cowswap/common-utils'
 import { TokenAmount, ButtonSecondary } from '@cowswap/ui'
@@ -11,9 +14,6 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import CowProtocolIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
-import discordImage from 'legacy/assets/cow-swap/discord.svg'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import CopyHelper from 'legacy/components/Copy'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'

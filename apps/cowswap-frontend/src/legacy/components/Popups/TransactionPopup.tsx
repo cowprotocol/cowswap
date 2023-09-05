@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 
+import { BlockExplorerLinkType } from '@cowswap/common-utils'
 import { AutoRow } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
@@ -9,7 +10,6 @@ import styled, { ThemeContext } from 'styled-components/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { ThemedText } from 'legacy/theme'
-import { BlockExplorerLinkType } from 'legacy/utils'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

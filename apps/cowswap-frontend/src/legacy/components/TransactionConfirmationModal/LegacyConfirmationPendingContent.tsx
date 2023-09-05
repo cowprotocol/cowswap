@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo } from 'react'
 
+import alertImage from '@cowswap/assets/cow-swap/alert-circle.svg'
+import checkImage from '@cowswap/assets/cow-swap/check.svg'
 import { getChainCurrencySymbols } from '@cowswap/common-const'
 import { shortenAddress } from '@cowswap/common-utils'
 import { ExternalLink } from '@cowswap/ui'
@@ -17,8 +19,6 @@ import { t, Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
-import checkImage from 'legacy/assets/cow-swap/check.svg'
 import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'

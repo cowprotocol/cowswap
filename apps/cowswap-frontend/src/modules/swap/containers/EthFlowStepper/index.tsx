@@ -1,4 +1,5 @@
 import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
+import { formatSymbol } from '@cowswap/common-utils'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -12,7 +13,6 @@ import {
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {
   order: Order | undefined

@@ -1,10 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import XDaiLogo from '@cowswap/assets/cow-swap/xdai.png'
+import EthereumLogo from '@cowswap/assets/images/ethereum-logo.png'
 import { NATIVE_CURRENCY_BUY_ADDRESS, ADDRESS_IMAGE_OVERRIDE } from '@cowswap/common-const'
 import { uriToHttp } from '@cowswap/common-utils'
 import { Currency } from '@uniswap/sdk-core'
-
-import XDaiLogo from 'legacy/assets/cow-swap/xdai.png'
-import EthereumLogo from 'legacy/assets/images/ethereum-logo.png'
 
 import { useProxyTokenLogo } from 'api/proxy'
 

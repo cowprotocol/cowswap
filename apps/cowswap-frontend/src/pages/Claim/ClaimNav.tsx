@@ -1,3 +1,4 @@
+import { shortenAddress } from '@cowswap/common-utils'
 import { ButtonSecondary } from '@cowswap/ui'
 import { Identicon } from '@cowswap/wallet'
 
@@ -5,7 +6,6 @@ import CopyHelper from 'legacy/components/Copy'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
-import { shortenAddress } from 'legacy/utils'
 
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
 

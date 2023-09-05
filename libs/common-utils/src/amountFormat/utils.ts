@@ -1,9 +1,9 @@
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-import { FractionLike, Nullish } from 'types'
+import { FractionLike, Nullish } from '../types'
 
-import { FractionUtils } from 'utils/fractionUtils'
+import { FractionUtils } from '../fractionUtils'
 
 const ONE = JSBI.BigInt(1)
 const HUNDRED_K = JSBI.BigInt(100_000)

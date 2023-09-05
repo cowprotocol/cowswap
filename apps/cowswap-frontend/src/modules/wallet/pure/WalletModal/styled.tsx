@@ -1,8 +1,7 @@
+import { ReactComponent as Close } from '@cowswap/assets/images/x.svg'
 import { ExternalLink } from '@cowswap/ui'
 
 import styled from 'styled-components/macro'
-
-import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 
 export const TermsWrapper = styled.div`
   color: ${({ theme }) => theme.text1};

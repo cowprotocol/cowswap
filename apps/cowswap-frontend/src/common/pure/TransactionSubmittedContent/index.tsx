@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import GameIcon from '@cowswap/assets/cow-swap/game.gif'
 import { AddToMetamask } from '@cowswap/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -8,7 +9,6 @@ import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
 import { Nullish } from 'types'
 
-import GameIcon from 'legacy/assets/cow-swap/game.gif'
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'

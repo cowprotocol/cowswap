@@ -3,6 +3,8 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowswap/analytics'
+import fortuneCookieImage from '@cowswap/assets/cow-swap/fortune-cookie.png'
+import twitterImage from '@cowswap/assets/cow-swap/twitter.svg'
 import { useInterval } from '@cowswap/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowswap/common-utils'
 import { ExternalLink } from '@cowswap/ui'
@@ -12,8 +14,6 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import Confetti from 'legacy/components/Confetti'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'

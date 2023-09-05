@@ -1,12 +1,12 @@
+import Cursor1 from '@cowswap/assets/cow-swap/cursor1.gif'
+import Cursor2 from '@cowswap/assets/cow-swap/cursor2.gif'
+import Cursor3 from '@cowswap/assets/cow-swap/cursor3.gif'
+import Cursor4 from '@cowswap/assets/cow-swap/cursor4.gif'
 import { ButtonSize } from '@cowswap/ui'
 
 import { transparentize, lighten, darken } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
-import Cursor2 from 'legacy/assets/cow-swap/cursor2.gif'
-import Cursor3 from 'legacy/assets/cow-swap/cursor3.gif'
-import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
 import { Colors } from 'legacy/theme/styled'
 

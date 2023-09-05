@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
-import styled from 'styled-components/macro'
+import Checkmark from '@cowswap/assets/cow-swap/checkmark.svg'
+import Exclamation from '@cowswap/assets/cow-swap/exclamation.svg'
+import Finish from '@cowswap/assets/cow-swap/finish.svg'
+import Refund from '@cowswap/assets/cow-swap/refund.svg'
 
-import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
-import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
-import Finish from 'legacy/assets/cow-swap/finish.svg'
-import Refund from 'legacy/assets/cow-swap/refund.svg'
+import styled from 'styled-components/macro'
 
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'

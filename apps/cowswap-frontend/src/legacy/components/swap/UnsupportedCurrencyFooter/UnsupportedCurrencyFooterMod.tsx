@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { getEtherscanLink } from '@cowswap/common-utils'
 import { ButtonEmpty } from '@cowswap/ui'
 import { AutoRow, RowBetween } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
@@ -13,7 +14,6 @@ import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
-import { getEtherscanLink } from 'legacy/utils'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'

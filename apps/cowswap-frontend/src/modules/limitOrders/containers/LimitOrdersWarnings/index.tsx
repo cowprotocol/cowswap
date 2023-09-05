@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
+import { isFractionFalsy } from '@cowswap/common-utils'
 import { useIsSafeViaWc, useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -28,7 +29,6 @@ import {
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'

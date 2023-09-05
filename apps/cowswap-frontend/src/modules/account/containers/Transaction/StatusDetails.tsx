@@ -1,11 +1,12 @@
+import OrderCancelledImage from '@cowswap/assets/cow-swap/order-cancelled.svg'
+import OrderCheckImage from '@cowswap/assets/cow-swap/order-check.svg'
+import OrderExpiredImage from '@cowswap/assets/cow-swap/order-expired.svg'
+import OrderOpenImage from '@cowswap/assets/cow-swap/order-open.svg'
+import PresignaturePendingImage from '@cowswap/assets/cow-swap/order-presignature-pending.svg'
+
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import OrderCancelledImage from 'legacy/assets/cow-swap/order-cancelled.svg'
-import OrderCheckImage from 'legacy/assets/cow-swap/order-check.svg'
-import OrderExpiredImage from 'legacy/assets/cow-swap/order-expired.svg'
-import OrderOpenImage from 'legacy/assets/cow-swap/order-open.svg'
-import PresignaturePendingImage from 'legacy/assets/cow-swap/order-presignature-pending.svg'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 

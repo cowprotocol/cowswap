@@ -1,12 +1,12 @@
+import diagramIMG from '@cowswap/assets/cow-swap/cowswap-diagram.png'
+import gaslessIMG from '@cowswap/assets/cow-swap/gasless.png'
+import mevIMG from '@cowswap/assets/cow-swap/mev.png'
 import { MEV_TOTAL, FLASHBOTS_LINK } from '@cowswap/common-const'
 import { ExternalLink as ExternalLinkTheme } from '@cowswap/ui'
 
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import diagramIMG from 'legacy/assets/cow-swap/cowswap-diagram.png'
-import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
-import mevIMG from 'legacy/assets/cow-swap/mev.png'
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 

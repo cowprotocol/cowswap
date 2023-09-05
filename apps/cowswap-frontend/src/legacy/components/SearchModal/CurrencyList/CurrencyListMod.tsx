@@ -1,5 +1,6 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
+import TokenListLogo from '@cowswap/assets/svg/tokenlist.svg'
 import { useTheme } from '@cowswap/common-hooks'
 import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowswap/ui'
 import { MouseoverTooltip } from '@cowswap/ui'
@@ -11,7 +12,6 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'

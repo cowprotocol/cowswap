@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ReactComponent as Close } from '@cowswap/assets/images/x.svg'
 
-import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
+import styled from 'styled-components/macro'
 
 export const CloseIcon = styled(Close)`
   opacity: 0.6;

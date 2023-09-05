@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import CheckCircle from '@cowswap/assets/cow-swap/check.svg'
+import ImportantIcon from '@cowswap/assets/cow-swap/important.svg'
 import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
 import {
   calculateGasMargin,
@@ -16,8 +18,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CheckCircle from 'legacy/assets/cow-swap/check.svg'
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
 import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'

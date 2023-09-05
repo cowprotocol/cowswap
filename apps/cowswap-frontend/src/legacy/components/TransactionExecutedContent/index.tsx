@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import cowMeditatingSmooth from '@cowswap/assets/images/cow-meditating-smoooth.svg'
 
-import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { Order } from 'legacy/state/orders/actions'
 

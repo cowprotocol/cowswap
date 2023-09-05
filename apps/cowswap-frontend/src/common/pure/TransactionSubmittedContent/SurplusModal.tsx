@@ -2,6 +2,9 @@ import React, { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { sendEvent } from '@cowswap/analytics'
+import CheckSingular from '@cowswap/assets/cow-swap/check-singular.svg'
+import SurplusCow from '@cowswap/assets/cow-swap/surplus-cow.svg'
+import twitterImage from '@cowswap/assets/cow-swap/twitter.svg'
 import { FiatAmount, TokenAmount, SymbolElement } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
 
@@ -9,9 +12,6 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CheckSingular from 'legacy/assets/cow-swap/check-singular.svg'
-import SurplusCow from 'legacy/assets/cow-swap/surplus-cow.svg'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'

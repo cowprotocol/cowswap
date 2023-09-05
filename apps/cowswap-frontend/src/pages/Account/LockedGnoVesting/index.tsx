@@ -2,6 +2,8 @@ import { useCallback, useState, useEffect } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { claimAnalytics } from '@cowswap/analytics'
+import ArrowIcon from '@cowswap/assets/cow-swap/arrow.svg'
+import cowImage from '@cowswap/assets/cow-swap/cow_v2.svg'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -22,8 +24,6 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
-import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
-import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { ConfirmOperationType } from 'legacy/state/types'

@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { FractionUtils } from '@cowswap/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
@@ -9,7 +10,6 @@ import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 
-import { FractionUtils } from 'utils/fractionUtils'
 import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {

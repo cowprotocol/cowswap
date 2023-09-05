@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import Circle from '@cowswap/assets/images/blue-loader.svg'
 import { useENS } from '@cowswap/ens'
 import { ButtonSecondary } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
 
-import Circle from 'legacy/assets/images/blue-loader.svg'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'

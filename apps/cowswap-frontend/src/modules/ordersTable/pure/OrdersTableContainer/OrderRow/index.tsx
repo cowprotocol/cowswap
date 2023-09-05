@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import AlertTriangle from '@cowswap/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowswap/common-const'
 import { useTimeAgo } from '@cowswap/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowswap/common-utils'
@@ -11,7 +12,6 @@ import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import { ThemeContext } from 'styled-components/macro'
 
-import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 
+import cowNoConnectionIMG from '@cowswap/assets/cow-swap/cow-no-connection.png'
 import { DISCORD_LINK } from '@cowswap/common-const'
 import { ButtonPrimary } from '@cowswap/ui'
 import { AutoRow } from '@cowswap/ui'
@@ -8,7 +9,6 @@ import { ExternalLink } from '@cowswap/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import cowNoConnectionIMG from 'legacy/assets/cow-swap/cow-no-connection.png'
 import { AutoColumn } from 'legacy/components/Column'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 

@@ -1,9 +1,8 @@
+import iconCompleted from '@cowswap/assets/cow-swap/check.svg'
 import { ButtonPrimary } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
 
 import SVG from 'react-inlinesvg'
-
-import iconCompleted from 'legacy/assets/cow-swap/check.svg'
 
 import * as styledEl from './styled'
 

@@ -1,9 +1,9 @@
+import ImportantIcon from '@cowswap/assets/cow-swap/important.svg'
 import { ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
 import { TokenAmount } from '@cowswap/ui'
 
 import SVG from 'react-inlinesvg'
 
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { ClaimType } from 'legacy/state/claim/hooks/types'
 import { calculatePercentage } from 'legacy/state/claim/hooks/utils'

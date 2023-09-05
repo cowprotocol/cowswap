@@ -1,9 +1,8 @@
+import cow404IMG from '@cowswap/assets/cow-swap/cow-404.png'
 import { ButtonPrimary } from '@cowswap/ui'
 
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-
-import cow404IMG from 'legacy/assets/cow-swap/cow-404.png'
 
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 

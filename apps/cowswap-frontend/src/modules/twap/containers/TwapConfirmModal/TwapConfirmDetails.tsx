@@ -1,11 +1,10 @@
 import React from 'react'
 
+import { shortenAddress } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
-
-import { shortenAddress } from 'legacy/utils'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'

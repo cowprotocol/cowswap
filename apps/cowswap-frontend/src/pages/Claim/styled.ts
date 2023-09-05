@@ -1,13 +1,13 @@
+import LogoGNO from '@cowswap/assets/cow-swap/gno.png'
+import LogoETH from '@cowswap/assets/cow-swap/network-mainnet-logo.svg'
+import LogoUSDC from '@cowswap/assets/cow-swap/usdc.png'
+import LogoXDAI from '@cowswap/assets/cow-swap/xdai.png'
 import { ButtonPrimary, ButtonSecondary } from '@cowswap/ui'
 
 import { transparentize, darken, lighten } from 'polished'
 import { CheckCircle, Frown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import LogoGNO from 'legacy/assets/cow-swap/gno.png'
-import LogoETH from 'legacy/assets/cow-swap/network-mainnet-logo.svg'
-import LogoUSDC from 'legacy/assets/cow-swap/usdc.png'
-import LogoXDAI from 'legacy/assets/cow-swap/xdai.png'
 import BadgeOriginal from 'legacy/components/Badge'
 import { CopyIcon } from 'legacy/components/Copy'
 import { Icon } from 'legacy/components/CowProtocolLogo'
