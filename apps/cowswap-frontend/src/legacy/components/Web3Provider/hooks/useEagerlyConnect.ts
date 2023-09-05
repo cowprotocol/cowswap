@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 
 import { Connector } from '@web3-react/types'
 
-import { useAppSelector } from 'legacy/state/hooks'
+import { useAppSelector } from '../../../state/hooks'
 
-import { BACKFILLABLE_WALLETS } from '../../../../../libs/wallet/src/api/types'
-import { injectedWidgetConnection } from '../../../../../libs/wallet/src/web3-react/connection/injectedWidget'
-import { networkConnection } from '../../../../../libs/wallet/src/web3-react/connection/network'
-import { gnosisSafeConnection } from '../../../../../libs/wallet/src/web3-react/connection/safe'
-import { getWeb3ReactConnection } from '../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
+import { BACKFILLABLE_WALLETS } from '../../../../../../../libs/wallet/src/api/types'
+import { injectedWidgetConnection } from '../../../../../../../libs/wallet/src/web3-react/connection/injectedWidget'
+import { networkConnection } from '../../../../../../../libs/wallet/src/web3-react/connection/network'
+import { gnosisSafeConnection } from '../../../../../../../libs/wallet/src/web3-react/connection/safe'
+import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowswap/common-utils'
 
 async function connect(connector: Connector) {
