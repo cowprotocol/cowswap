@@ -6,7 +6,6 @@ import { getWeb3ReactConnection } from './getWeb3ReactConnection'
 import { ConnectionType } from '../../api/types'
 
 const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
-  [ConnectionType.FORTMATIC]: [SupportedChainId.MAINNET],
   [ConnectionType.INJECTED]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.INJECTED_WIDGET]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.COINBASE_WALLET]: ALL_SUPPORTED_CHAIN_IDS,

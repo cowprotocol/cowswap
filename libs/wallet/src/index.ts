@@ -1,3 +1,5 @@
+import './types.d.ts'
+
 export * from './api/types'
 export * from './web3-react/types'
 export * from './assets'

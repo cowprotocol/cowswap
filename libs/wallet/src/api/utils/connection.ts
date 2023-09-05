@@ -1,5 +1,4 @@
 import CoinbaseWalletIcon from '../assets/coinbase.svg'
-import FortmaticIcon from '../assets/formatic.png'
 import KeystoneImage from '../assets/keystone.svg'
 import LedgerIcon from '../assets/ledger.svg'
 import TallyIcon from '../assets/tally.svg'
@@ -14,7 +13,6 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
   [ConnectionType.WALLET_CONNECT]: 'WalletConnect',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect v2',
-  [ConnectionType.FORTMATIC]: 'Fortmatic',
   [ConnectionType.NETWORK]: 'Network',
   [ConnectionType.GNOSIS_SAFE]: 'Safe',
   [ConnectionType.ZENGO]: 'Zengo',
@@ -38,7 +36,6 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.AMBIRE]: IDENTICON_KEY,
   [ConnectionType.ALPHA]: IDENTICON_KEY,
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
-  [ConnectionType.FORTMATIC]: FortmaticIcon,
   [ConnectionType.TRUST]: TrustIcon,
   [ConnectionType.TALLY]: TallyIcon,
   [ConnectionType.LEDGER]: LedgerIcon,

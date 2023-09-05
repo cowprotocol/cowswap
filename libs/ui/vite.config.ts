@@ -4,11 +4,13 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+import macrosPlugin from 'vite-plugin-babel-macros'
 
 export default defineConfig({
   cacheDir: '../../../node_modules/.vite/ui',
 
   plugins: [
+    macrosPlugin(),
     dts({
       entryRoot: 'src',
       tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
