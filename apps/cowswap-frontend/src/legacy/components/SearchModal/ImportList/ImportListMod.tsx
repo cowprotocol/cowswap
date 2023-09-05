@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { addListAnalytics } from '@cowswap/analytics'
+import { useTheme } from '@cowswap/common-hooks'
 import { ButtonPrimary } from '@cowswap/ui'
 import { AutoRow, RowBetween, RowFixed } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
@@ -17,7 +18,6 @@ import { Card } from 'legacy/components/SearchModal/ManageLists'
 import { Checkbox, PaddedColumn, TextDot } from 'legacy/components/SearchModal/styleds'
 import { SectionBreak } from 'legacy/components/swap/styleds'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 

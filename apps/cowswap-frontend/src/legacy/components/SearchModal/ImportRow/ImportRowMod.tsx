@@ -1,5 +1,6 @@
 import { CSSProperties } from 'react'
 
+import { useTheme } from '@cowswap/common-hooks'
 import { ButtonPrimary } from '@cowswap/ui'
 import { AutoRow, RowFixed } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
@@ -11,7 +12,6 @@ import styled from 'styled-components/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import { useIsTokenActive, useIsUserAddedToken } from 'legacy/hooks/Tokens'
-import useTheme from 'legacy/hooks/useTheme'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 

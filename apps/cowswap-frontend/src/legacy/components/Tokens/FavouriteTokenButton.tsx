@@ -1,11 +1,11 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
+import { useTheme } from '@cowswap/common-hooks'
 import { ButtonStar } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import useTheme from 'legacy/hooks/useTheme'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
 
 export const StyledButtonStar = styled(ButtonStar)`

@@ -1,6 +1,6 @@
-import styled, { keyframes } from 'styled-components/macro'
+import { useTheme } from '@cowswap/common-hooks'
 
-import useTheme from 'legacy/hooks/useTheme'
+import styled, { keyframes } from 'styled-components/macro'
 
 const Wrapper = styled.div`
   height: 90px;

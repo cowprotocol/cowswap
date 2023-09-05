@@ -1,3 +1,4 @@
+import { useTheme } from '@cowswap/common-hooks'
 import { ButtonPrimary } from '@cowswap/ui'
 import { RowBetween } from '@cowswap/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -15,7 +16,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
 import { SectionBreak } from 'legacy/components/swap/styleds'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 
