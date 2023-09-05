@@ -1,4 +1,4 @@
-import { WalletUpdater, HwAccountIndexUpdater } from '@cowswap/wallet'
+import { WalletUpdater } from '@cowswap/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
@@ -15,6 +15,7 @@ import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
+import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
 import { ListsUpdater } from 'common/updaters/ListsUpdater'
 import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {

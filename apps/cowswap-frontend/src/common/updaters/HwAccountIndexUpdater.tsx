@@ -5,10 +5,10 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { getIsHardWareWallet } from '../../web3-react/utils/getIsHardWareWallet'
-import { getWeb3ReactConnection } from '../../web3-react/utils/getWeb3ReactConnection'
-import { useWalletInfo } from '../hooks'
-import { hwAccountIndexAtom } from '../state'
+import { getIsHardWareWallet } from '../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
+import { useWalletInfo } from '../../../../../libs/wallet/src/api/hooks'
+import { hwAccountIndexAtom } from '../../../../../libs/wallet/src/api/state'
 
 const indexChanged = true
 
