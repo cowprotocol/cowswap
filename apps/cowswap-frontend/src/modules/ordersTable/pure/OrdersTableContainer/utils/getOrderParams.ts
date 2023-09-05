@@ -39,18 +39,12 @@ export function getOrderParams(
   const allowance = allowances[order.inputToken.address]?.value
 
   const [hasEnoughBalance, hasEnoughAllowance] = (() => {
-    if (order.partiallyFillable) {
-      // When balance or allowance are undefined (loading state), show as true
-      // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
-      const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
-      const hasEnoughBalance = isEnoughAmount(amount, balance)
-      const hasEnoughAllowance = isEnoughAmount(amount, allowance)
-      return [hasEnoughBalance, hasEnoughAllowance]
-    } else {
-      const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-      const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
-      return [hasEnoughBalance, hasEnoughAllowance]
-    }
+    // Check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
+    const amount = order.partiallyFillable ? sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS) : sellAmount
+    const hasEnoughBalance = isEnoughAmount(amount, balance)
+    const hasEnoughAllowance = isEnoughAmount(amount, allowance)
+
+    return [hasEnoughBalance, hasEnoughAllowance]
   })()
 
   return {
