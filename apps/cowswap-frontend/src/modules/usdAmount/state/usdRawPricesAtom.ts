@@ -6,7 +6,7 @@ import { deepEqual } from 'utils/deepEqual'
 
 export interface UsdRawPriceState {
   updatedAt?: number
-  price: number | null
+  price: string | null
   currency: Token
   isLoading: boolean
 }

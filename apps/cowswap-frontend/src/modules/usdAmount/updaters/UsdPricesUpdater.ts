@@ -15,11 +15,11 @@ import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
+  resetUsdPricesAtom,
+  setUsdPricesLoadingAtom,
   UsdRawPrices,
   usdRawPricesAtom,
   UsdRawPriceState,
-  resetUsdPricesAtom,
-  setUsdPricesLoadingAtom,
 } from '../state/usdRawPricesAtom'
 
 const swrOptions: SWRConfiguration = {
@@ -72,8 +72,8 @@ export function UsdPricesUpdater() {
   return null
 }
 
-function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null> {
-  let usdcPricePromise: Promise<number | null> | null = null
+function usdcPriceLoader(chainId: SupportedChainId): () => Promise<string | null> {
+  let usdcPricePromise: Promise<string | null> | null = null
 
   return () => {
     // Cache the result to avoid fetching it multiple times
@@ -85,11 +85,11 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null
   }
 }
 
-async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<UsdRawPrices> {
+async function processQueue(queue: Token[], getUsdcPrice: () => Promise<string | null>): Promise<UsdRawPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
       return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {
-        if (typeof price !== 'number') {
+        if (!price) {
           return null
         }
 

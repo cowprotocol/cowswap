@@ -46,7 +46,7 @@ export class CoingeckoRateLimitError extends Error {
   }
 }
 
-export async function getCoingeckoUsdPrice(currency: Token): Promise<number | null> {
+export async function getCoingeckoUsdPrice(currency: Token): Promise<string | null> {
   const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
   if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
@@ -70,6 +70,6 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<number | nu
       return Promise.reject(error)
     })
     .then((res: CoinGeckoUsdQuote) => {
-      return res[Object.keys(res)[0]]?.usd || null
+      return res[Object.keys(res)[0]]?.usd?.toString() || null
     })
 }
