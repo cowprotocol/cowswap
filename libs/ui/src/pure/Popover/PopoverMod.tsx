@@ -1,14 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react'
-
-import { useInterval } from '@cowswap/common-hooks'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
-
-// MOD imports
 
 import { PopoverContainerProps } from './index'
 
@@ -124,7 +120,14 @@ export default function Popover({
   const updateCallback = useCallback(() => {
     update && update()
   }, [update])
-  useInterval(updateCallback, show ? 100 : null)
+
+  useEffect(() => {
+    if (!show) return
+
+    const interval = setInterval(updateCallback, 100)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowswap/ui'
 
 import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 

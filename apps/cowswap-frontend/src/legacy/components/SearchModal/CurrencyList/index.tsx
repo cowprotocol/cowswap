@@ -1,5 +1,6 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowswap/common-const'
 import { RowFixed, TokenAmount } from '@cowswap/ui'
+import { MouseoverTooltip } from '@cowswap/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 // eslint-disable-next-line no-restricted-imports
@@ -11,7 +12,6 @@ import styled from 'styled-components/macro'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
 import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 import { StyledLogo } from 'common/pure/CurrencyLogo'

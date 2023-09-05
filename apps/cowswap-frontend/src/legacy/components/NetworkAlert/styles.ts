@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ExternalLink } from '@cowswap/ui'
 
-import { ExternalLink } from 'legacy/theme'
+import styled from 'styled-components/macro'
 
 export const ReadMoreLink = styled(ExternalLink)`
   color: ${({ theme }) => theme.text1};

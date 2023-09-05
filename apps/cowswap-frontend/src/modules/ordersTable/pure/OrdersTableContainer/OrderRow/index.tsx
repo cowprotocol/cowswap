@@ -5,13 +5,13 @@ import { ZERO_FRACTION } from '@cowswap/common-const'
 import { useTimeAgo } from '@cowswap/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowswap/common-utils'
 import { TokenAmount, TokenSymbol, Loader } from '@cowswap/ui'
+import { MouseoverTooltipContent } from '@cowswap/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import { ThemeContext } from 'styled-components/macro'
 
 import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'

@@ -4,6 +4,7 @@ import { getChainInfo } from '@cowswap/common-const'
 import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowswap/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
 import { RowFixed } from '@cowswap/ui'
+import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -13,11 +14,9 @@ import styled, { keyframes } from 'styled-components/macro'
 
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
-import { ExternalLink, ThemedText } from 'legacy/theme'
+import { ThemedText } from 'legacy/theme'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
-
-import { MouseoverTooltip } from '../Tooltip'
 
 export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;

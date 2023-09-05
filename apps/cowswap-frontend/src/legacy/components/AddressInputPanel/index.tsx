@@ -3,13 +3,14 @@ import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import { getBlockExplorerUrl as getExplorerLink } from '@cowswap/common-utils'
 import { useENS } from '@cowswap/ens'
 import { RowBetween } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { t, Trans } from '@lingui/macro'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ExternalLink, ThemedText } from 'legacy/theme'
+import { ThemedText } from 'legacy/theme'
 
 import { autofocus } from 'common/utils/autofocus'
 

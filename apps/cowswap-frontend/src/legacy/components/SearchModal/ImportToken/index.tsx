@@ -1,4 +1,5 @@
-import { RowFixed } from '@cowswap/ui'
+import { getEtherscanLink as getExplorerLink } from '@cowswap/common-utils'
+import { RowFixed, ExternalLink } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -11,8 +12,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme/components'
-import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 

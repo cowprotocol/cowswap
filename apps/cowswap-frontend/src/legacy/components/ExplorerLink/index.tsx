@@ -1,10 +1,9 @@
 import { PropsWithChildren } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getExplorerLabel, getEtherscanLink } from '@cowswap/common-utils'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
-
-import { ExternalLink } from 'legacy/theme'
-import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
 
 import { getSafeWebUrl } from 'api/gnosisSafe'
 

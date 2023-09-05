@@ -1,4 +1,4 @@
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowswap/ui'
 
 import { getSafeWebUrl } from 'api/gnosisSafe'
 

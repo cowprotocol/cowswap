@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { addListAnalytics } from '@cowswap/analytics'
 import { ButtonPrimary } from '@cowswap/ui'
 import { AutoRow, RowBetween, RowFixed } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
@@ -19,7 +20,6 @@ import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
 import useTheme from 'legacy/hooks/useTheme'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme'
 
 import { ImportProps } from './index'
 

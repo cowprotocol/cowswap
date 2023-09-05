@@ -5,11 +5,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { RowFixed } from 'legacy/components/Row'
-
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-
 import MetaMaskLogo from '../../assets/metamask.png'
+import { RowFixed, TokenSymbol } from '@cowswap/ui'
 
 export const ButtonCustom = styled.button`
   display: flex;

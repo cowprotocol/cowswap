@@ -3,8 +3,7 @@ import React from 'react'
 import { darken, lighten } from 'polished'
 import styled from 'styled-components/macro'
 
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { ExternalLink } from 'legacy/theme'
+import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};

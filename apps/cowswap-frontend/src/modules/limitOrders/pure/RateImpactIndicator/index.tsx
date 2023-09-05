@@ -1,10 +1,9 @@
 import { TokenSymbol } from '@cowswap/ui'
+import { MouseoverTooltipContent } from '@cowswap/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 

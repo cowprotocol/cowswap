@@ -1,9 +1,9 @@
 import { ButtonPrimary } from '@cowswap/ui'
+import { ExternalLink as ExternalLinkTheme } from '@cowswap/ui'
 
 import styled from 'styled-components/macro'
 
 import cow404IMG from 'legacy/assets/cow-swap/cow-404.png'
-import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 

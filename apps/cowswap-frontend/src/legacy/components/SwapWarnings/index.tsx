@@ -1,11 +1,11 @@
 import React, { useContext, useMemo } from 'react'
 
+import { MouseoverTooltipContent } from '@cowswap/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 

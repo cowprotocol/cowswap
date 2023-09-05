@@ -1,11 +1,12 @@
 import { RowBetween } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { CloseIcon, ExternalLink } from 'legacy/theme'
+import { CloseIcon } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   width: 100%;

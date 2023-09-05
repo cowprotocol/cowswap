@@ -1,5 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getChainInfo } from '@cowswap/common-const'
+import { useTheme } from '@cowswap/common-hooks'
 import { AutoRow } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -7,10 +10,8 @@ import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { ExternalLink, HideSmall } from 'legacy/theme'
+import { HideSmall } from 'legacy/theme'
 
 const L2Icon = styled.img`
   width: 24px;

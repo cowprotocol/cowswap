@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { TokenAmount } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -15,7 +16,6 @@ import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
 import { ClaimCommonTypes, EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
 import { CustomLightSpinner } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme'
 
 import { Countdown } from 'pages/Claim/Countdown'
 import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'

@@ -1,9 +1,10 @@
 import { ButtonPrimary } from '@cowswap/ui'
+import { ExternalLink as ExternalLinkTheme } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'legacy/theme'
+import { StyledInternalLink } from 'legacy/theme'
 
 import { Content } from 'modules/application/pure/Page'
 

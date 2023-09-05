@@ -2,9 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowswap/analytics'
+import { renderTooltip } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
-
-import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'

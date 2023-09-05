@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,7 +14,6 @@ import { BadgeVariant } from 'legacy/components/Badge'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { FaqDrawer } from 'legacy/components/FaqDrawer'
 import { Stepper } from 'legacy/components/Stepper'
-import { ConfirmOperationType } from 'legacy/state'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimState,
@@ -25,7 +25,7 @@ import {
 import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 import { InvestClaim } from 'legacy/state/claim/reducer'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from 'legacy/state/claim/types'
-import { ExternalLink } from 'legacy/theme'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'

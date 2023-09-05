@@ -1,3 +1,6 @@
+import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowswap/common-const'
+import { getExplorerBaseUrl } from '@cowswap/common-utils'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Globe } from 'react-feather'
@@ -13,9 +16,6 @@ import IMAGE_PIE from 'legacy/assets/cow-swap/pie.svg'
 import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
-import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
-import { ExternalLink } from 'legacy/theme'
-import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 
 import { Routes } from 'common/constants/routes'
 

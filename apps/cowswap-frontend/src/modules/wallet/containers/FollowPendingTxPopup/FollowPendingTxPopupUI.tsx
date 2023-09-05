@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { Tooltip, TooltipProps } from '@cowswap/ui'
+
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { StyledClose as IconClose } from 'legacy/components/Popups/styled'
-import Tooltip, { TooltipProps } from 'legacy/components/Tooltip'
 
 interface PopupContentProps {
   onCheck: () => void

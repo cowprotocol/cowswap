@@ -1,6 +1,5 @@
 import { RowFixed } from '@cowswap/ui'
-
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { MouseoverTooltipContent } from '@cowswap/ui'
 
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'

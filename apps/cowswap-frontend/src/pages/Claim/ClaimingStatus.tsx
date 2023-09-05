@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { V_COW } from '@cowswap/common-const'
 import { shortenAddress } from '@cowswap/common-utils'
 import { TokenAmount, ButtonSecondary } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo, AddToMetamask } from '@cowswap/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -21,7 +22,6 @@ import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
-import { ExternalLink } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
 import {

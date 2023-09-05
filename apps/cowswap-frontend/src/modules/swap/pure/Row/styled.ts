@@ -1,10 +1,9 @@
 import { RowBetween, RowFixed } from '@cowswap/ui'
+import { MouseoverTooltipContent } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { RowStyleProps } from './types'
 

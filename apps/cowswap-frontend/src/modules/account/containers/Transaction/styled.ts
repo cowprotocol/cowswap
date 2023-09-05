@@ -1,9 +1,10 @@
 import { StyledSVG, FiatAmount, RowFixed } from '@cowswap/ui'
+import { ExternalLink, StyledLink } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
+import { LinkStyledButton } from 'legacy/theme'
 
 import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { RateWrapper } from 'common/pure/RateInfo'

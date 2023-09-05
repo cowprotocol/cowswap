@@ -3,6 +3,9 @@
   // "extends": ["plugin:@nx/react"],
   "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

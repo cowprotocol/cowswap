@@ -28,13 +28,12 @@ import { Connector } from '@web3-react/types'
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { MouseoverTooltip } from '@cowswap/ui'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
-import { ExternalLink } from 'legacy/theme'
 
 import Activity from 'modules/account/containers/Transaction'
 
@@ -65,6 +64,7 @@ import { SurplusCard } from './SurplusCard'
 
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
+import { ExternalLink } from '../../../../../../../libs/ui/src/pure/ExternalLink'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GOERLI]: 'Görli',

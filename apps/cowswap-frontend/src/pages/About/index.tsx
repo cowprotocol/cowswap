@@ -1,4 +1,6 @@
-// Assets
+import { MEV_TOTAL, FLASHBOTS_LINK } from '@cowswap/common-const'
+import { ExternalLink as ExternalLinkTheme } from '@cowswap/ui'
+
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -7,8 +9,6 @@ import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
 import mevIMG from 'legacy/assets/cow-swap/mev.png'
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import { MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
-import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'

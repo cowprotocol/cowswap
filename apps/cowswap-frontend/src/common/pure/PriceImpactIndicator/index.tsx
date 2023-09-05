@@ -1,11 +1,11 @@
 import { formatPercent } from '@cowswap/common-utils'
 import { Loader } from '@cowswap/ui'
+import { MouseoverTooltip } from '@cowswap/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { warningSeverity } from 'legacy/utils/prices'
 

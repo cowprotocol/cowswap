@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
-import Popover, { PopoverProps } from 'legacy/components/Popover'
+import Popover, { PopoverProps } from '../Popover'
 
 export const TooltipContainer = styled.div`
   max-width: 300px;
@@ -23,7 +23,7 @@ interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverCon
   disableHover?: boolean // disable the hover and content display
 }
 
-export default function Tooltip({ text, className, ...rest }: TooltipProps) {
+export function Tooltip({ text, className, ...rest }: TooltipProps) {
   return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 

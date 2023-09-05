@@ -1,4 +1,5 @@
 import { Row, RowFixed, RowBetween } from '@cowswap/ui'
+import { LinkIcon } from '@cowswap/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled, { DefaultTheme } from 'styled-components/macro'
@@ -8,7 +9,7 @@ import Column from 'legacy/components/Column'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { Separator } from 'legacy/components/SearchModal/styleds'
-import { ButtonText, LinkIcon } from 'legacy/theme'
+import { ButtonText } from 'legacy/theme'
 
 import ManageTokensMod, { ManageTokensProps, Footer } from './ManageTokensMod'
 

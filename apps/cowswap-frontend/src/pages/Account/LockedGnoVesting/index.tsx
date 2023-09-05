@@ -15,6 +15,7 @@ import {
   isRejectRequestProviderError,
 } from '@cowswap/common-utils'
 import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowswap/ui'
+import { MouseoverTooltipContent } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
@@ -24,9 +25,8 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
 import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import CopyHelper from 'legacy/components/Copy'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { ConfirmOperationType } from 'legacy/state'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'

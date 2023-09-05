@@ -1,6 +1,7 @@
 import { useNetworkName } from '@cowswap/common-hooks'
 import { formatDateWithTimezone } from '@cowswap/common-utils'
 import { ButtonSecondary } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -9,7 +10,6 @@ import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
-import { ExternalLink } from 'legacy/theme'
 
 import { IntroDescription, BannerExplainer } from './styled'
 

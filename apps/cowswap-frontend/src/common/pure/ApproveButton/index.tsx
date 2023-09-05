@@ -1,13 +1,13 @@
 import { useContext, useMemo } from 'react'
 
 import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowswap/ui'
+import { MouseoverTooltip } from '@cowswap/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'

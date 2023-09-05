@@ -3,6 +3,7 @@ import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState }
 import { useNetworkName, useTheme } from '@cowswap/common-hooks'
 import { getEtherscanLink as getExplorerLink, isAddress } from '@cowswap/common-utils'
 import { TokenSymbol, Row, RowBetween, RowFixed } from '@cowswap/ui'
+import { ExternalLink, ExternalLinkIcon } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -14,7 +15,7 @@ import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchM
 import { PaddedColumn, SearchInput, Separator } from 'legacy/components/SearchModal/styleds'
 import { useToken } from 'legacy/hooks/Tokens'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'legacy/state/user/hooks'
-import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'legacy/theme'
+import { ButtonText, ThemedText, TrashIcon } from 'legacy/theme'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 

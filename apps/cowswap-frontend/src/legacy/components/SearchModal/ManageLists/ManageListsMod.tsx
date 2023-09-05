@@ -3,8 +3,7 @@ import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } 
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '@cowswap/analytics'
 import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowswap/common-hooks'
 import { parseENSAddress, uriToHttp } from '@cowswap/common-utils'
-import { ButtonEmpty, ButtonPrimary } from '@cowswap/ui'
-import { Row, RowBetween, RowFixed } from '@cowswap/ui'
+import { Row, RowBetween, RowFixed, ButtonEmpty, ButtonPrimary, ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList, Version } from '@uniswap/token-lists'
 
@@ -21,7 +20,7 @@ import Toggle from 'legacy/components/Toggle'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
-import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
+import { IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 

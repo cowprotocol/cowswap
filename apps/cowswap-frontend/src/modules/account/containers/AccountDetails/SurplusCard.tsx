@@ -1,10 +1,10 @@
 import { FiatAmount, TokenAmount } from '@cowswap/ui'
+import { ExternalLink } from '@cowswap/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { ExternalLink } from 'legacy/theme'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
