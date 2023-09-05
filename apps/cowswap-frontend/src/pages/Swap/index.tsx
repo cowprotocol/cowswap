@@ -1,10 +1,9 @@
 import React from 'react'
 
+import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
-
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { AppDataUpdater } from 'modules/appData'
 import { SwapWidget, SwapDerivedStateUpdater, SwapAmountsFromUrlUpdater } from 'modules/swap'

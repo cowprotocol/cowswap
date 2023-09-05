@@ -1,15 +1,7 @@
 import { useContext, useState } from 'react'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowswap/analytics'
-import { RowBetween, RowFixed } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
-import { Percent } from '@uniswap/sdk-core'
-
-import { Trans } from '@lingui/macro'
-import { darken } from 'polished'
-import styled, { ThemeContext } from 'styled-components/macro'
-
-import { AutoColumn } from 'legacy/components/Column'
+import { DEFAULT_DEADLINE_FROM_NOW } from '@cowswap/common-const'
 import {
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
@@ -21,8 +13,16 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-} from 'legacy/constants'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+} from '@cowswap/common-const'
+import { RowBetween, RowFixed } from '@cowswap/ui'
+import { useWalletInfo } from '@cowswap/wallet'
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { darken } from 'polished'
+import styled, { ThemeContext } from 'styled-components/macro'
+
+import { AutoColumn } from 'legacy/components/Column'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 

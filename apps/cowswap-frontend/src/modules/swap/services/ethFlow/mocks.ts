@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from '@cowswap/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowModalContentProps } from 'modules/swap/pure/EthFlow/EthFlowModalContent'

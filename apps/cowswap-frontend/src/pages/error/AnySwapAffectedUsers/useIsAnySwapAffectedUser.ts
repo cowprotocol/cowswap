@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi, Erc20Interface } from '@cowswap/abis'
+import { ZERO_ADDRESS } from '@cowswap/common-const'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
-
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 

@@ -1,4 +1,4 @@
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowswap/common-const'
 
 import { RowDeadlineContent, RowDeadlineProps } from '.'
 

@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+import { getChainInfo } from '@cowswap/common-const'
 import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -8,7 +9,6 @@ import { transparentize, darken } from 'polished'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'

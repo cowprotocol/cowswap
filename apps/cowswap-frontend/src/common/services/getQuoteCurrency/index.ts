@@ -1,12 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { DAI, USDC_MAINNET, USDT } from '@cowswap/common-const'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
+import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from '@cowswap/common-const'
+import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from '@cowswap/common-const'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import { DAI, USDC_MAINNET, USDT } from 'legacy/constants/tokens'
-import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'legacy/utils/gnosis_chain/constants'
-import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
 const STABLE_COINS: { [key in SupportedChainId]: string[] } = {

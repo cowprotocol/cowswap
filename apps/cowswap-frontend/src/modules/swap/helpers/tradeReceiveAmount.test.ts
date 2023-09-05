@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowswap/common-const'
 import { CurrencyAmount, Price, Token, TradeType } from '@uniswap/sdk-core'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from './tradeReceiveAmount'

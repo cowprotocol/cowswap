@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { RAW_CODE_LINK } from 'legacy/constants'
+import { RAW_CODE_LINK } from '@cowswap/common-const'
 
 import { FortuneItem } from 'modules/fortune/types'
 

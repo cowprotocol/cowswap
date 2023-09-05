@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getChainInfo } from '@cowswap/common-const'
 import { AutoRow } from '@cowswap/ui'
 
 import { Trans } from '@lingui/macro'
@@ -8,7 +9,6 @@ import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { getChainInfo } from 'legacy/constants/chainInfo'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

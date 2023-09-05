@@ -2,13 +2,13 @@
 
 import { useMemo } from 'react'
 
+import { nativeOnChain } from '@cowswap/common-const'
 import { useInterfaceMulticall } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { nativeOnChain } from 'legacy/constants/tokens'
 import { isAddress } from 'legacy/utils'
 
 import { useOnchainBalances } from 'modules/tokens'

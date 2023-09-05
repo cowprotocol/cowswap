@@ -1,8 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowswap/common-const'
 
 import { useSelect } from 'react-cosmos/client'
-
-import { COW, GNO } from 'legacy/constants/tokens'
 
 import { CurrencySelectButton, CurrencySelectButtonProps } from 'common/pure/CurrencySelectButton/index'
 

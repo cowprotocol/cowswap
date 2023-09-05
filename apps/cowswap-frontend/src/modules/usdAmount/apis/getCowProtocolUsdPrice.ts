@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { USDC } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
-
-import { USDC } from 'legacy/constants/tokens'
 
 import { getCowProtocolNativePrice } from './getCowProtocolNativePrice'
 

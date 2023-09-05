@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { GpEther } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
-
-import { GpEther } from 'legacy/constants/tokens'
 
 import { EthFlowBannerContent, EthFlowBannerContentProps } from '.'
 

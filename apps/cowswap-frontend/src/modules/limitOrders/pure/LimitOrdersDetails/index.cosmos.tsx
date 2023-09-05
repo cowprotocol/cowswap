@@ -3,9 +3,8 @@ import { SetStateAction } from 'jotai'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowswap/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { COW, GNO } from 'legacy/constants/tokens'
 
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'

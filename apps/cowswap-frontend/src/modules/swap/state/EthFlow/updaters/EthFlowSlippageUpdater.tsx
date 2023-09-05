@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 
+import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@cowswap/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
-import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'legacy/constants'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'

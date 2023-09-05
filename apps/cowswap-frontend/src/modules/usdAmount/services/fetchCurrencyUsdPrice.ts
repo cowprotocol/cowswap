@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LONG_PRECISION } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
-
-import { LONG_PRECISION } from 'legacy/constants'
 
 import {
   COINGECK_PLATFORMS,

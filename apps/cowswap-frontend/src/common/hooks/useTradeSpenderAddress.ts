@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
+import { GP_VAULT_RELAYER } from '@cowswap/common-const'
 import { useWalletInfo } from '@cowswap/wallet'
-
-import { GP_VAULT_RELAYER } from 'legacy/constants'
 
 export function useTradeSpenderAddress(): string | undefined {
   const { chainId } = useWalletInfo()

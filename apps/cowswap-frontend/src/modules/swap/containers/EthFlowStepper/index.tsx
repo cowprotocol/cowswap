@@ -1,4 +1,5 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
+
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'

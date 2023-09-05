@@ -2,13 +2,12 @@ import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW as COWS, USDC_MAINNET } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
 
 import { act, render, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
 import { JotaiTestProvider } from 'test-utils'
-
-import { COW as COWS, USDC_MAINNET } from 'legacy/constants/tokens'
 
 import { UsdPricesUpdater } from './UsdPricesUpdater'
 

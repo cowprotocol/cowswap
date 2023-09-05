@@ -1,8 +1,7 @@
+import { ZERO_FRACTION } from '@cowswap/common-const'
+import { DAI_GOERLI, USDC_GOERLI } from '@cowswap/common-const'
 import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
-
-import { ZERO_FRACTION } from 'legacy/constants'
-import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
 

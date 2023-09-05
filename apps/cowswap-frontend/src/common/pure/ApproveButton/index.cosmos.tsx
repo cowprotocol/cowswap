@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowswap/common-const'
 
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 import { ApproveButton } from '.'

@@ -1,9 +1,9 @@
 import type { Order } from '@cowprotocol/contracts'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CoWSwapEthFlow } from '@cowswap/abis'
+import { WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'

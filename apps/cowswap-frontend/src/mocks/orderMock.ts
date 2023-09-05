@@ -1,7 +1,7 @@
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowswap/common-const'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 export const getOrderMock = (chainId: SupportedChainId): Order => {

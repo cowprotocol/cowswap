@@ -2,9 +2,9 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
 import { useEthFlowContract } from '@cowswap/common-hooks'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'

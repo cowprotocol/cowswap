@@ -1,10 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowswap/common-const'
 import { isInjectedWidget } from '@cowswap/common-utils'
 import { useIsSafeApp } from '@cowswap/wallet'
-
-import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
 
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
