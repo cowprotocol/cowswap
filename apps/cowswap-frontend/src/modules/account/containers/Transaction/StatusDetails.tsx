@@ -3,14 +3,14 @@ import OrderCheckImage from '@cowswap/assets/cow-swap/order-check.svg'
 import OrderExpiredImage from '@cowswap/assets/cow-swap/order-expired.svg'
 import OrderOpenImage from '@cowswap/assets/cow-swap/order-open.svg'
 import PresignaturePendingImage from '@cowswap/assets/cow-swap/order-presignature-pending.svg'
+import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
+import { getSafeWebUrl } from '@cowswap/core'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
-import { getSafeWebUrl } from 'api/gnosisSafe'
 import { CancelButton } from 'common/pure/CancelButton'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 

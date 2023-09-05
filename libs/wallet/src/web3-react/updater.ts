@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { getSafeInfo } from 'api/gnosisSafe'
+import { getSafeInfo } from '@cowswap/core'
 import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'

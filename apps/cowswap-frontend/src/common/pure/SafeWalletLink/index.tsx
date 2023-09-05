@@ -1,6 +1,5 @@
+import { getSafeWebUrl } from '@cowswap/core'
 import { ExternalLink } from '@cowswap/ui'
-
-import { getSafeWebUrl } from 'api/gnosisSafe'
 
 export function SafeWalletLink(props: {
   chainId: number

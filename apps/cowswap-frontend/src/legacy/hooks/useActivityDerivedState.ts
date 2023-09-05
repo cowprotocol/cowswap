@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { getEtherscanLink, getExplorerOrderLink } from '@cowswap/common-utils'
+import { getSafeWebUrl } from '@cowswap/core'
 import { useGnosisSafeInfo } from '@cowswap/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
@@ -8,8 +9,6 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-
-import { getSafeWebUrl } from 'api/gnosisSafe'
 
 import { ActivityDescriptors, ActivityStatus, ActivityType } from './useRecentActivity'
 

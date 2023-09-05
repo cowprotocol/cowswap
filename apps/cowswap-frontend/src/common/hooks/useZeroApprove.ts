@@ -8,10 +8,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 import { pollUntil } from 'common/utils/pollUntil'
 
 import { useApproveCallback } from './useApproveCallback'
+import { useSafeApiKit } from './useSafeApiKit'
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 import { zeroApprovalState } from '../state/useZeroApprovalState'
