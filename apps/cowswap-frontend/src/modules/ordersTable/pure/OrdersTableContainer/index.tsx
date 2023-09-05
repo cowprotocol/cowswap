@@ -1,7 +1,5 @@
 import { ReactNode } from 'react'
 
-import { Web3Status } from '@cowswap/wallet'
-
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
@@ -10,6 +8,8 @@ import styled from 'styled-components/macro'
 import cowMeditatingV2 from 'legacy/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
 import { ExternalLink } from 'legacy/theme'
+
+import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 

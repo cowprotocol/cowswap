@@ -12,7 +12,6 @@ export * from './web3-react/hooks/useIsSmartContractWallet'
 export * from './web3-react/updater'
 
 // Components
-export * from './web3-react/containers/Web3Status'
 export * from './web3-react/containers/AccountSelectorModal'
 export * from './web3-react/containers/AccountSelectorModal/state'
 export * from './web3-react/containers/WalletModal'

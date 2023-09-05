@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage, selectAtom } from 'jotai/utils'
 
+import { OrderID } from 'api/gnosisProtocol'
+
 type FollowPendingTxPopup = {
   showPopup: boolean
   lastOrderPopupClosed: string | undefined
