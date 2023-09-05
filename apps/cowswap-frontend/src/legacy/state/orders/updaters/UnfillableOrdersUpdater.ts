@@ -190,17 +190,23 @@ export function UnfillableOrdersUpdater(): null {
     verifiedQuotesEnabled,
   ])
 
+  const updatePendingRef = useRef(updatePending)
   useEffect(() => {
+    updatePendingRef.current = updatePending
+  }, [updatePending])
+
+  useEffect(() => {
+    console.log('[UnfillableOrdersUpdater] Start interval', { updatePendingRef, chainId, account, isWindowVisible })
     if (!chainId || !account || !isWindowVisible) {
       console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
       return
     }
 
     console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
-    updatePending()
-    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
+    updatePendingRef.current()
+    const interval = setInterval(updatePendingRef.current, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
-  }, [updatePending, chainId, account, isWindowVisible])
+  }, [updatePendingRef, chainId, account, isWindowVisible])
 
   return null
 }
