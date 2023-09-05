@@ -13,7 +13,8 @@ import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { APPROVE_GAS_LIMIT_DEFAULT } from '../../hooks/useApproveCallback/useApproveCallbackMod'
 import { useTransactionAdder } from '../enhancedTransactions/hooks'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AppState, ConfirmOperationType } from '../index'
+import { AppState } from '../index'
+import { ConfirmOperationType } from '../types'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 

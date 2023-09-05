@@ -4,7 +4,7 @@ import React from 'react'
 import { TokenSymbol } from '@cowswap/ui'
 
 import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
-import { ConfirmOperationType } from 'legacy/state'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { tradeApproveStateAtom } from './tradeApproveStateAtom'
 

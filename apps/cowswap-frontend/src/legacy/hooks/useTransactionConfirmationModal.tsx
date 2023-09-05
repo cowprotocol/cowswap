@@ -4,7 +4,7 @@ import { TransactionConfirmationModal } from 'legacy/components/TransactionConfi
 import { useOpenModal, useCloseModals, useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { ConfirmOperationType } from '../state'
+import { ConfirmOperationType } from '../state/types'
 
 export default function useTransactionConfirmationModal(
   defaultOperationType: ConfirmOperationType = ConfirmOperationType.WRAP_ETHER

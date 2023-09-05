@@ -9,7 +9,7 @@ import JSBI from 'jsbi'
  */
 export function tryParseCurrencyAmount<T extends Currency>(value: string, currency: T): CurrencyAmount<T>
 export function tryParseCurrencyAmount<T extends Currency>(value?: string, currency?: T): CurrencyAmount<T> | undefined
-export default function tryParseCurrencyAmount<T extends Currency>(
+export function tryParseCurrencyAmount<T extends Currency>(
   value?: string,
   currency?: T
 ): CurrencyAmount<T> | undefined {

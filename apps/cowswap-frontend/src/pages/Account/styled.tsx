@@ -1,6 +1,5 @@
 import { Loader as SpinnerLoader, ButtonPrimary } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
-import { AddToMetamask } from '@cowswap/wallet'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
@@ -9,6 +8,7 @@ import styled, { css } from 'styled-components/macro'
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
+import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
 
 import { BannerExplainer } from 'pages/Claim/styled'
 

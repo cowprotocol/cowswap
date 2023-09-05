@@ -11,7 +11,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { ConfirmOperationType } from '../../state'
+import { ConfirmOperationType } from '../../state/types'
 import { useCurrency } from '../Tokens'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'

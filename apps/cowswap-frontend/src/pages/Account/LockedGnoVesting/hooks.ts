@@ -14,8 +14,8 @@ import { useWalletInfo } from '@cowswap/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'
 

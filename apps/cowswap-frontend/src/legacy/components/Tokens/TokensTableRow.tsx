@@ -36,7 +36,7 @@ import {
 } from './styled'
 
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback/useApproveCallbackMod'
-import { ConfirmOperationType } from '../../state'
+import { ConfirmOperationType } from '../../state/types'
 
 type DataRowParams = {
   tokenData: Token
