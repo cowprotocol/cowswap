@@ -3,6 +3,11 @@ import { selectAtom } from 'jotai/utils'
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
+import { Order } from 'legacy/state/orders/actions'
+import { useIsExpertMode } from 'legacy/state/user/hooks'
+
+import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
+
 import {
   handleFollowPendingTxPopupAtom,
   handleHidePopupPermanentlyAtom,
@@ -10,10 +15,6 @@ import {
   followPendingTxPopupAtom,
   handleCloseOrderPopupAtom,
 } from '../../state/followPendingTxPopupAtom'
-import { Order } from 'legacy/state/orders/actions'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
-
-import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {
   const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)

@@ -14,7 +14,6 @@ export * from './web3-react/updater'
 // Components
 export * from './web3-react/containers/AccountSelectorModal'
 export * from './web3-react/containers/AccountSelectorModal/state'
-export * from './web3-react/containers/WalletModal'
 export * from './api/container/Identicon'
 export * from './web3-react/containers/AddToMetamask'
 
@@ -28,8 +27,8 @@ export { switchChain } from './web3-react/utils/switchChain'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
-export { handleFollowPendingTxPopupAtom } from './api/state/followPendingTxPopupAtom'
 
 // Connections
+export * from './web3-react/connection/index'
 export { injectedConnection } from './web3-react/connection/injected'
 export { walletConnectConnection } from './web3-react/connection/walletConnect'

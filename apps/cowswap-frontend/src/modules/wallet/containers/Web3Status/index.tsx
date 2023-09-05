@@ -9,7 +9,7 @@ import { Web3StatusInner } from '../../../../../../../libs/wallet/src/api/pure/W
 import { Wrapper } from '../../../../../../../libs/wallet/src/api/pure/Web3StatusInner/styled'
 import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { AccountSelectorModal } from '../../../../../../../libs/wallet/src/web3-react/containers/AccountSelectorModal'
-import { WalletModal } from '../../../../../../../libs/wallet/src/web3-react/containers/WalletModal'
+import { WalletModal } from '../WalletModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
