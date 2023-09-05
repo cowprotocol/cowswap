@@ -2,6 +2,7 @@ import ICON_CHECK from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { IconSpinner } from 'common/pure/IconSpinner'
 
 type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'
@@ -11,22 +12,22 @@ interface StepProps {
   stepNumber: number
   label: string
   dotSize?: number
-  dotBorderColor?: string
+  dotBorderColor?: UI
 }
 
 interface StepStyles {
-  dotBackground: string
-  dotColor: string
-  labelColor: string
+  dotBackground: UI
+  dotColor: UI
+  labelColor: UI
 }
 
 const stateStyles: Record<StepState, StepStyles> = {
-  active: { dotBackground: '--cow-color-link', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-text1' },
-  finished: { dotBackground: '--cow-color-link-opacity-10', dotColor: '--cow-color-link', labelColor: '--cow-color-text1' },
-  disabled: { dotBackground: '--cow-color-text1-opacity-25', dotColor: '--cow-color-text1-opacity-25', labelColor: '--cow-color-text1-opacity-25' },
-  error: { dotBackground: '--cow-color-danger-bg', dotColor: '--cow-color-danger', labelColor: '--cow-color-danger' },
-  loading: { dotBackground: '--cow-color-link', dotColor: '--cow-container-bg-01', labelColor: '--cow-color-link' },
-  open: { dotBackground: '--cow-color-text1-opacity-10', dotColor: '--cow-container-text2', labelColor: '--cow-color-text2' },
+  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_TEXT1 },
+  finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
+  disabled: { dotBackground: UI.COLOR_TEXT1_OPACITY_25, dotColor: UI.COLOR_TEXT1_OPACITY_25, labelColor: UI.COLOR_TEXT1_OPACITY_25 },
+  error: { dotBackground: UI.COLOR_ALERT_BG, dotColor: UI.COLOR_ALERT, labelColor: UI.COLOR_ALERT },
+  loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_LINK },
+  open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
 }
 
 const Step = styled.div<StepProps>`
@@ -35,7 +36,7 @@ const Step = styled.div<StepProps>`
   align-items: center;
   margin: 0;
   padding: 0;
-  font-size: var(--cow-font-size-small);
+  font-size: var(${UI.FONT_SIZE_SMALL});
   background: transparent;
   color: ${({ stepState }) => `var(${stateStyles[stepState].labelColor})`};
   gap: 8px;
@@ -50,7 +51,7 @@ const Step = styled.div<StepProps>`
     max-width: var(--dotSize);
     max-height: var(--dotSize);
     border-radius: var(--dotSize);
-    border: 1px solid ${({ dotBorderColor = '--cow-container-bg-01' }) => `var(${dotBorderColor})`};
+    border: 1px solid ${({ dotBorderColor = UI.COLOR_CONTAINER_BG_01 }) => `var(${dotBorderColor})`};
     background: ${({ stepState }) => `var(${stateStyles[stepState].dotBackground})`};
     color: ${({ stepState }) => `var(${stateStyles[stepState].dotColor})`};
     flex: 0 0 auto;
@@ -67,7 +68,7 @@ const Step = styled.div<StepProps>`
     }
 
     > svg > path {
-      fill: var(--cow-color-link);
+      fill: var(${UI.COLOR_LINK});
     }
   }
 
@@ -80,8 +81,8 @@ const Step = styled.div<StepProps>`
     width: 100%;
     height: 1px;
     border: 0;
-    background: ${({ stepState }) => stepState === 'error' ? 'var(--cow-color-danger)' : stepState === 'finished' ? 'var(--cow-color-link)' : 'var(--cow-color-text1-opacity-25)' };
-    border-radius: var(--cow-border-radius-normal);
+    background: ${({ stepState }) => stepState === 'error' ? `var(${stateStyles['error'].dotBackground})` : stepState === 'finished' ? `var(${stateStyles['finished'].dotBackground})` : `var(${UI.COLOR_TEXT1_OPACITY_25})`};
+    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   }
 
   &&:last-child {
@@ -133,5 +134,5 @@ export function Stepper({ steps, maxWidth, dotSize = 21 }: StepperProps) {
         </Step>
       ))}
     </Wrapper>
-  );
+  )
 }
