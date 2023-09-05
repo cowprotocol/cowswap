@@ -1,6 +1,6 @@
-import { ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
-import { trezorConnection } from '../../../../../../../libs/wallet/src/web3-react/connection/trezor'
-import { HardWareWallet } from '../../../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
+import { trezorConnection } from '../../web3-react/connection/trezor'
+import { HardWareWallet } from '../../web3-react/utils/getIsHardWareWallet'
+import { ConnectionType } from '../../api/types'
 
 interface WalletAccountsLoader {
   getAccounts(): string[] | null

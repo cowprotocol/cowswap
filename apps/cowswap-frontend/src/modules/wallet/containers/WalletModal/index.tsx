@@ -1,24 +1,21 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
+import { changeWalletAnalytics } from '@cowswap/analytics'
+import { usePrevious } from '@cowswap/common-hooks'
+import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
+import { useWalletInfo, ConnectionType, getIsHardWareWallet, getWeb3ReactConnection } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { changeWalletAnalytics } from '@cowswap/analytics'
 import { useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { useWalletInfo } from '../../../../../../../libs/wallet/src/api/hooks'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
-import { ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
-import { getIsHardWareWallet } from '../../../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
-import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
-import { usePrevious } from '@cowswap/common-hooks'
-import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

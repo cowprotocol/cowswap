@@ -1,32 +1,29 @@
-import { Connector } from '@web3-react/types'
-
+import { useTheme } from '@cowswap/common-hooks'
 import { isMobile } from '@cowswap/common-utils'
-
-import { FeatureGuard } from 'common/containers/FeatureGuard'
-
-import { AlphaOption } from '../../../../../../libs/wallet/src/web3-react/connection/alpha'
-import { AmbireOption } from '../../../../../../libs/wallet/src/web3-react/connection/ambire'
-import { CoinbaseWalletOption } from '../../../../../../libs/wallet/src/web3-react/connection/coinbase'
 import {
+  AlphaOption,
+  AmbireOption,
+  CoinbaseWalletOption,
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from '../../../../../../libs/wallet/src/web3-react/connection/injected'
-import { InstallKeystoneOption, KeystoneOption } from '../../../../../../libs/wallet/src/web3-react/connection/keystone'
-import { LedgerOption } from '../../../../../../libs/wallet/src/web3-react/connection/ledger'
-import { TrezorOption } from '../../../../../../libs/wallet/src/web3-react/connection/trezor'
-import { TrustWalletOption } from '../../../../../../libs/wallet/src/web3-react/connection/trust'
-import { WalletConnectOption } from '../../../../../../libs/wallet/src/web3-react/connection/walletConnect'
-import { WalletConnectV2Option } from '../../../../../../libs/wallet/src/web3-react/connection/walletConnectV2'
-
-import {
+  InstallKeystoneOption,
+  KeystoneOption,
+  LedgerOption,
+  TrezorOption,
+  TrustWalletOption,
+  WalletConnectOption,
+  WalletConnectV2Option,
   getIsCoinbaseWallet,
   getIsInjected,
   getIsMetaMask,
-} from '../../../../../../libs/wallet/src/api/utils/connection'
+} from '@cowswap/wallet'
+import { Connector } from '@web3-react/types'
+
 import { useSelectedWallet } from 'legacy/state/user/hooks'
-import { useTheme } from '@cowswap/common-hooks'
+
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 export type TryActivation = (connector: Connector) => void
 

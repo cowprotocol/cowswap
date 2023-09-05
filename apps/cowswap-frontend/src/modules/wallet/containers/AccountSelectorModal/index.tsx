@@ -2,6 +2,15 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useAddSnackbar } from '@cowswap/snackbars'
+import {
+  accountsLoaders,
+  hwAccountIndexAtom,
+  getConnectionIcon,
+  getConnectionName,
+  AccountIndexSelect,
+  HardWareWallet,
+  getWeb3ReactConnection,
+} from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
@@ -10,15 +19,8 @@ import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalan
 
 import { CowModal } from 'common/pure/Modal'
 
-import { accountsLoaders } from './accountsLoaders'
 import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './state'
 import * as styledEl from './styled'
-
-import { hwAccountIndexAtom } from '../../../../../../../libs/wallet/src/api/state'
-import { getConnectionIcon, getConnectionName } from '../../../../../../../libs/wallet/src/api/utils/connection'
-import { AccountIndexSelect } from '../../../../../../../libs/wallet/src/web3-react/pure/AccountIndexSelect'
-import { HardWareWallet } from '../../../../../../../libs/wallet/src/web3-react/utils/getIsHardWareWallet'
-import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 
 export function AccountSelectorModal() {
   const { isOpen } = useAtomValue(accountSelectorModalAtom)

@@ -1,16 +1,15 @@
+import { STORAGE_KEY_LAST_PROVIDER } from '@cowswap/common-const'
+import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import { STORAGE_KEY_LAST_PROVIDER } from '@cowswap/common-const'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { useWalletDetails, useWalletInfo } from '../../../../../../../libs/wallet/src/api/hooks'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
-import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { AccountSelectorModal } from '../AccountSelectorModal'
-import { WalletModal } from '../WalletModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
+import { WalletModal } from '../WalletModal'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()

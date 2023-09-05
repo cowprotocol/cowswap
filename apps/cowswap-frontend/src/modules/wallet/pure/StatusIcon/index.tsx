@@ -1,9 +1,7 @@
-import styled from 'styled-components/macro'
+import { Identicon, ConnectionType } from '@cowswap/wallet'
+import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowswap/wallet'
 
-import CoinbaseWalletIcon from '../../../../../../../libs/wallet/src/api/assets/coinbase.svg'
-import WalletConnectIcon from '../../../../../../../libs/wallet/src/api/assets/walletConnectIcon.svg'
-import { Identicon } from '../../../../../../../libs/wallet/src/api/container/Identicon'
-import { ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
+import styled from 'styled-components/macro'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};

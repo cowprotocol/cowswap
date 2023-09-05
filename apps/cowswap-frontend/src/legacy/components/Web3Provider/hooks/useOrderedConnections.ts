@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import { useAppSelector } from 'legacy/state/hooks'
-
-import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../../../../../libs/wallet/src/api/types'
-import { getWeb3ReactConnection } from '../../../../../../../libs/wallet/src/web3-react/utils/getWeb3ReactConnection'
 import { isInjectedWidget } from '@cowswap/common-utils'
+import { BACKFILLABLE_WALLETS, ConnectionType, getWeb3ReactConnection } from '@cowswap/wallet'
+
+import { useAppSelector } from 'legacy/state/hooks'
 
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS]
 
