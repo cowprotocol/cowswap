@@ -145,7 +145,7 @@ export function UnfillableOrdersUpdater(): null {
 
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
-        const verifiedQuote = verifiedQuotesEnabled && enoughBalance === true
+        const verifiedQuote = verifiedQuotesEnabled && enoughBalance
 
         _getOrderPrice(chainId, order, verifiedQuote, strategy)
           .then((quote) => {
@@ -208,7 +208,12 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order, verifyQuote: boolean, strategy: GpPriceStrategy) {
+async function _getOrderPrice(
+  chainId: ChainId,
+  order: Order,
+  verifyQuote: boolean | undefined,
+  strategy: GpPriceStrategy
+) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)

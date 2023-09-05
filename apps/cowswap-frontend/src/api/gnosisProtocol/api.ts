@@ -14,7 +14,7 @@ import {
   PriceQuality,
   TotalSurplus,
   OrderQuoteSideKindBuy,
-  OrderQuoteSideKindSell
+  OrderQuoteSideKindSell,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -225,7 +225,7 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
-export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): PriceQuality {
+export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean | undefined }): PriceQuality {
   const { fast = false, verifyQuote } = props
   if (fast) {
     return PriceQuality.FAST
