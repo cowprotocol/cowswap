@@ -11,7 +11,7 @@ export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
 export const MARKET_OPERATOR_API_POLL_INTERVAL = ms`2s`
 // We can have lots of limit orders and it creates a high load, so we poll them no so ofter as market orders
 export const LIMIT_OPERATOR_API_POLL_INTERVAL = ms`15s`
-export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = ms`15s`
+export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = ms`30s`
 export const SPOT_PRICE_CHECK_POLL_INTERVAL = ms`15s`
 export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = ms`15s`
 
