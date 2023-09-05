@@ -3,13 +3,10 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { serialize } from '@ethersproject/transactions'
 
 import { EthereumTransaction } from '@trezor/connect'
-import { jotaiStore } from 'jotaiStore'
-
-import { gasPriceAtom } from 'modules/gasPirce'
-
 import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type { TrezorConnect } from '@trezor/connect-web'
+import { gasPriceAtom, jotaiStore } from '@cowswap/core'
 
 // TODO: use API or Oracle for gas price
 const DEFAULT_GOERLI_GAS_PRICE = 40 * 10 ** 9 // 40 GWEI

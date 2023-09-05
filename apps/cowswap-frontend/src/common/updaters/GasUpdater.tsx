@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react'
 
 import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowswap/common-const'
 import { useBlockNumber } from '@cowswap/common-hooks'
+import { gasPriceAtom } from '@cowswap/core'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { useDispatch } from 'react-redux'
@@ -10,8 +11,6 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'legacy/state'
 import { updateGasPrices, UpdateGasPrices } from 'legacy/state/gas/actions'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-
-import { gasPriceAtom } from 'modules/gasPirce'
 
 import { gasFeeApi } from 'api/gasPrices'
 

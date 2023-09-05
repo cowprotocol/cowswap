@@ -8,11 +8,8 @@ import {
   RequestArguments,
 } from '@web3-react/types'
 
-import { isRejectRequestProviderError } from 'legacy/utils/misc'
-
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
-
 import { IFrameEthereumProvider } from './IFrameEthereumProvider'
+import { isInjectedWidget, isRejectRequestProviderError } from '@cowswap/common-utils'
 
 type InjectedWalletProvider = Provider & {
   isConnected: () => boolean

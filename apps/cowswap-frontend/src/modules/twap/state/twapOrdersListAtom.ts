@@ -3,13 +3,12 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { walletInfoAtom } from '@cowswap/wallet'
 
-import { getJotaiIsolatedStorage } from 'jotaiStore'
-
 import store from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
 
 import { deepEqual } from 'utils/deepEqual'
 
+import { getJotaiIsolatedStorage } from '../../../../../../libs/core/src/jotaiStore'
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'

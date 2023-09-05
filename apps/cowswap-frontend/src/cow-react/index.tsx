@@ -8,6 +8,7 @@ import { StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowswap/common-hooks'
 import { nodeRemoveChildFix } from '@cowswap/common-utils'
+import { jotaiStore } from '@cowswap/core'
 import { SnackbarsWidget } from '@cowswap/snackbars'
 
 import { LanguageProvider } from 'i18n'
@@ -30,7 +31,6 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
-import { jotaiStore } from '../jotaiStore'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

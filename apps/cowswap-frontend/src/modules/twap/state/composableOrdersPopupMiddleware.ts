@@ -1,7 +1,7 @@
 import { isTruthy } from '@cowswap/common-utils'
+import { jotaiStore } from '@cowswap/core'
 
 import { isAnyOf } from '@reduxjs/toolkit'
-import { jotaiStore } from 'jotaiStore'
 import { Middleware } from 'redux'
 
 import { AppState } from 'legacy/state'
