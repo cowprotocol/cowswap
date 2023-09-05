@@ -1,6 +1,5 @@
+import { useTokenContract } from '@cowswap/common-hooks'
 import { useSafeAppsSdk } from '@cowswap/wallet'
-
-import { useTokenContract } from 'legacy/hooks/useContract'
 
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
 

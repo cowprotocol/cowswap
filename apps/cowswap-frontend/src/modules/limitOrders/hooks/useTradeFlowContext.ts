@@ -1,13 +1,13 @@
 import { useAtomValue } from 'jotai'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useGP2SettlementContract } from '@cowswap/common-hooks'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'

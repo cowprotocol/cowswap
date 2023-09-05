@@ -1,4 +1,4 @@
-import { environmentName } from 'legacy/utils/environments'
+import { environmentName } from '@cowswap/common-utils'
 
 import { AppDataInfo } from '../types'
 import { toKeccak256 } from '../utils/buildAppData'

@@ -1,11 +1,10 @@
+import { COW, NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
+import { useEthFlowContract, useGP2SettlementContract } from '@cowswap/common-hooks'
 import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { renderHook } from '@testing-library/react-hooks'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { COW } from 'legacy/constants/tokens'
-import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'

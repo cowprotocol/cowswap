@@ -1,9 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { environmentName } from '@cowswap/common-utils'
 
 import { metadataApiSDK } from 'cowSdk'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
-
-import { environmentName } from 'legacy/utils/environments'
 
 import { UtmParams } from 'modules/utm'
 

@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
 import { Erc20 } from '@cowswap/abis'
+import { useTokenContract } from '@cowswap/common-hooks'
+import { calculateGasMargin } from '@cowswap/common-utils'
 import { useWalletInfo } from '@cowswap/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -8,9 +10,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
 export async function estimateApprove(
   tokenContract: Erc20,

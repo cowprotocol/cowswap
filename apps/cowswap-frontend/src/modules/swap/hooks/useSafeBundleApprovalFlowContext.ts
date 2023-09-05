@@ -1,4 +1,4 @@
-import { useTokenContract } from 'legacy/hooks/useContract'
+import { useTokenContract } from '@cowswap/common-hooks'
 
 import { FlowType } from 'modules/swap/hooks/useFlowContext'
 import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'

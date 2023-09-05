@@ -4,7 +4,7 @@ function getErrorMessage(filePath: string, res: Response): string {
   return `Error fetching file ${filePath} - status: ${res.statusText}`
 }
 
-export default function useFetchFile(filePath: string) {
+export function useFetchFile(filePath: string) {
   const [file, setFile] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 

@@ -1,10 +1,10 @@
 import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { CoWSwapEthFlow } from '@cowswap/abis'
+import { calculateGasMargin } from '@cowswap/common-utils'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'

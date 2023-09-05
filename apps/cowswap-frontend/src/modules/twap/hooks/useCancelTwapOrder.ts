@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useGP2SettlementContract } from '@cowswap/common-hooks'
 import { useSafeAppsSdk } from '@cowswap/wallet'
 
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'

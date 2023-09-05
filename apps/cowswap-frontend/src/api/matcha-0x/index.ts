@@ -1,10 +1,10 @@
 import { OrderKind } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { getTokensFromMarket } from '@cowswap/common-utils'
 
 import { PriceInformation } from 'types'
 
-import { LegacyPriceQuoteParams } from 'legacy/types'
-import { getTokensFromMarket } from 'legacy/utils/misc'
+import { LegacyPriceQuoteParams } from 'legacy/state/price/types'
 import { getValidParams } from 'legacy/utils/price'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
