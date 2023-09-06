@@ -1,7 +1,7 @@
 import React, { HTMLProps } from 'react'
 import { anonymizeLink } from '@cowswap/common-utils'
 import { externalLinkAnalytics, outboundLink } from '@cowswap/analytics'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 
 export const StyledLink = styled.a`

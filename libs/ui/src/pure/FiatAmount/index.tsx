@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { FeatureFlag, formatFiatAmount, FractionUtils } from '@cowswap/common-utils'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { FractionLike, Nullish } from '../../types'

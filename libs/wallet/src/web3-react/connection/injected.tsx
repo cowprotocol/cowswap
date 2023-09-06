@@ -1,8 +1,6 @@
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 
-import { Trans } from '@lingui/macro'
-
 import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
 import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
@@ -60,11 +58,7 @@ export function InstallMetaMaskOption() {
 
 export function OpenMetaMaskMobileOption() {
   return (
-    <ConnectWalletOption
-      {...metamaskInjectedOption}
-      header={<Trans>MetaMask</Trans>}
-      link={METAMASK_DEEP_LINK + window.location}
-    />
+    <ConnectWalletOption {...metamaskInjectedOption} header="MetaMask" link={METAMASK_DEEP_LINK + window.location} />
   )
 }
 

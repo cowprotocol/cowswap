@@ -32,19 +32,19 @@
     "baseUrl": ".",
     "paths": {
       "@cowswap/abis": ["libs/abis/src/index.ts"],
-      "@cowswap/ui": ["libs/ui/src/index.ts"],
-      "@cowswap/ui-utils": ["libs/ui-utils/src/index.ts"],
-      "@cowswap/widget-lib": ["libs/widget-lib/src/index.ts"],
-      "@cowswap/widget-react": ["libs/widget-react/src/index.ts"],
-      "@cowswap/snackbars": ["libs/snackbars/src/index.ts"],
-      "@cowswap/wallet": ["libs/wallet/src/index.ts"],
+      "@cowswap/analytics": ["libs/analytics/src/index.ts"],
       "@cowswap/assets/*": ["libs/assets/src/*"],
       "@cowswap/common-const": ["libs/common-const/src/index.ts"],
-      "@cowswap/common-utils": ["libs/common-utils/src/index.ts"],
       "@cowswap/common-hooks": ["libs/common-hooks/src/index.ts"],
-      "@cowswap/ens": ["libs/ens/src/index.ts"],
+      "@cowswap/common-utils": ["libs/common-utils/src/index.ts"],
       "@cowswap/core": ["libs/core/src/index.ts"],
-      "@cowswap/analytics": ["libs/analytics/src/index.ts"]
+      "@cowswap/ens": ["libs/ens/src/index.ts"],
+      "@cowswap/snackbars": ["libs/snackbars/src/index.ts"],
+      "@cowswap/ui": ["libs/ui/src/index.ts"],
+      "@cowswap/ui-utils": ["libs/ui-utils/src/index.ts"],
+      "@cowswap/wallet": ["libs/wallet/src/index.ts"],
+      "@cowswap/widget-lib": ["libs/widget-lib/src/index.ts"],
+      "@cowswap/widget-react": ["libs/widget-react/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -2,8 +2,6 @@ import { useCallback, useRef, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
-
 import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowswap/ui'
 import { shortenAddress } from '@cowswap/common-utils'
 
@@ -46,8 +44,7 @@ export function AccountIndexSelect(props: AccountIndexSelectProps) {
         <styledEl.LoadingWrapper>
           <>
             <styledEl.TextWrapper>
-              <Trans>Please select which account you would like to use:</Trans>
-
+              Please select which account you would like to use:
               <styledEl.SelectWrapper>
                 <SelectDropdown ref={selectRef} defaultValue={currentIndex}>
                   {accountsList.map((address, index) => {
@@ -71,17 +68,17 @@ export function AccountIndexSelect(props: AccountIndexSelectProps) {
                   {loadingAccounts ? (
                     <>
                       <Loader stroke="currentColor" size="12px" />
-                      <Trans>Loading...</Trans>
+                      Loading...
                     </>
                   ) : (
-                    <Trans>Load more</Trans>
+                    'Load more'
                   )}
                 </styledEl.LoaderContainer>
               </styledEl.SelectWrapper>
             </styledEl.TextWrapper>
 
             <ButtonPrimary $borderRadius="12px" padding="12px" onClick={onAccountIndexChangeCallback}>
-              <Trans>Connect selected account</Trans>
+              Connect selected account
             </ButtonPrimary>
           </>
         </styledEl.LoadingWrapper>

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
-    "preview": "nx run cowswap-frontend:preview",
+    "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
     "test": "nx run-many -t test -p $npm_package_config_enabledApps",
     "e2e": "nx run-many -t e2e -p $npm_package_config_enabledApps",
     "lint": "nx run-many -t lint -p $npm_package_config_enabledApps",
@@ -249,7 +249,7 @@
     "vite": "~4.3.9",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-dts": "~2.3.0",
-    "vite-plugin-node-polyfills": "^0.11.1",
+    "vite-plugin-node-polyfills": "^0.12.0",
     "vite-plugin-pwa": "^0.16.4",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "~4.2.0",

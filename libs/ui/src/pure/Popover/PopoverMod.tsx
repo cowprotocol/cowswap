@@ -4,7 +4,7 @@ import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
-import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
+import styled, { DefaultTheme, StyledComponent } from 'styled-components'
 
 import { PopoverContainerProps } from './index'
 

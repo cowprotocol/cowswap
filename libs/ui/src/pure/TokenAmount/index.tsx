@@ -3,7 +3,7 @@ import { formatTokenAmount, FractionUtils } from '@cowswap/common-utils'
 import { FeatureFlag } from '@cowswap/common-utils'
 
 import { darken, transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
 import { TokenSymbol, TokenSymbolProps } from '../TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'

@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const SelectDropdown = styled.select`
   border-radius: 12px;
