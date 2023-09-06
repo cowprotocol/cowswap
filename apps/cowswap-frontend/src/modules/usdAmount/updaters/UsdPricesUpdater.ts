@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -10,6 +10,8 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { USDC } from 'legacy/constants/tokens'
 
 import { useWalletInfo } from 'modules/wallet'
+
+import { FractionUtils } from 'utils/fractionUtils'
 
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
@@ -72,8 +74,8 @@ export function UsdPricesUpdater() {
   return null
 }
 
-function usdcPriceLoader(chainId: SupportedChainId): () => Promise<string | null> {
-  let usdcPricePromise: Promise<string | null> | null = null
+function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | null> {
+  let usdcPricePromise: Promise<number | null> | null = null
 
   return () => {
     // Cache the result to avoid fetching it multiple times
@@ -81,11 +83,13 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<string | null
       usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
     }
 
-    return usdcPricePromise
+    return usdcPricePromise.then((usdcPrice) =>
+      typeof usdcPrice === 'number' ? FractionUtils.fromNumber(usdcPrice) : null
+    )
   }
 }
 
-async function processQueue(queue: Token[], getUsdcPrice: () => Promise<string | null>): Promise<UsdRawPrices> {
+async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction | null>): Promise<UsdRawPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
       return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {

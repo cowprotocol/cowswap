@@ -1,11 +1,12 @@
 import { atom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Price, Token } from '@uniswap/sdk-core'
+import { Fraction, Price, Token } from '@uniswap/sdk-core'
 
 import { USDC } from 'legacy/constants/tokens'
 
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { FractionUtils } from 'utils/fractionUtils'
 
 import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 
@@ -30,14 +31,16 @@ export const usdTokenPricesAtom = atom((get) => {
   }, {})
 })
 
-function calculatePrice(currency: Token, price: string | null): Price<Token, Token> | null {
+const ONE_USDC_ATOM = new Fraction(1, 1_000_000)
+
+function calculatePrice(currency: Token, price: Fraction | null): Price<Token, Token> | null {
   if (!price) {
     return null
   }
 
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
-  if (price.includes('e') || new RegExp('^0\\.' + '0'.repeat(usdcToken.decimals)).test(price)) {
+  if (FractionUtils.lte(price, ONE_USDC_ATOM)) {
     // Less than 1 atom of USDC, cannot create a Price instance
     return null
   }

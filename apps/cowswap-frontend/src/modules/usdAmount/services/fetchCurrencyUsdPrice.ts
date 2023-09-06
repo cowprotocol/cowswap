@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import {
   COINGECK_PLATFORMS,
@@ -26,8 +26,8 @@ function getShouldSkipCoingecko(currency: Token): boolean {
  */
 export function fetchCurrencyUsdPrice(
   currency: Token,
-  getUsdcPrice: () => Promise<string | null>
-): Promise<string | null> {
+  getUsdcPrice: () => Promise<Fraction | null>
+): Promise<Fraction | null> {
   const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
 
   if (coingeckoRateLimitHitTimestamp && !shouldSkipCoingecko) {
