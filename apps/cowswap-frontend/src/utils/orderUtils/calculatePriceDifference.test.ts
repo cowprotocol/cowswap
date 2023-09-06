@@ -1,10 +1,8 @@
 import { ZERO_FRACTION } from '@cowswap/common-const'
 import { DAI_GOERLI, USDC_GOERLI } from '@cowswap/common-const'
-import { tryParseCurrencyAmount } from '@cowswap/common-utils'
+import { buildPriceFromCurrencyAmounts, tryParseCurrencyAmount } from '@cowswap/common-utils'
 import { FractionUtils } from '@cowswap/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
-
-import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
 
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
 

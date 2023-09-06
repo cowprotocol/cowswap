@@ -18,15 +18,21 @@ const settlementCancellationTxHash = '0xcfwj23g4fwe111'
 const ethFlowCancellationTxHash = '0xcfwj23g4fwe222'
 
 jest.mock('legacy/state/orders/hooks')
-jest.mock('modules/wallet', () => {
+jest.mock('@cowswap/wallet', () => {
   return {
-    ...jest.requireActual('modules/wallet'),
+    ...jest.requireActual('@cowswap/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
   }
 })
+jest.mock('@cowswap/common-hooks', () => {
+  return {
+    ...jest.requireActual('@cowswap/common-hooks'),
+    useEthFlowContract: jest.fn(),
+    useGP2SettlementContract: jest.fn(),
+  }
+})
 jest.mock('legacy/state/enhancedTransactions/hooks')
-jest.mock('legacy/hooks/useContract')
-jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+jest.mock('common/hooks/useAnalyticsReporter')
 
 const orderMock = {
   id: 'xx1',

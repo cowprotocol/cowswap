@@ -26,7 +26,7 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
 jest.mock('common/hooks/featureFlags/useIsTxBundlingEnabled')
-jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+jest.mock('common/hooks/useAnalyticsReporter')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
