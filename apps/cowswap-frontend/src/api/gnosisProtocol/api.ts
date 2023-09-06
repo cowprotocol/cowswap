@@ -21,7 +21,7 @@ import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from
 
 import { orderBookApi } from 'cowSdk'
 
-import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/types'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types'
 
 import { getAppData } from 'modules/appData'
 
