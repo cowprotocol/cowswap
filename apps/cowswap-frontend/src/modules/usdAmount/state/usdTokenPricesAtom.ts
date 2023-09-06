@@ -6,7 +6,6 @@ import { Fraction, Price, Token } from '@uniswap/sdk-core'
 import { USDC } from 'legacy/constants/tokens'
 
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { FractionUtils } from 'utils/fractionUtils'
 
 import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 
@@ -40,7 +39,7 @@ function calculatePrice(currency: Token, price: Fraction | null): Price<Token, T
 
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
-  if (FractionUtils.lte(price, ONE_USDC_ATOM)) {
+  if (price.lessThan(ONE_USDC_ATOM)) {
     // Less than 1 atom of USDC, cannot create a Price instance
     return null
   }
