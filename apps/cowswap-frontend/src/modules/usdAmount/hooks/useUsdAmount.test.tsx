@@ -14,7 +14,7 @@ import { usdRawPricesAtom, UsdRawPriceState } from '../state/usdRawPricesAtom'
 
 const WETH_RAW_PRICE_STATE: UsdRawPriceState = {
   updatedAt: Date.now(),
-  price: 1650,
+  price: '1650',
   currency: WETH_GNOSIS_CHAIN,
   isLoading: false,
 }
@@ -47,6 +47,6 @@ describe('useUsdAmount', () => {
       { wrapper: TestComponent }
     )
 
-    expect(result.current.value?.toExact()).toBe(WETH_RAW_PRICE_STATE.price?.toString())
+    expect(result.current.value?.toExact()).toBe(WETH_RAW_PRICE_STATE.price)
   })
 })
