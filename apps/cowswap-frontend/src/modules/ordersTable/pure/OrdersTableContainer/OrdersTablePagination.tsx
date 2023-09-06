@@ -2,6 +2,8 @@ import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export interface OrdersTablePaginationProps {
   getPageUrl?(index: number): Partial<{ pathname: string; search: string }>
   onPageChange?(index: number): void
@@ -40,7 +42,7 @@ const pageButtonStyles = css<{ $active?: boolean }>`
 
   &:hover {
     background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

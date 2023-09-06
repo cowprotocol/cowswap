@@ -1,12 +1,14 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const FeeTooltipWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`

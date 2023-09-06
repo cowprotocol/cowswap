@@ -1,10 +1,12 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const Tag = styled.div`
   /* background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   font-size: 12px;
-  font-weight: var(--cow-font-weight-medium);
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border-radius: 4px;
   padding: 4px 6px;
   overflow: hidden;

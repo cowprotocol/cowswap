@@ -8,9 +8,9 @@ import styled from 'styled-components/macro'
 
 import { isMobile } from 'legacy/utils/userAgent'
 
+import { UI } from 'common/constants/theme'
+
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
-
-
 
 export * from './styled'
 
@@ -94,7 +94,7 @@ export const CowModal = styled(Modal) <{
   padding?: string
 }>`
   > [data-reach-dialog-content] {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     width: 100%;
     max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
@@ -153,16 +153,16 @@ const ModalInner = styled.div`
   width: 100%;
   height: auto;
   margin: auto;
-  background: var(--cow-container-bg-01);
-  border-radius: var(--cow-border-radius-normal);
-  box-shadow: var(--cow-box-shadow-normal);
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: var(${UI.BOX_SHADOW_NORMAL});
   padding: 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 8vh 0 0;
     border-radius: 0;
-    border-top-left-radius: var(--cow-border-radius-normal);
-    border-top-right-radius: var(--cow-border-radius-normal);
+    border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
     box-shadow: none;
   `}
 `
@@ -172,7 +172,7 @@ const NewCowModal = styled.div<{ maxWidth?: number | string; minHeight?: number 
   width: 100%;
   height: 100%;
   margin: auto;
-  background: var(--cow-modal-backdrop);
+  background: var(${UI.MODAL_BACKDROP});
   overflow-y: auto;
 
   ${ModalInner} {
@@ -194,7 +194,7 @@ const Heading = styled.h2`
   height: auto;
   padding: 18px;
   margin: 0;
-  font-size: var(--cow-font-size-medium);
+  font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     position: sticky;
@@ -212,9 +212,9 @@ const IconX = styled.div`
   margin: 0 0 0 auto;
 
   > svg {
-    width: var(--cow-icon-size-normal);
-    height: var(--cow-icon-size-normal);
-    fill: var(--cow-icon-color-normal);
+    width: var(${UI.ICON_SIZE_NORMAL});
+    height: var(${UI.ICON_SIZE_NORMAL});
+    fill: var(${UI.ICON_COLOR_NORMAL});
   }
 
   &:hover {
@@ -230,23 +230,23 @@ const NewModalContent = styled.div<{ paddingTop?: number}>`
   flex: 1;
   width: 100%;
   height: 100%;
-  padding: 0 var(--cow-padding-normal) var(--cow-padding-normal);
+  padding: 0 var(${UI.PADDING_NORMAL}) var(${UI.PADDING_NORMAL});
 
   h1, 
   h2, 
   h3 {
     width: 100%;
-    font-size: var(--cow-font-size-larger);
-    font-weight: var(--cow-font-weight-bold);
+    font-size: var(${UI.FONT_SIZE_LARGER});
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     text-align: center;
     line-height: 1.4;
     margin: 0 auto;
   }
 
   p {
-    font-size: var(--cow-font-size-normal);
-    font-weight: var(--cow-font-weight-normal);
-    color: var(--cow-color-text2);
+    font-size: var(${UI.FONT_SIZE_NORMAL});
+    font-weight: var(${UI.FONT_WEIGHT_NORMAL});
+    color: var(${UI.COLOR_TEXT2});
     margin: 0 auto;
     padding: 0;
   }
@@ -269,7 +269,7 @@ export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
   }
 
   p {
-    font-size: var(--cow-font-size-medium);
+    font-size: var(${UI.FONT_SIZE_MEDIUM});
   }
 `
 
@@ -277,7 +277,7 @@ export const NewModalContentBottom = styled(NewModalContentTop)`
   margin: auto 0 0;
 
   p {
-    font-size: var(--cow-font-size-normal);
+    font-size: var(${UI.FONT_SIZE_NORMAL});
   }
 `
 interface NewModalProps {

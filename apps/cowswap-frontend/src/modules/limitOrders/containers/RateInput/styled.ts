@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 import Loader from 'legacy/components/Loader'
 import Input from 'legacy/components/NumericalInput'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
@@ -31,7 +33,7 @@ export const Header = styled.div`
 
 export const MarketPriceButton = styled.button`
   background: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   white-space: nowrap;
   border: none;
   font-weight: 500;
@@ -82,7 +84,7 @@ export const ActiveCurrency = styled.button`
 `
 
 export const ActiveSymbol = styled.span`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: 13px;
   font-weight: 500;
   text-align: right;
@@ -92,7 +94,7 @@ export const ActiveSymbol = styled.span`
 export const ActiveIcon = styled.div`
   --size: 20px;
   background-color: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   width: var(--size);
   min-width: var(--size);
   height: var(--size);

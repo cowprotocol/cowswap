@@ -11,6 +11,7 @@ import { ExternalLink } from 'legacy/theme'
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
 import { ButtonCustom as AddToMetaMask } from 'modules/wallet/api/pure/AddToMetamask'
 
+import { UI } from 'common/constants/theme'
 import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`
@@ -116,7 +117,7 @@ export const ItemTitle = styled.h3`
   margin: 0 0 16px 0;
   font-size: 18px;
   line-height: 1.21;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   gap: 4px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -346,7 +347,7 @@ export const BannerCard = styled(BannerExplainer)`
     justify-content: space-between;
     height: 100%;
     padding: 24px 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       padding: 0;
@@ -362,7 +363,7 @@ export const BannerCard = styled(BannerExplainer)`
       }
 
       @supports not (-webkit-background-clip: text) {
-        color: ${({ theme }) => theme.text1};
+        color: var(${UI.COLOR_TEXT1});
       }
 
       ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -372,7 +373,7 @@ export const BannerCard = styled(BannerExplainer)`
     }
 
     > small {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       font-size: 14px;
       line-height: 1.5;
       text-align: left;
@@ -402,7 +403,7 @@ export const BannerCard = styled(BannerExplainer)`
     > span > a,
     > span > a:link {
       font-size: 15px;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
 
       &:hover {
         color: ${({ theme }) => theme.text3};
@@ -420,14 +421,14 @@ export const BannerCard = styled(BannerExplainer)`
 
   > svg {
     .stop1 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT1});
     }
     .stop2 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT1});
       stop-opacity: 0.8;
     }
     .stop3 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT1});
       stop-opacity: 0;
     }
   }
@@ -477,8 +478,8 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
     `};
 
     &:hover {
-      text-decoration-color: ${({ theme }) => theme.text1};
-      color: ${({ theme }) => theme.text1};
+      text-decoration-color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 
@@ -629,7 +630,7 @@ export const VestingBreakdown = styled.div`
   }
 
   > span:last-of-type > p {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -666,7 +667,7 @@ export const CardsSpinner = styled(SpinnerLoader)`
   margin: auto;
 
   & path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

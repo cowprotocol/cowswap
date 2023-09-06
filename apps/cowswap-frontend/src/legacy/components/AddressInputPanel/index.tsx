@@ -11,6 +11,7 @@ import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
@@ -50,7 +51,7 @@ const Input = styled.input<{ error?: boolean }>`
   width: 100%;
 
   &&::placeholder {
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
   }
 
   &:focus::placeholder {

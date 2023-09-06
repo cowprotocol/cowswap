@@ -12,6 +12,7 @@ import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import { Order } from 'legacy/state/orders/actions'
 import { ExternalLink } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount, SymbolElement } from 'common/pure/TokenAmount'
@@ -121,7 +122,7 @@ export const Wrapper = styled.div`
     width: 70%;
     margin: 34px auto;
     padding: 0;
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
   }
 `
 

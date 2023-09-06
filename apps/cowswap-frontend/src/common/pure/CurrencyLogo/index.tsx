@@ -4,7 +4,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import Logo from 'legacy/components/Logo'
+import Logo from 'legacy/components/Loader/Logo'
 
 import useCurrencyLogoURIs from './hooks/useCurrencyLogoURIs'
 

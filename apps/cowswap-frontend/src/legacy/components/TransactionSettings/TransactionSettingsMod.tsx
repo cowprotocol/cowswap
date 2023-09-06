@@ -30,6 +30,7 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
@@ -47,7 +48,7 @@ enum DeadlineError {
 }
 
 export const FancyButton = styled.button`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   align-items: center;
   height: 2rem;
   border-radius: 36px;

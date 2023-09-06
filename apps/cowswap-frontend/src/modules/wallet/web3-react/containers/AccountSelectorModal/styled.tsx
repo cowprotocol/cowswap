@@ -2,10 +2,12 @@ import styled from 'styled-components/macro'
 
 import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 
+import { UI } from 'common/constants/theme'
+
 export const CloseIcon = styled(Close)`
   opacity: 0.6;
   transition: opacity 0.3s ease-in-out;
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   width: 24px;
   height: 24px;
   cursor: pointer;

@@ -9,6 +9,8 @@ import { RowBetween } from 'legacy/components/Row'
 import useTheme from 'legacy/hooks/useTheme'
 import { ButtonSize } from 'legacy/theme/enum'
 
+import { UI } from 'common/constants/theme'
+
 import {
   // Import only the basic buttons
   ButtonPrimary as ButtonPrimaryMod,
@@ -166,7 +168,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background-image: none;
   border: 0;
   cursor: auto;

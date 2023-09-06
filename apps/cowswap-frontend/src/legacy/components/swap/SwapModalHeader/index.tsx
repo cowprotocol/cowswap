@@ -10,6 +10,8 @@ import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarn
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useWalletDetails } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
+
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
@@ -40,7 +42,7 @@ const Wrapper = styled.div`
   }
 
   svg {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

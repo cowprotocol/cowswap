@@ -16,13 +16,14 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 import { useWalletInfo } from 'modules/wallet'
 import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
 
+import { UI } from 'common/constants/theme'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-weight: 400;
 `
 
@@ -82,7 +83,7 @@ const SelectorLabel = styled.div`
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   display: flex;
   font-weight: 500;
   justify-content: space-between;

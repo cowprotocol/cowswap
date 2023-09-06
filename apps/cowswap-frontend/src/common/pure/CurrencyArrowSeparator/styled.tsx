@@ -1,6 +1,8 @@
 import { ArrowDown } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
@@ -57,7 +59,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
 export const ArrowDownIcon = styled(ArrowDown)`
   display: block;
   margin: auto;
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   stroke-width: 3px;
   padding: 0;
   height: 100%;

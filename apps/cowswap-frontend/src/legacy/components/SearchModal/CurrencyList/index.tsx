@@ -14,11 +14,13 @@ import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
+import { UI } from 'common/constants/theme'
 import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 import CurrencyListMod, { StyledBalanceText, TagContainer } from './CurrencyListMod'
 import { Tag as TagMod } from './styled'
+
 
 
 const TOKEN_TAGS: TagInfo[] = [
@@ -39,10 +41,10 @@ const TOKEN_TAGS: TagInfo[] = [
 const Tag = styled(TagMod)<{ tag?: TagInfo }>`
   display: flex;
   align-items: center;
-  background: ${({ tag }) => (tag?.id === '0' ? 'var(--cow-color-danger-bg)' : tag?.id === '1' ? 'var(--cow-color-success-bg)' : 'var(--cow-color-grey)')};
-  color: ${({ tag }) => (tag?.id === '0' ? 'var(--cow-color-danger-text)' : tag?.id === '1' ? 'var(--cow-color-success-text)' : 'var(--cow-color-text1)')};
+  background: ${({ tag }) => (tag?.id === '0' ? `var(${UI.COLOR_DANGER_BG})` : tag?.id === '1' ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_GREY})`)};
+  color: ${({ tag }) => (tag?.id === '0' ? `var(${UI.COLOR_DANGER_TEXT})` : tag?.id === '1' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT1})`)};
   font-size: 12px;
-  font-weight: var(--cow-font-weight-medium);
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border-radius: 4px;
   padding: 4px 6px;
   overflow: hidden;
@@ -78,12 +80,12 @@ const Wrapper = styled.div`
 
       // Token symbol name
       &:first-of-type {
-        color: ${({ theme }) => theme.text1};
+        color: var(${UI.COLOR_TEXT1});
       }
 
       // Token full name
       &:last-of-type {
-        color: ${({ theme }) => theme.text2};
+        color: var(${UI.COLOR_TEXT2});
         font-weight: 400;
       }
 
@@ -100,7 +102,7 @@ const Wrapper = styled.div`
   }
 
   ${TagLink} {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${LightGreyCard} {
@@ -108,7 +110,7 @@ const Wrapper = styled.div`
   }
 
   ${LightGreyCard} ${RowFixed} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

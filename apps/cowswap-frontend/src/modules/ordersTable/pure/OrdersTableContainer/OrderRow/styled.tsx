@@ -1,6 +1,7 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
@@ -285,7 +286,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     margin: 0 0 0 6px;
     cursor: pointer;
     outline: none;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     transition: color 0.2s ease-out;
     position: relative;
     height: var(--height);

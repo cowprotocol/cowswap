@@ -8,6 +8,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { toggleAccountSelectorModalAtom, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { AccountDetails } from '../AccountDetails'
@@ -64,7 +65,7 @@ const Header = styled.div`
   padding: 20px 30px;
   align-items: center;
   transition: opacity 0.2s ease-in-out;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: ${({ theme }) => theme.bg1};
   position: sticky;
   top: 0;
@@ -100,7 +101,7 @@ const Header = styled.div`
 const CloseIcon = styled(Close)`
   opacity: 0.6;
   transition: opacity 0.3s ease-in-out;
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   width: 24px;
   height: 24px;
 

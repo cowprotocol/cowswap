@@ -21,7 +21,7 @@ import { QuestionWrapper } from './index'
   border-radius: 36px;
   font-size: 12px;
   background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 
   :hover,
   :focus {

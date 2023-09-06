@@ -7,6 +7,8 @@ import { RowBetween } from 'legacy/components/Row'
 import useTheme from 'legacy/hooks/useTheme'
 import { ButtonSize } from 'legacy/theme/enum'
 
+import { UI } from 'common/constants/theme'
+
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 
 export const BaseButton = styled(RebassButton)<
@@ -103,7 +105,7 @@ export const ButtonLight = styled(BaseButton)`
 
 export const ButtonGray = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   font-size: 16px;
   // font-weight: 500;
 
@@ -151,7 +153,7 @@ export const ButtonSecondary = styled(BaseButton)`
 export const ButtonOutlined = styled(BaseButton)`
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: transparent;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   &:focus {
     box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
   }
@@ -234,13 +236,13 @@ export const ButtonText = styled(BaseButton)`
 
 export const ButtonConfirmedStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   /* border: 1px solid ${({ theme }) => theme.green1}; */
 
   &:disabled {
     /* opacity: 50%; */
     background-color: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
     cursor: auto;
   }
 `

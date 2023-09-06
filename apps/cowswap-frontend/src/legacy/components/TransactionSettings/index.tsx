@@ -3,6 +3,8 @@ import styled from 'styled-components/macro'
 
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 
+import { UI } from 'common/constants/theme'
+
 import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
 
 const Wrapper = styled.div`
@@ -27,13 +29,13 @@ const Wrapper = styled.div`
 
     > div > input::placeholder {
       opacity: 0.5;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 
   ${RowFixed} {
     > div {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       opacity: 0.85;
     }
 
@@ -49,7 +51,7 @@ const Wrapper = styled.div`
     > button > input::placeholder {
       background: transparent;
       opacity: 0.5;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 `

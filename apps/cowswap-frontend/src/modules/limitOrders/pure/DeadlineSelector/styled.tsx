@@ -3,6 +3,8 @@ import { transparentize } from 'polished'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
@@ -38,7 +40,7 @@ export const Label = styled.span`
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
   font-weight: 500;
@@ -88,7 +90,7 @@ export const ListWrapper = styled(MenuList)`
 `
 
 export const ListItem = styled(MenuItem)`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: none;
   border: 0;
   outline: none;
@@ -111,7 +113,7 @@ export const CustomInput = styled.input`
   border-radius: 8px;
   width: 100%;
   border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   padding: 4px 8px;
   outline: 0;
   background: ${({ theme }) => theme.bg1};
@@ -121,7 +123,7 @@ export const CustomInput = styled.input`
   }
 
   &::-webkit-datetime-edit {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   &::-webkit-datetime-edit[disabled] {
@@ -193,6 +195,6 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `

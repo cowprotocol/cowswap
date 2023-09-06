@@ -13,6 +13,8 @@ import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/st
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
+
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 
 export interface ListRowProps {
@@ -33,7 +35,7 @@ const Wrapper = styled.div`
 
     svg > path,
     svg > circle {
-      stroke: ${({ theme }) => theme.text1};
+      stroke: var(${UI.COLOR_TEXT1});
     }
   }
 
@@ -65,7 +67,7 @@ export const Card = styled(CardUni)`
   ${Row},
   ${Row} > div > div,
   ${Row} > div > div > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${Row} > img {
@@ -76,7 +78,7 @@ export const Card = styled(CardUni)`
   }
 
   ${TextDot} {
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
   }
 
   ${ButtonPrimary} {

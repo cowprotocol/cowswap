@@ -8,6 +8,8 @@ import { ButtonPrimary } from 'legacy/components/Button'
 import { StyledListLogo } from 'legacy/components/ListLogo'
 import { AutoRow } from 'legacy/components/Row'
 
+import { UI } from 'common/constants/theme'
+
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 
 interface ImportRowProps {
@@ -31,7 +33,7 @@ const Wrapper = styled.div`
   }
 
   ${TokenSection} > svg {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 
   ${TokenSection} ${AutoRow} {
@@ -40,7 +42,7 @@ const Wrapper = styled.div`
   }
 
   ${AutoRow} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     margin: 0;
   }
 

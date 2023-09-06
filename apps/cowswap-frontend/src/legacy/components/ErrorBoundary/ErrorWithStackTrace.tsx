@@ -14,6 +14,8 @@ import { userAgent } from 'legacy/utils/userAgent'
 
 import { Title } from 'modules/application/pure/Page'
 
+import { UI } from 'common/constants/theme'
+
 const FlexContainer = styled.div`
   display: flex;
   align-items: center;
@@ -44,7 +46,7 @@ const CodeBlockWrapper = styled.div`
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 
   /* MOD */
   ${({ theme }) => theme.mediaWidth.upToSmall`

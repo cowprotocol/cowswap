@@ -1,14 +1,15 @@
 import styled from 'styled-components/macro';
 
 import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos';
+import { UI } from 'common/constants/theme'
 
 import { IconSpinner} from './index';
 
 const Wrapper = styled.div`
   width: 400px;
   height: 400px;
-  background: var(--cow-container-bg-01);
-  border-radius: var(--cow-border-radius-normal);
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   display: flex;
   align-items: center;
   justify-content: center;

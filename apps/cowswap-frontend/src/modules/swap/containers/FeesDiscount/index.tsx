@@ -10,6 +10,8 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 
+import { UI } from 'common/constants/theme'
+
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
 }
@@ -18,7 +20,7 @@ const DarkSpan = styled.span`
   padding: 2px 8px;
   background: ${({ theme }) => theme.grey1};
   border-radius: 5px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {

@@ -9,6 +9,7 @@ import { RowFixed } from 'legacy/components/Row'
 
 import MetaMaskLogo from 'modules/wallet/api/assets/metamask.png'
 
+import { UI } from 'common/constants/theme'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 export const ButtonCustom = styled.button`
@@ -20,7 +21,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: transparent;
   outline: 0;
   padding: 8px 16px;

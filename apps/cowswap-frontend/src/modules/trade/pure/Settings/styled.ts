@@ -3,10 +3,12 @@ import { transparentize } from 'polished'
 import { Settings as SettingsIconRaw } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const SettingsTitle = styled.h3`
   font-weight: 600;
   font-size: 14px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   margin: 0 0 12px 0;
 `
 
@@ -17,7 +19,7 @@ export const SettingsContainer = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow2};
   border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
   background: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 export const SettingsBoxWrapper = styled.div<{ disabled: boolean }>`
@@ -37,7 +39,7 @@ export const SettingsBoxTitle = styled.div`
   display: flex;
   align-items: center;
   font-weight: 400;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: 14px;
   opacity: 0.85;
   margin-right: 2rem;
@@ -116,6 +118,6 @@ export const SettingsIcon = styled(SettingsIconRaw)`
 
   &:hover > path,
   &:hover > circle {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `

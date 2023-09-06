@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 
+import { UI } from 'common/constants/theme'
+
 import { OrderTab } from '../../const/tabs'
 
 const Tabs = styled.div`
@@ -40,7 +42,7 @@ const TabButton = styled(Link)<{ active: string }>`
 
   &:hover {
     background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

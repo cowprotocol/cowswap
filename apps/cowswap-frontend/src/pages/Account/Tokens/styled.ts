@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`
@@ -15,7 +16,7 @@ export const MenuButton = styled.button`
   outline: none;
   border: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: ${({ theme }) => theme.bg1};
   height: 44px;
   border-radius: 21px;
@@ -86,7 +87,7 @@ export const AccountPageWrapper = styled.div`
 `
 
 export const MainText = styled(ThemedText.Main)`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: 14px;
 `
 

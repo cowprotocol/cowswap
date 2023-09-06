@@ -2,6 +2,8 @@ import { transparentize, lighten } from 'polished'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const InfoPopup = styled.div`
   display: flex;
   position: relative;
@@ -34,7 +36,7 @@ export const InfoPopup = styled.div`
   }
 
   .content > a {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     text-decoration: underline;
 
     &::after {

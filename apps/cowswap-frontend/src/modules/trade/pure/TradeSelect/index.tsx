@@ -3,6 +3,8 @@ import { transparentize } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
 export type TradeSelectItem = { label: string; value: unknown }
@@ -44,7 +46,7 @@ const StyledMenuButton = styled(MenuButton)`
   cursor: pointer;
   width: 100%;
   justify-content: space-between;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 const StyledMenuItem = styled(MenuItem)`
@@ -53,7 +55,7 @@ const StyledMenuItem = styled(MenuItem)`
   color: ${({ theme }) => transparentize(0.2, theme.text1)};
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   &:not(:last-child) {

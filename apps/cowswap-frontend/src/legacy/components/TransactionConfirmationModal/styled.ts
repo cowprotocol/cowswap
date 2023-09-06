@@ -6,6 +6,8 @@ import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
 import { CloseIcon, ExternalLink } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   width: 100%;
   padding: 0;
@@ -154,7 +156,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -246,7 +248,7 @@ export const StepsIconWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 18px;
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 
   @keyframes spin {
@@ -304,7 +306,7 @@ export const StepsWrapper = styled.div`
     flex: 1 1 auto;
     height: 2px;
     border: 0;
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
     margin: auto;
     position: absolute;
     width: 100%;

@@ -3,6 +3,8 @@ import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
 
+import { UI } from 'common/constants/theme'
+
 export const Suffix = styled.span`
   margin: 0 0 0 3px;
   opacity: 0.7;
@@ -47,7 +49,7 @@ export const ArrowsWrapper = styled.div`
 
     &:hover {
       > span > svg > path {
-        fill: ${({ theme }) => theme.text1};
+        fill: var(${UI.COLOR_TEXT1});
       }
     }
   }

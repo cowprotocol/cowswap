@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import Input from 'legacy/components/NumericalInput'
 
+import { UI } from 'common/constants/theme'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const OuterWrapper = styled.div`
@@ -72,7 +73,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
   font-size: 28px;
   font-weight: 500;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 
   &::placeholder {
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
@@ -88,7 +89,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;
