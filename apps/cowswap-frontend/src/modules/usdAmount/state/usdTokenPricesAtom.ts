@@ -37,7 +37,7 @@ function calculatePrice(currency: Token, price: string | null): Price<Token, Tok
 
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
-  if (price.includes('e') || new RegExp('\\.' + '0'.repeat(usdcToken.decimals)).test(price)) {
+  if (price.includes('e') || new RegExp('^0\\.' + '0'.repeat(usdcToken.decimals)).test(price)) {
     // Less than 1 atom of USDC, cannot create a Price instance
     return null
   }
