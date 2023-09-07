@@ -119,10 +119,13 @@ export function UnfillableOrdersUpdater(): null {
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
 
+  const count = useRef(1)
   const updatePending = useCallback(() => {
     if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
     }
+
+    console.log('[UnfillableOrdersUpdater] Update pending orders', count.current++)
 
     const startTime = Date.now()
     try {
@@ -204,7 +207,7 @@ export function UnfillableOrdersUpdater(): null {
 
     console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
     updatePendingRef.current()
-    const interval = setInterval(updatePendingRef.current, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
+    const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
   }, [updatePendingRef, chainId, account, isWindowVisible])
 
