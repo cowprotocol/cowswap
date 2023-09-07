@@ -22,8 +22,6 @@ import _ArgentWalletContractAbi from './abis-legacy/argent-wallet-contract.json'
 
 import _ArgentWalletDetectorAbi from './abis-legacy/argent-wallet-detector.json'
 
-import _CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
-
 import _Eip2612Abi from './abis-legacy/eip_2612.json'
 
 import _EnsPublicResolverAbi from './abis-legacy/ens-public-resolver.json'
@@ -74,7 +72,6 @@ export const ethFlowBarnJson = _ethFlowBarnJson
 export const ethFlowProdJson = _ethFlowProdJson
 export const ArgentWalletContractAbi = _ArgentWalletContractAbi
 export const ArgentWalletDetectorAbi = _ArgentWalletDetectorAbi
-export const CoWSwapEthFlowJson = _CoWSwapEthFlowJson
 export const Eip2612Abi = _Eip2612Abi
 export const EnsPublicResolverAbi = _EnsPublicResolverAbi
 export const EnsAbi = _EnsAbi
