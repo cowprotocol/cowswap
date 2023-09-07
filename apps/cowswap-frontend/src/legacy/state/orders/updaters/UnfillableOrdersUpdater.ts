@@ -209,7 +209,7 @@ export function UnfillableOrdersUpdater(): null {
     updatePendingRef.current()
     const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
-  }, [updatePendingRef, chainId, account, isWindowVisible])
+  }, [chainId, account, isWindowVisible])
 
   return null
 }
