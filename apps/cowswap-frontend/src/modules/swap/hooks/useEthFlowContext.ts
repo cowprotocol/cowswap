@@ -10,7 +10,7 @@ import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
-import { useIsEthFlowOrderExists } from './useIsEthFlowOrderExists'
+import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
@@ -19,7 +19,7 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
-  const isEthFlowOrderExists = useIsEthFlowOrderExists()
+  const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
   const baseContext = getFlowContext({
     baseProps,
@@ -33,7 +33,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     ...baseContext,
     contract,
     addTransaction,
-    isEthFlowOrderExists,
+    checkEthFlowOrderExists,
     addInFlightOrderId,
   }
 }

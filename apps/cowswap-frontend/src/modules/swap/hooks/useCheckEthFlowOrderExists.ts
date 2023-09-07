@@ -10,7 +10,7 @@ export interface EthFlowOrderExistsCallback {
   (orderId: string, orderDigest: string): Promise<boolean>
 }
 
-export function useIsEthFlowOrderExists(): EthFlowOrderExistsCallback {
+export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
   const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
   const ethFlowContract = useEthFlowContract()
 
