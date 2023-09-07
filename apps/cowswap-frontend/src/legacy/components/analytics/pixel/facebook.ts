@@ -1,12 +1,17 @@
-import { PIXEL_EVENTS } from './constants'
+import { enablePixel } from './sendAllPixels'
+import { PixelEvent, PixelEventMap } from './types'
 import { sendPixel } from './utils'
 
-const events = {
-  [PIXEL_EVENTS.INIT]: 'InitiateCheckout',
-  [PIXEL_EVENTS.CONNECT_WALLET]: 'Contact',
-  [PIXEL_EVENTS.POST_TRADE]: 'Lead',
+const events: PixelEventMap<string> = {
+  [PixelEvent.INIT]: 'InitiateCheckout',
+  [PixelEvent.CONNECT_WALLET]: 'Contact',
+  [PixelEvent.POST_TRADE]: 'Lead',
 }
 
-export const sendFacebookEvent = sendPixel((event) => {
+const sendFacebookEvent = sendPixel((event) => {
   window.fbq?.('track', events[event])
 })
+
+export function enablePixelFacebook() {
+  enablePixel(events, sendFacebookEvent)
+}

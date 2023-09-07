@@ -1,12 +1,17 @@
-import { PIXEL_EVENTS } from './constants'
+import { enablePixel } from './sendAllPixels'
+import { PixelEvent, PixelEventMap } from './types'
 import { sendPixel } from './utils'
 
-const events = {
-  [PIXEL_EVENTS.INIT]: 'Lead',
-  [PIXEL_EVENTS.CONNECT_WALLET]: 'SignUp',
-  [PIXEL_EVENTS.POST_TRADE]: 'Purchase',
+const events: PixelEventMap<string> = {
+  [PixelEvent.INIT]: 'Lead',
+  [PixelEvent.CONNECT_WALLET]: 'SignUp',
+  [PixelEvent.POST_TRADE]: 'Purchase',
 }
 
-export const sendRedditEvent = sendPixel((event) => {
+const sendRedditEvent = sendPixel((event) => {
   window.rdt?.('track', events[event])
 })
+
+export function enablePixelReddit() {
+  enablePixel(events, sendRedditEvent)
+}

@@ -1,8 +1,7 @@
-import { PIXEL_ENABLED, PIXEL_EVENTS } from './constants'
+import { PIXEL_ENABLED } from './constants'
+import { SendPixel } from './types'
 
-type SendPixelFn = (event: PIXEL_EVENTS) => void
-
-export function sendPixel(sendFn: SendPixelFn): SendPixelFn {
+export function sendPixel(sendFn: SendPixel): SendPixel {
   return (event) => {
     if (!PIXEL_ENABLED) {
       return
