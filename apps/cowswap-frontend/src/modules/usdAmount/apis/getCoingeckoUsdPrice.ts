@@ -47,6 +47,12 @@ export class CoingeckoRateLimitError extends Error {
   }
 }
 
+export class CoingeckoUnknownCurrency extends Error {
+  constructor() {
+    super('CoingeckoUnknownCurrency')
+  }
+}
+
 export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | null> {
   const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
@@ -72,6 +78,13 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
     })
     .then((res: CoinGeckoUsdQuote) => {
       const value = res[currency.address.toLowerCase()]?.usd
-      return value !== undefined ? FractionUtils.fromNumber(value) : null
+
+      // If coingecko API returns an empty response
+      // It means Coingecko doesn't know about the currency
+      if (value === undefined) {
+        throw new CoingeckoUnknownCurrency()
+      }
+
+      return typeof value === 'number' ? FractionUtils.fromNumber(value) : null
     })
 }
