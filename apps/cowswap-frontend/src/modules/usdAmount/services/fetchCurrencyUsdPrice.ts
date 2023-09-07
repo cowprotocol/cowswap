@@ -5,16 +5,26 @@ import {
   COINGECK_PLATFORMS,
   COINGECKO_RATE_LIMIT_TIMEOUT,
   CoingeckoRateLimitError,
+  CoingeckoUnknownCurrency,
   getCoingeckoUsdPrice,
 } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 
+const coingeckoUnknownCurrencies: Record<SupportedChainId, { [address: string]: true }> = {
+  [SupportedChainId.MAINNET]: {},
+  [SupportedChainId.GNOSIS_CHAIN]: {},
+  [SupportedChainId.GOERLI]: {},
+}
+
 function getShouldSkipCoingecko(currency: Token): boolean {
   const chainId = currency.chainId as SupportedChainId
 
   if (!COINGECK_PLATFORMS[chainId]) return true
+
+  // Don't use Coingecko for unknown currencies
+  if (coingeckoUnknownCurrencies[chainId][currency.address.toLowerCase()]) return true
 
   return !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
 }
@@ -40,6 +50,9 @@ export function fetchCurrencyUsdPrice(
         if (error instanceof CoingeckoRateLimitError) {
           coingeckoRateLimitHitTimestamp = Date.now()
           console.error('Coingecko request limit reached')
+        } else if (error instanceof CoingeckoUnknownCurrency) {
+          // Mark currency as unknown for Coingecko
+          coingeckoUnknownCurrencies[currency.chainId as SupportedChainId][currency.address.toLowerCase()] = true
         } else {
           console.error('Cannot fetch coingecko price', error)
         }
