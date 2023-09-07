@@ -199,7 +199,6 @@ export function UnfillableOrdersUpdater(): null {
   updatePendingRef.current = updatePending
 
   useEffect(() => {
-    console.log('[UnfillableOrdersUpdater] Start interval', { updatePendingRef, chainId, account, isWindowVisible })
     if (!chainId || !account || !isWindowVisible) {
       console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
       return
