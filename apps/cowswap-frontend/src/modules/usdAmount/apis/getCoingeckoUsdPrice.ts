@@ -1,9 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
+import { FractionUtils } from 'utils/fractionUtils'
 
 export interface CoinGeckoUsdQuote {
   [address: string]: {
@@ -46,7 +47,7 @@ export class CoingeckoRateLimitError extends Error {
   }
 }
 
-export async function getCoingeckoUsdPrice(currency: Token): Promise<number | null> {
+export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | null> {
   const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
 
   if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
@@ -70,6 +71,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<number | nu
       return Promise.reject(error)
     })
     .then((res: CoinGeckoUsdQuote) => {
-      return res[Object.keys(res)[0]]?.usd || null
+      const value = res[currency.address.toLowerCase()]?.usd
+      return value !== undefined ? FractionUtils.fromNumber(value) : null
     })
 }

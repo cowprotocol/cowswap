@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -11,15 +11,17 @@ import { USDC } from 'legacy/constants/tokens'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { FractionUtils } from 'utils/fractionUtils'
+
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
+  resetUsdPricesAtom,
+  setUsdPricesLoadingAtom,
   UsdRawPrices,
   usdRawPricesAtom,
   UsdRawPriceState,
-  resetUsdPricesAtom,
-  setUsdPricesLoadingAtom,
 } from '../state/usdRawPricesAtom'
 
 const swrOptions: SWRConfiguration = {
@@ -72,7 +74,7 @@ export function UsdPricesUpdater() {
   return null
 }
 
-function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null> {
+function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | null> {
   let usdcPricePromise: Promise<number | null> | null = null
 
   return () => {
@@ -81,15 +83,17 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<number | null
       usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
     }
 
-    return usdcPricePromise
+    return usdcPricePromise.then((usdcPrice) =>
+      typeof usdcPrice === 'number' ? FractionUtils.fromNumber(usdcPrice) : null
+    )
   }
 }
 
-async function processQueue(queue: Token[], getUsdcPrice: () => Promise<number | null>): Promise<UsdRawPrices> {
+async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction | null>): Promise<UsdRawPrices> {
   const results = await Promise.all(
     queue.map((currency) => {
       return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {
-        if (typeof price !== 'number') {
+        if (!price) {
           return null
         }
 

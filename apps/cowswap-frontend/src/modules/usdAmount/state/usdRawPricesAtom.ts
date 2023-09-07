@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { deepEqual } from 'utils/deepEqual'
 
 export interface UsdRawPriceState {
   updatedAt?: number
-  price: number | null
+  price: Fraction | null
   currency: Token
   isLoading: boolean
 }
