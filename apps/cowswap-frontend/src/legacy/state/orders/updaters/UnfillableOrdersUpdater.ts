@@ -119,13 +119,12 @@ export function UnfillableOrdersUpdater(): null {
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
 
-  const count = useRef(1)
+  const balancesRef = useRef(balances)
+  balancesRef.current = balances
   const updatePending = useCallback(() => {
     if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
     }
-
-    console.log('[UnfillableOrdersUpdater] Update pending orders', count.current++)
 
     const startTime = Date.now()
     try {
@@ -147,7 +146,11 @@ export function UnfillableOrdersUpdater(): null {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
 
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
-        const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
+        const enoughBalance = hasEnoughBalanceAndAllowance({
+          account,
+          amount: currencyAmount,
+          balances: balancesRef.current,
+        })
         const verifiedQuote = verifiedQuotesEnabled && enoughBalance
 
         _getOrderPrice(chainId, order, verifiedQuote, strategy)
@@ -188,15 +191,12 @@ export function UnfillableOrdersUpdater(): null {
     strategy,
     updateIsUnfillableFlag,
     isWindowVisible,
-    balances,
     updatePendingOrderPrices,
     verifiedQuotesEnabled,
   ])
 
   const updatePendingRef = useRef(updatePending)
-  useEffect(() => {
-    updatePendingRef.current = updatePending
-  }, [updatePending])
+  updatePendingRef.current = updatePending
 
   useEffect(() => {
     console.log('[UnfillableOrdersUpdater] Start interval', { updatePendingRef, chainId, account, isWindowVisible })
