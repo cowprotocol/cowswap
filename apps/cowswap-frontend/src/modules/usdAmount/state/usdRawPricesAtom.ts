@@ -2,8 +2,6 @@ import { atom } from 'jotai'
 
 import { Fraction, Token } from '@uniswap/sdk-core'
 
-import ms from 'ms.macro'
-
 import { deepEqual } from 'utils/deepEqual'
 
 export interface UsdRawPriceState {
@@ -15,53 +13,51 @@ export interface UsdRawPriceState {
 
 export type UsdRawPrices = { [tokenAddress: string]: UsdRawPriceState }
 
-const DELETION_FROM_QUEUE_DEBOUNCE = ms`5s`
+const usdPriceQueueSubscribersCountAtom = atom<{ [tokenAddress: string]: number }>({})
 
 export const currenciesUsdPriceQueueAtom = atom<{ [tokenAddress: string]: Token }>({})
 
 export const usdRawPricesAtom = atom<UsdRawPrices>({})
 
-const currenciesToDeleteFromQueueAtom = atom<{ [tokenAddress: string]: Token | undefined }>({})
+export const addCurrencyToUsdPriceQueue = atom(null, (get, set, token: Token) => {
+  const currencyAddress = token.address.toLowerCase()
+  const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
+  const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
 
-export const addCurrencyToUsdPriceQueue = atom(null, (get, set, currency: Token) => {
-  const currencyAddress = currency.address.toLowerCase()
-  const currenciesToLoadUsdPrice = get(currenciesUsdPriceQueueAtom)
+  const subscribersCount = (usdPriceQueueSubscribersCount[currencyAddress] || 0) + 1
 
-  // Remove the currency from deletion queue
-  set(currenciesToDeleteFromQueueAtom, { ...get(currenciesToDeleteFromQueueAtom), [currencyAddress]: undefined })
+  // Increase the subscribers count
+  set(usdPriceQueueSubscribersCountAtom, {
+    ...usdPriceQueueSubscribersCount,
+    [currencyAddress]: subscribersCount,
+  })
 
   if (!currenciesToLoadUsdPrice[currencyAddress]) {
     set(currenciesUsdPriceQueueAtom, {
       ...currenciesToLoadUsdPrice,
-      [currencyAddress]: currency,
+      [currencyAddress]: token,
     })
   }
 })
 
-export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, currency: Token) => {
-  const currencyAddress = currency.address.toLowerCase()
-  const currenciesToLoadUsdPrice = get(currenciesUsdPriceQueueAtom)
-  const currenciesToDeleteFromQueue = get(currenciesToDeleteFromQueueAtom)
+export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, token: Token) => {
+  const currencyAddress = token.address.toLowerCase()
+  const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
+  const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
 
-  const isCurrencyInUsdPriceQueue = !!currenciesToLoadUsdPrice[currencyAddress]
-  const isCurrencyInDeletionQueue = !!currenciesToDeleteFromQueue[currencyAddress]
+  const subscribersCount = Math.max((usdPriceQueueSubscribersCount[currencyAddress] || 0) - 1, 0)
 
-  if (isCurrencyInUsdPriceQueue && !isCurrencyInDeletionQueue) {
-    // Add the currency from deletion queue
-    set(currenciesToDeleteFromQueueAtom, { ...currenciesToDeleteFromQueue, [currencyAddress]: currency })
+  // Decrease the subscribers count
+  set(usdPriceQueueSubscribersCountAtom, {
+    ...usdPriceQueueSubscribersCount,
+    [currencyAddress]: subscribersCount,
+  })
 
-    setTimeout(() => {
-      const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
+  // If there are no subscribers, then delete the token from queue
+  if (subscribersCount === 0) {
+    delete currenciesToLoadUsdPrice[currencyAddress]
 
-      // Remove the currency from USD price queue only if it's not added again
-      if (get(currenciesToDeleteFromQueueAtom)[currencyAddress]) {
-        set(currenciesToDeleteFromQueueAtom, { ...get(currenciesToDeleteFromQueueAtom), [currencyAddress]: undefined })
-
-        delete currenciesToLoadUsdPrice[currencyAddress]
-
-        set(currenciesUsdPriceQueueAtom, currenciesToLoadUsdPrice)
-      }
-    }, DELETION_FROM_QUEUE_DEBOUNCE)
+    set(currenciesUsdPriceQueueAtom, currenciesToLoadUsdPrice)
   }
 })
 
