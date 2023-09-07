@@ -18,13 +18,6 @@ import { useGetMarketDimension } from './useGetMarketDimension'
 import { googleAnalytics } from '../googleAnalytics'
 import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
 import { PixelEvent, sendAllPixels } from '../pixel'
-import {
-  enablePixelFacebook,
-  enablePixelMicrosoft,
-  enablePixelPaved,
-  enablePixelReddit,
-  enablePixelTwitter,
-} from '../pixel'
 import { Dimensions } from '../types'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
@@ -109,15 +102,15 @@ export function useAnalyticsReporter() {
   // Handle initiate pixel tracking
   useEffect(() => {
     if (!initiatedPixel) {
-      // Init all pixels
-      const enablePixelFunctions = [
-        enablePixelFacebook,
-        enablePixelMicrosoft,
-        enablePixelPaved,
-        enablePixelReddit,
-        enablePixelTwitter,
-      ]
-      enablePixelFunctions.forEach((enablePixel) => enablePixel())
+      // // Init all pixels
+      // const enablePixelFunctions = [
+      //   enablePixelFacebook,
+      //   enablePixelMicrosoft,
+      //   enablePixelPaved,
+      //   enablePixelReddit,
+      //   enablePixelTwitter,
+      // ]
+      // enablePixelFunctions.forEach((enablePixel) => enablePixel())
 
       // Sent
       sendAllPixels(PixelEvent.INIT)
