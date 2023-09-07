@@ -210,7 +210,7 @@ export default function FeesUpdater(): null {
       userAddress: account,
       validTo,
       isEthFlow,
-      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
+      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
     }

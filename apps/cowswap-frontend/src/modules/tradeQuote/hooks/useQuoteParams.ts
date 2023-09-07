@@ -47,7 +47,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
       toDecimals,
       fromDecimals,
       isEthFlow: false,
-      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
+      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
     }

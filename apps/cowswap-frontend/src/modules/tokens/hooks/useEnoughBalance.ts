@@ -31,7 +31,7 @@ export interface UseEnoughBalanceParams {
  * @param params Parameters to check balance and optionally the allowance
  * @returns true if the account has enough balance (and allowance if it applies)
  */
-export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean {
+export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean | undefined {
   const { account, amount, checkAllowanceAddress } = params
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped
@@ -75,22 +75,51 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
  * @param params Parameters to check balance and optionally the allowance
  * @returns true if the account has enough balance (and allowance if it applies)
  */
-export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean {
+export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean | undefined {
   const { account, amount, balances, nativeBalance, allowances } = params
+
+  if (!account || !amount) {
+    return undefined
+  }
+
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped
   const tokenAddress = getAddress(token)
 
-  const balance = tokenAddress ? balances[tokenAddress]?.value : undefined
-  const allowance = (tokenAddress && allowances && allowances[tokenAddress]?.value) || undefined
+  const enoughBalance = _enoughBalance(tokenAddress, amount, balances, isNativeCurrency, nativeBalance)
+  const enoughAllowance = _enoughAllowance(tokenAddress, amount, allowances, isNativeCurrency)
 
-  if (!account || !amount) {
-    return false
+  if (enoughBalance === undefined || enoughAllowance === undefined) {
+    return undefined
   }
 
-  const balanceAmount = isNativeCurrency ? nativeBalance : balance || undefined
-  const enoughBalance = isEnoughAmount(amount, balanceAmount)
-  const enoughAllowance = !allowances || isNativeCurrency || (allowance && isEnoughAmount(amount, allowance)) || false
-
   return enoughBalance && enoughAllowance
+}
+
+function _enoughBalance(
+  tokenAddress: string | null,
+  amount: CurrencyAmount<Currency>,
+  balances: TokenAmounts,
+  isNativeCurrency: boolean,
+  nativeBalance: CurrencyAmount<Currency> | undefined
+): boolean | undefined {
+  const balance = tokenAddress ? balances[tokenAddress]?.value : undefined
+  const balanceAmount = isNativeCurrency ? nativeBalance : balance || undefined
+  return isEnoughAmount(amount, balanceAmount)
+}
+
+function _enoughAllowance(
+  tokenAddress: string | null,
+  amount: CurrencyAmount<Currency>,
+  allowances: TokenAmounts | undefined,
+  isNativeCurrency: boolean
+): boolean | undefined {
+  if (!tokenAddress || !allowances) {
+    return undefined
+  }
+  if (isNativeCurrency) {
+    return true
+  }
+  const allowance = allowances[tokenAddress]?.value
+  return allowance && isEnoughAmount(amount, allowance)
 }

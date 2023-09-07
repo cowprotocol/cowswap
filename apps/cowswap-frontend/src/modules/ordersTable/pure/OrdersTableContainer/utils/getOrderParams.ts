@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { BalancesAndAllowances } from 'modules/tokens'
 
@@ -12,8 +12,8 @@ export interface OrderParams {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   rateInfoParams: RateInfoParams
-  hasEnoughBalance: boolean
-  hasEnoughAllowance: boolean
+  hasEnoughBalance: boolean | undefined
+  hasEnoughAllowance: boolean | undefined
 }
 
 const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
@@ -38,18 +38,12 @@ export function getOrderParams(
   const balance = balances[order.inputToken.address]?.value
   const allowance = allowances[order.inputToken.address]?.value
 
-  let hasEnoughBalance, hasEnoughAllowance
-
-  if (order.partiallyFillable) {
-    // When balance or allowance are undefined (loading state), show as true
-    // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
-    const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
-    hasEnoughBalance = balance === undefined || isEnoughAmount(amount, balance)
-    hasEnoughAllowance = allowance === undefined || isEnoughAmount(amount, allowance)
-  } else {
-    hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-    hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
-  }
+  const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
+    partiallyFillable: order.partiallyFillable,
+    sellAmount,
+    balance,
+    allowance,
+  })
 
   return {
     chainId,
@@ -59,4 +53,22 @@ export function getOrderParams(
     hasEnoughBalance,
     hasEnoughAllowance,
   }
+}
+
+function _hasEnoughBalanceAndAllowance(params: {
+  balance: CurrencyAmount<Token> | undefined
+  partiallyFillable: boolean
+  sellAmount: CurrencyAmount<Token>
+  allowance: CurrencyAmount<Token> | undefined
+}): {
+  hasEnoughBalance: boolean | undefined
+  hasEnoughAllowance: boolean | undefined
+} {
+  const { allowance, balance, partiallyFillable, sellAmount } = params
+  // Check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
+  const amount = partiallyFillable ? sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS) : sellAmount
+  const hasEnoughBalance = isEnoughAmount(amount, balance)
+  const hasEnoughAllowance = isEnoughAmount(amount, allowance)
+
+  return { hasEnoughBalance, hasEnoughAllowance }
 }
