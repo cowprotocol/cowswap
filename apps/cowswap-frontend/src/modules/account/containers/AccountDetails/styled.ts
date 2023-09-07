@@ -268,7 +268,7 @@ export const InfoCard = styled.div`
   justify-content: space-between;
   border-radius: 16px;
   padding: 24px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
 
   &:not(:first-child) {
     margin: 24px 0;
@@ -284,7 +284,7 @@ export const InfoCard = styled.div`
 `
 
 export const AccountSection = styled.div`
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   padding: 0;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
 `
@@ -450,7 +450,7 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   color: var(${UI.COLOR_TEXT1});
   padding: 6px 8px;
   font-size: 13px;

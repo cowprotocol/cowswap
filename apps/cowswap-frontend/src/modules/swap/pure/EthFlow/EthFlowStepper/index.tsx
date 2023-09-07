@@ -74,7 +74,7 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 22px;
   border-radius: 0 0 12px 12px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   font-size: 15px;
   line-height: 1;
 

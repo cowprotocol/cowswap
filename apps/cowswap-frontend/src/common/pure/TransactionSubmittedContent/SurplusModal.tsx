@@ -60,7 +60,7 @@ export const Wrapper = styled.div`
       --size: 28px;
       width: var(--size);
       height: var(--size);
-      background: ${({ theme }) => theme.bg1};
+      background: var(${UI.COLOR_CONTAINER_BG_01});
       border-radius: 50%;
       width: var(--size);
       height: var(--size);

@@ -13,6 +13,7 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
+import { UI } from 'common/constants/theme'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
@@ -63,7 +64,7 @@ const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   line-height: 1.6;
 `
 

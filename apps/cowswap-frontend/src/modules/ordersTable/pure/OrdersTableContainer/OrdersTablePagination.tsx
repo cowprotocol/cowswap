@@ -41,7 +41,7 @@ const pageButtonStyles = css<{ $active?: boolean }>`
   text-decoration: none;
 
   &:hover {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
     color: var(${UI.COLOR_TEXT1});
   }
 `

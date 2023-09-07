@@ -83,7 +83,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
 
     ${BodyText},
     ${StyledArrowUpRight} {

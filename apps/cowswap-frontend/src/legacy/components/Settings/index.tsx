@@ -14,7 +14,7 @@ const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
     border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: var(${UI.COLOR_CONTAINER_BG_01});
     color: var(${UI.COLOR_TEXT1});
     padding: 0;
     margin: 0;

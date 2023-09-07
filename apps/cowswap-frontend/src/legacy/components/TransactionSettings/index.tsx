@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   }
 
   ${OptionCustom} {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     border: 0;
 
     > div > input {
@@ -40,7 +40,7 @@ const Wrapper = styled.div`
     }
 
     > button {
-      background-color: ${({ theme }) => theme.grey1};
+      background-color: var(${UI.COLOR_GREY});
       border: 0;
     }
 

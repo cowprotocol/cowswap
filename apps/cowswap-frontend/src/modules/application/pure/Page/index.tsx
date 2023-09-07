@@ -172,7 +172,7 @@ export const GdocsListStyle = css`
   ol {
     margin: 24px 0;
     padding: 12px 48px;
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     border-radius: 12px;
 
     > li {

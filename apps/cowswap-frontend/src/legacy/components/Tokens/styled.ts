@@ -15,7 +15,7 @@ export const TokenSearchInput = styled.input`
   width: 100%;
   align-self: flex-end;
   box-shadow: none;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 21px;
   transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
@@ -26,7 +26,7 @@ export const TokenSearchInput = styled.input`
 
   &:focus {
     max-width: 500px;
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
     outline: 0;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -60,7 +60,7 @@ export const Wrapper = styled.div`
   width: 100%;
   border: none;
   padding: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 16px;
   display: grid;
 `
@@ -81,8 +81,8 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   width: 28px;
   height: 28px;
   border-radius: 28px;
-  background: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1}!important; // TODO: prevent styles override
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  color: var(${UI.COLOR_TEXT1})!important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 21px;
@@ -208,7 +208,7 @@ export const Row = styled.div`
   `}
 
   &:hover {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
   }
 `
 

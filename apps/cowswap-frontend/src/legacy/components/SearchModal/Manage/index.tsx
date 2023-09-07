@@ -21,7 +21,7 @@ export const Wrapper = styled.div`
   ${SearchInput} {
     border: none;
     transition: background 0.3s ease-in-out;
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
   }
 
   ${SearchInput}::placeholder {

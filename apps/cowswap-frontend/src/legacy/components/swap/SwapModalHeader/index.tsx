@@ -15,7 +15,7 @@ import { UI } from 'common/constants/theme'
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
   border: none;
   ${({ flatBorder = false }) => flatBorder && `border-radius: 20px 20px 0 0;`};
 `

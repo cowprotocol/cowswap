@@ -21,7 +21,7 @@ export const ContentWrapper = styled(Column)`
   > input {
     border: none;
     transition: background 0.3s ease-in-out;
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
     color: var(${UI.COLOR_TEXT1});
   }
 
@@ -35,7 +35,7 @@ export const ContentWrapper = styled(Column)`
   }
 
   ${Separator} {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
 
     // Target the token list container
     + div {

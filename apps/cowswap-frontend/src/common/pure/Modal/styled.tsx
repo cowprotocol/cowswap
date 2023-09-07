@@ -40,7 +40,7 @@ export const HoverText = styled.div`
 
 export const ContentWrapper = styled.div`
   /* background-color: ${({ theme }) => theme.bg0}; */
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;

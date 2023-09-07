@@ -1,11 +1,13 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { TransactionErrorContent } from './index'
 
 const Wrapper = styled.div`
   width: 560px;
   margin: 0 auto;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 const fixtures = {

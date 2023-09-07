@@ -52,7 +52,7 @@ export const Content = styled.div`
   left: 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;

@@ -17,7 +17,7 @@ export interface TradeSelectProps extends TradeWidgetFieldProps {
 }
 
 const StyledMenuList = styled(MenuList)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
   padding: 16px;

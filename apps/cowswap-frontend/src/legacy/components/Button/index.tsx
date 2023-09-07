@@ -51,7 +51,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
@@ -180,14 +180,14 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: ${({ theme }) => theme.red1};
-  color: ${({ theme }) => theme.bg1};
+  color: var(${UI.COLOR_CONTAINER_BG_01});
   transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: ${({ theme }) => theme.red1};
-    color: ${({ theme }) => theme.bg1};
+    color: var(${UI.COLOR_CONTAINER_BG_01});
   }
 
   &:hover {

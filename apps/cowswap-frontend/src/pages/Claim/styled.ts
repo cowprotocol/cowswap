@@ -25,7 +25,7 @@ export const InnerPageWrapper = styled.div`
   padding: 30px;
   border: none;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   min-height: 450px;
   justify-content: center;
   align-items: center;
@@ -163,7 +163,7 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
@@ -1355,7 +1355,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   justify-content: flex-start;
   overflow: hidden;
   border-radius: 24px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   margin: 6px 0;
   padding: 0;
 
@@ -1521,7 +1521,7 @@ export const AccountClaimSummary = styled.div`
     border-radius: var(--iconSize);
     width: var(--iconSize);
     height: var(--iconSize);
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       transform: rotate(90deg);

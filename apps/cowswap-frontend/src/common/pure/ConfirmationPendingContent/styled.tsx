@@ -34,7 +34,7 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   position: sticky;
   top: 0;
   left: 0;
@@ -107,7 +107,7 @@ export const GPModalHeader = styled(RowBetween)`
   left: 0;
   width: 100%;
   padding: 16px 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   z-index: 20;
 `
 
@@ -173,7 +173,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 16px 16px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -311,7 +311,7 @@ export const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;

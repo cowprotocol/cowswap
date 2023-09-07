@@ -46,13 +46,13 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
   border: 1px solid transparent;
   color: var(${UI.COLOR_TEXT1});
   font-weight: 500;
 
   &:hover {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     color: var(${UI.COLOR_TEXT1});
   }
 

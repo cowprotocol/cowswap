@@ -25,7 +25,7 @@ const StyledSubsidyTable = styled.table`
   }
 
   tbody {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     border-radius: 16px;
     border: 0;
   }

@@ -30,7 +30,7 @@ export const Wrapper = styled(Page)`
   justify-content: flex-end;
   flex-flow: column wrap;
   margin: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: ${({ theme }) => theme.boxShadow1};
   border: none;
 
@@ -64,7 +64,7 @@ export const ChildWrapper = styled.div`
   justify-content: center;
   border-radius: 21px;
   padding: 20px;
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-column-start: 1;
@@ -272,7 +272,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
@@ -327,7 +327,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 export const BannerCard = styled(BannerExplainer)`
   min-height: 192px;
   border-radius: 16px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border: none;
   padding: 0 100px 0 24px;
   flex: 1;
@@ -589,7 +589,7 @@ export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
   align-items: center;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 16px;
   padding: 16px;
   width: 100%;

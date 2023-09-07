@@ -18,7 +18,7 @@ interface FeesDiscountProps extends BoxProps {
 
 const DarkSpan = styled.span`
   padding: 2px 8px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 5px;
   color: var(${UI.COLOR_TEXT1});
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;

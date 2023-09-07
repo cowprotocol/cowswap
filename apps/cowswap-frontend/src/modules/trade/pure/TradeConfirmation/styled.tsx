@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const WidgetWrapper = styled.div`
   width: 100%;
   padding: 0;
@@ -32,7 +34,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   top: 0;
   left: 0;
   width: 100%;

@@ -40,7 +40,7 @@ const Wrapper = styled.div`
   }
 
   ${PopoverContainer} {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   }
 `
 
@@ -62,7 +62,7 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   ${Row},
   ${Row} > div > div,

@@ -33,7 +33,7 @@ const SideBar = styled.div`
   cursor: default;
   overflow-y: hidden;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -66,7 +66,7 @@ const Header = styled.div`
   align-items: center;
   transition: opacity 0.2s ease-in-out;
   color: var(${UI.COLOR_TEXT1});
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   position: sticky;
   top: 0;
   left: 0;
@@ -80,7 +80,7 @@ const Header = styled.div`
     position: sticky;
     left: 0;
     height: 52px;
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   `};
 
   &:hover {

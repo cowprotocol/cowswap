@@ -56,7 +56,7 @@ export const StyledMenuButton = styled(MenuButton)`
 
 export const StyledMenuList = styled(MenuList)`
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 8px;
   z-index: 2;
   min-width: 100%;

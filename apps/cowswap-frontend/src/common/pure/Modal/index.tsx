@@ -104,7 +104,7 @@ export const CowModal = styled(Modal) <{
     padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: var(${UI.COLOR_CONTAINER_BG_01});
     overflow: hidden;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -122,7 +122,7 @@ export const CowModal = styled(Modal) <{
         left: 0;
         width: 100%;
         padding: 16px;
-        background: ${({ theme }) => theme.bg1};
+        background: var(${UI.COLOR_CONTAINER_BG_01});
         z-index: 20;
       `}
     }

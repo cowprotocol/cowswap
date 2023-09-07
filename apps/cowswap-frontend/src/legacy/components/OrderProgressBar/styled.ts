@@ -19,7 +19,7 @@ export const ProgressBarWrapper = animated(styled.div`
   border-radius: 12px;
   padding: 20px 20px 0;
   color: var(${UI.COLOR_TEXT1});
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

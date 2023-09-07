@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 16px;
   padding: 10px 16px;
   min-height: ${({ minHeight }) => minHeight || '80px'};
@@ -77,7 +77,7 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
 
 export const ListWrapper = styled(MenuList)`
   display: block;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
   padding: 10px 15px;
@@ -116,7 +116,7 @@ export const CustomInput = styled.input`
   color: var(${UI.COLOR_TEXT1});
   padding: 4px 8px;
   outline: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   &::-webkit-calendar-picker-indicator {
     filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
@@ -179,7 +179,7 @@ export const ModalContent = styled.div`
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 12px;
 `
 

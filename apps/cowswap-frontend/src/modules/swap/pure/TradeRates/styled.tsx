@@ -64,7 +64,7 @@ export const Discount = styled.span`
   display: flex;
   cursor: pointer;
   padding: 2px 8px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   color: var(${UI.COLOR_TEXT1});
   border-radius: 5px;
   font-weight: 400;

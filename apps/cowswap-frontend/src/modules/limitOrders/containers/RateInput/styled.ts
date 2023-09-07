@@ -7,7 +7,7 @@ import Input from 'legacy/components/NumericalInput'
 import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div`
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 16px;
   padding: 10px 16px;
   flex: 1 1 70%;
@@ -32,7 +32,7 @@ export const Header = styled.div`
 `
 
 export const MarketPriceButton = styled.button`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   color: var(${UI.COLOR_TEXT1});
   white-space: nowrap;
   border: none;
@@ -93,7 +93,7 @@ export const ActiveSymbol = styled.span`
 
 export const ActiveIcon = styled.div`
   --size: 20px;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   color: var(${UI.COLOR_TEXT1});
   width: var(--size);
   min-width: var(--size);
@@ -119,7 +119,7 @@ export const EstimatedRate = styled.div`
   font-size: 13px;
   border-radius: 0 0 16px 16px;
   font-weight: 400;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border: 2px solid ${({ theme }) => theme.grey1};
 
   > b {

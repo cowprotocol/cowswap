@@ -120,7 +120,7 @@ const FortuneBanner = styled.div`
   left: 0;
   bottom: 0;
   z-index: 501;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   padding: 0;
   animation: open 0.3s ease-in-out forwards;
   overflow: hidden;
@@ -247,7 +247,7 @@ const FortuneContent = styled.div`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 24px;
 `
 
@@ -256,7 +256,7 @@ const HeaderElement = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   position: fixed;
   padding: 0 16px;
   top: 0;
