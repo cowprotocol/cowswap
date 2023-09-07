@@ -12,6 +12,8 @@ import { UI } from 'common/constants/theme'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
+
+
 export * from './styled'
 
 interface ModalProps {
