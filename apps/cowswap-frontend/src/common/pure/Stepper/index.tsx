@@ -25,7 +25,7 @@ const stateStyles: Record<StepState, StepStyles> = {
   active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_TEXT1 },
   finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
   disabled: { dotBackground: UI.COLOR_TEXT1_OPACITY_25, dotColor: UI.COLOR_TEXT1_OPACITY_25, labelColor: UI.COLOR_TEXT1_OPACITY_25 },
-  error: { dotBackground: UI.COLOR_ALERT_BG, dotColor: UI.COLOR_ALERT, labelColor: UI.COLOR_ALERT },
+  error: { dotBackground: UI.COLOR_DANGER_BG, dotColor: UI.COLOR_DANGER, labelColor: UI.COLOR_DANGER },
   loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_LINK },
   open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
 }

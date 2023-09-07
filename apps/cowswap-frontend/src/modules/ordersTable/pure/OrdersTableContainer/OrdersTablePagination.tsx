@@ -30,7 +30,7 @@ const PaginationBox = styled.div`
 
 const pageButtonStyles = css<{ $active?: boolean }>`
   background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.text1 : transparentize(0.2, theme.text1))};
+  color: ${({ theme, $active }) => ($active ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;
   padding: 5px 10px;

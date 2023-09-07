@@ -264,7 +264,7 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => (hasBalance ? theme.text1 : transparentize(0.3, theme.text1))};
+  color: ${({ hasBalance, theme }) => (hasBalance ? `var(${UI.COLOR_TEXT1})` : transparentize(0.3, theme.text1))};
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;

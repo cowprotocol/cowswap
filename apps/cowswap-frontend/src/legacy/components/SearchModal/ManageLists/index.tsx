@@ -56,7 +56,7 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 
   ${Row}, ${RowFixed}, ${RowBetween} {
     > div {
-      color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
+      color: ${({ active, theme }) => (active ? `var(${UI.COLOR_TEXT1})` : theme.text2)};
     }
   }
 `

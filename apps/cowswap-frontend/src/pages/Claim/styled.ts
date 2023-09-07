@@ -550,7 +550,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
       ? transparentize(0.9, theme.blue2)
       : transparentize(0.9, theme.attention)};
   color: ${({ variant, theme }) =>
-    variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
   margin: 0 auto;
   align-items: center;
   font-size: 15px;
@@ -573,7 +573,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
 
   > svg > path {
     fill: ${({ variant, theme }) =>
-      variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+      variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
   }
 
   > span {
@@ -753,8 +753,8 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? theme.success : theme.blue2)};
-  color: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
+  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
+  color: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -769,7 +769,7 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
     height: 21px;
 
     > path {
-      fill: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
+      fill: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
     }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
