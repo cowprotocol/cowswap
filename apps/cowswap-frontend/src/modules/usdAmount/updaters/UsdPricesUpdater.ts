@@ -17,7 +17,6 @@ import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
-  resetUsdPricesAtom,
   setUsdPricesLoadingAtom,
   UsdRawPrices,
   usdRawPricesAtom,
@@ -35,7 +34,6 @@ export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
-  const resetUsdPrices = useSetAtom(resetUsdPricesAtom)
   const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
@@ -45,10 +43,10 @@ export function UsdPricesUpdater() {
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 
-      setUsdPricesLoading(queue)
+      setUsdPricesLoading(queue, true)
 
       return processQueue(queue, getUsdcPrice).catch((error) => {
-        resetUsdPrices(queue)
+        setUsdPricesLoading(queue, false)
 
         return Promise.reject(error)
       })

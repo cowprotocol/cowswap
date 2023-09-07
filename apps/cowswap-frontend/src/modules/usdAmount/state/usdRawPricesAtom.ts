@@ -41,9 +41,8 @@ export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, currency:
   }
 })
 
-export const setUsdPricesLoadingAtom = atom(null, (get, set, currencies: Token[]) => {
+export const setUsdPricesLoadingAtom = atom(null, (get, set, currencies: Token[], isLoading: boolean) => {
   const currentState = get(usdRawPricesAtom)
-  const isLoading = true
 
   const newState = currencies.reduce<UsdRawPrices>((acc, token) => {
     const tokenAddress = token.address.toLowerCase()

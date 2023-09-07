@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -21,6 +21,13 @@ type Output = {
 }
 
 export function useGetSurplusData(order: Order | ParsedOrder | undefined): Output {
+  const [surplusData, setSurplusData] = useState<Output>({
+    surplusFiatValue: null,
+    showFiatValue: false,
+    surplusToken: null,
+    surplusAmount: null,
+    showSurplus: null,
+  })
   const { surplusAmount, surplusToken } = useMemo(() => {
     const output: { surplusToken?: Currency; surplusAmount?: CurrencyAmount<Currency> } = {}
 
@@ -35,17 +42,34 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
   }, [JSON.stringify(order)])
 
   const surplusFiatValue = useUsdAmount(surplusAmount).value
-  const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
+  const surplusFiatValueRef = useRef(surplusFiatValue)
 
-  const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)
+  // Update the surplus amount/token
+  useEffect(() => {
+    setSurplusData((surplusData) => ({
+      ...surplusData,
+      surplusAmount,
+      surplusToken,
+    }))
+  }, [surplusAmount, surplusToken])
 
-  return {
-    surplusFiatValue,
-    showFiatValue,
-    surplusToken,
-    surplusAmount,
-    showSurplus,
-  }
+  // Update the fiat value
+  //  - Updates only once, when we go from not knowing it, to knowing it
+  //  - This prevents flickering effects when the USD price is changing and that makes us change our mind about showing or not showing the surplus modal
+  useEffect(() => {
+    if (surplusFiatValueRef.current === null && surplusFiatValue !== null) {
+      const showFiatValue = Number(surplusFiatValue.toExact()) >= MIN_FIAT_SURPLUS_VALUE
+
+      setSurplusData((surplusData) => ({
+        ...surplusData,
+        surplusFiatValue,
+        showFiatValue,
+        showSurplus: shouldShowSurplus(surplusFiatValue, surplusData.surplusAmount),
+      }))
+    }
+  }, [surplusFiatValue])
+
+  return surplusData
 }
 
 function shouldShowSurplus(
