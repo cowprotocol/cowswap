@@ -22,7 +22,6 @@ import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
 import { useWalletDetails } from 'modules/wallet/api/hooks'
-import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
 import {
   getConnectionIcon,
   getConnectionName,
@@ -30,6 +29,7 @@ import {
   getIsMetaMask,
 } from 'modules/wallet/api/utils/connection'
 import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -194,9 +194,7 @@ export function AccountDetails({
                 )}
               </WalletSelector>
 
-              {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
-              )}
+              {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
 
             <WalletActions>
@@ -229,7 +227,7 @@ export function AccountDetails({
                     </WalletAction>
                   )}
 
-                  <WalletAction onClick={handleDisconnectClick}>
+                  <WalletAction id="disconnect-btn" onClick={handleDisconnectClick}>
                     <Trans>Disconnect</Trans>
                   </WalletAction>
                 </>

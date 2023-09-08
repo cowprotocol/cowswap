@@ -181,6 +181,7 @@ export function NetworkSelector() {
 
   return (
     <SelectorWrapper
+      id="network-select-btn"
       ref={node}
       onMouseEnter={!isUpToMedium ? openModal : undefined}
       onMouseLeave={!isUpToMedium ? closeModal : undefined}

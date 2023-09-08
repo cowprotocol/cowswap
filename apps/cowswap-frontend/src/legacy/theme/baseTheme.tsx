@@ -140,7 +140,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     colorScrollbar: css`
       // Firefox only
       scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
-      scroll-behavior: smooth;
+      // TODO: this property breaks Cypress tests for some reason, it prevents scrolling to top
+      // https://github.com/cypress-io/cypress/issues/3200
+      //scroll-behavior: smooth;
 
       // Webkit browsers only
       &::-webkit-scrollbar {
@@ -402,11 +404,14 @@ export const UniThemedGlobalStyle = css`
 
     // States
     --cow-color-information: var(--cow-color-lightBlue);
-    --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
-    --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+    --cow-color-information-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
+    --cow-color-information-text: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
 
     --cow-color-alert: var(--cow-color-yellow);
-    --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    --cow-color-alert-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
     --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
 
     --cow-color-alert2: var(--cow-color-yellow-light);
@@ -414,8 +419,10 @@ export const UniThemedGlobalStyle = css`
     --cow-color-alert2-text: var(--cow-color-blue);
 
     --cow-color-success: var(--cow-color-green);
-    --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
-    --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
+    --cow-color-success-bg: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success)};
+    --cow-color-success-text: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success)};
 
     // Text
     --cow-color-text1: ${({ theme }) => theme.text1};
