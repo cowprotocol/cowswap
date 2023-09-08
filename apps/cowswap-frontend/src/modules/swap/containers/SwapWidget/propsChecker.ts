@@ -39,9 +39,7 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
 }
 
 function isPriceImpactEqual(prev: PriceImpact, next: PriceImpact): boolean {
-  return (
-    prev.loading === next.loading && prev.error === next.error && areFractionsEqual(prev.priceImpact, next.priceImpact)
-  )
+  return prev.loading === next.loading && areFractionsEqual(prev.priceImpact, next.priceImpact)
 }
 
 export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): boolean {

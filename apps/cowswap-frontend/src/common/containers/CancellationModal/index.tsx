@@ -1,4 +1,4 @@
-import { useAtomValue } from 'legacy/state/application/atoms'
+import { useAtomValue } from 'jotai'
 
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'

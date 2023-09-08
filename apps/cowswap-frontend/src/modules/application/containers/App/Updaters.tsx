@@ -20,6 +20,7 @@ import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
+import { UsdPricesUpdater } from 'modules/usdAmount'
 import { WalletUpdater, HwAccountIndexUpdater } from 'modules/wallet'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
@@ -54,6 +55,7 @@ export function Updaters() {
       <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
       <TotalSurplusUpdater />
+      <UsdPricesUpdater />
     </>
   )
 }

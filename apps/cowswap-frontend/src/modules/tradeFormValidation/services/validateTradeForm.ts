@@ -1,4 +1,4 @@
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { isAddress } from 'legacy/utils'
 
 import { isFractionFalsy } from 'utils/isFractionFalsy'

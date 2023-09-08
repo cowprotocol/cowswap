@@ -1,9 +1,9 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { TradeSummaryContent } from 'modules/swap/pure/TradeSummary'
+import { useUsdAmount } from 'modules/usdAmount'
 import { useWalletDetails } from 'modules/wallet'
 
 // Sub-components
@@ -17,7 +17,7 @@ export type TradeSummaryProps = {
 
 export function TradeSummary({ trade, ...restProps }: TradeSummaryProps) {
   const { allowsOffchainSigning } = useWalletDetails()
-  const feeFiatValue = useHigherUSDValue(trade.fee.feeAsCurrency).value
+  const feeFiatValue = useUsdAmount(trade.fee.feeAsCurrency).value
 
   return (
     <TradeSummaryContent

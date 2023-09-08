@@ -15,10 +15,11 @@ import {
   switchCurrencies,
   typeInput,
 } from 'legacy/state/swap/actions'
-import { queryParametersToSwapState } from 'legacy/state/swap/hooks'
 
 import { getIsNativeToken } from 'utils/getIsNativeToken'
 import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
+
+import { queryParametersToSwapState } from './utils'
 
 export interface SwapState {
   // Mod: added chainId
@@ -77,16 +78,20 @@ export default createReducer<SwapState>(initialState, (builder) =>
       }
     })
     .addCase(replaceOnlyTradeRawState, (state, { payload }) => {
-      const { chainId, recipient, inputCurrencyId, outputCurrencyId } = payload
+      const { chainId, recipient, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount } =
+        payload
+
+      const typedValue = state.independentField === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
       return {
         ...state,
+        typedValue: typedValue ?? state.typedValue,
         chainId,
         [Field.INPUT]: {
-          currencyId: inputCurrencyId ?? null,
+          currencyId: inputCurrencyId ?? state.INPUT.currencyId,
         },
         [Field.OUTPUT]: {
-          currencyId: outputCurrencyId ?? null,
+          currencyId: outputCurrencyId ?? state.OUTPUT.currencyId,
         },
         recipient,
       }

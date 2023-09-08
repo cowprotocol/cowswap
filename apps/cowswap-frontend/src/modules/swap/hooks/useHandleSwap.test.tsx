@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
@@ -42,16 +43,17 @@ const mockUseSafeBundleEthFlowContext = useSafeBundleEthFlowContext as jest.Mock
 
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
-  error: undefined,
   loading: false,
 }
 describe('useHandleSwapCallback', () => {
+  let onUserInput: jest.Mock
   let onChangeRecipient: jest.Mock
 
   beforeEach(() => {
     onChangeRecipient = jest.fn()
+    onUserInput = jest.fn()
 
-    mockUseSwapActionHandlers.mockReturnValue({ onChangeRecipient } as any)
+    mockUseSwapActionHandlers.mockReturnValue({ onChangeRecipient, onUserInput } as any)
     mockUseSwapFlowContext.mockReturnValue(1 as any)
     mockUseEthFlowContext.mockReturnValue(1 as any)
     mockUseSafeBundleFlowContext.mockReturnValue(1 as any)
@@ -70,5 +72,7 @@ describe('useHandleSwapCallback', () => {
 
     expect(onChangeRecipient).toBeCalledTimes(1)
     expect(onChangeRecipient).toHaveBeenCalledWith(null)
+    expect(onUserInput).toBeCalledTimes(1)
+    expect(onUserInput).toHaveBeenCalledWith(Field.INPUT, '')
   })
 })

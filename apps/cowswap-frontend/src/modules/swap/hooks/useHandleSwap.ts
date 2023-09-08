@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
@@ -21,7 +22,7 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
   const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
   const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const { onChangeRecipient } = useSwapActionHandlers()
+  const { onChangeRecipient, onUserInput } = useSwapActionHandlers()
 
   return useCallback(async () => {
     if (!swapFlowContext && !ethFlowContext && !safeBundleApprovalFlowContext && !safeBundleEthFlowContext) return
@@ -40,13 +41,16 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
       await ethFlow(ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
     }
 
+    // Clean up form fields after successful swap
     onChangeRecipient(null)
+    onUserInput(Field.INPUT, '')
   }, [
     swapFlowContext,
     ethFlowContext,
     safeBundleApprovalFlowContext,
     safeBundleEthFlowContext,
     onChangeRecipient,
+    onUserInput,
     priceImpactParams,
     confirmPriceImpactWithoutFee,
   ])

@@ -11,12 +11,12 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
 import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { TradeAmounts } from 'common/types'
 import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 
 import { TradeConfirmActions } from '../../trade'
-import { TradeAmounts } from '../../trade/types/TradeAmounts'
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
@@ -38,7 +38,6 @@ const mockUseIsTxBundlingEnabled = useIsTxBundlingEnabled as jest.MockedFunction
 const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
-  error: undefined,
   loading: false,
 }
 const recipient = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
