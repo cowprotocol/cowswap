@@ -2,6 +2,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 interface IconSpinnerProps {
@@ -9,11 +10,11 @@ interface IconSpinnerProps {
   image?: string
   size?: number
   children?: React.ReactNode
-  bgColor?: ColorVariables;
+  bgColor?: UI
   spinnerWidth?: number
 }
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorVariables }>`
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
   --bgColor: ${({ bgColor }) => `var(${bgColor})`};
   display: flex;
   position: relative;
@@ -33,7 +34,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorV
     width: calc(100% + 2 * ${({ spinnerWidth }) => spinnerWidth}px);
     height: calc(100% + 2 * ${({ spinnerWidth }) => spinnerWidth}px);
     border-radius: 50%;
-    background: conic-gradient(from 0deg at 50% 50%, var(--cow-color-border) 0%, var(--cow-color-link) 100%);
+    background: conic-gradient(from 0deg at 50% 50%, var(${UI.COLOR_BORDER}) 0%, var(${UI.COLOR_LINK}) 100%);
     animation: spin 2s linear infinite;
     z-index: 1;
   }
@@ -44,7 +45,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorV
     object-fit: contain;
     z-index: 2;
     position: relative;
-    border: ${({ spinnerWidth }) => spinnerWidth}px solid var(--cow-container-bg-01);
+    border: ${({ spinnerWidth }) => spinnerWidth}px solid var(${UI.COLOR_CONTAINER_BG_01});
     border-radius: ${({ size }) => size}px;
     background-color: var(--bgColor);
     width: 100%;
@@ -64,26 +65,14 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: ColorV
   }
 `
 
-enum ColorVariables {
-  CONTAINER_BG_01 = '--cow-container-bg-01',
-}
-
 export function IconSpinner({
   currency,
   image,
   size = 24,
   children,
-  bgColor = ColorVariables.CONTAINER_BG_01,
+  bgColor = UI.COLOR_CONTAINER_BG_01,
   spinnerWidth = 2
 }: IconSpinnerProps) {
-
-  const content = currency ? (
-    <CurrencyLogo currency={currency} size="100%" />
-  ) : image ? (
-    <img src={image} alt="Spinning icon" width={size} height={size} />
-  ) : (
-    children || <span />
-  );
 
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>

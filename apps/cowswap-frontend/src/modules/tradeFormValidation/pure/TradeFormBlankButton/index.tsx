@@ -4,6 +4,8 @@ import { Trans } from '@lingui/macro'
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 const LONG_TEXT_LENGTH = 20
 
 const ActionButton = styled.button<{ hasLongText$: boolean }>`
@@ -27,7 +29,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;

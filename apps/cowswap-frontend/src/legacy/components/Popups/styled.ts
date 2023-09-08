@@ -2,6 +2,8 @@ import { animated } from '@react-spring/web'
 import { X } from 'react-feather'
 import styled, { DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 const Fader = styled.div`
   position: absolute;
   bottom: 0px;
@@ -15,7 +17,7 @@ export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<D
   display: inline-block;
   width: 100%;
   //padding: 1em;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   position: relative;
   border-radius: 10px;
   padding: 20px 35px 20px 20px;

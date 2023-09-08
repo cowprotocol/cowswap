@@ -3,6 +3,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos';
+import { UI } from 'common/constants/theme'
 import { IconSpinner } from 'common/pure/IconSpinner'
 import { Stepper } from 'common/pure/Stepper'
 
@@ -20,7 +21,7 @@ const ArrowRight = styled(SVG)`
   margin: auto;
 
   > path {
-    fill: var(--cow-color-text2);
+    fill: var(${UI.COLOR_TEXT2});
   }
 `
 

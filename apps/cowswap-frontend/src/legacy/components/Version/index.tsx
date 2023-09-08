@@ -10,6 +10,8 @@ import { getEtherscanLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
+
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'
 
@@ -67,7 +69,7 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   gap: 10px;
 `
 

@@ -21,6 +21,7 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme
 
 import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
 
+import { UI } from 'common/constants/theme'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 import { WalletUpdater } from './modules/wallet'
@@ -82,7 +83,7 @@ export const DemoContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};

@@ -5,6 +5,8 @@ import { MarkdownPage } from 'legacy/components/Markdown'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { GdocsListStyle } from 'modules/application/pure/Page'
 
+import { UI } from 'common/constants/theme'
+
 import contentFile from './CookiePolicy.md'
 
 const Wrapper = styled(MarkdownPage)`
@@ -20,14 +22,14 @@ const Wrapper = styled(MarkdownPage)`
       width: 100%;
       min-width: 800px;
       border-spacing: 1px;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
 
       > thead {
         background: ${({ theme }) => theme.bg3};
       }
 
       > tbody > tr {
-        background: ${({ theme }) => theme.grey1};
+        background: var(${UI.COLOR_GREY});
       }
 
       > tbody > tr > td > span[role='img'] {

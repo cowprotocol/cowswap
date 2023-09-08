@@ -6,6 +6,7 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
+import { UI } from 'common/constants/theme'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 interface RateImpactAcknowledge {
@@ -41,7 +42,7 @@ const ReadMoreLink = styled.a`
   text-decoration: underline;
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

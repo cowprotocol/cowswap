@@ -3,12 +3,14 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   position: relative;
 `
 
 export const LabelText = styled.span`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   transition: color 0.15s ease-in-out;
 `
 
@@ -19,7 +21,7 @@ export const StyledSVG = styled(SVG)`
   height: var(--size);
 
   > path {
-    fill: ${({ theme }) => theme.text1};
+    fill: var(${UI.COLOR_TEXT1});
     transition: fill 0.15s ease-in-out;
   }
 
@@ -54,7 +56,7 @@ export const StyledMenuButton = styled(MenuButton)`
 
 export const StyledMenuList = styled(MenuList)`
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 8px;
   z-index: 2;
   min-width: 100%;
@@ -67,7 +69,7 @@ export const StyledMenuList = styled(MenuList)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 6px 12px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: 13px;
   cursor: pointer;
   border-radius: 8px;

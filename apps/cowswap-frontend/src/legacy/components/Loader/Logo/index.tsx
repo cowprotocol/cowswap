@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Slash } from 'react-feather'
 import { ImageProps } from 'rebass'
 
-import useTheme from '../../hooks/useTheme'
+import useTheme from 'legacy/hooks/useTheme'
 
 const BAD_SRCS: { [tokenAddress: string]: true } = {}
 

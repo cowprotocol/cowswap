@@ -1,6 +1,7 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
@@ -118,7 +119,7 @@ export const TableRowCheckbox = styled.input`
   outline: 0;
 
   &:checked {
-    background-color: ${({ theme }) => theme.text1};
+    background-color: var(${UI.COLOR_TEXT1});
   }
 
   &:checked + ${CheckboxCheckmark}::after {
@@ -126,7 +127,7 @@ export const TableRowCheckbox = styled.input`
   }
 
   &:indeterminate {
-    border-color: ${({ theme }) => theme.text1};
+    border-color: var(${UI.COLOR_TEXT1});
   }
 
   &:indeterminate + ${CheckboxCheckmark}::after {

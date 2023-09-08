@@ -5,10 +5,12 @@ import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelpe
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { ExternalLink } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
 
 import { InfoCard } from './styled'
 
@@ -89,7 +91,7 @@ export function SurplusCard() {
     }
 
     ${InfoCard} > div > span > p {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
 
     ${InfoCard} > div > span > b {

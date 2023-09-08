@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const WrapCardWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   align-items: center;
@@ -38,14 +40,14 @@ export const WrappingPreviewContainer = styled.div`
     border: 1px solid ${({ theme }) => theme.bg3};
 
     &:nth-of-type(1) {
-      background-color: ${({ theme }) => theme.bg1};
+      background-color: var(${UI.COLOR_CONTAINER_BG_01});
       border-radius: 16px 0 0 16px;
       border-right: 0;
     }
 
     &:nth-of-type(2) {
-      color: ${({ theme }) => theme.text1};
-      background-color: ${({ theme }) => theme.grey1};
+      color: var(${UI.COLOR_TEXT1});
+      background-color: var(${UI.COLOR_GREY});
       border: 1px solid ${({ theme }) => theme.grey1};
       border-radius: 0 16px 16px 0;
     }
@@ -65,8 +67,8 @@ export const WrappingPreviewContainer = styled.div`
     bottom: 0;
     right: 0;
     margin: auto;
-    background: ${({ theme }) => theme.grey1};
-    stroke: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_GREY});
+    stroke: var(${UI.COLOR_TEXT1});
     width: 32px;
     height: 32px;
     border-radius: 32px;

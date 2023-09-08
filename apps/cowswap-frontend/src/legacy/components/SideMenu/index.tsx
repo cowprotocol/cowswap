@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   display: flex;
   flex-flow: column wrap;
@@ -8,7 +10,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   font-weight: 500;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   height: max-content;
   position: sticky;
   top: 0;

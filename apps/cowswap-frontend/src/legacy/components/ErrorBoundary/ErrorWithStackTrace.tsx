@@ -14,6 +14,8 @@ import { userAgent } from 'legacy/utils/userAgent'
 
 import { Title } from 'modules/application/pure/Page'
 
+import { UI } from 'common/constants/theme'
+
 const FlexContainer = styled.div`
   display: flex;
   align-items: center;
@@ -37,14 +39,14 @@ const StyledParagraph = styled.p`
 `
 
 const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   overflow: auto;
   white-space: pre;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 
   /* MOD */
   ${({ theme }) => theme.mediaWidth.upToSmall`

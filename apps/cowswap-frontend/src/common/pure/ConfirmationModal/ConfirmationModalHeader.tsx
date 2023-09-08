@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { X as CloseIcon } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 const Container = styled.header`
   display: flex;
   width: 100%;
@@ -10,7 +12,7 @@ const Container = styled.header`
   padding: 0 0 16px;
   margin: 0 0 24px;
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 const Title = styled.b`
@@ -30,7 +32,7 @@ const Close = styled(CloseIcon)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

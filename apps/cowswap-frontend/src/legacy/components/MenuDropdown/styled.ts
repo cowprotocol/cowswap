@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const MenuFlyout = styled.ol`
   display: flex;
   padding: 0;
@@ -50,7 +52,7 @@ export const Content = styled.div`
   left: 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;
@@ -107,7 +109,7 @@ export const MenuSection = styled.div`
     font-weight: 500;
     margin: 0;
     padding: 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     opacity: 0.8;
     transition: opacity 0.15s ease-in-out;
 
@@ -118,11 +120,11 @@ export const MenuSection = styled.div`
       max-height: 21px;
       margin: 0 7px 0 0;
       object-fit: contain;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
 
     > svg > path {
-      fill: ${({ theme }) => theme.text1};
+      fill: var(${UI.COLOR_TEXT1});
     }
 
     &:hover {

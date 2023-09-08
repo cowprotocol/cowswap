@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
+import { UI } from 'common/constants/theme'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Box = styled.div`
@@ -15,7 +16,7 @@ export const Row = styled.div`
   justify-content: space-between;
   font-size: 13px;
   font-weight: 400;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   min-height: 24px;
   gap: 3px;
 
@@ -33,7 +34,7 @@ export const Row = styled.div`
       transition: color 0.15s ease-in-out;
 
       &:hover {
-        color: ${({ theme }) => theme.text1};
+        color: var(${UI.COLOR_TEXT1});
       }
     }
 
@@ -63,8 +64,8 @@ export const Discount = styled.span`
   display: flex;
   cursor: pointer;
   padding: 2px 8px;
-  background: ${({ theme }) => theme.grey1};
-  color: ${({ theme }) => theme.text1};
+  background: var(${UI.COLOR_GREY});
+  color: var(${UI.COLOR_TEXT1});
   border-radius: 5px;
   font-weight: 400;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;

@@ -5,9 +5,11 @@ import styled from 'styled-components/macro'
 
 import { MouseoverTooltipContent, TooltipContainer } from 'legacy/components/Tooltip'
 
+import { UI } from 'common/constants/theme'
+
 const StyledInfoIcon = styled(Info)`
   opacity: 0.5;
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;
