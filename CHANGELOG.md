@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.47.0-RC.0](https://github.com/cowprotocol/cowswap/compare/v1.46.0...v1.47.0-RC.0) (2023-09-08)
+
+
+### Features
+
+* generate the analyze bundle for vite ([#3096](https://github.com/cowprotocol/cowswap/issues/3096)) ([7611a3d](https://github.com/cowprotocol/cowswap/commit/7611a3deea3349bc0000ae0296f90209e452e049))
+* usd prices and amounts module ([#3081](https://github.com/cowprotocol/cowswap/issues/3081)) ([10b1c6d](https://github.com/cowprotocol/cowswap/commit/10b1c6deb25342a4654d15cabafe4fa72f53a384))
+
+
+### Bug Fixes
+
+* add a space between "Added COW" ([#3094](https://github.com/cowprotocol/cowswap/issues/3094)) ([f4f1236](https://github.com/cowprotocol/cowswap/commit/f4f123607dab4047fa6d23d9e207b4c7e2724d17))
+* add html space chars before banner token symbols ([#3117](https://github.com/cowprotocol/cowswap/issues/3117)) ([f87b8d2](https://github.com/cowprotocol/cowswap/commit/f87b8d2f78aa9340b6b1a168b038c2a24d24a69f))
+* fix crash tokens page due to tiny price ([#3111](https://github.com/cowprotocol/cowswap/issues/3111)) ([1cf0461](https://github.com/cowprotocol/cowswap/commit/1cf0461aa1a74614db1cdcc4d84f365fa4e0629c))
+* fix mapping network name from URL query to chainId ([#3125](https://github.com/cowprotocol/cowswap/issues/3125)) ([a3e8bf5](https://github.com/cowprotocol/cowswap/commit/a3e8bf5d456c0a6ecd1ff5d6cffe65ae6278b86e))
+* **price-impact:** display unknown price impact warning only when there is no data ([#3114](https://github.com/cowprotocol/cowswap/issues/3114)) ([984dd66](https://github.com/cowprotocol/cowswap/commit/984dd66a9bf4c2114b525bd32d7de315aa808adb))
+* remove quote API usage for fiat amount and price impact calc ([#3074](https://github.com/cowprotocol/cowswap/issues/3074)) ([cdaca30](https://github.com/cowprotocol/cowswap/commit/cdaca30b3f8d5a3585e9fda6b515a94d57641d91))
+* surplus modal flickering ([#3124](https://github.com/cowprotocol/cowswap/issues/3124)) ([7d5b7ce](https://github.com/cowprotocol/cowswap/commit/7d5b7ce84078a99a559675529ce17162e0cffbb3))
+* **swap:** reset state after network changes ([#3116](https://github.com/cowprotocol/cowswap/issues/3116)) ([6377f58](https://github.com/cowprotocol/cowswap/commit/6377f580b5502556e23bbdab7d2d28e30a179f94))
+* **trade:** check allowance before pending tx for approval state ([#3090](https://github.com/cowprotocol/cowswap/issues/3090)) ([bebe49d](https://github.com/cowprotocol/cowswap/commit/bebe49d22df6bdb20a9a952a320b14db2f4fad57))
+* **trade:** clean form amounts after wrap/unwrap ([#3095](https://github.com/cowprotocol/cowswap/issues/3095)) ([12d805c](https://github.com/cowprotocol/cowswap/commit/12d805c6d2c396bebf7ed4333a68aedd13d9ef1a))
+* **twap:** load TWAP part details ([#3113](https://github.com/cowprotocol/cowswap/issues/3113)) ([cdd3056](https://github.com/cowprotocol/cowswap/commit/cdd305645179fc0c000d26f56fa3edf282e4f191))
+* update only current account pending orders ([#3078](https://github.com/cowprotocol/cowswap/issues/3078)) ([5e2fa4c](https://github.com/cowprotocol/cowswap/commit/5e2fa4cf042ff57e0a26ceb079a68ccdf434fbd0))
+* update token logo cache after tokens list loading ([#3100](https://github.com/cowprotocol/cowswap/issues/3100)) ([5e2dfd1](https://github.com/cowprotocol/cowswap/commit/5e2dfd12dc693231a41cc1af5dcf44fdfe544cb8))
+* **usd-amount:** delete token from queue only if there are no subscribers left ([#3121](https://github.com/cowprotocol/cowswap/issues/3121)) ([bb95c94](https://github.com/cowprotocol/cowswap/commit/bb95c942da8c4d311d668acb5fc515c2e2dde27a))
+* **usd-amount:** fallback to native_price API if Coingecko doesn't know the currency ([#3120](https://github.com/cowprotocol/cowswap/issues/3120)) ([1fa5fb2](https://github.com/cowprotocol/cowswap/commit/1fa5fb2185f40c7b1d2b8913ef3f53bca082c79d))
+
+
+### Miscellaneous Chores
+
+* **release:** 1.47.0-RC.0 ([375cac7](https://github.com/cowprotocol/cowswap/commit/375cac7c0fb9913457f1866497f83dc6753bbc5d))
+
 ## [1.46.0](https://github.com/cowprotocol/cowswap/compare/v1.45.1...v1.46.0) (2023-08-29)
 
 

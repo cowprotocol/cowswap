@@ -1,43 +1,63 @@
 import { atom } from 'jotai'
 
-import { Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { deepEqual } from 'utils/deepEqual'
 
 export interface UsdRawPriceState {
   updatedAt?: number
-  price: number | null
+  price: Fraction | null
   currency: Token
   isLoading: boolean
 }
 
 export type UsdRawPrices = { [tokenAddress: string]: UsdRawPriceState }
 
+const usdPriceQueueSubscribersCountAtom = atom<{ [tokenAddress: string]: number }>({})
+
 export const currenciesUsdPriceQueueAtom = atom<{ [tokenAddress: string]: Token }>({})
 
 export const usdRawPricesAtom = atom<UsdRawPrices>({})
 
-export const addCurrencyToUsdPriceQueue = atom(null, (get, set, currency: Token) => {
-  const currencyAddress = currency.address.toLowerCase()
-  const currenciesToLoadUsdPrice = get(currenciesUsdPriceQueueAtom)
+export const addCurrencyToUsdPriceQueue = atom(null, (get, set, token: Token) => {
+  const currencyAddress = token.address.toLowerCase()
+  const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
+  const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
+
+  const subscribersCount = (usdPriceQueueSubscribersCount[currencyAddress] || 0) + 1
+
+  // Increase the subscribers count
+  set(usdPriceQueueSubscribersCountAtom, {
+    ...usdPriceQueueSubscribersCount,
+    [currencyAddress]: subscribersCount,
+  })
 
   if (!currenciesToLoadUsdPrice[currencyAddress]) {
     set(currenciesUsdPriceQueueAtom, {
       ...currenciesToLoadUsdPrice,
-      [currencyAddress]: currency,
+      [currencyAddress]: token,
     })
   }
 })
 
-export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, currency: Token) => {
-  const currencyAddress = currency.address.toLowerCase()
-  const currenciesToLoadUsdPrice = get(currenciesUsdPriceQueueAtom)
+export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, token: Token) => {
+  const currencyAddress = token.address.toLowerCase()
+  const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
+  const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
 
-  if (currenciesToLoadUsdPrice[currencyAddress]) {
-    const stateCopy = { ...currenciesToLoadUsdPrice }
-    delete stateCopy[currencyAddress]
+  const subscribersCount = Math.max((usdPriceQueueSubscribersCount[currencyAddress] || 0) - 1, 0)
 
-    set(currenciesUsdPriceQueueAtom, stateCopy)
+  // Decrease the subscribers count
+  set(usdPriceQueueSubscribersCountAtom, {
+    ...usdPriceQueueSubscribersCount,
+    [currencyAddress]: subscribersCount,
+  })
+
+  // If there are no subscribers, then delete the token from queue
+  if (subscribersCount === 0) {
+    delete currenciesToLoadUsdPrice[currencyAddress]
+
+    set(currenciesUsdPriceQueueAtom, currenciesToLoadUsdPrice)
   }
 })
 

@@ -39,10 +39,10 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { chainId } = useWalletInfo()
   const wethContract = useWETHContract()
   const addTransaction = useTransactionAdder()
-  const { updateState } = useTradeState()
+  const { updateState, state: tradeState } = useTradeState()
   const setWrapNativeState = useSetAtom(wrapNativeStateAtom)
 
-  if (!wethContract || !chainId || !amount || !updateState) {
+  if (!wethContract || !chainId || !amount || !updateState || !tradeState) {
     return null
   }
 
@@ -51,6 +51,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
     wethContract,
     amount,
     addTransaction,
+    tradeState,
     updateTradeState: updateState,
     closeModals() {
       setWrapNativeState({ isOpen: false })
