@@ -2,6 +2,8 @@ import { transparentize } from 'polished'
 import { ArrowDownCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   border-radius: 8px;
@@ -17,7 +19,7 @@ export const ActiveRowLinkList = styled.div`
 
   & > a {
     align-items: center;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     display: flex;
     flex-direction: row;
     font-size: 14px;

@@ -2,6 +2,8 @@ import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export interface OrdersTablePaginationProps {
   getPageUrl?(index: number): Partial<{ pathname: string; search: string }>
   onPageChange?(index: number): void
@@ -28,7 +30,7 @@ const PaginationBox = styled.div`
 
 const pageButtonStyles = css<{ $active?: boolean }>`
   background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.text1 : transparentize(0.2, theme.text1))};
+  color: ${({ theme, $active }) => ($active ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;
   padding: 5px 10px;
@@ -39,8 +41,8 @@ const pageButtonStyles = css<{ $active?: boolean }>`
   text-decoration: none;
 
   &:hover {
-    background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

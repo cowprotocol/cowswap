@@ -2,6 +2,8 @@ import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -15,7 +17,7 @@ export const Wrapper = styled.div`
 
   > svg:first-child {
     margin: 0 4px 0 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     opacity: 0.5;
   }
 

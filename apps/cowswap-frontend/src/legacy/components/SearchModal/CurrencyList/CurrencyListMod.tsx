@@ -65,6 +65,7 @@ function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
 export const TagContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  flex-flow: row wrap;
 `
 
 export const TokenListLogoWrapper = styled.img`
@@ -92,8 +93,13 @@ function TokenTags({ currency }: { currency: Currency }) {
   return (
     <TagContainer>
       <MouseoverTooltip text={tag.description}>
-        <Tag key={tag.id}>{tag.name}</Tag>
+        <Tag key={tag.id}>
+          {tag.icon && <img src={tag.icon} alt={tag.name} />}
+          {tag.name}
+        </Tag>
       </MouseoverTooltip>
+
+      {/* If there are more than one tag, show the first one and a '...' tag */}
       {tags.length > 1 ? (
         <MouseoverTooltip
           text={tags
@@ -117,6 +123,7 @@ function CurrencyRow({
   showCurrencyAmount,
   eventProperties,
   isUnsupported, // gp-swap added
+  isPermitCompatible, // gp-swap added
   allTokens,
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
@@ -129,9 +136,10 @@ function CurrencyRow({
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
+  isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
-  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean; isPermitCompatible: boolean }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWalletInfo()
   const key = currencyKey(currency)
@@ -170,7 +178,7 @@ function CurrencyRow({
           </ThemedText.DarkGray>
         </Column>
         {/* <TokenTags currency={currency} /> */}
-        <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
+        <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         {showCurrencyAmount && (
           <RowFixed style={{ justifySelf: 'flex-end' }}>
             {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
@@ -336,6 +344,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
+      const isPermitCompatible = false // TODO: Make dynamic 
 
       if (isLoading) {
         return (
@@ -361,6 +370,7 @@ export default function CurrencyList({
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
             isUnsupported={isUnsupported}
+            isPermitCompatible={isPermitCompatible} // gp-swap added
             showCurrencyAmount={showCurrencyAmount}
             eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />

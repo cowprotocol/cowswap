@@ -12,6 +12,8 @@ import { CopyIcon } from 'legacy/components/Copy'
 import { Icon } from 'legacy/components/CowProtocolLogo'
 import { Step } from 'legacy/components/Stepper'
 
+import { UI } from 'common/constants/theme'
+
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
 export const InnerPageWrapper = styled.div`
@@ -19,11 +21,11 @@ export const InnerPageWrapper = styled.div`
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   padding: 30px;
   border: none;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   min-height: 450px;
   justify-content: center;
   align-items: center;
@@ -161,7 +163,7 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
@@ -201,7 +203,7 @@ export const IntroDescription = styled.div<{ center?: boolean }>`
   }
 
   > p > i {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     font-weight: 600;
     font-style: normal;
   }
@@ -431,7 +433,7 @@ export const ClaimTable = styled.div`
     text-align: left;
     font-weight: normal;
     font-size: 15px;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     position: relative;
   }
 
@@ -442,7 +444,7 @@ export const ClaimTable = styled.div`
   td {
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     word-break: break-word;
     background: ${({ theme }) => theme.blueShade3};
   }
@@ -505,7 +507,7 @@ export const ClaimTable = styled.div`
 
     > span > b {
       font-weight: 500;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 
@@ -548,7 +550,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
       ? transparentize(0.9, theme.blue2)
       : transparentize(0.9, theme.attention)};
   color: ${({ variant, theme }) =>
-    variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
   margin: 0 auto;
   align-items: center;
   font-size: 15px;
@@ -571,7 +573,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
 
   > svg > path {
     fill: ${({ variant, theme }) =>
-      variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+      variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
   }
 
   > span {
@@ -652,7 +654,7 @@ export const ClaimTotal = styled.div`
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
   padding: 24px 24px 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   position: relative;
   display: flex;
   flex-direction: column;
@@ -670,7 +672,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 26px;
@@ -751,8 +753,8 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? theme.success : theme.blue2)};
-  color: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
+  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
+  color: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -767,7 +769,7 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
     height: 21px;
 
     > path {
-      fill: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
+      fill: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
     }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -780,7 +782,7 @@ export const InputField = styled.div`
   padding: 18px 18px 18px 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   display: flex;
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
@@ -792,7 +794,7 @@ export const InputField = styled.div`
     border: 0;
     font-size: 24px;
     outline: 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     width: 100%;
   }
 
@@ -839,7 +841,7 @@ export const InputField = styled.div`
     padding: 0;
     font-size: 22px;
     font-weight: 600;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   > span {
@@ -961,7 +963,7 @@ export const TopNav = styled.div`
 
   ${ButtonSecondary} {
     margin: 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     font-size: 15px;
     width: auto;
   }
@@ -1198,7 +1200,7 @@ export const UnderlineButton = styled.button`
   }
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   &:disabled {
@@ -1258,7 +1260,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     background: ${({ theme }) => theme.bg5};
     border-radius: 12px;
     padding: 0 12px;
@@ -1271,7 +1273,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
   }
 
   > div > label > input {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     border: none;
     padding: 12px 70px 0 0;
     font-size: 26px;
@@ -1353,7 +1355,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   justify-content: flex-start;
   overflow: hidden;
   border-radius: 24px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   margin: 6px 0;
   padding: 0;
 
@@ -1376,7 +1378,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: block;
     font-size: 12px;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     z-index: 1;
     height: 100%;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
@@ -1425,7 +1427,7 @@ export const InvestSummary = styled.div`
 
   > span > b {
     font-weight: 600;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -1519,7 +1521,7 @@ export const AccountClaimSummary = styled.div`
     border-radius: var(--iconSize);
     width: var(--iconSize);
     height: var(--iconSize);
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       transform: rotate(90deg);
@@ -1532,7 +1534,7 @@ export const AccountClaimSummary = styled.div`
     }
 
     > svg > path {
-      fill: ${({ theme }) => theme.text1};
+      fill: var(${UI.COLOR_TEXT1});
     }
   }
 `
@@ -1589,7 +1591,7 @@ export const CowSpinner = styled.div`
     height: 94%;
     width: 94%;
     padding: 0;
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
     border-radius: var(--circle-size);
     z-index: 1;
   }

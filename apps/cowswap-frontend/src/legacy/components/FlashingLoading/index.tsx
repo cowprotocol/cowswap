@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import CowIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
 
+import { UI } from 'common/constants/theme'
+
 export const LoadingWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -25,7 +27,7 @@ export const LoadingWrapper = styled.div`
   }
 
   > svg > g {
-    fill: ${({ theme }) => theme.text2};
+    fill: var(${UI.COLOR_TEXT2});
   }
 
   > span {
@@ -35,7 +37,7 @@ export const LoadingWrapper = styled.div`
     font-weight: 500;
     letter-spacing: 2px;
     margin: 5px auto 0;
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
   }
 
   @keyframes pulse {

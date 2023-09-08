@@ -2,6 +2,8 @@ import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
+import { UI } from 'common/constants/theme'
+
 export const ReceiveAmountBox = styled.div`
   display: flex;
   justify-content: space-between;
@@ -9,7 +11,7 @@ export const ReceiveAmountBox = styled.div`
   border-radius: 0 0 16px 16px;
   font-size: 14px;
   font-weight: 600;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border: 2px solid ${({ theme }) => theme.grey1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

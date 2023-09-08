@@ -3,6 +3,8 @@ import React from 'react'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'
 import { Progress2 } from './steps/Progress2'
@@ -72,7 +74,7 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 22px;
   border-radius: 0 0 12px 12px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   font-size: 15px;
   line-height: 1;
 
@@ -117,7 +119,7 @@ export const Progress = styled.div<ProgressProps>`
     transition: width 0.3s ease-in-out, background 0.2s ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
     background: ${({ status, theme }) =>
-      status === 'error' ? theme.danger : status === 'success' ? theme.success : theme.text3};
+      status === 'error' ? `var(${UI.COLOR_DANGER})` : status === 'success' ? `var(${UI.COLOR_SUCCESS})` : theme.text3};
     border-radius: var(--height);
 
     ${({ theme }) => theme.mediaWidth.upToSmall<ProgressProps>`

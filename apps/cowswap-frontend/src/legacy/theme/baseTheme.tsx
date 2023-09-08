@@ -1,4 +1,4 @@
-import { transparentize, lighten, darken } from 'polished'
+import { transparentize, darken, lighten } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
@@ -8,6 +8,8 @@ import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
 import { ButtonSize } from 'legacy/theme/enum'
 import { Colors } from 'legacy/theme/styled'
+
+import { UI } from 'common/constants/theme'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
@@ -387,45 +389,82 @@ export const UniFixedGlobalStyle = css`
 
 export const UniThemedGlobalStyle = css`
   :root {
-    // CSS Variables ===============================
-
     // Colors
-    --cow-color-white: ${({ theme }) => theme.white};
-    --cow-color-blue: ${({ theme }) => theme.blueDark2};
-    --cow-color-border: ${({ theme }) => theme.grey1};
-    --cow-color-lightBlue: ${({ theme }) => theme.information};
-    --cow-color-lightBlue-opacity-90: ${({ theme }) => transparentize(0.1, theme.information)}; // 90% opacity
-    --cow-color-lightBlue-opacity-80: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
-    --cow-color-yellow: ${({ theme }) => theme.alert};
-    --cow-color-yellow-light: ${({ theme }) => theme.alert2};
-    --cow-color-green: ${({ theme }) => theme.success};
+    ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
+    ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
+    ${UI.COLOR_GREY}: ${({ theme }) => theme.grey1};
+    ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
+    ${UI.COLOR_YELLOW}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
+    ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
+    ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
+    
+    // Base
+    ${UI.COLOR_BORDER}: var(${UI.COLOR_GREY});
+    ${UI.COLOR_CONTAINER_BG_01}: ${({ theme }) => theme.bg1};
+    ${UI.COLOR_CONTAINER_BG_02}: ${({ theme }) => theme.bg2};
+    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT1});
+    ${UI.BORDER_RADIUS_NORMAL}: 24px;
+    ${UI.PADDING_NORMAL}: 24px;
+    ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
+    
+    // Icons
+    ${UI.ICON_SIZE_NORMAL}: 24px;
+    ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
 
-    // States
-    --cow-color-information: var(--cow-color-lightBlue);
-    --cow-color-information-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
-    --cow-color-information-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+    // [STATE] Information (light blue)
+    ${UI.COLOR_INFORMATION}: var(${UI.COLOR_LIGHT_BLUE});
+    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
+    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
 
-    --cow-color-alert: var(--cow-color-yellow);
-    --cow-color-alert-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
-    --cow-color-alert-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
+    // [STATE] Alert (yellow)
+    ${UI.COLOR_ALERT}: var(${UI.COLOR_YELLOW});
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
+    
+    // [STATE] Alert2 (yellow lighter)
+    ${UI.COLOR_ALERT2}: var(${UI.COLOR_YELLOW_LIGHT});
+    ${UI.COLOR_ALERT2_BG}: var(${UI.COLOR_YELLOW_LIGHT});
+    ${UI.COLOR_ALERT2_TEXT}: var(${UI.COLOR_BLUE});
+    
+    // [STATE] Success (green)
+    ${UI.COLOR_SUCCESS}: var(${UI.COLOR_GREEN});
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
 
-    --cow-color-alert2: var(--cow-color-yellow-light);
-    --cow-color-alert2-bg: var(--cow-color-alert2);
-    --cow-color-alert2-text: var(--cow-color-blue);
-
-    --cow-color-success: var(--cow-color-green);
-    --cow-color-success-bg: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
-    --cow-color-success-text: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
-
+    
+    // [STATE] Danger (red)
+    ${UI.COLOR_DANGER}: var(${UI.COLOR_RED});
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger))};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger))};
+    
     // Text
-    --cow-color-text1: ${({ theme }) => theme.text1};
-    --cow-color-text1-inactive: ${({ theme }) => transparentize(0.4, theme.text1)};
-    --cow-color-text1-opacity-25: ${({ theme }) => transparentize(0.75, theme.text1)};
+    ${UI.COLOR_TEXT1}: ${({ theme }) => theme.text1};
+    ${UI.COLOR_TEXT1_INACTIVE}: ${({ theme }) => transparentize(0.4, theme.text1)};
+    ${UI.COLOR_TEXT1_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.text1)};
+    ${UI.COLOR_TEXT1_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text1)};
+    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(0.3, theme.text1)};
+    ${UI.COLOR_LINK}: ${({ theme }) => theme.text3};
+    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text3)};
+
+    // Font Weights & Sizes
+    ${UI.FONT_WEIGHT_NORMAL}: 400;
+    ${UI.FONT_WEIGHT_MEDIUM}: 500;
+    ${UI.FONT_WEIGHT_BOLD}: 600;
+    ${UI.FONT_SIZE_SMALLER}: 10px;
+    ${UI.FONT_SIZE_SMALL}: 12px;
+    ${UI.FONT_SIZE_NORMAL}: 14px;
+    ${UI.FONT_SIZE_MEDIUM}: 16px;
+    ${UI.FONT_SIZE_LARGE}: 18px;
+    ${UI.FONT_SIZE_LARGER}: 20px;
+    ${UI.FONT_SIZE_LARGEST}: 24px;
   }
 
   html {
-    color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.bg2};
+    color: var(${UI.COLOR_TEXT1});
+    background-color: var(${UI.COLOR_CONTAINER_BG_02})
   }
   body {
     min-height: 100vh;
@@ -443,7 +482,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${UniThemedGlobalStyle}
 
   html {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     ${({ theme }) => theme.body.background}
   }
 
@@ -457,8 +496,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.white};
+    background: var(${UI.COLOR_CONTAINER_BG_02});
+    color: var(${UI.COLOR_WHITE});
   }
 
   // TODO: Can be removed once we control this component

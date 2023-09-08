@@ -1,6 +1,8 @@
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 const Card = styled(Box)<{ width?: string; padding?: string; border?: string; $borderRadius?: string }>`
   width: ${({ width }) => width ?? '100%'};
   padding: ${({ padding }) => padding ?? '1rem'};
@@ -11,7 +13,7 @@ export default Card
 
 export const LightCard = styled(Card)`
   border: 1px solid ${({ theme }) => theme.bg2};
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 export const LightGreyCard = styled(Card)`

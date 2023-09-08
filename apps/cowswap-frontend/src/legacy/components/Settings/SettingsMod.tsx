@@ -21,6 +21,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { SettingsTabProp } from './index'
@@ -30,7 +31,7 @@ export const StyledMenuIcon = styled(Settings)`
   width: 20px;
 
   > * {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 
   :hover {

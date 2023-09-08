@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 
+import { UI } from 'common/constants/theme'
+
 import { OrderTab } from '../../const/tabs'
 
 const Tabs = styled.div`
@@ -24,7 +26,7 @@ const Tabs = styled.div`
 const TabButton = styled(Link)<{ active: string }>`
   display: inline-block;
   background: ${({ theme, active }) => (active === 'true' ? transparentize(0.88, theme.text3) : 'transparent')};
-  color: ${({ theme, active }) => (active === 'true' ? theme.text1 : transparentize(0.2, theme.text1))};
+  color: ${({ theme, active }) => (active === 'true' ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.text1))};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
   font-size: 13px;
@@ -39,8 +41,8 @@ const TabButton = styled(Link)<{ active: string }>`
   `};
 
   &:hover {
-    background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

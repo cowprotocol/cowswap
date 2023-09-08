@@ -12,6 +12,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
+import { UI } from 'common/constants/theme'
+
 import { AuxInformationContainer } from '../swap/styleds'
 
 interface HighFeeContainerProps {
@@ -52,7 +54,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
       : LOW_TIER_FEE
       ? theme.alert
       : theme.info};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   padding: ${({ padding = '16px' }) => padding};
   width: ${({ width = '100%' }) => width};
   border-radius: 16px;
