@@ -6,6 +6,8 @@ import styled from 'styled-components/macro'
 import QuestionImage from 'legacy/assets/svg/question.svg'
 import { renderTooltip } from 'legacy/components/Tooltip'
 
+import { UI } from 'common/constants/theme'
+
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
 const QuestionMark = () => <SVG src={QuestionImage} />
@@ -24,7 +26,7 @@ export const QuestionWrapper = styled.div`
   background-color: transparent;
 
   > svg > path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

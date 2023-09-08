@@ -29,6 +29,7 @@ import { isAddress } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
@@ -42,7 +43,7 @@ export const Footer = styled.div`
   padding: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 export interface CurrencySearchProps {

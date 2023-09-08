@@ -2,12 +2,14 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const StyledIdenticon = styled.div`
   height: 1rem;
   width: 1rem;
   border-radius: 1.125rem;
   // background-color: ${({ theme }) => theme.bg4};
-  background-color: ${({ theme }) => theme.bg1}; // MOD
+  background-color: var(${UI.COLOR_CONTAINER_BG_01}); // MOD
   font-size: initial;
 `
 

@@ -4,6 +4,8 @@ import { darken, transparentize } from 'polished'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
 
+import { UI } from 'common/constants/theme'
+
 const turnOnToggle = keyframes`
   from {
     margin-left: 0em;
@@ -54,7 +56,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   background: ${({ theme, isActive }) => (isActive ? theme.bg2 : theme.grey1)};
   border: none;
   border-radius: 20px;

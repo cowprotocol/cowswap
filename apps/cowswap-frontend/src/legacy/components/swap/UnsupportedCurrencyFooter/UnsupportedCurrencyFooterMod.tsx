@@ -15,6 +15,7 @@ import { getEtherscanLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'
 
@@ -28,7 +29,7 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
   max-width: 400px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   background-color: ${({ theme }) => theme.advancedBG};
   z-index: ${Z_INDEX.deprecated_zero};
 

@@ -27,6 +27,7 @@ import listVersionLabel from 'legacy/utils/listVersionLabel'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
@@ -53,7 +54,7 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   border-radius: 0.5rem;
   padding: 1rem;
   display: grid;

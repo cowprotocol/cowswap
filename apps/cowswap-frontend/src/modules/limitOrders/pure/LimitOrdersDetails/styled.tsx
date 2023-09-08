@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
+import { UI } from 'common/constants/theme'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const DetailsRow = styled.div`
@@ -41,7 +42,7 @@ export const DetailsRow = styled.div`
 export const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 400;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   min-height: 24px;
   gap: 3px;
 `

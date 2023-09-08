@@ -13,6 +13,8 @@ import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/st
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
+
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 
 export interface ListRowProps {
@@ -33,12 +35,12 @@ const Wrapper = styled.div`
 
     svg > path,
     svg > circle {
-      stroke: ${({ theme }) => theme.text1};
+      stroke: var(${UI.COLOR_TEXT1});
     }
   }
 
   ${PopoverContainer} {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   }
 `
 
@@ -54,18 +56,18 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 
   ${Row}, ${RowFixed}, ${RowBetween} {
     > div {
-      color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
+      color: ${({ active, theme }) => (active ? `var(${UI.COLOR_TEXT1})` : theme.text2)};
     }
   }
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   ${Row},
   ${Row} > div > div,
   ${Row} > div > div > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${Row} > img {
@@ -76,7 +78,7 @@ export const Card = styled(CardUni)`
   }
 
   ${TextDot} {
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
   }
 
   ${ButtonPrimary} {

@@ -11,13 +11,14 @@ import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
   z-index: 1;
   width: 100%;
 `
@@ -28,7 +29,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   align-items: center;
   border-radius: 16px;
   border: 0;
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
 `
 
 export const InputContainer = styled.div`
@@ -50,7 +51,7 @@ const Input = styled.input<{ error?: boolean }>`
   width: 100%;
 
   &&::placeholder {
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
   }
 
   &:focus::placeholder {

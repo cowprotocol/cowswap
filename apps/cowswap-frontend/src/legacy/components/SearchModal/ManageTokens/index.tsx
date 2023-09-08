@@ -10,6 +10,8 @@ import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { Separator } from 'legacy/components/SearchModal/styleds'
 import { ButtonText, LinkIcon } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 import ManageTokensMod, { ManageTokensProps, Footer } from './ManageTokensMod'
 
 export type ImportTokensRowProps = Omit<ManageTokensProps, 'ImportTokensRow'> & {
@@ -31,7 +33,7 @@ export const Wrapper = styled.div`
   }
 
   ${RowBetween} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   // Custom Tokens Title
@@ -41,7 +43,7 @@ export const Wrapper = styled.div`
 
   // Token name
   ${RowBetween} > div > a > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${RowFixed} > svg,

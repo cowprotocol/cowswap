@@ -9,6 +9,8 @@ import { RowFixed } from 'legacy/components/Row'
 import { Separator } from 'legacy/components/SearchModal/styleds'
 import { IconWrapper, ThemedText } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 
 export const ContentWrapper = styled(Column)`
@@ -19,8 +21,8 @@ export const ContentWrapper = styled(Column)`
   > input {
     border: none;
     transition: background 0.3s ease-in-out;
-    background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
+    color: var(${UI.COLOR_TEXT1});
   }
 
   > input::placeholder {
@@ -33,7 +35,7 @@ export const ContentWrapper = styled(Column)`
   }
 
   ${Separator} {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
 
     // Target the token list container
     + div {
