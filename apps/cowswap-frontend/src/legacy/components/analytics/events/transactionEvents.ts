@@ -1,13 +1,7 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { sendEvent } from '../googleAnalytics'
-import { PIXEL_EVENTS } from '../pixel/constants'
-import { sendFacebookEvent } from '../pixel/facebook'
-import { sendLinkedinEvent } from '../pixel/linkedin'
-import { sendMicrosoftEvent } from '../pixel/microsoft'
-import { sendPavedEvent } from '../pixel/paved'
-import { sendRedditEvent } from '../pixel/reddit'
-import { sendTwitterEvent } from '../pixel/twitter'
+import { PixelEvent, sendAllPixels } from '../pixel'
 import { AnalyticsOrderType, Category } from '../types'
 
 const LABEL_FROM_CLASS: Record<AnalyticsOrderType, string> = {
@@ -86,12 +80,7 @@ export function signTradeAnalytics(orderClass: AnalyticsOrderType, label?: strin
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, orderClass: AnalyticsOrderType, label?: string) {
   if (action === 'Posted') {
-    sendFacebookEvent(PIXEL_EVENTS.POST_TRADE)
-    sendLinkedinEvent(PIXEL_EVENTS.POST_TRADE)
-    sendTwitterEvent(PIXEL_EVENTS.POST_TRADE)
-    sendRedditEvent(PIXEL_EVENTS.POST_TRADE)
-    sendPavedEvent(PIXEL_EVENTS.POST_TRADE)
-    sendMicrosoftEvent(PIXEL_EVENTS.POST_TRADE)
+    sendAllPixels(PixelEvent.POST_TRADE)
   }
 
   sendEvent({
