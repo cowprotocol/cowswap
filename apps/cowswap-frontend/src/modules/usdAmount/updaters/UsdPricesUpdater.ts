@@ -8,6 +8,7 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
 import { USDC } from 'legacy/constants/tokens'
+import useDebounce from 'legacy/hooks/useDebounce'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -31,6 +32,8 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
+const USD_PRICES_QUEUE_DEBOUNCE_TIME = ms`0.5s`
+
 export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
@@ -40,15 +43,17 @@ export function UsdPricesUpdater() {
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
+  const debouncedQueue = useDebounce(queue, USD_PRICES_QUEUE_DEBOUNCE_TIME)
+
   const swrResponse = useSWR<UsdRawPrices | null>(
-    ['UsdPricesUpdater', queue, chainId],
+    ['UsdPricesUpdater', debouncedQueue, chainId],
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 
-      setUsdPricesLoading(queue)
+      setUsdPricesLoading(debouncedQueue)
 
-      return processQueue(queue, getUsdcPrice).catch((error) => {
-        resetUsdPrices(queue)
+      return processQueue(debouncedQueue, getUsdcPrice).catch((error) => {
+        resetUsdPrices(debouncedQueue)
 
         return Promise.reject(error)
       })
