@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -42,7 +42,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
   const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
-  const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount).value
+  const minReceivedUsdAmount = useUsdAmount(minReceiveAmount).value
 
   // Limit price is the same for all parts
   const limitPrice = usePrice(inputCurrencyAmount, minReceiveAmount)

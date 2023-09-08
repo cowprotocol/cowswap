@@ -2,8 +2,9 @@ import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { ExternalLink } from 'legacy/theme'
+
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -16,7 +17,7 @@ export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 
   const showSurplusAmount = surplusAmount && surplusAmount.greaterThan(0)
-  const surplusUsdAmount = useHigherUSDValue(showSurplusAmount ? surplusAmount : undefined).value
+  const surplusUsdAmount = useUsdAmount(showSurplusAmount ? surplusAmount : undefined).value
   const nativeSymbol = useNativeCurrency()?.symbol || 'ETH'
 
   const Wrapper = styled.div`

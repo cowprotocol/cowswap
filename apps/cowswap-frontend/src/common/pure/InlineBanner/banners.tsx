@@ -31,8 +31,8 @@ export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol
       <strong>Token wrapping bundling</strong>
       <p>
         For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
-        This includes the {nativeCurrencySymbol} wrapping and, if needed,
-        {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!
+        This includes the&nbsp;{nativeCurrencySymbol}&nbsp;wrapping and, if needed,&nbsp;{wrappedCurrencySymbol}
+        &nbsp;approval. Even if the trade fails, your wrapping and approval will be done!
       </p>
     </InlineBanner>
   )

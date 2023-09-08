@@ -7,9 +7,10 @@ import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { TradeAmounts } from 'common/types'
+
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { TradeConfirmation, TradeConfirmationProps } from '../../pure/TradeConfirmation'
-import { TradeAmounts } from '../../types/TradeAmounts'
 
 import { TradeConfirmModal } from './index'
 

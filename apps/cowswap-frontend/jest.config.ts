@@ -12,4 +12,5 @@ export default {
   coverageDirectory: '../../coverage/cowswap',
   setupFiles: ['dotenv/config'],
   setupFilesAfterEnv: ['./src/setupTests.ts'],
+  transformIgnorePatterns: ['node_modules/(?!@ledgerhq/connect-kit-loader)'],
 }

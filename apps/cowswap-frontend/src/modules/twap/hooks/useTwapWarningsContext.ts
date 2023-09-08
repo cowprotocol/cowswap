@@ -19,13 +19,14 @@ export interface TwapWarningsContext {
 export function useTwapWarningsContext(): TwapWarningsContext {
   const { account } = useWalletInfo()
   const primaryFormValidation = useGetTradeFormValidation()
-  const priceImpact = useTradePriceImpact()
+  const priceImpactParams = useTradePriceImpact()
 
   return useMemo(() => {
     // TODO: bind to settings
     const expertMode = false
     const canTrade = !primaryFormValidation || NOT_BLOCKING_VALIDATIONS.includes(primaryFormValidation)
-    const showPriceImpactWarning = canTrade && !expertMode && !!priceImpact.error
+    const showPriceImpactWarning =
+      canTrade && !expertMode && !priceImpactParams.loading && !priceImpactParams.priceImpact
     const walletIsNotConnected = !account
 
     return {
@@ -33,5 +34,5 @@ export function useTwapWarningsContext(): TwapWarningsContext {
       showPriceImpactWarning,
       walletIsNotConnected,
     }
-  }, [priceImpact, primaryFormValidation, account])
+  }, [primaryFormValidation, account, priceImpactParams])
 }

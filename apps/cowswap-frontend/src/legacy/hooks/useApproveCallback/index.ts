@@ -1,30 +1,16 @@
 import { useMemo } from 'react'
 
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
+import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { ClaimType } from 'legacy/state/claim/hooks'
-import { Field } from 'legacy/state/swap/actions'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
 import { useWalletInfo } from 'modules/wallet'
 
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
-
-export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
-
-export type ApproveCallbackFromTradeParams = Pick<
-  ApproveCallbackParams,
-  'openTransactionConfirmationModal' | 'closeModals' | 'amountToCheckAgainstAllowance'
-> & {
-  trade: TradeGp | undefined
-  allowedSlippage: Percent
-  isNativeFlow?: boolean
-}
 
 export type OptionalApproveCallbackParams = {
   transactionSummary?: string
@@ -41,36 +27,6 @@ export type ApproveCallbackState = {
   approve: ApproveCallback
   revokeApprove: (optionalParams?: OptionalApproveCallbackParams | undefined) => Promise<void>
   isPendingApproval: boolean
-}
-
-// export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
-export function useApproveCallbackFromTrade({
-  openTransactionConfirmationModal,
-  closeModals,
-  trade,
-  allowedSlippage,
-  amountToCheckAgainstAllowance,
-  isNativeFlow,
-}: ApproveCallbackFromTradeParams): ApproveCallbackState {
-  const { chainId } = useWalletInfo()
-
-  const amountToApprove = useMemo(() => {
-    if (trade) {
-      const slippageForTrade = computeSlippageAdjustedAmounts(trade, allowedSlippage)
-      return isNativeFlow ? slippageForTrade[Field.INPUT]?.wrapped : slippageForTrade[Field.INPUT]
-    }
-    return undefined
-  }, [trade, allowedSlippage, isNativeFlow])
-
-  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-
-  return useApproveCallback({
-    openTransactionConfirmationModal,
-    closeModals,
-    amountToApprove,
-    spender: vaultRelayer,
-    amountToCheckAgainstAllowance,
-  })
 }
 
 type ApproveCallbackFromClaimParams = Omit<
@@ -109,40 +65,6 @@ export function useApproveCallbackFromClaim({
     openTransactionConfirmationModal,
     closeModals,
     spender: vCowContract,
-    amountToApprove: approveAmounts?.amountToApprove,
-    amountToCheckAgainstAllowance: approveAmounts?.amountToCheckAgainstAllowance,
-  })
-}
-
-type ApproveCallbackFromBalanceParams = Omit<
-  ApproveCallbackParams,
-  'spender' | 'amountToApprove' | 'amountToCheckAgainstAllowance'
-> & {
-  token: Token
-  balance?: CurrencyAmount<Currency>
-}
-
-export function useApproveCallbackFromBalance({
-  openTransactionConfirmationModal,
-  closeModals,
-  token,
-  balance,
-}: ApproveCallbackFromBalanceParams) {
-  const { chainId } = useWalletInfo()
-
-  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-
-  const approveAmounts = useMemo(() => {
-    return {
-      amountToApprove: CurrencyAmount.fromRawAmount(token, MaxUint256),
-      amountToCheckAgainstAllowance: balance,
-    }
-  }, [balance, token])
-
-  return useApproveCallback({
-    openTransactionConfirmationModal,
-    closeModals,
-    spender: vaultRelayer,
     amountToApprove: approveAmounts?.amountToApprove,
     amountToCheckAgainstAllowance: approveAmounts?.amountToCheckAgainstAllowance,
   })

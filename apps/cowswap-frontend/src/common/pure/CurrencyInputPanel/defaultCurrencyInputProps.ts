@@ -42,7 +42,6 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
   priceImpactParams: {
     priceImpact: new Percent(2, 10_000),
     loading: false,
-    error: 'fetch-quote-error',
   },
   subsidyAndBalance: {
     subsidy: {

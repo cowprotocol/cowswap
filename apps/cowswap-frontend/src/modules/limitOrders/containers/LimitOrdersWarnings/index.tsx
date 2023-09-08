@@ -7,8 +7,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -17,6 +15,7 @@ import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
+import { useTradePriceImpact } from 'modules/trade'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -38,7 +37,6 @@ import { RateImpactWarning } from '../../pure/RateImpactWarning'
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
 
 export interface LimitOrdersWarningsProps {
-  priceImpact: PriceImpact
   feeAmount?: Nullish<CurrencyAmount<Currency>>
   isConfirmScreen?: boolean
   className?: string
@@ -58,7 +56,7 @@ const StyledRateImpactWarning = styled(RateImpactWarning)`
 `
 
 export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
-  const { priceImpact, feeAmount, isConfirmScreen = false, className } = props
+  const { feeAmount, isConfirmScreen = false, className } = props
 
   const { isPriceImpactAccepted, isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
@@ -67,14 +65,21 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const rateImpact = useRateImpact()
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { slippageAdjustedSellAmount, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
+  const priceImpactParams = useTradePriceImpact()
 
   const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
   const showPriceImpactWarning =
-    canTrade && !tradeQuote.isLoading && !!chainId && !expertMode && !!account && !!priceImpact.error
+    canTrade &&
+    !tradeQuote.isLoading &&
+    !expertMode &&
+    !!account &&
+    !priceImpactParams.loading &&
+    !priceImpactParams.priceImpact
+
   const showRateImpactWarning =
     canTrade &&
     !tradeQuote.isLoading &&

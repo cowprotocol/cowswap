@@ -20429,6 +20429,16 @@ rollup-plugin-terser@^7.0.0:
     serialize-javascript "^4.0.0"
     terser "^5.0.0"
 
+rollup-plugin-visualizer@^5.9.2:
+  version "5.9.2"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-visualizer/-/rollup-plugin-visualizer-5.9.2.tgz#f1aa2d9b1be8ebd6869223c742324897464d8891"
+  integrity sha512-waHktD5mlWrYFrhOLbti4YgQCn1uR24nYsNuXxg7LkPH8KdTXVWR9DNY1WU0QqokyMixVXJS4J04HNrVTMP01A==
+  dependencies:
+    open "^8.4.0"
+    picomatch "^2.3.1"
+    source-map "^0.7.4"
+    yargs "^17.5.1"
+
 rollup@^2.43.1:
   version "2.79.1"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.79.1.tgz#bedee8faef7c9f93a2647ac0108748f497f081c7"
@@ -21046,7 +21056,7 @@ source-map@^0.5.7:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
 
-source-map@^0.7.3:
+source-map@^0.7.3, source-map@^0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
@@ -24239,7 +24249,7 @@ yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yargs@^17.0.0, yargs@^17.3.1, yargs@^17.6.2, yargs@^17.7.2:
+yargs@^17.0.0, yargs@^17.3.1, yargs@^17.5.1, yargs@^17.6.2, yargs@^17.7.2:
   version "17.7.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
   integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==

@@ -85,7 +85,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             partiallyFillableOverride={partiallyFillableOverride}
             featurePartialFillsEnabled={partialFillsEnabled}
           />
-          <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+          <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

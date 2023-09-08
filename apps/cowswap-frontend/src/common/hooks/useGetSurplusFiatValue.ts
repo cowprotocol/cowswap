@@ -5,9 +5,11 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { MIN_FIAT_SURPLUS_VALUE, MIN_FIAT_SURPLUS_VALUE_MODAL, MIN_SURPLUS_UNITS } from 'legacy/constants'
-import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
 import { Order } from 'legacy/state/orders/actions'
 
+import { useUsdAmount } from 'modules/usdAmount'
+
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -33,18 +35,21 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(order)])
 
-  const surplusFiatValue = useCoingeckoUsdValue(surplusAmount).value
+  const surplusFiatValue = useUsdAmount(surplusAmount).value
   const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
 
   const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)
 
-  return {
-    surplusFiatValue,
-    showFiatValue,
-    surplusToken,
-    surplusAmount,
-    showSurplus,
-  }
+  return useSafeMemo(
+    () => ({
+      surplusFiatValue,
+      showFiatValue,
+      surplusToken,
+      surplusAmount,
+      showSurplus,
+    }),
+    [surplusFiatValue, showFiatValue, surplusToken, surplusAmount, showSurplus]
+  )
 }
 
 function shouldShowSurplus(

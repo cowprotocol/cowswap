@@ -279,9 +279,9 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
   })
 }
 
-export function useRecentActivityLastPendingOrder() {
-  const { chainId } = useWalletInfo()
-  const pending = useCombinedPendingOrders({ chainId })
+export function useRecentActivityLastPendingOrder(): Order | null {
+  const { chainId, account } = useWalletInfo()
+  const pending = useCombinedPendingOrders({ chainId, account })
 
   return useMemo(() => {
     if (!pending.length) {

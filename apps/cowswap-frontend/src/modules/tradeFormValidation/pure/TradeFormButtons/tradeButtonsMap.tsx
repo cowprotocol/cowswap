@@ -34,6 +34,7 @@ const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
   [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
   [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
+  [GpQuoteErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
 }
 
 const unsupportedTokenButton = (context: TradeFormButtonContext) => {

@@ -17,6 +17,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useTradeState } from './useTradeState'
 
 import { wrapNativeStateAtom } from '../state/wrapNativeStateAtom'
 
@@ -38,9 +39,10 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { chainId } = useWalletInfo()
   const wethContract = useWETHContract()
   const addTransaction = useTransactionAdder()
+  const { updateState, state: tradeState } = useTradeState()
   const setWrapNativeState = useSetAtom(wrapNativeStateAtom)
 
-  if (!wethContract || !chainId || !amount) {
+  if (!wethContract || !chainId || !amount || !updateState || !tradeState) {
     return null
   }
 
@@ -49,6 +51,8 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
     wethContract,
     amount,
     addTransaction,
+    tradeState,
+    updateTradeState: updateState,
     closeModals() {
       setWrapNativeState({ isOpen: false })
     },
