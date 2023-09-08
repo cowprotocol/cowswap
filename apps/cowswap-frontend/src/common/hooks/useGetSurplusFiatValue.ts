@@ -9,6 +9,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -39,13 +40,16 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Outpu
 
   const showSurplus = shouldShowSurplus(surplusFiatValue, surplusAmount)
 
-  return {
-    surplusFiatValue,
-    showFiatValue,
-    surplusToken,
-    surplusAmount,
-    showSurplus,
-  }
+  return useSafeMemo(
+    () => ({
+      surplusFiatValue,
+      showFiatValue,
+      surplusToken,
+      surplusAmount,
+      showSurplus,
+    }),
+    [surplusFiatValue, showFiatValue, surplusToken, surplusAmount, showSurplus]
+  )
 }
 
 function shouldShowSurplus(
