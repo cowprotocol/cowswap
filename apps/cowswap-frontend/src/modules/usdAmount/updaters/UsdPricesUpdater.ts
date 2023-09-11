@@ -18,7 +18,6 @@ import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
-  resetUsdPricesAtom,
   setUsdPricesLoadingAtom,
   UsdRawPrices,
   usdRawPricesAtom,
@@ -38,7 +37,6 @@ export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
-  const resetUsdPrices = useSetAtom(resetUsdPricesAtom)
   const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
@@ -52,11 +50,7 @@ export function UsdPricesUpdater() {
 
       setUsdPricesLoading(debouncedQueue)
 
-      return processQueue(debouncedQueue, getUsdcPrice).catch((error) => {
-        resetUsdPrices(debouncedQueue)
-
-        return Promise.reject(error)
-      })
+      return processQueue(debouncedQueue, getUsdcPrice)
     },
     swrOptions
   )
@@ -96,21 +90,24 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | nu
 
 async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction | null>): Promise<UsdRawPrices> {
   const results = await Promise.all(
-    queue.map((currency) => {
-      return fetchCurrencyUsdPrice(currency, getUsdcPrice).then((price) => {
-        if (!price) {
-          return null
-        }
+    queue.map(async (currency) => {
+      const state: UsdRawPriceState = {
+        price: null,
+        currency,
+        isLoading: false,
+      }
 
-        const state: UsdRawPriceState = {
-          updatedAt: Date.now(),
-          price,
-          currency,
-          isLoading: false,
+      try {
+        const price = await fetchCurrencyUsdPrice(currency, getUsdcPrice)
+        if (price) {
+          state.price = price
+          state.updatedAt = Date.now()
         }
+      } catch (e) {
+        console.debug(`[UsdPricesUpdater]: Failed to fetch price for `, currency.address)
+      }
 
-        return { [currency.address.toLowerCase()]: state }
-      })
+      return { [currency.address.toLowerCase()]: state }
     })
   )
 
