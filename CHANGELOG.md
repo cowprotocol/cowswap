@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.47.0](https://github.com/cowprotocol/cowswap/compare/v1.47.0-RC.0...v1.47.0) (2023-09-11)
+
+
+### Bug Fixes
+
+* **usd-price:** handle individual token price query failure ([#3127](https://github.com/cowprotocol/cowswap/issues/3127)) ([7d253d9](https://github.com/cowprotocol/cowswap/commit/7d253d9e654cfb3c0d7b862395637430f833b6df))
+
+
+### Miscellaneous Chores
+
+* **release:** 1.47.0 ([58b3ff4](https://github.com/cowprotocol/cowswap/commit/58b3ff4674a486c725505f3ec24d39df13f34b8d))
+
 ## [1.47.0-RC.0](https://github.com/cowprotocol/cowswap/compare/v1.46.0...v1.47.0-RC.0) (2023-09-08)
 
 
