@@ -78,20 +78,3 @@ export const setUsdPricesLoadingAtom = atom(null, (get, set, currencies: Token[]
     set(usdRawPricesAtom, newState)
   }
 })
-
-export const resetUsdPricesAtom = atom(null, (get, set, currencies: Token[]) => {
-  const currentState = get(usdRawPricesAtom)
-  const isLoading = false
-
-  const newState = currencies.reduce<UsdRawPrices>((acc, token) => {
-    const tokenAddress = token.address.toLowerCase()
-
-    acc[tokenAddress] = { currency: token, isLoading, price: null }
-
-    return acc
-  }, {})
-
-  if (!deepEqual(currentState, newState)) {
-    set(usdRawPricesAtom, newState)
-  }
-})
