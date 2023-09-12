@@ -2,15 +2,22 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
-import { InlineBanner } from './index'
+import { InlineBanner, InlineBannerProps } from './index'
+
+
+export enum BannerOrientation {
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
+}
 
 export function BundleTxApprovalBanner() {
   return (
-    <InlineBanner type="information">
+    <InlineBanner bannerType="information">
       <strong>Token approval bundling</strong>
       <p>
         For your convenience, token approval and order placement will be bundled into a single transaction, streamlining
@@ -27,7 +34,7 @@ export type BundleTxWrapBannerProps = {
 
 export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
   return (
-    <InlineBanner type="information">
+    <InlineBanner bannerType="information">
       <strong>Token wrapping bundling</strong>
       <p>
         For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
@@ -49,7 +56,7 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
   const supportsWrappingText = supportsWrapping ? `${nativeCurrencySymbol} wrapping, ` : ''
 
   return (
-    <InlineBanner type="information">
+    <InlineBanner bannerType="information">
       <strong>Use Safe web app</strong>
       <p>
         Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
@@ -79,6 +86,15 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
       {/*<br />*/}
       {/* TODO: add link to somewhere */}
       {/*<a href="/">Learn more ↗</a>*/}
+    </InlineBanner>
+  )
+}
+
+export function ThirdPartySignerWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, padding = '10px 16px' }: InlineBannerProps) {
+  return (
+    <InlineBanner borderRadius={borderRadius} orientation={orientation} iconSize={iconSize} bannerType={bannerType} padding={padding}>
+      <p><strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!</p>
+      <ButtonSecondary minHeight={'28px'}>Dismiss</ButtonSecondary>
     </InlineBanner>
   )
 }

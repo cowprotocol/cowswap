@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
-export const ButtonSecondary = styled.button`
+export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: string }>`
   background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});
   color: var(${UI.COLOR_LIGHT_BLUE});
   font-size: 12px;
@@ -12,8 +12,8 @@ export const ButtonSecondary = styled.button`
   border-radius: 12px;
   position: relative;
   transition: background 0.2s ease-in-out;
-  min-height: 35px;
-  padding: 0 12px;
+  min-height: ${({ minHeight = '35px' }) => minHeight};
+  padding: ${({ padding = '0 12px' }) => padding};
   cursor: pointer;
   white-space: nowrap;
 

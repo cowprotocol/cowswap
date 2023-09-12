@@ -15,6 +15,7 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { BannerOrientation, ThirdPartySignerWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -247,9 +248,15 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId]
   }
 
+  const isSafeAnd3rdPartyRecipient = true
+
   return (
     <>
+      {/* Warning banner if Safe + 3rd party recipient */}
+      {isSafeAnd3rdPartyRecipient && <ThirdPartySignerWarningBanner borderRadius={'12px 12px 0 0'} orientation={BannerOrientation.Horizontal} />}
+
       <Summary>
+
         <span>
           {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
 
