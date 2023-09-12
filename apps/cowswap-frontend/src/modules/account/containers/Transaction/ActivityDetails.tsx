@@ -12,9 +12,11 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation, ThirdPartySignerWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
@@ -248,6 +250,7 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId]
   }
 
+  // TODO: Get this from the API
   const isSafeAnd3rdPartyRecipient = true
 
   return (
@@ -307,6 +310,17 @@ export function ActivityDetails(props: {
                   </>
                 )}
               </SummaryInnerRow>
+
+              {/* TODO: Get dynamic recipient */}
+              <SummaryInnerRow>
+                <b>Recipient:</b>
+                <i>
+                  <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                  <a href="#" target="_blank">0xfE84A86803952041eCCCB584300eb66C601BfeC1 ↗</a>
+                  </i>
+              </SummaryInnerRow>
+              {/* ============================== */}
+
               {surplusAmount?.greaterThan(0) && (
                 <SummaryInnerRow>
                   <b>Surplus</b>

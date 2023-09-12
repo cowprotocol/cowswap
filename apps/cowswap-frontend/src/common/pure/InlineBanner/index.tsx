@@ -1,70 +1,65 @@
 import { ReactNode } from 'react'
 
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import iconInformation from 'legacy/assets/cow-swap/alert-circle.svg'
-import iconAlert from 'legacy/assets/cow-swap/alert.svg'
-import iconDanger from 'legacy/assets/cow-swap/alert.svg'
-import iconSuccess from 'legacy/assets/cow-swap/check.svg'
-
 import { UI } from 'common/constants/theme'
+import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 
-export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings';
+export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface ColorEnums {
-  icon?: string;
-  iconText?: string;
-  color: string;
-  bg: string;
-  text: string;
+  icon?: IconType
+  iconText?: string
+  color: UI
+  bg: string
+  text: string
 }
 
 function getColorEnums(bannerType: BannerType): ColorEnums {
   switch (bannerType) {
     case 'alert':
       return {
-        icon: iconAlert,
+        icon: IconType.ALERT,
         color: UI.COLOR_ALERT,
         bg: UI.COLOR_ALERT_BG,
         text: UI.COLOR_ALERT_TEXT,
-      };
+      }
     case 'information':
       return {
-        icon: iconInformation,
+        icon: IconType.INFORMATION,
         color: UI.COLOR_INFORMATION,
         bg: UI.COLOR_INFORMATION_BG,
         text: UI.COLOR_INFORMATION_TEXT,
-      };
+      }
     case 'success':
       return {
-        icon: iconSuccess,
+        icon: IconType.SUCCESS,
         color: UI.COLOR_SUCCESS,
         bg: UI.COLOR_SUCCESS_BG,
         text: UI.COLOR_SUCCESS_TEXT,
-      };
+      }
     case 'danger':
       return {
-        icon: iconDanger,
+        icon: IconType.DANGER,
         color: UI.COLOR_DANGER,
         bg: UI.COLOR_DANGER_BG,
         text: UI.COLOR_DANGER_TEXT,
-      };
+      }
     case 'savings':
       return {
         iconText: '💸',
         color: UI.COLOR_SUCCESS,
         bg: UI.COLOR_SUCCESS_BG,
         text: UI.COLOR_SUCCESS_TEXT,
-      };
+      }
     default:
       return {
-        icon: iconAlert,
+        icon: IconType.ALERT,
         color: UI.COLOR_ALERT,
         bg: UI.COLOR_ALERT_BG,
         text: UI.COLOR_ALERT_TEXT,
-      };
+      }
   }
 }
 
@@ -97,21 +92,6 @@ const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; ori
     `};
   }
 
-  > span > svg {
-    --size: ${({ iconSize = 32 }) => `${iconSize}px`};
-    display: block;
-    min-width: var(--size);
-    min-height: var(--size);
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-    stroke: none !important;
-  }
-
-  > span > svg > path {
-    fill: ${({ colorEnums }) => `var(${colorEnums.color})`};
-  }
-
   > span > strong {
     display: flex;
     align-items: center;
@@ -142,19 +122,20 @@ export type InlineBannerProps = {
   borderRadius?: string
   orientation?: BannerOrientation
   iconSize?: number
+  iconPadding?: string
   padding?: string
 }
 
-export function InlineBanner({ children, className, hideIcon, bannerType = 'alert', borderRadius, orientation, iconSize, padding }: InlineBannerProps) {
-  const colorEnums = getColorEnums(bannerType);
+export function InlineBanner({ children, className, hideIcon, bannerType = 'alert', borderRadius, orientation, iconSize, iconPadding, padding }: InlineBannerProps) {
+  const colorEnums = getColorEnums(bannerType)
 
   return (
-    <Wrapper className={className} colorEnums={colorEnums} borderRadius={borderRadius} orientation={orientation} iconSize={iconSize} padding={padding}>
+    <Wrapper className={className} colorEnums={colorEnums} borderRadius={borderRadius} orientation={orientation} padding={padding}>
       <span>
-        {!hideIcon && colorEnums.icon && <SVG src={colorEnums.icon} description={bannerType} />}
+        {!hideIcon && colorEnums.icon && <Icon image={IconType.ALERT} size={iconSize} color={colorEnums.color} description={bannerType} padding={iconPadding} />}
         {!hideIcon && colorEnums.iconText && <i>{colorEnums.iconText}</i>}
         {children}
       </span>
     </Wrapper>
-  );
+  )
 }

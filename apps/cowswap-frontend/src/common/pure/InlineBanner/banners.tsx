@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -90,11 +92,35 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
   )
 }
 
-export function ThirdPartySignerWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, padding = '10px 16px' }: InlineBannerProps) {
+export function ThirdPartySignerWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, iconPadding = '0', padding = '10px 16px' }: InlineBannerProps) {
+  const [isVisible, setIsVisible] = useState(true)
+
+  // On component mount, check if the banner was dismissed before
+  useEffect(() => {
+    const isBannerDismissed = localStorage.getItem('thirdPartySignerWarningBannerDismissed')
+    if (isBannerDismissed) {
+      setIsVisible(false)
+    }
+  }, [])
+
+  const handleDismiss = () => {
+    // Hide the banner
+    setIsVisible(false)
+
+    // Save the state in localStorage
+    // TODO: store a more unique key using the (Safe) transaction hash. 
+    // This way, the banner will be shown again if the user signs a new transaction.
+    localStorage.setItem('thirdPartySignerWarningBannerDismissed', 'true')
+  }
+
+  if (!isVisible) {
+    return null
+  }
+
   return (
-    <InlineBanner borderRadius={borderRadius} orientation={orientation} iconSize={iconSize} bannerType={bannerType} padding={padding}>
+    <InlineBanner borderRadius={borderRadius} orientation={orientation} iconSize={iconSize} iconPadding={iconPadding} bannerType={bannerType} padding={padding}>
       <p><strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!</p>
-      <ButtonSecondary minHeight={'28px'}>Dismiss</ButtonSecondary>
+      <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>Dismiss</ButtonSecondary>
     </InlineBanner>
   )
 }

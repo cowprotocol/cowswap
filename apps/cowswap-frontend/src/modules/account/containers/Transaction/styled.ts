@@ -83,6 +83,7 @@ export const IconType = styled.div`
 `
 
 export const Summary = styled.div`
+  position: relative;
   display: grid;
   flex-flow: row wrap;
   width: 100%;
@@ -269,8 +270,8 @@ export const StatusLabel = styled.div<{
     isPending || isPresignaturePending || isCreating
       ? theme.text1
       : color === 'success'
-      ? theme.success
-      : theme.attention};
+        ? theme.success
+        : theme.attention};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -290,13 +291,13 @@ export const StatusLabel = styled.div<{
   &::before {
     content: '';
     background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-      !isCancelling && (isPending || isCreating)
-        ? 'transparent'
-        : isPresignaturePending || (isPending && isTransaction)
+    !isCancelling && (isPending || isCreating)
+      ? 'transparent'
+      : isPresignaturePending || (isPending && isTransaction)
         ? theme.pending
         : color === 'success'
-        ? theme.success
-        : theme.attention};
+          ? theme.success
+          : theme.attention};
     position: absolute;
     left: 0;
     top: 0;
@@ -330,9 +331,9 @@ export const StatusLabel = styled.div<{
 
   > svg > path {
     fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
-      isPending || isPresignaturePending || isCreating
-        ? theme.text1
-        : color === 'success'
+    isPending || isPresignaturePending || isCreating
+      ? theme.text1
+      : color === 'success'
         ? theme.success
         : theme.attention};
   }
@@ -355,7 +356,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   }
 `
 
-export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
+export const OldTransactionState = styled(ExternalLink) <{ pending: boolean; success?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -482,7 +483,7 @@ export const ActivityVisual = styled.div`
     box-shadow: none;
     background: ${({ theme }) => theme.white};
     color: ${({ theme }) =>
-      theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
+    theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
     border: 2px solid ${({ theme }) => theme.bg1};
   }
 
