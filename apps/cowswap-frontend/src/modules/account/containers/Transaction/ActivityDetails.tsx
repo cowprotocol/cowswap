@@ -274,7 +274,6 @@ export function ActivityDetails(props: {
       />}
 
       <Summary>
-
         <span>
           {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
 

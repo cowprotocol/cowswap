@@ -1,3 +1,5 @@
+import {useEffect, useState } from 'react'
+
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
@@ -8,7 +10,11 @@ import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { TwapOrderItem } from 'modules/twap/types'
 
+import { UI } from 'common/constants/theme'
+import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
+import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { CowModal } from 'common/pure/Modal'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -88,6 +94,17 @@ export function ReceiptModal({
   estimatedExecutionPrice,
   receiverEnsName,
 }: ReceiptProps) {
+
+  // Check if Custom Recipient Warning Banner should be visible
+  const [isCustomRecipientWarningBannerVisible, toggleCustomRecipientWarningBannerVisible] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED)
+  const [isWarningRecipientIconVisible, setWarningRecipientIconVisible] = useState(isCustomRecipientWarningBannerVisible)
+  useEffect(() => {
+    setWarningRecipientIconVisible(isCustomRecipientWarningBannerVisible)
+  }, [isCustomRecipientWarningBannerVisible])
+
+  // TODO: Get this from the API
+  const isCustomRecipient = true
+
   if (!order || !chainId) {
     return null
   }
@@ -108,7 +125,7 @@ export function ReceiptModal({
 
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner type="information">
+            <InlineBanner bannerType="information">
               <p>
                 {isTwapPartOrder
                   ? `Part of a ${twapOrder.order.n}-part TWAP order split`
@@ -123,6 +140,17 @@ export function ReceiptModal({
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
           <styledEl.FieldsWrapper>
+
+            {/* If custom recipient show warning banner */}
+            {isCustomRecipient && isCustomRecipientWarningBannerVisible && <CustomRecipientWarningBanner
+              borderRadius={'12px 12px 0 0'}
+              orientation={BannerOrientation.Horizontal}
+              onDismiss={() => {
+                setWarningRecipientIconVisible(false)
+                toggleCustomRecipientWarningBannerVisible()
+              }}
+            />}
+
             <styledEl.Field>
               <FieldLabel label="Status" />
               <StatusField order={order} />
@@ -132,8 +160,9 @@ export function ReceiptModal({
               <styledEl.Field>
                 <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
                 <div>
+                  {isWarningRecipientIconVisible && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
-                    {receiverEnsName || shortenAddress(order.receiver)}
+                    {receiverEnsName || shortenAddress(order.receiver)} ↗
                   </ExternalLink>
                 </div>
               </styledEl.Field>

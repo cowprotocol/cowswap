@@ -82,6 +82,10 @@ export const Field = styled.div`
   &:last-child {
     border-radius: 0 0 16px 16px;
   }
+
+  > div {
+    display: flex;
+  }
 `
 
 export const CurrencyField = styled.div`
