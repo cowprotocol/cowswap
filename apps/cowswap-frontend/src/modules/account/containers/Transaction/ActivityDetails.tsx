@@ -1,10 +1,10 @@
-import { ReactNode, useState, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { V_COW, COW } from 'legacy/constants/tokens'
+import { COW, V_COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import useENS from 'legacy/hooks/useENS'
@@ -17,28 +17,31 @@ import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { UI } from 'common/constants/theme'
-import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
-import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import {
+  useHideReceiverWalletBanner,
+  useIsReceiverWalletBannerHidden,
+} from 'common/state/receiverWalletBannerVisibility'
 
 import { StatusDetails } from './StatusDetails'
 import {
+  ActivityVisual,
+  CreationTimeText,
+  FiatWrapper,
+  StyledFiatAmount,
   Summary,
   SummaryInner,
   SummaryInnerRow,
-  TransactionInnerDetail,
   TextAlert,
+  TransactionInnerDetail,
   TransactionState as ActivityLink,
-  CreationTimeText,
-  ActivityVisual,
-  StyledFiatAmount,
-  FiatWrapper,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -166,7 +169,7 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isCreating, isPending, isPresignaturePending } = activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
@@ -182,11 +185,8 @@ export function ActivityDetails(props: {
   const { name: receiverEnsName } = useENS(order?.receiver)
 
   // Check if Custom Recipient Warning Banner should be visible
-  const [isCustomRecipientWarningBannerVisible, toggleCustomRecipientWarningBannerVisible] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED)
-  const [isWarningRecipientIconVisible, setWarningRecipientIconVisible] = useState(isCustomRecipientWarningBannerVisible)
-  useEffect(() => {
-    setWarningRecipientIconVisible(isCustomRecipientWarningBannerVisible)
-  }, [isCustomRecipientWarningBannerVisible])
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id)
+  const hideCustomRecipientWarning = useHideReceiverWalletBanner()
 
   if (!order && !enhancedTransaction) return null
 
@@ -264,19 +264,18 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId]
   }
 
-  const isCustomRecipient = order?.owner !== order?.receiver
+  const isCustomRecipient = Boolean(order?.receiver && order.owner !== order.receiver)
 
   return (
     <>
       {/* Warning banner if custom recipient */}
-      {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner
-        borderRadius={'12px 12px 0 0'}
-        orientation={BannerOrientation.Horizontal}
-        onDismiss={() => {
-          setWarningRecipientIconVisible(false)
-          toggleCustomRecipientWarningBannerVisible()
-        }}
-      />}
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && (
+        <CustomRecipientWarningBanner
+          borderRadius={'12px 12px 0 0'}
+          orientation={BannerOrientation.Horizontal}
+          onDismiss={() => hideCustomRecipientWarning(id)}
+        />
+      )}
 
       <Summary>
         <span>
@@ -330,21 +329,21 @@ export function ActivityDetails(props: {
                 )}
               </SummaryInnerRow>
 
-              {order && isCustomRecipient && order.receiver && (
-                <>
-                  <SummaryInnerRow>
-                    <b>Recipient:</b>
-                    <i>
-                      {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isWarningRecipientIconVisible && order.receiver && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
-                      <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
-                        {receiverEnsName || shortenAddress(order.receiver)} ↗
-                      </ExternalLink>
-                    </i>
-                  </SummaryInnerRow>
-                  {console.log({ orderExists: !!order, isCreating, isPending, isPresignaturePending, receiverExists: !!order.receiver, isCustomRecipient })}
-                </>
+              {order && isCustomRecipient && (
+                <SummaryInnerRow>
+                  <b>Recipient:</b>
+                  <i>
+                    {isCustomRecipientWarningBannerVisible && (
+                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                    )}
+                    <ExternalLink
+                      href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
+                    >
+                      {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
+                    </ExternalLink>
+                  </i>
+                </SummaryInnerRow>
               )}
-
 
               {surplusAmount?.greaterThan(0) && (
                 <SummaryInnerRow>

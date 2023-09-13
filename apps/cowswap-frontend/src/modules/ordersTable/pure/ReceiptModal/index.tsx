@@ -1,5 +1,3 @@
-import {useEffect, useState } from 'react'
-
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
@@ -11,11 +9,14 @@ import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { UI } from 'common/constants/theme'
-import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
 import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { CowModal } from 'common/pure/Modal'
+import {
+  useHideReceiverWalletBanner,
+  useIsReceiverWalletBannerHidden,
+} from 'common/state/receiverWalletBannerVisibility'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -31,7 +32,6 @@ import { PriceField } from './PriceField'
 import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
-
 
 interface ReceiptProps {
   isOpen: boolean
@@ -95,16 +95,13 @@ export function ReceiptModal({
   estimatedExecutionPrice,
   receiverEnsName,
 }: ReceiptProps) {
-
   // Check if Custom Recipient Warning Banner should be visible
-  const [isCustomRecipientWarningBannerVisible, toggleCustomRecipientWarningBannerVisible] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED)
-  const [isWarningRecipientIconVisible, setWarningRecipientIconVisible] = useState(isCustomRecipientWarningBannerVisible)
-  useEffect(() => {
-    setWarningRecipientIconVisible(isCustomRecipientWarningBannerVisible)
-  }, [isCustomRecipientWarningBannerVisible])
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
+  const hideCustomRecipientWarning = useHideReceiverWalletBanner()
 
-  // TODO: Get this from the API
-  const isCustomRecipient = true
+  const isCustomRecipient = Boolean(order.receiver && order.owner !== order.receiver)
+
+  const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible
 
   if (!order || !chainId) {
     return null
@@ -141,18 +138,14 @@ export function ReceiptModal({
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
           <styledEl.FieldsWrapper>
-
             {/* If custom recipient show warning banner */}
-            {/* TODO: Pass activityDerivedState to this component */}
-            {/* {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner */}
-            {order && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner
-              borderRadius={'12px 12px 0 0'}
-              orientation={BannerOrientation.Horizontal}
-              onDismiss={() => {
-                setWarningRecipientIconVisible(false)
-                toggleCustomRecipientWarningBannerVisible()
-              }}
-            />}
+            {showCustomRecipientBanner && (
+              <CustomRecipientWarningBanner
+                borderRadius={'12px 12px 0 0'}
+                orientation={BannerOrientation.Horizontal}
+                onDismiss={() => hideCustomRecipientWarning(order.id)}
+              />
+            )}
 
             <styledEl.Field>
               <FieldLabel label="Status" />
@@ -163,8 +156,7 @@ export function ReceiptModal({
               <styledEl.Field>
                 <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
                 <div>
-                  {/* TODO: Pass activityDerivedState to this component and check isCreating || isPending || isPresignaturePending */}
-                  {order && isCustomRecipient && isWarningRecipientIconVisible && order.receiver && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
+                  {isCustomRecipient && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
                   </ExternalLink>
