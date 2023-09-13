@@ -7,8 +7,12 @@ import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { V_COW, COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import useENS from 'legacy/hooks/useENS'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
+import { ExternalLink } from 'legacy/theme'
+import { shortenAddress } from 'legacy/utils'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
@@ -162,7 +166,7 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isCreating, isPending, isPresignaturePending } = activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
@@ -174,6 +178,8 @@ export function ActivityDetails(props: {
   const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
+
+  const { name: receiverEnsName } = useENS(order?.receiver)
 
   // Check if Custom Recipient Warning Banner should be visible
   const [isCustomRecipientWarningBannerVisible, toggleCustomRecipientWarningBannerVisible] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED)
@@ -258,13 +264,12 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId]
   }
 
-  // TODO: Get this from the API
-  const isCustomRecipient = true
+  const isCustomRecipient = order?.owner !== order?.receiver
 
   return (
     <>
       {/* Warning banner if custom recipient */}
-      {isCustomRecipient && isCustomRecipientWarningBannerVisible && <CustomRecipientWarningBanner
+      {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner
         borderRadius={'12px 12px 0 0'}
         orientation={BannerOrientation.Horizontal}
         onDismiss={() => {
@@ -325,17 +330,21 @@ export function ActivityDetails(props: {
                 )}
               </SummaryInnerRow>
 
-              {/* TODO: Get dynamic recipient */}
-              {isCustomRecipient && (
-                <SummaryInnerRow>
-                  <b>Recipient:</b>
-                  <i>
-                    {isWarningRecipientIconVisible && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
-                    <a href="#" target="_blank" rel="noopener nofollow">0xfE84A86803952041eCCCB584300eb66C601BfeC1 ↗</a>
-                  </i>
-                </SummaryInnerRow>
+              {order && isCustomRecipient && order.receiver && (
+                <>
+                  <SummaryInnerRow>
+                    <b>Recipient:</b>
+                    <i>
+                      {isWarningRecipientIconVisible && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
+                      <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
+                        {receiverEnsName || shortenAddress(order.receiver)} ↗
+                      </ExternalLink>
+                    </i>
+                  </SummaryInnerRow>
+                  {console.log({ orderExists: !!order, isCreating, isPending, isPresignaturePending, receiverExists: !!order.receiver, isCustomRecipient })}
+                </>
               )}
-              {/* ============================== */}
+
 
               {surplusAmount?.greaterThan(0) && (
                 <SummaryInnerRow>

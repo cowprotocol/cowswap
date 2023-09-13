@@ -32,6 +32,7 @@ import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
 
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -142,7 +143,9 @@ export function ReceiptModal({
           <styledEl.FieldsWrapper>
 
             {/* If custom recipient show warning banner */}
-            {isCustomRecipient && isCustomRecipientWarningBannerVisible && <CustomRecipientWarningBanner
+            {/* TODO: Pass activityDerivedState to this component */}
+            {/* {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner */}
+            {order && isCustomRecipient && isCustomRecipientWarningBannerVisible && order.receiver && <CustomRecipientWarningBanner
               borderRadius={'12px 12px 0 0'}
               orientation={BannerOrientation.Horizontal}
               onDismiss={() => {

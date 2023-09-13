@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+// LocalStorage key names
 export enum LSKeys {
   BANNER_CUSTOM_RECIPIENT_DISMISSED = 'warningBannerCustomRecipientDismissed',
 }
