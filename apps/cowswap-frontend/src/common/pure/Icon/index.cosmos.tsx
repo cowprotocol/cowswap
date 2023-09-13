@@ -1,9 +1,8 @@
 import styled from 'styled-components/macro';
 
-import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos';
 import { UI } from 'common/constants/theme'
 
-import { IconSpinner} from './index';
+import { Icon, IconType } from './index';
 
 const Wrapper = styled.div`
   width: 400px;
@@ -16,32 +15,12 @@ const Wrapper = styled.div`
   margin: 100px;
 `;
 
-const SpinnerFixtures = {
-  'token image / default size': (
+const IconFixtures = {
+  'icon ALERT / default size': (
     <Wrapper>
-      <IconSpinner currency={MOCK_TOKEN} />
-    </Wrapper>
-  ),
-  'token image / custom size': (
-    <Wrapper>
-      <IconSpinner currency={MOCK_TOKEN} size={84} />
-    </Wrapper>
-  ),
-  'token image / custom size + spinnerWidth': (
-    <Wrapper>
-      <IconSpinner currency={MOCK_TOKEN} size={84} spinnerWidth={4} />
-    </Wrapper>
-  ),
-  'regular image / custom size': (
-    <Wrapper>
-      <IconSpinner image={IMAGE_ACCOUNT} size={84} />
-    </Wrapper>
-  ),
-  'no children': (
-    <Wrapper>
-      <IconSpinner />
+      <Icon image={IconType.ALERT} />
     </Wrapper>
   ),
 };
 
-export default SpinnerFixtures;
+export default IconFixtures;
