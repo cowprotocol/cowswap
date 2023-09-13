@@ -335,7 +335,7 @@ export function ActivityDetails(props: {
                   <SummaryInnerRow>
                     <b>Recipient:</b>
                     <i>
-                      {isWarningRecipientIconVisible && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
+                      {order && (isCreating || isPending || isPresignaturePending) && isCustomRecipient && isWarningRecipientIconVisible && order.receiver && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
                       <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                         {receiverEnsName || shortenAddress(order.receiver)} ↗
                       </ExternalLink>
