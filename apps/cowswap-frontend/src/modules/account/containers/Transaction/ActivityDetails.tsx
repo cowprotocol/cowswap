@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,11 +13,12 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { UI } from 'common/constants/theme'
+import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Icon, IconType } from 'common/pure/Icon'
-import { BannerOrientation, ThirdPartySignerWarningBanner } from 'common/pure/InlineBanner/banners'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -174,6 +175,13 @@ export function ActivityDetails(props: {
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
+  // Check if Custom Recipient Warning Banner should be visible
+  const [isCustomRecipientWarningBannerVisible, toggleCustomRecipientWarningBannerVisible] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED)
+  const [isWarningRecipientIconVisible, setWarningRecipientIconVisible] = useState(isCustomRecipientWarningBannerVisible)
+  useEffect(() => {
+    setWarningRecipientIconVisible(isCustomRecipientWarningBannerVisible)
+  }, [isCustomRecipientWarningBannerVisible])
+
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
@@ -251,12 +259,19 @@ export function ActivityDetails(props: {
   }
 
   // TODO: Get this from the API
-  const isSafeAnd3rdPartyRecipient = true
+  const isCustomRecipient = true
 
   return (
     <>
-      {/* Warning banner if Safe + 3rd party recipient */}
-      {isSafeAnd3rdPartyRecipient && <ThirdPartySignerWarningBanner borderRadius={'12px 12px 0 0'} orientation={BannerOrientation.Horizontal} />}
+      {/* Warning banner if custom recipient */}
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && <CustomRecipientWarningBanner
+        borderRadius={'12px 12px 0 0'}
+        orientation={BannerOrientation.Horizontal}
+        onDismiss={() => {
+          setWarningRecipientIconVisible(false)
+          toggleCustomRecipientWarningBannerVisible()
+        }}
+      />}
 
       <Summary>
 
@@ -312,13 +327,15 @@ export function ActivityDetails(props: {
               </SummaryInnerRow>
 
               {/* TODO: Get dynamic recipient */}
-              <SummaryInnerRow>
-                <b>Recipient:</b>
-                <i>
-                  <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
-                  <a href="#" target="_blank">0xfE84A86803952041eCCCB584300eb66C601BfeC1 ↗</a>
+              {isCustomRecipient && (
+                <SummaryInnerRow>
+                  <b>Recipient:</b>
+                  <i>
+                    {isWarningRecipientIconVisible && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
+                    <a href="#" target="_blank" rel="noopener nofollow">0xfE84A86803952041eCCCB584300eb66C601BfeC1 ↗</a>
                   </i>
-              </SummaryInnerRow>
+                </SummaryInnerRow>
+              )}
               {/* ============================== */}
 
               {surplusAmount?.greaterThan(0) && (

@@ -63,7 +63,7 @@ function getColorEnums(bannerType: BannerType): ColorEnums {
   }
 }
 
-const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; orientation?: BannerOrientation; iconSize?: number; padding?: string }>`
+const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; orientation?: BannerOrientation; iconSize?: number; padding?: string; }>`
   display: flex;
   align-items: center;
   justify-content: center;

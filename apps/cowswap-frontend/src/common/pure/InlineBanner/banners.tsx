@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react'
-
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
 import { InlineBanner, InlineBannerProps } from './index'
-
 
 export enum BannerOrientation {
   Horizontal = 'horizontal',
@@ -92,29 +90,16 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
   )
 }
 
-export function ThirdPartySignerWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, iconPadding = '0', padding = '10px 16px' }: InlineBannerProps) {
-  const [isVisible, setIsVisible] = useState(true)
-
-  // On component mount, check if the banner was dismissed before
-  useEffect(() => {
-    const isBannerDismissed = localStorage.getItem('thirdPartySignerWarningBannerDismissed')
-    if (isBannerDismissed) {
-      setIsVisible(false)
-    }
-  }, [])
+export function CustomRecipientWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, iconPadding = '0', padding = '10px 16px', onDismiss }: InlineBannerProps & { onDismiss?: () => void }) {
+  const [isBannerVisible, toggleBannerVisibility] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED);
 
   const handleDismiss = () => {
-    // Hide the banner
-    setIsVisible(false)
+    toggleBannerVisibility();
+    onDismiss?.();
+  };
 
-    // Save the state in localStorage
-    // TODO: store a more unique key using the (Safe) transaction hash. 
-    // This way, the banner will be shown again if the user signs a new transaction.
-    localStorage.setItem('thirdPartySignerWarningBannerDismissed', 'true')
-  }
-
-  if (!isVisible) {
-    return null
+  if (!isBannerVisible) {
+    return null;
   }
 
   return (
@@ -122,5 +107,5 @@ export function ThirdPartySignerWarningBanner({ bannerType, borderRadius, orient
       <p><strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!</p>
       <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>Dismiss</ButtonSecondary>
     </InlineBanner>
-  )
+  );
 }
