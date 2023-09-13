@@ -2,7 +2,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useBannerVisibility, LSKeys } from 'common/hooks/useBannerVisibility'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
@@ -90,22 +89,34 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
   )
 }
 
-export function CustomRecipientWarningBanner({ bannerType, borderRadius, orientation, iconSize = 21, iconPadding = '0', padding = '10px 16px', onDismiss }: InlineBannerProps & { onDismiss?: () => void }) {
-  const [isBannerVisible, toggleBannerVisibility] = useBannerVisibility(LSKeys.BANNER_CUSTOM_RECIPIENT_DISMISSED);
+type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: () => void }
 
-  const handleDismiss = () => {
-    toggleBannerVisibility();
-    onDismiss?.();
-  };
-
-  if (!isBannerVisible) {
-    return null;
-  }
+export function CustomRecipientWarningBanner({
+  bannerType,
+  borderRadius,
+  orientation,
+  iconSize = 21,
+  iconPadding = '0',
+  padding = '10px 16px',
+  onDismiss,
+}: CustomRecipientBannerProps) {
+  const handleDismiss = () => onDismiss?.()
 
   return (
-    <InlineBanner borderRadius={borderRadius} orientation={orientation} iconSize={iconSize} iconPadding={iconPadding} bannerType={bannerType} padding={padding}>
-      <p><strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!</p>
-      <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>Dismiss</ButtonSecondary>
+    <InlineBanner
+      borderRadius={borderRadius}
+      orientation={orientation}
+      iconSize={iconSize}
+      iconPadding={iconPadding}
+      bannerType={bannerType}
+      padding={padding}
+    >
+      <p>
+        <strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!
+      </p>
+      <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
+        Dismiss
+      </ButtonSecondary>
     </InlineBanner>
-  );
+  )
 }
