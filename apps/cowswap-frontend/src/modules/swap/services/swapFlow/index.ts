@@ -38,7 +38,7 @@ export async function swapFlow(
 
     const hooks = buildAppDataHooks([permitData])
 
-    input.orderParams.appData = addHooksToAppData(input.orderParams.appData, hooks)
+    input.orderParams.appData = await addHooksToAppData(input.orderParams.appData, hooks)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')

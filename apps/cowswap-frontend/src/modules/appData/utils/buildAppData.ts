@@ -1,3 +1,4 @@
+import { stringifyDeterministic } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -19,8 +20,10 @@ export type BuildAppDataParams = {
   hooks?: AppDataHooks
 }
 
-function generateAppDataFromDoc(doc: AppDataRootSchema): Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'> {
-  const fullAppData = JSON.stringify(doc)
+async function generateAppDataFromDoc(
+  doc: AppDataRootSchema
+): Promise<Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'>> {
+  const fullAppData = await stringifyDeterministic(doc)
   const appDataKeccak256 = toKeccak256(fullAppData)
   return { fullAppData, appDataKeccak256 }
 }
@@ -46,7 +49,7 @@ export async function buildAppData({
     metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks },
   })
 
-  const { fullAppData, appDataKeccak256 } = generateAppDataFromDoc(doc)
+  const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)
 
   return { doc, fullAppData, appDataKeccak256 }
 }
@@ -55,7 +58,7 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): AppDataInfo {
+export async function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): Promise<AppDataInfo> {
   if (!hooks) {
     return appData
   }
@@ -70,7 +73,7 @@ export function addHooksToAppData(appData: AppDataInfo, hooks: AppDataHooks | un
     },
   }
 
-  const { fullAppData, appDataKeccak256 } = generateAppDataFromDoc(newDoc)
+  const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(newDoc)
 
   return {
     doc: newDoc,
