@@ -14,13 +14,13 @@ import { PermitHookData, PermitHookParams } from '../types'
 import { generatePermitHook } from '../utils/generatePermitHook'
 
 /**
- * Returns PermitHookData using a fake signer if inputCurrency is permittable
+ * Returns PermitHookData using an account agnostic signer if inputCurrency is permittable
  *
  * Internally checks whether the token is permittable
  *
  * If not permittable or not able to tell, returns undefined
  */
-export function useFakePermitHookData(): PermitHookData | undefined {
+export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
   const params = usePermitHookParams()
 
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
