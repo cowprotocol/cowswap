@@ -87,7 +87,7 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
     // Sometimes tokens implement the permit interface but don't actually implement it
     // This check filters out possible cases where that happened by excluding
     // gas limit which are bellow a minimum threshold
-    return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
+    return gasLimit > PERMIT_GAS_LIMIT_MIN
       ? {
           type: 'eip-2612',
           gasLimit,
@@ -159,7 +159,7 @@ function estimateDaiLikeToken(
           .then((res) => {
             const gasLimit = res.toNumber()
 
-            return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
+            return gasLimit > PERMIT_GAS_LIMIT_MIN
               ? {
                   gasLimit,
                   type: 'dai-like',
