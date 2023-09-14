@@ -5,7 +5,7 @@ import { useFakePermitHookData } from 'modules/permit'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 
-export function useAppDataHooksUpdater(): null {
+export function AppDataHooksUpdater(): null {
   const updateAppDataHooks = useUpdateAppDataHooks()
   const permitHookData = useFakePermitHookData()
 

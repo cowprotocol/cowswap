@@ -23,7 +23,7 @@ export type UseAppDataParams = {
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm, hooks }: UseAppDataParams): void {
+export function InnerAppDataUpdater({ chainId, slippageBips, orderClass, utm, hooks }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
