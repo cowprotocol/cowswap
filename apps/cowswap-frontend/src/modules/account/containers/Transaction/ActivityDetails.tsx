@@ -18,6 +18,7 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Icon, IconType } from 'common/pure/Icon'
@@ -185,7 +186,7 @@ export function ActivityDetails(props: {
   const { name: receiverEnsName } = useENS(order?.receiver)
 
   // Check if Custom Recipient Warning Banner should be visible
-  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id)
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
 
   if (!order && !enhancedTransaction) return null

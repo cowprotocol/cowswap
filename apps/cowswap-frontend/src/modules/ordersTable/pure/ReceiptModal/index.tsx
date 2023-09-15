@@ -9,6 +9,7 @@ import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { UI } from 'common/constants/theme'
+import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
@@ -101,7 +102,7 @@ export function ReceiptModal({
 
   const isCustomRecipient = Boolean(order.receiver && order.owner !== order.receiver)
 
-  const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible
+  const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
 
   if (!order || !chainId) {
     return null
@@ -156,7 +157,9 @@ export function ReceiptModal({
               <styledEl.Field>
                 <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
                 <div>
-                  {isCustomRecipient && <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />}
+                  {showCustomRecipientBanner && (
+                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                  )}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
                   </ExternalLink>
