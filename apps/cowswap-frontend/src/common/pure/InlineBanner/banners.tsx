@@ -112,7 +112,7 @@ export function CustomRecipientWarningBanner({
       padding={padding}
     >
       <p>
-        <strong>Caution:</strong> Order recipient address differs from your Safe. Verify recipient before signing!
+        <strong>Caution:</strong> Order recipient address differs from order owner!
       </p>
       <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
         Dismiss
