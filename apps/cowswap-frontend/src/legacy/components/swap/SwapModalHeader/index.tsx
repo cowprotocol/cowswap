@@ -27,6 +27,7 @@ import { useWalletDetails } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
@@ -103,6 +104,8 @@ function SwapModalHeaderComponent({
       trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
     ]
   }, [trade])
+
+  const isCustomRecipient = recipient !== null
 
   return (
     <AutoColumn gap={'4px'}>
@@ -223,7 +226,13 @@ function SwapModalHeaderComponent({
           </ThemedText.Italic>
         )}
       </AutoColumn>
-      {recipient !== null ? (
+      {/*TODO: adjust styles and maybe merge with the indication below? */}
+      {isCustomRecipient && (
+        <AutoColumn justify="flex-start" gap="sm">
+          <CustomRecipientWarningBanner borderRadius={'12px 12px 0 0'} orientation={BannerOrientation.Horizontal} />
+        </AutoColumn>
+      )}
+      {isCustomRecipient ? (
         <AutoColumn justify="flex-start" gap="sm">
           <ThemedText.Main style={{ padding: '0.75rem 1rem' }}>
             <Trans>
