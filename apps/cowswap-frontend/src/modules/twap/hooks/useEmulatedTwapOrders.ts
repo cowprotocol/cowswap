@@ -27,10 +27,17 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
     if (!refresher) return []
     if (!tokensByAddress) return []
 
-    return allTwapOrders
-      .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-      .map((order) => {
-        return mapTwapOrderToStoreOrder(order, tokensByAddress)
-      })
+    return allTwapOrders.reduce<Order[]>((acc, order) => {
+      if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
+        return acc
+      }
+
+      try {
+        acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
+      } catch (e) {
+        console.error(`[useEmulatedPartOrders] Failed to map order`, order, e)
+      }
+      return acc
+    }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
 }
