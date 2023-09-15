@@ -45,7 +45,7 @@ export interface BaseFlowContext {
 export type SwapFlowContext = BaseFlowContext & {
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
-  hasEnoughAllowance: boolean
+  hasEnoughAllowance: boolean | undefined
 }
 
 export type EthFlowContext = BaseFlowContext & {
