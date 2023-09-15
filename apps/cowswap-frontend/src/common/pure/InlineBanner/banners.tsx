@@ -114,9 +114,11 @@ export function CustomRecipientWarningBanner({
       <p>
         <strong>Caution:</strong> Order recipient address differs from order owner!
       </p>
-      <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
-        Dismiss
-      </ButtonSecondary>
+      {onDismiss && (
+        <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
+          Dismiss
+        </ButtonSecondary>
+      )}
     </InlineBanner>
   )
 }
