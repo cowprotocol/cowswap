@@ -6,7 +6,6 @@ import {
   Erc721,
   Erc1155,
   Weth,
-  CoWSwapEthFlowJson,
   Eip2612Abi,
   Erc20Abi,
   Erc20Bytes32Abi,
