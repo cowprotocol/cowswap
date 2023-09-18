@@ -3,8 +3,10 @@ import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 import { ExternalLink } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 export const TermsWrapper = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 export const Blurb = styled.div`
@@ -76,7 +78,7 @@ export const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--cow-color-border);
+  border: 1px solid var(${UI.COLOR_BORDER});
   padding: 8px;
   margin: 0 12px 0 0;
 
@@ -86,7 +88,7 @@ export const IconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(--cow-color-text1);
+    --color: var(${UI.COLOR_TEXT1});
     fill: var(--color);
     stroke: var(--color);
   }

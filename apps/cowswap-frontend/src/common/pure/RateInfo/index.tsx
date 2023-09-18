@@ -9,6 +9,7 @@ import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { UI } from 'common/constants/theme'
 import { usePrice } from 'common/hooks/usePrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -60,7 +61,7 @@ const RateLabel = styled.div`
   color: ${({ theme }) => transparentize(0.2, theme.text1)};
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -68,7 +69,7 @@ const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
   background: ${({ theme }) => transparentize(0.9, theme.text1)};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   width: var(--size);
   height: var(--size);
   min-width: var(--size);

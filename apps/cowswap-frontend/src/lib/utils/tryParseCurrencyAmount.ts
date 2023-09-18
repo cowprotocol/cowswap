@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
@@ -8,18 +8,24 @@ import JSBI from 'jsbi'
  * Returns the CurrencyAmount, or undefined if parsing fails.
  */
 export default function tryParseCurrencyAmount<T extends Currency>(value: string, currency: T): CurrencyAmount<T>
+export default function tryParseCurrencyAmount<T extends Currency>(value: Fraction, currency: T): CurrencyAmount<T>
 export default function tryParseCurrencyAmount<T extends Currency>(
   value?: string,
   currency?: T
 ): CurrencyAmount<T> | undefined
 export default function tryParseCurrencyAmount<T extends Currency>(
-  value?: string,
+  value?: string | Fraction,
   currency?: T
 ): CurrencyAmount<T> | undefined {
   if (!value || !currency) {
     return undefined
   }
   try {
+    if (value instanceof Fraction) {
+      const decimalAdjusted = new Fraction(10 ** currency.decimals).multiply(value)
+      return CurrencyAmount.fromFractionalAmount(currency, decimalAdjusted.numerator, decimalAdjusted.denominator)
+    }
+
     const [quotient, remainder] = value.split('.')
     const fixedNumber = remainder ? quotient + '.' + remainder.slice(0, currency.decimals) : quotient
     const typedValueParsed = parseUnits(fixedNumber, currency.decimals).toString()

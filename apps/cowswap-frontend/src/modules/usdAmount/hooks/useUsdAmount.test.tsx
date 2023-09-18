@@ -1,7 +1,7 @@
 import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react-hooks'
 import { JotaiTestProvider } from 'test-utils'
@@ -14,7 +14,7 @@ import { usdRawPricesAtom, UsdRawPriceState } from '../state/usdRawPricesAtom'
 
 const WETH_RAW_PRICE_STATE: UsdRawPriceState = {
   updatedAt: Date.now(),
-  price: 1650,
+  price: new Fraction('1650'),
   currency: WETH_GNOSIS_CHAIN,
   isLoading: false,
 }
@@ -47,6 +47,6 @@ describe('useUsdAmount', () => {
       { wrapper: TestComponent }
     )
 
-    expect(result.current.value?.toExact()).toBe(WETH_RAW_PRICE_STATE.price?.toString())
+    expect(result.current.value?.toExact()).toBe(WETH_RAW_PRICE_STATE?.price?.toFixed(0))
   })
 })

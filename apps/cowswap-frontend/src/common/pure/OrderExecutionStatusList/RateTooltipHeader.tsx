@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { OrderExecutionStatusList } from './index'
 
 const Content = styled.div`
@@ -16,7 +18,7 @@ const Content = styled.div`
     line-height: 1.5;
     padding: 0;
     margin: 0;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   > h3 {

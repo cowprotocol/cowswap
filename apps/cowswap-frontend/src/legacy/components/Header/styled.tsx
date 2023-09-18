@@ -9,6 +9,8 @@ import styled, { css } from 'styled-components/macro'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 import Row, { RowFixed } from 'legacy/components/Row'
 
+import { UI } from 'common/constants/theme'
+
 const activeClassName = 'active'
 
 export const TitleMod = styled.a`
@@ -77,7 +79,7 @@ export const StyledNavLinkUni = styled(NavLink)`
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   font-size: 1rem;
   width: fit-content;
   margin: 0 12px;
@@ -85,7 +87,7 @@ export const StyledNavLinkUni = styled(NavLink)`
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   :hover,
@@ -119,7 +121,7 @@ export const StyledMenuButton = styled.button`
     margin-top: 2px;
   }
   > * {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -177,7 +179,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -223,7 +225,7 @@ export const HeaderElement = styled(HeaderElementUni)`
     width: 100%;
     border-radius: 0;
     height: 64px;
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: var(${UI.COLOR_CONTAINER_BG_01});
     border-top: 1px solid ${({ theme }) => theme.grey1};
     backdrop-filter: blur(21px);
     padding: 10px 16px;
@@ -253,7 +255,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             width: 100%;
             display: flex;
             height: 60px;
-            background: ${({ theme }) => theme.bg1};
+            background: var(${UI.COLOR_CONTAINER_BG_01});
             position: fixed;
             top: 0;
             left: 0;
@@ -283,7 +285,7 @@ export const HeaderModWrapper = styled(HeaderMod)``
 export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   margin: 0;
   text-decoration: none;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
@@ -315,7 +317,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 100%;
@@ -324,17 +326,17 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       font-weight: 600;
       font-size: 17px;
       padding: 28px 10px;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
     `};
 
     > svg > path {
-      fill: ${({ theme }) => theme.text2};
+      fill: var(${UI.COLOR_TEXT2});
       transition: fill 0.15s ease-in-out;
     }
 
     &:hover {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       background: ${({ theme }) => transparentize(0.95, theme.text1)};
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -342,7 +344,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       `};
 
       > svg > path {
-        fill: ${({ theme }) => theme.text1};
+        fill: var(${UI.COLOR_TEXT1});
       }
     }
 
@@ -357,7 +359,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.ACTIVE {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       font-weight: 600;
     }
   }
@@ -407,7 +409,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     left: 0;
     bottom: 0;
     z-index: 3;
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
     outline: 0;
     padding: 60px 8px;
     overflow-x: hidden;
@@ -447,11 +449,11 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a > svg > path {
-    fill: ${({ theme }) => theme.text1};
+    fill: var(${UI.COLOR_TEXT1});
   }
 
   > a:hover > svg > path {
-    fill: ${({ theme }) => theme.text1};
+    fill: var(${UI.COLOR_TEXT1});
   }
 `
 

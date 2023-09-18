@@ -7,6 +7,8 @@ import styled, { keyframes } from 'styled-components/macro'
 import { externalLinkAnalytics, outboundLink } from 'legacy/components/analytics'
 import { anonymizeLink } from 'legacy/utils/anonymizeLink'
 
+import { UI } from 'common/constants/theme'
+
 export const ButtonText = styled.button`
   outline: none;
   border: none;
@@ -250,7 +252,7 @@ export const Spinner = styled.img`
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 export function BackArrow({ to }: { to: string }) {
   return (

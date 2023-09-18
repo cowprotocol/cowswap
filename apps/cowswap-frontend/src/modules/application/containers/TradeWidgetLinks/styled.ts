@@ -2,22 +2,24 @@ import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 import { BadgeType } from '.'
 
 const badgeBackgrounds: Record<BadgeType, string> = {
-  information: 'var(--cow-color-information-bg)',
-  alert: 'var(--cow-color-alert-bg)',
-  alert2: 'var(--cow-color-alert2-bg)',
-  success: 'var(--cow-color-success-bg)',
+  information: `var(${UI.COLOR_INFORMATION_BG})`,
+  alert: `var(${UI.COLOR_ALERT_BG})`,
+  alert2: `var(${UI.COLOR_ALERT2_BG})`,
+  success: `var(${UI.COLOR_SUCCESS_BG})`,
   default: 'transparent', // text only
 };
 
 const badgeColors: Record<BadgeType, string> = {
-  information: 'var(--cow-color-information-text)',
-  alert: 'var(--cow-color-alert-text)',
-  alert2: 'var(--cow-color-alert2-text)',
-  success: 'var(--cow-color-success-text)',
-  default: 'var(--cow-color-text1-inactive)', // text only
+  information: `var(${UI.COLOR_INFORMATION_TEXT})`,
+  alert: `var(${UI.COLOR_ALERT_TEXT})`,
+  alert2: `var(${UI.COLOR_ALERT2_TEXT})`,
+  success: `var(${UI.COLOR_SUCCESS_TEXT})`,
+  default: `var(${UI.COLOR_TEXT1_INACTIVE})`, // text only
 };
 
 export const Badge = styled.div<{ type?: BadgeType }>`
@@ -82,13 +84,13 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
   background: transparent;
   transition: background 0.2 ease-in-out;
 
-  ${({ isActive, theme }) =>
+  ${({ isActive }) =>
     isActive &&
     css`
-      background: ${theme.grey1};
+      background: var(${UI.COLOR_GREY});
 
       ${Link} {
-        color: ${theme.text1};
+        color: var(${UI.COLOR_TEXT1});
       }
 
       ${Link} > ${Badge} {

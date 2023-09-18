@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
+import { UI } from 'common/constants/theme'
+
 import { AccountIndexSelect } from './index'
 
 const accountsList = [
@@ -25,7 +27,7 @@ const Wrapper = styled.div`
   margin: 100px auto;
   padding: 20px;
 
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 const Fixtures = {

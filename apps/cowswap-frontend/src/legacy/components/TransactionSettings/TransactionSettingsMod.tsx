@@ -30,6 +30,7 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
@@ -47,7 +48,7 @@ enum DeadlineError {
 }
 
 export const FancyButton = styled.button`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   align-items: center;
   height: 2rem;
   border-radius: 36px;
@@ -57,7 +58,7 @@ export const FancyButton = styled.button`
   /* border: 1px solid ${({ theme }) => theme.bg3}; */
   border: 0; // mod
   outline: none;
-  /* background: ${({ theme }) => theme.bg1}; */
+  /* background: var(${UI.COLOR_CONTAINER_BG_01}); */
   background: ${({ theme }) => theme.bg2}; // mod
   :hover {
     /* border: 1px solid ${({ theme }) => theme.bg4}; */
@@ -84,7 +85,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
 `
 
 export const Input = styled.input`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   font-size: 16px;
   width: auto;
   outline: none;
@@ -301,7 +302,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               fontSize: '14px',
               paddingTop: '7px',
               // color: slippageError ? 'red' : '#F3841E',
-              color: slippageError ? theme.danger : theme.warning, // MOD
+              color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning, // MOD
             }}
           >
             {slippageError ? (

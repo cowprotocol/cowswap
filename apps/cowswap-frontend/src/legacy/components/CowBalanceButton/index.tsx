@@ -6,11 +6,12 @@ import styled, { css } from 'styled-components/macro'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 
+import { UI } from 'common/constants/theme'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   padding: 6px 12px;
   border: 2px solid transparent;
   font-weight: 500;

@@ -88,10 +88,10 @@ export default createReducer<SwapState>(initialState, (builder) =>
         typedValue: typedValue ?? state.typedValue,
         chainId,
         [Field.INPUT]: {
-          currencyId: inputCurrencyId ?? state.INPUT.currencyId,
+          currencyId: inputCurrencyId ?? null,
         },
         [Field.OUTPUT]: {
-          currencyId: outputCurrencyId ?? state.OUTPUT.currencyId,
+          currencyId: outputCurrencyId ?? null,
         },
         recipient,
       }

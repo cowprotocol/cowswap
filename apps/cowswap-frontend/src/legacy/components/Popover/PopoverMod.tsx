@@ -6,6 +6,7 @@ import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import useInterval from 'lib/hooks/useInterval'
 
 // MOD imports
@@ -17,10 +18,10 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  /* color: ${({ theme }) => theme.text2}; */
+  /* color: var(${UI.COLOR_TEXT2}); */
   /* MOD */
-  color: ${({ theme }) => theme.text1};
-  background: ${({ theme }) => theme.bg1};
+  color: var(${UI.COLOR_TEXT1});
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
   border-radius: 8px;
@@ -44,7 +45,7 @@ export const Arrow = styled.div`
     content: '';
     border: 1px solid ${({ theme }) => theme.bg3};
     transform: rotate(45deg);
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   }
 
   &.arrow-top {

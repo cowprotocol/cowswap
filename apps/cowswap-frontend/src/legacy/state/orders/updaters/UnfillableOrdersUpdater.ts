@@ -119,6 +119,8 @@ export function UnfillableOrdersUpdater(): null {
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
 
+  const balancesRef = useRef(balances)
+  balancesRef.current = balances
   const updatePending = useCallback(() => {
     if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
@@ -144,9 +146,14 @@ export function UnfillableOrdersUpdater(): null {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
 
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
-        const enoughBalance = hasEnoughBalanceAndAllowance({ account, amount: currencyAmount, balances })
+        const enoughBalance = hasEnoughBalanceAndAllowance({
+          account,
+          amount: currencyAmount,
+          balances: balancesRef.current,
+        })
+        const verifiedQuote = verifiedQuotesEnabled && enoughBalance
 
-        _getOrderPrice(chainId, order, enoughBalance && verifiedQuotesEnabled, strategy)
+        _getOrderPrice(chainId, order, verifiedQuote, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
@@ -184,10 +191,12 @@ export function UnfillableOrdersUpdater(): null {
     strategy,
     updateIsUnfillableFlag,
     isWindowVisible,
-    balances,
     updatePendingOrderPrices,
     verifiedQuotesEnabled,
   ])
+
+  const updatePendingRef = useRef(updatePending)
+  updatePendingRef.current = updatePending
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
@@ -196,10 +205,10 @@ export function UnfillableOrdersUpdater(): null {
     }
 
     console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
-    updatePending()
-    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
+    updatePendingRef.current()
+    const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
-  }, [updatePending, chainId, account, isWindowVisible])
+  }, [chainId, account, isWindowVisible])
 
   return null
 }
@@ -207,7 +216,12 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order, verifyQuote: boolean, strategy: GpPriceStrategy) {
+async function _getOrderPrice(
+  chainId: ChainId,
+  order: Order,
+  verifyQuote: boolean | undefined,
+  strategy: GpPriceStrategy
+) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)

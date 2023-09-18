@@ -1,12 +1,17 @@
-import { PIXEL_EVENTS } from './constants'
+import { enablePixel } from './sendAllPixels'
+import { PixelEvent, PixelEventMap } from './types'
 import { sendPixel } from './utils'
 
-const events = {
-  [PIXEL_EVENTS.INIT]: 'tw-oddz2-oddz8',
-  [PIXEL_EVENTS.CONNECT_WALLET]: 'tw-oddz2-oddza',
-  [PIXEL_EVENTS.POST_TRADE]: 'tw-oddz2-oddzb',
+const events: PixelEventMap<string> = {
+  [PixelEvent.INIT]: 'tw-oddz2-oddz8',
+  [PixelEvent.CONNECT_WALLET]: 'tw-oddz2-oddza',
+  [PixelEvent.POST_TRADE]: 'tw-oddz2-oddzb',
 }
 
-export const sendTwitterEvent = sendPixel((event: PIXEL_EVENTS) => {
+export const sendTwitterEvent = sendPixel((event) => {
   window.twq?.('event', events[event], {})
 })
+
+export function enablePixelTwitter() {
+  enablePixel(events, sendTwitterEvent)
+}

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useTradePriceImpact } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -18,12 +19,14 @@ export interface TwapWarningsContext {
 export function useTwapWarningsContext(): TwapWarningsContext {
   const { account } = useWalletInfo()
   const primaryFormValidation = useGetTradeFormValidation()
+  const priceImpactParams = useTradePriceImpact()
 
   return useMemo(() => {
     // TODO: bind to settings
     const expertMode = false
     const canTrade = !primaryFormValidation || NOT_BLOCKING_VALIDATIONS.includes(primaryFormValidation)
-    const showPriceImpactWarning = canTrade && !expertMode
+    const showPriceImpactWarning =
+      canTrade && !expertMode && !priceImpactParams.loading && !priceImpactParams.priceImpact
     const walletIsNotConnected = !account
 
     return {
@@ -31,5 +34,5 @@ export function useTwapWarningsContext(): TwapWarningsContext {
       showPriceImpactWarning,
       walletIsNotConnected,
     }
-  }, [primaryFormValidation, account])
+  }, [primaryFormValidation, account, priceImpactParams])
 }

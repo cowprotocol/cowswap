@@ -9,10 +9,12 @@ import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
 import { SwapCallbackError } from 'legacy/components/swap/styleds'
 import { ButtonSize } from 'legacy/theme/enum'
 
+import { UI } from 'common/constants/theme'
+
 const Wrapper = styled.div`
   ${RowBetween} > div,
   ${RowFixed} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

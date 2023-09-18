@@ -7,6 +7,7 @@ import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
+import { UI } from 'common/constants/theme'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 interface RateImpactProps {
@@ -21,8 +22,8 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  color: ${({ isPositive, isTooLowRate, theme }) =>
-    isPositive ? theme.success : isTooLowRate ? theme.danger : theme.text1};
+  color: ${({ isPositive, isTooLowRate }) =>
+    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT1})`};
 `
 const ImpactTooltip = styled.span`
   display: block;

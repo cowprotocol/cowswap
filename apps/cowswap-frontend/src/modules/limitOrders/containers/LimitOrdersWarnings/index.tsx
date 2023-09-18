@@ -15,6 +15,7 @@ import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
+import { useTradePriceImpact } from 'modules/trade'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -64,13 +65,21 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const rateImpact = useRateImpact()
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { slippageAdjustedSellAmount, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
+  const priceImpactParams = useTradePriceImpact()
 
   const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
-  const showPriceImpactWarning = canTrade && !tradeQuote.isLoading && !!chainId && !expertMode && !!account
+  const showPriceImpactWarning =
+    canTrade &&
+    !tradeQuote.isLoading &&
+    !expertMode &&
+    !!account &&
+    !priceImpactParams.loading &&
+    !priceImpactParams.priceImpact
+
   const showRateImpactWarning =
     canTrade &&
     !tradeQuote.isLoading &&

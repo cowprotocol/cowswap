@@ -6,6 +6,7 @@ import { isAddress } from '../../utils'
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
   id: string
+  icon?: string
 }
 /**
  * Token instances created from token info on a token list.
