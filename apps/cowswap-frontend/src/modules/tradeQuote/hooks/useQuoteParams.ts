@@ -14,7 +14,7 @@ import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQ
 import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
-  const { chainId, account } = useWalletInfo()
+  const { chainId, account, active } = useWalletInfo()
   const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 
   const { state } = useDerivedTradeState()
@@ -29,10 +29,11 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const enoughBalance = useEnoughBalanceAndAllowance({
     account,
     amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
+    spender: undefined,
   })
 
   return useMemo(() => {
-    if (!sellToken || !buyToken || !amount || !orderKind) return
+    if (!sellToken || !buyToken || !amount || !orderKind || !active) return
 
     const params: LegacyFeeQuoteParams = {
       sellToken,
@@ -45,7 +46,9 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
       toDecimals,
       fromDecimals,
       isEthFlow: false,
-      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      priceQuality: getPriceQuality({
+        verifyQuote: verifiedQuotesEnabled && enoughBalance,
+      }),
     }
 
     return params
@@ -60,5 +63,6 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
     sellToken,
     toDecimals,
     verifiedQuotesEnabled,
+    active,
   ])
 }

@@ -39,10 +39,29 @@ export type TokenAmountsResult = {
 }
 
 export interface BalancesAndAllowancesParams {
+  /**
+   * Account to fetch the balances and allowances for
+   */
   account: string | undefined
+
+  /**
+   * Spender account to check the allowance for the given account. Undefined if the allowance is not required
+   */
   spender: string | undefined
+
+  /**
+   * List of tokens to get the balance and allowance for
+   */
   tokens: Token[]
+
+  /**
+   * Number of blocks to wait between each balance polling
+   */
   blocksPerFetchBalance?: number
+
+  /**
+   * Number of blocks to wait between each allowance polling
+   */
   blocksPerFetchAllowance?: number
 }
 

@@ -39,9 +39,11 @@ export function useOnchainAllowances(params: OnchainAllowancesParams): TokenAmou
 }
 
 /**
- * Fetches
- * @param params
- * @returns
+ * Fetches the balances and allowances for the given account and tokens.
+ * Optionally you can pass a spender to check the allowance for the given account.
+ *
+ * @param params Parameters to fetch the balances and allowances
+ * @returns the balances and allowances for the given account and tokens
  */
 export function useOnchainBalancesAndAllowances(params: BalancesAndAllowancesParams): BalancesAndAllowances {
   const { account, spender, tokens, blocksPerFetchAllowance, blocksPerFetchBalance } = params

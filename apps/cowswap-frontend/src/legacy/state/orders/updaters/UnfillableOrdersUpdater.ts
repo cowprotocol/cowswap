@@ -150,6 +150,9 @@ export function UnfillableOrdersUpdater(): null {
           account,
           amount: currencyAmount,
           balances: balancesRef.current,
+          spender: undefined, // Only the balance is relevant for determining if we should use verified quotes
+          allowances: undefined, // Only the balance is relevant for determining if we should use verified quotes
+          nativeBalance: undefined, // Not relevant either
         })
         const verifiedQuote = verifiedQuotesEnabled && enoughBalance
 

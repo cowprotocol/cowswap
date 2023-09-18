@@ -96,7 +96,6 @@ export function WalletUpdater() {
 
   // Update wallet info
   useEffect(() => {
-    console.log('[WalletUpdater] setWalletInfo', walletInfo)
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 

@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -11,19 +13,19 @@ import { TokenAmounts } from '../types'
 
 export interface UseEnoughBalanceParams {
   /**
-   * Address of the account to check balance (and optionally the allowance)
+   * Address of the account to check balance (and optionally the allowance). Undefined if the account is unknown, therefore we shouldn't do the check.
    */
-  account?: string
+  account: string | undefined
 
   /**
-   * Amount against which to check balance (and optionally the allowance)
+   * Amount against which to check balance (and optionally the allowance). Undefined if the amount is unknown, therefore we shouldn't do the check.
    */
-  amount?: CurrencyAmount<Currency>
+  amount: CurrencyAmount<Currency> | undefined
 
   /**
-   * Address of the account to check allowance. Set to undefined to skip allowance check.
+   * Spender account to check the allowance for the given account. Undefined if the allowance is not required
    */
-  checkAllowanceAddress?: string
+  spender: string | undefined
 }
 
 /**
@@ -32,42 +34,46 @@ export interface UseEnoughBalanceParams {
  * @returns true if the account has enough balance (and allowance if it applies)
  */
 export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): boolean | undefined {
-  const { account, amount, checkAllowanceAddress } = params
+  const { account, amount, spender } = params
   const isNativeCurrency = amount?.currency.isNative
   const token = amount?.currency.wrapped
 
   const { balances, allowances } = useBalancesAndAllowances({
     account,
-    spender: checkAllowanceAddress,
+    spender,
     tokens: !isNativeCurrency && account && token ? [token as Token] : [],
   })
 
   const native = useNativeCurrency()
   const [nativeBalance] = useCurrencyBalances(isNativeCurrency ? account : undefined, [native])
 
-  return hasEnoughBalanceAndAllowance({
-    ...params,
-    balances,
-    allowances: checkAllowanceAddress ? allowances : undefined,
-    nativeBalance,
-  })
+  return useMemo(() => {
+    return hasEnoughBalanceAndAllowance({
+      account,
+      amount,
+      balances,
+      spender,
+      allowances: spender ? allowances : undefined,
+      nativeBalance,
+    })
+  }, [account, amount, balances, allowances, nativeBalance, spender])
 }
 
-export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'checkAllowanceAddress'> {
+export interface EnoughBalanceAndAllowanceParams extends UseEnoughBalanceParams {
   /**
    * Balances per token for the account
    */
   balances: TokenAmounts
 
   /**
-   * Allowances per token for the account
+   * Allowances per token for the account. Undefined if the allowances are not required for the check, so only the balance is checked.
    */
-  allowances?: TokenAmounts
+  allowances: TokenAmounts | undefined
 
   /**
-   * Native balance for the account
+   * Native balance for the account or undefined if it is unknown.
    */
-  nativeBalance?: CurrencyAmount<Currency>
+  nativeBalance: CurrencyAmount<Currency> | undefined
 }
 
 /**
@@ -75,7 +81,7 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
  * @param params Parameters to check balance and optionally the allowance
  * @returns true if the account has enough balance (and allowance if it applies)
  */
-export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): boolean | undefined {
+export function hasEnoughBalanceAndAllowance(params: EnoughBalanceAndAllowanceParams): boolean | undefined {
   const { account, amount, balances, nativeBalance, allowances } = params
 
   if (!account || !amount) {
@@ -114,12 +120,14 @@ function _enoughAllowance(
   allowances: TokenAmounts | undefined,
   isNativeCurrency: boolean
 ): boolean | undefined {
-  if (!tokenAddress || !allowances) {
-    return undefined
-  }
-  if (isNativeCurrency) {
+  if (!allowances || isNativeCurrency) {
     return true
   }
+
+  if (!tokenAddress) {
+    return undefined
+  }
+
   const allowance = allowances[tokenAddress]?.value
   return allowance && isEnoughAmount(amount, allowance)
 }
