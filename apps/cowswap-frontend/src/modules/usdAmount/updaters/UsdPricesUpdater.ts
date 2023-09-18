@@ -3,8 +3,9 @@ import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { USDC } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
 import { useDebounce } from '@cowswap/common-hooks'
+import { FractionUtils } from '@cowswap/common-utils'
+import { useWalletInfo } from '@cowswap/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
