@@ -13,7 +13,7 @@ export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = {
   1: 55_000,
   100: 55_000,
-  5: 55_000,
+  5: 36_000,
 }
 
 export const DEFAULT_PERMIT_VALUE = MaxUint256.toString()
