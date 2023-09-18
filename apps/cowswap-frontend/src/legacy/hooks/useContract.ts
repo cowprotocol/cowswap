@@ -9,7 +9,6 @@ import {
   Erc721,
   Erc1155,
   Weth,
-  CoWSwapEthFlowJson,
   ArgentWalletDetectorAbi,
   Eip2612Abi,
   EnsPublicResolverAbi,
@@ -26,6 +25,7 @@ import {
   CoWSwapEthFlow,
   vCowAbi,
   UniswapInterfaceMulticall,
+  CoWSwapEthFlowAbi,
 } from '@cowswap/abis'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
@@ -114,8 +114,6 @@ export function useInterfaceMulticall() {
   return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, MulticallABI, false) as UniswapInterfaceMulticall
 }
 
-const COWSWAP_ETHFLOW_ABI = CoWSwapEthFlowJson.abi
-
 export function useEthFlowContract(): CoWSwapEthFlow | null {
   const { chainId } = useWalletInfo()
 
@@ -123,7 +121,7 @@ export function useEthFlowContract(): CoWSwapEthFlow | null {
 
   const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
 
-  return useContract<CoWSwapEthFlow>(contractAddress, COWSWAP_ETHFLOW_ABI, true)
+  return useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true)
 }
 
 export function useGP2SettlementContract(): GPv2Settlement | null {

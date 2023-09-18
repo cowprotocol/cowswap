@@ -5,6 +5,7 @@ import { StyledSVG } from 'legacy/components/Loader'
 import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { RateWrapper } from 'common/pure/RateInfo'
@@ -88,7 +89,7 @@ export const Summary = styled.div`
   padding: 22px;
   grid-template-rows: 1fr;
   grid-template-columns: 80px auto min-content;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
@@ -152,7 +153,7 @@ export const SummaryInner = styled.div`
   }
 
   > a {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     text-decoration: underline;
     font-size: 14px;
 
@@ -345,12 +346,12 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   font-size: 12px;
   line-height: 1.1;
   margin: 7px auto 0;
-  color: ${({ isCancelling, theme }) => (isCancelling ? theme.text1 : 'inherit')};
+  color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT1})` : 'inherit')};
 
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -396,7 +397,7 @@ export const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 export const TransactionInnerDetail = styled.div`
@@ -404,7 +405,7 @@ export const TransactionInnerDetail = styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => theme.card.border};
 

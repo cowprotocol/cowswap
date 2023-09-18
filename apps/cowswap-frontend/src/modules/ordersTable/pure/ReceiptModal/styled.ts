@@ -2,8 +2,10 @@ import styled from 'styled-components/macro'
 
 import { AutoRow } from 'legacy/components/Row'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   width: 100%;
   margin: 0 0 14px;
   overflow-y: auto;
@@ -24,7 +26,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 16px 16px;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   position: sticky;
   top: 0;
   left: 0;
@@ -69,7 +71,7 @@ export const Field = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   width: 100%;
   font-size: 13px;
 
@@ -88,7 +90,7 @@ export const CurrencyField = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 16px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   width: 100%;
   border-radius: 16px;
   margin: 0 0 10px;

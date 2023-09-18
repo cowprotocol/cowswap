@@ -1,13 +1,18 @@
-import { PIXEL_EVENTS } from './constants'
+import { enablePixel } from './sendAllPixels'
+import { PixelEvent, PixelEventMap } from './types'
 import { sendPixel } from './utils'
 
-const events = {
-  [PIXEL_EVENTS.INIT]: 'page_view',
-  [PIXEL_EVENTS.CONNECT_WALLET]: 'begin_checkout',
-  [PIXEL_EVENTS.POST_TRADE]: 'purchase',
+const events: PixelEventMap<string> = {
+  [PixelEvent.INIT]: 'page_view',
+  [PixelEvent.CONNECT_WALLET]: 'begin_checkout',
+  [PixelEvent.POST_TRADE]: 'purchase',
 }
 
-export const sendMicrosoftEvent = sendPixel((event) => {
+const sendMicrosoftEvent = sendPixel((event) => {
   window.uetq = window.uetq || []
   window.uetq.push('event', events[event], {})
 })
+
+export function enablePixelMicrosoft() {
+  enablePixel(events, sendMicrosoftEvent)
+}

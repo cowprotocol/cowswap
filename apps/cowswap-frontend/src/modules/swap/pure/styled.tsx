@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import { RowBetween } from 'legacy/components/Row'
 
+import { UI } from 'common/constants/theme'
+
 export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   ...props,
   align: 'center',
@@ -26,7 +28,7 @@ export const BottomGrouping = styled.div`
 
   div > svg,
   div > svg > path {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 `
 export const LightGreyText = styled.span`
@@ -36,7 +38,7 @@ export const LightGreyText = styled.span`
 
 export const StyledInfoIcon = styled(Info)`
   opacity: 0.5;
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;

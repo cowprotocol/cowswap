@@ -5,6 +5,8 @@ import { animated } from '@react-spring/web'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
@@ -27,7 +29,7 @@ export const CloseIcon = styled.div`
 
 export const HoverText = styled.div`
   text-decoration: none;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   display: flex;
   align-items: center;
 
@@ -38,7 +40,7 @@ export const HoverText = styled.div`
 
 export const ContentWrapper = styled.div`
   /* background-color: ${({ theme }) => theme.bg0}; */
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;

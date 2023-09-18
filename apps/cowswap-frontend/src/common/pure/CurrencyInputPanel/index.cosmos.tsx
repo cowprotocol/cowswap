@@ -27,10 +27,7 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
     options: [Field.INPUT, Field.OUTPUT],
     defaultValue: Field.INPUT,
   })
-  const [priceImpactError] = useSelect('priceImpactParams.error', {
-    options: ['fetch-quote-error', 'insufficient-liquidity', 'fee-exceeds-sell-amount'],
-    defaultValue: 'fetch-quote-error',
-  })
+
   const [priceImpactRaw] = useValue('priceImpactParams.priceImpact', { defaultValue: 2 })
 
   const balance = CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18)

@@ -7,6 +7,8 @@ import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'
 
+import { UI } from 'common/constants/theme'
+
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.content};
@@ -16,7 +18,7 @@ export const PageWrapper = styled(Widget)`
 export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
 
@@ -170,7 +172,7 @@ export const GdocsListStyle = css`
   ol {
     margin: 24px 0;
     padding: 12px 48px;
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     border-radius: 12px;
 
     > li {

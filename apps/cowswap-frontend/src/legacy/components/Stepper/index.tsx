@@ -3,6 +3,8 @@ import styled from 'styled-components/macro'
 
 import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div<{ totalSteps: number }>`
   width: 100%;
   display: grid;
@@ -84,7 +86,7 @@ export const Step = styled.div<{
 
   > b {
     color: ${({ isActiveStep, completedStep, theme }) =>
-      completedStep ? theme.text1 : isActiveStep ? theme.text1 : transparentize(0.4, theme.text1)};
+      completedStep ? `var(${UI.COLOR_TEXT1})` : isActiveStep ? `var(${UI.COLOR_TEXT1})` : transparentize(0.4, theme.text1)};
     font-weight: ${({ isActiveStep, completedStep }) => (completedStep ? '300' : isActiveStep ? 'bold' : '300')};
     text-align: center;
 

@@ -3,6 +3,8 @@ import styled from 'styled-components/macro'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { ExternalLink } from 'legacy/theme/components'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -25,7 +27,7 @@ export const Icon = styled.div`
 export const Content = styled.div`
   flex: 1;
   padding: 0 1rem;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   h4 {
     margin-bottom: 5px;
     font-size: 1.1rem;
@@ -65,6 +67,6 @@ export const GetZengoButton = styled(ButtonPrimary)`
 export const HowToUse = styled(ExternalLink)`
   font-size: 0.8rem;
   margin-top: 5px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   cursor: pointer;
 `
