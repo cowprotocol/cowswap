@@ -47,19 +47,11 @@ export interface LimitOrdersDetailsProps {
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
-  featurePartialFillsEnabled: boolean
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const {
-    executionPrice,
-    tradeContext,
-    settingsState,
-    rateInfoParams,
-    limitRateState,
-    partiallyFillableOverride,
-    featurePartialFillsEnabled,
-  } = props
+  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState, partiallyFillableOverride } =
+    props
   const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
@@ -136,11 +128,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Active</span>
         </div>
       </styledEl.DetailsRow> */}
-      <OrderType
-        isPartiallyFillable={partiallyFillable}
-        partiallyFillableOverride={partiallyFillableOverride}
-        featurePartialFillsEnabled={featurePartialFillsEnabled}
-      />
+      <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>

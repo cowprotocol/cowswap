@@ -4,11 +4,10 @@ import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
-  featurePartialFillsEnabled: boolean
   onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
-export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: SettingsProps) {
+export function Settings({ state, onStateChanged }: SettingsProps) {
   const { expertMode, showRecipient, partialFillsEnabled } = state
 
   return (
@@ -41,8 +40,7 @@ export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: 
             amount.
           </>
         }
-        disabled={!featurePartialFillsEnabled}
-        value={featurePartialFillsEnabled && partialFillsEnabled}
+        value={partialFillsEnabled}
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
     </SettingsContainer>
