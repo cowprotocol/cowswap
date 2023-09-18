@@ -1,7 +1,9 @@
 import { ButtonPrimary } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 export const BannerWrapper = styled.div`
   display: flex;

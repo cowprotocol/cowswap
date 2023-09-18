@@ -1,12 +1,10 @@
 import { darken } from 'polished'
-import { Check, ChevronDown } from 'react-feather'
+import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
 import { ButtonSize } from '../../enum'
-
-import { UI } from 'common/constants/theme'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 
@@ -104,7 +102,7 @@ export const ButtonLight = styled(BaseButton)`
 
 export const ButtonGray = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
-  color: var(${UI.COLOR_TEXT2});
+  color: var(--cow-color-text2);
   font-size: 16px;
   // font-weight: 500;
 
@@ -152,7 +150,7 @@ export const ButtonSecondary = styled(BaseButton)`
 export const ButtonOutlined = styled(BaseButton)`
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: transparent;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(--cow-color-text1);
   &:focus {
     box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
   }
@@ -235,13 +233,13 @@ export const ButtonText = styled(BaseButton)`
 
 export const ButtonConfirmedStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
-  color: var(${UI.COLOR_TEXT1});
+  color: var(--cow-color-text1);
   /* border: 1px solid ${({ theme }) => theme.green1}; */
 
   &:disabled {
     /* opacity: 50%; */
     background-color: ${({ theme }) => theme.bg2};
-    color: var(${UI.COLOR_TEXT2});
+    color: var(--cow-color-text2);
     cursor: auto;
   }
 `
@@ -311,30 +309,3 @@ export function ButtonDropdownLight({ disabled = false, children, ...rest }: { d
     </ButtonOutlined>
   )
 }
-
-const ActiveOutlined = styled(ButtonOutlined)`
-  border: 1px solid;
-  border-color: ${({ theme }) => theme.primary1};
-`
-
-const Circle = styled.div`
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.primary1};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const CheckboxWrapper = styled.div`
-  width: 30px;
-  padding: 0 10px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-`
-
-const ResponsiveCheck = styled(Check)`
-  size: 13px;
-`

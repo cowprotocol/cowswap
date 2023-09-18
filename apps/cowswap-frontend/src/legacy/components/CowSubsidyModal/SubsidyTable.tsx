@@ -2,12 +2,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { V_COW } from '@cowswap/common-const'
 import { TokenAmount } from '@cowswap/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { UI } from 'UIUIUI'
 
 import { transparentize, lighten } from 'polished'
 import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { UI } from 'common/constants/theme'
 
 import { COW_SUBSIDY_DATA } from './constants'
 

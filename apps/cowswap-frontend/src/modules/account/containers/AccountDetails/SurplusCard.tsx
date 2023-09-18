@@ -1,6 +1,6 @@
 import { FiatAmount, TokenAmount } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -8,6 +8,7 @@ import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelpe
 
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { UI } from 'common/constants/theme'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

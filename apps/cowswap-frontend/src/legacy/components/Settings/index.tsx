@@ -1,9 +1,11 @@
 import { RowFixed } from '@cowswap/ui'
 import { Percent } from '@uniswap/sdk-core'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
+
+import { UI } from 'common/constants/theme'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 

@@ -1,7 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { UI } from 'UIUIUI'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowswap/analytics'
 import fortuneCookieImage from '@cowswap/assets/cow-swap/fortune-cookie.png'
@@ -25,6 +24,7 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
+import { UI } from 'common/constants/theme'
 import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`

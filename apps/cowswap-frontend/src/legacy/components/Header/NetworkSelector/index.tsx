@@ -3,7 +3,6 @@ import { useRef } from 'react'
 import { getChainInfo } from '@cowswap/common-const'
 import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
-import { UI } from 'UIUIUI'
 
 import { Trans } from '@lingui/macro'
 import { transparentize, darken } from 'polished'
@@ -15,6 +14,7 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'

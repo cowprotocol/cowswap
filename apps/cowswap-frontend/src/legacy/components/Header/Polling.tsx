@@ -6,7 +6,6 @@ import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
 import { RowFixed } from '@cowswap/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
-import { UI } from 'UIUIUI'
 
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
@@ -16,6 +15,8 @@ import styled, { keyframes } from 'styled-components/macro'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import { ThemedText } from 'legacy/theme'
+
+import { UI } from 'common/constants/theme'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 

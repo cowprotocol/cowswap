@@ -9,8 +9,10 @@ import {
 import { getEtherscanLink } from '@cowswap/common-utils'
 import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
-import { UI } from 'UIUIUI'
+
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'

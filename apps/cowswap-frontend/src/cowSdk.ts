@@ -1,4 +1,5 @@
 import { MetadataApi } from '@cowprotocol/app-data'
+import { OrderBookApi } from '@cowprotocol/cow-sdk'
 import { isBarnBackendEnv } from '@cowswap/common-utils'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS

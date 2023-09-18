@@ -1,12 +1,14 @@
 import React from 'react'
 
 import { isMobile } from '@cowswap/common-utils'
-import { UI } from 'UIUIUI'
+
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -63,9 +65,9 @@ export function Modal({
               <StyledDialogContent
                 {...(isMobile
                   ? {
-                    ...bind(),
-                    style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
-                  }
+                      ...bind(),
+                      style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
+                    }
                   : {})}
                 aria-label="dialog content"
                 $minHeight={minHeight}
@@ -85,7 +87,7 @@ export function Modal({
   )
 }
 
-export const CowModal = styled(Modal) <{
+export const CowModal = styled(Modal)<{
   maxWidth?: number | string
   backgroundColor?: string
   border?: string
@@ -174,8 +176,8 @@ const NewCowModal = styled.div<{ maxWidth?: number | string; minHeight?: number 
   overflow-y: auto;
 
   ${ModalInner} {
-    max-width: ${({ maxWidth }) => maxWidth ? `${maxWidth}px` : '100%'};
-    min-height: ${({ minHeight }) => minHeight ? `${minHeight}px` : '100%'};
+    max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+    min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : '100%')};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-width: 100%;
@@ -220,7 +222,7 @@ const IconX = styled.div`
   }
 `
 
-const NewModalContent = styled.div<{ paddingTop?: number}>`
+const NewModalContent = styled.div<{ paddingTop?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,26 +288,17 @@ interface NewModalProps {
   children?: React.ReactNode
 }
 
-export function NewModal({
-  maxWidth = 450,
-  minHeight = 450,
-  title,
-  children,
-  onDismiss,
-}: NewModalProps) {
-
+export function NewModal({ maxWidth = 450, minHeight = 450, title, children, onDismiss }: NewModalProps) {
   return (
     <NewCowModal maxWidth={maxWidth} minHeight={minHeight}>
-
       <ModalInner>
         {title && <Heading>{title}</Heading>}
-        <NewModalContent>
-          {children}
-        </NewModalContent>
+        <NewModalContent>{children}</NewModalContent>
       </ModalInner>
 
-      <IconX onClick={() => onDismiss && onDismiss()}><SVG src={CLOSE_ICON} /></IconX>
-
+      <IconX onClick={() => onDismiss && onDismiss()}>
+        <SVG src={CLOSE_ICON} />
+      </IconX>
     </NewCowModal>
   )
 }

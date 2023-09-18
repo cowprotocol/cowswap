@@ -1,8 +1,10 @@
 import { RowBetween } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   ...props,

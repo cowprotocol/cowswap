@@ -3,7 +3,6 @@ import { ButtonPrimary } from '@cowswap/ui'
 import { Row, RowFixed, RowBetween } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList } from '@uniswap/token-lists'
-import { UI } from 'UIUIUI'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -12,6 +11,8 @@ import CardUni from 'legacy/components/Card'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { TextDot } from 'legacy/components/SearchModal/styleds'
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
+
+import { UI } from 'common/constants/theme'
 
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 

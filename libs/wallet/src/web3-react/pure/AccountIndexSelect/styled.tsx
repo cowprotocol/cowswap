@@ -1,6 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { UI } from 'UIUIUI'
 import { ButtonSecondary } from '@cowswap/ui'
 
 export const Wrapper = styled.div`
@@ -18,7 +17,7 @@ export const LoaderContainer = styled(ButtonSecondary)`
 
   &[disabled] {
     cursor: default;
-    background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});
+    background: var(--cow-color-lightBlue-opacity-90);
   }
 `
 

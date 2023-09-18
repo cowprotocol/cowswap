@@ -1,10 +1,9 @@
+import { WETH_GOERLI } from '@cowswap/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
 import { AccountIndexSelect } from './index'
-import { WETH_GOERLI } from '@cowswap/common-const'
-import { UI } from 'UIUIUI'
 
 const accountsList = [
   '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',
@@ -25,7 +24,7 @@ const Wrapper = styled.div`
   margin: 100px auto;
   padding: 20px;
 
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(--cow-container-bg-01);
 `
 
 const Fixtures = {

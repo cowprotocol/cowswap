@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
-import { UI } from 'UIUIUI'
 
 import { MouseoverTooltipContent, TooltipContainer } from '@cowswap/ui'
 
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 const StyledInfoIcon = styled(Info)`
   opacity: 0.5;

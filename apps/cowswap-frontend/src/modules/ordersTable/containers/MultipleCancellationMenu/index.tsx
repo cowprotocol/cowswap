@@ -2,11 +2,12 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { useWalletDetails } from '@cowswap/wallet'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'

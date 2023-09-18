@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { UI } from 'UIUIUI'
 
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
@@ -14,10 +13,8 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  /* color: var(${UI.COLOR_TEXT2}); */
-  /* MOD */
-  color: var(${UI.COLOR_TEXT1});
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  color: var(--cow-color-text1);
+  background: var(--cow-container-bg-01);
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
   border-radius: 8px;
@@ -41,7 +38,7 @@ export const Arrow = styled.div`
     content: '';
     border: 1px solid ${({ theme }) => theme.bg3};
     transform: rotate(45deg);
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(--cow-container-bg-01);
   }
 
   &.arrow-top {

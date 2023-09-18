@@ -5,7 +5,7 @@ import { DEFAULT_DATE_FORMAT } from '@cowswap/common-const'
 import { formatInputAmount } from '@cowswap/common-utils'
 import { isAddress, shortenAddress } from '@cowswap/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
-import { UI } from 'UIUIUI'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -21,6 +21,7 @@ import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/sta
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
+import { UI } from 'common/constants/theme'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
 

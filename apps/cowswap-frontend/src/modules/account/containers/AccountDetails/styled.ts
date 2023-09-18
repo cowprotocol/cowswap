@@ -7,7 +7,9 @@ import styled from 'styled-components/macro'
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { UI } from 'UIUIUI'
+
+import { UI } from 'common/constants/theme'
+
 import {
   StatusLabelWrapper,
   Summary,

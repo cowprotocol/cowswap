@@ -1,8 +1,10 @@
 import CowIcon from '@cowswap/assets/cow-swap/cowprotocol.svg'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 export const LoadingWrapper = styled.div`
   display: flex;

@@ -1,10 +1,11 @@
 import { BaseButton } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 export const TokenSearchInput = styled.input`
@@ -81,7 +82,7 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   height: 28px;
   border-radius: 28px;
   background: var(${UI.COLOR_CONTAINER_BG_01});
-  color: var(${UI.COLOR_TEXT1})!important; // TODO: prevent styles override
+  color: var(${UI.COLOR_TEXT1}) !important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 21px;

@@ -1,9 +1,11 @@
 import { RowBetween, RowFixed } from '@cowswap/ui'
 import { MouseoverTooltipContent } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 import { RowStyleProps } from './types'
 

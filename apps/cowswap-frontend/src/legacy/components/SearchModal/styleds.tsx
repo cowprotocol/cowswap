@@ -1,6 +1,8 @@
 import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowswap/ui'
-import { UI } from 'UIUIUI'
+
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 import { AutoColumn } from '../Column'
 
