@@ -4,6 +4,7 @@ import { escapeRegExp } from '@cowswap/common-utils'
 
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -14,7 +15,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   outline: none;
   border: none;
   flex: 1 1 auto;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   font-size: ${({ fontSize }) => fontSize ?? '28px'};
   text-align: ${({ align }) => align && align};
   white-space: nowrap;

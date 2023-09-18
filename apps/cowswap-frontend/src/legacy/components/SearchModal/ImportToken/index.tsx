@@ -13,6 +13,7 @@ import ListLogo from 'legacy/components/ListLogo'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
@@ -47,7 +48,7 @@ const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       position: sticky;
       top: 0;
-      background: ${({ theme }) => theme.bg1};
+      background: var(${UI.COLOR_CONTAINER_BG_01});
     `}
   }
 `

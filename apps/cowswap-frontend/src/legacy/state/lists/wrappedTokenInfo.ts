@@ -5,6 +5,7 @@ import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
   id: string
+  icon?: string
 }
 /**
  * Token instances created from token info on a token list.

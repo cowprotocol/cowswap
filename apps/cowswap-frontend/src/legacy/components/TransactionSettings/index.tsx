@@ -1,5 +1,5 @@
 import { RowBetween, RowFixed } from '@cowswap/ui'
-
+import { UI } from 'UIUIUI'
 import { darken } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   }
 
   ${OptionCustom} {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     border: 0;
 
     > div > input {
@@ -27,18 +27,18 @@ const Wrapper = styled.div`
 
     > div > input::placeholder {
       opacity: 0.5;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 
   ${RowFixed} {
     > div {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       opacity: 0.85;
     }
 
     > button {
-      background-color: ${({ theme }) => theme.grey1};
+      background-color: var(${UI.COLOR_GREY});
       border: 0;
     }
 
@@ -49,7 +49,7 @@ const Wrapper = styled.div`
     > button > input::placeholder {
       background: transparent;
       opacity: 0.5;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
   }
 `

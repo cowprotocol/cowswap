@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
+import { UI } from 'common/constants/theme'
+
 const IconImage = styled.div`
   display: flex;
   align-items: center;
@@ -12,7 +14,7 @@ const IconImage = styled.div`
 
   > svg {
     opacity: 0.5;
-    fill: ${({ theme }) => theme.text1};
+    fill: var(${UI.COLOR_TEXT1});
     margin: 0 3px 0 0;
   }
 `

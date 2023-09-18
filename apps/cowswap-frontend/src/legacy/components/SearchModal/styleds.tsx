@@ -1,5 +1,5 @@
 import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowswap/ui'
-
+import { UI } from 'UIUIUI'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from '../Column'
@@ -7,7 +7,7 @@ import { AutoColumn } from '../Column'
 export const TextDot = styled.div`
   height: 3px;
   width: 3px;
-  background-color: ${({ theme }) => theme.text2};
+  background-color: var(${UI.COLOR_TEXT2});
   border-radius: 50%;
 `
 
@@ -51,7 +51,7 @@ export const SearchInput = styled.input`
   border: none;
   outline: none;
   border-radius: 20px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   border-style: solid;
   border: 1px solid ${({ theme }) => theme.bg3};
   -webkit-appearance: none;

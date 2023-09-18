@@ -1,4 +1,5 @@
 import { ButtonSecondary } from '@cowswap/ui'
+import { UI } from 'UIUIUI'
 
 import { darken } from 'polished'
 import { Activity } from 'react-feather'
@@ -44,14 +45,14 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
-  background-color: ${({ theme }) => theme.grey1};
+  background-color: var(${UI.COLOR_GREY});
   border: 1px solid transparent;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-weight: 500;
 
   &:hover {
-    background-color: ${({ theme }) => theme.grey1};
-    color: ${({ theme }) => theme.text1};
+    background-color: var(${UI.COLOR_GREY});
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${({ clickDisabled }) =>
@@ -81,7 +82,7 @@ export const NetworkIcon = styled(Activity)`
 `
 
 export const Wrapper = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   height: 40px;
   width: 100%;
   display: flex;

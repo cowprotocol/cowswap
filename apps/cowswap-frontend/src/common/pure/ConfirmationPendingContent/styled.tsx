@@ -7,6 +7,8 @@ import styled, { css } from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 export const Wrapper = styled.div`
   width: 100%;
   padding: 0;
@@ -34,7 +36,7 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   position: sticky;
   top: 0;
   left: 0;
@@ -107,7 +109,7 @@ export const GPModalHeader = styled(RowBetween)`
   left: 0;
   width: 100%;
   padding: 16px 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   z-index: 20;
 `
 
@@ -146,7 +148,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -173,7 +175,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 16px 16px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -238,7 +240,7 @@ export const StepsIconWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 18px;
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 
   @keyframes spin {
@@ -296,7 +298,7 @@ export const StepsWrapper = styled.div`
     flex: 1 1 auto;
     height: 2px;
     border: 0;
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
     margin: auto;
     position: absolute;
     width: 100%;
@@ -311,7 +313,7 @@ export const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;

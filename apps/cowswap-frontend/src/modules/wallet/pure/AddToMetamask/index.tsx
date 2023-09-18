@@ -16,7 +16,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${({ theme }) => theme.text1};
+  color: var(--cow-color-text1);
   background: transparent;
   outline: 0;
   padding: 8px 16px;

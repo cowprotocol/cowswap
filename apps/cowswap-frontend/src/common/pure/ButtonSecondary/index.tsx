@@ -1,8 +1,10 @@
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const ButtonSecondary = styled.button`
-  background: var(--cow-color-lightBlue-opacity-90);
-  color: var(--cow-color-lightBlue);
+  background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});
+  color: var(${UI.COLOR_LIGHT_BLUE});
   font-size: 12px;
   font-weight: 600;
   border: 0;
@@ -16,6 +18,6 @@ export const ButtonSecondary = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: var(--cow-color-lightBlue-opacity-80);
+    background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_80});
   }
 `

@@ -4,7 +4,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { transparentize, lighten, darken } from 'polished'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-
+import { UI } from 'UIUIUI'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
 interface RateImpactAcknowledge {
@@ -40,7 +40,7 @@ const ReadMoreLink = styled.a`
   text-decoration: underline;
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

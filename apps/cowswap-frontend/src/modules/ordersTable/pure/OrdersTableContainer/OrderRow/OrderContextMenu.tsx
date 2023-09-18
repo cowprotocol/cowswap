@@ -5,6 +5,8 @@ import { transparentize } from 'polished'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
   border: 0;
@@ -26,7 +28,7 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 `
 export const ContextMenuList = styled(MenuList)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 12px;
   overflow: hidden;
   position: relative;
@@ -47,7 +49,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   align-items: center;
   font-size: 15px;
   font-weight: 500;
-  color: ${({ theme, $red }) => ($red ? theme.danger : theme.text1)};
+  color: ${({ theme, $red }) => ($red ? `var(${UI.COLOR_DANGER})` : theme.text1)};
 
   &:hover {
     background: ${({ theme }) => transparentize(0.8, theme.text3)};

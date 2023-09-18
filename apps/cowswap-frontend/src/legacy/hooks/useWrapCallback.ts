@@ -10,7 +10,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { getOperationMessage } from '../components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { ConfirmOperationType } from '../state/types'
@@ -39,6 +39,7 @@ export interface WrapUnwrapContext {
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
+  tradeState: TradeRawState
   updateTradeState: (update: Partial<ExtendedTradeRawState>) => void
   closeModals: () => void
   openTransactionConfirmationModal: OpenSwapConfirmModalCallback
@@ -56,6 +57,7 @@ export async function wrapUnwrapCallback(
     openTransactionConfirmationModal,
     closeModals,
     updateTradeState,
+    tradeState,
   } = context
   const isNativeIn = amount.currency.isNative
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
@@ -79,7 +81,7 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     // Clean up form fields after successful wrap/unwrap
-    updateTradeState({ inputCurrencyAmount: '', outputCurrencyAmount: '' })
+    updateTradeState({ ...tradeState, inputCurrencyAmount: '', outputCurrencyAmount: '' })
 
     return txReceipt
   } catch (error: any) {

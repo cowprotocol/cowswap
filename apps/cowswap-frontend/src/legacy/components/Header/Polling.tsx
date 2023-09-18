@@ -6,6 +6,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
 import { RowFixed } from '@cowswap/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
+import { UI } from 'UIUIUI'
 
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
@@ -99,7 +100,7 @@ export const Spinner = styled.div<{ warning: boolean }>`
 
 const Wrapper = styled.div`
   ${StyledPolling} {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     position: relative;
     margin: 0;
     padding: 0;
@@ -109,7 +110,7 @@ const Wrapper = styled.div`
     opacity: 1;
 
     a {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       opacity: 0.5;
       transition: opacity 0.3s ease-in-out;
       text-decoration: none;
@@ -126,7 +127,7 @@ const Wrapper = styled.div`
 
     ${StyledPollingNumber} > a {
       opacity: 1;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
 
       &:hover {
         opacity: 1;
@@ -137,7 +138,7 @@ const Wrapper = styled.div`
 
   ${StyledGasDot},
   ${StyledPollingDot} {
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
   }
 
   ${StyledPollingDot} {

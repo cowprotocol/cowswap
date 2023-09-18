@@ -28,6 +28,11 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useGetMarketDimension } from './useGetMarketDimension'
 
+import { googleAnalytics } from '../googleAnalytics'
+import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
+import { PixelEvent, sendAllPixels } from '../pixel'
+import { Dimensions } from '../types'
+
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
 }
@@ -89,12 +94,7 @@ export function useAnalyticsReporter() {
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account) {
-      sendFacebookEvent(PIXEL_EVENTS.CONNECT_WALLET)
-      sendLinkedinEvent(PIXEL_EVENTS.CONNECT_WALLET)
-      sendTwitterEvent(PIXEL_EVENTS.CONNECT_WALLET)
-      sendRedditEvent(PIXEL_EVENTS.CONNECT_WALLET)
-      sendPavedEvent(PIXEL_EVENTS.CONNECT_WALLET)
-      sendMicrosoftEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendAllPixels(PixelEvent.CONNECT_WALLET)
     }
   }, [account, walletName, prevAccount])
 
@@ -115,12 +115,18 @@ export function useAnalyticsReporter() {
   // Handle initiate pixel tracking
   useEffect(() => {
     if (!initiatedPixel) {
-      sendFacebookEvent(PIXEL_EVENTS.INIT)
-      sendLinkedinEvent(PIXEL_EVENTS.INIT)
-      sendTwitterEvent(PIXEL_EVENTS.INIT)
-      sendRedditEvent(PIXEL_EVENTS.INIT)
-      sendPavedEvent(PIXEL_EVENTS.INIT)
-      sendMicrosoftEvent(PIXEL_EVENTS.INIT)
+      // // Init all pixels
+      // const enablePixelFunctions = [
+      //   enablePixelFacebook,
+      //   enablePixelMicrosoft,
+      //   enablePixelPaved,
+      //   enablePixelReddit,
+      //   enablePixelTwitter,
+      // ]
+      // enablePixelFunctions.forEach((enablePixel) => enablePixel())
+
+      // Sent
+      sendAllPixels(PixelEvent.INIT)
 
       initiatedPixel = true
     }

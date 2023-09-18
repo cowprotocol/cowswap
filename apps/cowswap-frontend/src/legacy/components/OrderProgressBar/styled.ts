@@ -1,5 +1,6 @@
 import CowProtocolLogo from '@cowswap/assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from '@cowswap/ui'
+import { UI } from 'UIUIUI'
 
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
@@ -16,8 +17,8 @@ export const ProgressBarWrapper = animated(styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px 20px 0;
-  color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.grey1};
+  color: var(${UI.COLOR_TEXT1});
+  background-color: var(${UI.COLOR_GREY});
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -205,7 +206,7 @@ export const StatusWrapper = styled.div`
 
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   margin: 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 0.835rem;
@@ -217,7 +218,7 @@ export const StatusMsg = styled.p`
 `
 
 export const StyledCoWLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   text-decoration: underline;
   opacity: 1 !important;
 

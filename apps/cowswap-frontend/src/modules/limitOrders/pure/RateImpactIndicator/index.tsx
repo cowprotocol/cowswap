@@ -1,7 +1,7 @@
 import { TokenSymbol } from '@cowswap/ui'
 import { MouseoverTooltipContent } from '@cowswap/ui'
 import { Currency } from '@uniswap/sdk-core'
-
+import { UI } from 'UIUIUI'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -19,8 +19,8 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  color: ${({ isPositive, isTooLowRate, theme }) =>
-    isPositive ? theme.success : isTooLowRate ? theme.danger : theme.text1};
+  color: ${({ isPositive, isTooLowRate }) =>
+    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT1})`};
 `
 const ImpactTooltip = styled.span`
   display: block;

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import QuestionImage from '@cowswap/assets/svg/question.svg'
 import { renderTooltip } from '@cowswap/ui'
+import { UI } from 'UIUIUI'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -24,7 +25,7 @@ export const QuestionWrapper = styled.div`
   background-color: transparent;
 
   > svg > path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

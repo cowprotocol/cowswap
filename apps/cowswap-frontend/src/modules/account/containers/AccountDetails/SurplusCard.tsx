@@ -1,6 +1,6 @@
 import { FiatAmount, TokenAmount } from '@cowswap/ui'
 import { ExternalLink } from '@cowswap/ui'
-
+import { UI } from 'UIUIUI'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -90,7 +90,7 @@ export function SurplusCard() {
     }
 
     ${InfoCard} > div > span > p {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
 
     ${InfoCard} > div > span > b {

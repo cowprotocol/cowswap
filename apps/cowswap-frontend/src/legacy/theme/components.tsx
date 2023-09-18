@@ -3,6 +3,7 @@ import React from 'react'
 import { ArrowLeft, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
+import { UI } from 'UIUIUI'
 
 export const ButtonText = styled.button`
   outline: none;
@@ -138,7 +139,7 @@ export const Spinner = styled.img`
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 export function BackArrow({ to }: { to: string }) {
   return (

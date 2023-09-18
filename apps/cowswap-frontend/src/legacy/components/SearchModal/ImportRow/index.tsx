@@ -8,6 +8,8 @@ import styled from 'styled-components/macro'
 
 import { StyledListLogo } from 'legacy/components/ListLogo'
 
+import { UI } from 'common/constants/theme'
+
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 
 interface ImportRowProps {
@@ -31,7 +33,7 @@ const Wrapper = styled.div`
   }
 
   ${TokenSection} > svg {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 
   ${TokenSection} ${AutoRow} {
@@ -40,7 +42,7 @@ const Wrapper = styled.div`
   }
 
   ${AutoRow} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     margin: 0;
   }
 

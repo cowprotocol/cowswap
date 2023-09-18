@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { useWalletDetails } from '@cowswap/wallet'
-
+import { UI } from 'UIUIUI'
 import { transparentize } from 'polished'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -61,7 +61,7 @@ const ActionButton = styled.button`
 
 const TextButton = styled.button`
   display: inline-block;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-size: 13px;
   padding: 5px 10px;
   cursor: pointer;

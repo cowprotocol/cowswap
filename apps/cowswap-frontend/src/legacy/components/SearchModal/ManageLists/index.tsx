@@ -3,6 +3,7 @@ import { ButtonPrimary } from '@cowswap/ui'
 import { Row, RowFixed, RowBetween } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
 import { TokenList } from '@uniswap/token-lists'
+import { UI } from 'UIUIUI'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -32,12 +33,12 @@ const Wrapper = styled.div`
 
     svg > path,
     svg > circle {
-      stroke: ${({ theme }) => theme.text1};
+      stroke: var(${UI.COLOR_TEXT1});
     }
   }
 
   ${PopoverContainer} {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   }
 `
 
@@ -53,18 +54,18 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 
   ${Row}, ${RowFixed}, ${RowBetween} {
     > div {
-      color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
+      color: ${({ active, theme }) => (active ? `var(${UI.COLOR_TEXT1})` : theme.text2)};
     }
   }
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   ${Row},
   ${Row} > div > div,
   ${Row} > div > div > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${Row} > img {
@@ -75,7 +76,7 @@ export const Card = styled(CardUni)`
   }
 
   ${TextDot} {
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
   }
 
   ${ButtonPrimary} {

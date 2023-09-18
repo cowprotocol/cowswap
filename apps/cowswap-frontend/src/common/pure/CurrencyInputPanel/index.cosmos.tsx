@@ -27,6 +27,7 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
     options: [Field.INPUT, Field.OUTPUT],
     defaultValue: Field.INPUT,
   })
+
   const [priceImpactRaw] = useValue('priceImpactParams.priceImpact', { defaultValue: 2 })
 
   const balance = CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18)

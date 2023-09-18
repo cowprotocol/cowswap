@@ -25,8 +25,8 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 
 import { getAppData } from 'modules/appData'
 
-import { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
-import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
+import { ApiErrorCodes, ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import GpQuoteError, { GpQuoteErrorDetails, mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -139,6 +139,16 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
 export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteResponse> {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
+  const { sellToken, buyToken } = quoteParams
+
+  if (sellToken === buyToken) {
+    return Promise.reject(
+      mapOperatorErrorToQuoteError({
+        errorType: ApiErrorCodes.SameBuyAndSellToken,
+        description: GpQuoteErrorDetails.SameBuyAndSellToken,
+      })
+    )
+  }
 
   return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
     if (isOrderbookTypedError(error)) {
@@ -223,7 +233,7 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
-export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean }): PriceQuality {
+export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean | undefined }): PriceQuality {
   const { fast = false, verifyQuote } = props
   if (fast) {
     return PriceQuality.FAST

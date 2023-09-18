@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
 
+import { UI } from 'common/constants/theme'
+
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
   padding: 1rem;
@@ -83,7 +85,7 @@ export const HeaderText = styled.div`
 `
 
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   margin-top: 10px;
   font-size: 12px;
 `

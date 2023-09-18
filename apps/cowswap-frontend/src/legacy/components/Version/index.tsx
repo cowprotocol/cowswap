@@ -9,7 +9,7 @@ import {
 import { getEtherscanLink } from '@cowswap/common-utils'
 import { ExternalLink } from '@cowswap/ui'
 import { useWalletInfo } from '@cowswap/wallet'
-
+import { UI } from 'UIUIUI'
 import styled from 'styled-components/macro'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -69,7 +69,7 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   gap: 10px;
 `
 

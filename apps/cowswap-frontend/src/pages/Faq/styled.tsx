@@ -8,6 +8,8 @@ import { StyledInternalLink } from 'legacy/theme'
 
 import { Content } from 'modules/application/pure/Page'
 
+import { UI } from 'common/constants/theme'
+
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;
   font-weight: normal;
@@ -36,14 +38,14 @@ export const Wrapper = styled.div`
     > table {
       width: 100%;
       border-spacing: 1px;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
 
       > thead {
         background: ${({ theme }) => theme.bg3};
       }
 
       > tbody > tr {
-        background: ${({ theme }) => theme.grey1};
+        background: var(${UI.COLOR_GREY});
       }
 
       > tbody > tr > td > span[role='img'] {
@@ -121,7 +123,7 @@ export const Menu = styled.div`
   font-weight: bold;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   height: max-content;
   position: sticky;
   top: 0;

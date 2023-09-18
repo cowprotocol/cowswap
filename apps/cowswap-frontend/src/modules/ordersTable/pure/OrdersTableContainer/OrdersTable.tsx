@@ -27,6 +27,7 @@ import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/type
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
+import { UI } from 'common/constants/theme'
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -150,7 +151,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

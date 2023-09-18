@@ -1,5 +1,5 @@
 import { BaseButton } from '@cowswap/ui'
-
+import { UI } from 'UIUIUI'
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
@@ -14,7 +14,7 @@ export const TokenSearchInput = styled.input`
   width: 100%;
   align-self: flex-end;
   box-shadow: none;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 21px;
   transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
@@ -25,7 +25,7 @@ export const TokenSearchInput = styled.input`
 
   &:focus {
     max-width: 500px;
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
     outline: 0;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -59,7 +59,7 @@ export const Wrapper = styled.div`
   width: 100%;
   border: none;
   padding: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 16px;
   display: grid;
 `
@@ -80,8 +80,8 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   width: 28px;
   height: 28px;
   border-radius: 28px;
-  background: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1}!important; // TODO: prevent styles override
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  color: var(${UI.COLOR_TEXT1})!important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 21px;
@@ -166,7 +166,7 @@ export const ArrowButton = styled.button`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
@@ -207,7 +207,7 @@ export const Row = styled.div`
   `}
 
   &:hover {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
   }
 `
 
@@ -248,11 +248,11 @@ export const Cell = styled.div`
     transition: text-decoration-color 0.2s ease-in-out;
     overflow: hidden;
     display: flex;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
 
     &:hover {
-      color: ${({ theme }) => theme.text1};
-      text-decoration-color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
+      text-decoration-color: var(${UI.COLOR_TEXT1});
     }
   }
 `
@@ -263,7 +263,7 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => (hasBalance ? theme.text1 : transparentize(0.3, theme.text1))};
+  color: ${({ hasBalance, theme }) => (hasBalance ? `var(${UI.COLOR_TEXT1})` : transparentize(0.3, theme.text1))};
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
@@ -297,7 +297,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     max-height: 100%;
 
     > path {
-      fill: ${({ theme }) => theme.text1};
+      fill: var(${UI.COLOR_TEXT1});
     }
   }
 
@@ -416,7 +416,7 @@ export const FiatValue = styled.div`
 `
 
 export const InfoCircle = styled(HelpCircle)`
-  stroke: ${({ theme }) => theme.text1};
+  stroke: var(${UI.COLOR_TEXT1});
   width: 15px;
   height: 15px;
   margin-left: 5px;

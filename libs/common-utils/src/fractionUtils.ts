@@ -1,5 +1,6 @@
-import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token, Currency } from '@uniswap/sdk-core'
+import { BigintIsh, Currency, CurrencyAmount, Fraction, Price, Rounding, Token } from '@uniswap/sdk-core'
 
+import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 import { FractionLike, Nullish } from './types'
 
@@ -121,5 +122,26 @@ export class FractionUtils {
     const decimalsShift = JSBI.BigInt(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(decimalsA - decimalsB))))
 
     return decimalsA < decimalsB ? value.multiply(decimalsShift) : value.divide(decimalsShift)
+  }
+
+
+  /**
+   * Converts a number into a Fraction
+   *
+   * @param n
+   */
+  static fromNumber(n: number): Fraction {
+    const bigNumber = new BigNumber(n)
+    const decimalPlaces = bigNumber.decimalPlaces()
+
+    if (!decimalPlaces) {
+      return new Fraction(JSBI.BigInt(n))
+    }
+
+    const denominator = Math.pow(10, decimalPlaces)
+
+    const numerator = bigNumber.times(denominator).decimalPlaces(0).toFixed()
+
+    return new Fraction(JSBI.BigInt(numerator), JSBI.BigInt(denominator))
   }
 }

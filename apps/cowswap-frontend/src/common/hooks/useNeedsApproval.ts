@@ -39,5 +39,5 @@ export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boo
     return false
   }
 
-  return !isEnoughAmount(amount, allowance)
+  return isEnoughAmount(amount, allowance) === false
 }

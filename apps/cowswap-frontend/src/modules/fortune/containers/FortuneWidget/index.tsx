@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { UI } from 'UIUIUI'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowswap/analytics'
 import fortuneCookieImage from '@cowswap/assets/cow-swap/fortune-cookie.png'
@@ -120,7 +121,7 @@ const FortuneBanner = styled.div`
   left: 0;
   bottom: 0;
   z-index: 501;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   padding: 0;
   animation: open 0.3s ease-in-out forwards;
   overflow: hidden;
@@ -183,7 +184,7 @@ const FortuneTitle = styled.h2`
   font-size: 21px;
   text-align: center;
   font-weight: 700;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 
   > i {
     font-size: 16px;
@@ -227,7 +228,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     font-size: 100px;
     position: absolute;
     z-index: 1;
@@ -243,11 +244,11 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 const StyledExternalLink = styled(ExternalLink)`
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 24px;
 `
 
@@ -256,7 +257,7 @@ const HeaderElement = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   position: fixed;
   padding: 0 16px;
   top: 0;
@@ -283,7 +284,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

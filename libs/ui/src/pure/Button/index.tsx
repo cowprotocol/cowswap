@@ -8,6 +8,8 @@ import styled from 'styled-components'
 import { RowBetween } from '../Row'
 import { ButtonSize } from '../../enum'
 
+import { UI } from 'common/constants/theme'
+
 import {
   // Import only the basic buttons
   ButtonPrimary as ButtonPrimaryMod,
@@ -48,7 +50,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.grey1};
+    background-color: var(${UI.COLOR_GREY});
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
@@ -165,7 +167,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   background-image: none;
   border: 0;
   cursor: auto;
@@ -177,14 +179,14 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: ${({ theme }) => theme.red1};
-  color: ${({ theme }) => theme.bg1};
+  color: var(${UI.COLOR_CONTAINER_BG_01});
   transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: ${({ theme }) => theme.red1};
-    color: ${({ theme }) => theme.bg1};
+    color: var(${UI.COLOR_CONTAINER_BG_01});
   }
 
   &:hover {

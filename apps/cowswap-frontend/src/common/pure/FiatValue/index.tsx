@@ -1,5 +1,6 @@
 import { FiatAmount } from '@cowswap/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { UI } from 'UIUIUI'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -11,7 +12,7 @@ import { PriceImpactIndicator } from '../PriceImpactIndicator'
 const FiatValueWrapper = styled.div<{ hasValue$: boolean }>`
   display: inline-block;
   font-size: 14px;
-  color: ${({ theme, hasValue$ }) => (hasValue$ ? theme.text1 : theme.text4)};
+  color: ${({ theme, hasValue$ }) => (hasValue$ ? `var(${UI.COLOR_TEXT1})` : theme.text4)};
 `
 
 export function FiatValue({

@@ -9,6 +9,8 @@ import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
+import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderExists'
+
 export interface UniqueOrderIdResult {
   orderId: string
   orderParams: PostOrderParams // most cases, will be the same as the ones in the parameter, but it might be modified to make the order unique
@@ -32,7 +34,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  checkInFlightOrderIdExists: (orderId: string) => boolean
+  checkEthFlowOrderExists: EthFlowOrderExistsCallback
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
@@ -58,11 +60,11 @@ export async function calculateUniqueOrderId(
     sellAmount: orderParams.inputAmount.quotient.toString(),
     fee: orderParams.feeAmount?.quotient.toString(),
   }
-  if (checkInFlightOrderIdExists(orderId)) {
+  if (await checkEthFlowOrderExists(orderId, orderDigest)) {
     logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ❌ Collision detected: ' + orderId, logParams)
 
     // Recursive call, increment one fee until we get an unique order Id
-    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkInFlightOrderIdExists)
+    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkEthFlowOrderExists)
   }
 
   logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ✅ Order Id is Unique' + orderId, logParams)

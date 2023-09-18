@@ -204,7 +204,7 @@ export function FeesUpdater(): null {
       userAddress: account,
       validTo,
       isEthFlow,
-      priceQuality: getPriceQuality({ verifyQuote: enoughBalance && verifiedQuotesEnabled }),
+      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
     }
 
     // Don't refetch if offline.
