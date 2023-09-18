@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useWalletInfo } from '@cowswap/wallet'
 
 import { useTradePriceImpact } from 'modules/trade'
-
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 const NOT_BLOCKING_VALIDATIONS = [

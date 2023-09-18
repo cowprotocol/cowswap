@@ -124,7 +124,7 @@ export function WalletModal() {
         )
       }
     },
-    [chainId, dispatch, toggleWalletModal, toggleAccountSelectorModal]
+    [chainId, dispatch, toggleAccountSelectorModal]
   )
 
   return (
