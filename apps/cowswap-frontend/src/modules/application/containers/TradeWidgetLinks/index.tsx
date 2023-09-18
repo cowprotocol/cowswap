@@ -12,15 +12,15 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 import * as styledEl from './styled'
 
 interface MenuItemConfig {
-  route: RoutesValues;
-  label: string;
-  featureGuard?: string;
-  onClick?: () => void;
-  badgeText?: string;
-  badgeType?: BadgeType;
+  route: RoutesValues
+  label: string
+  featureGuard?: string
+  onClick?: () => void
+  badgeText?: string
+  badgeType?: BadgeType
 }
 
-export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default';
+export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default'
 
 const MENU_ITEMS: MenuItemConfig[] = [
   { route: Routes.SWAP, label: 'Swap' },
@@ -28,15 +28,14 @@ const MENU_ITEMS: MenuItemConfig[] = [
   {
     route: Routes.ADVANCED_ORDERS,
     label: 'TWAP',
-    featureGuard: 'advancedOrdersEnabled',
     badgeText: 'NEW!',
-    badgeType: 'alert2'
+    badgeType: 'alert2',
   },
 ]
 
 interface TradeWidgetLinksProps {
-  highlightedBadgeText?: string;
-  highlightedBadgeType?: BadgeType;
+  highlightedBadgeText?: string
+  highlightedBadgeType?: BadgeType
 }
 
 export function TradeWidgetLinks({ highlightedBadgeText, highlightedBadgeType }: TradeWidgetLinksProps) {
@@ -45,21 +44,21 @@ export function TradeWidgetLinks({ highlightedBadgeText, highlightedBadgeType }:
 
   const buildMenuItem = useCallback(
     (item: MenuItemConfig) => {
-      const routePath = parameterizeTradeRoute(tradeContext, item.route);
-  
-      const isActive = !!matchPath(location.pathname, routePath);
-  
+      const routePath = parameterizeTradeRoute(tradeContext, item.route)
+
+      const isActive = !!matchPath(location.pathname, routePath)
+
       const menuItem = (
-        <MenuItem 
-          key={item.label} 
-          routePath={routePath} 
-          item={item} 
+        <MenuItem
+          key={item.label}
+          routePath={routePath}
+          item={item}
           isActive={isActive}
-          badgeText={item.badgeText || highlightedBadgeText} 
+          badgeText={item.badgeText || highlightedBadgeText}
           badgeType={item.badgeType || highlightedBadgeType}
         />
-      );      
-  
+      )
+
       return item.featureGuard ? (
         <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
           {menuItem}
@@ -69,17 +68,23 @@ export function TradeWidgetLinks({ highlightedBadgeText, highlightedBadgeType }:
       )
     },
     [location.pathname, tradeContext, highlightedBadgeText, highlightedBadgeType]
-  );  
+  )
 
   return <styledEl.Wrapper>{MENU_ITEMS.map(buildMenuItem)}</styledEl.Wrapper>
 }
 
-const MenuItem = ({ routePath, item, isActive, badgeText, badgeType }: { 
-  routePath: string; 
-  item: MenuItemConfig; 
-  isActive: boolean;
-  badgeText?: string;
-  badgeType?: BadgeType;
+const MenuItem = ({
+  routePath,
+  item,
+  isActive,
+  badgeText,
+  badgeType,
+}: {
+  routePath: string
+  item: MenuItemConfig
+  isActive: boolean
+  badgeText?: string
+  badgeType?: BadgeType
 }) => (
   <styledEl.MenuItem isActive={isActive}>
     <styledEl.Link to={routePath}>
