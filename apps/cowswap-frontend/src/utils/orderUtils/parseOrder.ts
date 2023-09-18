@@ -33,6 +33,7 @@ export interface ParsedOrderExecutionData {
 
 export interface ParsedOrder {
   id: string
+  owner: string
   isCancelling: boolean | undefined
   receiver: string | undefined
   inputToken: Token
@@ -94,6 +95,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
 
   return {
     id: order.id,
+    owner: order.owner,
     isCancelling: order.isCancelling,
     inputToken: order.inputToken,
     outputToken: order.outputToken,

@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -24,14 +23,17 @@ import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
+  BannerOrientation,
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
+  CustomRecipientWarningBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
+import { useDerivedTradeState } from '../../../trade/hooks/useDerivedTradeState'
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
@@ -103,13 +105,17 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     isSafeViaWc &&
     primaryFormValidation === TradeFormValidation.ApproveRequired
 
+  const { state } = useDerivedTradeState()
+  const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
+
   const isVisible =
     showPriceImpactWarning ||
     rateImpact < 0 ||
     showHighFeeWarning ||
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
-    shouldZeroApprove
+    shouldZeroApprove ||
+    showRecipientWarning
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -135,6 +141,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
+      {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning

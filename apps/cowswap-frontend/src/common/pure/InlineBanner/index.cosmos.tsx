@@ -13,7 +13,7 @@ const Fixtures = {
   alert: (
     <DemoContainer>
       <InlineBanner bannerType="alert">
-        <strong>This is an alert banner (explicitly passed type).</strong>
+        <strong>This is an alert banner (explicitly passed bannerType).</strong>
       </InlineBanner>
     </DemoContainer>
   ),

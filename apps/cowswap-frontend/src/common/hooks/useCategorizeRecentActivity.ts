@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { useRecentActivity, TransactionAndOrder } from 'legacy/hooks/useRecentActivity'
-import { PENDING_STATES } from 'legacy/state/orders/actions'
+import { useRecentActivity } from 'legacy/hooks/useRecentActivity'
+import { OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
+export const isPending = ({ status }: { status: OrderStatus }) => PENDING_STATES.includes(status)
 
 export function useCategorizeRecentActivity() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed

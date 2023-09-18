@@ -5,7 +5,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
-import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
+import { SwapModalHeader } from 'legacy/components/swap/SwapModalHeader'
 import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import TradeGp from 'legacy/state/swap/TradeGp'
