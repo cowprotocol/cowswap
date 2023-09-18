@@ -85,16 +85,14 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTxBundlingEnabled = useIsBundlingSupported()
-  const isEthFlowBundlingEnabled = useIsBundlingSupported()
+  const isBundlingSupported = useIsBundlingSupported()
 
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
-    isTxBundlingEnabled,
-    isEthFlowBundlingEnabled,
+    isBundlingSupported,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,

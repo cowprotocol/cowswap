@@ -9,7 +9,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const {
     derivedTradeState,
     approvalState,
-    isTxBundlingEnabled,
+    isBundlingSupported,
     isWrapUnwrap,
     isExpertMode,
     isSupportedWallet,
@@ -77,11 +77,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (approvalRequired) {
-    if (isTxBundlingEnabled) {
-      if (isExpertMode) {
-        return TradeFormValidation.ExpertApproveAndSwap
-      }
-      return TradeFormValidation.ApproveAndSwap
+    if (isBundlingSupported) {
+      return isExpertMode ? TradeFormValidation.ExpertApproveAndSwap : TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
   }

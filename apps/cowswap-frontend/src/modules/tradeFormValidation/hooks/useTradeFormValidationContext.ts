@@ -24,7 +24,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
 
-  const isTxBundlingEnabled = useIsBundlingSupported()
+  const isBundlingSupported = useIsBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -34,7 +34,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const commonContext = {
     account,
     isWrapUnwrap,
-    isTxBundlingEnabled,
+    isBundlingSupported,
     isSupportedWallet,
     isSwapUnsupported,
     isSafeReadonlyUser,
