@@ -1,24 +1,19 @@
 import { useEffect } from 'react'
 
-import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '@cowswap/analytics'
-import { googleAnalytics } from '@cowswap/analytics'
 import {
-  PIXEL_EVENTS,
-  sendFacebookEvent,
-  sendLinkedinEvent,
-  sendMicrosoftEvent,
-  sendPavedEvent,
-  sendRedditEvent,
-  sendTwitterEvent,
   Dimensions,
+  GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY,
+  googleAnalytics,
+  PixelEvent,
+  sendAllPixels,
 } from '@cowswap/analytics'
 import { usePrevious } from '@cowswap/common-hooks'
 import {
+  getConnectionName,
+  getIsMetaMask,
   getWeb3ReactConnection,
   useWalletDetails,
   useWalletInfo,
-  getConnectionName,
-  getIsMetaMask,
 } from '@cowswap/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -27,11 +22,6 @@ import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useGetMarketDimension } from './useGetMarketDimension'
-
-import { googleAnalytics } from '../googleAnalytics'
-import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
-import { PixelEvent, sendAllPixels } from '../pixel'
-import { Dimensions } from '../types'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
