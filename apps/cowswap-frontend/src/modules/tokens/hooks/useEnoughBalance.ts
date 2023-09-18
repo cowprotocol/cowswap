@@ -31,6 +31,8 @@ export type UseEnoughBalanceAndAllowanceResult = {
   enoughAllowance: boolean | undefined
 }
 
+const DEFAULT_BALANCE_AND_ALLOWANCE = { enoughBalance: undefined, enoughAllowance: undefined }
+
 /**
  * Check if the account has enough balance and optionally allowance
  * @param params UseEnoughBalanceParams to check balance and optionally the allowance
@@ -84,7 +86,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
   const { account, amount, balances, nativeBalance, allowances } = params
 
   if (!account || !amount) {
-    return { enoughBalance: undefined, enoughAllowance: undefined }
+    return DEFAULT_BALANCE_AND_ALLOWANCE
   }
 
   const isNativeCurrency = amount?.currency.isNative
