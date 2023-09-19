@@ -105,9 +105,19 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
 
   const callData = await callDataPromise
 
+  // Only estimate the gas limit again when it's a real user
+  // Otherwise the gasLimit was already pre-calculated
+  const gasLimit = !account
+    ? permitInfo.gasLimit
+    : await provider.estimateGas({
+        data: callData,
+        from: owner,
+        to: tokenAddress,
+      })
+
   return {
     target: tokenAddress,
     callData,
-    gasLimit: permitInfo.gasLimit.toString(),
+    gasLimit: gasLimit.toString(),
   }
 }
