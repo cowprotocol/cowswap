@@ -22,8 +22,6 @@ import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
-import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
@@ -86,16 +84,14 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const isEthFlowBundlingEnabled = useIsEthFlowBundlingEnabled()
+  const isBundlingSupported = useIsBundlingSupported()
 
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
-    isTxBundlingEnabled,
-    isEthFlowBundlingEnabled,
+    isBundlingSupported,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,

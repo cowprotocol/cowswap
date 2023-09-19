@@ -9,19 +9,21 @@ import MenuDropdown from 'legacy/components/MenuDropdown'
 import { MenuSection, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 
 import {
-  DropDownItem,
-  ParametrizedLink,
   CustomItem,
+  DropDownItem,
   ExternalLink,
   InternalLink,
   MainMenuContext,
   MenuItemKind,
   MenuLink,
   MenuTreeItem,
+  ParametrizedLink,
 } from 'modules/mainMenu/types'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { RoutesValues } from 'common/constants/routes'
+
+import { MAIN_MENU } from '../../constants/mainMenu'
 
 // Assets
 
@@ -165,12 +167,12 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
 }
 
 export interface MenuTreeProps {
-  items: MenuTreeItem[]
+  items?: MenuTreeItem[]
   context: MainMenuContext
   isMobileMenuOpen: boolean
 }
 
-export function MenuTree({ items, isMobileMenuOpen, context }: MenuTreeProps) {
+export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuTreeProps) {
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {items.map((menuItem, index) => {

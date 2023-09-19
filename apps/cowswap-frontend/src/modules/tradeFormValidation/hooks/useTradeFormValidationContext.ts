@@ -11,7 +11,6 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove'
-import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -26,7 +25,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
 
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
+  const isBundlingSupported = useIsBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -36,7 +35,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const commonContext = {
     account,
     isWrapUnwrap,
-    isTxBundlingEnabled,
+    isBundlingSupported,
     isSupportedWallet,
     isSwapUnsupported,
     isSafeReadonlyUser,

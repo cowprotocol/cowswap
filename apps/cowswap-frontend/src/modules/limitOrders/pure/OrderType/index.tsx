@@ -11,7 +11,6 @@ import * as styledEl from './styled'
 
 export type OrderTypeProps = {
   isPartiallyFillable: boolean
-  featurePartialFillsEnabled: boolean
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   className?: string
 }
@@ -42,11 +41,7 @@ export function OrderType(props: OrderTypeProps) {
 
 const LABELS = ['Partially fillable', 'Fill or kill']
 
-function OrderTypePicker({
-  isPartiallyFillable,
-  featurePartialFillsEnabled,
-  partiallyFillableOverride,
-}: OrderTypeProps) {
+function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
   const [override, setOverride] = partiallyFillableOverride
 
   const showPartiallyFillable = override ?? isPartiallyFillable
@@ -54,21 +49,18 @@ function OrderTypePicker({
   const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
   const onSelect = (label: string) => setOverride(label === LABELS[0])
-  const disabled = !featurePartialFillsEnabled
 
   return (
     <Menu>
       {({ isExpanded }: { isExpanded: boolean }) => (
         <styledEl.Wrapper>
-          <styledEl.StyledMenuButton disabled={disabled}>
+          <styledEl.StyledMenuButton>
             <styledEl.LabelText>{labelText}</styledEl.LabelText>
-            {!disabled && (
-              <styledEl.StyledSVG
-                src={IMAGE_CARET_DOWN}
-                description="dropdown icon"
-                className={isExpanded ? 'expanded' : ''}
-              />
-            )}
+            <styledEl.StyledSVG
+              src={IMAGE_CARET_DOWN}
+              description="dropdown icon"
+              className={isExpanded ? 'expanded' : ''}
+            />
           </styledEl.StyledMenuButton>
 
           <styledEl.StyledMenuList portal={false}>
