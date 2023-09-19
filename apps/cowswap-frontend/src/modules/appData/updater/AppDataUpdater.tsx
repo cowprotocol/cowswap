@@ -8,7 +8,7 @@ import { useUtm } from 'modules/utm'
 import { useWalletInfo } from 'modules/wallet'
 
 import { AppDataHooksUpdater } from './AppDataHooksUpdater'
-import { InnerAppDataUpdater, UseAppDataParams } from './InnerAppDataUpdater'
+import { AppDataInfoUpdater, UseAppDataParams } from './AppDataInfoUpdater'
 
 import { useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
@@ -34,7 +34,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
 
 const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => {
   AppDataHooksUpdater()
-  InnerAppDataUpdater(params)
+  AppDataInfoUpdater(params)
 
   return null
 })
