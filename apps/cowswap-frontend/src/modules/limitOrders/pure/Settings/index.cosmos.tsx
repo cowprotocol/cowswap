@@ -8,7 +8,6 @@ const defaultProps: SettingsProps = {
     deadlineMilliseconds: 200_000,
     customDeadlineTimestamp: null,
   },
-  featurePartialFillsEnabled: true,
   onStateChanged(state) {
     console.log('Settings state changed: ', state)
   },

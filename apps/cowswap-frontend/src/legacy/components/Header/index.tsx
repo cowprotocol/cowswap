@@ -15,7 +15,7 @@ import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
+import { MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -72,8 +72,6 @@ export default function Header() {
     setIsOrdersPanelOpen(false)
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
-
-  const menuItems = useMenuItems()
 
   const navigate = useNavigate()
 
@@ -139,9 +137,7 @@ export default function Header() {
               </UniIcon>
             </Title>
           )}
-          {!isInjectedWidgetMode && (
-            <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
-          )}
+          {!isInjectedWidgetMode && <MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
         </HeaderRow>
 
         <HeaderControls>

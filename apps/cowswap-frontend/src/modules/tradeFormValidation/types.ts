@@ -45,7 +45,7 @@ export interface TradeFormValidationCommonContext {
   tradeQuote: TradeQuoteState
   recipientEnsAddress: string | null
   isWrapUnwrap: boolean
-  isTxBundlingEnabled: boolean
+  isBundlingSupported: boolean
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
