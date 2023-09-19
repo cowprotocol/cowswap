@@ -1,4 +1,10 @@
-import { useIsSmartContractWallet, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import {
+  useIsSmartContractWallet,
+  useGnosisSafeInfo,
+  useWalletDetails,
+  useWalletInfo,
+  useIsBundlingSupported,
+} from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'

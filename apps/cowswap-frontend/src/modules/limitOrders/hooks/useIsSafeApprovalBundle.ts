@@ -1,8 +1,7 @@
+import { useIsBundlingSupported } from '@cowswap/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { useIsBundlingSupported } from 'modules/wallet'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 

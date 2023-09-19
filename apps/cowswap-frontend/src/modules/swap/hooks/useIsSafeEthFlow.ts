@@ -1,4 +1,4 @@
-import { useIsBundlingSupported } from 'modules/wallet'
+import { useIsBundlingSupported } from '@cowswap/wallet'
 
 import { useIsSwapEth } from './useIsSwapEth'
 

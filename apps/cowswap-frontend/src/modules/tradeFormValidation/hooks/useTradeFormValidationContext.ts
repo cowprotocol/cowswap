@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useENSAddress } from '@cowswap/ens'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
 
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
