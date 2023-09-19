@@ -9,6 +9,8 @@ import { Nullish } from 'types'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/atoms'
 import { IsTokenPermittableResult } from '../types'
 import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
@@ -30,11 +32,13 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   const isNative = token?.isNative
   const tokenName = token?.name || lowerCaseAddress || ''
 
+  const isPermitEnabled = useIsPermitEnabled(chainId)
+
   const addPermitInfo = useAddPermitInfo()
-  const permitInfo = usePermitInfo(chainId, lowerCaseAddress)
+  const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
 
   useEffect(() => {
-    if (!chainId || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
+    if (!chainId || !isPermitEnabled || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
       return
     }
 
