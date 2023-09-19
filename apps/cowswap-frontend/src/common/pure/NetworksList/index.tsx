@@ -28,7 +28,6 @@ export function NetworksList(props: NetworksListProps) {
 
         const rowContent = (
           <styledEl.FlyoutRow
-            className="network-item"
             data-network-id={targetChainId}
             key={targetChainId}
             onClick={() => onSelectChain(targetChainId)}
@@ -45,7 +44,7 @@ export function NetworksList(props: NetworksListProps) {
         }
 
         return (
-          <styledEl.ActiveRowWrapper className="network-item" data-network-id={targetChainId} key={targetChainId}>
+          <styledEl.ActiveRowWrapper data-network-id={targetChainId} key={targetChainId}>
             {rowContent}
             <styledEl.ActiveRowLinkList>
               {bridge && (

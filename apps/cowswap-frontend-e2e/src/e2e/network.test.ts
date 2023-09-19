@@ -4,7 +4,6 @@ describe('Network', () => {
     cy.visit('/#/5/swap/GNO/COW')
     cy.get('#web3-status-connected').click()
 
-    cy.viewport('iphone-6')
     cy.get('#account-orders-panel').then((el) => {
       /**
        * Disable css smooth scroll, that doesn't plays nice with cypress.
@@ -14,12 +13,12 @@ describe('Network', () => {
       el.scrollTop(0)
     })
 
+    cy.screenshot()
     cy.get('#disconnect-btn').click()
-    cy.viewport('macbook-16')
 
     // WHEN: network changes to Gnosis chain
     cy.get('#network-select-btn').trigger('mouseover')
-    cy.get('.network-item[data-network-id="100"]').click()
+    cy.get('div[data-network-id="100"]').click()
 
     // THEN: sell token is WXDAI and buy token is empty
     cy.get('#input-currency-input .token-symbol-container').should('contain', 'WXDAI')
