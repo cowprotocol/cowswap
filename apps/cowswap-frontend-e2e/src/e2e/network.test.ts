@@ -13,7 +13,7 @@ describe('Network', () => {
       el.scrollTop(0)
     })
 
-    cy.get('#disconnect-btn').click({ force: true })
+    cy.get('#disconnect-btn').should('be.visible').click()
 
     // WHEN: network changes to Gnosis chain
     cy.get('#network-select-btn').trigger('mouseover')
