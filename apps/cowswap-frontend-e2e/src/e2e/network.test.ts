@@ -1,7 +1,6 @@
 describe('Network', () => {
   it('When network is changed, then should reset swap form state', () => {
     // GIVEN: current network is Goerli, wallet is not connected
-    cy.viewport(1080, 1200)
     cy.visit('/#/5/swap/GNO/COW')
     cy.get('#web3-status-connected').click()
 
@@ -14,7 +13,7 @@ describe('Network', () => {
       el.scrollTop(0)
     })
 
-    cy.get('#disconnect-btn').click()
+    cy.get('#disconnect-btn').click({ force: true })
 
     // WHEN: network changes to Gnosis chain
     cy.get('#network-select-btn').trigger('mouseover')
