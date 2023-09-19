@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
@@ -21,10 +21,12 @@ import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
+import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
+
 import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { Web3ReactConnection } from '../types'
 
-import { TryActivation } from '.'
+import { onError, TryActivation } from '.'
 
 const TOOLTIP_TEXT =
   'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'
@@ -38,24 +40,30 @@ export const walletConnectV2Option = {
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
 
-function createWalletConnectV2Connector(
-  chainId: SupportedChainId
-): [WalletConnectV2Connector, Web3ReactHooks, Web3ReactStore] {
-  return initializeConnector<WalletConnectV2Connector>(
+function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnector, Web3ReactHooks, Web3ReactStore] {
+  return initializeConnector<AsyncConnector>(
     (actions) =>
-      new WalletConnectV2Connector({
+      new AsyncConnector(
+        () =>
+          import('../connectors/WalletConnectV2Connector').then(
+            (m) =>
+              new m.WalletConnectV2Connector({
+                actions,
+                onError(error) {
+                  console.error('WalletConnect2 ERROR:', error)
+                },
+                options: {
+                  projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
+                  chains: [chainId],
+                  optionalChains: ALL_SUPPORTED_CHAIN_IDS,
+                  showQrModal: true,
+                  rpcMap: RPC_URLS,
+                },
+              })
+          ),
         actions,
-        onError(error) {
-          console.error('WalletConnect2 ERROR:', error)
-        },
-        options: {
-          projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
-          chains: [chainId],
-          optionalChains: ALL_SUPPORTED_CHAIN_IDS,
-          showQrModal: true,
-          rpcMap: RPC_URLS,
-        },
-      })
+        onError
+      )
   )
 }
 
@@ -76,6 +84,14 @@ function createWalletConnectV2Connector(
  */
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
   let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
+
+  web3WalletConnectV2Hooks.useProvider = function useProvider<T>() {
+    const [customProvider, setCustomProvider] = useState<T | undefined>(undefined)
+
+    web3WalletConnectV2.events.on(ASYNC_CUSTOM_PROVIDER_EVENT, setCustomProvider)
+
+    return customProvider
+  }
 
   let onActivate: (() => void) | undefined
 
