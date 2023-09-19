@@ -143,7 +143,7 @@ export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
     <>
       <SidebarBackground onClick={handleCloseOrdersPanel} />
       <SideBar>
-        <Wrapper>
+        <Wrapper id="account-orders-panel">
           <Header>
             <strong>Account</strong>
             <CloseIcon onClick={handleCloseOrdersPanel} />

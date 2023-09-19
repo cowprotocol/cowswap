@@ -142,9 +142,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     colorScrollbar: css`
       // Firefox only
       scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
-      // TODO: this property breaks Cypress tests for some reason, it prevents scrolling to top
-      // https://github.com/cypress-io/cypress/issues/3200
-      //scroll-behavior: smooth;
+      scroll-behavior: smooth;
 
       // Webkit browsers only
       &::-webkit-scrollbar {
@@ -418,12 +416,15 @@ export const UniThemedGlobalStyle = css`
 
     // [STATE] Information (light blue)
     ${UI.COLOR_INFORMATION}: var(${UI.COLOR_LIGHT_BLUE});
-    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
-    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
+    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
 
     // [STATE] Alert (yellow)
     ${UI.COLOR_ALERT}: var(${UI.COLOR_YELLOW});
-    ${UI.COLOR_ALERT_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
 
     // [STATE] Alert2 (yellow lighter)
@@ -433,14 +434,17 @@ export const UniThemedGlobalStyle = css`
 
     // [STATE] Success (green)
     ${UI.COLOR_SUCCESS}: var(${UI.COLOR_GREEN});
-    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
-    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
-
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success)};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success)};
 
     // [STATE] Danger (red)
     ${UI.COLOR_DANGER}: var(${UI.COLOR_RED});
-    ${UI.COLOR_DANGER_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger))};
-    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger))};
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger)};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger)};
 
     // Text
     ${UI.COLOR_TEXT1}: ${({ theme }) => theme.text1};
@@ -466,7 +470,7 @@ export const UniThemedGlobalStyle = css`
 
   html {
     color: var(${UI.COLOR_TEXT1});
-    background-color: var(${UI.COLOR_CONTAINER_BG_02})
+    background-color: var(${UI.COLOR_CONTAINER_BG_02});
   }
   body {
     min-height: 100vh;
