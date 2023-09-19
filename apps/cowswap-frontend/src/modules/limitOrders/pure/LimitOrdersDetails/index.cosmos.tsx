@@ -1,8 +1,6 @@
 import { SetStateAction } from 'jotai'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { COW, GNO } from 'legacy/constants/tokens'
@@ -63,7 +61,6 @@ const Fixtures = {
       executionPrice={null}
       limitRateState={initLimitRateState()}
       partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
-      featurePartialFillsEnabled
     />
   ),
 }

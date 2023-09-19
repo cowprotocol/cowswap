@@ -27,7 +27,6 @@ export interface LimitOrdersProps {
 
   recipient: string | null
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
-  featurePartialFillsEnabled: boolean
 
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
@@ -50,7 +49,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.recipient === b.recipient &&
     a.widgetActions === b.widgetActions &&
     a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
-    a.featurePartialFillsEnabled === b.featurePartialFillsEnabled &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
