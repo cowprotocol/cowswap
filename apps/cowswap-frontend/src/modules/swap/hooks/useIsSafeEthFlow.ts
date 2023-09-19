@@ -1,10 +1,10 @@
-import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
+import { useIsBundlingSupported } from 'modules/wallet'
 
 import { useIsSwapEth } from './useIsSwapEth'
 
 export function useIsSafeEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
-  const isEthFlowBundlingEnabled = useIsEthFlowBundlingEnabled()
+  const isBundlingSupported = useIsBundlingSupported()
 
-  return isEthFlowBundlingEnabled && isSwapEth
+  return isBundlingSupported && isSwapEth
 }
