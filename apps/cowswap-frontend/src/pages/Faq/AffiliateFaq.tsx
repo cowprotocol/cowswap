@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable } from 'legacy/components/Link'
 import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
 
@@ -17,8 +15,6 @@ import ToC from './ToC'
 
 import { Footer } from '.'
 
-// AmplitudeAnalytics
-
 const PROD = `https://${PRODUCTION_URL}`
 const BARN = `https://${BARN_URL}`
 
@@ -26,7 +22,7 @@ export default function AffiliateFaq() {
   const { toc, faqRef } = useToC()
 
   return (
-    <Trace page={PageName.FAQ_AFFILIATE_PAGE} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="Affiliate FAQ" />
         <FaqMenu />
@@ -203,6 +199,6 @@ export default function AffiliateFaq() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

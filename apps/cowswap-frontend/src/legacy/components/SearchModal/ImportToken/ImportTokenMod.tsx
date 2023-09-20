@@ -6,8 +6,6 @@ import { transparentize } from 'polished'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { ButtonPrimary } from 'legacy/components/Button'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
@@ -87,12 +85,7 @@ export function ImportToken(props: ImportProps) {
         {tokens.map((token) => (
           <TokenImportCard token={token} list={list} key={'import' + token.address} />
         ))}
-        <TraceEvent
-          events={[Event.onClick]}
-          name={EventName.TOKEN_IMPORTED}
-          properties={formatAnalyticsEventProperties(tokens)}
-          element={ElementName.IMPORT_TOKEN_BUTTON}
-        >
+        <>
           <ButtonPrimary
             altDisabledStyle={true}
             $borderRadius="20px"
@@ -105,7 +98,7 @@ export function ImportToken(props: ImportProps) {
           >
             <Trans>Import</Trans>
           </ButtonPrimary>
-        </TraceEvent>
+        </>
       </AutoColumn>
     </Wrapper>
   )

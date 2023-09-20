@@ -1,4 +1,3 @@
-import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'legacy/components/analytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
@@ -17,7 +16,6 @@ import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 
 export function App() {
-  initializeAnalytics()
   useAnalyticsReporter()
   useInitializeUtm()
 

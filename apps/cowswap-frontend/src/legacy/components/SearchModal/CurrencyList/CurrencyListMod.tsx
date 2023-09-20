@@ -8,8 +8,6 @@ import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
 import Loader from 'legacy/components/Loader'
@@ -139,7 +137,11 @@ function CurrencyRow({
   isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
-  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean; isPermitCompatible: boolean }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: {
+    currency: Currency
+    isUnsupported: boolean
+    isPermitCompatible: boolean
+  }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWalletInfo()
   const key = currencyKey(currency)
@@ -149,12 +151,7 @@ function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    <TraceEvent
-      events={[Event.onClick, Event.onKeyPress]}
-      name={EventName.TOKEN_SELECTED}
-      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-      element={ElementName.TOKEN_SELECTOR_ROW}
-    >
+    <>
       <MenuItem
         tabIndex={0}
         style={style}
@@ -185,7 +182,7 @@ function CurrencyRow({
           </RowFixed>
         )}
       </MenuItem>
-    </TraceEvent>
+    </>
   )
 }
 
@@ -344,7 +341,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
-      const isPermitCompatible = false // TODO: Make dynamic 
+      const isPermitCompatible = false // TODO: Make dynamic
 
       if (isLoading) {
         return (

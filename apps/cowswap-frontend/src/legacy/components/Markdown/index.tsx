@@ -6,8 +6,6 @@ import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
 // AmplitudeAnalytics
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable, Link } from 'legacy/components/Link'
 import useFetchFile from 'legacy/hooks/useFetchFile'
 
@@ -34,7 +32,7 @@ const MarkdownContent = (props: ReactMarkdownPropsBase & { children: string }) =
 export function MarkdownPage({ contentFile, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(contentFile)
   return (
-    <Trace page={PageName.TOC_PAGE} shouldLogImpression>
+    <>
       <Wrapper className={className}>
         {title && <Title>{title}</Title>}
         <Content>
@@ -42,6 +40,6 @@ export function MarkdownPage({ contentFile, title, className }: MarkdownParams) 
           {error && <MarkdownContent>{error}</MarkdownContent>}
         </Content>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

@@ -5,8 +5,6 @@ import styled from 'styled-components/macro'
 import diagramIMG from 'legacy/assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
 import mevIMG from 'legacy/assets/cow-swap/mev.png'
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
 import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
@@ -32,7 +30,7 @@ const Wrapper = styled(Page)`
 
 export default function About() {
   return (
-    <Trace page={PageName.ABOUT_PAGE} shouldLogImpression>
+    <>
       <Wrapper>
         <PageTitle title="About" />
         <Title>About</Title>
@@ -115,6 +113,6 @@ export default function About() {
           </p>
         </Content>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

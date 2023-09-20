@@ -4,8 +4,6 @@ import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import { AutoRow } from 'legacy/components/Row'
 import { useFavouriteOrCommonTokens } from 'legacy/hooks/useFavouriteOrCommonTokens'
@@ -75,13 +73,7 @@ export default function CommonBases({
             const tokenAddress = currency instanceof Token ? currency?.address : undefined
 
             return (
-              <TraceEvent
-                events={[Event.onClick, Event.onKeyPress]}
-                name={EventName.TOKEN_SELECTED}
-                properties={formatAnalyticsEventProperties(currency, tokenAddress, searchQuery, isAddressSearch)}
-                element={ElementName.COMMON_BASES_CURRENCY_BUTTON}
-                key={currencyId(currency)}
-              >
+              <>
                 <BaseWrapper
                   tabIndex={0}
                   onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
@@ -94,7 +86,7 @@ export default function CommonBases({
                     <TokenSymbol token={currency} length={6} />
                   </Text>
                 </BaseWrapper>
-              </TraceEvent>
+              </>
             )
           })}
         </CommonBasesRow>

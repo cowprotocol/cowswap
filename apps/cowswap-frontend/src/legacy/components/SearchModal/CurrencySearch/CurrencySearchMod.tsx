@@ -8,8 +8,6 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
 import Row /* RowBetween , RowFixed */ from 'legacy/components/Row'
@@ -208,7 +206,7 @@ export function CurrencySearch({
   }, [])
 
   return (
-    <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
+    <>
       <ContentWrapper>
         <PaddedColumn style={{ padding: 0 }} gap="16px">
           <PaddedRow>
@@ -288,6 +286,6 @@ export function CurrencySearch({
           </Row>
         </Footer>
       </ContentWrapper>
-    </Trace>
+    </>
   )
 }
