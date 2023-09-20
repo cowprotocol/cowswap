@@ -1,3 +1,5 @@
+import { Web3Provider } from '@ethersproject/providers'
+
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
@@ -7,7 +9,7 @@ import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConn
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
 
-import { DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
+import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
 
 const CACHE_PREFIX = 'permitCache:v0-'
@@ -105,11 +107,38 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
 
   const callData = await callDataPromise
 
+  const gasLimit = await calculateGasLimit(callData, owner, tokenAddress, provider, !!account)
+
   return {
     target: tokenAddress,
     callData,
-    // TODO: Find a way to calculate the gas for quote calls without requesting user to sign
-    // For now, keep it hard coded
-    gasLimit: '80000',
+    gasLimit,
+  }
+}
+
+async function calculateGasLimit(
+  data: string,
+  from: string,
+  to: string,
+  provider: Web3Provider,
+  isUserAccount: boolean
+): Promise<string> {
+  if (isUserAccount) {
+    // "Real" user account, use the default
+    // If we send a smaller gas limit than what was used in the quote, it won't matter
+    // If we send a bigger gas limit, the order will fail
+
+    // TODO: it might still happen that user's permit will cost more than the static account
+    return DEFAULT_PERMIT_GAS_LIMIT
+  }
+
+  try {
+    const actual = await provider.estimateGas({ data, from, to })
+
+    return actual.gt(DEFAULT_PERMIT_GAS_LIMIT) ? actual.toString() : DEFAULT_PERMIT_GAS_LIMIT
+  } catch (e) {
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
+
+    return DEFAULT_PERMIT_GAS_LIMIT
   }
 }
