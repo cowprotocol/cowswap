@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "affected": {
-    "defaultBase": "origin/develop"
+    "defaultBase": "develop"
   },
   "tasksRunnerOptions": {
     "default": {
