@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { initializeConnector } from '@web3-react/core'
-import { WalletConnect } from '@web3-react/walletconnect'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
@@ -20,6 +19,8 @@ import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
+import { AsyncConnector } from './asyncConnector'
+
 import { Web3ReactConnection } from '../types'
 
 import { onError, TryActivation } from '.'
@@ -35,17 +36,25 @@ export const walletConnectOption = {
   id: 'wallet-connect',
 }
 
-const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
+const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new WalletConnect({
+    new AsyncConnector(
+      () =>
+        import('@web3-react/walletconnect').then(
+          (m) =>
+            new m.WalletConnect({
+              actions,
+              options: {
+                rpc: RPC_URLS,
+                qrcode: true,
+                bridge: process.env.REACT_APP_WALLET_CONNECT_V1_BRIDGE || 'https://safe-walletconnect.safe.global',
+              },
+              onError,
+            })
+        ),
       actions,
-      options: {
-        rpc: RPC_URLS,
-        qrcode: true,
-        bridge: process.env.REACT_APP_WALLET_CONNECT_V1_BRIDGE || 'https://safe-walletconnect.safe.global',
-      },
-      onError,
-    })
+      onError
+    )
 )
 export const walletConnectConnection: Web3ReactConnection = {
   connector: web3WalletConnect,
