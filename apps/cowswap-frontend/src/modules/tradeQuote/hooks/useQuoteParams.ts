@@ -28,7 +28,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
 
-  const enoughBalance = useEnoughBalanceAndAllowance({
+  const { enoughBalance } = useEnoughBalanceAndAllowance({
     account,
     amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
   })

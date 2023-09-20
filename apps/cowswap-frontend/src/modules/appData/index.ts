@@ -1,6 +1,6 @@
 export { getAppData } from './utils/fullAppData'
 export * from './updater/AppDataUpdater'
 export { useAppData, useUploadAppData } from './hooks'
-export { addHooksToAppData, buildAppData } from './utils/buildAppData'
+export { updateHooksOnAppData, buildAppData } from './utils/buildAppData'
 export { buildAppDataHooks } from './utils/buildAppDataHooks'
 export type { AppDataInfo, UploadAppDataParams } from './types'
