@@ -1,5 +1,3 @@
-import { useLast } from './useLast'
-
 export * from './useContract'
 export * from './useDebounce'
 export * from './usePrevious'
