@@ -131,7 +131,6 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (id.includes('@1inch')) return '@1inch'
-            if (id.includes('@amplitude')) return '@amplitude'
             if (id.includes('@cowprotocol')) return '@cowprotocol'
             if (id.includes('@ethersproject')) return '@ethersproject'
             if (id.includes('@metamask') || id.includes('elliptic')) return '@metamask'
