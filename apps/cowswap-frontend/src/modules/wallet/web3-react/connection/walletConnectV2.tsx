@@ -23,7 +23,6 @@ import { getCurrentChainIdFromUrl } from 'utils/getCurrentChainIdFromUrl'
 
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
 
-import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { Web3ReactConnection } from '../types'
 
 import { onError, TryActivation } from '.'
@@ -100,7 +99,7 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
     {
       get: (target, p, receiver) => Reflect.get(web3WalletConnectV2, p, receiver),
       getOwnPropertyDescriptor: (target, p) => Reflect.getOwnPropertyDescriptor(web3WalletConnectV2, p),
-      getPrototypeOf: () => WalletConnectV2Connector.prototype,
+      getPrototypeOf: () => AsyncConnector.prototype,
       set: (target, p, receiver) => Reflect.set(web3WalletConnectV2, p, receiver),
     }
   ) as typeof web3WalletConnectV2
