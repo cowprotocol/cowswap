@@ -18,7 +18,7 @@
     "preci:build": "yarn run fetch:develop",
     "postci:build": "rm -rf build && mkdir build && cp -R dist/apps/cowswap-frontend/* build",
     "ci:build": "yarn run build",
-    "fetch:develop": "git remote add origin https://github.com/cowprotocol/cowswap.git && git fetch origin develop",
+    "fetch:develop": "git remote add origin https://github.com/cowprotocol/cowswap.git && git fetch origin refactor/separate-wallet-module-1",
     "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
     "prebuild": "nx run cowswap-frontend:i18n",
     "prepare": "husky install",
