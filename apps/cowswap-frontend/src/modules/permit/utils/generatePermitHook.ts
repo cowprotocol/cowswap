@@ -133,9 +133,14 @@ async function calculateGasLimit(
   }
 
   try {
+    // Query the actual gas estimate
     const actual = await provider.estimateGas({ data, from, to })
 
-    return actual.gt(DEFAULT_PERMIT_GAS_LIMIT) ? actual.toString() : DEFAULT_PERMIT_GAS_LIMIT
+    // Add 10% to actual value to account for minor differences with real account
+    const gasLimit = actual.add(actual.div(10))
+
+    // Pick the biggest between estimated and default
+    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
   } catch (e) {
     console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
 
