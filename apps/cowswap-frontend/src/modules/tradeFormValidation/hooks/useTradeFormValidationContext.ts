@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
-import useENSAddress from 'legacy/hooks/useENSAddress'
+import { useENSAddress } from '@cowprotocol/ens'
+import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove'
 

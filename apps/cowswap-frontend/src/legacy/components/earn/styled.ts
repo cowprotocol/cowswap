@@ -1,8 +1,8 @@
-import styled from 'styled-components/macro'
+import uImage from '@cowprotocol/assets/images/big_unicorn.png'
+import noise from '@cowprotocol/assets/images/noise.png'
+import xlUnicorn from '@cowprotocol/assets/images/xl_uni.png'
 
-import uImage from 'legacy/assets/images/big_unicorn.png'
-import noise from 'legacy/assets/images/noise.png'
-import xlUnicorn from 'legacy/assets/images/xl_uni.png'
+import styled from 'styled-components/macro'
 
 import { AutoColumn } from '../Column'
 

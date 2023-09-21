@@ -1,3 +1,6 @@
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -8,14 +11,11 @@ import styled from 'styled-components/macro'
 
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
-import { ButtonPrimary } from 'legacy/components/Button'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
 import { SectionBreak } from 'legacy/components/swap/styleds'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 

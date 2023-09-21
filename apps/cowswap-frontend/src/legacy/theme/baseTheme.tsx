@@ -1,12 +1,13 @@
-import { transparentize, darken, lighten } from 'polished'
+import Cursor1 from '@cowprotocol/assets/cow-swap/cursor1.gif'
+import Cursor2 from '@cowprotocol/assets/cow-swap/cursor2.gif'
+import Cursor3 from '@cowprotocol/assets/cow-swap/cursor3.gif'
+import Cursor4 from '@cowprotocol/assets/cow-swap/cursor4.gif'
+import { ButtonSize } from '@cowprotocol/ui'
+
+import { transparentize, lighten, darken } from 'polished'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
-import Cursor2 from 'legacy/assets/cow-swap/cursor2.gif'
-import Cursor3 from 'legacy/assets/cow-swap/cursor3.gif'
-import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
-import { ButtonSize } from 'legacy/theme/enum'
 import { Colors } from 'legacy/theme/styled'
 
 import { UI } from 'common/constants/theme'
@@ -400,7 +401,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
-    
+
     // Base
     ${UI.COLOR_BORDER}: var(${UI.COLOR_GREY});
     ${UI.COLOR_CONTAINER_BG_01}: ${({ theme }) => theme.bg1};
@@ -409,37 +410,43 @@ export const UniThemedGlobalStyle = css`
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
     ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
-    
+
     // Icons
     ${UI.ICON_SIZE_NORMAL}: 24px;
     ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
 
     // [STATE] Information (light blue)
     ${UI.COLOR_INFORMATION}: var(${UI.COLOR_LIGHT_BLUE});
-    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information))};
-    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information))};
+    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
+    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
 
     // [STATE] Alert (yellow)
     ${UI.COLOR_ALERT}: var(${UI.COLOR_YELLOW});
-    ${UI.COLOR_ALERT_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
-    
+
     // [STATE] Alert2 (yellow lighter)
     ${UI.COLOR_ALERT2}: var(${UI.COLOR_YELLOW_LIGHT});
     ${UI.COLOR_ALERT2_BG}: var(${UI.COLOR_YELLOW_LIGHT});
     ${UI.COLOR_ALERT2_TEXT}: var(${UI.COLOR_BLUE});
-    
+
     // [STATE] Success (green)
     ${UI.COLOR_SUCCESS}: var(${UI.COLOR_GREEN});
-    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success))};
-    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success))};
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success)};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success)};
 
-    
     // [STATE] Danger (red)
     ${UI.COLOR_DANGER}: var(${UI.COLOR_RED});
-    ${UI.COLOR_DANGER_BG}: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger))};
-    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger))};
-    
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) =>
+      theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger)};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger)};
+
     // Text
     ${UI.COLOR_TEXT1}: ${({ theme }) => theme.text1};
     ${UI.COLOR_TEXT1_INACTIVE}: ${({ theme }) => transparentize(0.4, theme.text1)};
@@ -464,7 +471,7 @@ export const UniThemedGlobalStyle = css`
 
   html {
     color: var(${UI.COLOR_TEXT1});
-    background-color: var(${UI.COLOR_CONTAINER_BG_02})
+    background-color: var(${UI.COLOR_CONTAINER_BG_02});
   }
   body {
     min-height: 100vh;

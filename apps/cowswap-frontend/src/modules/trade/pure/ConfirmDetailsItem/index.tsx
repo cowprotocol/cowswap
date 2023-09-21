@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { RowFixed } from '@cowprotocol/ui'
+
 import { CornerDownRight } from 'react-feather'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
-import { RowFixed } from 'legacy/components/Row'
 
 import { TextWrapper } from 'modules/swap/pure/Row/styled'
 

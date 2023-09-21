@@ -1,3 +1,5 @@
+import { RowFixed } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { Edit } from 'react-feather'
@@ -5,7 +7,6 @@ import styled from 'styled-components/macro'
 import { DefaultTheme } from 'styled-components/macro'
 
 import Column from 'legacy/components/Column'
-import { RowFixed } from 'legacy/components/Row'
 import { Separator } from 'legacy/components/SearchModal/styleds'
 import { IconWrapper, ThemedText } from 'legacy/theme'
 

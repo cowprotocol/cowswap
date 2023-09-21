@@ -1,17 +1,16 @@
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { ExternalLink } from 'legacy/theme'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { UI } from 'common/constants/theme'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
 
 import { InfoCard } from './styled'
 

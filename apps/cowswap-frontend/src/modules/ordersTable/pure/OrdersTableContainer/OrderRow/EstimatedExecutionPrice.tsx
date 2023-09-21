@@ -1,18 +1,17 @@
 import { useContext } from 'react'
 
+import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken, transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { ZERO_FRACTION } from 'legacy/constants'
-
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculateOrderExecutionStatus, ExecuteIndicator } from 'common/pure/OrderExecutionStatusList'
-import { SymbolElement, TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 

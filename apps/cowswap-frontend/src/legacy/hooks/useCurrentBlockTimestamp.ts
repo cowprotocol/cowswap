@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
+import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'
-
-import { useInterfaceMulticall } from './useContract'
 
 // gets the current timestamp from the blockchain
 export default function useCurrentBlockTimestamp(): BigNumber | undefined {

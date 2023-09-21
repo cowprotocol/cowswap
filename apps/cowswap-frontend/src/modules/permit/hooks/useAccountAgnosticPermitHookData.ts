@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useDerivedTradeState } from 'modules/trade'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 

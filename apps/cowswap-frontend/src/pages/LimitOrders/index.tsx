@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrders } from 'legacy/state/orders/hooks'
 
@@ -19,7 +20,6 @@ import {
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 

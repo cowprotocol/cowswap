@@ -1,19 +1,18 @@
 import { useCallback, useMemo } from 'react'
 
+import { useTokenContract, usePrevious } from '@cowprotocol/common-hooks'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { useCurrency } from 'legacy/hooks/Tokens'
-import { useTokenContract } from 'legacy/hooks/useContract'
-import usePrevious from 'legacy/hooks/usePrevious'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-import { useWalletInfo } from 'modules/wallet'
+import { ConfirmOperationType } from '../../state/types'
+import { useCurrency } from '../Tokens'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 

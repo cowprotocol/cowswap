@@ -3,6 +3,10 @@ import './polyfills'
 
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
+import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
+import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
+import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'
@@ -13,15 +17,9 @@ import { Flex } from 'rebass'
 import styled from 'styled-components/macro'
 import { ThemeContext } from 'styled-components/macro'
 
-import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
-import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
-import store from 'legacy/state'
+import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
-
-import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
-
-import { WalletUpdater, injectedConnection } from './modules/wallet'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -96,7 +94,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
       <FixedGlobalStyle />
-      <Provider store={store}>
+      <Provider store={cowSwapStore}>
         <HashRouter>
           <ThemeProvider>
             <ThemedGlobalStyle />

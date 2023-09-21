@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
+import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { ArrowRight, ArrowLeft } from 'react-feather'
 import { NavHashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import NotificationBanner from 'legacy/components/NotificationBanner'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LinkStyledButton } from 'legacy/theme'
@@ -15,7 +15,6 @@ import { LinkStyledButton } from 'legacy/theme'
 import { Routes } from 'common/constants/routes'
 import { UI } from 'common/constants/theme'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 export type RequestCancellationModalProps = {
   summary?: string

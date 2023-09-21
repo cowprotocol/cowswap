@@ -1,11 +1,12 @@
+import { genericPropsChecker } from '@cowprotocol/common-utils'
+import { areFractionsEqual } from '@cowprotocol/common-utils'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { areFractionsEqual } from 'utils/areFractionsEqual'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
   if (!prev || !next) {

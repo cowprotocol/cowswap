@@ -1,3 +1,4 @@
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -7,7 +8,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import * as styledEl from '../CurrencyInputPanel/styled'
 

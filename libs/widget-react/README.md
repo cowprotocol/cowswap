@@ -17,7 +17,7 @@ yarn add @cowprotocol/widget-react
 Import component and some convenient types
 
 ```ts
-import { CowSwapWidgetSettings } from '@cowswap/widget-lib'
+import { CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 ```
 

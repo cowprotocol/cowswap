@@ -1,9 +1,9 @@
+import { WETH_GOERLI } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect } from 'react-cosmos/client'
 
-import { Field } from 'legacy/state/swap/actions'
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+import { Field } from 'legacy/state/types'
 
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 

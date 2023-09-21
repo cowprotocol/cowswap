@@ -11,13 +11,12 @@
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
     "preview": "nx run cowswap-frontend:preview",
-    "test": "nx run-many -t test -p $npm_package_config_enabledApps",
-    "e2e": "nx run-many -t e2e -p $npm_package_config_enabledApps",
-    "lint": "nx run-many -t lint -p $npm_package_config_enabledApps",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:build",
-    "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
+    "cosmos:export": "nx run cowswap-frontend:cosmos:export",
+    "test": "nx run-many -t test --output-style=stream",
+    "e2e": "nx run-many -t e2e",
+    "lint": "nx run-many -t lint",
     "prebuild": "nx run cowswap-frontend:i18n",
-    "postbuild": "rm -rf build && mkdir build && mv dist/apps/cowswap-frontend/* build",
+    "build": "nx build cowswap-frontend",
     "prepare": "husky install",
     "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
@@ -250,65 +249,10 @@
     "vite": "~4.3.9",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-dts": "~2.3.0",
-    "vite-plugin-node-polyfills": "^0.11.1",
+    "vite-plugin-node-polyfills": "^0.12.0",
     "vite-plugin-pwa": "^0.16.4",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "~0.32.0"
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/build",
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "build:analyze": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "ipfs:build": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "optimize-bundle": {
-        "outputs": [
-          "{projectRoot}/../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json"
-        ]
-      },
-      "i18n:extract": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "i18n": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "i18n:pseudo": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "cosmos:export": {
-        "outputs": [
-          "{projectRoot}/public/cosmos"
-        ]
-      },
-      "sitemap": {
-        "outputs": [
-          "{projectRoot}/public/sitemap.xml"
-        ]
-      },
-      "writeVersion": {
-        "outputs": [
-          "{projectRoot}/public/version.json"
-        ]
-      }
-    }
   }
 }

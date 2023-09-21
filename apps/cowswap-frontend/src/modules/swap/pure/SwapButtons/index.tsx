@@ -1,26 +1,23 @@
 import React, { ReactNode } from 'react'
 
+import { GpEther } from '@cowprotocol/common-const'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ButtonSize, TokenSymbol, ButtonError, ButtonPrimary, AutoRow } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 
-import { ButtonError, ButtonPrimary } from 'legacy/components/Button'
 import { GreyCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
-import { GpEther } from 'legacy/constants/tokens'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { Field } from 'legacy/state/swap/actions'
-import { ButtonSize } from 'legacy/theme/enum'
+import { Field } from 'legacy/state/types'
 
 import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import * as styledEl from './styled'
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Erc20 } from '@cowswap/abis'
+import { Erc20 } from '@cowprotocol/abis'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

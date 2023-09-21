@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import styled from 'styled-components/macro'
 
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'

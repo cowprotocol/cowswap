@@ -1,14 +1,13 @@
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import { Field } from 'legacy/state/swap/actions'
-import TradeGp from 'legacy/state/swap/TradeGp'
-
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_LOW,
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
-} from '../constants/misc'
+} from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { Field } from 'legacy/state/types'
 
 const IMPACT_TIERS = [
   BLOCKED_PRICE_IMPACT_NON_EXPERT,

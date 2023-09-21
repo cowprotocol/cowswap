@@ -1,12 +1,13 @@
 import { useAtomValue } from 'jotai'
 
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'
@@ -14,7 +15,6 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

@@ -1,14 +1,14 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
-import { ButtonPrimary } from 'legacy/components/Button'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
-import { isRejectRequestProviderError } from 'legacy/utils/misc'
-
-import { useWalletInfo } from 'modules/wallet'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'

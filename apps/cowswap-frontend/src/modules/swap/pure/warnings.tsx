@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 

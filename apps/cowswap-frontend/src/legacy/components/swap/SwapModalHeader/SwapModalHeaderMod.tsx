@@ -1,5 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 
+import { INPUT_OUTPUT_EXPLANATION } from '@cowprotocol/common-const'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { TokenAmount, TokenSymbol, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -9,15 +12,12 @@ import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
 import { AuxInformationContainer, TruncatedText } from 'legacy/components/swap/styleds'
 import { WarningProps } from 'legacy/components/SwapWarnings'
-import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
-import { Field } from 'legacy/state/swap/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { Field } from 'legacy/state/types'
 import { ThemedText } from 'legacy/theme'
-import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
@@ -26,8 +26,6 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import FeeInformationTooltip from '../FeeInformationTooltip'
 

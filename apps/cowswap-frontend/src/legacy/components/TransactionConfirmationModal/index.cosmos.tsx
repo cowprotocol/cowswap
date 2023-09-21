@@ -1,13 +1,14 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { COW, GNO } from 'legacy/constants/tokens'
-import store from 'legacy/state'
 import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
+
+import { cowSwapStore } from '../../state'
 
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()
 
@@ -40,7 +41,7 @@ const Fixtures = {
   ),
 }
 
-store.dispatch(
+cowSwapStore.dispatch(
   addPendingOrder({
     id: txHash,
     chainId: 5,

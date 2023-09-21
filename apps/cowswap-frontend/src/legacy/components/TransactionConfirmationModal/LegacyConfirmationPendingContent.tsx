@@ -1,19 +1,10 @@
 import React, { ReactNode, useMemo } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
-
-import { t, Trans } from '@lingui/macro'
-import { CheckCircle, UserCheck } from 'react-feather'
-import SVG from 'react-inlinesvg'
-
-import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
-import checkImage from 'legacy/assets/cow-swap/check.svg'
-import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
-import { ExternalLink } from 'legacy/theme'
-import { shortenAddress } from 'legacy/utils'
-import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
-
-import { getStatusIcon } from 'modules/account/containers/AccountDetails'
+import alertImage from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import checkImage from '@cowprotocol/assets/cow-swap/check.svg'
+import { getChainCurrencySymbols } from '@cowprotocol/common-const'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { ExternalLink } from '@cowprotocol/ui'
 import {
   getWeb3ReactConnection,
   useGnosisSafeInfo,
@@ -21,7 +12,16 @@ import {
   useWalletInfo,
   getIsMetaMask,
   injectedConnection,
-} from 'modules/wallet'
+} from '@cowprotocol/wallet'
+import { useWeb3React } from '@web3-react/core'
+
+import { t, Trans } from '@lingui/macro'
+import { CheckCircle, UserCheck } from 'react-feather'
+import SVG from 'react-inlinesvg'
+
+import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
+import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 
 import {
   ApproveComparison,
@@ -37,7 +37,8 @@ import {
   WalletIcon,
   Wrapper,
 } from './styled'
-import { ConfirmOperationType } from './types'
+
+import { ConfirmOperationType } from '../../state/types'
 
 enum WalletType {
   SAFE,

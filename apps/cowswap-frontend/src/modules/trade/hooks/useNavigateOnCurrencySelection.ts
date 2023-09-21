@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 

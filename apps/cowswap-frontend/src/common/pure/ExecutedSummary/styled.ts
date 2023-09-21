@@ -1,8 +1,6 @@
+import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
-
-import { FiatAmount } from '../FiatAmount'
 
 export const SummaryWrapper = styled.div`
   font-size: 1rem;

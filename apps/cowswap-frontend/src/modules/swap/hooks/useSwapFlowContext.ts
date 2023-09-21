@@ -1,8 +1,7 @@
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TradeType } from '@uniswap/sdk-core'
-
-import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
 import { useIsTokenPermittable } from 'modules/permit'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'

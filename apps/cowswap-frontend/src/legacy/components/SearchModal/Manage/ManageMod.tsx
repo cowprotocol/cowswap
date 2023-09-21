@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
+import { RowBetween } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { ArrowLeft } from 'react-feather'
 import { Text } from 'rebass'
 
-import { RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { ManageLists } from 'legacy/components/SearchModal/ManageLists'
 import ManageTokens from 'legacy/components/SearchModal/ManageTokens'

@@ -1,10 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -16,7 +18,6 @@ import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersRece
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { useBalancesAndAllowances } from 'modules/tokens'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
@@ -26,6 +27,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
+import { useCategorizeRecentActivity } from '../../../../common/hooks/useCategorizeRecentActivity'
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
 import { getParsedOrderFromItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
@@ -103,6 +105,7 @@ export function OrdersTableWidget({
 
   // Get effective balance
   const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
+  const { pendingActivity } = useCategorizeRecentActivity()
 
   const toggleOrdersForCancellation = useCallback(
     (orders: ParsedOrder[]) => {
@@ -160,6 +163,7 @@ export function OrdersTableWidget({
           selectedOrders={ordersToCancel}
           allowsOffchainSigning={allowsOffchainSigning}
           orderType={orderType}
+          pendingActivities={pendingActivity}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>

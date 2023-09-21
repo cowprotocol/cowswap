@@ -1,12 +1,9 @@
+import { COW, GNO, DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { COW, GNO } from 'legacy/constants/tokens'
-import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
-
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { RateInfoParams, RateInfo } from './index'
 

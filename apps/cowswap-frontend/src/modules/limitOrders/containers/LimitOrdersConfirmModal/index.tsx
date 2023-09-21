@@ -1,6 +1,8 @@
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
 
+import { TokenSymbol } from '@cowprotocol/ui'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
@@ -16,7 +18,6 @@ import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'mo
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'

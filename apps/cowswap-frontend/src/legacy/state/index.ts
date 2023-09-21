@@ -1,39 +1,36 @@
+import { DEFAULT_NETWORK_FOR_LISTS } from '@cowprotocol/common-const'
+
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import application from 'legacy/state/application/reducer'
-import claim from 'legacy/state/claim/reducer'
-import connection from 'legacy/state/connection/reducer'
-import { cowTokenMiddleware } from 'legacy/state/cowToken/middleware'
-import cowToken from 'legacy/state/cowToken/reducer'
-import enhancedTransactions from 'legacy/state/enhancedTransactions/reducer'
-import gas from 'legacy/state/gas/reducer'
-import { updateVersion } from 'legacy/state/global/actions'
-import lists from 'legacy/state/lists/reducer'
-import logs from 'legacy/state/logs/slice'
-import orders from 'legacy/state/orders/reducer'
-import { priceMiddleware } from 'legacy/state/price/middleware'
-import price from 'legacy/state/price/reducer'
-import profile from 'legacy/state/profile/reducer'
-import swap from 'legacy/state/swap/reducer'
-import user from 'legacy/state/user/reducer'
+// import { composableOrdersPopupMiddleware } from 'modules/twap/state/composableOrdersPopupMiddleware'
 
-import multicall from 'lib/state/multicall'
+import application from './application/reducer'
+import claim from './claim/reducer'
+import connection from './connection/reducer'
+import { cowTokenMiddleware } from './cowToken/middleware'
+import cowToken from './cowToken/reducer'
+import enhancedTransactions from './enhancedTransactions/reducer'
+import gas from './gas/reducer'
+import { updateVersion } from './global/actions'
+import lists from './lists/reducer'
+import logs from './logs/slice'
+import { multicall } from './multicall'
+import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
+import orders from './orders/reducer'
+import { priceMiddleware } from './price/middleware'
+import price from './price/reducer'
+import profile from './profile/reducer'
+import swap from './swap/reducer'
+import user from './user/reducer'
 
-import { appziMiddleware, popupMiddleware, soundMiddleware, composableOrdersPopupMiddleware } from './orders/middleware'
-
-const UNISWAP_REDUCERS = {
+const reducers = {
   application,
   user,
   connection,
   swap,
   multicall: multicall.reducer,
   logs,
-}
-
-const reducers = {
-  ...UNISWAP_REDUCERS,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
   lists,
   orders,
@@ -46,13 +43,14 @@ const reducers = {
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
 
-const store = configureStore({
+export const cowSwapStore = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
-      .concat(composableOrdersPopupMiddleware)
+      // TODO: fix it
+      // .concat(composableOrdersPopupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware)
@@ -61,12 +59,10 @@ const store = configureStore({
 })
 
 // this instantiates the app / reducers in several places using the default chainId
-store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
+cowSwapStore.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
 
 // TODO: this is new, should we enable it?
 // setupListeners(store.dispatch)
 
-export default store
-
 export type AppState = StateFromReducersMapObject<typeof reducers>
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof cowSwapStore.dispatch

@@ -1,8 +1,8 @@
+import { COW, DAI, GNO, USDC } from '@cowprotocol/common-const'
+import { WETH_GOERLI } from '@cowprotocol/common-const'
 import { OrderKind, OrderClass } from '@cowprotocol/cow-sdk'
 
-import { COW, DAI, GNO, USDC } from 'legacy/constants/tokens'
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 

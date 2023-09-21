@@ -1,8 +1,10 @@
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
-import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'legacy/theme'
+import { StyledInternalLink } from 'legacy/theme'
 
 import { Content } from 'modules/application/pure/Page'
 

@@ -1,7 +1,7 @@
-import HashLink from 'legacy/components/HashLink'
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowprotocol/ui'
 
-export { ExternalLink } from 'legacy/theme'
+import HashLink from 'legacy/components/HashLink'
+
 const SCROLL_OFFSET = 24
 
 export interface LinkRendererProps {

@@ -1,20 +1,14 @@
 import { useCallback } from 'react'
 
+import { ExternalLink, Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Text } from 'rebass'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ExternalLink } from 'legacy/components/Link'
-import Row from 'legacy/components/Row'
 import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
-import {
-  ConfirmationModalContentProps,
-  LegacyConfirmationModalContent,
-} from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { CowModal } from 'common/pure/Modal'
 
@@ -22,6 +16,10 @@ import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'
 
 import CowBalance from '../CowBalance'
+import {
+  ConfirmationModalContentProps,
+  LegacyConfirmationModalContent,
+} from '../TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 export type CowSubsidy = { tier: number; discount: number }
 export interface CowSubsidyInfoProps {

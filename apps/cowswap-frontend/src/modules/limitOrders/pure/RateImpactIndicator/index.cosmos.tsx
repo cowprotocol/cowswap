@@ -1,4 +1,4 @@
-import { GNO_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { GNO_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 
 import { RateImpactIndicator } from './index'
 

@@ -1,7 +1,8 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
+
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
-import { orderAnalytics } from '../../../components/analytics'
 import { addPopup, AddPopupPayload } from '../../application/reducer'
 import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'

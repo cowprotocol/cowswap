@@ -1,13 +1,14 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 
 import { UI } from 'common/constants/theme'
-import { TokenAmount } from 'common/pure/TokenAmount'
+
+import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;

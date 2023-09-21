@@ -1,20 +1,19 @@
+import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
+import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderClass, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { PENDING_ORDERS_BUFFER, ZERO_FRACTION } from 'legacy/constants'
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import { AppDispatch } from 'legacy/state'
-import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from 'legacy/state/orders/actions'
-import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'legacy/state/orders/consts'
-import { UpdateOrderParams } from 'legacy/state/orders/hooks'
-import { serializeToken } from 'legacy/state/user/hooks'
-
-import { buildPriceFromCurrencyAmounts } from 'modules/utils/orderUtils/buildPriceFromCurrencyAmounts'
-
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
+
+import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
+import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
+import { UpdateOrderParams } from './hooks'
+
+import { AppDispatch } from '../index'
+import { serializeToken } from '../user/hooks'
 
 export type OrderTransitionStatus =
   | 'unknown'

@@ -1,27 +1,17 @@
 import { Fragment, useMemo } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWeb3React } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
-
-import { Trans } from '@lingui/macro'
-
-import Copy from 'legacy/components/Copy'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import {
-  ActivityDescriptors,
-  groupActivitiesByDay,
-  useMultipleActivityDescriptors,
-} from 'legacy/hooks/useRecentActivity'
-import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
-import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { isMobile } from 'legacy/utils/userAgent'
-
-import Activity from 'modules/account/containers/Transaction'
+  getEtherscanLink,
+  getExplorerLabel,
+  shortenAddress,
+  getExplorerAddressLink,
+  isMobile,
+} from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
-  useDisconnectWallet,
   useWalletInfo,
   WalletDetails,
   getConnectionIcon,
@@ -33,7 +23,20 @@ import {
   useIsWalletConnect,
   getWeb3ReactConnection,
   getIsHardWareWallet,
-} from 'modules/wallet'
+} from '@cowprotocol/wallet'
+import { useWeb3React } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
+
+import { Trans } from '@lingui/macro'
+
+import Copy from 'legacy/components/Copy'
+import {
+  ActivityDescriptors,
+  groupActivitiesByDay,
+  useMultipleActivityDescriptors,
+} from 'legacy/hooks/useRecentActivity'
+
+import Activity from 'modules/account/containers/Transaction'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -60,6 +63,7 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {

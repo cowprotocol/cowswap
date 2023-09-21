@@ -1,11 +1,17 @@
+import {
+  useIsSmartContractWallet,
+  useGnosisSafeInfo,
+  useWalletDetails,
+  useWalletInfo,
+  useIsBundlingSupported,
+} from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
-import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { useIsTokenPermittable } from 'modules/permit'
@@ -21,12 +27,11 @@ import { useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
-import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
+import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean

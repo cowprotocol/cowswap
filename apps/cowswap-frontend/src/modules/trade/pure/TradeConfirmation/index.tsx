@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CloseIcon } from 'legacy/theme'
-import { ButtonSize } from 'legacy/theme/enum'
 
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'

@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet'
+import { APP_TITLE } from '@cowprotocol/common-const'
 
-import { APP_TITLE } from 'legacy/constants'
+import { Helmet } from 'react-helmet'
 
 type PageTitleProps = {
   title?: string

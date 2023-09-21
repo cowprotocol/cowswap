@@ -1,5 +1,10 @@
+import { Erc20, Weth } from '@cowprotocol/abis'
+import { GpEther as ETHER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
+import { calculateValidTo, getAddress } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
-import { Erc20, Weth } from '@cowswap/abis'
+import { useENSAddress } from '@cowprotocol/ens'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -7,14 +12,9 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { GpEther as ETHER } from 'legacy/constants/tokens'
-import { useTokenContract, useWETHContract } from 'legacy/hooks/useContract'
-import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'legacy/state/orders/hooks'
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
@@ -27,12 +27,9 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-
-import { getAddress } from 'utils/getAddress'
-import { calculateValidTo } from 'utils/time'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>

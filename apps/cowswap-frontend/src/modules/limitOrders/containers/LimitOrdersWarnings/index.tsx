@@ -2,6 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -19,7 +21,6 @@ import { useTradePriceImpact } from 'modules/trade'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -29,7 +30,6 @@ import {
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'

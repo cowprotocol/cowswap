@@ -1,15 +1,13 @@
+import { COMMON_BASES, DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ConnectionType } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import { SupportedLocale } from 'legacy/constants/locales'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-import { COMMON_BASES } from 'legacy/constants/routing'
-import { updateVersion } from 'legacy/state/global/actions'
-import { SerializedPair, SerializedToken } from 'legacy/state/user/types'
+import { SerializedPair, SerializedToken } from './types'
 
-import { ConnectionType } from 'modules/wallet'
+import { updateVersion } from '../global/actions'
 
 // MOD imports
 // import { serializeToken } from './hooks'

@@ -1,4 +1,4 @@
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
@@ -31,7 +31,6 @@ export const Routes = {
   DOCS: '/docs',
   STATS: '/stats',
   TWITTER: '/twitter',
-  KITCHEN_SINK: '/kitchen-sink',
 } as const
 
 export type RoutesKeys = keyof typeof Routes

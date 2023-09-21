@@ -1,8 +1,7 @@
 import { atom } from 'jotai'
 
+import { deepEqual } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
-
-import { deepEqual } from 'utils/deepEqual'
 
 export interface UsdRawPriceState {
   updatedAt?: number

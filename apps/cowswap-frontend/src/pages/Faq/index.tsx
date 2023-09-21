@@ -1,7 +1,3 @@
-import { Link } from 'react-router-dom'
-
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
@@ -10,7 +6,12 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from 'legacy/constants'
+} from '@cowprotocol/common-const'
+
+import { Link } from 'react-router-dom'
+
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'

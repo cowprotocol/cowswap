@@ -1,20 +1,15 @@
 import React, { useMemo, useState } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
-import { Field } from 'legacy/state/swap/actions'
-import {
-  useDerivedSwapInfo,
-  useHighFeeWarning,
-  useIsFeeGreaterThanInput,
-  useSwapActionHandlers,
-  useSwapState,
-  useUnknownImpactWarning,
-} from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
@@ -40,15 +35,21 @@ import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import {
+  useDerivedSwapInfo,
+  useHighFeeWarning,
+  useIsFeeGreaterThanInput,
+  useSwapActionHandlers,
+  useSwapState,
+  useUnknownImpactWarning,
+} from '../../hooks/useSwapState'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
   SwapButtonState.ApproveAndSwap,

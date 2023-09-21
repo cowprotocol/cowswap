@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAction } from '@reduxjs/toolkit'
 
-import { ClaimInfo } from 'legacy/state/claim/reducer'
+import { ClaimInfo } from './reducer'
 
 export enum ClaimStatus {
   DEFAULT = 'DEFAULT',
@@ -10,33 +10,6 @@ export enum ClaimStatus {
   SUBMITTED = 'SUBMITTED',
   CONFIRMED = 'CONFIRMED',
   FAILED = 'FAILED',
-}
-
-export type ClaimActions = {
-  // account
-  setInputAddress: (payload: string) => void
-  setActiveClaimAccount: (payload: string) => void
-  setActiveClaimAccountENS: (payload: string) => void
-
-  // search
-  setIsSearchUsed: (payload: boolean) => void
-
-  // claiming
-  setClaimStatus: (payload: ClaimStatus) => void
-  setClaimedAmount: (payload: string) => void
-  setEstimatedGas: (payload: string) => void
-
-  // investing
-  setIsInvestFlowActive: (payload: boolean) => void
-  setInvestFlowStep: (payload: number) => void
-  initInvestFlowData: () => void
-  updateInvestAmount: (payload: { index: number; amount: string }) => void
-  updateInvestError: (payload: { index: number; error: string | undefined }) => void
-  setIsTouched: (payload: { index: number; isTouched: boolean }) => void
-
-  // claim row selection
-  setSelected: (payload: number[]) => void
-  setSelectedAll: (payload: boolean) => void
 }
 
 // accounts

@@ -1,15 +1,15 @@
 import { ReactNode } from 'react'
 
+import { useFetchFile } from '@cowprotocol/common-hooks'
+
 import ReactMarkdown, { ReactMarkdownPropsBase } from 'react-markdown'
 import ReactMarkdownHtml from 'react-markdown/with-html'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-// AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable, Link } from 'legacy/components/Link'
-import useFetchFile from 'legacy/hooks/useFetchFile'
 
 import { Page, Title, Content } from 'modules/application/pure/Page'
 

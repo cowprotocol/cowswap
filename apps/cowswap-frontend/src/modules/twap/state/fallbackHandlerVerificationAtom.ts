@@ -1,6 +1,6 @@
 import { atomWithStorage } from 'jotai/utils'
 
-import { atomWithPartialUpdate } from 'utils/jotai/atomWithPartialUpdate'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 import { ExtensibleFallbackVerification } from '../services/verifyExtensibleFallback'
 
