@@ -8,6 +8,7 @@ import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
+import { useIsTokenPermittable } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
@@ -86,6 +87,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isBundlingSupported = useIsBundlingSupported()
+  const isPermitSupported = !!useIsTokenPermittable(currencyIn)
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -106,6 +108,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapCallbackError,
     trade,
     isBestQuoteLoading,
+    isPermitSupported,
   })
 
   return {

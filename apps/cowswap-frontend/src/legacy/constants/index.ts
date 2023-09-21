@@ -65,13 +65,13 @@ export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<number
   },
 }
 
-export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
+export const GP_SETTLEMENT_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
   [ChainId.GNOSIS_CHAIN]: GPv2Settlement[ChainId.GNOSIS_CHAIN].address,
   [ChainId.GOERLI]: GPv2Settlement[ChainId.GOERLI].address,
 }
 
-export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
+export const GP_VAULT_RELAYER: Record<number, string> = {
   [ChainId.MAINNET]: GPv2VaultRelayer[ChainId.MAINNET].address,
   [ChainId.GNOSIS_CHAIN]: GPv2VaultRelayer[ChainId.GNOSIS_CHAIN].address,
   [ChainId.GOERLI]: GPv2VaultRelayer[ChainId.GOERLI].address,

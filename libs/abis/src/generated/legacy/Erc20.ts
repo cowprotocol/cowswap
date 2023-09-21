@@ -28,6 +28,8 @@ export interface Erc20Interface extends utils.Interface {
     'symbol()': FunctionFragment
     'transfer(address,uint256)': FunctionFragment
     'allowance(address,address)': FunctionFragment
+    'nonces(address)': FunctionFragment
+    'permit(address,address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
   }
 
   getFunction(
@@ -41,6 +43,8 @@ export interface Erc20Interface extends utils.Interface {
       | 'symbol'
       | 'transfer'
       | 'allowance'
+      | 'nonces'
+      | 'permit'
   ): FunctionFragment
 
   encodeFunctionData(functionFragment: 'name', values?: undefined): string
@@ -61,6 +65,19 @@ export interface Erc20Interface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string
   encodeFunctionData(functionFragment: 'allowance', values: [PromiseOrValue<string>, PromiseOrValue<string>]): string
+  encodeFunctionData(functionFragment: 'nonces', values: [PromiseOrValue<string>]): string
+  encodeFunctionData(
+    functionFragment: 'permit',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string
 
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result
@@ -71,6 +88,8 @@ export interface Erc20Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'transfer', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'nonces', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'permit', data: BytesLike): Result
 
   events: {
     'Approval(address,address,uint256)': EventFragment
@@ -156,6 +175,19 @@ export interface Erc20 extends BaseContract {
       _spender: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>
+
+    nonces(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>
+
+    permit(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      value: PromiseOrValue<BigNumberish>,
+      deadline: PromiseOrValue<BigNumberish>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>
   }
 
   name(overrides?: CallOverrides): Promise<string>
@@ -193,6 +225,19 @@ export interface Erc20 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>
 
+  nonces(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
+
+  permit(
+    owner: PromiseOrValue<string>,
+    spender: PromiseOrValue<string>,
+    value: PromiseOrValue<BigNumberish>,
+    deadline: PromiseOrValue<BigNumberish>,
+    v: PromiseOrValue<BigNumberish>,
+    r: PromiseOrValue<BytesLike>,
+    s: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>
+
   callStatic: {
     name(overrides?: CallOverrides): Promise<string>
 
@@ -228,6 +273,19 @@ export interface Erc20 extends BaseContract {
       _spender: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>
+
+    nonces(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
+
+    permit(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      value: PromiseOrValue<BigNumberish>,
+      deadline: PromiseOrValue<BigNumberish>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>
   }
 
   filters: {
@@ -289,6 +347,19 @@ export interface Erc20 extends BaseContract {
       _spender: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>
+
+    nonces(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
+
+    permit(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      value: PromiseOrValue<BigNumberish>,
+      deadline: PromiseOrValue<BigNumberish>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>
   }
 
   populateTransaction: {
@@ -325,6 +396,19 @@ export interface Erc20 extends BaseContract {
       _owner: PromiseOrValue<string>,
       _spender: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>
+
+    nonces(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>
+
+    permit(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      value: PromiseOrValue<BigNumberish>,
+      deadline: PromiseOrValue<BigNumberish>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>
   }
 }

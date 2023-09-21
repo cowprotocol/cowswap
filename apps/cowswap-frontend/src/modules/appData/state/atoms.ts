@@ -4,6 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
 
 import {
+  AppDataHooks,
   AppDataInfo,
   AppDataPendingToUpload,
   RemoveAppDataFromUploadQueueParams,
@@ -93,3 +94,8 @@ export const removeAppDataFromUploadQueueAtom = atom(
     set(appDataUploadQueueAtom, () => get(appDataUploadQueueAtom).filter(buildInverseDocFilterFn(chainId, orderId)))
   }
 )
+
+/**
+ * In memory atom for storing the current appData hooks info
+ */
+export const appDataHooksAtom = atom<AppDataHooks | undefined>(undefined)
