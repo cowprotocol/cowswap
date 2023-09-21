@@ -1,4 +1,4 @@
 import './polyfills'
 import './cow-react'
 
-// Main
+console.log('Main')
