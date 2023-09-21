@@ -1,5 +1,5 @@
-import { signTradeAnalytics, tradeAnalytics } from 'legacy/components/analytics'
-import { AnalyticsOrderType } from 'legacy/components/analytics/types'
+import { signTradeAnalytics, tradeAnalytics } from '@cowprotocol/analytics'
+import { AnalyticsOrderType } from '@cowprotocol/analytics'
 
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 

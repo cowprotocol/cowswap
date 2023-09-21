@@ -1,18 +1,15 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { USDC } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-
-import { USDC } from 'legacy/constants/tokens'
-import useDebounce from 'legacy/hooks/useDebounce'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { FractionUtils } from 'utils/fractionUtils'
 
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'

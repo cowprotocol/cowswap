@@ -1,10 +1,10 @@
+import { AutoRow } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import { AutoColumn as AutoColumnUni } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
 
 export { default } from './CommonBasesMod'
 

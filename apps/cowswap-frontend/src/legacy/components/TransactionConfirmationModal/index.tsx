@@ -1,23 +1,21 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useCallback, useEffect } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { handleFollowPendingTxPopupAtom } from 'legacy/state/application/atoms'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
-import { useWalletInfo } from 'modules/wallet'
+import { handleFollowPendingTxPopupAtom } from 'modules/wallet/state/followPendingTxPopupAtom'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
-import { ConfirmOperationType } from './types'
-
-export * from './types'
 
 export interface ConfirmationModalProps {
   isOpen: boolean

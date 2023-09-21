@@ -2,17 +2,16 @@
 
 import { useMemo } from 'react'
 
+import { nativeOnChain } from '@cowprotocol/common-const'
+import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { nativeOnChain } from 'legacy/constants/tokens'
-import { useInterfaceMulticall } from 'legacy/hooks/useContract'
-import { isAddress } from 'legacy/utils'
-
 import { useOnchainBalances } from 'modules/tokens'
 import { TokenAmounts } from 'modules/tokens'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 

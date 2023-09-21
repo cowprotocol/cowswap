@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../../../const'
 

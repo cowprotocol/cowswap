@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from 'react'
 
+import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
+
 import { createAction } from '@reduxjs/toolkit'
 
-import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
-import { AppState } from 'legacy/state'
-import { addPopup, ApplicationModal, PopupContent, removePopup } from 'legacy/state/application/reducer'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { addPopup, ApplicationModal, PopupContent, removePopup } from './reducer'
+
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
 
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 
@@ -66,7 +68,7 @@ export function useTogglePrivacyPolicy(): () => void {
 }
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function useRemovePopup(): (key: string) => void {
   const dispatch = useAppDispatch()
@@ -79,7 +81,7 @@ export function useRemovePopup(): (key: string) => void {
 }
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useAppSelector((state: AppState) => state.application.popupList)
@@ -102,7 +104,7 @@ export function useCloseModals(): () => void {
 }
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function useAddPopup(): (content: PopupContent, key?: string, removeAfterMs?: number | null) => void {
   const dispatch = useAppDispatch()

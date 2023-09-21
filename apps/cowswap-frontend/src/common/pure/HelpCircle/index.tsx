@@ -1,7 +1,8 @@
+import { questionIcon } from '@cowprotocol/assets/cow-swap/question'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { questionIcon } from 'legacy/assets/cow-swap/question'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 const HelpCircleWrapper = styled.div`

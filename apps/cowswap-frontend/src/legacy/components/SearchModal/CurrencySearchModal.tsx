@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { usePrevious, useLast } from '@cowprotocol/common-hooks'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
-// import Modal from '../Modal'
 import { CurrencySearch } from 'legacy/components/SearchModal/CurrencySearch'
 import { ImportList } from 'legacy/components/SearchModal/ImportList'
 import { ImportToken } from 'legacy/components/SearchModal/ImportToken'
 import Manage from 'legacy/components/SearchModal/Manage'
-import usePrevious from 'legacy/hooks/usePrevious'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 import { CowModal as Modal } from 'common/pure/Modal'
-
-import useLast from '../../hooks/useLast'
 
 export interface CurrencySearchModalProps {
   isOpen: boolean

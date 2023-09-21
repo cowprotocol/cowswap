@@ -1,9 +1,10 @@
+import { BARN_URL, PRODUCTION_URL } from '@cowprotocol/common-const'
+
 import { Link } from 'react-router-dom'
 
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable } from 'legacy/components/Link'
-import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'

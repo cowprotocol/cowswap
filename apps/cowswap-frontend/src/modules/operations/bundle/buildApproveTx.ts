@@ -1,4 +1,4 @@
-import { Erc20 } from '@cowswap/abis'
+import { Erc20 } from '@cowprotocol/abis'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { estimateApprove } from 'common/hooks/useApproveCallback'

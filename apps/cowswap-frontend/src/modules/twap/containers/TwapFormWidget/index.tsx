@@ -1,11 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
-import {
-  openAdvancedOrdersTabAnalytics,
-  twapWalletCompatibilityAnalytics,
-} from 'legacy/components/analytics/events/twapEvents'
-import { renderTooltip } from 'legacy/components/Tooltip'
+import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
+import { renderTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -14,7 +12,6 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
-import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'

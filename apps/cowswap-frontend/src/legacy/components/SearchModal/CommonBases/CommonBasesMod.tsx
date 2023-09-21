@@ -1,3 +1,5 @@
+import { currencyId } from '@cowprotocol/common-utils'
+import { TokenSymbol, AutoRow } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -7,12 +9,9 @@ import styled from 'styled-components/macro'
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { AutoRow } from 'legacy/components/Row'
 import { useFavouriteOrCommonTokens } from 'legacy/hooks/useFavouriteOrCommonTokens'
-import { currencyId } from 'legacy/utils/currencyId'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
 

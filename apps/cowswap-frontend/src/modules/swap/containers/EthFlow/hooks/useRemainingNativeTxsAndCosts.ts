@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 
+import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { parseUnits } from 'ethers/lib/utils'
 
-import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 

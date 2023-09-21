@@ -1,7 +1,6 @@
 import { MetadataApi } from '@cowprotocol/app-data'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { OrderBookApi } from '@cowprotocol/cow-sdk'
-
-import { isBarnBackendEnv } from 'legacy/utils/environments'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)

@@ -1,8 +1,9 @@
 import { useAtomValue } from 'jotai'
 
+import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
+
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
-import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
 import { FallbackHandlerVerificationUpdater } from './FallbackHandlerVerificationUpdater'

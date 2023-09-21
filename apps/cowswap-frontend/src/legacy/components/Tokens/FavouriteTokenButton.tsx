@@ -1,11 +1,11 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonStar } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonStar } from 'legacy/components/Button'
-import useTheme from 'legacy/hooks/useTheme'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
 
 import { UI } from 'common/constants/theme'

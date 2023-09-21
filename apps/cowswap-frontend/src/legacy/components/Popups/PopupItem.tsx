@@ -12,7 +12,7 @@ import { AnimatedFader, PopupWrapper, StyledClose } from './styled'
 import { TransactionPopup } from './TransactionPopup'
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function PopupItem({
   removeAfterMs,

@@ -1,8 +1,8 @@
-import { Trans } from '@lingui/macro'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
+import { RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
-import { RowFixed } from 'legacy/components/Row'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+import { Trans } from '@lingui/macro'
 
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { ClickableText } from 'modules/swap/pure/Row/RowSlippageContent'

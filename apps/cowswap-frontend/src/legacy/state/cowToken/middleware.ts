@@ -1,11 +1,11 @@
-import { isAnyOf, Middleware } from '@reduxjs/toolkit'
+import { getCowSoundError, getCowSoundSuccess } from '@cowprotocol/common-utils'
 
-import { AppState } from 'legacy/state'
-import { getCowSoundSuccess, getCowSoundError } from 'legacy/utils/sound'
+import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
 import { finalizeTransaction } from '../enhancedTransactions/actions'
+import { AppState } from '../index'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 

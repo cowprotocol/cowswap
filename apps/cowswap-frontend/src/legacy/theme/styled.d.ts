@@ -1,4 +1,4 @@
-import { ButtonSize } from 'legacy/theme/enum'
+import { ButtonSize } from '@cowprotocol/ui'
 
 export type Color = string
 

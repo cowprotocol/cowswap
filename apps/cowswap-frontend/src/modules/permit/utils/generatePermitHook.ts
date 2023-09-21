@@ -1,8 +1,7 @@
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { Web3Provider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-
-import { GP_VAULT_RELAYER } from 'legacy/constants'
 
 import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
 

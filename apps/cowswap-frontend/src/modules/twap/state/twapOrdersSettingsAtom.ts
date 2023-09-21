@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { Percent } from '@uniswap/sdk-core'
 
-import { getJotaiIsolatedStorage } from 'jotaiStore'
 import { Milliseconds } from 'types'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_ORDER_DEADLINE, DEFAULT_TWAP_SLIPPAGE } from '../const'

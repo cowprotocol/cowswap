@@ -1,8 +1,9 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '@cowprotocol/common-utils'
+
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '../../../utils/sound'
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
 import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'

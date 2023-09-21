@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { ButtonPrimary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import ms from 'ms'
-
-import { ButtonPrimary } from 'legacy/components/Button'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 

@@ -1,11 +1,10 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
+import { BlockExplorerLinkType } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
-import { BlockExplorerLinkType } from 'legacy/utils'
-
-import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
 import { UpdateOrderParams } from '../actions'

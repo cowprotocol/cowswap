@@ -1,13 +1,13 @@
-import { ButtonSecondary } from 'legacy/components/Button'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { Identicon } from '@cowprotocol/wallet'
+
 import CopyHelper from 'legacy/components/Copy'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import { shortenAddress } from 'legacy/utils'
-
-import { Identicon } from 'modules/wallet/api/container/Identicon'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
-import { ClaimCommonTypes } from './types'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 

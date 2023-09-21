@@ -1,9 +1,9 @@
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-
-import { RowBetween, RowFixed } from 'legacy/components/Row'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { UI } from 'common/constants/theme'
 

@@ -1,12 +1,12 @@
+import { COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect, useValue } from 'react-cosmos/client'
 
-import { COW } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { CurrencyInputPanel, CurrencyInputPanelProps } from './CurrencyInputPanel'
 import { defaultCurrencyInputPanelProps } from './defaultCurrencyInputProps'

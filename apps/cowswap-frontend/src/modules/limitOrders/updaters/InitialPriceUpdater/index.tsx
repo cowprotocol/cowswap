@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect, useState } from 'react'
 
-import { Writeable } from 'types'
+import { usePrevious } from '@cowprotocol/common-hooks'
 
-import usePrevious from 'legacy/hooks/usePrevious'
+import { Writeable } from 'types'
 
 import { useGetInitialPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'

@@ -1,16 +1,13 @@
 import { useMemo } from 'react'
 
+import { TOKEN_SHORTHANDS } from '@cowprotocol/common-const'
+import { useBytes32TokenContract, useTokenContract } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { isChainAllowed, useWalletInfo } from '@cowprotocol/wallet'
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import { TOKEN_SHORTHANDS } from 'legacy/constants/tokens'
-import { useBytes32TokenContract, useTokenContract } from 'legacy/hooks/useContract'
-import { isAddress } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
-import { isChainAllowed } from 'modules/wallet/web3-react/connection'
 
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'

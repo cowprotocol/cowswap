@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
 
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
+import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
+
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-
-import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 
 import { DeadlineSettings } from './types'
 

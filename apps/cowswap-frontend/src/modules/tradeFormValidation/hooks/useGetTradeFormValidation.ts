@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import useDebounce from 'legacy/hooks/useDebounce'
+import { useDebounce } from '@cowprotocol/common-hooks'
 
 import { tradeFormValidationAtom } from '../state/tradeFormValidationAtom'
 import { TradeFormValidation } from '../types'

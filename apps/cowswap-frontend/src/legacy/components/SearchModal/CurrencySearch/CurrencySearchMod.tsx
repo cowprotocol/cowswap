@@ -1,5 +1,10 @@
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { searchByAddressAnalytics } from '@cowprotocol/analytics'
+import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { t, Trans } from '@lingui/macro'
@@ -10,24 +15,19 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
-import Row /* RowBetween , RowFixed */ from 'legacy/components/Row'
 import CommonBases from 'legacy/components/SearchModal/CommonBases'
 import CurrencyList from 'legacy/components/SearchModal/CurrencyList'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'legacy/components/SearchModal/styleds'
-import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'legacy/hooks/Tokens'
-import useDebounce from 'legacy/hooks/useDebounce'
-import useNetworkName from 'legacy/hooks/useNetworkName'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
-import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+import {
+  useAllTokenBalances,
+  useAllTokens,
+  useIsUserAddedToken,
+  useSearchInactiveTokenLists,
+  useToken,
+} from 'legacy/hooks/Tokens'
 import { ButtonText, CloseIcon, ThemedText } from 'legacy/theme'
-import { isAddress } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { UI } from 'common/constants/theme'
 import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'

@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react'
 
+import { renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { LabelTooltipItems } from 'modules/twap'
 

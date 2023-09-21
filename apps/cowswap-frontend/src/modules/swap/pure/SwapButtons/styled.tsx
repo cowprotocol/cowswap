@@ -1,8 +1,6 @@
-import { Text } from 'rebass'
+import { ButtonSize, ButtonError, RowBetween } from '@cowprotocol/ui'
 
-import { ButtonError } from 'legacy/components/Button'
-import { RowBetween } from 'legacy/components/Row'
-import { ButtonSize } from 'legacy/theme/enum'
+import { Text } from 'rebass'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 

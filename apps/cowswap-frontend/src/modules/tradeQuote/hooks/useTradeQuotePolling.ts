@@ -1,13 +1,13 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect, useMemo } from 'react'
 
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
-import useDebounce from 'legacy/hooks/useDebounce'
 import { useIsUnsupportedTokens } from 'legacy/state/lists/hooks'
-import { onlyResolvesLast } from 'legacy/utils/async'
 
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { updateTradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'

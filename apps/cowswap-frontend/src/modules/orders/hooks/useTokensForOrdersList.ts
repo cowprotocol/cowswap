@@ -1,12 +1,12 @@
 import { useCallback, useRef } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
 
 import { TokensByAddress, TokenWithLogo } from 'modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 

@@ -1,7 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiIsolatedStorage } from 'jotaiStore'
+import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+
 import { Milliseconds, Timestamp } from 'types'
 
 import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'

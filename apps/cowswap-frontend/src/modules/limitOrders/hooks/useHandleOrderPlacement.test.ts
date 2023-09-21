@@ -1,5 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { useIsBundlingSupported } from '@cowprotocol/wallet'
+
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -8,7 +10,6 @@ import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundl
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useIsBundlingSupported } from 'modules/wallet'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
@@ -25,8 +26,8 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
-jest.mock('modules/wallet', () => {
-  const actual = jest.requireActual('modules/wallet')
+jest.mock('@cowprotocol/wallet', () => {
+  const actual = jest.requireActual('@cowprotocol/wallet')
 
   return new Proxy(actual, {
     get: (target, property) => {
@@ -41,7 +42,7 @@ jest.mock('modules/wallet', () => {
     },
   })
 })
-jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+jest.mock('common/hooks/useAnalyticsReporter')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>

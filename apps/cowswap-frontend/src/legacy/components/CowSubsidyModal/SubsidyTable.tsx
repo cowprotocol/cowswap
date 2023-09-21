@@ -1,14 +1,14 @@
+import { V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { transparentize, lighten } from 'polished'
 import styled from 'styled-components/macro'
 
-import { V_COW } from 'legacy/constants/tokens'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { UI } from 'common/constants/theme'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { COW_SUBSIDY_DATA } from './constants'
 

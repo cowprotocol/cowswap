@@ -1,9 +1,10 @@
 import React from 'react'
 
+import { renderTooltip } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { Content, ErrorText, TradeWidgetFieldBox, TradeWidgetFieldLabel } from './styled'
 

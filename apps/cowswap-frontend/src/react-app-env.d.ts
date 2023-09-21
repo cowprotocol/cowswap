@@ -6,8 +6,6 @@ declare module '@metamask/jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
 
-declare module 'fortmatic'
-
 interface Window {
   console: Console & { force: Console }
   // walletLinkExtension is injected by the Coinbase Wallet extension

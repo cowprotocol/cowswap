@@ -1,32 +1,35 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/abis'
+import {
+  COW,
+  LOCKED_GNO_VESTING_DURATION,
+  LOCKED_GNO_VESTING_START_TIME,
+  MERKLE_DROP_CONTRACT_ADDRESSES,
+  TOKEN_DISTRO_CONTRACT_ADDRESSES,
+} from '@cowprotocol/common-const'
+import { useContract } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowswap/abis'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'
-import { COW as COW_TOKENS } from 'legacy/constants/tokens'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
-import { useContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const COW = COW_TOKENS[SupportedChainId.MAINNET]
+const _COW = COW[SupportedChainId.MAINNET]
 
 const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useWalletInfo()
-  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(COW, 0))
+  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
   const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
     if (account && chainId) {
       fetchClaim(account, chainId).then((claim) => {
         if (!canceled) {
-          setAllocation(CurrencyAmount.fromRawAmount(COW, claim?.amount ?? 0))
+          setAllocation(CurrencyAmount.fromRawAmount(_COW, claim?.amount ?? 0))
         }
       })
     } else {
@@ -59,7 +62,7 @@ export const useCowFromLockedGnoBalances = () => {
   const { result, loading } = useSingleCallResult(allocated.greaterThan(0) ? tokenDistro : null, 'balances', [
     account ?? undefined,
   ])
-  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(COW, result ? result.claimed.toString() : 0), [result])
+  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, result ? result.claimed.toString() : 0), [result])
 
   return {
     allocated,

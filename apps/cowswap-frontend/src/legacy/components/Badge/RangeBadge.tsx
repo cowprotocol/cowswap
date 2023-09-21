@@ -1,10 +1,10 @@
+import { MouseoverTooltip } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import Badge, { BadgeVariant } from 'legacy/components/Badge'
-
-import { MouseoverTooltip } from '../Tooltip'
 
 const BadgeWrapper = styled.div`
   font-size: 14px;

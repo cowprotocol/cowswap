@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/cowswap-frontend"
+        "outputPath": "build"
       },
       "configurations": {
         "development": {

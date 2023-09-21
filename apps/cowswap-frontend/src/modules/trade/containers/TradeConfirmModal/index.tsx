@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { CowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'

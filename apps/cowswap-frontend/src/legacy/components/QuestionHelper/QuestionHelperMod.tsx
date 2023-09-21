@@ -1,9 +1,8 @@
 import { useCallback, useState } from 'react'
 
-import styled from 'styled-components/macro'
+import { Tooltip, TooltipProps, renderTooltip } from '@cowprotocol/ui'
 
-import Tooltip, { renderTooltip } from 'legacy/components/Tooltip'
-import { TooltipProps } from 'legacy/components/Tooltip'
+import styled from 'styled-components/macro'
 
 import { QuestionWrapper } from './index'
 

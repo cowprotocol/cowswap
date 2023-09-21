@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
 
 import { TWAPOrder, TWAPOrderStruct } from '../types'
 

@@ -1,10 +1,10 @@
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
-import { FractionUtils } from 'utils/fractionUtils'
 
 export interface CoinGeckoUsdQuote {
   [address: string]: {

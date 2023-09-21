@@ -1,5 +1,7 @@
 import { useRef } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
+import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
@@ -7,18 +9,13 @@ import { transparentize, darken } from 'polished'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
-import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
-
 import { UI } from 'common/constants/theme'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 

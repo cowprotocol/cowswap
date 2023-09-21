@@ -1,5 +1,6 @@
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { COW } from 'legacy/constants/tokens'
+import { COW } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { isOrderCancellable } from './isOrderCancellable'

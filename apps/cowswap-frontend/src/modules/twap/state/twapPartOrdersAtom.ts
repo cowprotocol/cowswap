@@ -1,13 +1,10 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { deepEqual } from '@cowprotocol/common-utils'
+import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { getJotaiIsolatedStorage } from 'jotaiStore'
-
-import { walletInfoAtom } from 'modules/wallet/api/state'
-
-import { deepEqual } from 'utils/deepEqual'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export interface TwapPartOrderItem {
   uid: string

@@ -1,3 +1,5 @@
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from '@cowprotocol/common-utils'
 import {
   Address,
   CowEnv,
@@ -19,16 +21,12 @@ import {
 
 import { orderBookApi } from 'cowSdk'
 
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
-import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types'
 
 import { getAppData } from 'modules/appData'
 
 import { ApiErrorCodes, ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { GpQuoteErrorDetails, mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-
-import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

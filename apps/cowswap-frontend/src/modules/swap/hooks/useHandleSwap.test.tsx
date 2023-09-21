@@ -1,8 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
-import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { ethFlow } from 'modules/swap/services/ethFlow'
@@ -15,17 +14,18 @@ import { useEthFlowContext } from './useEthFlowContext'
 import { useHandleSwap } from './useHandleSwap'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useSwapFlowContext } from './useSwapFlowContext'
+import { useSwapActionHandlers } from './useSwapState'
 
+jest.mock('./useSwapState')
 jest.mock('./useSwapFlowContext')
 jest.mock('./useEthFlowContext')
 jest.mock('./useSafeBundleApprovalFlowContext')
 jest.mock('./useSafeBundleEthFlowContext')
-jest.mock('legacy/state/swap/hooks')
 jest.mock('modules/swap/services/swapFlow')
 jest.mock('modules/swap/services/ethFlow')
 jest.mock('modules/swap/services/safeBundleFlow')
 jest.mock('modules/twap/state/twapOrdersListAtom', () => ({}))
-jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+jest.mock('common/hooks/useAnalyticsReporter')
 
 const mockUseSwapActionHandlers = useSwapActionHandlers as jest.MockedFunction<typeof useSwapActionHandlers>
 const mockSwapFlow = swapFlow as jest.MockedFunction<typeof swapFlow>
