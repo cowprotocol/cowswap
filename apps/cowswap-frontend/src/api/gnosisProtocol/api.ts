@@ -7,14 +7,14 @@ import {
   OrderKind,
   OrderQuoteRequest,
   OrderQuoteResponse,
-  PartialApiContext,
-  SigningScheme,
-  SupportedChainId as ChainId,
-  Trade,
-  PriceQuality,
-  TotalSurplus,
   OrderQuoteSideKindBuy,
   OrderQuoteSideKindSell,
+  PartialApiContext,
+  PriceQuality,
+  SigningScheme,
+  SupportedChainId as ChainId,
+  TotalSurplus,
+  Trade,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -103,7 +103,20 @@ const ETH_FLOW_AUX_QUOTE_PARAMS = {
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
+  const {
+    amount,
+    kind,
+    userAddress,
+    receiver,
+    validTo,
+    sellToken,
+    buyToken,
+    chainId,
+    priceQuality,
+    isEthFlow,
+    appData,
+    appDataHash,
+  } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -112,7 +125,8 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
-    appData: getAppData().appDataKeccak256,
+    appData: appData || getAppData().appDataKeccak256,
+    appDataHash,
     validTo,
     partiallyFillable: false,
     priceQuality,

@@ -7,7 +7,7 @@ import { UtmParams } from 'modules/utm'
 
 import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataOrderClass } from '../types'
+import { AppDataHooks, AppDataOrderClass } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -16,13 +16,14 @@ export type UseAppDataParams = {
   slippageBips: string
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
+  hooks?: AppDataHooks
 }
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: UseAppDataParams): void {
+export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hooks }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
@@ -36,7 +37,7 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
       return
     }
 
-    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm }
+    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm, hooks }
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -51,7 +52,7 @@ export function useAppDataUpdater({ chainId, slippageBips, orderClass, utm }: Us
     }
 
     updateAppData()
-  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm])
+  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks])
 }
 function getEnvByClass(orderClass: string): CowEnv | undefined {
   if (orderClass === 'twap') {

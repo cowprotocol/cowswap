@@ -1,3 +1,4 @@
+import { stringifyDeterministic } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -7,7 +8,7 @@ import { environmentName } from 'legacy/utils/environments'
 
 import { UtmParams } from 'modules/utm'
 
-import { AppDataOrderClass } from '../types'
+import { AppDataHooks, AppDataInfo, AppDataOrderClass, AppDataRootSchema } from '../types'
 
 export type BuildAppDataParams = {
   appCode: string
@@ -16,6 +17,15 @@ export type BuildAppDataParams = {
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
+  hooks?: AppDataHooks
+}
+
+async function generateAppDataFromDoc(
+  doc: AppDataRootSchema
+): Promise<Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'>> {
+  const fullAppData = await stringifyDeterministic(doc)
+  const appDataKeccak256 = toKeccak256(fullAppData)
+  return { fullAppData, appDataKeccak256 }
 }
 
 export async function buildAppData({
@@ -23,26 +33,51 @@ export async function buildAppData({
   slippageBips,
   referrerAccount,
   appCode,
-  orderClass,
-  utm: utmParams,
-}: BuildAppDataParams) {
+  orderClass: orderClassName,
+  utm,
+  hooks,
+}: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
   const quoteParams = { slippageBips }
-  const orderClassParams = { orderClass }
+  const orderClass = { orderClass: orderClassName }
 
   const doc = await metadataApiSDK.generateAppDataDoc({
-    appDataParams: { appCode, environment: environmentName },
-    metadataParams: { referrerParams, quoteParams, orderClassParams, utmParams },
+    appCode,
+    environment: environmentName,
+    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks },
   })
 
-  const fullAppData = JSON.stringify(doc)
-  const appDataKeccak256 = toKeccak256(fullAppData)
+  const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)
 
   return { doc, fullAppData, appDataKeccak256 }
 }
 
 export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
+}
+
+export async function updateHooksOnAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): Promise<AppDataInfo> {
+  const { doc } = appData
+
+  const newDoc = {
+    ...doc,
+    metadata: {
+      ...doc.metadata,
+      hooks,
+    },
+  }
+
+  if (!hooks) {
+    delete newDoc.metadata.hooks
+  }
+
+  const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(newDoc)
+
+  return {
+    doc: newDoc,
+    fullAppData,
+    appDataKeccak256,
+  }
 }
