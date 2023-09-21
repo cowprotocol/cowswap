@@ -7,9 +7,6 @@ import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 
@@ -32,7 +29,7 @@ const Wrapper = styled(Page)`
 
 export default function About() {
   return (
-    <Trace page={PageName.ABOUT_PAGE} shouldLogImpression>
+    <>
       <Wrapper>
         <PageTitle title="About" />
         <Title>About</Title>
@@ -115,6 +112,6 @@ export default function About() {
           </p>
         </Content>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

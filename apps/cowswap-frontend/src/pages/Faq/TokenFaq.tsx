@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
@@ -19,7 +16,7 @@ export default function TokenFaq() {
   const { toc, faqRef } = useToC()
 
   return (
-    <Trace page={PageName.FAQ_TOKEN_PAGE} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="Token FAQ" />
         <FaqMenu />
@@ -134,6 +131,6 @@ export default function TokenFaq() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

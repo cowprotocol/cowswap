@@ -9,8 +9,6 @@ import { useWeb3React } from '@web3-react/core'
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { ContentWrapper as SearchInputFormatter } from 'legacy/components/SearchModal/CurrencySearch'
 import { TokenSearchInput } from 'legacy/components/Tokens/styled'
 import TokensTable from 'legacy/components/Tokens/TokensTable'
@@ -151,7 +149,7 @@ export default function TokensOverview() {
   }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
+    <>
       {!isProviderNetworkUnsupported && (
         <AccountHeading>
           <LeftSection>
@@ -209,6 +207,6 @@ export default function TokensOverview() {
 
         {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
       </Overview>
-    </Trace>
+    </>
   )
 }

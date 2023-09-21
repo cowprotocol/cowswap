@@ -1,6 +1,3 @@
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
@@ -11,13 +8,11 @@ import ToC from './ToC'
 
 import { Footer } from '.'
 
-// AmplitudeAnalytics
-
 export default function EthFlowFAQ() {
   const { toc, faqRef } = useToC()
 
   return (
-    <Trace page={PageName.FAQ_ETH_FLOW} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="Selling Native tokens (ETH, xDAI) " />
         <FaqMenu />
@@ -347,6 +342,6 @@ export default function EthFlowFAQ() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

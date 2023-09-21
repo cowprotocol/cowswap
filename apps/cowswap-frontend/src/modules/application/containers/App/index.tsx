@@ -1,6 +1,5 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
 import Header from 'legacy/components/Header'
@@ -18,7 +17,6 @@ import * as styledEl from './styled'
 import { useAnalyticsReporter } from '../../../../common/hooks/useAnalyticsReporter'
 
 export function App() {
-  initializeAnalytics()
   useAnalyticsReporter()
   useInitializeUtm()
 
