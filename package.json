@@ -10,13 +10,13 @@
   },
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
-    "preview": "nx run cowswap-frontend:preview",
-    "cosmos:export": "nx run cowswap-frontend:cosmos:export",
+    "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
+    "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
     "test": "nx run-many -t test --output-style=stream",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
     "prebuild": "nx run cowswap-frontend:i18n",
-    "build": "nx build cowswap-frontend",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
     "prepare": "husky install",
     "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
