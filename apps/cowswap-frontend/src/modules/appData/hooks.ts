@@ -5,7 +5,7 @@ import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeApp } from '@cowprotocol/wallet'
 
-import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
+import { addAppDataToUploadQueueAtom, appDataHooksAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
 
 import { injectedWidgetMetaDataAtom } from '../injectedWidget/state/injectedWidgetMetaDataAtom'
@@ -36,4 +36,12 @@ export function useAppCode(): string | null {
 
 export function useUploadAppData() {
   return useSetAtom(addAppDataToUploadQueueAtom)
+}
+
+export function useUpdateAppDataHooks() {
+  return useSetAtom(appDataHooksAtom)
+}
+
+export function useAppDataHooks() {
+  return useAtomValue(appDataHooksAtom)
 }

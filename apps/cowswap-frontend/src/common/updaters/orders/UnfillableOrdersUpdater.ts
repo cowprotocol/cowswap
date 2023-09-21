@@ -146,7 +146,7 @@ export function UnfillableOrdersUpdater(): null {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
 
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
-        const enoughBalance = hasEnoughBalanceAndAllowance({
+        const { enoughBalance } = hasEnoughBalanceAndAllowance({
           account,
           amount: currencyAmount,
           balances: balancesRef.current,

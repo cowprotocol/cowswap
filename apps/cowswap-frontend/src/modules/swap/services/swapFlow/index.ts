@@ -1,16 +1,19 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Web3Provider } from '@ethersproject/providers'
+import { Percent, Token } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
+import { generatePermitHook } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
@@ -21,6 +24,26 @@ export async function swapFlow(
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return
+  }
+
+  if (input.permitInfo && !input.hasEnoughAllowance) {
+    // If token is permittable and there's not enough allowance, get th permit hook
+
+    // TODO: maybe we need a modal to inform the user what they need to sign?
+    const permitData = await generatePermitHook({
+      inputToken: input.context.trade.inputAmount.currency as Token,
+      provider: input.orderParams.signer.provider as Web3Provider,
+      account: input.orderParams.account,
+      chainId: input.orderParams.chainId,
+      permitInfo: input.permitInfo,
+    })
+
+    const hooks = buildAppDataHooks([permitData])
+
+    input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, hooks)
+  } else {
+    // Otherwise, remove hooks (if any) from appData to avoid stale data
+    input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, undefined)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')

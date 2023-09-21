@@ -6,13 +6,12 @@ import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react-hooks'
+import { orderBookApi } from 'cowSdk'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
+import * as tokensModule from 'modules/tokens'
 import { DEFAULT_TRADE_DERIVED_STATE } from 'modules/trade'
-
-import { getQuote } from 'api/gnosisProtocol/api'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
@@ -21,18 +20,8 @@ import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 jest.mock('common/hooks/useShouldZeroApprove/useShouldZeroApprove')
 jest.mock('common/hooks/useGetMarketDimension')
 
-jest.mock('api/gnosisProtocol/api', () => ({
-  ...jest.requireActual('api/gnosisProtocol/api'),
-  getQuote: jest.fn(),
-}))
-
-jest.mock('modules/tokens', () => ({
-  ...jest.requireActual('modules/tokens'),
-  useEnoughBalanceAndAllowance: jest.fn(),
-}))
-
-const getQuoteMock = jest.mocked(getQuote)
-const useEnoughBalanceAndAllowanceMock = jest.mocked(useEnoughBalanceAndAllowance)
+const getQuoteMock = jest.spyOn(orderBookApi, 'getQuote')
+const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBalanceAndAllowance')
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_GOERLI, 10_000_000)
 const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[5], 2_000_000)
@@ -42,6 +31,7 @@ const walletInfoMock: WalletInfo = {
   account: '0x333333f332a06ecb5d20d35da44ba07986d6e203',
   active: true,
 }
+
 const limitOrdersDerivedStateMock: LimitOrdersDerivedState = {
   ...DEFAULT_TRADE_DERIVED_STATE,
   inputCurrency: inputCurrencyAmount.currency,
@@ -69,7 +59,7 @@ describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    getQuoteMock.mockReturnValue(new Promise(() => void 0))
+    getQuoteMock.mockImplementation(() => new Promise(() => void 0))
     useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
   })
 
@@ -84,14 +74,14 @@ describe('useTradeQuotePolling()', () => {
       // Assert
       const callParams = getQuoteMock.mock.calls[0][0]
 
-      expect(callParams.userAddress).toBe(walletInfoMock.account) // useAddress field value
+      expect(callParams.from).toBe(walletInfoMock.account) // useAddress field value
       expect(getQuoteMock).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })
   })
 
   describe('When wallet is NOT connected', () => {
-    it('Then  the "useAddress" field in the quote request should be 0x000...0000', () => {
+    it('Then the "useAddress" field in the quote request should be 0x000...0000', () => {
       // Arrange
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
@@ -101,7 +91,7 @@ describe('useTradeQuotePolling()', () => {
       // Assert
       const callParams = getQuoteMock.mock.calls[0][0]
 
-      expect(callParams.userAddress).toBe(undefined) // useAddress field value
+      expect(callParams.from).toBe(ZERO_ADDRESS) // useAddress field value
       expect(getQuoteMock).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })

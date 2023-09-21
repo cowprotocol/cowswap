@@ -61,6 +61,7 @@ export enum FlowType {
 interface BaseFlowContextSetup {
   chainId: number | undefined
   account: string | undefined
+  sellTokenContract: Erc20 | null
   provider: Web3Provider | undefined
   trade: TradeGp | undefined
   appData: AppDataInfo | null
@@ -107,6 +108,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     trade,
     allowedSlippage
   )
+  const sellTokenContract = useTokenContract(getAddress(inputAmountWithSlippage?.currency) || undefined, true)
 
   const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
   const flowType = _getFlowType(isSafeBundle, isEoaEthFlow, isSafeEthFlow)
@@ -114,6 +116,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   return {
     chainId,
     account,
+    sellTokenContract,
     provider,
     trade,
     appData,
@@ -177,6 +180,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     uploadAppData,
     dispatch,
     flowType,
+    sellTokenContract,
   } = baseProps
 
   if (
@@ -261,5 +265,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     swapConfirmManager,
     orderParams,
     appDataInfo: appData,
+    sellTokenContract,
   }
 }

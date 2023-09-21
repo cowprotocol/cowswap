@@ -16,6 +16,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 
+import { useAppData } from 'modules/appData'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
@@ -63,8 +64,9 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     kind: currentKind,
     userAddress: currentUserAddress,
     receiver: currentReceiver,
+    appData: currentAppData,
   } = currentParams
-  const { amount, buyToken, sellToken, kind, userAddress, receiver } = quoteInfo
+  const { amount, buyToken, sellToken, kind, userAddress, receiver, appData } = quoteInfo
   const hasSameReceiver = currentReceiver && receiver ? currentReceiver === receiver : true
 
   // cache the base quote params without quoteInfo user address to check
@@ -73,6 +75,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     buyToken === currentBuyToken &&
     amount === currentAmount &&
     kind === currentKind &&
+    appData === currentAppData &&
     hasSameReceiver
   // 2 checks: if there's a quoteInfo user address (meaning quote was already calculated once) and one without
   // in case user is not connected
@@ -127,7 +130,7 @@ export function FeesUpdater(): null {
     parsedAmount,
   } = useDerivedSwapInfo()
 
-  const enoughBalance = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
+  const { enoughBalance } = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
@@ -146,6 +149,8 @@ export function FeesUpdater(): null {
   const isEthFlow = useIsEoaEthFlow()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
+
+  const appData = useAppData()
 
   const refetchQuote = useRefetchQuoteCallback()
   const setQuoteError = useSetQuoteError()
@@ -205,6 +210,8 @@ export function FeesUpdater(): null {
       validTo,
       isEthFlow,
       priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      appData: appData?.fullAppData,
+      appDataHash: appData?.appDataKeccak256,
     }
 
     // Don't refetch if offline.
@@ -277,6 +284,8 @@ export function FeesUpdater(): null {
     sellTokenAddressInvalid,
     enoughBalance,
     verifiedQuotesEnabled,
+    appData?.fullAppData,
+    appData?.appDataKeccak256,
   ])
 
   return null
