@@ -77,9 +77,9 @@ async function generatePermitHookRaw(
   const deadline = getPermitDeadline()
   const value = DEFAULT_PERMIT_VALUE
 
-  const callDataPromise =
+  const callData =
     permitInfo.type === 'eip-2612'
-      ? buildEip2162PermitCallData({
+      ? await buildEip2162PermitCallData({
           eip2162Utils,
           callDataParams: [
             {
@@ -94,7 +94,7 @@ async function generatePermitHookRaw(
             tokenAddress,
           ],
         })
-      : buildDaiLikePermitCallData({
+      : await buildDaiLikePermitCallData({
           eip2162Utils,
           callDataParams: [
             {
@@ -110,8 +110,6 @@ async function generatePermitHookRaw(
             tokenAddress,
           ],
         })
-
-  const callData = await callDataPromise
 
   const gasLimit = await calculateGasLimit(callData, owner, tokenAddress, provider, !!account)
 
