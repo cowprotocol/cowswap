@@ -1,11 +1,17 @@
 import { useMemo } from 'react'
 
+import { RPC_URLS } from '@cowprotocol/common-const'
+
 import { initializeConnector } from '@web3-react/core'
-import { WalletConnect } from '@web3-react/walletconnect'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+
+import { AsyncConnector } from './asyncConnector'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { onError } from './onError'
 import { ConnectionType } from '../../api/types'
+import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import {
   getConnectionName,
   getIsAlphaWallet,
@@ -14,13 +20,8 @@ import {
   getIsZengoWallet,
 } from '../../api/utils/connection'
 import { WC_DISABLED_TEXT } from '../../constants'
-import { useWalletMetaData } from '../hooks/useWalletMetadata'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { RPC_URLS } from '@cowprotocol/common-const'
-import { onError } from './onError'
-import { useFlags } from 'launchdarkly-react-client-sdk'
 
 const WC_SUNSET_LINK =
   'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'
@@ -33,17 +34,25 @@ export const walletConnectOption = {
   id: 'wallet-connect',
 }
 
-const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
+const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new WalletConnect({
+    new AsyncConnector(
+      () =>
+        import('@web3-react/walletconnect').then(
+          (m) =>
+            new m.WalletConnect({
+              actions,
+              options: {
+                rpc: RPC_URLS,
+                qrcode: true,
+                bridge: process.env.REACT_APP_WALLET_CONNECT_V1_BRIDGE || 'https://safe-walletconnect.safe.global',
+              },
+              onError,
+            })
+        ),
       actions,
-      options: {
-        rpc: RPC_URLS,
-        qrcode: true,
-        bridge: process.env.REACT_APP_WALLET_CONNECT_V1_BRIDGE || 'https://safe-walletconnect.safe.global',
-      },
-      onError,
-    })
+      onError
+    )
 )
 export const walletConnectConnection: Web3ReactConnection = {
   connector: web3WalletConnect,

@@ -127,7 +127,6 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
-            if (id.includes('@walletconnect')) return '@walletconnect'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3'
           },
