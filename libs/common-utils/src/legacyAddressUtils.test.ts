@@ -1,4 +1,4 @@
-import { isAddress, shortenAddress } from '.'
+import { isAddress, shortenAddress } from './legacyAddressUtils'
 
 describe('utils', () => {
   describe('#isAddress', () => {
