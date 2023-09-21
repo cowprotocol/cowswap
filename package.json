@@ -12,9 +12,10 @@
     "start": "nx run cowswap-frontend:serve",
     "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
     "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
-    "test": "nx run-many -t test --exclude=cowswap --output-style=stream",
-    "e2e": "nx run-many -t e2e --exclude=cowswap",
-    "lint": "nx run-many -t lint --exclude=cowswap",
+    "test": "nx run-many -t test --output-style=stream",
+    "e2e": "nx run-many -t e2e",
+    "lint": "nx run-many -t lint",
+    "prebuild": "nx run cowswap-frontend:i18n",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
     "prepare": "husky install",
     "postinstall": "yarn run patch-package",
@@ -252,45 +253,5 @@
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "~0.32.0"
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/build",
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "build:analyze": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "ipfs:build": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "optimize-bundle": {
-        "outputs": [
-          "{projectRoot}/../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json"
-        ]
-      },
-      "cosmos:export": {
-        "outputs": [
-          "{projectRoot}/public/cosmos"
-        ]
-      },
-      "sitemap": {
-        "outputs": [
-          "{projectRoot}/public/sitemap.xml"
-        ]
-      },
-      "writeVersion": {
-        "outputs": [
-          "{projectRoot}/public/version.json"
-        ]
-      }
-    }
   }
 }
