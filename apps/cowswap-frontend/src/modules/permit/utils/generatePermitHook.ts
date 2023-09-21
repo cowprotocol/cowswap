@@ -123,21 +123,13 @@ async function calculateGasLimit(
   provider: Web3Provider,
   isUserAccount: boolean
 ): Promise<string> {
-  if (isUserAccount) {
-    // "Real" user account, use the default
-    // If we send a smaller gas limit than what was used in the quote, it won't matter
-    // If we send a bigger gas limit, the order will fail
-
-    // TODO: it might still happen that user's permit will cost more than the static account
-    return DEFAULT_PERMIT_GAS_LIMIT
-  }
-
   try {
     // Query the actual gas estimate
     const actual = await provider.estimateGas({ data, from, to })
 
     // Add 10% to actual value to account for minor differences with real account
-    const gasLimit = actual.add(actual.div(10))
+    // Do not add it if this is the real user's account
+    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
 
     // Pick the biggest between estimated and default
     return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
