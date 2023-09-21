@@ -12,9 +12,9 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
 
-// eslint-disable-next-line no-restricted-imports
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
+// eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]

@@ -1,4 +1,4 @@
-import { isMobile } from '../../common-utils/src/userAgent'
+import { isMobile } from '@cowprotocol/common-utils'
 
 import { initAnalytics, serviceWorkerAnalytics } from './events/otherEvents'
 import { googleAnalytics } from './googleAnalytics'
