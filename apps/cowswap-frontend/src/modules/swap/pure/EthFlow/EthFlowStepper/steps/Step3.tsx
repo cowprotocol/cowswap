@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 
-import Checkmark from '@cowswap/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowswap/assets/cow-swap/exclamation.svg'
-import Finish from '@cowswap/assets/cow-swap/finish.svg'
-import Refund from '@cowswap/assets/cow-swap/refund.svg'
+import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
+import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 
 import styled from 'styled-components/macro'
 

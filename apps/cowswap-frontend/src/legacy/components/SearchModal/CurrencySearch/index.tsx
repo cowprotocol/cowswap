@@ -1,4 +1,4 @@
-import { RowFixed } from '@cowswap/ui'
+import { RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'

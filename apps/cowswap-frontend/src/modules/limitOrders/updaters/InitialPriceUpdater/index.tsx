@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect, useState } from 'react'
 
-import { usePrevious } from '@cowswap/common-hooks'
+import { usePrevious } from '@cowprotocol/common-hooks'
 
 import { Writeable } from 'types'
 

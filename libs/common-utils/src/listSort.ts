@@ -1,4 +1,4 @@
-import { DEFAULT_LIST_OF_LISTS } from '@cowswap/common-const'
+import { DEFAULT_LIST_OF_LISTS } from '@cowprotocol/common-const'
 
 const DEFAULT_LIST_PRIORITIES = DEFAULT_LIST_OF_LISTS.reduce<{ [listUrl: string]: number }>((memo, listUrl, index) => {
   memo[listUrl] = index + 1

@@ -1,6 +1,6 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { COW, GNO } from '@cowswap/common-const'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 

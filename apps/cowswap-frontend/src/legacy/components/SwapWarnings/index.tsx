@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'

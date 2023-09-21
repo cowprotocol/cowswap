@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
-import { changeWalletAnalytics } from '@cowswap/analytics'
-import { usePrevious } from '@cowswap/common-hooks'
-import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
-import { useWalletInfo, ConnectionType, getIsHardWareWallet, getWeb3ReactConnection } from '@cowswap/wallet'
+import { changeWalletAnalytics } from '@cowprotocol/analytics'
+import { usePrevious } from '@cowprotocol/common-hooks'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { useWalletInfo, ConnectionType, getIsHardWareWallet, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 

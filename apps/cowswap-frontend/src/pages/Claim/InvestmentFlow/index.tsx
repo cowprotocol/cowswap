@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 
+import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
+import RoundArrow from '@cowprotocol/assets/cow-swap/round-arrow.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import CowProtocolImage from '@cowswap/assets/cow-swap/cowprotocol.svg'
-import ImportantIcon from '@cowswap/assets/cow-swap/important.svg'
-import RoundArrow from '@cowswap/assets/cow-swap/round-arrow.svg'
-import { ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'

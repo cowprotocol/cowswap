@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useEthFlowContract, useGP2SettlementContract } from '@cowswap/common-hooks'
+import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
 
 import { Order } from 'legacy/state/orders/actions'
 

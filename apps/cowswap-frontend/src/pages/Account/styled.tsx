@@ -1,5 +1,5 @@
-import { Loader as SpinnerLoader, ButtonPrimary } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'

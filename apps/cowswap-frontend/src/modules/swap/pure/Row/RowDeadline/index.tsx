@@ -1,6 +1,6 @@
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowswap/common-const'
-import { RowFixed } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
+import { RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 

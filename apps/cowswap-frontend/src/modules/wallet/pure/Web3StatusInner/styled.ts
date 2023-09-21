@@ -1,4 +1,4 @@
-import { ButtonSecondary } from '@cowswap/ui'
+import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { darken } from 'polished'
 import { Activity } from 'react-feather'

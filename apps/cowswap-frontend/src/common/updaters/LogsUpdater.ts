@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
-import { useBlockNumber } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useBlockNumber } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Filter } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 

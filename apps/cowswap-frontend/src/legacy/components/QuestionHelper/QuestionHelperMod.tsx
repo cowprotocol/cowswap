@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Tooltip, TooltipProps, renderTooltip } from '@cowswap/ui'
+import { Tooltip, TooltipProps, renderTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

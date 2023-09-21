@@ -2,8 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
-import { isFractionFalsy } from '@cowswap/common-utils'
-import { useIsSafeViaWc, useWalletInfo } from '@cowswap/wallet'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

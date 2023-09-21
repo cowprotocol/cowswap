@@ -1,5 +1,5 @@
-import { currencyId } from '@cowswap/common-utils'
-import { TokenSymbol, AutoRow } from '@cowswap/ui'
+import { currencyId } from '@cowprotocol/common-utils'
+import { TokenSymbol, AutoRow } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

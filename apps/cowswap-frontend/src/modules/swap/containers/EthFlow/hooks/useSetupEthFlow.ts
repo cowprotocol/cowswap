@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
-import { delay } from '@cowswap/common-utils'
+import { delay } from '@cowprotocol/common-utils'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'

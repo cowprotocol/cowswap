@@ -1,6 +1,6 @@
+import { V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { V_COW } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { transparentize, lighten } from 'polished'

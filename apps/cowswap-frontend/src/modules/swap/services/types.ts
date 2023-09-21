@@ -1,5 +1,5 @@
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowswap/abis'
-import { Erc20, Weth } from '@cowswap/abis'
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
+import { Erc20, Weth } from '@cowprotocol/abis'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

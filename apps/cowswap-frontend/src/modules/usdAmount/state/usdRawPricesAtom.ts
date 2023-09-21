@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { deepEqual } from '@cowswap/common-utils'
+import { deepEqual } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 export interface UsdRawPriceState {

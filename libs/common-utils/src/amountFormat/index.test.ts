@@ -1,6 +1,6 @@
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { USDC_GNOSIS_CHAIN, DAI_GOERLI, USDC_GOERLI } from '@cowswap/common-const'
+import { USDC_GNOSIS_CHAIN, DAI_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 

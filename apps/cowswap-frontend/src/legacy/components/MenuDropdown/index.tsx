@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 
-import IMAGE_CARRET_DOWN from '@cowswap/assets/cow-swap/carret-down.svg'
-import { useOnClickOutside } from '@cowswap/common-hooks'
+import IMAGE_CARRET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
 

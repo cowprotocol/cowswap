@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
-import { isAddress } from '@cowswap/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 
 export function useFilterTokens(tokens: Token[], query: string): Token[] {
   return useMemo(() => {

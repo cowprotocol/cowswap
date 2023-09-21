@@ -1,4 +1,4 @@
-import { useInterfaceMulticall, useBlockNumber } from '@cowswap/common-hooks'
+import { useInterfaceMulticall, useBlockNumber } from '@cowprotocol/common-hooks'
 import { createMulticall } from '@uniswap/redux-multicall'
 import { useWeb3React } from '@web3-react/core'
 

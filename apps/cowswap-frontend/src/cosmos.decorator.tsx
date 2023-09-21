@@ -3,10 +3,10 @@ import './polyfills'
 
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
-import IMAGE_MOON from '@cowswap/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@cowswap/assets/cow-swap/sun.svg'
-import { BlockNumberProvider } from '@cowswap/common-hooks'
-import { WalletUpdater, injectedConnection } from '@cowswap/wallet'
+import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
+import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
+import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'

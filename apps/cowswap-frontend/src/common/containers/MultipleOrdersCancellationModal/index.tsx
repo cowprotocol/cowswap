@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
-import { isRejectRequestProviderError } from '@cowswap/common-utils'
-import { ButtonPrimary } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'

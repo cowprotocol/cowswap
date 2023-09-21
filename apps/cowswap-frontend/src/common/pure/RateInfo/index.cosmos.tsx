@@ -1,6 +1,6 @@
+import { COW, GNO, DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW, GNO, DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from '@cowswap/common-const'
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

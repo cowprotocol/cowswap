@@ -1,4 +1,4 @@
-import { BlockExplorerLinkType, formatOrderId } from '@cowswap/common-utils'
+import { BlockExplorerLinkType, formatOrderId } from '@cowprotocol/common-utils'
 
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'

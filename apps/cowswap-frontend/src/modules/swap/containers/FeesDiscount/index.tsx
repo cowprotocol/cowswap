@@ -1,5 +1,5 @@
-import { AutoRow } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import { AutoRow } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'

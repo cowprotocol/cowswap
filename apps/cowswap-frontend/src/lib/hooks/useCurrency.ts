@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { TOKEN_SHORTHANDS } from '@cowswap/common-const'
-import { useBytes32TokenContract, useTokenContract } from '@cowswap/common-hooks'
-import { isAddress } from '@cowswap/common-utils'
-import { isChainAllowed, useWalletInfo } from '@cowswap/wallet'
+import { TOKEN_SHORTHANDS } from '@cowprotocol/common-const'
+import { useBytes32TokenContract, useTokenContract } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { isChainAllowed, useWalletInfo } from '@cowprotocol/wallet'
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Token } from '@uniswap/sdk-core'

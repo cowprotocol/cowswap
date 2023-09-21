@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
-import CowImage from '@cowswap/assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from '@cowswap/common-const'
+import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { AsyncConnector } from './asyncConnector'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'

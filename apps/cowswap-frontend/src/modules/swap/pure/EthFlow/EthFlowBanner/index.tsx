@@ -1,6 +1,6 @@
-import savingsIcon from '@cowswap/assets/cow-swap/savings.svg'
-import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowswap/common-const'
-import { ButtonPrimary } from '@cowswap/ui'
+import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

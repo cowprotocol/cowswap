@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { shortenOrderId } from '@cowswap/common-utils'
+import { shortenOrderId } from '@cowprotocol/common-utils'
 
 import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { ConfirmOperationType } from 'legacy/state/types'

@@ -1,4 +1,4 @@
-import { jotaiStore } from '@cowswap/core'
+import { jotaiStore } from '@cowprotocol/core'
 
 import { hwAccountIndexAtom } from '../state'
 

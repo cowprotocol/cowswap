@@ -1,5 +1,5 @@
-import { ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
-import { useDebounce } from '@cowswap/common-hooks'
+import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

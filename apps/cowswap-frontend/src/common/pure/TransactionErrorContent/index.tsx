@@ -1,4 +1,4 @@
-import { ButtonPrimary } from '@cowswap/ui'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'

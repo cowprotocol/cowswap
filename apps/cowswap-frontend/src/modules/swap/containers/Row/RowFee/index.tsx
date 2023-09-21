@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { formatFiatAmount, formatTokenAmount } from '@cowswap/common-utils'
-import { FractionUtils } from '@cowswap/common-utils'
-import { formatSymbol } from '@cowswap/common-utils'
+import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { formatSymbol } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'

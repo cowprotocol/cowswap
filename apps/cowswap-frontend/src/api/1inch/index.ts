@@ -1,6 +1,6 @@
+import { getTokensFromMarket } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getTokensFromMarket } from '@cowswap/common-utils'
 
 import { PriceInformation } from 'types'
 

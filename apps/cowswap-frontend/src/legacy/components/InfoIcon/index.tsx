@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { MouseoverTooltipContent, TooltipContainer } from '@cowswap/ui'
+import { MouseoverTooltipContent, TooltipContainer } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'

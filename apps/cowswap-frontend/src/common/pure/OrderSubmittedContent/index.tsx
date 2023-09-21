@@ -1,6 +1,6 @@
+import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isCowOrder } from '@cowswap/common-utils'
-import { ButtonPrimary } from '@cowswap/ui'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

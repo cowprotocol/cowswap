@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useInterfaceMulticall } from '@cowswap/common-hooks'
+import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'

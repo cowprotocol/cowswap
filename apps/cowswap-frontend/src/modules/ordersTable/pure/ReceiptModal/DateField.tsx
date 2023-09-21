@@ -1,4 +1,4 @@
-import { useTimeAgo } from '@cowswap/common-hooks'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
 
 import { format } from 'date-fns'
 

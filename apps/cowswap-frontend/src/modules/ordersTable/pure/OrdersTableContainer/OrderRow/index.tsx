@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 
+import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import AlertTriangle from '@cowswap/assets/cow-swap/alert.svg'
-import { ZERO_FRACTION } from '@cowswap/common-const'
-import { useTimeAgo } from '@cowswap/common-hooks'
-import { getAddress, getEtherscanLink } from '@cowswap/common-utils'
-import { TokenAmount, TokenSymbol, Loader } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'

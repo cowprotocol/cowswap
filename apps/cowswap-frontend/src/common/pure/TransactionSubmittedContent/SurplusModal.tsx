@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 
+import { sendEvent } from '@cowprotocol/analytics'
+import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
+import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
+import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { sendEvent } from '@cowswap/analytics'
-import CheckSingular from '@cowswap/assets/cow-swap/check-singular.svg'
-import SurplusCow from '@cowswap/assets/cow-swap/surplus-cow.svg'
-import twitterImage from '@cowswap/assets/cow-swap/twitter.svg'
-import { FiatAmount, TokenAmount, SymbolElement } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'

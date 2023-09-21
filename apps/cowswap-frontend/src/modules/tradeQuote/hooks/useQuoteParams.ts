@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
-import { getAddress } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { getAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'

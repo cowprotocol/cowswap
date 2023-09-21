@@ -1,4 +1,4 @@
-import { questionIcon } from '@cowswap/assets/cow-swap/question'
+import { questionIcon } from '@cowprotocol/assets/cow-swap/question'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

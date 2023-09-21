@@ -1,5 +1,5 @@
+import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
-import { RADIX_DECIMAL } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus, SerializedOrder, addPendingOrder, AddPendingOrderParams } from './actions'

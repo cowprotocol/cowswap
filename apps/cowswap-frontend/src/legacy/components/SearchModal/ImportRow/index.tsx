@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react'
 
-import { ButtonPrimary } from '@cowswap/ui'
-import { AutoRow } from '@cowswap/ui'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

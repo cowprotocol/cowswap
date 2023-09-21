@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { useAllTokens } from 'legacy/hooks/Tokens'

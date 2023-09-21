@@ -1,6 +1,6 @@
+import { PRICE_API_TIMEOUT_MS } from '@cowprotocol/common-const'
+import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
-import { PRICE_API_TIMEOUT_MS } from '@cowswap/common-const'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from '@cowswap/common-utils'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import * as Sentry from '@sentry/browser'

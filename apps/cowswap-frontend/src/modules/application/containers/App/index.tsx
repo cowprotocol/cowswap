@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowswap/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'

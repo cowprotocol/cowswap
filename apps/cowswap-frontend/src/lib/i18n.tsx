@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 
-import { DEFAULT_LOCALE, SupportedLocale } from '@cowswap/common-const'
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'

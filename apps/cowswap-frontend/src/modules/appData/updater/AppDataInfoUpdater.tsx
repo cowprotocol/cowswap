@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { percentToBips } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { percentToBips } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useUtm } from 'modules/utm'

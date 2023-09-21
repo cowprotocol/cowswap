@@ -1,5 +1,5 @@
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from '@cowswap/common-const'
-import { isLocal } from '@cowswap/common-utils'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from '@cowprotocol/common-const'
+import { isLocal } from '@cowprotocol/common-utils'
 
 let warningMsg
 

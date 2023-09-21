@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { RowFixed } from '@cowswap/ui'
+import { RowFixed } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
 

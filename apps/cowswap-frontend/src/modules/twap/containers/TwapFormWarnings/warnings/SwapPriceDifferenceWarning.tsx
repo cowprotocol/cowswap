@@ -1,4 +1,4 @@
-import { FiatAmount, TokenAmount } from '@cowswap/ui'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'

@@ -1,4 +1,4 @@
-import { FractionUtils } from '@cowswap/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'

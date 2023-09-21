@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 

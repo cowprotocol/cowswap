@@ -1,4 +1,4 @@
-import { useWindowSize } from '@cowswap/common-hooks'
+import { useWindowSize } from '@cowprotocol/common-hooks'
 
 import ReactConfetti from 'react-confetti'
 

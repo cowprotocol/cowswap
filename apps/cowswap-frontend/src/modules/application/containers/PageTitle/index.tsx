@@ -1,4 +1,4 @@
-import { APP_TITLE } from '@cowswap/common-const'
+import { APP_TITLE } from '@cowprotocol/common-const'
 
 import { Helmet } from 'react-helmet'
 

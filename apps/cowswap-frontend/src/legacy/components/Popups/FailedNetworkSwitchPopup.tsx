@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getChainInfo } from '@cowswap/common-const'
-import { AutoRow } from '@cowswap/ui'
+import { AutoRow } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getChainInfo } from '@cowswap/common-const'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 

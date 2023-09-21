@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { renderTooltip } from '@cowswap/ui'
+import { renderTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 

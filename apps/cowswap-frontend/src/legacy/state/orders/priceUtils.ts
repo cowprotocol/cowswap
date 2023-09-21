@@ -1,6 +1,6 @@
 // Copied from @cowprotocol/cow-js
 
-import { DEFAULT_DECIMALS } from '@cowswap/common-const'
+import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 
 import { BigNumber } from 'bignumber.js'
 

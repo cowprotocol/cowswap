@@ -1,4 +1,4 @@
-import { shortenOrderId } from '@cowswap/common-utils'
+import { shortenOrderId } from '@cowprotocol/common-utils'
 
 import styled from 'styled-components/macro'
 

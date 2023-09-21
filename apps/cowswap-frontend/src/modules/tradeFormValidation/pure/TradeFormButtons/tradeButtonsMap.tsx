@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

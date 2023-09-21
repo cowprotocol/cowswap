@@ -1,5 +1,5 @@
-import { useBlockNumber } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useBlockNumber } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { multicall } from 'legacy/state/multicall'
 import { SkipFirst } from 'legacy/types/tuple'

@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
-import { getIntOrFloat } from '@cowswap/common-utils'
+import { getIntOrFloat } from '@cowprotocol/common-utils'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 

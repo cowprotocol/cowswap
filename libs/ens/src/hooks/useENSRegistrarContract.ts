@@ -1,6 +1,6 @@
-import { getContract } from '@cowswap/common-utils'
-import { ENS_REGISTRAR_ADDRESSES } from '@cowswap/common-const'
-import { EnsAbi, EnsRegistrar } from '@cowswap/abis'
+import { getContract } from '@cowprotocol/common-utils'
+import { ENS_REGISTRAR_ADDRESSES } from '@cowprotocol/common-const'
+import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 

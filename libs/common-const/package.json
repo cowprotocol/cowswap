@@ -1,5 +1,5 @@
 {
-  "name": "@cowswap/common-const",
+  "name": "@cowprotocol/common-const",
   "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",

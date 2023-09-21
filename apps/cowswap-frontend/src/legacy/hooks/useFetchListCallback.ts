@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import { MAINNET_PROVIDER } from '@cowswap/common-const'
-import { resolveENSContentHash } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
+import { resolveENSContentHash } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { nanoid } from '@reduxjs/toolkit'

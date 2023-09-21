@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { COW } from '@cowswap/common-const'
-import { WETH_GOERLI } from '@cowswap/common-const'
-import { WalletInfo, walletInfoAtom } from '@cowswap/wallet'
+import { COW } from '@cowprotocol/common-const'
+import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react-hooks'

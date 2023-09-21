@@ -1,6 +1,6 @@
-import IMAGE_MOON from '@cowswap/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@cowswap/assets/cow-swap/sun.svg'
-import { ExternalLink as ExternalLinkComponent } from '@cowswap/ui'
+import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
+import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
+import { ExternalLink as ExternalLinkComponent } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 

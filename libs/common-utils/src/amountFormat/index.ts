@@ -9,7 +9,7 @@ import {
   PERCENTAGE_PRECISION,
   ZERO_FRACTION,
   INTL_NUMBER_FORMAT,
-} from '@cowswap/common-const'
+} from '@cowprotocol/common-const'
 
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
 import { trimTrailingZeros } from '../trimTrailingZeros'

@@ -1,3 +1,5 @@
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { isAddress, shortenAddress, formatTokenAmount, formatSymbol } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -7,8 +9,6 @@ import {
   OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowswap/common-const'
-import { isAddress, shortenAddress, formatTokenAmount, formatSymbol } from '@cowswap/common-utils'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 

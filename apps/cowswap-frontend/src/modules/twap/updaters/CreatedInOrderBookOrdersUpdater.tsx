@@ -3,7 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAsyncMemo } from 'use-async-memo'
 

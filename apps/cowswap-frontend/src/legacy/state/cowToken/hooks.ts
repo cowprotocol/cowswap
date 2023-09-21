@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
-import { V_COW } from '@cowswap/common-const'
-import { useVCowContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { V_COW } from '@cowprotocol/common-const'
+import { useVCowContract } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 

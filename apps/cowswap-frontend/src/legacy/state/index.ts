@@ -1,4 +1,4 @@
-import { DEFAULT_NETWORK_FOR_LISTS } from '@cowswap/common-const'
+import { DEFAULT_NETWORK_FOR_LISTS } from '@cowprotocol/common-const'
 
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'

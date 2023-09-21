@@ -6,7 +6,7 @@ import { isChainAllowed } from './isChainAllowed'
 
 import { ConnectionType } from '../../api/types'
 import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
-import { getChainInfo, RPC_URLS } from '@cowswap/common-const'
+import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {

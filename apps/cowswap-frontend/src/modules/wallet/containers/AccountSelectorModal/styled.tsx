@@ -1,4 +1,4 @@
-import { ReactComponent as Close } from '@cowswap/assets/images/x.svg'
+import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
 
 import styled from 'styled-components/macro'
 

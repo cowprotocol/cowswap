@@ -1,14 +1,14 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
   openNpsAppziSometimes,
   timeSinceInSeconds,
-} from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+} from '@cowprotocol/common-utils'
+import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'

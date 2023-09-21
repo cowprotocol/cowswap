@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useIsWindowVisible } from '@cowswap/common-hooks'
-import { FractionUtils } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'

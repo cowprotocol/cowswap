@@ -1,4 +1,4 @@
-import { TokenAmount } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

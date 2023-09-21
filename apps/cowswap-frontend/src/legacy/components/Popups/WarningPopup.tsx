@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { AutoRow } from '@cowswap/ui'
+import { AutoRow } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'

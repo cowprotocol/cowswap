@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

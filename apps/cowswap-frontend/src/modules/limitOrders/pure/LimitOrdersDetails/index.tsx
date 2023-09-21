@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
 
-import ArrowDownImage from '@cowswap/assets/cow-swap/arrowDownRight.svg'
-import { DEFAULT_DATE_FORMAT } from '@cowswap/common-const'
-import { formatInputAmount } from '@cowswap/common-utils'
-import { isAddress, shortenAddress } from '@cowswap/common-utils'
+import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
+import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
+import { formatInputAmount } from '@cowprotocol/common-utils'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'

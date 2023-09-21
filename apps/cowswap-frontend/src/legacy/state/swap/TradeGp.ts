@@ -1,5 +1,5 @@
-import { ONE_FRACTION } from '@cowswap/common-const'
-import { CanonicalMarketParams, getCanonicalMarket } from '@cowswap/common-utils'
+import { ONE_FRACTION } from '@cowprotocol/common-const'
+import { CanonicalMarketParams, getCanonicalMarket } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
 
 interface PriceInformation {

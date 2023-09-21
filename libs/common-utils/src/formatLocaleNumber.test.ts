@@ -1,4 +1,4 @@
-import { SUPPORTED_LOCALES, SupportedLocale } from '@cowswap/common-const'
+import { SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
 
 import formatLocaleNumber from './formatLocaleNumber'
 

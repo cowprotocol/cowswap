@@ -1,8 +1,8 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
+import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
-import { isAddress } from '@cowswap/common-utils'
 
 import * as Sentry from '@sentry/react'
 import useSWR from 'swr'

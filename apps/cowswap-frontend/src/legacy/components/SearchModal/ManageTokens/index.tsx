@@ -1,5 +1,5 @@
-import { Row, RowFixed, RowBetween } from '@cowswap/ui'
-import { LinkIcon } from '@cowswap/ui'
+import { Row, RowFixed, RowBetween } from '@cowprotocol/ui'
+import { LinkIcon } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled, { DefaultTheme } from 'styled-components/macro'

@@ -1,6 +1,6 @@
+import { getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getEtherscanLink } from '@cowswap/common-utils'
-import { ExternalLink } from '@cowswap/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 

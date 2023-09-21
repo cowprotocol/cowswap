@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
-import { ButtonPrimary, ButtonSecondary } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'
 
 import { Trans } from '@lingui/macro'

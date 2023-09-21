@@ -1,4 +1,4 @@
-import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowswap/ui'
+import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

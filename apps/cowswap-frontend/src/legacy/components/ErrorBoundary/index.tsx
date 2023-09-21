@@ -1,6 +1,6 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
-import { sendError } from '@cowswap/analytics'
+import { sendError } from '@cowprotocol/analytics'
 
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'

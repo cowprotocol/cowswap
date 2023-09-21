@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useIsSafeWallet, walletConnectConnection } from '@cowswap/wallet'
+import { useIsSafeWallet, walletConnectConnection } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

@@ -8,9 +8,9 @@ import { useWalletInfo } from '../../api/hooks'
 import { useWalletMetaData } from './useWalletMetadata'
 import { getIsAmbireWallet } from '../../api/utils/connection'
 import { Contract } from '@ethersproject/contracts'
-import { getProviderOrSigner } from '@cowswap/common-utils'
-import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowswap/common-const'
-import { ArgentWalletDetectorAbi } from '@cowswap/abis'
+import { getProviderOrSigner } from '@cowprotocol/common-utils'
+import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowprotocol/common-const'
+import { ArgentWalletDetectorAbi } from '@cowprotocol/abis'
 
 function useCheckIsSmartContract(): boolean | undefined {
   const { provider } = useWeb3React()

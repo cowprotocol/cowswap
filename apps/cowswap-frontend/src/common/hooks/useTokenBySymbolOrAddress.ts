@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { doesTokenMatchSymbolOrAddress } from '@cowswap/common-utils'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 
 import { useFavouriteTokens } from 'legacy/state/user/hooks'

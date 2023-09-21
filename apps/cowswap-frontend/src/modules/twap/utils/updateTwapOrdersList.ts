@@ -1,4 +1,4 @@
-import { deepEqual } from '@cowswap/common-utils'
+import { deepEqual } from '@cowprotocol/common-utils'
 
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'

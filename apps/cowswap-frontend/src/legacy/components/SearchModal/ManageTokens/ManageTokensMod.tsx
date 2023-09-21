@@ -1,10 +1,10 @@
 import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 
-import { useNetworkName, useTheme } from '@cowswap/common-hooks'
-import { getEtherscanLink as getExplorerLink, isAddress } from '@cowswap/common-utils'
-import { TokenSymbol, Row, RowBetween, RowFixed } from '@cowswap/ui'
-import { ExternalLink, ExternalLinkIcon } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useNetworkName, useTheme } from '@cowprotocol/common-hooks'
+import { getEtherscanLink as getExplorerLink, isAddress } from '@cowprotocol/common-utils'
+import { TokenSymbol, Row, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { ExternalLink, ExternalLinkIcon } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

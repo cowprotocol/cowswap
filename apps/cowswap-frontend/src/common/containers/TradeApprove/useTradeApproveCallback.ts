@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { approvalAnalytics } from '@cowswap/analytics'
-import { isRejectRequestProviderError } from '@cowswap/common-utils'
+import { approvalAnalytics } from '@cowprotocol/analytics'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 

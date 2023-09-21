@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Row, RowFixed } from '@cowswap/ui'
+import { Row, RowFixed } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
 import { transparentize, darken } from 'polished'

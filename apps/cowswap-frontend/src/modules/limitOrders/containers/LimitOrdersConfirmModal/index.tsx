@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
 
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 

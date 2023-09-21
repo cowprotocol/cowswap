@@ -1,5 +1,5 @@
-import { Identicon, ConnectionType } from '@cowswap/wallet'
-import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowswap/wallet'
+import { Identicon, ConnectionType } from '@cowprotocol/wallet'
+import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 

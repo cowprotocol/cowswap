@@ -1,5 +1,5 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW, GNO } from '@cowswap/common-const'
 
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'

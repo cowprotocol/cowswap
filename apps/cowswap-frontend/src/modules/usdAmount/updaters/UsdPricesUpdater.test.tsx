@@ -1,8 +1,8 @@
 import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
+import { COW as COWS, USDC_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW as COWS, USDC_MAINNET } from '@cowswap/common-const'
 import { Token } from '@uniswap/sdk-core'
 
 import { act, render, waitFor } from '@testing-library/react'

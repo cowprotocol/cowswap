@@ -1,4 +1,4 @@
-import { ExternalLink } from '@cowswap/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import HashLink from 'legacy/components/HashLink'
 

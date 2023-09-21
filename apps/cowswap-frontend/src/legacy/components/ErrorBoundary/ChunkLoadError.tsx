@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 
-import cowNoConnectionIMG from '@cowswap/assets/cow-swap/cow-no-connection.png'
-import { DISCORD_LINK } from '@cowswap/common-const'
-import { ButtonPrimary } from '@cowswap/ui'
-import { AutoRow } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import cowNoConnectionIMG from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
+import { DISCORD_LINK } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

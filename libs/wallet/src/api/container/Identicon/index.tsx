@@ -3,7 +3,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'
-import { useENSAvatar } from '@cowswap/ens'
+import { useENSAvatar } from '@cowprotocol/ens'
 
 import jazzicon from '@metamask/jazzicon'
 

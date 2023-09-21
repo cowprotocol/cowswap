@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
+import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import EtherscanImage from '@cowswap/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER } from '@cowswap/common-const'
-import { usePrevious, useTheme } from '@cowswap/common-hooks'
-import { getBlockExplorerUrl } from '@cowswap/common-utils'
-import { TokenAmount, TokenSymbol, Loader } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'

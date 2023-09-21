@@ -1,6 +1,6 @@
-import uImage from '@cowswap/assets/images/big_unicorn.png'
-import noise from '@cowswap/assets/images/noise.png'
-import xlUnicorn from '@cowswap/assets/images/xl_uni.png'
+import uImage from '@cowprotocol/assets/images/big_unicorn.png'
+import noise from '@cowprotocol/assets/images/noise.png'
+import xlUnicorn from '@cowprotocol/assets/images/xl_uni.png'
 
 import styled from 'styled-components/macro'
 

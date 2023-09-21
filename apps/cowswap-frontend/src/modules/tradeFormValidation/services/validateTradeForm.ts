@@ -1,5 +1,5 @@
-import { isFractionFalsy } from '@cowswap/common-utils'
-import { isAddress } from '@cowswap/common-utils'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { FiatAmount, TokenAmount } from '@cowswap/ui'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

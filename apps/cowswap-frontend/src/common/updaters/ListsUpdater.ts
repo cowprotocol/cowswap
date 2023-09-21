@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react'
 
-import { UNSUPPORTED_LIST_URLS } from '@cowswap/common-const'
-import { useInterval, useIsWindowVisible } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
+import { useInterval, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useWeb3React } from '@web3-react/core'
 

@@ -1,4 +1,4 @@
-import CowIcon from '@cowswap/assets/cow-swap/cowprotocol.svg'
+import CowIcon from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'

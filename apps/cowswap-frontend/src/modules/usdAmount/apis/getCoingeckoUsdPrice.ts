@@ -1,5 +1,5 @@
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FractionUtils } from '@cowswap/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'

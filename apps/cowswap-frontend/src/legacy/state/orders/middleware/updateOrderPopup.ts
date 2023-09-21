@@ -1,6 +1,6 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
+import { BlockExplorerLinkType } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { orderAnalytics } from '@cowswap/analytics'
-import { BlockExplorerLinkType } from '@cowswap/common-utils'
 
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { toggleDarkModeAnalytics } from '@cowswap/analytics'
-import { isInjectedWidget } from '@cowswap/common-utils'
-import { addBodyClass, removeBodyClass } from '@cowswap/common-utils'
-import { TokenAmount } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'

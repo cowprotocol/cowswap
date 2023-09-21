@@ -1,4 +1,4 @@
-import { AutoRow } from '@cowswap/ui'
+import { AutoRow } from '@cowprotocol/ui'
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'

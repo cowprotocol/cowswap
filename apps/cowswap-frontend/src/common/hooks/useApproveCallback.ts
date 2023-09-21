@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
-import { Erc20 } from '@cowswap/abis'
-import { useTokenContract } from '@cowswap/common-hooks'
-import { calculateGasMargin } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { Erc20 } from '@cowprotocol/abis'
+import { useTokenContract } from '@cowprotocol/common-hooks'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'

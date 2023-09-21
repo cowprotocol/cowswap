@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
+import { getDateTimestamp } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowswap/common-const'
-import { getDateTimestamp } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'

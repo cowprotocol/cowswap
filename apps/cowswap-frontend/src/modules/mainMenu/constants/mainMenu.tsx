@@ -1,18 +1,24 @@
-import IMAGE_CODE from '@cowswap/assets/cow-swap/code.svg'
-import IMAGE_COOKIE_POLICY from '@cowswap/assets/cow-swap/cookie-policy.svg'
-import IMAGE_DISCORD from '@cowswap/assets/cow-swap/discord.svg'
-import IMAGE_DOCS from '@cowswap/assets/cow-swap/doc.svg'
-import IMAGE_GAME from '@cowswap/assets/cow-swap/game.gif'
-import IMAGE_INFO from '@cowswap/assets/cow-swap/info.svg'
-import IMAGE_SLICER from '@cowswap/assets/cow-swap/ninja-cow.png'
-import IMAGE_PIE from '@cowswap/assets/cow-swap/pie.svg'
-import IMAGE_PRIVACY_POLICY from '@cowswap/assets/cow-swap/privacy-policy.svg'
-import IMAGE_TERMS_AND_CONDITIONS from '@cowswap/assets/cow-swap/terms-and-conditions.svg'
-import IMAGE_TWITTER from '@cowswap/assets/cow-swap/twitter.svg'
-import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowswap/common-const'
-import { getExplorerBaseUrl } from '@cowswap/common-utils'
-import { ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import IMAGE_CODE from '@cowprotocol/assets/cow-swap/code.svg'
+import IMAGE_COOKIE_POLICY from '@cowprotocol/assets/cow-swap/cookie-policy.svg'
+import IMAGE_DISCORD from '@cowprotocol/assets/cow-swap/discord.svg'
+import IMAGE_DOCS from '@cowprotocol/assets/cow-swap/doc.svg'
+import IMAGE_GAME from '@cowprotocol/assets/cow-swap/game.gif'
+import IMAGE_INFO from '@cowprotocol/assets/cow-swap/info.svg'
+import IMAGE_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+import IMAGE_PIE from '@cowprotocol/assets/cow-swap/pie.svg'
+import IMAGE_PRIVACY_POLICY from '@cowprotocol/assets/cow-swap/privacy-policy.svg'
+import IMAGE_TERMS_AND_CONDITIONS from '@cowprotocol/assets/cow-swap/terms-and-conditions.svg'
+import IMAGE_TWITTER from '@cowprotocol/assets/cow-swap/twitter.svg'
+import {
+  CONTRACTS_CODE_LINK,
+  DISCORD_LINK,
+  DOCS_LINK,
+  DUNE_DASHBOARD_LINK,
+  TWITTER_LINK,
+} from '@cowprotocol/common-const'
+import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Globe } from 'react-feather'
 

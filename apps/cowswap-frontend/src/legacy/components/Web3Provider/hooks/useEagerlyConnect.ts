@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 
-import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowswap/common-utils'
+import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   BACKFILLABLE_WALLETS,
   getWeb3ReactConnection,
   injectedWidgetConnection,
   networkConnection,
   gnosisSafeConnection,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
 
 import { useAppSelector } from '../../../state/hooks'

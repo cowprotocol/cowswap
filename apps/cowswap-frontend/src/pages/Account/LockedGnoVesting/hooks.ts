@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowswap/abis'
+import { MerkleDrop, TokenDistro, MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/abis'
 import {
   COW,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
-} from '@cowswap/common-const'
-import { useContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+} from '@cowprotocol/common-const'
+import { useContract } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 

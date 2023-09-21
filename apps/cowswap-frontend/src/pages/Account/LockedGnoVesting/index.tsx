@@ -1,24 +1,24 @@
 import { useCallback, useState, useEffect } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { claimAnalytics } from '@cowswap/analytics'
-import ArrowIcon from '@cowswap/assets/cow-swap/arrow.svg'
-import cowImage from '@cowswap/assets/cow-swap/cow_v2.svg'
+import { claimAnalytics } from '@cowprotocol/analytics'
+import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
+import cowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
-} from '@cowswap/common-const'
-import { usePrevious } from '@cowswap/common-hooks'
+} from '@cowprotocol/common-const'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import {
   formatDateWithTimezone,
   getBlockExplorerUrl,
   getProviderErrorMessage,
   isRejectRequestProviderError,
-} from '@cowswap/common-utils'
-import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+} from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

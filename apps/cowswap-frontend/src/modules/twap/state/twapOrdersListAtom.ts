@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { deepEqual } from '@cowswap/common-utils'
-import { getJotaiIsolatedStorage } from '@cowswap/core'
-import { walletInfoAtom } from '@cowswap/wallet'
+import { deepEqual } from '@cowprotocol/common-utils'
+import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { cowSwapStore } from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'

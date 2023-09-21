@@ -1,4 +1,4 @@
-import { useIsBundlingSupported } from '@cowswap/wallet'
+import { useIsBundlingSupported } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

@@ -6,7 +6,7 @@ import { EthereumTransaction } from '@trezor/connect'
 import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type { TrezorConnect } from '@trezor/connect-web'
-import { gasPriceAtom, jotaiStore } from '@cowswap/core'
+import { gasPriceAtom, jotaiStore } from '@cowprotocol/core'
 
 // TODO: use API or Oracle for gas price
 const DEFAULT_GOERLI_GAS_PRICE = 40 * 10 ** 9 // 40 GWEI

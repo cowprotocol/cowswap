@@ -1,4 +1,4 @@
-import { WalletUpdater } from '@cowswap/wallet'
+import { WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 import { MulticallUpdater } from 'legacy/state/multicall'

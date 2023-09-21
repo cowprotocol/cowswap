@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { tryParseCurrencyAmount } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

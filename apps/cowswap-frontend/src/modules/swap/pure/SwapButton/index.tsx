@@ -1,4 +1,4 @@
-import { ButtonSize, ButtonError } from '@cowswap/ui'
+import { ButtonSize, ButtonError } from '@cowprotocol/ui'
 
 export interface SwapButtonProps {
   disabled: boolean

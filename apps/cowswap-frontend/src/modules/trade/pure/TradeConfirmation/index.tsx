@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary } from '@cowswap/ui'
+import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 

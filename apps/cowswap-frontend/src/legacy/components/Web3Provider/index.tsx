@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getConnectionName, Web3ReactConnection } from '@cowswap/wallet'
+import { getConnectionName, Web3ReactConnection } from '@cowprotocol/wallet'
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 

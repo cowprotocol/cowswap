@@ -1,4 +1,4 @@
-import { useTheme } from '@cowswap/common-hooks'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import styled, { keyframes } from 'styled-components/macro'
 

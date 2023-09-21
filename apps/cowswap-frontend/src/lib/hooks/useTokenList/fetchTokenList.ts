@@ -1,4 +1,4 @@
-import { contenthashToUri, parseENSAddress, uriToHttp } from '@cowswap/common-utils'
+import { contenthashToUri, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
 import type { TokenList } from '@uniswap/token-lists'
 
 import validateTokenList from './validateTokenList'

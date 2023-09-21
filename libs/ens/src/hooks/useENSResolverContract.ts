@@ -1,5 +1,5 @@
-import { getContract } from '@cowswap/common-utils'
-import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowswap/abis'
+import { getContract } from '@cowprotocol/common-utils'
+import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowprotocol/abis'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 

@@ -1,7 +1,7 @@
 import { lazy, ReactNode, Suspense } from 'react'
 
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowswap/common-const'
-import { Loader } from '@cowswap/ui'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowprotocol/common-const'
+import { Loader } from '@cowprotocol/ui'
 
 import { Navigate, Route, Routes } from 'react-router-dom'
 

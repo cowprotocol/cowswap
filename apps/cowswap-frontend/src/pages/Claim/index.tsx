@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { usePrevious } from '@cowswap/common-hooks'
-import { getProviderErrorMessage } from '@cowswap/common-utils'
-import { useENS } from '@cowswap/ens'
-import { Loader } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { usePrevious } from '@cowprotocol/common-hooks'
+import { getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { useENS } from '@cowprotocol/ens'
+import { Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import Confetti from 'legacy/components/Confetti'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'

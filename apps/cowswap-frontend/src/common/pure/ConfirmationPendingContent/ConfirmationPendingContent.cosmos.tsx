@@ -1,4 +1,4 @@
-import { Identicon } from '@cowswap/wallet'
+import { Identicon } from '@cowprotocol/wallet'
 
 import { ConfirmationPendingContent } from './ConfirmationPendingContent'
 

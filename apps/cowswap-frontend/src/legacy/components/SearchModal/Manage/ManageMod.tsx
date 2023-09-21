@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { RowBetween } from '@cowswap/ui'
+import { RowBetween } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { ArrowLeft } from 'react-feather'

@@ -1,4 +1,4 @@
-import { Loader } from '@cowswap/ui'
+import { Loader } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'

@@ -1,4 +1,4 @@
-import { ButtonSecondary } from '@cowswap/ui'
+import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'

@@ -1,7 +1,7 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
-import { useTheme } from '@cowswap/common-hooks'
-import { ButtonStar } from '@cowswap/ui'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonStar } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

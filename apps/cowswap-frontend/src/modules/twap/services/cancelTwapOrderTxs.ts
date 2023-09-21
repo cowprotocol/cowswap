@@ -1,4 +1,4 @@
-import { ComposableCoW, GPv2Settlement } from '@cowswap/abis'
+import { ComposableCoW, GPv2Settlement } from '@cowprotocol/abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 

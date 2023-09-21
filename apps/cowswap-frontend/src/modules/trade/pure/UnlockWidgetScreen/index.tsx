@@ -1,6 +1,6 @@
-import iconCompleted from '@cowswap/assets/cow-swap/check.svg'
-import { ButtonPrimary } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 

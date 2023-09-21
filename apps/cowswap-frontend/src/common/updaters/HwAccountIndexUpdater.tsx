@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
-import { getIsHardWareWallet, getWeb3ReactConnection, hwAccountIndexAtom, useWalletInfo } from '@cowswap/wallet'
+import { getIsHardWareWallet, getWeb3ReactConnection, hwAccountIndexAtom, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAppSelector } from 'legacy/state/hooks'

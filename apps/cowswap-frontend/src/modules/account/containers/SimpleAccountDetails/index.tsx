@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 

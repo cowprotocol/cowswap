@@ -1,6 +1,6 @@
+import { DEFAULT_PRECISION, LONG_PRECISION, WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { DEFAULT_PRECISION, LONG_PRECISION, WRAPPED_NATIVE_CURRENCY as WETH } from '@cowswap/common-const'
 import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
 

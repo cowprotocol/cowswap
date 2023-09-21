@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ButtonSize, ButtonPrimary } from '@cowswap/ui'
+import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 
 import { TwapFormState } from './getTwapFormState'
 

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowswap/analytics'
-import { DEFAULT_DEADLINE_FROM_NOW } from '@cowswap/common-const'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
+import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import {
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
@@ -13,9 +13,9 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-} from '@cowswap/common-const'
-import { RowBetween, RowFixed } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+} from '@cowprotocol/common-const'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

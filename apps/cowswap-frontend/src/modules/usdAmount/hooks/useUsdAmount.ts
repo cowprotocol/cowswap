@@ -1,4 +1,4 @@
-import { currencyAmountToTokenAmount } from '@cowswap/common-utils'
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

@@ -1,4 +1,4 @@
-import { environmentName } from '@cowswap/common-utils'
+import { environmentName } from '@cowprotocol/common-utils'
 
 import * as Sentry from '@sentry/react'
 

@@ -20,8 +20,8 @@ import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { RPC_URLS } from '@cowswap/common-const'
-import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
+import { RPC_URLS } from '@cowprotocol/common-const'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 
 const TOOLTIP_TEXT =
   'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'

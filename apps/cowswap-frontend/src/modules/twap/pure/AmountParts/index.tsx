@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { renderTooltip } from '@cowswap/ui'
+import { renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

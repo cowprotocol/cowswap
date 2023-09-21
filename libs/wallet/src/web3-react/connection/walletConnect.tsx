@@ -18,7 +18,7 @@ import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { RPC_URLS } from '@cowswap/common-const'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { onError } from './onError'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 

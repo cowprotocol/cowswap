@@ -1,4 +1,4 @@
-import { ButtonPrimary } from '@cowswap/ui'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'

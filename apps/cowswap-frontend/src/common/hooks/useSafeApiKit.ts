@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { createSafeApiKitInstance } from '@cowswap/core'
-import { useIsSafeWallet, useWalletInfo } from '@cowswap/wallet'
+import { createSafeApiKitInstance } from '@cowprotocol/core'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { useWeb3React } from '@web3-react/core'
 

@@ -1,4 +1,4 @@
-import { WETH_GOERLI } from '@cowswap/common-const'
+import { WETH_GOERLI } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect } from 'react-cosmos/client'

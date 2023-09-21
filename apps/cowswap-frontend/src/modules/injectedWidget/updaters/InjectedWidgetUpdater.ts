@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { deepEqual } from '@cowswap/common-utils'
+import { deepEqual } from '@cowprotocol/common-utils'
 
 import { useNavigate } from 'react-router-dom'
 

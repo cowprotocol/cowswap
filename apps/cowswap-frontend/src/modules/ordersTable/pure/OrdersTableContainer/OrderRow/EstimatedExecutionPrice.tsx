@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 
-import AlertTriangle from '@cowswap/assets/cow-swap/alert.svg'
-import { ZERO_FRACTION } from '@cowswap/common-const'
-import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken, transparentize } from 'polished'

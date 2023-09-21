@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
+import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowswap/abis'
-import { useGnosisSafeInfo } from '@cowswap/wallet'
+import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 

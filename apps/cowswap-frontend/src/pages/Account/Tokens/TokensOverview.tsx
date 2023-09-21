@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
-import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowswap/common-hooks'
-import { isAddress, isTruthy } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
+import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 

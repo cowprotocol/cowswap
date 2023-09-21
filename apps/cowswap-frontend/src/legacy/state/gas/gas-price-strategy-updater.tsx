@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { DEFAULT_GP_PRICE_STRATEGY } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { DEFAULT_GP_PRICE_STRATEGY } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 

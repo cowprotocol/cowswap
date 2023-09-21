@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { isFractionFalsy } from '@cowswap/common-utils'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'

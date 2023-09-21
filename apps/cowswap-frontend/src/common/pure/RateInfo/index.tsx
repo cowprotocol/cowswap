@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 
+import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getAddress } from '@cowswap/common-utils'
-import { FiatAmount, TokenAmount, TokenSymbol } from '@cowswap/ui'
+import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

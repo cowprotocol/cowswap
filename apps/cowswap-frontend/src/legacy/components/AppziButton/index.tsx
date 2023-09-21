@@ -1,5 +1,5 @@
-import FeedbackIcon from '@cowswap/assets/cow-swap/feedback.svg'
-import { isAppziEnabled, openFeedbackAppzi } from '@cowswap/common-utils'
+import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
+import { isAppziEnabled, openFeedbackAppzi } from '@cowprotocol/common-utils'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'

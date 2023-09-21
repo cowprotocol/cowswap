@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { useGP2SettlementContract } from '@cowswap/common-hooks'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 

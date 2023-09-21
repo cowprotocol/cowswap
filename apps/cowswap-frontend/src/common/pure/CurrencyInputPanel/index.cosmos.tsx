@@ -1,5 +1,5 @@
+import { COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW } from '@cowswap/common-const'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { DemoContainer } from 'cosmos.decorator'

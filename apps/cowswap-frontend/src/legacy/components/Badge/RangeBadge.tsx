@@ -1,4 +1,4 @@
-import { MouseoverTooltip } from '@cowswap/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'

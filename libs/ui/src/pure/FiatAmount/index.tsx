@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { FeatureFlag, formatFiatAmount, FractionUtils } from '@cowswap/common-utils'
+import { FeatureFlag, formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { FractionLike, Nullish } from '../../types'
-import { LONG_PRECISION } from '@cowswap/common-const'
+import { LONG_PRECISION } from '@cowprotocol/common-const'
 export interface FiatAmountProps {
   amount: Nullish<FractionLike>
   accurate?: boolean

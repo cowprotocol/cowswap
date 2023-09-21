@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { walletInfoAtom } from '@cowswap/wallet'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'

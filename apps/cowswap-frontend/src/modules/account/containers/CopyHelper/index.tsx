@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { useCopyClipboard } from '@cowswap/common-hooks'
+import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'

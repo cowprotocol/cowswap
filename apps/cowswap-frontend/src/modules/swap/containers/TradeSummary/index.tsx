@@ -1,4 +1,4 @@
-import { useWalletDetails } from '@cowswap/wallet'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'

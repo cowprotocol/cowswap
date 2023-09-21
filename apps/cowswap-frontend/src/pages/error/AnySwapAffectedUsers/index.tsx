@@ -1,6 +1,6 @@
-import cow404IMG from '@cowswap/assets/cow-swap/cow-404.png'
-import { ButtonPrimary } from '@cowswap/ui'
-import { ExternalLink as ExternalLinkTheme } from '@cowswap/ui'
+import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

@@ -20,7 +20,7 @@ import {
   vCowAbi,
   UniswapInterfaceMulticall,
   CoWSwapEthFlowAbi,
-} from '@cowswap/abis'
+} from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
@@ -31,10 +31,10 @@ import {
   V_COW_CONTRACT_ADDRESS,
   MULTICALL_ADDRESS,
   WRAPPED_NATIVE_CURRENCY,
-} from '@cowswap/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowswap/common-utils'
+} from '@cowprotocol/common-const'
+import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 

@@ -1,4 +1,4 @@
-import { ReactComponent as DropDown } from '@cowswap/assets/images/dropdown.svg'
+import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
 
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'

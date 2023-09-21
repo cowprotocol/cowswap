@@ -1,15 +1,15 @@
 import { Fragment, useMemo } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   getEtherscanLink,
   getExplorerLabel,
   shortenAddress,
   getExplorerAddressLink,
   isMobile,
-} from '@cowswap/common-utils'
-import { MouseoverTooltip } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+} from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   useWalletInfo,
@@ -23,7 +23,7 @@ import {
   useIsWalletConnect,
   getWeb3ReactConnection,
   getIsHardWareWallet,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 

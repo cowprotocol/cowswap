@@ -8,7 +8,7 @@ import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { RPC_URLS } from '@cowswap/common-const'
+import { RPC_URLS } from '@cowprotocol/common-const'
 
 const BASE_PROPS = {
   color: '#4196FC',

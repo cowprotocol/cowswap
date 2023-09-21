@@ -1,5 +1,5 @@
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useGP2SettlementContract } from '@cowswap/common-hooks'
 import { TradeType } from '@uniswap/sdk-core'
 
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'

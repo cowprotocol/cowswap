@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { useIsWindowVisible } from '@cowswap/common-hooks'
-import { SentryTag } from '@cowswap/common-utils'
-import { useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { SentryTag } from '@cowprotocol/common-utils'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import * as Sentry from '@sentry/browser'
 

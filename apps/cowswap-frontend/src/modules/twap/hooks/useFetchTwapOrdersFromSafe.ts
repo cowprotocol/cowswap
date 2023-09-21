@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { ComposableCoW } from '@cowswap/abis'
+import { ComposableCoW } from '@cowprotocol/abis'
 
 import ms from 'ms.macro'
 

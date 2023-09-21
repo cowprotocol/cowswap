@@ -1,4 +1,4 @@
-import { Loader, ButtonPrimary } from '@cowswap/ui'
+import { Loader, ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

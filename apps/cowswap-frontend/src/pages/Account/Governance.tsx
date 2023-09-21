@@ -1,4 +1,4 @@
-import CowProtocolImage from '@cowswap/assets/cow-swap/cowprotocol.svg'
+import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 
 import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg, CardActions } from './styled'
 

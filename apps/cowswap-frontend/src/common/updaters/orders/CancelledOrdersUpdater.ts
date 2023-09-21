@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 
+import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { CANCELLED_ORDERS_PENDING_TIME } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderFulfillmentData } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'

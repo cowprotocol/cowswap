@@ -1,7 +1,7 @@
-import { getEtherscanLink as getExplorerLink } from '@cowswap/common-utils'
-import { RowFixed } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getEtherscanLink as getExplorerLink } from '@cowprotocol/common-utils'
+import { RowFixed } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 

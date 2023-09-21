@@ -1,6 +1,6 @@
-import { shortenAddress } from '@cowswap/common-utils'
-import { ButtonSecondary } from '@cowswap/ui'
-import { Identicon } from '@cowswap/wallet'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { Identicon } from '@cowprotocol/wallet'
 
 import CopyHelper from 'legacy/components/Copy'
 import { ClaimStatus } from 'legacy/state/claim/actions'

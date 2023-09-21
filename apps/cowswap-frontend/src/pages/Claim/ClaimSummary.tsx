@@ -1,6 +1,6 @@
-import { V_COW } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { V_COW } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

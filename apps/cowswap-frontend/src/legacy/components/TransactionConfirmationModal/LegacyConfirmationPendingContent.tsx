@@ -1,10 +1,10 @@
 import React, { ReactNode, useMemo } from 'react'
 
-import alertImage from '@cowswap/assets/cow-swap/alert-circle.svg'
-import checkImage from '@cowswap/assets/cow-swap/check.svg'
-import { getChainCurrencySymbols } from '@cowswap/common-const'
-import { shortenAddress } from '@cowswap/common-utils'
-import { ExternalLink } from '@cowswap/ui'
+import alertImage from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import checkImage from '@cowprotocol/assets/cow-swap/check.svg'
+import { getChainCurrencySymbols } from '@cowprotocol/common-const'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { ExternalLink } from '@cowprotocol/ui'
 import {
   getWeb3ReactConnection,
   useGnosisSafeInfo,
@@ -12,7 +12,7 @@ import {
   useWalletInfo,
   getIsMetaMask,
   injectedConnection,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { t, Trans } from '@lingui/macro'

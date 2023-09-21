@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useCallback, useEffect } from 'react'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'

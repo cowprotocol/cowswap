@@ -2,10 +2,10 @@
 
 import { useMemo } from 'react'
 
-import { nativeOnChain } from '@cowswap/common-const'
-import { useInterfaceMulticall } from '@cowswap/common-hooks'
-import { isAddress } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { nativeOnChain } from '@cowprotocol/common-const'
+import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

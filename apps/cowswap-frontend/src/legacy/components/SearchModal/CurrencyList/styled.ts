@@ -1,4 +1,4 @@
-import { RowFixed } from '@cowswap/ui'
+import { RowFixed } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

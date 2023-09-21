@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { getQuoteUnsupportedToken } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
 

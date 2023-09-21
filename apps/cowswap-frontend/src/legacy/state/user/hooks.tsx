@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
-import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCY_BUY_TOKEN, SupportedLocale } from '@cowswap/common-const'
-import { calculateValidTo } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCY_BUY_TOKEN, SupportedLocale } from '@cowprotocol/common-const'
+import { calculateValidTo } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

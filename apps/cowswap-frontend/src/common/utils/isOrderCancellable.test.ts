@@ -1,5 +1,5 @@
-import { COW } from '@cowswap/common-const'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
+import { COW } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 

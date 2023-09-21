@@ -1,5 +1,5 @@
-import { RowBetween, RowFixed } from '@cowswap/ui'
-import { MouseoverTooltipContent } from '@cowswap/ui'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { Text } from 'rebass'

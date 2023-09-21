@@ -1,4 +1,4 @@
-import { BaseButton } from '@cowswap/ui'
+import { BaseButton } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'

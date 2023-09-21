@@ -2,10 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { twapConversionAnalytics } from '@cowprotocol/analytics'
+import { getCowSoundSend } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
-import { twapConversionAnalytics } from '@cowswap/analytics'
-import { getCowSoundSend } from '@cowswap/common-utils'
-import { useWalletInfo, useSafeAppsSdk } from '@cowswap/wallet'
+import { useWalletInfo, useSafeAppsSdk } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

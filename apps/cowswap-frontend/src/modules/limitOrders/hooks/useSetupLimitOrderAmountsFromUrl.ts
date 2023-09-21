@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { getIntOrFloat } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { tryParseCurrencyAmount } from '@cowswap/common-utils'
-import { FractionUtils } from '@cowswap/common-utils'
-import { getIntOrFloat } from '@cowswap/common-utils'
 import { Price } from '@uniswap/sdk-core'
 
 import { useLocation, useNavigate } from 'react-router-dom'

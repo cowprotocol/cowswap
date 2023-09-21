@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 
+import { GpEther } from '@cowprotocol/common-const'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { GpEther } from '@cowswap/common-const'
-import { genericPropsChecker } from '@cowswap/common-utils'
-import { ButtonSize, TokenSymbol, ButtonError, ButtonPrimary, AutoRow } from '@cowswap/ui'
+import { ButtonSize, TokenSymbol, ButtonError, ButtonPrimary, AutoRow } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

@@ -1,5 +1,5 @@
-import { RowBetween } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import { RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'

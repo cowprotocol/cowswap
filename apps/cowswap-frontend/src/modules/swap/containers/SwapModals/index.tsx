@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { genericPropsChecker } from '@cowswap/common-utils'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'

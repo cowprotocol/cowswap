@@ -2,8 +2,8 @@ import { useCallback, useRef, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowswap/ui'
-import { shortenAddress } from '@cowswap/common-utils'
+import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowprotocol/ui'
+import { shortenAddress } from '@cowprotocol/common-utils'
 
 import * as styledEl from './styled'
 

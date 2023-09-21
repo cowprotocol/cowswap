@@ -1,7 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from '../../types'
-import { formatSymbol } from '@cowswap/common-utils'
+import { formatSymbol } from '@cowprotocol/common-utils'
 
 export type TokenSymbolProps = {
   token: Nullish<Pick<Currency, 'symbol' | 'name'>>

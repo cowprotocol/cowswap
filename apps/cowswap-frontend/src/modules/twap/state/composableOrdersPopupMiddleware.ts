@@ -1,5 +1,5 @@
-import { isTruthy } from '@cowswap/common-utils'
-import { jotaiStore } from '@cowswap/core'
+import { isTruthy } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'

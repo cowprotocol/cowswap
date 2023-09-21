@@ -1,4 +1,4 @@
-import { FAQ_MENU_LINKS } from '@cowswap/common-const'
+import { FAQ_MENU_LINKS } from '@cowprotocol/common-const'
 
 import { NavLink } from 'react-router-dom'
 

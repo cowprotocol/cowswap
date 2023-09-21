@@ -1,4 +1,4 @@
-import { detectExplorer } from '@cowswap/common-utils'
+import { detectExplorer } from '@cowprotocol/common-utils'
 
 import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'

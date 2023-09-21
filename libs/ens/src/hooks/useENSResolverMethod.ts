@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { useENSResolver } from './useENSResolver'
 import { useENSResolverContract } from './useENSResolverContract'
-import { isZero } from '@cowswap/common-utils'
+import { isZero } from '@cowprotocol/common-utils'
 import { useMemo } from 'react'
 
 export function useENSResolverMethod(

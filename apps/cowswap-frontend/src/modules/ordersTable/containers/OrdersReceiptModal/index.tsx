@@ -1,5 +1,5 @@
-import { useENS } from '@cowswap/ens'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useENS } from '@cowprotocol/ens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

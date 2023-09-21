@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
+import { formatInputAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { setMaxSellTokensAnalytics } from '@cowswap/analytics'
-import { formatInputAmount } from '@cowswap/common-utils'
-import { TokenAmount } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

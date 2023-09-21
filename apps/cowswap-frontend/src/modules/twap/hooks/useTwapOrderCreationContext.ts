@@ -1,6 +1,6 @@
-import { ComposableCoW, Erc20 } from '@cowswap/abis'
-import { useTokenContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
+import { useTokenContract } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

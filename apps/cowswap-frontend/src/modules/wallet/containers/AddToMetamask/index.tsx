@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
-import { addTokenToMetamaskAnalytics } from '@cowswap/analytics'
-import { getIsMetaMask } from '@cowswap/wallet'
+import { addTokenToMetamaskAnalytics } from '@cowprotocol/analytics'
+import { getIsMetaMask } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 

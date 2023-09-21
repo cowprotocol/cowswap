@@ -1,5 +1,5 @@
-import { ReactComponent as Close } from '@cowswap/assets/images/x.svg'
-import { ExternalLink } from '@cowswap/ui'
+import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

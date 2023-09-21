@@ -1,5 +1,5 @@
+import { USDC_MAINNET as USDC, USDT } from '@cowprotocol/common-const'
 import { OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
-import { USDC_MAINNET as USDC, USDT } from '@cowswap/common-const'
 import { Price } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'

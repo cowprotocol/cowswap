@@ -1,4 +1,4 @@
-import { isEnoughAmount, getAddress } from '@cowswap/common-utils'
+import { isEnoughAmount, getAddress } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'

@@ -1,6 +1,6 @@
-import { useTheme } from '@cowswap/common-hooks'
-import { ButtonPrimary } from '@cowswap/ui'
-import { RowBetween } from '@cowswap/ui'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 

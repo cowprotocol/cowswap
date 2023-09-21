@@ -1,5 +1,5 @@
+import { GpEther, USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { GpEther, USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { CLAIMS_REPO, FREE_CLAIM_TYPES, PAID_CLAIM_TYPES } from './const'

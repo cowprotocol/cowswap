@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { FractionUtils } from '@cowswap/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'

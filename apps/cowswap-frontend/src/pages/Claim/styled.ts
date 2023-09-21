@@ -1,8 +1,8 @@
-import LogoGNO from '@cowswap/assets/cow-swap/gno.png'
-import LogoETH from '@cowswap/assets/cow-swap/network-mainnet-logo.svg'
-import LogoUSDC from '@cowswap/assets/cow-swap/usdc.png'
-import LogoXDAI from '@cowswap/assets/cow-swap/xdai.png'
-import { ButtonPrimary, ButtonSecondary } from '@cowswap/ui'
+import LogoGNO from '@cowprotocol/assets/cow-swap/gno.png'
+import LogoETH from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
+import LogoUSDC from '@cowprotocol/assets/cow-swap/usdc.png'
+import LogoXDAI from '@cowprotocol/assets/cow-swap/xdai.png'
+import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
 import { transparentize, darken, lighten } from 'polished'
 import { CheckCircle, Frown } from 'react-feather'
@@ -574,7 +574,11 @@ export const UserMessage = styled.div<{ variant?: string }>`
 
   > svg > path {
     fill: ${({ variant, theme }) =>
-      variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+      variant === 'danger'
+        ? `var(${UI.COLOR_DANGER})`
+        : variant === 'info'
+        ? theme.blue2
+        : darken(0.1, theme.attention)};
   }
 
   > span {

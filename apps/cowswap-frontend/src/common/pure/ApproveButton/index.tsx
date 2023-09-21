@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 
-import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
+import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

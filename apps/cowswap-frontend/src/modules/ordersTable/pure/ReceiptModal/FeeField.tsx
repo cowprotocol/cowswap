@@ -1,4 +1,4 @@
-import { TokenAmount } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

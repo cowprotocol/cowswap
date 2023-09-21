@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { DEFAULT_NETWORK_FOR_LISTS } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { useDispatch } from 'react-redux'

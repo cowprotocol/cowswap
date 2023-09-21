@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { Erc20Interface, Erc20Abi } from '@cowswap/abis'
-import { isAddress } from '@cowswap/common-utils'
+import { Erc20Interface, Erc20Abi } from '@cowprotocol/abis'
+import { isAddress } from '@cowprotocol/common-utils'
 import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'

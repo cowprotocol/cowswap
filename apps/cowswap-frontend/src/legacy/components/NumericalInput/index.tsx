@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { escapeRegExp } from '@cowswap/common-utils'
+import { escapeRegExp } from '@cowprotocol/common-utils'
 
 import styled from 'styled-components/macro'
 

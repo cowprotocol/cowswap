@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { LONG_LOAD_THRESHOLD } from '@cowswap/common-const'
+import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'

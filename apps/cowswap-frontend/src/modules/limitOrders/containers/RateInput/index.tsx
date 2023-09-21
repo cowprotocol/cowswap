@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { formatInputAmount, getAddress, isFractionFalsy } from '@cowswap/common-utils'
-import { TokenSymbol, Loader } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
+import { TokenSymbol, Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RefreshCw } from 'react-feather'
 

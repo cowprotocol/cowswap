@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
-import { useDebounce } from '@cowswap/common-hooks'
-import { isInjectedWidget } from '@cowswap/common-utils'
 import { Token } from '@uniswap/sdk-core'
 
 import TokenWarningModal from 'legacy/components/TokenWarningModal'

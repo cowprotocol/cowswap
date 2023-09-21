@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { AVG_APPROVE_COST_GWEI } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 

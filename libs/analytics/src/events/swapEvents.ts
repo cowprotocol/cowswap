@@ -1,4 +1,4 @@
-import { debounce } from '@cowswap/common-utils'
+import { debounce } from '@cowprotocol/common-utils'
 
 import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'

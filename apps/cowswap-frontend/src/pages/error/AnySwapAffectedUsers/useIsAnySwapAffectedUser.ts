@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Erc20Abi, Erc20Interface } from '@cowswap/abis'
-import { ZERO_ADDRESS } from '@cowswap/common-const'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 

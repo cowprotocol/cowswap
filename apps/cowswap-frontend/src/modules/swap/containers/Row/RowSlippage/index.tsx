@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { formatPercent } from '@cowswap/common-utils'
+import { formatPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'

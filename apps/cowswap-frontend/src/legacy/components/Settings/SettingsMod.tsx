@@ -4,9 +4,9 @@ import {
   showExpertModeConfirmationAnalytics,
   toggleExpertModeAnalytics,
   toggleRecepientAddressAnalytics,
-} from '@cowswap/analytics'
-import { useOnClickOutside } from '@cowswap/common-hooks'
-import { RowBetween, RowFixed } from '@cowswap/ui'
+} from '@cowprotocol/analytics'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Settings } from 'react-feather'

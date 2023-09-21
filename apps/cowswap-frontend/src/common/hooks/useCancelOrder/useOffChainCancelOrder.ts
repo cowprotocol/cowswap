@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Order } from 'legacy/state/orders/actions'

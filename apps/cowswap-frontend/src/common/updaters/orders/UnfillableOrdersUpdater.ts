@@ -1,13 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
+import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { priceOutOfRangeAnalytics } from '@cowswap/analytics'
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
-import { useIsWindowVisible } from '@cowswap/common-hooks'
-import { getPromiseFulfilledValue } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation, PriceInformation } from 'types'

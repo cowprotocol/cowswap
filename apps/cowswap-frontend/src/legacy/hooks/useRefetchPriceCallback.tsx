@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
-import { PriceQuality } from '@cowprotocol/cow-sdk'
-import { isOnline } from '@cowswap/common-hooks'
+import { isOnline } from '@cowprotocol/common-hooks'
 import {
   CancelableResult,
   onlyResolvesLast,
@@ -10,7 +9,8 @@ import {
   registerOnWindow,
   calculateValidTo,
   getQuoteUnsupportedToken,
-} from '@cowswap/common-utils'
+} from '@cowprotocol/common-utils'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { getEtherscanLink, getExplorerOrderLink } from '@cowswap/common-utils'
-import { getSafeWebUrl } from '@cowswap/core'
-import { useGnosisSafeInfo } from '@cowswap/wallet'
+import { getEtherscanLink, getExplorerOrderLink } from '@cowprotocol/common-utils'
+import { getSafeWebUrl } from '@cowprotocol/core'
+import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'

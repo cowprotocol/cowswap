@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import cowMeditatingV2 from '@cowswap/assets/cow-swap/meditating-cow-v2.svg'
-import imageConnectWallet from '@cowswap/assets/cow-swap/wallet-plus.svg'
-import { ExternalLink } from '@cowswap/ui'
+import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
+import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'

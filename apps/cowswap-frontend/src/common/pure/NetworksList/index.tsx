@@ -1,8 +1,8 @@
+import { getChainInfo } from '@cowprotocol/common-const'
+import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
-import { getChainInfo } from '@cowswap/common-const'
-import { getExplorerBaseUrl } from '@cowswap/common-utils'
-import { ExternalLink } from '@cowswap/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 

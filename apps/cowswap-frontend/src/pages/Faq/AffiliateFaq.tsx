@@ -1,4 +1,4 @@
-import { BARN_URL, PRODUCTION_URL } from '@cowswap/common-const'
+import { BARN_URL, PRODUCTION_URL } from '@cowprotocol/common-const'
 
 import { Link } from 'react-router-dom'
 

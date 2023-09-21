@@ -1,5 +1,5 @@
 // Util functions that only pertain to/deal with operator API related stuff
-import { ZERO_BIG_NUMBER } from '@cowswap/common-const'
+import { ZERO_BIG_NUMBER } from '@cowprotocol/common-const'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'

@@ -1,4 +1,4 @@
-import { useIsSmartContractWallet } from '@cowswap/wallet'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 

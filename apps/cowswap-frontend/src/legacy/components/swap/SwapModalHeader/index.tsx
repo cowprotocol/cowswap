@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useWalletDetails } from '@cowswap/wallet'
+import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'

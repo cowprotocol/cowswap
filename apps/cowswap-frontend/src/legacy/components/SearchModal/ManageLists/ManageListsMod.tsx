@@ -1,10 +1,10 @@
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '@cowswap/analytics'
-import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowswap/common-hooks'
-import { parseENSAddress, uriToHttp } from '@cowswap/common-utils'
-import { Row, RowBetween, RowFixed, ButtonEmpty, ButtonPrimary, ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '@cowprotocol/analytics'
+import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowprotocol/common-hooks'
+import { parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
+import { Row, RowBetween, RowFixed, ButtonEmpty, ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList, Version } from '@uniswap/token-lists'
 
 import { t, Trans } from '@lingui/macro'

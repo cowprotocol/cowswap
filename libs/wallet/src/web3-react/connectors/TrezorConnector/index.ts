@@ -7,8 +7,8 @@ import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type transformTypedData from '@trezor/connect-plugin-ethereum'
 import type { TrezorConnect } from '@trezor/connect-web'
-import { getCurrentChainIdFromUrl } from '@cowswap/common-utils'
-import { RPC_URLS } from '@cowswap/common-const'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { RPC_URLS } from '@cowprotocol/common-const'
 
 const defaultChainId = getCurrentChainIdFromUrl()
 

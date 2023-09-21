@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
-import { isFractionFalsy } from '@cowswap/common-utils'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'

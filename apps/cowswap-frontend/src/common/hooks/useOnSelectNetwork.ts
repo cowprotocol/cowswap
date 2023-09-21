@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getWeb3ReactConnection } from '@cowswap/wallet'
-import { switchChain } from '@cowswap/wallet'
+import { getWeb3ReactConnection } from '@cowprotocol/wallet'
+import { switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAddPopup, useCloseModal } from 'legacy/state/application/hooks'

@@ -1,4 +1,4 @@
-import { rawToTokenAmount } from '@cowswap/common-utils'
+import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'

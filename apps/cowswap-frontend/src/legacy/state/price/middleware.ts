@@ -1,4 +1,4 @@
-import { initialPriceLoadAnalytics } from '@cowswap/analytics'
+import { initialPriceLoadAnalytics } from '@cowprotocol/analytics'
 
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 

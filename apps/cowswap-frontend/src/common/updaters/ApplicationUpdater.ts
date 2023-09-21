@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { usePrevious, useIsWindowVisible, useDebounce } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { usePrevious, useIsWindowVisible, useDebounce } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { updateChainId } from 'legacy/state/application/reducer'

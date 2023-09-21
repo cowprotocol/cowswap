@@ -1,6 +1,6 @@
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
-import { isAddress } from '@cowswap/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { ParsedQs } from 'qs'

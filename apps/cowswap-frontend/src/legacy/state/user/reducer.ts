@@ -1,6 +1,6 @@
+import { COMMON_BASES, DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COMMON_BASES, DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowswap/common-const'
-import { ConnectionType } from '@cowswap/wallet'
+import { ConnectionType } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import { createSlice } from '@reduxjs/toolkit'

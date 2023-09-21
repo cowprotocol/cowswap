@@ -1,6 +1,6 @@
-import { shortenAddress } from '@cowswap/common-utils'
-import { Loader, RowBetween } from '@cowswap/ui'
-import { ConnectionType } from '@cowswap/wallet'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { Loader, RowBetween } from '@cowprotocol/ui'
+import { ConnectionType } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 

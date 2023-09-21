@@ -1,4 +1,4 @@
-import { RowBetween } from '@cowswap/ui'
+import { RowBetween } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { Info } from 'react-feather'

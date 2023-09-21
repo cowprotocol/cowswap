@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { useWalletInfo, useIsSafeWallet } from '@cowswap/wallet'
+import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useAllTransactions } from './TransactionHooksMod'
 

@@ -1,10 +1,10 @@
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { searchByAddressAnalytics } from '@cowswap/analytics'
-import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowswap/common-hooks'
-import { isAddress } from '@cowswap/common-utils'
-import { Row } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { searchByAddressAnalytics } from '@cowprotocol/analytics'
+import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { t, Trans } from '@lingui/macro'

@@ -1,5 +1,5 @@
-import { isEnoughAmount } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { isEnoughAmount } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

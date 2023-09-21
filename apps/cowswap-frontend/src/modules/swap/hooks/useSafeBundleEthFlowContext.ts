@@ -1,4 +1,4 @@
-import { useWETHContract } from '@cowswap/common-hooks'
+import { useWETHContract } from '@cowprotocol/common-hooks'
 
 import { FlowType } from 'modules/swap/hooks/useFlowContext'
 import { SafeBundleEthFlowContext } from 'modules/swap/services/types'

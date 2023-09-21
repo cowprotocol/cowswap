@@ -1,6 +1,6 @@
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useGP2SettlementContract } from '@cowswap/common-hooks'
-import { useSafeAppsSdk } from '@cowswap/wallet'
+import { useSafeAppsSdk } from '@cowprotocol/wallet'
 import { TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 

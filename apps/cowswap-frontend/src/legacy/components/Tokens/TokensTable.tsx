@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useFilterTokens, usePrevious } from '@cowswap/common-hooks'
+import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

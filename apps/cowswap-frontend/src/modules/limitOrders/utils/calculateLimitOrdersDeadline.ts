@@ -1,4 +1,4 @@
-import { calculateValidTo } from '@cowswap/common-utils'
+import { calculateValidTo } from '@cowprotocol/common-utils'
 
 import { Timestamp } from 'types'
 

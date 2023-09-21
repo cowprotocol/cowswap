@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { V_COW_CONTRACT_ADDRESS } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 

@@ -1,4 +1,4 @@
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { transparentize, lighten, darken } from 'polished'

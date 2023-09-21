@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { FractionUtils } from '@cowswap/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'

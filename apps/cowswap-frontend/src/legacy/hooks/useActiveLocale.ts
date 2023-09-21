@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowswap/common-const'
-import { useParsedQueryString, parsedQueryString } from '@cowswap/common-hooks'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
+import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 
 import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'

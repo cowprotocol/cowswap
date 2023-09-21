@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { TokenAmount, TokenSymbol } from '@cowswap/ui'
-import { useWalletDisplayedAddress } from '@cowswap/wallet'
+import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'

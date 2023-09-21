@@ -1,6 +1,6 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { ButtonPrimary, ButtonSecondary } from '@cowswap/ui'
+import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'

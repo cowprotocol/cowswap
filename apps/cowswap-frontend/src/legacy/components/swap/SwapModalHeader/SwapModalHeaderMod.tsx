@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 
-import { INPUT_OUTPUT_EXPLANATION } from '@cowswap/common-const'
-import { isAddress, shortenAddress } from '@cowswap/common-utils'
-import { TokenAmount, TokenSymbol, RowBetween, RowFixed } from '@cowswap/ui'
+import { INPUT_OUTPUT_EXPLANATION } from '@cowprotocol/common-const'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { TokenAmount, TokenSymbol, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

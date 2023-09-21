@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useTheme } from '@cowswap/common-hooks'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import { Slash } from 'react-feather'
 import { ImageProps } from 'rebass'

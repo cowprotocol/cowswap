@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { usePrevious, useLast } from '@cowswap/common-hooks'
+import { usePrevious, useLast } from '@cowprotocol/common-hooks'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 

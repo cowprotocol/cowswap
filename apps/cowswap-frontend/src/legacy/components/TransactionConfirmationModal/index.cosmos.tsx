@@ -1,5 +1,5 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW, GNO } from '@cowswap/common-const'
 
 import styled from 'styled-components/macro'
 

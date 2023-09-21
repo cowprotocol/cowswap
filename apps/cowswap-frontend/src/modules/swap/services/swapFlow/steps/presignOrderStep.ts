@@ -1,5 +1,5 @@
-import { GPv2Settlement } from '@cowswap/abis'
-import { calculateGasMargin } from '@cowswap/common-utils'
+import { GPv2Settlement } from '@cowprotocol/abis'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 

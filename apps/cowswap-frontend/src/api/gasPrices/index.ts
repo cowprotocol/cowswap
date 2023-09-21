@@ -1,5 +1,5 @@
+import { DEFAULT_NETWORK_FOR_LISTS, GAS_API_KEYS, GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { DEFAULT_NETWORK_FOR_LISTS, GAS_API_KEYS, GAS_FEE_ENDPOINTS } from '@cowswap/common-const'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 

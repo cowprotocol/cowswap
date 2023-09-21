@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
+import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
+import { sortByListPriority } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { UNSUPPORTED_LIST_URLS } from '@cowswap/common-const'
-import { sortByListPriority } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'

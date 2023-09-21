@@ -1,6 +1,6 @@
 import networksJson from '@cowprotocol/contracts/networks.json'
 import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { ethFlowBarnJson, ethFlowProdJson } from '@cowswap/abis'
+import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { Fraction, Percent, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'

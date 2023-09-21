@@ -1,8 +1,8 @@
-import CowProtocolImage from '@cowswap/assets/cow-swap/cowprotocol.svg'
-import { useNetworkName } from '@cowswap/common-hooks'
-import { formatDateWithTimezone } from '@cowswap/common-utils'
-import { ButtonSecondary } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import { useNetworkName } from '@cowprotocol/common-hooks'
+import { formatDateWithTimezone } from '@cowprotocol/common-utils'
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'

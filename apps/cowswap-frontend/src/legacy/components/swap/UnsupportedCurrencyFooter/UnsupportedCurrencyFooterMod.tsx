@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { getEtherscanLink } from '@cowswap/common-utils'
-import { ButtonEmpty } from '@cowswap/ui'
-import { AutoRow, RowBetween } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { ButtonEmpty } from '@cowprotocol/ui'
+import { AutoRow, RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 
-import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowswap/common-utils'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
 
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'

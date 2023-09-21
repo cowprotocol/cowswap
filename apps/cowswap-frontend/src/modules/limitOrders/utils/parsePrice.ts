@@ -1,4 +1,4 @@
-import { DEFAULT_DECIMALS } from '@cowswap/common-const'
+import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { Currency } from '@uniswap/sdk-core'
 
 /**

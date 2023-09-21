@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'

@@ -1,7 +1,7 @@
+import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { parsedQueryString } from '@cowprotocol/common-hooks'
+import { getIsNativeToken, getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
-import { parsedQueryString } from '@cowswap/common-hooks'
-import { getIsNativeToken, getIsWrapOrUnwrap } from '@cowswap/common-utils'
 
 import { createReducer } from '@reduxjs/toolkit'
 

@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { isFractionFalsy } from '@cowswap/common-utils'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { fullAmountQuoteAtom } from './fullAmountQuoteAtom'

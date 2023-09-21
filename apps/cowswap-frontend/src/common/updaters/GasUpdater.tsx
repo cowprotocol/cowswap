@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect } from 'react'
 
-import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowswap/common-const'
-import { useBlockNumber } from '@cowswap/common-hooks'
-import { gasPriceAtom } from '@cowswap/core'
-import { useWalletInfo } from '@cowswap/wallet'
+import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowprotocol/common-const'
+import { useBlockNumber } from '@cowprotocol/common-hooks'
+import { gasPriceAtom } from '@cowprotocol/core'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
 

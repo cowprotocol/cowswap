@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { FractionUtils } from '@cowswap/common-utils'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { Writeable } from 'types'

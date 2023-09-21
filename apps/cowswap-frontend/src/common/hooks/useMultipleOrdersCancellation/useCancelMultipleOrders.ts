@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { orderBookApi } from 'cowSdk'

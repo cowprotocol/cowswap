@@ -1,5 +1,5 @@
-import { getEtherscanLink as getExplorerLink } from '@cowswap/common-utils'
-import { RowFixed, ExternalLink } from '@cowswap/ui'
+import { getEtherscanLink as getExplorerLink } from '@cowprotocol/common-utils'
+import { RowFixed, ExternalLink } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

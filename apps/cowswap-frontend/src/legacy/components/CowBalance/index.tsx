@@ -1,4 +1,4 @@
-import { TokenAmount } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

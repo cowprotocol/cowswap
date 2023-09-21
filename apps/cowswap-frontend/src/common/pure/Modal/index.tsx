@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { isMobile } from '@cowswap/common-utils'
+import { isMobile } from '@cowprotocol/common-utils'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'

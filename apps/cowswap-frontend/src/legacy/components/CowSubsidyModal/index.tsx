@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { ExternalLink, Row } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { ExternalLink, Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Text } from 'rebass'

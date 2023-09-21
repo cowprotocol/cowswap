@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowswap/common-const'
-import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowswap/common-utils'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
+import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
 
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 

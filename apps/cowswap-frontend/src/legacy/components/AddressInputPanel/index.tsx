@@ -1,10 +1,10 @@
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 
-import { getBlockExplorerUrl as getExplorerLink } from '@cowswap/common-utils'
-import { useENS } from '@cowswap/ens'
-import { RowBetween } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
+import { useENS } from '@cowprotocol/ens'
+import { RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'

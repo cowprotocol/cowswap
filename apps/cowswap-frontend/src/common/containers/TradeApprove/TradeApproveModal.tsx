@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import React from 'react'
 
-import { TokenSymbol } from '@cowswap/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 
 import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { ConfirmOperationType } from 'legacy/state/types'

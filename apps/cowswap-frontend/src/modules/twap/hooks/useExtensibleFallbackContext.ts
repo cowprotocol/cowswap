@@ -1,7 +1,7 @@
+import { GPv2Settlement } from '@cowprotocol/abis'
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { GPv2Settlement } from '@cowswap/abis'
-import { useGP2SettlementContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 

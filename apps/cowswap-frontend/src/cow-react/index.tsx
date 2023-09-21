@@ -1,15 +1,15 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
 
-import '@cowswap/analytics'
+import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
-import { BlockNumberProvider } from '@cowswap/common-hooks'
-import { nodeRemoveChildFix } from '@cowswap/common-utils'
-import { jotaiStore } from '@cowswap/core'
-import { SnackbarsWidget } from '@cowswap/snackbars'
+import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
+import { SnackbarsWidget } from '@cowprotocol/snackbars'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'

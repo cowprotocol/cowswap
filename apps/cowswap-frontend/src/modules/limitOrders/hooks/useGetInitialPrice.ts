@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { useIsWindowVisible } from '@cowswap/common-hooks'
-import { getAddress } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { getAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
 import * as Sentry from '@sentry/browser'

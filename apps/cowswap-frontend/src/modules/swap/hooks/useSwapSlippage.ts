@@ -1,4 +1,4 @@
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowswap/common-const'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useUserSlippageToleranceWithDefault } from 'legacy/state/user/hooks'

@@ -1,5 +1,5 @@
 {
-  "name": "@cowswap/analytics",
+  "name": "@cowprotocol/analytics",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/analytics/src",
   "projectType": "library",

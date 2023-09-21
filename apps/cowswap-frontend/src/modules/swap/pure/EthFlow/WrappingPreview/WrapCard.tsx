@@ -1,6 +1,6 @@
+import { CHAIN_INFO, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CHAIN_INFO, WRAPPED_NATIVE_CURRENCY } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

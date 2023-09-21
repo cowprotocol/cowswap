@@ -1,5 +1,5 @@
-import { COW } from '@cowswap/common-const'
-import { WETH_GOERLI } from '@cowswap/common-const'
+import { COW } from '@cowprotocol/common-const'
+import { WETH_GOERLI } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getTwapFormState, TwapFormState } from './getTwapFormState'

@@ -1,4 +1,4 @@
-import { isAddress } from '@cowswap/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 

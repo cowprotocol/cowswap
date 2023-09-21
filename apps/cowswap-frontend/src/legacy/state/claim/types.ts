@@ -1,6 +1,6 @@
 import { SyntheticEvent } from 'react'
 
-import { GpEther } from '@cowswap/common-const'
+import { GpEther } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import { UserClaimData } from './hooks'

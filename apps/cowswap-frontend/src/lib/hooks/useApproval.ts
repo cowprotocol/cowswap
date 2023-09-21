@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
-import { useTokenContract } from '@cowswap/common-hooks'
-import { calculateGasMargin } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useTokenContract } from '@cowprotocol/common-hooks'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'

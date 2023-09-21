@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
-import { maxAmountSpend } from '@cowswap/common-utils'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { maxAmountSpend } from '@cowprotocol/common-utils'
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 

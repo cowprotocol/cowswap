@@ -1,5 +1,5 @@
-import { genericPropsChecker } from '@cowswap/common-utils'
-import { areFractionsEqual } from '@cowswap/common-utils'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
+import { areFractionsEqual } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 

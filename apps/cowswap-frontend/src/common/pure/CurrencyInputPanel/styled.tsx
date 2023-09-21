@@ -1,4 +1,4 @@
-import { TokenAmount, loadingOpacityMixin } from '@cowswap/ui'
+import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { changeSwapAmountAnalytics } from '@cowswap/analytics'
+import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'

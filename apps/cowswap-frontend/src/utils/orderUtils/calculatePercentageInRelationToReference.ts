@@ -1,4 +1,4 @@
-import { ZERO_FRACTION } from '@cowswap/common-const'
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
 import { FractionLike, Nullish } from 'types'

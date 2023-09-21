@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { isAddress } from '@cowswap/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 
 import { useENSAddress } from './useENSAddress'
 import { useENSName } from './useENSName'

@@ -9,7 +9,7 @@ import {
 } from '@web3-react/types'
 
 import { IFrameEthereumProvider } from './IFrameEthereumProvider'
-import { isInjectedWidget, isRejectRequestProviderError } from '@cowswap/common-utils'
+import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 type InjectedWalletProvider = Provider & {
   isConnected: () => boolean

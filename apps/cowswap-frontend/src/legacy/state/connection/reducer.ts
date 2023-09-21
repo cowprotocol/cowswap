@@ -1,4 +1,4 @@
-import { ConnectionType } from '@cowswap/wallet'
+import { ConnectionType } from '@cowprotocol/wallet'
 
 import { createSlice } from '@reduxjs/toolkit'
 

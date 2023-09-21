@@ -1,5 +1,5 @@
-import CheckCircle from '@cowswap/assets/cow-swap/check.svg'
-import { useNetworkName } from '@cowswap/common-hooks'
+import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
+import { useNetworkName } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'

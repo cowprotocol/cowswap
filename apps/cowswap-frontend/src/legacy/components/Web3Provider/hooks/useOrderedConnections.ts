@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { isInjectedWidget } from '@cowswap/common-utils'
-import { BACKFILLABLE_WALLETS, ConnectionType, getWeb3ReactConnection } from '@cowswap/wallet'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { BACKFILLABLE_WALLETS, ConnectionType, getWeb3ReactConnection } from '@cowprotocol/wallet'
 
 import { useAppSelector } from 'legacy/state/hooks'
 

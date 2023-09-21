@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from '@cowswap/common-const'
-import { useLoadingWithTimeout } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from '@cowprotocol/common-const'
+import { useLoadingWithTimeout } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetQuoteAndStatus, useIsBestQuoteLoading, useIsQuoteLoading } from 'legacy/state/price/hooks'
 

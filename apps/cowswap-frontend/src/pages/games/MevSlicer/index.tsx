@@ -1,6 +1,6 @@
-import { gameAnalytics } from '@cowswap/analytics'
-import ninjaCowImg from '@cowswap/assets/cow-swap/ninja-cow.png'
-import { ButtonPrimary } from '@cowswap/ui'
+import { gameAnalytics } from '@cowprotocol/analytics'
+import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

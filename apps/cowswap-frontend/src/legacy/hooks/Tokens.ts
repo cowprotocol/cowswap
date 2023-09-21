@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getChainInfo } from '@cowswap/common-const'
-import { doesTokenMatchSymbolOrAddress } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'

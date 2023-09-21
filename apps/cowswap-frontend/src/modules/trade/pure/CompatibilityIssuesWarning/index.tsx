@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { genericPropsChecker } from '@cowswap/common-utils'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { HashLink } from 'react-router-hash-link'

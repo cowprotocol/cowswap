@@ -1,10 +1,10 @@
-import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
   openNpsAppziSometimes,
   timeSinceInSeconds,
-} from '@cowswap/common-utils'
+} from '@cowprotocol/common-utils'
+import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'

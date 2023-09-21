@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowswap/common-const'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'

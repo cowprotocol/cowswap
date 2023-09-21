@@ -7,7 +7,7 @@
 ```tsx
 // Add the widget in the root component
 
-import { SnackbarsWidget } from '@cowswap/common-utils'
+import { SnackbarsWidget } from '@cowprotocol/common-utils'
 
 export function App() {
   return (
@@ -22,7 +22,7 @@ export function App() {
 ```tsx
 // Use the hook to add a snackbar
 
-import { useAddSnackbar } from '@cowswap/common-utils'
+import { useAddSnackbar } from '@cowprotocol/common-utils'
 
 export function MyComponent() {
   const addSnackbar = useAddSnackbar()

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import CheckCircle from '@cowswap/assets/cow-swap/check.svg'
-import ImportantIcon from '@cowswap/assets/cow-swap/important.svg'
-import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
+import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
+import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
+import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   getProviderErrorMessage,
   tryParseCurrencyAmount,
   formatTokenAmount,
   formatSymbol,
-} from '@cowswap/common-utils'
-import { Loader, loadingOpacityMixin, ButtonSize, TokenAmount, ButtonConfirmed, Row } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+} from '@cowprotocol/common-utils'
+import { Loader, loadingOpacityMixin, ButtonSize, TokenAmount, ButtonConfirmed, Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 

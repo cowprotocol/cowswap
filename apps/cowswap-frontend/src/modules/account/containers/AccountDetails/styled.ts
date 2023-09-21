@@ -1,5 +1,5 @@
-import { ButtonSecondary } from '@cowswap/ui'
-import { ExternalLink, StyledLink } from '@cowswap/ui'
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'

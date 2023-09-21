@@ -1,4 +1,4 @@
-import { FiatAmount, TokenAmount } from '@cowswap/ui'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { getChainInfo } from '@cowswap/common-const'
-import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowswap/common-hooks'
-import { ExplorerDataType, getExplorerLink } from '@cowswap/common-utils'
-import { RowFixed } from '@cowswap/ui'
-import { MouseoverTooltip, ExternalLink } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getChainInfo } from '@cowprotocol/common-const'
+import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowprotocol/common-hooks'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'

@@ -1,5 +1,5 @@
-import { FiatAmount } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
+import { FiatAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

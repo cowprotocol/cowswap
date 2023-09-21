@@ -1,4 +1,4 @@
-import { getCowSoundError, getCowSoundSuccess } from '@cowswap/common-utils'
+import { getCowSoundError, getCowSoundSuccess } from '@cowprotocol/common-utils'
 
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 

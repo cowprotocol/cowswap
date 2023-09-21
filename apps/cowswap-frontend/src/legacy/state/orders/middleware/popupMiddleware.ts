@@ -1,4 +1,4 @@
-import { isTruthy } from '@cowswap/common-utils'
+import { isTruthy } from '@cowprotocol/common-utils'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'

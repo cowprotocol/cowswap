@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { shortenAddress } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'

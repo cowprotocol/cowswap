@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
-import { TokenAmount } from '@cowswap/ui'
-import { useWalletDetails } from '@cowswap/wallet'
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

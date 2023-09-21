@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { getIsNativeToken } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeState } from './useTradeState'
 

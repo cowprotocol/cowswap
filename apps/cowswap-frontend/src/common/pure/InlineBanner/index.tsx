@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import iconInformation from '@cowswap/assets/cow-swap/alert-circle.svg'
-import iconAlert from '@cowswap/assets/cow-swap/alert.svg'
-import iconDanger from '@cowswap/assets/cow-swap/alert.svg'
-import iconSuccess from '@cowswap/assets/cow-swap/check.svg'
+import iconInformation from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import iconAlert from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconDanger from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
 
 import { lighten, darken, transparentize } from 'polished'
 import SVG from 'react-inlinesvg'

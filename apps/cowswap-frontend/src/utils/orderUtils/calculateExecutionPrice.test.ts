@@ -1,6 +1,6 @@
+import { USDC_GOERLI, WETH_GOERLI } from '@cowprotocol/common-const'
+import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
-import { USDC_GOERLI, WETH_GOERLI } from '@cowswap/common-const'
-import { rawToTokenAmount } from '@cowswap/common-utils'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'

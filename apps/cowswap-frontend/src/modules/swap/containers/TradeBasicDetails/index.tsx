@@ -1,4 +1,4 @@
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowswap/common-const'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { BoxProps } from 'rebass'

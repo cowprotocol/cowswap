@@ -1,8 +1,8 @@
 import { CSSProperties } from 'react'
 
-import { useTheme } from '@cowswap/common-hooks'
-import { ButtonPrimary } from '@cowswap/ui'
-import { AutoRow, RowFixed } from '@cowswap/ui'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow, RowFixed } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

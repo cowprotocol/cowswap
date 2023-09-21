@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { COMMON_BASES } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { COMMON_BASES } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useFavouriteTokens } from 'legacy/state/user/hooks'
 

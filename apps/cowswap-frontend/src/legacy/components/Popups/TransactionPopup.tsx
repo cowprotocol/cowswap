@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
-import { BlockExplorerLinkType } from '@cowswap/common-utils'
-import { AutoRow } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { BlockExplorerLinkType } from '@cowprotocol/common-utils'
+import { AutoRow } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import CowProtocolImage from '@cowswap/assets/cow-swap/cowprotocol.svg'
-import Circle from '@cowswap/assets/images/blue-loader.svg'
-import { TokenAmount } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import Circle from '@cowprotocol/assets/images/blue-loader.svg'
+import { TokenAmount } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useTokenContract } from '@cowswap/common-hooks'
+import { useTokenContract } from '@cowprotocol/common-hooks'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

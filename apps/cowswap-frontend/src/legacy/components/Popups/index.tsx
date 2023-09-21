@@ -1,7 +1,7 @@
 import { MouseEvent, useCallback, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -74,7 +74,7 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
 `
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function Popups() {
   // get all popups

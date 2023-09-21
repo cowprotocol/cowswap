@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { COW } from '@cowswap/common-const'
-import { useWalletInfo } from '@cowswap/wallet'
+import { COW } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

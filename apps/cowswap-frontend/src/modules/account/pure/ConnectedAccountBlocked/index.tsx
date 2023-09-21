@@ -1,5 +1,5 @@
-import { useTheme } from '@cowswap/common-hooks'
-import { ExternalLink } from '@cowswap/ui'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertOctagon } from 'react-feather'

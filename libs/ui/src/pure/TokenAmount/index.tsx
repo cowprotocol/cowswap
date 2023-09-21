@@ -1,6 +1,6 @@
-import { LONG_PRECISION } from '@cowswap/common-const'
-import { formatTokenAmount, FractionUtils } from '@cowswap/common-utils'
-import { FeatureFlag } from '@cowswap/common-utils'
+import { LONG_PRECISION } from '@cowprotocol/common-const'
+import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { FeatureFlag } from '@cowprotocol/common-utils'
 
 import { darken, transparentize } from 'polished'
 import styled from 'styled-components'

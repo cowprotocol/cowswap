@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { useIsSafeApp, useWalletInfo } from '@cowswap/wallet'
+import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'

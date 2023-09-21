@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { safeNamehash, uriToHttp, isAddress, isZero, getContract } from '@cowswap/common-utils'
+import { safeNamehash, uriToHttp, isAddress, isZero, getContract } from '@cowprotocol/common-utils'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
@@ -10,7 +10,7 @@ import { useENSResolverContract } from './useENSResolverContract'
 import useSWR from 'swr'
 import { useENSResolver } from './useENSResolver'
 import { useWeb3React } from '@web3-react/core'
-import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowswap/abis'
+import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
 
 /**
  * Returns the ENS avatar URI, if available.

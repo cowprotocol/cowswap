@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 import { FractionLike, Nullish } from './types'
 
-import { FULL_PRICE_PRECISION } from '@cowswap/common-const'
+import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
 import { trimTrailingZeros } from './trimTrailingZeros'
 
 export class FractionUtils {
@@ -123,7 +123,6 @@ export class FractionUtils {
 
     return decimalsA < decimalsB ? value.multiply(decimalsShift) : value.divide(decimalsShift)
   }
-
 
   /**
    * Converts a number into a Fraction

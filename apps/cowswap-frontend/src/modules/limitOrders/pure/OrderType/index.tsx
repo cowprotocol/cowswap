@@ -1,4 +1,4 @@
-import IMAGE_CARET_DOWN from '@cowswap/assets/cow-swap/carret-down.svg'
+import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
 
 import { Menu } from '@reach/menu-button'
 

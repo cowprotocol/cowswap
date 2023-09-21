@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { getRandomInt } from '@cowswap/common-utils'
+import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { CheckedFortunesList, checkedFortunesListAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import { fortunesListAtom } from 'modules/fortune/state/fortunesListAtom'

@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useWETHContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWETHContract } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

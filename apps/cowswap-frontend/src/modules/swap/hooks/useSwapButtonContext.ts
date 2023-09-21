@@ -4,7 +4,7 @@ import {
   useWalletDetails,
   useWalletInfo,
   useIsBundlingSupported,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'

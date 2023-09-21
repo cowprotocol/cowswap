@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { isAddress } from '@cowswap/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 
 import { tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 

@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { modifySafeHandlerAnalytics } from '@cowswap/analytics'
-import { useIsSafeViaWc, useWalletInfo } from '@cowswap/wallet'
+import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'

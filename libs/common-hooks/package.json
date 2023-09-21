@@ -1,5 +1,5 @@
 {
-  "name": "@cowswap/common-hooks",
+  "name": "@cowprotocol/common-hooks",
   "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",

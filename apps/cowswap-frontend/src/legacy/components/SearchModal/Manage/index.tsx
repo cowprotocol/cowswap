@@ -1,4 +1,4 @@
-import { RowBetween } from '@cowswap/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 

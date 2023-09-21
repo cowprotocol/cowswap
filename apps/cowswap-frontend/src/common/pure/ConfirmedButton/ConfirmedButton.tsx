@@ -1,6 +1,6 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
-import { ButtonError } from '@cowswap/ui'
+import { ButtonError } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

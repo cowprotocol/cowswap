@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Tooltip, TooltipProps } from '@cowswap/ui'
+import { Tooltip, TooltipProps } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'

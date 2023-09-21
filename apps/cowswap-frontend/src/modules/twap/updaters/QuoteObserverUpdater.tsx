@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { usePrevious } from '@cowswap/common-hooks'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'

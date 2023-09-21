@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useAddSnackbar } from '@cowswap/snackbars'
+import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
   hwAccountIndexAtom,
@@ -10,7 +10,7 @@ import {
   AccountIndexSelect,
   HardWareWallet,
   getWeb3ReactConnection,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'

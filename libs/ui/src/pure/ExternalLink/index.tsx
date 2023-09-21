@@ -1,6 +1,6 @@
 import React, { HTMLProps } from 'react'
-import { anonymizeLink } from '@cowswap/common-utils'
-import { externalLinkAnalytics, outboundLink } from '@cowswap/analytics'
+import { anonymizeLink } from '@cowprotocol/common-utils'
+import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
 import styled from 'styled-components'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 

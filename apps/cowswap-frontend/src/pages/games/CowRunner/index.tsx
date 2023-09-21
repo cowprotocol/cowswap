@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
+import { gameAnalytics } from '@cowprotocol/analytics'
 import { CowGame } from '@cowprotocol/cow-runner-game'
-import { gameAnalytics } from '@cowswap/analytics'
 
 import styled from 'styled-components/macro'
 

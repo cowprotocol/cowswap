@@ -1,7 +1,7 @@
-import { UNSUPPORTED_LIST_URLS } from '@cowswap/common-const'
-import { ButtonPrimary } from '@cowswap/ui'
-import { Row, RowFixed, RowBetween } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { Row, RowFixed, RowBetween } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { transparentize } from 'polished'

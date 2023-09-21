@@ -1,7 +1,7 @@
 import { Atom, useAtomValue } from 'jotai'
 
-import { tryParseFractionalAmount } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'

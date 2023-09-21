@@ -1,5 +1,5 @@
-import { useTheme } from '@cowswap/common-hooks'
-import { isMobile } from '@cowswap/common-utils'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { isMobile } from '@cowprotocol/common-utils'
 import {
   AlphaOption,
   AmbireOption,
@@ -18,7 +18,7 @@ import {
   getIsCoinbaseWallet,
   getIsInjected,
   getIsMetaMask,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'

@@ -1,5 +1,5 @@
 {
-  "name": "@cowswap/common-hooks",
+  "name": "@cowprotocol/common-hooks",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common-hooks/src",
   "projectType": "library",

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletDetails } from '@cowswap/wallet'
+import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 

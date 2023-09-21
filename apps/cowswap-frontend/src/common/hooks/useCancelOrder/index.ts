@@ -2,8 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { calculateGasMargin } from '@cowswap/common-utils'
-import { useWalletDetails, useWalletInfo } from '@cowswap/wallet'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'

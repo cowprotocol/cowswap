@@ -1,4 +1,4 @@
-import { RowFixed } from '@cowswap/ui'
+import { RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'

@@ -1,5 +1,5 @@
-import { StyledSVG, FiatAmount, RowFixed } from '@cowswap/ui'
-import { ExternalLink, StyledLink } from '@cowswap/ui'
+import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
+import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled, { css, keyframes } from 'styled-components/macro'

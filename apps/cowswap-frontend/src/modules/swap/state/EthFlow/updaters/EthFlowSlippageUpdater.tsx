@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
-import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@cowswap/common-const'
-import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowswap/common-utils'
+import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@cowprotocol/common-const'
+import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'

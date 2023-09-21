@@ -1,11 +1,11 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
-} from '@cowswap/common-const'
-import { getChainIdValues } from '@cowswap/common-utils'
+} from '@cowprotocol/common-const'
+import { getChainIdValues } from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getVersionUpgrade, TokenList, VersionUpgrade } from '@uniswap/token-lists'
 
 import { createReducer } from '@reduxjs/toolkit'

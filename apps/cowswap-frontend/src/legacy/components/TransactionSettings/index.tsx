@@ -1,4 +1,4 @@
-import { RowBetween, RowFixed } from '@cowswap/ui'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { darken } from 'polished'
 import styled from 'styled-components/macro'

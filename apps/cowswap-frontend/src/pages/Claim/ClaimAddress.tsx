@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import Circle from '@cowswap/assets/images/blue-loader.svg'
-import { useENS } from '@cowswap/ens'
-import { ButtonSecondary } from '@cowswap/ui'
+import Circle from '@cowprotocol/assets/images/blue-loader.svg'
+import { useENS } from '@cowprotocol/ens'
+import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 

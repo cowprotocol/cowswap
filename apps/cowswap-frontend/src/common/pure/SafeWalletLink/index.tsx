@@ -1,5 +1,5 @@
-import { getSafeWebUrl } from '@cowswap/core'
-import { ExternalLink } from '@cowswap/ui'
+import { getSafeWebUrl } from '@cowprotocol/core'
+import { ExternalLink } from '@cowprotocol/ui'
 
 export function SafeWalletLink(props: {
   chainId: number

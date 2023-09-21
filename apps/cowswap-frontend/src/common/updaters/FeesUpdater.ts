@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 
+import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
+import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { DEFAULT_DECIMALS } from '@cowswap/common-const'
-import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowswap/common-hooks'
-import { isAddress, tryParseCurrencyAmount } from '@cowswap/common-utils'
-import { useENSAddress } from '@cowswap/ens'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useENSAddress } from '@cowprotocol/ens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
+import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'

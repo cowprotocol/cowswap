@@ -1,10 +1,10 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
-import TokenListLogo from '@cowswap/assets/svg/tokenlist.svg'
-import { useTheme } from '@cowswap/common-hooks'
-import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -136,7 +136,11 @@ function CurrencyRow({
   isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
-  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean; isPermitCompatible: boolean }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: {
+    currency: Currency
+    isUnsupported: boolean
+    isPermitCompatible: boolean
+  }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWalletInfo()
   const key = currencyKey(currency)
@@ -341,7 +345,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
-      const isPermitCompatible = false // TODO: Make dynamic 
+      const isPermitCompatible = false // TODO: Make dynamic
 
       if (isLoading) {
         return (

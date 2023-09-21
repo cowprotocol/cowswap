@@ -1,6 +1,6 @@
-import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'

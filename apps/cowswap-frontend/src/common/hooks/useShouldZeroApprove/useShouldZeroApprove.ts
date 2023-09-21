@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useTokenContract } from '@cowswap/common-hooks'
+import { useTokenContract } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

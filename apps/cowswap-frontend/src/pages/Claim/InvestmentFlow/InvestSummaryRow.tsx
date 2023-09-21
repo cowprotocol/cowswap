@@ -1,6 +1,6 @@
-import ImportantIcon from '@cowswap/assets/cow-swap/important.svg'
-import { ONE_HUNDRED_PERCENT } from '@cowswap/common-const'
-import { TokenAmount } from '@cowswap/ui'
+import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
+import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 

@@ -1,4 +1,4 @@
-import { TokenAmount, FiatAmount } from '@cowswap/ui'
+import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useENSAddress } from '@cowswap/ens'
+import { useENSAddress } from '@cowprotocol/ens'
 
 import { useTradeState } from '../hooks/useTradeState'
 

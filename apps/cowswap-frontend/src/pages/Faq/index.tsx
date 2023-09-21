@@ -6,7 +6,7 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from '@cowswap/common-const'
+} from '@cowprotocol/common-const'
 
 import { Link } from 'react-router-dom'
 

@@ -1,5 +1,5 @@
-import { RowFixed } from '@cowswap/ui'
-import { useWalletInfo } from '@cowswap/wallet'
+import { RowFixed } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'

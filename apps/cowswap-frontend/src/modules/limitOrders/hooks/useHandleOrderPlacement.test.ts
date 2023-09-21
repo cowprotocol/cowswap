@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { useIsBundlingSupported } from '@cowswap/wallet'
+import { useIsBundlingSupported } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react-hooks'
 
@@ -26,8 +26,8 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
-jest.mock('@cowswap/wallet', () => {
-  const actual = jest.requireActual('@cowswap/wallet')
+jest.mock('@cowprotocol/wallet', () => {
+  const actual = jest.requireActual('@cowprotocol/wallet')
 
   return new Proxy(actual, {
     get: (target, property) => {

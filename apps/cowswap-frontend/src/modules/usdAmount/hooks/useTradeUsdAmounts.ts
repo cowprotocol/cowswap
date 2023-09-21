@@ -1,4 +1,4 @@
-import { isFractionFalsy } from '@cowswap/common-utils'
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

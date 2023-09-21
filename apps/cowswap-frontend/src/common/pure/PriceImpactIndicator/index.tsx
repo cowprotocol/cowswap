@@ -1,6 +1,6 @@
-import { formatPercent } from '@cowswap/common-utils'
-import { Loader } from '@cowswap/ui'
-import { MouseoverTooltip } from '@cowswap/ui'
+import { formatPercent } from '@cowprotocol/common-utils'
+import { Loader } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'

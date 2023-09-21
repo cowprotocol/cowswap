@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { changeSwapAmountAnalytics } from '@cowswap/analytics'
-import { tryParseCurrencyAmount } from '@cowswap/common-utils'
 
 import { Field } from 'legacy/state/types'
 

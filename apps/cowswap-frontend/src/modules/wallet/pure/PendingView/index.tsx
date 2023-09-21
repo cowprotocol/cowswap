@@ -1,4 +1,4 @@
-import { ButtonEmpty, ButtonPrimary, Loader } from '@cowswap/ui'
+import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'

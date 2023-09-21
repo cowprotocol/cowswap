@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
 
-import { addListAnalytics } from '@cowswap/analytics'
-import { useTheme } from '@cowswap/common-hooks'
-import { ButtonPrimary } from '@cowswap/ui'
-import { AutoRow, RowBetween, RowFixed } from '@cowswap/ui'
-import { ExternalLink } from '@cowswap/ui'
+import { addListAnalytics } from '@cowprotocol/analytics'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'

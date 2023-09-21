@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useFetchFile } from '@cowswap/common-hooks'
+import { useFetchFile } from '@cowprotocol/common-hooks'
 
 import ReactMarkdown, { ReactMarkdownPropsBase } from 'react-markdown'
 import ReactMarkdownHtml from 'react-markdown/with-html'

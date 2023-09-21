@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { useContract } from '@cowswap/common-hooks'
-import { useENSAddress } from '@cowswap/ens'
+import { useContract } from '@cowprotocol/common-hooks'
+import { useENSAddress } from '@cowprotocol/ens'
 
 import JSBI from 'jsbi'
 

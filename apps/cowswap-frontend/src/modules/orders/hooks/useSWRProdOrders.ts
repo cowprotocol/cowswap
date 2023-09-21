@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { GP_ORDER_UPDATE_INTERVAL } from '@cowprotocol/common-const'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { GP_ORDER_UPDATE_INTERVAL } from '@cowswap/common-const'
-import { isBarnBackendEnv } from '@cowswap/common-utils'
-import { useWalletInfo } from '@cowswap/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 

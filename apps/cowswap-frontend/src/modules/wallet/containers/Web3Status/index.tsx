@@ -1,5 +1,5 @@
-import { STORAGE_KEY_LAST_PROVIDER } from '@cowswap/common-const'
-import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowswap/wallet'
+import { STORAGE_KEY_LAST_PROVIDER } from '@cowprotocol/common-const'
+import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'

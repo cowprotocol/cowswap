@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { genericPropsChecker } from '@cowswap/common-utils'
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'

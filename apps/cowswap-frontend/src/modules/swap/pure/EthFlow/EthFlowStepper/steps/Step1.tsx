@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Checkmark from '@cowswap/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowswap/assets/cow-swap/exclamation.svg'
-import Send from '@cowswap/assets/cow-swap/send.svg'
-import X from '@cowswap/assets/cow-swap/x.svg'
+import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import Send from '@cowprotocol/assets/cow-swap/send.svg'
+import X from '@cowprotocol/assets/cow-swap/x.svg'
 
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'

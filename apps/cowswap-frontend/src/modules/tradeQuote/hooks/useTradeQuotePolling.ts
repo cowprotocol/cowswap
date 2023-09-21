@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect, useMemo } from 'react'
 
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
-import { useDebounce } from '@cowswap/common-hooks'
-import { onlyResolvesLast } from '@cowswap/common-utils'
 
 import ms from 'ms.macro'
 

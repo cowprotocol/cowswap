@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '@cowswap/common-const'
+import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'

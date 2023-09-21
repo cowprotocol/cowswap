@@ -1,6 +1,6 @@
-import { COW, NATIVE_CURRENCY_BUY_TOKEN } from '@cowswap/common-const'
-import { useEthFlowContract, useGP2SettlementContract } from '@cowswap/common-hooks'
-import { useWalletInfo } from '@cowswap/wallet'
+import { COW, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { renderHook } from '@testing-library/react-hooks'
@@ -18,15 +18,15 @@ const settlementCancellationTxHash = '0xcfwj23g4fwe111'
 const ethFlowCancellationTxHash = '0xcfwj23g4fwe222'
 
 jest.mock('legacy/state/orders/hooks')
-jest.mock('@cowswap/wallet', () => {
+jest.mock('@cowprotocol/wallet', () => {
   return {
-    ...jest.requireActual('@cowswap/wallet'),
+    ...jest.requireActual('@cowprotocol/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
   }
 })
-jest.mock('@cowswap/common-hooks', () => {
+jest.mock('@cowprotocol/common-hooks', () => {
   return {
-    ...jest.requireActual('@cowswap/common-hooks'),
+    ...jest.requireActual('@cowprotocol/common-hooks'),
     useEthFlowContract: jest.fn(),
     useGP2SettlementContract: jest.fn(),
   }

@@ -1,4 +1,4 @@
-import { AutoRow } from '@cowswap/ui'
+import { AutoRow } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'

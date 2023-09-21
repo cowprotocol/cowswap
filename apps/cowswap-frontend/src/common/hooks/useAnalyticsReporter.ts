@@ -6,15 +6,15 @@ import {
   googleAnalytics,
   PixelEvent,
   sendAllPixels,
-} from '@cowswap/analytics'
-import { usePrevious } from '@cowswap/common-hooks'
+} from '@cowprotocol/analytics'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import {
   getConnectionName,
   getIsMetaMask,
   getWeb3ReactConnection,
   useWalletDetails,
   useWalletInfo,
-} from '@cowswap/wallet'
+} from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import ReactGA from 'react-ga4'

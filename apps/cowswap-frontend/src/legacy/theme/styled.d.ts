@@ -1,4 +1,4 @@
-import { ButtonSize } from '@cowswap/ui'
+import { ButtonSize } from '@cowprotocol/ui'
 
 export type Color = string
 

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { useTheme } from '@cowswap/common-hooks'
-import { FiatAmount } from '@cowswap/ui'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

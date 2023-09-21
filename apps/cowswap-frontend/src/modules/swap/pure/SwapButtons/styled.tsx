@@ -1,4 +1,4 @@
-import { ButtonSize, ButtonError, RowBetween } from '@cowswap/ui'
+import { ButtonSize, ButtonError, RowBetween } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 

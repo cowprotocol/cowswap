@@ -1,11 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
-import cowLogo from '@cowswap/assets/cow-swap/cow.svg'
-import gnoLogo from '@cowswap/assets/cow-swap/gno.png'
-import usdcLogo from '@cowswap/assets/cow-swap/usdc.png'
-import vCowLogo from '@cowswap/assets/cow-swap/vCOW.png'
-import wxDaiLogo from '@cowswap/assets/cow-swap/wxdai.png'
+import cowLogo from '@cowprotocol/assets/cow-swap/cow.svg'
+import gnoLogo from '@cowprotocol/assets/cow-swap/gno.png'
+import usdcLogo from '@cowprotocol/assets/cow-swap/usdc.png'
+import vCowLogo from '@cowprotocol/assets/cow-swap/vCOW.png'
+import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 
 import {
   USDC_GNOSIS_CHAIN,

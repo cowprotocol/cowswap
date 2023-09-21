@@ -1,4 +1,4 @@
-import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowswap/common-const'
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
 import { transparentize } from 'polished'
 import { HashLink } from 'react-router-hash-link'

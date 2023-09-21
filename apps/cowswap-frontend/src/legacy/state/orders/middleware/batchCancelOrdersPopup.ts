@@ -1,4 +1,4 @@
-import { orderAnalytics } from '@cowswap/analytics'
+import { orderAnalytics } from '@cowprotocol/analytics'
 
 import { Dispatch, MiddlewareAPI } from 'redux'
 

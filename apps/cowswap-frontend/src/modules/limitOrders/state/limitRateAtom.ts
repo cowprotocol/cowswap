@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { atomWithPartialUpdate } from '@cowswap/common-utils'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 export interface LimitRateState {

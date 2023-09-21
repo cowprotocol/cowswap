@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useMachineTimeMs } from '@cowswap/common-hooks'
+import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 
 import ms from 'ms.macro'
 
