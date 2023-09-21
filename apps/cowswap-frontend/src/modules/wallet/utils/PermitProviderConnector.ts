@@ -1,3 +1,4 @@
+import { getContract } from '@cowprotocol/common-utils'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
 import type { Web3Provider } from '@ethersproject/providers'
@@ -5,8 +6,6 @@ import { Wallet } from '@ethersproject/wallet'
 
 import { AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 import { AbiInput } from 'web3-utils'
-
-import { getContract } from 'legacy/utils'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(private provider: Web3Provider, private walletSigner?: Wallet | undefined) {}

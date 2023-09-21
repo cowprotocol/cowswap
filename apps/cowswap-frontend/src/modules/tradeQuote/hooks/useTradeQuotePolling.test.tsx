@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { COW } from '@cowprotocol/common-const'
+import { COW, ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { WETH_GOERLI } from '@cowprotocol/common-const'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'

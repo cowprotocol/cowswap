@@ -1,9 +1,8 @@
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
 import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
 
