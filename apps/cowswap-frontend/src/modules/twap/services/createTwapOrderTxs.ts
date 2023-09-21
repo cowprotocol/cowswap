@@ -1,4 +1,5 @@
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { MaxUint256 } from '@uniswap/sdk-core'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'
@@ -20,7 +21,7 @@ export function createTwapOrderTxs(
   const { sellAmount } = order
 
   const sellTokenAddress = sellAmount.currency.address
-  const sellAmountAtoms = sellAmount.quotient.toString()
+  const sellAmountAtoms = MaxUint256.toString()
 
   const txs: MetaTransactionData[] = []
 
