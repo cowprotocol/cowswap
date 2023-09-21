@@ -116,7 +116,6 @@ function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
-  eventProperties,
   isUnsupported, // gp-swap added
   isPermitCompatible, // gp-swap added
   allTokens,
@@ -129,7 +128,6 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   showCurrencyAmount?: boolean
-  eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
   isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
@@ -233,25 +231,6 @@ interface TokenRowProps {
   style: CSSProperties
 }
 
-const formatAnalyticsEventProperties = (
-  token: Token,
-  index: number,
-  data: any[],
-  searchQuery: string,
-  isAddressSearch: string | false
-) => ({
-  token_symbol: token?.symbol,
-  token_address: token?.address,
-  is_suggested_token: false,
-  is_selected_from_list: true,
-  scroll_position: '',
-  token_list_index: index,
-  token_list_length: data.length,
-  ...(isAddressSearch === false
-    ? { search_token_symbol_input: searchQuery }
-    : { search_token_address_input: isAddressSearch }),
-})
-
 // TODO: refactor the component
 export default function CurrencyList({
   height,
@@ -265,8 +244,6 @@ export default function CurrencyList({
   setImportToken,
   showCurrencyAmount,
   isLoading,
-  searchQuery,
-  isAddressSearch,
   additionalTokens,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
@@ -282,8 +259,8 @@ export default function CurrencyList({
   setImportToken: (token: Token) => void
   showCurrencyAmount?: boolean
   isLoading: boolean
-  searchQuery: string
-  isAddressSearch: string | false
+  searchQuery?: string
+  isAddressSearch?: string | false
   additionalTokens?: Currency[]
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
@@ -366,7 +343,6 @@ export default function CurrencyList({
             isUnsupported={isUnsupported}
             isPermitCompatible={isPermitCompatible} // gp-swap added
             showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />
         )
       } else {
@@ -382,8 +358,6 @@ export default function CurrencyList({
       showImportView,
       showCurrencyAmount,
       isLoading,
-      isAddressSearch,
-      searchQuery,
       isUnsupportedToken,
       BalanceComponent,
       TokenTagsComponent,

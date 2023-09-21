@@ -1,6 +1,6 @@
 import { currencyId } from '@cowprotocol/common-utils'
 import { TokenSymbol, AutoRow } from '@cowprotocol/ui'
-import { Currency, Token } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
@@ -11,7 +11,7 @@ import { useFavouriteOrCommonTokens } from 'legacy/hooks/useFavouriteOrCommonTok
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
-import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
+import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index'
 
 export const StyledScrollarea = styled.div`
   overflow-y: auto; // fallback for 'overlay'
@@ -25,35 +25,16 @@ export const StyledScrollarea = styled.div`
   `}
 `
 
-const formatAnalyticsEventProperties = (
-  currency: Currency,
-  tokenAddress: string | undefined,
-  searchQuery: string,
-  isAddressSearch: string | false
-) => ({
-  token_symbol: currency?.symbol,
-  token_chain_id: currency?.chainId,
-  ...(tokenAddress ? { token_address: tokenAddress } : {}),
-  is_suggested_token: true,
-  is_selected_from_list: false,
-  is_imported_by_user: false,
-  ...(isAddressSearch === false
-    ? { search_token_symbol_input: searchQuery }
-    : { search_token_address_input: isAddressSearch }),
-})
-
 const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({
   onSelect,
   selectedCurrency,
-  searchQuery,
-  isAddressSearch,
 }: {
   chainId?: number
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
-  searchQuery: string
-  isAddressSearch: string | false
+  searchQuery?: string
+  isAddressSearch?: string | false
 }) {
   const tokens = useFavouriteOrCommonTokens()
 
@@ -69,7 +50,6 @@ export default function CommonBases({
         <CommonBasesRow gap="4px">
           {tokens.map((currency: Currency) => {
             const isSelected = selectedCurrency?.equals(currency)
-            const tokenAddress = currency instanceof Token ? currency?.address : undefined
 
             return (
               <>

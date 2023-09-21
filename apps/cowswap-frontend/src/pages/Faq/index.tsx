@@ -9,6 +9,7 @@ import {
 } from '@cowprotocol/common-const'
 
 import { Link } from 'react-router-dom'
+
 import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
