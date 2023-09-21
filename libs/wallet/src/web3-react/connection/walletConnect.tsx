@@ -1,29 +1,27 @@
 import { useMemo } from 'react'
 
+import { RPC_URLS } from '@cowprotocol/common-const'
+
 import { initializeConnector } from '@web3-react/core'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
-import { RPC_URLS } from 'legacy/constants/networks'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
-import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+
+import { AsyncConnector } from './asyncConnector'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
+import { onError } from './onError'
+import { ConnectionType } from '../../api/types'
+import { useWalletMetaData } from '../hooks/useWalletMetadata'
 import {
   getConnectionName,
   getIsAlphaWallet,
   getIsAmbireWallet,
   getIsTrustWallet,
   getIsZengoWallet,
-} from 'modules/wallet/api/utils/connection'
-import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
-
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
-
-import { AsyncConnector } from './asyncConnector'
-
-import { Web3ReactConnection } from '../types'
-
-import { onError, TryActivation } from '.'
+} from '../../api/utils/connection'
+import { WC_DISABLED_TEXT } from '../../constants'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 
 const WC_SUNSET_LINK =
   'https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595'
@@ -62,11 +60,11 @@ export const walletConnectConnection: Web3ReactConnection = {
   type: ConnectionType.WALLET_CONNECT,
 }
 
-export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
+export function WalletConnectOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   const { walletName } = useWalletMetaData()
-  const { walletConnectV1Deprecated: isDeprecated } = useFeatureFlags()
+  const { walletConnectV1Deprecated: isDeprecated } = useFlags()
 
-  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnect = useIsActiveConnection(selectedWallet, walletConnectConnection)
   const isActive =
     isWalletConnect &&
     !getIsZengoWallet(walletName) &&
