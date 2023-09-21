@@ -1,17 +1,20 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
 
-import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
-import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -21,12 +24,11 @@ import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { useWalletInfo, Web3Status } from 'modules/wallet'
+import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { Routes } from 'common/constants/routes'
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
@@ -54,6 +56,7 @@ export default function Header() {
 
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
+  const { pendingActivity } = useCategorizeRecentActivity()
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -159,7 +162,7 @@ export default function Header() {
                   <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
                 </BalanceText>
               )}
-              <Web3Status />
+              <Web3Status pendingActivities={pendingActivity} />
             </AccountElement>
           </HeaderElement>
         </HeaderControls>

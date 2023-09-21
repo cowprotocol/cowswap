@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ExtensibleFallbackVerification } from '../services/verifyExtensibleFallback'
 import { fallbackHandlerVerificationAtom } from '../state/fallbackHandlerVerificationAtom'

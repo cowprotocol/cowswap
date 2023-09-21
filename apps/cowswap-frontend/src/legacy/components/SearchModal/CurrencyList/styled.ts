@@ -1,8 +1,9 @@
+import { RowFixed } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import { RowFixed } from 'legacy/components/Row'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 import { UI } from 'common/constants/theme'
@@ -11,8 +12,18 @@ import { StyledLogo } from 'common/pure/CurrencyLogo'
 export const Tag = styled.div<{ tag?: TagInfo }>`
   display: flex;
   align-items: center;
-  background: ${({ tag }) => (tag?.id === '0' ? `var(${UI.COLOR_DANGER_BG})` : tag?.id === '1' ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_GREY})`)};
-  color: ${({ tag }) => (tag?.id === '0' ? `var(${UI.COLOR_DANGER_TEXT})` : tag?.id === '1' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT1})`)};
+  background: ${({ tag }) =>
+    tag?.id === '0'
+      ? `var(${UI.COLOR_DANGER_BG})`
+      : tag?.id === '1'
+      ? `var(${UI.COLOR_SUCCESS_BG})`
+      : `var(${UI.COLOR_GREY})`};
+  color: ${({ tag }) =>
+    tag?.id === '0'
+      ? `var(${UI.COLOR_DANGER_TEXT})`
+      : tag?.id === '1'
+      ? `var(${UI.COLOR_SUCCESS_TEXT})`
+      : `var(${UI.COLOR_TEXT1})`};
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border-radius: 4px;
@@ -58,7 +69,7 @@ export const Wrapper = styled.div`
         color: var(${UI.COLOR_TEXT2});
         font-weight: 400;
       }
-      
+
       ${({ theme }) => theme.mediaWidth.upToSmall`
         max-width: 140px;
       `};

@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { joinPathFragments } from '@nx/devkit'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'

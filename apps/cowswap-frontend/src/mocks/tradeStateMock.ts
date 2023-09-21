@@ -1,9 +1,9 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { getAppData } from 'modules/appData'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'

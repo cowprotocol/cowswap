@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

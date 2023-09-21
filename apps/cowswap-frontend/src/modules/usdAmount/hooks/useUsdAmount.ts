@@ -1,9 +1,9 @@
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { currencyAmountToTokenAmount } from 'utils/currencyAmountToTokenAmount'
 
 import { useUsdPrice } from './useUsdPrice'
 

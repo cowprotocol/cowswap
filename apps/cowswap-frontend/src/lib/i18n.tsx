@@ -1,5 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
+
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import {
@@ -35,8 +37,6 @@ import {
   zh,
 } from 'make-plural/plurals'
 import { PluralCategory } from 'make-plural/plurals'
-
-import { DEFAULT_LOCALE, SupportedLocale } from 'legacy/constants/locales'
 
 type LocalePlural = {
   [key in SupportedLocale]: (n: number | string, ord?: boolean) => PluralCategory

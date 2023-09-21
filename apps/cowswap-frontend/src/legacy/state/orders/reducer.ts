@@ -3,8 +3,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
-import { flatOrdersStateNetwork } from 'modules/orders/utils/flatOrdersStateNetwork'
-
 import { OrderID } from 'api/gnosisProtocol'
 import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
@@ -35,6 +33,7 @@ import {
   CONFIRMED_STATES,
 } from './actions'
 import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
+import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 
 export interface OrderObject {
   id: OrderID

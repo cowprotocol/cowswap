@@ -4,11 +4,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { AppDispatch, AppState } from 'legacy/state'
-import { useSwapState } from 'legacy/state/swap/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
-
 import {
   updateQuote,
   UpdateQuoteParams,
@@ -21,6 +16,8 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
+
+import { AppDispatch, AppState } from '../index'
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void
@@ -75,16 +72,6 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
   const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
 
   return { quote, isGettingNewQuote, isRefreshingQuote }
-}
-
-// syntactic sugar for not needing to pass swapstate
-export function useIsQuoteRefreshing() {
-  const { chainId } = useWalletInfo()
-  const {
-    INPUT: { currencyId },
-  } = useSwapState()
-  const { isRefreshingQuote } = useGetQuoteAndStatus({ token: currencyId, chainId })
-  return isRefreshingQuote
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {

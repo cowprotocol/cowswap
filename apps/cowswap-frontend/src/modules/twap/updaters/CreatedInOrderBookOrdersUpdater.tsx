@@ -3,13 +3,13 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
-import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'

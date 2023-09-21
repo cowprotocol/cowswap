@@ -1,14 +1,13 @@
+import { formatPercent } from '@cowprotocol/common-utils'
+import { Loader } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import Loader from 'legacy/components/Loader'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { warningSeverity } from 'legacy/utils/prices'
-
-import { formatPercent } from 'utils/amountFormat'
 
 export interface PriceImpactIndicatorProps {
   priceImpactParams?: PriceImpact

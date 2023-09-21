@@ -1,17 +1,17 @@
+import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import { useNetworkName } from '@cowprotocol/common-hooks'
+import { formatDateWithTimezone } from '@cowprotocol/common-utils'
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
-import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
-import { ButtonSecondary } from 'legacy/components/Button'
-import useNetworkName from 'legacy/hooks/useNetworkName'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'
-import { ExternalLink } from 'legacy/theme'
-
-import { formatDateWithTimezone } from 'utils/time'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { IntroDescription, BannerExplainer } from './styled'
-import { ClaimCommonTypes } from './types'
 
 type ClaimIntroductionProps = Pick<
   ClaimCommonTypes,

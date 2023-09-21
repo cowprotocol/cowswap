@@ -1,17 +1,15 @@
-import * as CSS from 'csstype'
+import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
-import SpinnerLoader from 'legacy/components/Loader'
-import { ExternalLink } from 'legacy/theme'
 
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
-import { ButtonCustom as AddToMetaMask } from 'modules/wallet/api/pure/AddToMetamask'
+import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
 
-import { UI } from 'common/constants/theme'
 import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`
@@ -30,7 +28,7 @@ export const Wrapper = styled(Page)`
   justify-content: flex-end;
   flex-flow: column wrap;
   margin: 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: ${({ theme }) => theme.bg1};
   box-shadow: ${({ theme }) => theme.boxShadow1};
   border: none;
 
@@ -56,138 +54,59 @@ export const ExtLink = styled(ExternalLink)`
   }
 `
 
-export const ChildWrapper = styled.div`
+const linkMixin = css`
+  font-size: 13px;
+  height: 100%;
+  font-weight: 500;
+  border-radius: 0;
+  min-height: initial;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
   display: flex;
-  flex-direction: column;
   align-items: center;
-  flex-grow: 1;
-  justify-content: center;
-  border-radius: 21px;
-  padding: 20px;
-  background-color: var(${UI.COLOR_GREY});
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    width: 100%;
-    padding: 14px;
-  `}
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+      font-size: 15px;
+      margin: 0 auto;
+    `};
 
-  > .item {
-    width: 100%;
+  &:hover {
+    text-decoration-color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 
-export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boolean }>>`
-  display: grid;
-  grid-column-gap: 22px;
-  grid-row-gap: 22px;
-  grid-template-columns: ${(props) => (props.horizontal ? '1fr 1fr' : '1fr')};
+export const StyledAddToMetamask = styled(AddToMetamask)`
+  border: 0;
+  min-height: initial;
+  border-radius: initial;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 1fr;
-      grid-column-gap: 0;
-      > :first-child,
-      > :nth-child(2) {
-        grid-column-start: 1;
-        grid-column-end: 2;
-      }
-  `}
+  &:hover {
+    background: transparent;
 
-  @supports (-webkit-touch-callout: none) {
-    /* CSS specific to iOS devices */
-    display: flex;
-    flex-direction: column;
+    > div {
+      text-decoration: underline;
+    }
   }
-`
 
-export const CardHead = styled.div`
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
+  > div > img,
+  > div > svg {
+    height: 13px;
+    width: auto;
+    object-fit: contain;
+    margin: 0 6px 0 0;
+  }
+
+  ${linkMixin}
 `
 
 export const StyledTime = styled.p`
   margin: 0;
-`
-
-export const ItemTitle = styled.h3`
-  display: flex;
-  align-items: center;
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  line-height: 1.21;
-  color: var(${UI.COLOR_TEXT1});
-  gap: 4px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 0 0 10px 0;
-    font-size: 16px;
-  `}
-`
-
-export const FlexWrap = styled.div`
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
-
-  > div {
-    width: auto;
-  }
-
-  button {
-    max-width: 180px;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-wrap: wrap;
-    > div {
-      width: 50%;
-    }
-    button {
-      max-width: 100%;
-    }
-  `}
-`
-
-export const StyledContainer = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-wrap: wrap;
-    flex-direction: column;
-  `}
-`
-
-export const FlexCol = styled.div`
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-
-  strong {
-    font-size: 21px;
-    margin-top: 6px;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      font-size: 14px;
-    `}
-  }
-
-  span:not([role='img']) {
-    font-size: 14px;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-    text-align: center;
-    display: flex;
-    align-items: center;
-    padding: 8px 0 0 0;
-  }
 `
 
 export const Loader = styled.div<{ isLoading: boolean }>`
@@ -211,29 +130,6 @@ export const Loader = styled.div<{ isLoading: boolean }>`
         content: '';
       }
     `}
-`
-
-export const ProfileGridWrap = styled(GridWrap)`
-  grid-template-columns: 1fr auto;
-  justify-content: space-between;
-  align-items: center;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    > :first-child,
-    > :nth-child(2) {
-      grid-column-start: auto;
-      grid-column-end: auto;
-    }
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
-    > :first-child,
-    > :nth-child(2) {
-      grid-column-start: 1;
-      grid-column-end: 1;
-    }
-    grid-row-gap: 0px;
-  `};
 `
 
 export const CardsWrapper = styled.div`
@@ -272,7 +168,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: ${({ theme }) => theme.bg1};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
@@ -327,7 +223,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 export const BannerCard = styled(BannerExplainer)`
   min-height: 192px;
   border-radius: 16px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: ${({ theme }) => theme.bg1};
   border: none;
   padding: 0 100px 0 24px;
   flex: 1;
@@ -347,7 +243,7 @@ export const BannerCard = styled(BannerExplainer)`
     justify-content: space-between;
     height: 100%;
     padding: 24px 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: ${({ theme }) => theme.text1};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       padding: 0;
@@ -363,7 +259,7 @@ export const BannerCard = styled(BannerExplainer)`
       }
 
       @supports not (-webkit-background-clip: text) {
-        color: var(${UI.COLOR_TEXT1});
+        color: ${({ theme }) => theme.text1};
       }
 
       ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -373,7 +269,7 @@ export const BannerCard = styled(BannerExplainer)`
     }
 
     > small {
-      color: var(${UI.COLOR_TEXT1});
+      color: ${({ theme }) => theme.text1};
       font-size: 14px;
       line-height: 1.5;
       text-align: left;
@@ -403,7 +299,7 @@ export const BannerCard = styled(BannerExplainer)`
     > span > a,
     > span > a:link {
       font-size: 15px;
-      color: var(${UI.COLOR_TEXT1});
+      color: ${({ theme }) => theme.text1};
 
       &:hover {
         color: ${({ theme }) => theme.text3};
@@ -421,14 +317,14 @@ export const BannerCard = styled(BannerExplainer)`
 
   > svg {
     .stop1 {
-      stop-color: var(${UI.COLOR_TEXT1});
+      stop-color: ${({ theme }) => theme.text1};
     }
     .stop2 {
-      stop-color: var(${UI.COLOR_TEXT1});
+      stop-color: ${({ theme }) => theme.text1};
       stop-opacity: 0.8;
     }
     .stop3 {
-      stop-color: var(${UI.COLOR_TEXT1});
+      stop-color: ${({ theme }) => theme.text1};
       stop-opacity: 0;
     }
   }
@@ -456,53 +352,8 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
   `};
 
   > a,
-  ${AddToMetaMask}, > ${ClickToCopy} {
-    font-size: 13px;
-    height: 100%;
-    font-weight: 500;
-    border-radius: 0;
-    min-height: initial;
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-    display: flex;
-    align-items: center;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      font-size: 15px;
-      margin: 0 auto;
-    `};
-
-    &:hover {
-      text-decoration-color: var(${UI.COLOR_TEXT1});
-      color: var(${UI.COLOR_TEXT1});
-    }
-  }
-
-  ${AddToMetaMask} {
-    border: 0;
-    min-height: initial;
-    border-radius: initial;
-
-    &:hover {
-      background: transparent;
-
-      > div {
-        text-decoration: underline;
-      }
-    }
-
-    > div > img,
-    > div > svg {
-      height: 13px;
-      width: auto;
-      object-fit: contain;
-      margin: 0 6px 0 0;
-    }
+  > ${ClickToCopy} {
+    ${linkMixin}
   }
 
   > ${ClickToCopy} svg {
@@ -589,7 +440,7 @@ export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
   align-items: center;
-  background: var(${UI.COLOR_GREY});
+  background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
   padding: 16px;
   width: 100%;
@@ -630,7 +481,7 @@ export const VestingBreakdown = styled.div`
   }
 
   > span:last-of-type > p {
-    color: var(${UI.COLOR_TEXT1});
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -667,34 +518,6 @@ export const CardsSpinner = styled(SpinnerLoader)`
   margin: auto;
 
   & path {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: ${({ theme }) => theme.text1};
   }
 `
-
-interface TimeProps {
-  date: string | undefined
-}
-
-export const TimeFormatted = ({ date }: TimeProps) => {
-  if (!date) return null
-
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-  const _date = new Date(date)
-  const monthName = months[_date.getMonth()]
-  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-
-  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
-}

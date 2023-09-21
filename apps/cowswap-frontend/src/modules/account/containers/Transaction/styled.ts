@@ -1,13 +1,13 @@
+import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
+import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { StyledSVG } from 'legacy/components/Loader'
-import { RowFixed } from 'legacy/components/Row'
-import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
+import { LinkStyledButton } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 import { StyledLogo } from 'common/pure/CurrencyLogo'
-import { FiatAmount } from 'common/pure/FiatAmount'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`

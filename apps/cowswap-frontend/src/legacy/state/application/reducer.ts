@@ -1,12 +1,12 @@
+import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
+import { BlockExplorerLinkType } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
-import { initialState } from 'legacy/state/application/initialState'
-import { BlockExplorerLinkType } from 'legacy/utils'
+import { initialState } from './initialState'
 
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId

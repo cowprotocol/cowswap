@@ -53,6 +53,7 @@ export interface SwapButtonStateParams {
   isSmartContractWallet: boolean
   isBestQuoteLoading: boolean
   wrappedToken: Token
+  isPermitSupported: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -66,12 +67,14 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { quoteError, approvalState } = input
+  const { quoteError, approvalState, isPermitSupported } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !input.inputError && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
+    !isPermitSupported &&
+    !input.inputError &&
+    (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade

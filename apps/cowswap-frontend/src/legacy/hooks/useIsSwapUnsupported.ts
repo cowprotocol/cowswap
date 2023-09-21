@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { useUnsupportedTokens } from 'legacy/hooks/Tokens'
+import { useUnsupportedTokens } from './Tokens'
 
 /**
  * Returns true if the input currency or output currency cannot be traded in the interface

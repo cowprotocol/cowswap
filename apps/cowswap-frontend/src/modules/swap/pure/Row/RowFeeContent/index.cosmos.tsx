@@ -1,7 +1,7 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { RowFeeProps } from 'modules/swap/containers/Row/RowFee'

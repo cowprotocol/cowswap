@@ -1,13 +1,13 @@
+import { toErc20Address } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 
 import BigNumberJs from 'bignumber.js'
 import { FeeInformation, PriceInformation } from 'types'
 
-import { toErc20Address } from 'legacy/utils/tokens'
-
 import { getQuote } from 'api/gnosisProtocol'
-import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
+
+import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from '../state/price/types'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -58,7 +58,7 @@ export async function getBestQuote({
       })
     })
   } else {
-    console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')
+    console.debug('legacy strategy, hang tight.')
 
     const { getBestQuoteLegacy } = await import('legacy/utils/priceLegacy')
 

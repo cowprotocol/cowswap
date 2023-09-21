@@ -1,16 +1,15 @@
 import { useCallback } from 'react'
 
-import { Erc20 } from '@cowswap/abis'
+import { Erc20 } from '@cowprotocol/abis'
+import { getBytes32TokenContract, getTokenContract } from '@cowprotocol/common-hooks'
+import { retry } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { getBytes32TokenContract, getTokenContract } from 'legacy/hooks/useContract'
 import { useAddUserToken } from 'legacy/state/user/hooks'
-import { retry } from 'legacy/utils/retry'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 

@@ -1,22 +1,19 @@
+import { wrapAnalytics } from '@cowprotocol/analytics'
+import { RADIX_HEX } from '@cowprotocol/common-const'
+import { getChainCurrencySymbols } from '@cowprotocol/common-const'
+import { calculateGasMargin, formatTokenAmount, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { wrapAnalytics } from 'legacy/components/analytics'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { getOperationMessage } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { RADIX_HEX } from 'legacy/constants'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
-import { formatTokenAmount } from 'utils/amountFormat'
-
-import { isRejectRequestProviderError } from '../utils/misc'
+import { getOperationMessage } from '../components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
+import { ConfirmOperationType } from '../state/types'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')

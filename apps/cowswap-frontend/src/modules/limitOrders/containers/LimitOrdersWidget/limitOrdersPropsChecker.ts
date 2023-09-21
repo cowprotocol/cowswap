@@ -1,3 +1,4 @@
+import { areFractionsEqual, genericPropsChecker, getAddress } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -10,9 +11,6 @@ import { TradeFormValidation } from 'modules/tradeFormValidation'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { areFractionsEqual } from 'utils/areFractionsEqual'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
-import { getAddress } from 'utils/getAddress'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 

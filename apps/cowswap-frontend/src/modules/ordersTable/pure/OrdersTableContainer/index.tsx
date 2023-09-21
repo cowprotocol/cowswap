@@ -1,16 +1,15 @@
 import { ReactNode } from 'react'
 
+import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
+import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import cowMeditatingV2 from 'legacy/assets/cow-swap/meditating-cow-v2.svg'
-import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
-import { ExternalLink } from 'legacy/theme'
-
-import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
-import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
+import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
@@ -85,10 +84,6 @@ const Content = styled.div`
     text-align: center;
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
-
-  ${Web3StatusWrapper} {
-    margin: 0 auto;
-  }
 `
 
 const Header = styled.div`
@@ -144,6 +139,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isOpenOrdersTab: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
+  pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
 }
@@ -170,6 +166,7 @@ export function OrdersTableContainer({
   getSpotPrice,
   children,
   orderType,
+  pendingActivities,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -188,7 +185,7 @@ export function OrdersTableContainer({
             </Trans>
           </p>
 
-          <Web3Status />
+          <Web3Status pendingActivities={pendingActivities} />
         </Content>
       )
     }

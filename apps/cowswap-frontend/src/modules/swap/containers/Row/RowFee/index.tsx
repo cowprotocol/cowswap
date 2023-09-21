@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
 
+import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { formatSymbol } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -9,9 +12,6 @@ import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { formatFiatAmount, formatTokenAmount } from 'utils/amountFormat'
-import { formatSymbol } from 'utils/format'
-import { FractionUtils } from 'utils/fractionUtils'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'

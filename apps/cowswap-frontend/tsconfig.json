@@ -9,12 +9,20 @@
     "types": ["node", "vite/client"],
     "baseUrl": "src",
     "paths": {
-      "@cowswap/abis": ["../../../libs/abis/src/index.ts"],
-      "@cowswap/ui": ["../../../libs/ui/src/index.ts"],
-      "@cowswap/ui-utils": ["../../../libs/ui-utils/src/index.ts"],
-      "@cowswap/widget-lib": ["../../../libs/widget-lib/src/index.ts"],
-      "@cowswap/widget-react": ["../../../libs/widget-react/src/index.ts"],
-      "@cowswap/snackbars": ["../../../libs/snackbars/src/index.ts"]
+      "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
+      "@cowprotocol/ui": ["../../../libs/ui/src/index.ts"],
+      "@cowprotocol/ui-utils": ["../../../libs/ui-utils/src/index.ts"],
+      "@cowprotocol/widget-lib": ["../../../libs/widget-lib/src/index.ts"],
+      "@cowprotocol/widget-react": ["../../../libs/widget-react/src/index.ts"],
+      "@cowprotocol/snackbars": ["../../../libs/snackbars/src/index.ts"],
+      "@cowprotocol/wallet": ["../../../libs/wallet/src/index.ts"],
+      "@cowprotocol/assets/*": ["../../../libs/assets/src/*"],
+      "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
+      "@cowprotocol/common-utils": ["../../../libs/common-utils/src/index.ts"],
+      "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
+      "@cowprotocol/ens": ["../../../libs/ens/src/index.ts"],
+      "@cowprotocol/core": ["../../../libs/core/src/index.ts"],
+      "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"]
     }
   },
   "files": [],

@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from 'legacy/constants/locales'
-import store from 'legacy/state'
-import { useUserLocale } from 'legacy/state/user/hooks'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
+import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 
-import useParsedQueryString from './useParsedQueryString'
-import { parsedQueryString } from './useParsedQueryString'
+import { cowSwapStore } from 'legacy/state'
+import { useUserLocale } from 'legacy/state/user/hooks'
 
 /**
  * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
@@ -35,7 +34,7 @@ export function navigatorLocale(): SupportedLocale | undefined {
 }
 
 function storeLocale(): SupportedLocale | undefined {
-  return store.getState().user.userLocale ?? undefined
+  return cowSwapStore.getState().user.userLocale ?? undefined
 }
 
 export const initialLocale =

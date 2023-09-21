@@ -1,35 +1,42 @@
 import { Fragment, useMemo } from 'react'
 
+import {
+  getEtherscanLink,
+  getExplorerLabel,
+  shortenAddress,
+  getExplorerAddressLink,
+  isMobile,
+} from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import {
+  ConnectionType,
+  useWalletInfo,
+  WalletDetails,
+  getConnectionIcon,
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+  Identicon,
+  useWalletDetails,
+  useIsWalletConnect,
+  getWeb3ReactConnection,
+  getIsHardWareWallet,
+} from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
-import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
-import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { isMobile } from 'legacy/utils/userAgent'
 
 import Activity from 'modules/account/containers/Transaction'
-import { ConnectionType, useDisconnectWallet, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { Identicon } from 'modules/wallet/api/container/Identicon'
-import { useWalletDetails } from 'modules/wallet/api/hooks'
-import { useIsWalletConnect } from 'modules/wallet/web3-react/hooks/useIsWalletConnect'
-import {
-  getConnectionIcon,
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
-} from 'modules/wallet/api/utils/connection'
-import { getIsHardWareWallet, getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
 import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -56,6 +63,7 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -194,9 +202,7 @@ export function AccountDetails({
                 )}
               </WalletSelector>
 
-              {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
-              )}
+              {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
 
             <WalletActions>

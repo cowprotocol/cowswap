@@ -1,10 +1,11 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
+import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'
 
 import { Trans } from '@lingui/macro'
 
-import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimDispatchers,
@@ -12,10 +13,7 @@ import {
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
 } from 'legacy/state/claim/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { ClaimCommonTypes } from 'pages/Claim/types'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { ClaimAddressProps } from './ClaimAddress'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'

@@ -1,5 +1,10 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
+import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -7,29 +12,21 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import Loader from 'legacy/components/Loader'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { LoadingRows } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { useAllTokens, useIsUserAddedToken } from 'legacy/hooks/Tokens'
-import useTheme from 'legacy/hooks/useTheme'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { Tag } from './styled' // mod
 
@@ -139,7 +136,11 @@ function CurrencyRow({
   isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
-  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean; isPermitCompatible: boolean }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: {
+    currency: Currency
+    isUnsupported: boolean
+    isPermitCompatible: boolean
+  }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWalletInfo()
   const key = currencyKey(currency)
@@ -344,7 +345,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
-      const isPermitCompatible = false // TODO: Make dynamic 
+      const isPermitCompatible = false // TODO: Make dynamic
 
       if (isLoading) {
         return (

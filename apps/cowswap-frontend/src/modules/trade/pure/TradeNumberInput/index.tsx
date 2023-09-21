@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
+
 import BigNumberJs from 'bignumber.js'
 import SVG from 'react-inlinesvg'
-
-import carretDown from 'legacy/assets/cow-swap/carret-down.svg'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
 

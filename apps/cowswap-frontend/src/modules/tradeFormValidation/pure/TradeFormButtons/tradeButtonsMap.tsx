@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { TokenSymbol } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
@@ -7,7 +9,6 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 
 import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'

@@ -1,6 +1,5 @@
+import { COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { COW } from 'legacy/constants/tokens'
 
 import { RateImpactWarning } from './index'
 

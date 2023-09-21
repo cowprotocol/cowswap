@@ -1,9 +1,9 @@
+import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
+import { isAppziEnabled, openFeedbackAppzi } from '@cowprotocol/common-utils'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import FeedbackIcon from 'legacy/assets/cow-swap/feedback.svg'
-import { isAppziEnabled, openFeedbackAppzi } from 'legacy/utils/appzi'
 
 const Wrapper = styled.div`
   background: ${({ theme }) => transparentize(0.3, theme.bg2)};

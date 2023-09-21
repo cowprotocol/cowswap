@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react'
 
-import { useOrder } from 'legacy/state/orders/hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'

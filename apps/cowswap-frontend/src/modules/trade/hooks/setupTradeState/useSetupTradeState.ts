@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo, switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
-
-import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { useWalletInfo } from 'modules/wallet'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'

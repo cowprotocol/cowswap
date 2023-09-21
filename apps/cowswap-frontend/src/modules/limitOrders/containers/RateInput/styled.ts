@@ -1,7 +1,8 @@
+import { Loader } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import Loader from 'legacy/components/Loader'
 import Input from 'legacy/components/NumericalInput'
 
 import { UI } from 'common/constants/theme'

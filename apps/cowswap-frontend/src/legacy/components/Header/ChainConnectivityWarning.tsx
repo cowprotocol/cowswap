@@ -1,13 +1,12 @@
+import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { MEDIA_WIDTHS } from 'legacy/theme'
-
-import { useWalletInfo } from 'modules/wallet'
 
 const BodyRow = styled.div`
   color: ${({ theme }) => theme.black};

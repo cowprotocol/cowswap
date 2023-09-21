@@ -1,21 +1,23 @@
 import { useMemo } from 'react'
 
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { getAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
+import { useAppData } from 'modules/appData'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
-import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
+  const appData = useAppData()
 
   const { state } = useDerivedTradeState()
 
@@ -26,7 +28,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
 
-  const enoughBalance = useEnoughBalanceAndAllowance({
+  const { enoughBalance } = useEnoughBalanceAndAllowance({
     account,
     amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
   })
@@ -46,19 +48,23 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
       fromDecimals,
       isEthFlow: false,
       priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      appData: appData?.fullAppData,
+      appDataHash: appData?.appDataKeccak256,
     }
 
     return params
   }, [
-    amount,
-    account,
-    chainId,
-    orderKind,
-    enoughBalance,
-    buyToken,
-    fromDecimals,
     sellToken,
+    buyToken,
+    amount,
+    orderKind,
+    chainId,
+    account,
     toDecimals,
+    fromDecimals,
+    enoughBalance,
     verifiedQuotesEnabled,
+    appData?.fullAppData,
+    appData?.appDataKeccak256,
   ])
 }

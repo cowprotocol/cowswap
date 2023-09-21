@@ -1,7 +1,7 @@
+import { isTruthy } from '@cowprotocol/common-utils'
+
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'
-
-import { isTruthy } from 'legacy/utils/misc'
 
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'

@@ -1,13 +1,9 @@
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
+import invariant from 'tiny-invariant'
 import { Nullish } from 'types'
-
-import { ZERO_FRACTION } from 'legacy/constants'
-
-import { assertSameMarket } from 'common/utils/markets'
-import { FractionUtils } from 'utils/fractionUtils'
-
-import { adjustDecimalsAtoms } from './calculateAmountForRate'
 
 const ONE = new Fraction(1)
 
@@ -81,7 +77,7 @@ function calculatePriceDifferenceAux({
 
   // Convert difference in token amount
   const differenceInUnits = FractionUtils.fromPrice(targetPrice).subtract(FractionUtils.fromPrice(referencePrice))
-  const difference = adjustDecimalsAtoms(differenceInUnits, 0, referencePrice.quoteCurrency.decimals)
+  const difference = FractionUtils.adjustDecimalsAtoms(differenceInUnits, 0, referencePrice.quoteCurrency.decimals)
   const differenceInQuoteToken = CurrencyAmount.fromFractionalAmount(
     referencePrice.quoteCurrency,
     difference.numerator,
@@ -97,4 +93,12 @@ function calculatePriceDifferenceAux({
   // })
 
   return { percentage, amount: differenceInQuoteToken }
+}
+
+function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
+  // Assert I'm comparing apples with apples (prices should refer to market)
+  invariant(
+    price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
+    'Prices are not from the same market'
+  )
 }

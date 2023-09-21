@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
+import QuestionImage from '@cowprotocol/assets/svg/question.svg'
+import { renderTooltip } from '@cowprotocol/ui'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import QuestionImage from 'legacy/assets/svg/question.svg'
-import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { UI } from 'common/constants/theme'
 

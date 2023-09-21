@@ -1,21 +1,22 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
-import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
+import { deserializeToken, useFavouriteTokens, useUserAddedTokens } from 'legacy/state/user/hooks'
 
 import { TokensByAddress, tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from 'modules/wallet'
 
-import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
-import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
-import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
+import { useCurrencyFromMap, useTokenFromMapOrNetwork } from '../../lib/hooks/useCurrency'
+import { TokenAmounts, useOnchainBalances } from '../../modules/tokens'
+import { TokenAddressMap, useUnsupportedTokenList } from '../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
@@ -189,4 +190,32 @@ export function useToken(tokenAddress?: string | null): Token | null | undefined
 export function useCurrency(currencyId?: string | null): Currency | null | undefined {
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
+}
+
+// mimics useAllBalances
+export function useAllTokenBalances(): [TokenAmounts, boolean] {
+  const { account } = useWalletInfo()
+  const allTokens = useAllTokens()
+  // Mod, add favourite tokens to balances
+  const favTokens = useFavouriteTokens()
+
+  const allTokensArray = useMemo(() => {
+    const favTokensObj = favTokens.reduce(
+      (acc, cur: Token) => {
+        acc[cur.address] = cur
+        return acc
+      },
+      {} as {
+        [address: string]: Token
+      }
+    )
+
+    return Object.values({ ...favTokensObj, ...allTokens })
+  }, [allTokens, favTokens])
+
+  const { isLoading, amounts } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
+  return [amounts ?? {}, isLoading]
 }

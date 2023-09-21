@@ -1,11 +1,14 @@
+import {
+  getExplorerOrderLink,
+  isOrderInPendingTooLong,
+  openNpsAppziSometimes,
+  timeSinceInSeconds,
+} from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { timeSinceInSeconds } from '../../../../utils/time'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from '../../../utils/appzi'
-import { getExplorerOrderLink } from '../../../utils/explorer'
 import { AppState } from '../../index'
 import * as OrderActions from '../actions'
 import { getOrderByIdFromState } from '../helpers'

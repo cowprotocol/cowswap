@@ -1,13 +1,10 @@
 import { PropsWithChildren } from 'react'
 
+import { getExplorerLabel, getEtherscanLink } from '@cowprotocol/common-utils'
+import { getSafeWebUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { ExternalLink } from 'legacy/theme'
-import { getExplorerLabel, getEtherscanLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { getSafeWebUrl } from 'api/gnosisSafe'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType

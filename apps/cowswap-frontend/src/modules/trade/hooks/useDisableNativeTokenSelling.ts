@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-
-import { useWalletInfo } from 'modules/wallet'
+import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'

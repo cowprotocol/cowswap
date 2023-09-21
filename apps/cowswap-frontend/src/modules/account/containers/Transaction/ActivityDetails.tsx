@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
+import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { V_COW, COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
@@ -17,7 +17,6 @@ import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { StatusDetails } from './StatusDetails'
 import {

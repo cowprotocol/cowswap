@@ -1,14 +1,16 @@
 import React, { useMemo, useState } from 'react'
 
+import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
+import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
+import { formatInputAmount } from '@cowprotocol/common-utils'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import ArrowDownImage from 'legacy/assets/cow-swap/arrowDownRight.svg'
 import { InfoIcon } from 'legacy/components/InfoIcon'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { isAddress, shortenAddress } from 'legacy/utils'
 
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
@@ -19,11 +21,9 @@ import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/sta
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { DEFAULT_DATE_FORMAT } from 'common/constants/intl'
 import { UI } from 'common/constants/theme'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'
 

@@ -1,10 +1,9 @@
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { UsdAmountInfo, useUsdAmount } from './useUsdAmount'
 

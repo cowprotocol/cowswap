@@ -1,19 +1,19 @@
 import { useState } from 'react'
 
+import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { ButtonEmpty } from '@cowprotocol/ui'
+import { AutoRow, RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonEmpty } from 'legacy/components/Button'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow, RowBetween } from 'legacy/components/Row'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
-import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
-import { getEtherscanLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
+import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'

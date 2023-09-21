@@ -1,7 +1,7 @@
+import { ButtonSecondary } from '@cowprotocol/ui'
+
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { ButtonSecondary } from 'legacy/components/Button'
 
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
 import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'

@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
-
-import { onlyResolvesLast } from 'legacy/utils/async'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'

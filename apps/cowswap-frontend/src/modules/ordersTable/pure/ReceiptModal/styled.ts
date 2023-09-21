@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { AutoRow } from '@cowprotocol/ui'
 
-import { AutoRow } from 'legacy/components/Row'
+import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 

@@ -1,10 +1,10 @@
+import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { CloseIcon, ExternalLink } from 'legacy/theme'
-import { shortenAddress } from 'legacy/utils'
-import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
+import { CloseIcon } from 'legacy/theme'
 
 import { TwapOrderItem } from 'modules/twap/types'
 

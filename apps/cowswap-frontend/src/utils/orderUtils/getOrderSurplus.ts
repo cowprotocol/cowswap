@@ -1,8 +1,9 @@
 // Util functions that only pertain to/deal with operator API related stuff
+import { ZERO_BIG_NUMBER } from '@cowprotocol/common-const'
+
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { ZERO_BIG_NUMBER } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
 
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'

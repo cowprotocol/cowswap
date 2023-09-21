@@ -1,8 +1,8 @@
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowswap/abis'
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Order } from 'legacy/state/orders/actions'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 

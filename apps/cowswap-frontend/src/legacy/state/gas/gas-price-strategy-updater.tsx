@@ -1,14 +1,14 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { DEFAULT_GP_PRICE_STRATEGY } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import ms from 'ms.macro'
 
-import { DEFAULT_GP_PRICE_STRATEGY } from 'legacy/constants'
-import { gasPriceStrategyAtom } from 'legacy/state/gas/atoms'
-
-import { useWalletInfo } from 'modules/wallet'
-
 import { getPriceStrategy } from 'api/gnosisProtocol/priceApi'
+
+import { gasPriceStrategyAtom } from './atoms'
 
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
