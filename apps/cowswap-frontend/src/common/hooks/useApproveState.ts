@@ -1,19 +1,17 @@
 import { useMemo } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import usePrevious from 'legacy/hooks/usePrevious'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { FractionUtils } from 'utils/fractionUtils'
-
-import { ApprovalState } from '../../legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined

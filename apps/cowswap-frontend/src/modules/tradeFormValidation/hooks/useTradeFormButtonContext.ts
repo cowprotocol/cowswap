@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
+import { useWalletDetails } from '@cowprotocol/wallet'
+
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useWrapNativeFlow } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useWalletDetails } from 'modules/wallet'
 
 import { TradeFormButtonContext } from '../types'
 

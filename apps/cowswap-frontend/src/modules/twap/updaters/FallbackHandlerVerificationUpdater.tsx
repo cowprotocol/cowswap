@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useAsyncMemo } from 'use-async-memo'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useAsyncMemo } from 'use-async-memo'
 
 import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { useFallbackHandlerVerification } from '../hooks/useFallbackHandlerVerification'

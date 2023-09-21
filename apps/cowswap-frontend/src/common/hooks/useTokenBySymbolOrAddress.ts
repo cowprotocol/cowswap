@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 
 import { useFavouriteTokens } from 'legacy/state/user/hooks'
@@ -8,7 +9,6 @@ import { useFavouriteTokens } from 'legacy/state/user/hooks'
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
   const tokensByAddress = useAtomValue(tokensByAddressAtom)

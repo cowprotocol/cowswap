@@ -1,7 +1,7 @@
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 

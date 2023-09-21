@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import usePrevious from 'legacy/hooks/usePrevious'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'

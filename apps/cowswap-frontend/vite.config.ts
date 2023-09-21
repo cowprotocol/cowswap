@@ -3,7 +3,7 @@ import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig, loadEnv, PluginOption, searchForWorkspaceRoot } from 'vite'
+import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -11,6 +11,8 @@ import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
+
+import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
@@ -24,16 +26,6 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
-
-  // expose .env as process.env instead of import.meta since jest does not import meta yet
-  const envWithProcessPrefix = Object.entries(env).reduce((prev, [key, val]) => {
-    return {
-      ...prev,
-      ['process.env.' + key]: JSON.stringify(val),
-    }
-  }, {})
-
   const plugins = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
@@ -81,7 +73,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     define: {
-      ...envWithProcessPrefix,
+      ...getReactProcessEnv(mode),
     },
 
     assetsInclude: ['**/*.md'],

@@ -1,6 +1,7 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
+
 import { Dispatch, MiddlewareAPI } from 'redux'
 
-import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
 import { ExpireOrdersBatchParams } from '../actions'

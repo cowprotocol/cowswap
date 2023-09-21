@@ -1,8 +1,7 @@
+import { Loader, ButtonPrimary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-
-import { ButtonPrimary } from 'legacy/components/Button'
-import Loader from 'legacy/components/Loader'
 
 const ButtonWrapper = styled.div`
   display: flex;

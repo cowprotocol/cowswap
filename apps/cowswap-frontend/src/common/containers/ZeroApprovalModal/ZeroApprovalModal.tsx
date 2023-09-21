@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useWalletDetails, useWalletDisplayedAddress } from 'modules/wallet'
+import { useWalletDetails, useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { CowModal } from 'common/pure/Modal'

@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 
+import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -10,7 +11,6 @@ import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 

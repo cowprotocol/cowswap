@@ -1,12 +1,12 @@
 import { CSSProperties } from 'react'
 
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { StyledListLogo } from 'legacy/components/ListLogo'
-import { AutoRow } from 'legacy/components/Row'
 
 import { UI } from 'common/constants/theme'
 

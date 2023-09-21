@@ -1,7 +1,7 @@
+import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import ShieldImage from 'legacy/assets/cow-swap/protection.svg'
 
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 

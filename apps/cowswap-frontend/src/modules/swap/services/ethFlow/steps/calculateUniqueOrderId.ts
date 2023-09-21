@@ -1,14 +1,13 @@
+import { CoWSwapEthFlow } from '@cowprotocol/abis'
+import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { Order } from '@cowprotocol/contracts'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-import { CoWSwapEthFlow } from '@cowswap/abis'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
-
-import { MAX_VALID_TO_EPOCH } from 'utils/time'
 
 import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderExists'
 

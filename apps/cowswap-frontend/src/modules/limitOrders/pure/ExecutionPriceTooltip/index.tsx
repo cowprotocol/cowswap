@@ -1,11 +1,10 @@
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
-import { FiatAmount } from 'common/pure/FiatAmount'
 import { RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
 import * as styledEl from './styled'

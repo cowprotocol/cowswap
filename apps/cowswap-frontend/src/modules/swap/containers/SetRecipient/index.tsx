@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 
+import { AutoRow } from '@cowprotocol/ui'
+
 import { ArrowDown } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
 import { AddressInputPanel } from 'legacy/components/AddressInputPanel'
-import { AutoRow } from 'legacy/components/Row'
 import { ArrowWrapper } from 'legacy/components/swap/styleds'
 
 export interface SetRecipientProps {

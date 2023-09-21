@@ -1,6 +1,6 @@
-import ReactConfetti from 'react-confetti'
+import { useWindowSize } from '@cowprotocol/common-hooks'
 
-import { useWindowSize } from '../../hooks/useWindowSize'
+import ReactConfetti from 'react-confetti'
 
 // eslint-disable-next-line react/prop-types
 export default function Confetti({ start, variant }: { start: boolean; variant?: string }) {

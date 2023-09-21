@@ -1,10 +1,10 @@
+import { RowBetween } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { SearchInput, Separator } from 'legacy/components/SearchModal/styleds'
 

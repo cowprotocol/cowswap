@@ -1,12 +1,11 @@
+import { PRICE_API_TIMEOUT_MS } from '@cowprotocol/common-const'
+import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
 import { FeeInformation, PriceInformation } from 'types'
-
-import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
 
 import {
   getPriceQuote as getPriceQuote1inch,
@@ -16,17 +15,18 @@ import {
 import { getQuote } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import {
+  getPriceQuote as getPriceQuoteMatcha,
+  MatchaPriceQuote,
+  toPriceInformation as toPriceInformationMatcha,
+} from 'api/matcha-0x'
+
+import {
   LegacyPriceInformationWithSource,
   LegacyPriceQuoteError,
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
-} from 'api/gnosisProtocol/legacy/types'
-import {
-  getPriceQuote as getPriceQuoteMatcha,
-  MatchaPriceQuote,
-  toPriceInformation as toPriceInformationMatcha,
-} from 'api/matcha-0x'
+} from '../state/price/types'
 
 /**
  * ************************************************** *
@@ -147,7 +147,7 @@ function _extractPriceAndErrorPromiseValues(
 }
 
 function _checkFeeErrorForData(error: GpQuoteError) {
-  console.warn('[getBestQuote:Legacy]::Fee error', error)
+  console.warn('legacy]::Fee error', error)
 
   const feeAmount = error?.data?.fee_amount || error?.data?.feeAmount
   const feeExpiration = error?.data?.expiration

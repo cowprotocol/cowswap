@@ -1,12 +1,14 @@
 import { useSetAtom } from 'jotai'
 
+import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { toggleAccountSelectorModalAtom, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
 import { UI } from 'common/constants/theme'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'

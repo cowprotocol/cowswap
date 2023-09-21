@@ -1,9 +1,8 @@
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'

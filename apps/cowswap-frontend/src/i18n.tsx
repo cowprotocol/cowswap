@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
-import { SupportedLocale } from 'legacy/constants/locales'
+import { SupportedLocale } from '@cowprotocol/common-const'
+
 import { initialLocale, useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { useUserLocaleManager } from 'legacy/state/user/hooks'
 

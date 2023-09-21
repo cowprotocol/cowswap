@@ -1,3 +1,5 @@
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from '@cowprotocol/common-utils'
 import {
   Address,
   CowEnv,
@@ -7,28 +9,24 @@ import {
   OrderKind,
   OrderQuoteRequest,
   OrderQuoteResponse,
-  PartialApiContext,
-  SigningScheme,
-  SupportedChainId as ChainId,
-  Trade,
-  PriceQuality,
-  TotalSurplus,
   OrderQuoteSideKindBuy,
   OrderQuoteSideKindSell,
+  PartialApiContext,
+  PriceQuality,
+  SigningScheme,
+  SupportedChainId as ChainId,
+  TotalSurplus,
+  Trade,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
 
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
-import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types'
 
 import { getAppData } from 'modules/appData'
 
 import { ApiErrorCodes, ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { GpQuoteErrorDetails, mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-
-import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -103,7 +101,20 @@ const ETH_FLOW_AUX_QUOTE_PARAMS = {
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
+  const {
+    amount,
+    kind,
+    userAddress,
+    receiver,
+    validTo,
+    sellToken,
+    buyToken,
+    chainId,
+    priceQuality,
+    isEthFlow,
+    appData,
+    appDataHash,
+  } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -112,7 +123,8 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
-    appData: getAppData().appDataKeccak256,
+    appData: appData || getAppData().appDataKeccak256,
+    appDataHash,
     validTo,
     partiallyFillable: false,
     priceQuality,

@@ -1,8 +1,8 @@
+import CowIcon from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import CowIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
 
 import { UI } from 'common/constants/theme'
 

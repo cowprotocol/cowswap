@@ -1,4 +1,4 @@
-import { getProviderErrorMessage, isRejectRequestProviderError } from 'legacy/utils/misc'
+import { getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 export const USER_SWAP_REJECTED_ERROR = 'User rejected signing the order'
 

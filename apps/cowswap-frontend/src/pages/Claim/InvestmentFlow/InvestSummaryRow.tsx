@@ -1,14 +1,15 @@
+import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
+import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+
 import SVG from 'react-inlinesvg'
 
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import { ClaimType } from 'legacy/state/claim/hooks'
+import { ClaimType } from 'legacy/state/claim/hooks/types'
 import { calculatePercentage } from 'legacy/state/claim/hooks/utils'
+import { ClaimWithInvestmentData } from 'legacy/state/claim/types'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
-import { ClaimWithInvestmentData } from 'pages/Claim/types'
 
 export type Props = { claim: ClaimWithInvestmentData }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import loadingCowWebp from 'legacy/assets/cow-swap/cow-load.webp'
+import loadingCowWebp from '@cowprotocol/assets/cow-swap/cow-load.webp'
 
 import * as styledEl from './styled'
 

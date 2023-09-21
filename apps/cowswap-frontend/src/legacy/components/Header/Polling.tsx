@@ -1,27 +1,24 @@
 import { useEffect, useState } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
+import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowprotocol/common-hooks'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { RowFixed } from 'legacy/components/Row'
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
-import useMachineTimeMs from 'legacy/hooks/useMachineTime'
-import useTheme from 'legacy/hooks/useTheme'
-import { ExternalLink, ThemedText } from 'legacy/theme'
-import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
-
-import { useWalletInfo } from 'modules/wallet'
+import { ThemedText } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
-
-import { MouseoverTooltip } from '../Tooltip'
 
 export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;

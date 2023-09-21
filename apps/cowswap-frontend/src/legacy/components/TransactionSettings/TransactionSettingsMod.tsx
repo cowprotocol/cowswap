@@ -1,14 +1,7 @@
 import { useContext, useState } from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
-
-import { Trans } from '@lingui/macro'
-import { darken } from 'polished'
-import styled, { ThemeContext } from 'styled-components/macro'
-
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'legacy/components/analytics'
-import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
+import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import {
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
@@ -20,15 +13,22 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-} from 'legacy/constants'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+} from '@cowprotocol/common-const'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { darken } from 'polished'
+import styled, { ThemeContext } from 'styled-components/macro'
+
+import { AutoColumn } from 'legacy/components/Column'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useWalletInfo } from 'modules/wallet'
 
 import { UI } from 'common/constants/theme'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'

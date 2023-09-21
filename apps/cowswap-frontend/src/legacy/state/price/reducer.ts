@@ -4,15 +4,16 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
 import { FeeInformation, PriceInformation } from 'types'
 
-import { Writable } from 'legacy/types'
-
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
-
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
+import { LegacyFeeQuoteParams } from './types'
 
 import { PrefillStateRequired } from '../orders/reducer'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
+
+type Writable<T> = {
+  -readonly [K in keyof T]: T[K]
+}
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,

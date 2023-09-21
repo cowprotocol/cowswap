@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiIsolatedStorage } from 'jotaiStore'
+import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
 export interface AdvancedOrdersSettingsState {
   readonly showRecipient: boolean

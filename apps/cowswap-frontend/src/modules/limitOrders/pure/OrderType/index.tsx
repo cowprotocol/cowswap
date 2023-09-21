@@ -1,6 +1,7 @@
+import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
+
 import { Menu } from '@reach/menu-button'
 
-import IMAGE_CARET_DOWN from 'legacy/assets/cow-swap/carret-down.svg'
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'

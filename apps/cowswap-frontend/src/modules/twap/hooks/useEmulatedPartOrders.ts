@@ -1,9 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useMachineTimeMs } from '@cowprotocol/common-hooks'
+
 import ms from 'ms.macro'
 
-import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import { Order } from 'legacy/state/orders/actions'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'

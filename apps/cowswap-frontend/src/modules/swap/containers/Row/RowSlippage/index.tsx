@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { formatPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
@@ -8,7 +9,6 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { formatPercent } from 'utils/amountFormat'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent

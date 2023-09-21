@@ -1,18 +1,14 @@
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-// eslint-disable-next-line no-restricted-imports
-// import { t } from '@lingui/macro'
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-
 import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import CurrencyListMod, { StyledBalanceText, TagContainer } from './CurrencyListMod'
 import { Wrapper, Tag, TagLink } from './styled'
@@ -34,8 +30,8 @@ const TOKEN_TAGS: Record<Tags, TagInfo> = {
     icon: ICON_GAS_FREE,
     description: 'This token can be approved without spending gas, using the token Permit.',
     id: '1',
-  }
-};
+  },
+}
 
 export const MenuItem = styled(MenuItemMod)`
   &:hover {
@@ -43,23 +39,17 @@ export const MenuItem = styled(MenuItemMod)`
   }
 `
 
-function TokenTags({
-  isUnsupported, 
-  isPermitCompatible
-}: { 
-  isUnsupported: boolean; 
-  isPermitCompatible?: boolean; 
-}) {
-  const tagsToShow: TagInfo[] = [];
+function TokenTags({ isUnsupported, isPermitCompatible }: { isUnsupported: boolean; isPermitCompatible?: boolean }) {
+  const tagsToShow: TagInfo[] = []
 
   if (isUnsupported) {
-    tagsToShow.push(TOKEN_TAGS[Tags.UNSUPPORTED]);
+    tagsToShow.push(TOKEN_TAGS[Tags.UNSUPPORTED])
   } else if (isPermitCompatible) {
-    tagsToShow.push(TOKEN_TAGS[Tags.GAS_FREE]);
+    tagsToShow.push(TOKEN_TAGS[Tags.GAS_FREE])
   }
 
   if (tagsToShow.length === 0) {
-    return <span />;
+    return <span />
   }
 
   return (
@@ -72,13 +62,13 @@ function TokenTags({
         </TagLink>
       )}
     </TagDescriptor>
-  );
+  )
 }
 
-function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[]; }) {
+function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[] }) {
   return (
     <TagContainer>
-      {tags.map(tag => (
+      {tags.map((tag) => (
         <MouseoverTooltip key={tag.id} text={tag.description}>
           <Tag tag={tag}>
             {tag.icon ? <img src={tag.icon} alt={tag.name} /> : null}
@@ -88,7 +78,7 @@ function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: T
       ))}
       {children}
     </TagContainer>
-  );
+  )
 }
 
 export function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {

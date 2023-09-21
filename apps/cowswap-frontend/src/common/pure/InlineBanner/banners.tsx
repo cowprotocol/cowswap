@@ -1,8 +1,7 @@
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 

@@ -1,7 +1,7 @@
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '@cowprotocol/common-utils'
+
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
-
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
 
 import { soundMiddleware } from './soundMiddleware'
 
@@ -11,7 +11,7 @@ const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
-jest.mock('legacy/utils/sound')
+jest.mock('@cowprotocol/common-utils')
 
 describe('soundMiddleware', () => {
   beforeEach(() => {

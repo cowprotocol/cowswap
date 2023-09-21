@@ -1,24 +1,25 @@
 import { useCallback, useState } from 'react'
 
+import { addListAnalytics } from '@cowprotocol/analytics'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { AlertTriangle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { addListAnalytics } from 'legacy/components/analytics'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { Card } from 'legacy/components/SearchModal/ManageLists'
 import { Checkbox, PaddedColumn, TextDot } from 'legacy/components/SearchModal/styleds'
 import { SectionBreak } from 'legacy/components/swap/styleds'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme'
 
 import { ImportProps } from './index'
 

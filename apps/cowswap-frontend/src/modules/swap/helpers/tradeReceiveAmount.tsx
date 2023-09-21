@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
+import { TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
-
-import { TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 
 export interface ReceiveAmountInfo {
   type: 'from' | 'to'

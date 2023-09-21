@@ -1,3 +1,6 @@
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -6,14 +9,11 @@ import { transparentize } from 'polished'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
 import { SectionBreak } from 'legacy/components/swap/styleds'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 
@@ -47,12 +47,6 @@ export interface ImportProps {
   handleCurrencySelect?: (currency: Currency) => void
   CardComponent: (props: CardComponentProps) => JSX.Element // mod
 }
-
-const formatAnalyticsEventProperties = (tokens: Token[]) => ({
-  token_symbols: tokens.map((token) => token?.symbol),
-  token_addresses: tokens.map((token) => token?.address),
-  token_chain_ids: tokens.map((token) => token?.chainId),
-})
 
 export function ImportToken(props: ImportProps) {
   const { tokens, list, onBack, onDismiss, handleCurrencySelect } = props

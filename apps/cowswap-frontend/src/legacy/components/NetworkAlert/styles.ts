@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ExternalLink } from '@cowprotocol/ui'
 
-import { ExternalLink } from 'legacy/theme'
+import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 

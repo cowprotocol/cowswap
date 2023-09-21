@@ -1,17 +1,16 @@
 import { useMemo } from 'react'
 
+import { getEtherscanLink, getExplorerOrderLink } from '@cowprotocol/common-utils'
+import { getSafeWebUrl } from '@cowprotocol/core'
+import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { getEtherscanLink } from 'legacy/utils'
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-import { useGnosisSafeInfo } from 'modules/wallet'
 
-import { getSafeWebUrl } from 'api/gnosisSafe'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from './useRecentActivity'
 
 export function useActivityDerivedState({
   chainId,

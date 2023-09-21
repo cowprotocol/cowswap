@@ -1,10 +1,10 @@
+import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { isEnoughAmount } from 'utils/isEnoughAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {

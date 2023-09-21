@@ -1,11 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { approvalAnalytics } from '@cowprotocol/analytics'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import { approvalAnalytics } from 'legacy/components/analytics'
-import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'

@@ -1,32 +1,35 @@
 import { useCallback, useState, useEffect } from 'react'
 
+import { claimAnalytics } from '@cowprotocol/analytics'
+import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
+import cowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import {
+  LOCKED_GNO_VESTING_START_DATE,
+  MERKLE_DROP_CONTRACT_ADDRESSES,
+  TOKEN_DISTRO_CONTRACT_ADDRESSES,
+} from '@cowprotocol/common-const'
+import { usePrevious } from '@cowprotocol/common-hooks'
+import {
+  formatDateWithTimezone,
+  getBlockExplorerUrl,
+  getProviderErrorMessage,
+  isRejectRequestProviderError,
+} from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
-import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
-import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import { claimAnalytics } from 'legacy/components/analytics'
-import { ButtonPrimary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { LOCKED_GNO_VESTING_START_DATE } from 'legacy/constants'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import usePrevious from 'legacy/hooks/usePrevious'
-import { ButtonSize } from 'legacy/theme/enum'
-import { getBlockExplorerUrl } from 'legacy/utils'
-import { getProviderErrorMessage, isRejectRequestProviderError } from 'legacy/utils/misc'
-
-import { useWalletInfo } from 'modules/wallet'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
-import { formatDateWithTimezone } from 'utils/time'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 

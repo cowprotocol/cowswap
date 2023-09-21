@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom'
-
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
@@ -8,7 +6,9 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from 'legacy/constants'
+} from '@cowprotocol/common-const'
+
+import { Link } from 'react-router-dom'
 import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'

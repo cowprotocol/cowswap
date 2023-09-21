@@ -1,5 +1,7 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
+import { sendError } from '@cowprotocol/analytics'
+
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
 
@@ -12,8 +14,6 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'
-
-import { sendError } from '../analytics/googleAnalytics'
 
 type ErrorBoundaryState = {
   error: Error | null

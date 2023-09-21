@@ -1,11 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { getSurplusData } from 'api/gnosisProtocol/api'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'

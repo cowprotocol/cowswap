@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { useEthFlowContract } from 'legacy/hooks/useContract'
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { useEthFlowContract } from '@cowprotocol/common-hooks'
 
 import { ethFlowInFlightOrderIdsAtom } from '../state/EthFlow/ethFlowInFlightOrderIdsAtom'
 

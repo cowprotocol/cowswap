@@ -1,12 +1,12 @@
+import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
+import { useNetworkName } from '@cowprotocol/common-hooks'
+
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
-import CheckCircle from 'legacy/assets/cow-swap/check.svg'
-import useNetworkName from 'legacy/hooks/useNetworkName'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState } from 'legacy/state/claim/hooks'
-
-import { ClaimCommonTypes } from 'pages/Claim/types'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
 import { ClaimBanner as ClaimBannerWrapper } from './styled'
 

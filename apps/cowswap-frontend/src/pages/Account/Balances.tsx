@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
+import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
+import { COW, COW_CONTRACT_ADDRESS, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { usePrevious } from '@cowprotocol/common-hooks'
+import { useBlockNumber } from '@cowprotocol/common-hooks'
+import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
@@ -8,31 +18,17 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
-import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
-import { ButtonPrimary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { COW, V_COW } from 'legacy/constants/tokens'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import usePrevious from 'legacy/hooks/usePrevious'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
-import { getBlockExplorerUrl } from 'legacy/utils'
-import { getProviderErrorMessage } from 'legacy/utils/misc'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   ExtLink,
@@ -43,6 +39,7 @@ import {
   VestingBreakdown,
   CardsLoader,
   CardsSpinner,
+  StyledAddToMetamask,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -285,7 +282,7 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && !isProviderNetworkUnsupported && <AddToMetamask shortLabel currency={currencyCOW} />}
+              {isMetaMask && !isProviderNetworkUnsupported && <StyledAddToMetamask shortLabel currency={currencyCOW} />}
 
               {!isMetaMask && (
                 <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>

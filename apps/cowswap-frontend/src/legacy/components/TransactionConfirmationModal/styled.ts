@@ -1,10 +1,12 @@
+import { RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween } from 'legacy/components/Row'
-import { CloseIcon, ExternalLink } from 'legacy/theme'
+import { CloseIcon } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 

@@ -1,7 +1,6 @@
-import styled from 'styled-components/macro'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import styled from 'styled-components/macro'
 
 export const ExecutedWrapper = styled.div`
   display: flex;

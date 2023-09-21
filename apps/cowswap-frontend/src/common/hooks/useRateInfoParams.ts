@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useRateInfoParams(
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,

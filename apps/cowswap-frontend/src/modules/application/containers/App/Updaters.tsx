@@ -1,31 +1,34 @@
-import ApplicationUpdater from 'legacy/state/application/updater'
-import EnhancedTransactionUpdater from 'legacy/state/enhancedTransactions/updater'
+import { WalletUpdater } from '@cowprotocol/wallet'
+
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-import GasUpdater from 'legacy/state/gas/updater'
-import ListsUpdater from 'legacy/state/lists/updater'
-import LogsUpdater from 'legacy/state/logs/updater'
-import {
-  CancelledOrdersUpdater,
-  ExpiredOrdersUpdater,
-  GpOrdersUpdater,
-  PendingOrdersUpdater,
-  UnfillableOrdersUpdater,
-} from 'legacy/state/orders/updaters'
-import { SpotPricesUpdater } from 'legacy/state/orders/updaters/SpotPricesUpdater'
-import FeesUpdater from 'legacy/state/price/updater'
-import SentryUpdater from 'legacy/state/sentry/updater'
-import UserUpdater from 'legacy/state/user/updater'
+import { MulticallUpdater } from 'legacy/state/multicall'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { UsdPricesUpdater } from 'modules/usdAmount'
-import { WalletUpdater, HwAccountIndexUpdater } from 'modules/wallet'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
+import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
+import { FeesUpdater } from 'common/updaters/FeesUpdater'
+import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
+import { GasUpdater } from 'common/updaters/GasUpdater'
+import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
+import { ListsUpdater } from 'common/updaters/ListsUpdater'
+import { LogsUpdater } from 'common/updaters/LogsUpdater'
+import {
+  CancelledOrdersUpdater,
+  ExpiredOrdersUpdater,
+  GpOrdersUpdater,
+  PendingOrdersUpdater,
+  UnfillableOrdersUpdater,
+} from 'common/updaters/orders'
+import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
+import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
-import { MulticallUpdater } from 'lib/state/multicall'
+import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   return (
@@ -36,7 +39,8 @@ export function Updaters() {
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
-      <EnhancedTransactionUpdater />
+      <FinalizeTxUpdater />
+      <CancelReplaceTxUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
