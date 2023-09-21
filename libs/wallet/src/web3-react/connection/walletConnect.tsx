@@ -5,7 +5,7 @@ import { RPC_URLS } from '@cowprotocol/common-const'
 import { initializeConnector } from '@web3-react/core'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
-import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
+import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
 
 import { AsyncConnector } from './asyncConnector'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
