@@ -22,12 +22,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 
   // Always get the nonce for the real account, to know whether the cache should be invalidated
   // Static account should never need to pre-check the nonce as it'll never change once cached
-  const nonce = account
-    ? await eip2162Utils.getTokenNonce(inputToken.address, account).then((nonce) => {
-        console.log(`bug-getTokenNonce`, account, nonce)
-        return nonce
-      })
-    : undefined
+  const nonce = account ? await eip2162Utils.getTokenNonce(inputToken.address, account) : undefined
 
   const cachedResult = load(permitKey, nonce)
   if (cachedResult) {
@@ -159,7 +154,6 @@ type CachedData = PermitHookData & {
  */
 function save(key: string, nonce: number | undefined, data: PermitHookData): void {
   const cachedData: CachedData = { nonce, ...data }
-  console.debug(`bug-save: caching`, key, nonce, data)
 
   localStorage.setItem(key, JSON.stringify(cachedData))
 }
@@ -174,7 +168,6 @@ function load(key: string, nonce: number | undefined): PermitHookData | undefine
   const cachedData = localStorage.getItem(key)
 
   if (!cachedData) {
-    console.debug(`bug-load: nothing cached`, key, nonce)
     return undefined
   }
 
@@ -191,15 +184,12 @@ function load(key: string, nonce: number | undefined): PermitHookData | undefine
       // Remove cache key
       localStorage.removeItem(key)
 
-      console.debug(`bug-load: stale cache`, key, nonce, storedNonce)
       return undefined
     }
 
-    console.debug(`bug-load: loaded data`, key, nonce, storedNonce, permitHookData)
     // Cache is valid, return it
     return permitHookData
   } catch {
-    console.debug(`bug-load: failed to parse`, key, nonce, cachedData)
     // Failed to parse stored data, return nothing
     return undefined
   }
