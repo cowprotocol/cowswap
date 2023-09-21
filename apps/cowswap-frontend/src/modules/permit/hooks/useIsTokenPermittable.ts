@@ -56,7 +56,7 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
     })
-  }, [addPermitInfo, chainId, isNative, lowerCaseAddress, permitInfo, provider, tokenName])
+  }, [addPermitInfo, chainId, isNative, isPermitEnabled, lowerCaseAddress, permitInfo, provider, tokenName])
 
   if (isNative) {
     return false
