@@ -1,9 +1,7 @@
 import { SetStateAction } from 'jotai'
 
 import { COW, GNO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getAppData } from 'modules/appData'
@@ -18,6 +16,8 @@ const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const tradeContext: TradeFlowContext = {
+  hasEnoughAllowance: undefined,
+  permitInfo: undefined,
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
@@ -36,7 +36,6 @@ const tradeContext: TradeFlowContext = {
     appData: getAppData(),
   },
   rateImpact: 0,
-  appData: {} as any,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
