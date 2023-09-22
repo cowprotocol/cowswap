@@ -5,12 +5,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { generatePermitHook } from 'modules/permit'
+import { handlePermit } from 'modules/permit'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -53,26 +52,6 @@ export async function tradeFlow(
     throw new PriceImpactDeclineError()
   }
 
-  if (permitInfo && !hasEnoughAllowance) {
-    // If token is permittable and there's not enough allowance, get th permit hook
-
-    // TODO: maybe we need a modal to inform the user what they need to sign?
-    const permitData = await generatePermitHook({
-      inputToken: sellToken,
-      provider,
-      account,
-      chainId,
-      permitInfo,
-    })
-
-    const hooks = buildAppDataHooks([permitData])
-
-    postOrderParams.appData = await updateHooksOnAppData(appData, hooks)
-  } else {
-    // Otherwise, remove hooks (if any) from appData to avoid stale data
-    postOrderParams.appData = await updateHooksOnAppData(appData, undefined)
-  }
-
   logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
   tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
   beforeTrade?.()
@@ -80,13 +59,24 @@ export async function tradeFlow(
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
   try {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: sign and post order')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: handle permit')
+    postOrderParams.appData = await handlePermit({
+      permitInfo,
+      hasEnoughAllowance,
+      inputToken: sellToken,
+      provider,
+      account,
+      chainId,
+      appData,
+    })
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder({
       ...postOrderParams,
       signer: provider.getSigner(),
       validTo,
     })
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: add pending order step')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
       {
         id: orderId,
@@ -99,12 +89,12 @@ export async function tradeFlow(
       dispatch
     )
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: presign order (optional)')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: presign order (optional)')
     const presignTx = await (allowsOffchainSigning
       ? Promise.resolve(null)
       : presignOrderStep(orderId, settlementContract))
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: unhide SC order (optional)')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: unhide SC order (optional)')
     if (presignTx) {
       partialOrderUpdate(
         {
@@ -119,12 +109,12 @@ export async function tradeFlow(
       )
     }
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: Sign order')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: ERROR: ', error)
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
