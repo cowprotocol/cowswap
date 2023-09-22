@@ -62,7 +62,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
-    appData,
     rateImpact,
     postOrderParams: {
       class: OrderClass.LIMIT,

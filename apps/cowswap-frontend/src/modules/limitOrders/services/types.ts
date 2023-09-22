@@ -6,7 +6,6 @@ import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { AppDataInfo } from 'modules/appData'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -16,7 +15,6 @@ export interface TradeFlowContext {
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number
-  appData: AppDataInfo
   provider: Web3Provider
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
