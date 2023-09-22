@@ -142,7 +142,7 @@ async function calculateGasLimit(
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account } = params
 
-  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
+  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
 }
 
 type CachedData = PermitHookData & {
