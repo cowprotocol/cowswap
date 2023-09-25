@@ -6,7 +6,6 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -345,10 +344,11 @@ export function OrderRow({
               <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
               {withWarning && (
                 <styledEl.WarningIndicator>
-                  <MouseoverTooltipContent
-                    wrap={false}
+                  <styledEl.StyledQuestionHelper
                     bgColor={theme.alert}
-                    content={
+                    placement="bottom"
+                    Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
+                    text={
                       <styledEl.WarningContent>
                         {hasEnoughBalance === false && (
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
@@ -358,10 +358,7 @@ export function OrderRow({
                         )}
                       </styledEl.WarningContent>
                     }
-                    placement="bottom"
-                  >
-                    <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-                  </MouseoverTooltipContent>
+                  />
                 </styledEl.WarningIndicator>
               )}
             </>

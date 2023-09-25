@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
 import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -23,6 +25,7 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
 
   svg > path {
     fill: ${({ theme }) => theme.alert};
+    stroke: none;
   }
 `
 
@@ -30,6 +33,7 @@ export const WarningContent = styled.div`
   max-width: 270px;
   padding: 10px;
   color: ${({ theme }) => theme.black};
+  background: ${({ theme }) => theme.alert};
 
   h3,
   p {
@@ -40,6 +44,10 @@ export const WarningContent = styled.div`
   h3 {
     margin-bottom: 8px;
   }
+`
+
+export const StyledQuestionHelper = styled(QuestionHelper)`
+  margin: 0;
 `
 
 export const WarningParagraph = styled.div`
