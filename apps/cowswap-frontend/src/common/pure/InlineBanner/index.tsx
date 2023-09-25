@@ -16,54 +16,50 @@ interface ColorEnums {
   text: string
 }
 
-function getColorEnums(bannerType: BannerType): ColorEnums {
-  switch (bannerType) {
-    case 'alert':
-      return {
-        icon: IconType.ALERT,
-        color: UI.COLOR_ALERT,
-        bg: UI.COLOR_ALERT_BG,
-        text: UI.COLOR_ALERT_TEXT,
-      }
-    case 'information':
-      return {
-        icon: IconType.INFORMATION,
-        color: UI.COLOR_INFORMATION,
-        bg: UI.COLOR_INFORMATION_BG,
-        text: UI.COLOR_INFORMATION_TEXT,
-      }
-    case 'success':
-      return {
-        icon: IconType.SUCCESS,
-        color: UI.COLOR_SUCCESS,
-        bg: UI.COLOR_SUCCESS_BG,
-        text: UI.COLOR_SUCCESS_TEXT,
-      }
-    case 'danger':
-      return {
-        icon: IconType.DANGER,
-        color: UI.COLOR_DANGER,
-        bg: UI.COLOR_DANGER_BG,
-        text: UI.COLOR_DANGER_TEXT,
-      }
-    case 'savings':
-      return {
-        iconText: '💸',
-        color: UI.COLOR_SUCCESS,
-        bg: UI.COLOR_SUCCESS_BG,
-        text: UI.COLOR_SUCCESS_TEXT,
-      }
-    default:
-      return {
-        icon: IconType.ALERT,
-        color: UI.COLOR_ALERT,
-        bg: UI.COLOR_ALERT_BG,
-        text: UI.COLOR_ALERT_TEXT,
-      }
-  }
+const colorEnumsMap: Record<BannerType, ColorEnums> = {
+  alert: {
+    icon: IconType.ALERT,
+    color: UI.COLOR_ALERT,
+    bg: UI.COLOR_ALERT_BG,
+    text: UI.COLOR_ALERT_TEXT,
+  },
+  information: {
+    icon: IconType.INFORMATION,
+    color: UI.COLOR_INFORMATION,
+    bg: UI.COLOR_INFORMATION_BG,
+    text: UI.COLOR_INFORMATION_TEXT,
+  },
+  success: {
+    icon: IconType.SUCCESS,
+    color: UI.COLOR_SUCCESS,
+    bg: UI.COLOR_SUCCESS_BG,
+    text: UI.COLOR_SUCCESS_TEXT,
+  },
+  danger: {
+    icon: IconType.DANGER,
+    color: UI.COLOR_DANGER,
+    bg: UI.COLOR_DANGER_BG,
+    text: UI.COLOR_DANGER_TEXT,
+  },
+  savings: {
+    iconText: '💸',
+    color: UI.COLOR_SUCCESS,
+    bg: UI.COLOR_SUCCESS_BG,
+    text: UI.COLOR_SUCCESS_TEXT,
+  },
 }
 
-const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; orientation?: BannerOrientation; iconSize?: number; padding?: string; }>`
+function getColorEnums(bannerType: BannerType): ColorEnums {
+  return colorEnumsMap[bannerType] || colorEnumsMap.alert
+}
+
+const Wrapper = styled.span<{
+  colorEnums: ColorEnums
+  borderRadius?: string
+  orientation?: BannerOrientation
+  iconSize?: number
+  padding?: string
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +78,8 @@ const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; ori
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-flow: ${({ orientation = BannerOrientation.Vertical }) => (orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap')};
+    flex-flow: ${({ orientation = BannerOrientation.Vertical }) =>
+      orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
     width: 100%;
 
@@ -104,7 +101,8 @@ const Wrapper = styled.span<{ colorEnums: ColorEnums; borderRadius?: string; ori
     margin: auto;
     padding: 0;
     width: 100%;
-    text-align: ${({ orientation = BannerOrientation.Vertical }) => (orientation === BannerOrientation.Horizontal ? 'left' : 'center')};
+    text-align: ${({ orientation = BannerOrientation.Vertical }) =>
+      orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
   }
 
   > span > i {
@@ -126,13 +124,37 @@ export type InlineBannerProps = {
   padding?: string
 }
 
-export function InlineBanner({ children, className, hideIcon, bannerType = 'alert', borderRadius, orientation, iconSize, iconPadding, padding }: InlineBannerProps) {
+export function InlineBanner({
+  children,
+  className,
+  hideIcon,
+  bannerType = 'alert',
+  borderRadius,
+  orientation,
+  iconSize,
+  iconPadding,
+  padding,
+}: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
 
   return (
-    <Wrapper className={className} colorEnums={colorEnums} borderRadius={borderRadius} orientation={orientation} padding={padding}>
+    <Wrapper
+      className={className}
+      colorEnums={colorEnums}
+      borderRadius={borderRadius}
+      orientation={orientation}
+      padding={padding}
+    >
       <span>
-        {!hideIcon && colorEnums.icon && <Icon image={IconType.ALERT} size={iconSize} color={colorEnums.color} description={bannerType} padding={iconPadding} />}
+        {!hideIcon && colorEnums.icon && (
+          <Icon
+            image={IconType.ALERT}
+            size={iconSize}
+            color={colorEnums.color}
+            description={bannerType}
+            padding={iconPadding}
+          />
+        )}
         {!hideIcon && colorEnums.iconText && <i>{colorEnums.iconText}</i>}
         {children}
       </span>
