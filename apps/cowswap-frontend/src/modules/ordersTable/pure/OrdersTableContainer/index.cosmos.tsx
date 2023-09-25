@@ -47,7 +47,7 @@ const orderActions: OrderActions = {
     console.log('toggleAllOrdersForCancellation')
   },
   approveOrderToken() {
-    console.log('approveOrderToken')
+    console.log('approveOrderToken ')
   },
 }
 
