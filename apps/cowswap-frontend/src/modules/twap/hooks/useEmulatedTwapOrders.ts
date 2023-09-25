@@ -32,11 +32,7 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      try {
-        acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
-      } catch (e) {
-        console.error(`[useEmulatedPartOrders] Failed to map order`, order, e)
-      }
+      acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
       return acc
     }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])

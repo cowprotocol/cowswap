@@ -17,33 +17,29 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
   const groupsMap = new Map<string, OrderTableGroupMapItem>()
 
   const orders = allOrders.reduce<ParsedOrder[]>((acc, order) => {
-    try {
-      const parsedOrder = parseOrder(order)
-      const composableOrderId = order.composableCowInfo?.id
-      const parentOrderId = order.composableCowInfo?.parentId
+    const parsedOrder = parseOrder(order)
+    const composableOrderId = order.composableCowInfo?.id
+    const parentOrderId = order.composableCowInfo?.parentId
 
-      // Parent
-      if (composableOrderId) {
-        const group = groupsMap.get(composableOrderId)
+    // Parent
+    if (composableOrderId) {
+      const group = groupsMap.get(composableOrderId)
 
-        if (!group) {
-          groupsMap.set(composableOrderId, { parent: parsedOrder, children: [] })
-        } else {
-          group.parent = parsedOrder
-        }
-        // Child
-      } else if (parentOrderId) {
-        if (!groupsMap.has(parentOrderId)) {
-          groupsMap.set(parentOrderId, { parent: null, children: [] })
-        }
-
-        groupsMap.get(parentOrderId)!.children.push(parsedOrder)
-        // Regular order
+      if (!group) {
+        groupsMap.set(composableOrderId, { parent: parsedOrder, children: [] })
       } else {
-        acc.push(parsedOrder)
+        group.parent = parsedOrder
       }
-    } catch (e) {
-      console.warn(`[groupOrdersTable] Failed to parse order`, order.id)
+      // Child
+    } else if (parentOrderId) {
+      if (!groupsMap.has(parentOrderId)) {
+        groupsMap.set(parentOrderId, { parent: null, children: [] })
+      }
+
+      groupsMap.get(parentOrderId)!.children.push(parsedOrder)
+      // Regular order
+    } else {
+      acc.push(parsedOrder)
     }
 
     return acc
