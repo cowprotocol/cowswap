@@ -21,7 +21,7 @@ exports[`Create TWAP order When sell token is NOT approved AND token needs zero 
   "approve",
   [
     "0xB4FBF271143F4FBf7B91A5ded31805e42b222222",
-    "100000000000",
+    "115792089237316195423570985008687907853269984665640564039457584007913129639935",
   ],
 ]
 `;
@@ -80,7 +80,7 @@ exports[`Create TWAP order When sell token is NOT approved, then should generate
   "approve",
   [
     "0xB4FBF271143F4FBf7B91A5ded31805e42b222222",
-    "100000000000",
+    "115792089237316195423570985008687907853269984665640564039457584007913129639935",
   ],
 ]
 `;
