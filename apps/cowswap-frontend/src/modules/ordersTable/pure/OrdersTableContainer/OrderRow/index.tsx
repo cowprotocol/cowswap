@@ -5,7 +5,7 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
+import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -27,6 +27,7 @@ import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
@@ -91,7 +92,7 @@ function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {
   )
 }
 
-function AllowanceWarning(params: { symbol: string; isScheduled: boolean }) {
+function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: () => void }) {
   const { symbol, isScheduled } = params
 
   return (
@@ -128,6 +129,9 @@ function AllowanceWarning(params: { symbol: string; isScheduled: boolean }) {
           </>
         )}
       </p>
+      <styledEl.WarningActionBox>
+        <ButtonSecondary onClick={params.approve}>Approve</ButtonSecondary>
+      </styledEl.WarningActionBox>
     </styledEl.WarningParagraph>
   )
 }
@@ -354,7 +358,11 @@ export function OrderRow({
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
                         {hasEnoughAllowance === false && (
-                          <AllowanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
+                          <AllowanceWarning
+                            approve={() => orderActions.approveOrderToken(order.inputToken)}
+                            symbol={inputTokenSymbol}
+                            isScheduled={isOrderScheduled}
+                          />
                         )}
                       </styledEl.WarningContent>
                     }

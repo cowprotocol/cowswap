@@ -58,6 +58,10 @@ export const WarningParagraph = styled.div`
   }
 `
 
+export const WarningActionBox = styled.div`
+  margin-top: 15px;
+`
+
 export const RateValue = styled.span``
 
 export const StatusBox = styled.div`
