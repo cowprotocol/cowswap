@@ -15,6 +15,7 @@ import {
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -33,7 +34,6 @@ import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
-import { useDerivedTradeState } from '../../../trade/hooks/useDerivedTradeState'
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
