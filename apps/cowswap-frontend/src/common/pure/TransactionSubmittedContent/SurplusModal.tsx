@@ -1,23 +1,21 @@
 import React, { useCallback } from 'react'
 
+import { sendEvent } from '@cowprotocol/analytics'
+import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
+import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
+import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import CheckSingular from 'legacy/assets/cow-swap/check-singular.svg'
-import SurplusCow from 'legacy/assets/cow-swap/surplus-cow.svg'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import { Order } from 'legacy/state/orders/actions'
-import { ExternalLink } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount, SymbolElement } from 'common/pure/TokenAmount'
-
-import { sendEvent } from '../../../legacy/components/analytics/googleAnalytics'
 
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'

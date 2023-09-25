@@ -1,14 +1,15 @@
+import { Row, RowFixed, RowBetween } from '@cowprotocol/ui'
+import { LinkIcon } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled, { DefaultTheme } from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { Separator } from 'legacy/components/SearchModal/styleds'
-import { ButtonText, LinkIcon } from 'legacy/theme'
+import { ButtonText } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 

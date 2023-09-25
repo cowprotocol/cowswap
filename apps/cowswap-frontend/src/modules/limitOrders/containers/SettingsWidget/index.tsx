@@ -1,12 +1,10 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
 import { ExpertModeIndicator, MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { Settings } from '../../pure/Settings'
@@ -20,7 +18,6 @@ export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const [showExpertConfirm, setShowExpertConfirm] = useState(false)
-  const { partialFillsEnabled } = useFeatureFlags()
 
   const onStateChanged = useCallback(
     (state: Partial<LimitOrdersSettingsState>) => {
@@ -60,11 +57,7 @@ export function SettingsWidget() {
         </SettingsButton>
         <MenuContent>
           <MenuItem disabled={true} onSelect={() => void 0}>
-            <Settings
-              state={settingsState}
-              onStateChanged={onStateChanged}
-              featurePartialFillsEnabled={partialFillsEnabled}
-            />
+            <Settings state={settingsState} onStateChanged={onStateChanged} />
           </MenuItem>
         </MenuContent>
       </Menu>

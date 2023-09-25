@@ -1,4 +1,4 @@
-import { Erc20 } from '@cowswap/abis'
+import { Erc20 } from '@cowprotocol/abis'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 

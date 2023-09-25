@@ -1,8 +1,8 @@
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+
 import { transparentize } from 'polished'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
-
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 
 import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,

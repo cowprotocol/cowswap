@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { VCow } from '@cowswap/abis'
+import { VCow } from '@cowprotocol/abis'
+import { GpEther, V_COW } from '@cowprotocol/common-const'
+import { useIsMounted, useVCowContract } from '@cowprotocol/common-hooks'
+import { calculateGasMargin, formatTokenAmount, isAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
@@ -11,55 +14,44 @@ import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { GpEther, V_COW } from 'legacy/constants/tokens'
-import { useVCowContract } from 'legacy/hooks/useContract'
-import useIsMounted from 'legacy/hooks/useIsMounted'
-import { AppDispatch } from 'legacy/state'
-import { AppState } from 'legacy/state'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
+
+import { PAID_CLAIM_TYPES } from './const'
+import { ClaimInput, ClaimType, RepoClaims, UserClaims, VCowPrices } from './types'
 import {
+  claimTypeToTokenAmount,
   getClaimKey,
   getClaimsRepoPath,
   isFreeClaim,
-  claimTypeToTokenAmount,
   transformRepoClaimsToUserClaims,
-} from 'legacy/state/claim/hooks/utils'
-import { ClaimInfo } from 'legacy/state/claim/reducer'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
-import { isAddress } from 'legacy/utils'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+} from './utils'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
-import { EnhancedUserClaimData } from 'pages/Claim/types'
-import { formatTokenAmount } from 'utils/amountFormat'
-
+import { useAllClaimingTransactionIndices, useTransactionAdder } from '../../enhancedTransactions/hooks'
+import { AppDispatch, AppState } from '../../index'
 import {
-  setInputAddress,
+  ClaimStatus,
+  initInvestFlowData,
+  resetClaimUi,
   setActiveClaimAccount,
   setActiveClaimAccountENS,
-  setIsSearchUsed,
-  setClaimStatus,
   setClaimedAmount,
-  setIsInvestFlowActive,
+  setClaimsCount,
+  setClaimStatus,
+  setEstimatedGas,
+  setInputAddress,
   setInvestFlowStep,
-  initInvestFlowData,
-  updateInvestAmount,
+  setIsInvestFlowActive,
+  setIsSearchUsed,
+  setIsTouched,
   setSelected,
   setSelectedAll,
-  ClaimStatus,
-  resetClaimUi,
+  updateInvestAmount,
   updateInvestError,
-  setEstimatedGas,
-  setIsTouched,
-  setClaimsCount,
 } from '../actions'
-
-const CLAIMS_REPO_BRANCH = 'main'
-export const CLAIMS_REPO = `https://raw.githubusercontent.com/cowprotocol/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
+import { ClaimInfo } from '../reducer'
+import { EnhancedUserClaimData } from '../types'
 
 // Base amount = 1 VCOW
 const ONE_VCOW = CurrencyAmount.fromRawAmount(
@@ -74,19 +66,7 @@ const AIRDROP_TIME = ms`6 weeks`
 // For native token price calculation
 const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
 
-export enum ClaimType {
-  Airdrop, // free, no vesting, can be available on both mainnet and gchain
-  GnoOption, // paid, with vesting, must use GNO, can be available on both mainnet and gchain
-  UserOption, // paid, with vesting, must use Native currency, can be available on both mainnet and gchain
-  Investor, // paid, with vesting, must use USDC, only on mainnet
-  Team, // free, with vesting, only on mainnet
-  Advisor, // free, with vesting, only on mainnet
-}
-
 type RepoClaimType = keyof typeof ClaimType
-
-export const FREE_CLAIM_TYPES: ClaimType[] = [ClaimType.Airdrop, ClaimType.Team, ClaimType.Advisor]
-export const PAID_CLAIM_TYPES: ClaimType[] = [ClaimType.GnoOption, ClaimType.UserOption, ClaimType.Investor]
 
 export interface UserClaimData {
   index: number
@@ -99,22 +79,7 @@ export type RepoClaimData = Omit<UserClaimData, 'type'> & {
   type: RepoClaimType
 }
 
-export interface ClaimInput {
-  /**
-   * The index of the claim
-   */
-  index: number
-  /**
-   * The amount of the claim. Optional
-   * If not present, will claim the full amount
-   */
-  amount?: string
-}
-
 type Account = string | null | undefined
-
-export type UserClaims = UserClaimData[]
-export type RepoClaims = RepoClaimData[]
 
 export type ClassifiedUserClaims = {
   available: UserClaims
@@ -400,12 +365,6 @@ function _useVCowPriceForToken(priceFnName: VCowPriceFnNames): string | null {
   }, [chainId, priceFnName, vCowContract])
 
   return price
-}
-
-export type VCowPrices = {
-  native: string | null
-  gno: string | null
-  usdc: string | null
 }
 
 export function useVCowPrices(): VCowPrices {

@@ -1,4 +1,4 @@
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { SAFE_COW_APP_LINK } from 'common/constants/common'
 

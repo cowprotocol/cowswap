@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react'
 
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { getAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
 import * as Sentry from '@sentry/browser'
 import ms from 'ms.macro'
 import { useAsyncMemo } from 'use-async-memo'
 
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
-import { useWalletInfo } from 'modules/wallet'
 
 import { getNativePrice } from 'api/gnosisProtocol'
-import { getAddress } from 'utils/getAddress'
 
 type PriceResult = number | Error | undefined
 

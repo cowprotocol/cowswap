@@ -1,6 +1,7 @@
 import { MouseEvent, useCallback, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -10,8 +11,6 @@ import { PopupItem } from 'legacy/components/Popups/PopupItem'
 import { useActivePopups, useRemovePopup } from 'legacy/state/application/hooks'
 import { useURLWarningVisible } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
-
-import { useWalletInfo } from 'modules/wallet'
 
 export const MobilePopupInner = styled.div`
   height: 99%;
@@ -75,7 +74,7 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
 `
 
 /**
- * @deprecated use @cowswap/snackbars instead
+ * @deprecated use @cowprotocol/snackbars instead
  */
 export function Popups() {
   // get all popups

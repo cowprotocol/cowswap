@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

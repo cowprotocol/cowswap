@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -8,16 +10,19 @@ import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import { SwapModalHeader } from 'legacy/components/swap/SwapModalHeader'
 import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
+import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
-import { useWalletDetails } from 'modules/wallet'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useButtonText } from './hooks'
+
+import { LegacyConfirmationModalContent } from '../../TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState

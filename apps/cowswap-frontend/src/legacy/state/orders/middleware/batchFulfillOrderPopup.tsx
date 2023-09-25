@@ -1,7 +1,7 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
+
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
-
-import { orderAnalytics } from 'legacy/components/analytics'
 
 import { ExecutedSummary } from 'common/pure/ExecutedSummary'
 import { parseOrder } from 'utils/orderUtils/parseOrder'

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { useContract } from '@cowprotocol/common-hooks'
+import { useENSAddress } from '@cowprotocol/ens'
+
 import JSBI from 'jsbi'
 
 import { useSingleCallResult } from 'lib/hooks/multicall'
-
-import { useContract } from './useContract'
-import useENSAddress from './useENSAddress'
 
 const CHAIN_DATA_ABI = [
   {

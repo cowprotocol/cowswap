@@ -1,17 +1,16 @@
 import { useCallback } from 'react'
 
+import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
+import { resolveENSContentHash } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { nanoid } from '@reduxjs/toolkit'
 
-import { MAINNET_PROVIDER } from 'legacy/constants/networks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { fetchTokenList } from 'legacy/state/lists/actions'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
-import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()

@@ -1,9 +1,13 @@
+import { shortenOrderId } from '@cowprotocol/common-utils'
+
 import styled from 'styled-components/macro'
 
-import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
-
-import { shortenOrderId } from '../../utils'
-
+const CancellationSummary = styled.span`
+  padding: 12px;
+  margin: 0;
+  border-radius: 6px;
+  background: ${({ theme }) => theme.bg1};
+`
 // Moved this function to separate file to avoid curcular deps
 
 const Wrapper = styled.div`

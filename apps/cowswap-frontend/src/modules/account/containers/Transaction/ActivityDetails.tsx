@@ -1,35 +1,23 @@
 import { ReactNode } from 'react'
 
+import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { COW, V_COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import useENS from 'legacy/hooks/useENS'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { ExternalLink } from 'legacy/theme'
-import { shortenAddress } from 'legacy/utils'
-import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { Icon, IconType } from 'common/pure/Icon'
-import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
-import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import {
-  useHideReceiverWalletBanner,
-  useIsReceiverWalletBannerHidden,
-} from 'common/state/receiverWalletBannerVisibility'
 
 import { StatusDetails } from './StatusDetails'
 import {

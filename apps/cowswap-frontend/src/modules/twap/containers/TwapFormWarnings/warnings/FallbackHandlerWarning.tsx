@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ExternalLink } from '@cowprotocol/ui'
 
-import { ExternalLink } from 'legacy/theme'
+import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
 

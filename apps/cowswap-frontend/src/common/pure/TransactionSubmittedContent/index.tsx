@@ -1,5 +1,6 @@
 import React from 'react'
 
+import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
 import { Nullish } from 'types'
 
-import GameIcon from 'legacy/assets/cow-swap/game.gif'
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -15,7 +15,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
 
 import { Routes } from 'common/constants/routes'
 

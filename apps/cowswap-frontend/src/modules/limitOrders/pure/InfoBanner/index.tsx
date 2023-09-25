@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
+import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+
 import SVG from 'react-inlinesvg'
 import { HashLink } from 'react-router-hash-link'
-
-import AlertIcon from 'legacy/assets/cow-swap/alert-circle.svg'
 
 import * as styledEl from './styled'
 

@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { t } from '@lingui/macro'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletInfo } from 'modules/wallet'
+import { t } from '@lingui/macro'
 
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 

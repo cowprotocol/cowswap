@@ -129,7 +129,6 @@ jobs:
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run eslint
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login != github.repository_owner }}
         run: yarn lint
 
   integration-tests:

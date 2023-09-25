@@ -1,8 +1,7 @@
+import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
-
-import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 
 function getPriceQuoteAmount(price: Price<Currency, Currency>, isInverted: boolean): CurrencyAmount<Currency> {
   const executionPrice = isInverted ? price.invert() : price

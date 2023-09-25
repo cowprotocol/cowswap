@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { useSetPartOrderCancelling } from 'modules/twap/hooks/useSetPartOrderCancelling'
-import { useWalletInfo } from 'modules/wallet'
 
 import { CancelledOrderInfo } from './onChainCancellation'
 import { useGetOnChainCancellation } from './useGetOnChainCancellation'

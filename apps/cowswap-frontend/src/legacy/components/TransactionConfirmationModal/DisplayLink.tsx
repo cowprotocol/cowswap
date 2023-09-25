@@ -1,11 +1,12 @@
 import React, { useContext } from 'react'
 
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
+
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
-import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from 'legacy/utils'
 
 import { ExternalLinkCustom } from './styled'
 

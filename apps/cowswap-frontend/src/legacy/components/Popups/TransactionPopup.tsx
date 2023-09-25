@@ -1,15 +1,15 @@
 import { useContext } from 'react'
 
+import { BlockExplorerLinkType } from '@cowprotocol/common-utils'
+import { AutoRow } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
-import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
-import { BlockExplorerLinkType } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

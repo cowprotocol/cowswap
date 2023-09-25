@@ -1,13 +1,12 @@
+import { useENS } from '@cowprotocol/ens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import useENS from 'legacy/hooks/useENS'
-
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
 import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
-import { useWalletInfo } from 'modules/wallet'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 

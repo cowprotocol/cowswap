@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 
+import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsSafeEthFlow } from 'modules/swap/hooks/useIsSafeEthFlow'
-
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 export function useButtonText(slippageAdjustedSellAmount: Nullish<CurrencyAmount<Currency>>) {
   const isSafeApprovalBundle = useIsSafeApprovalBundle(slippageAdjustedSellAmount)

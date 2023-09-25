@@ -1,29 +1,22 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
+import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
+import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { ContentWrapper as SearchInputFormatter } from 'legacy/components/SearchModal/CurrencySearch'
 import { TokenSearchInput } from 'legacy/components/Tokens/styled'
 import TokensTable from 'legacy/components/Tokens/TokensTable'
-import { useAllTokens } from 'legacy/hooks/Tokens'
-import useDebounce from 'legacy/hooks/useDebounce'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import usePrevious from 'legacy/hooks/usePrevious'
-import useTheme from 'legacy/hooks/useTheme'
-import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+import { useAllTokenBalances, useAllTokens } from 'legacy/hooks/Tokens'
 import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens } from 'legacy/state/user/hooks'
 import { CloseIcon } from 'legacy/theme'
-import { isAddress } from 'legacy/utils'
-import { isTruthy } from 'legacy/utils/misc'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -156,7 +149,7 @@ export default function TokensOverview() {
   }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
+    <>
       {!isProviderNetworkUnsupported && (
         <AccountHeading>
           <LeftSection>
@@ -214,6 +207,6 @@ export default function TokensOverview() {
 
         {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
       </Overview>
-    </Trace>
+    </>
   )
 }

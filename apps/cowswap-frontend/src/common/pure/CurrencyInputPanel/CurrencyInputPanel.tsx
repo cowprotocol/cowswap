@@ -1,24 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
+import { formatInputAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
 import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'
 

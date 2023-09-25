@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { shortenOrderId } from '@cowprotocol/common-utils'
+
 import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { shortenOrderId } from 'legacy/utils'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 import { CowModal as Modal } from 'common/pure/Modal'

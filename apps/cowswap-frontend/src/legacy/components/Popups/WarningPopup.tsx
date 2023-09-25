@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 
+import { AutoRow } from '@cowprotocol/ui'
+
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
 
 const RowNoFlex = styled(AutoRow)`

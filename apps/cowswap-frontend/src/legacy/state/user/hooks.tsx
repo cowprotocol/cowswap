@@ -1,19 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
+import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCY_BUY_TOKEN, SupportedLocale } from '@cowprotocol/common-const'
+import { calculateValidTo } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
-
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { SupportedLocale } from 'legacy/constants/locales'
-import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-import { AppState } from 'legacy/state'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { calculateValidTo } from 'utils/time'
 
 import {
   addSerializedToken,
@@ -30,7 +23,9 @@ import {
 } from './reducer'
 import { SerializedToken } from './types'
 
-import { useSwapActionHandlers } from '../swap/hooks'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
+import { setRecipient } from '../swap/actions'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
@@ -107,7 +102,12 @@ export function useIsRecipientToggleVisible(): boolean {
 export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
   const dispatch = useAppDispatch()
   const isVisible = useIsRecipientToggleVisible()
-  const { onChangeRecipient } = useSwapActionHandlers()
+  const onChangeRecipient = useCallback(
+    (recipient: string | null) => {
+      dispatch(setRecipient({ recipient }))
+    },
+    [dispatch]
+  )
 
   const toggleVisibility = useCallback(
     (value?: boolean) => {

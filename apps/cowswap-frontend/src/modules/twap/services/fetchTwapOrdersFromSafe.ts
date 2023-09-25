@@ -1,11 +1,10 @@
-import { ComposableCoW } from '@cowswap/abis'
+import { ComposableCoW } from '@cowprotocol/abis'
+import { delay, isTruthy } from '@cowprotocol/common-utils'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import ms from 'ms.macro'
-
-import { delay, isTruthy } from 'legacy/utils/misc'
 
 import { SafeTransactionParams } from 'common/types'
 

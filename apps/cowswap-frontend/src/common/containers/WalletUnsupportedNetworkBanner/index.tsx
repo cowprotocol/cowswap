@@ -1,9 +1,9 @@
+import { getChainInfo } from '@cowprotocol/common-const'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 

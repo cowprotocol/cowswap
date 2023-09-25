@@ -1,10 +1,9 @@
+import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
-
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import useDebounce from 'legacy/hooks/useDebounce'
 
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'

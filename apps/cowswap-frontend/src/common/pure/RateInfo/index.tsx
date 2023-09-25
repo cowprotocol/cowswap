@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 
+import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -11,11 +13,7 @@ import { Nullish } from 'types'
 
 import { UI } from 'common/constants/theme'
 import { usePrice } from 'common/hooks/usePrice'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
-import { getAddress } from 'utils/getAddress'
 
 const DEFAULT_DECIMALS = 4
 

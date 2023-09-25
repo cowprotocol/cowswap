@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { ButtonPrimary } from 'legacy/components/Button'
-import { ButtonSize } from 'legacy/theme/enum'
+import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 
 import { TwapFormState } from './getTwapFormState'
 

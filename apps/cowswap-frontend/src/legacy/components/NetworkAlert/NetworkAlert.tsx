@@ -1,17 +1,17 @@
+import { getChainInfo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AutoRow } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AutoRow } from 'legacy/components/Row'
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { ExternalLink, HideSmall } from 'legacy/theme'
-
-import { useWalletInfo } from 'modules/wallet'
+import { HideSmall } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
 

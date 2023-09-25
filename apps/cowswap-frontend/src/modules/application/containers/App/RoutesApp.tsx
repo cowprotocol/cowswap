@@ -1,10 +1,11 @@
 import { lazy, ReactNode, Suspense } from 'react'
 
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowprotocol/common-const'
+import { Loader } from '@cowprotocol/ui'
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import Loader from 'legacy/components/Loader'
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
@@ -34,9 +35,6 @@ const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pag
 // Account
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
-
-// Misc
-const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ 'pages/KitchenSink'))
 
 function createRedirectExternal(url: string) {
   return () => {
@@ -68,7 +66,6 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
   { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
   { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
-  { route: RoutesEnum.KITCHEN_SINK, element: <KitchenSink /> },
 ]
 
 export function RoutesApp() {

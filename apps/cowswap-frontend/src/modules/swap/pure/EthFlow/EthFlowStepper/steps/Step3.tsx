@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
-import styled from 'styled-components/macro'
+import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
+import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 
-import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
-import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
-import Finish from 'legacy/assets/cow-swap/finish.svg'
-import Refund from 'legacy/assets/cow-swap/refund.svg'
+import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 

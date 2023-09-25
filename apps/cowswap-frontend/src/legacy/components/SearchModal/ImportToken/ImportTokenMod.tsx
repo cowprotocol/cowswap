@@ -1,3 +1,6 @@
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -6,16 +9,11 @@ import { transparentize } from 'polished'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
-import { ButtonPrimary } from 'legacy/components/Button'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
 import { SectionBreak } from 'legacy/components/swap/styleds'
-import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 
@@ -50,12 +48,6 @@ export interface ImportProps {
   CardComponent: (props: CardComponentProps) => JSX.Element // mod
 }
 
-const formatAnalyticsEventProperties = (tokens: Token[]) => ({
-  token_symbols: tokens.map((token) => token?.symbol),
-  token_addresses: tokens.map((token) => token?.address),
-  token_chain_ids: tokens.map((token) => token?.chainId),
-})
-
 export function ImportToken(props: ImportProps) {
   const { tokens, list, onBack, onDismiss, handleCurrencySelect } = props
   const theme = useTheme()
@@ -87,12 +79,7 @@ export function ImportToken(props: ImportProps) {
         {tokens.map((token) => (
           <TokenImportCard token={token} list={list} key={'import' + token.address} />
         ))}
-        <TraceEvent
-          events={[Event.onClick]}
-          name={EventName.TOKEN_IMPORTED}
-          properties={formatAnalyticsEventProperties(tokens)}
-          element={ElementName.IMPORT_TOKEN_BUTTON}
-        >
+        <>
           <ButtonPrimary
             altDisabledStyle={true}
             $borderRadius="20px"
@@ -105,7 +92,7 @@ export function ImportToken(props: ImportProps) {
           >
             <Trans>Import</Trans>
           </ButtonPrimary>
-        </TraceEvent>
+        </>
       </AutoColumn>
     </Wrapper>
   )

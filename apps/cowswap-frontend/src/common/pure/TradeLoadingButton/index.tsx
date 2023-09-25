@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
+import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
+
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { Dots } from 'legacy/components/swap/styleds'
-import { LONG_LOAD_THRESHOLD } from 'legacy/constants'
 import { ThemedText } from 'legacy/theme'
 
 const fadeIn = `

@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
@@ -14,7 +15,6 @@ import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
-import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
 import { CowModal } from 'common/pure/Modal'

@@ -40,8 +40,7 @@ export interface SwapButtonStateParams {
   isReadonlyGnosisSafeUser: boolean
   isExpertMode: boolean
   isSwapUnsupported: boolean
-  isTxBundlingEnabled: boolean
-  isEthFlowBundlingEnabled: boolean
+  isBundlingSupported: boolean
   quoteError: QuoteError | undefined | null
   inputError?: string
   approvalState: ApprovalState
@@ -54,6 +53,7 @@ export interface SwapButtonStateParams {
   isSmartContractWallet: boolean
   isBestQuoteLoading: boolean
   wrappedToken: Token
+  isPermitSupported: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -67,12 +67,14 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { quoteError, approvalState } = input
+  const { quoteError, approvalState, isPermitSupported } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !input.inputError && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
+    !isPermitSupported &&
+    !input.inputError &&
+    (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
@@ -104,12 +106,8 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (!input.isNativeIn && showApproveFlow) {
-    if (input.isTxBundlingEnabled) {
-      // TODO: decide if this should be done re-using the current approval flow state or whether do it custom with bundling
-      if (input.isExpertMode) {
-        return SwapButtonState.ExpertApproveAndSwap
-      }
-      return SwapButtonState.ApproveAndSwap
+    if (input.isBundlingSupported) {
+      return input.isExpertMode ? SwapButtonState.ExpertApproveAndSwap : SwapButtonState.ApproveAndSwap
     }
     return SwapButtonState.NeedApprove
   }
@@ -125,7 +123,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   if (input.isNativeIn) {
     if (getEthFlowEnabled(input.isSmartContractWallet)) {
       return input.isExpertMode ? SwapButtonState.ExpertModeEthFlowSwap : SwapButtonState.RegularEthFlowSwap
-    } else if (input.isEthFlowBundlingEnabled) {
+    } else if (input.isBundlingSupported) {
       return input.isExpertMode ? SwapButtonState.ExpertWrapAndSwap : SwapButtonState.WrapAndSwap
     } else {
       return SwapButtonState.SwapWithWrappedToken

@@ -1,6 +1,5 @@
-import { ExternalLink } from 'legacy/theme'
-
-import { getSafeWebUrl } from 'api/gnosisSafe'
+import { getSafeWebUrl } from '@cowprotocol/core'
+import { ExternalLink } from '@cowprotocol/ui'
 
 export function SafeWalletLink(props: {
   chainId: number

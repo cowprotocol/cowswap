@@ -1,13 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSafeApp } from '@cowprotocol/wallet'
 
-import { useIsSafeApp } from 'modules/wallet'
-
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
-
-import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
+import { addAppDataToUploadQueueAtom, appDataHooksAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
 
 import { injectedWidgetMetaDataAtom } from '../injectedWidget/state/injectedWidgetMetaDataAtom'
@@ -38,4 +36,12 @@ export function useAppCode(): string | null {
 
 export function useUploadAppData() {
   return useSetAtom(addAppDataToUploadQueueAtom)
+}
+
+export function useUpdateAppDataHooks() {
+  return useSetAtom(appDataHooksAtom)
+}
+
+export function useAppDataHooks() {
+  return useAtomValue(appDataHooksAtom)
 }

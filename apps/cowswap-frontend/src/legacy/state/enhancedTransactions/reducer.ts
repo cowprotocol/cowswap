@@ -12,7 +12,7 @@ import {
   updateSafeTransaction,
   ReplacementType,
   SerializableTransactionReceipt,
-} from 'legacy/state/enhancedTransactions/actions'
+} from './actions'
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',

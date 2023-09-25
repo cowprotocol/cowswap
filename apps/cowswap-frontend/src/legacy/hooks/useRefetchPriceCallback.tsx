@@ -1,9 +1,18 @@
 import { useCallback } from 'react'
 
+import { isOnline } from '@cowprotocol/common-hooks'
+import {
+  CancelableResult,
+  onlyResolvesLast,
+  getPromiseFulfilledValue,
+  isPromiseFulfilled,
+  registerOnWindow,
+  calculateValidTo,
+  getQuoteUnsupportedToken,
+} from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { isOnline } from 'legacy/hooks/useIsOnline'
 import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'
 import {
   useAddGpUnsupportedToken,
@@ -13,9 +22,8 @@ import {
 import { QuoteError } from 'legacy/state/price/actions'
 import { useQuoteDispatchers } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
+import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/state/price/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { CancelableResult, onlyResolvesLast } from 'legacy/utils/async'
-import { getPromiseFulfilledValue, isPromiseFulfilled, registerOnWindow } from 'legacy/utils/misc'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -26,9 +34,6 @@ import GpQuoteError, {
   GpQuoteErrorDetails,
   isValidQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
-import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
-import { getQuoteUnsupportedToken } from 'utils/getQuoteUnsupportedToken'
-import { calculateValidTo } from 'utils/time'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -240,12 +245,6 @@ export function useRefetchQuoteCallback() {
           priceQuality: PriceQuality.FAST,
         },
       }
-
-      // Register get best and fast quote methods on window
-      registerOnWindow({
-        getBestQuote: async () => getBestQuoteResolveOnlyLastCall(bestQuoteParams),
-        getFastQuote: async () => getFastQuoteResolveOnlyLastCall(fastQuoteParams),
-      })
 
       // Get the fast quote
       if (!isPriceRefresh) {

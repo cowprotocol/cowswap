@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { twapConversionAnalytics } from 'legacy/components/analytics/events/twapEvents'
+import { twapConversionAnalytics } from '@cowprotocol/analytics'
 
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'

@@ -1,4 +1,4 @@
-import { SignatureVerifierMuxerAbi, SignatureVerifierMuxer } from '@cowswap/abis'
+import { SignatureVerifierMuxerAbi, SignatureVerifierMuxer } from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
 
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'

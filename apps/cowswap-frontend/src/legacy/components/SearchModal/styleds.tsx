@@ -1,11 +1,10 @@
-import styled from 'styled-components/macro'
+import { LoadingRows as BaseLoadingRows, RowBetween } from '@cowprotocol/ui'
 
-import { LoadingRows as BaseLoadingRows } from 'legacy/components/Loader/styled'
+import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
 import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
 
 export const TextDot = styled.div`
   height: 3px;

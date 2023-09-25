@@ -1,11 +1,8 @@
-import React, { HTMLProps } from 'react'
+import React from 'react'
 
-import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feather'
+import { ArrowLeft, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
-
-import { externalLinkAnalytics, outboundLink } from 'legacy/components/analytics'
-import { anonymizeLink } from 'legacy/utils/anonymizeLink'
 
 import { UI } from 'common/constants/theme'
 
@@ -95,55 +92,6 @@ export const StyledInternalLink = styled(Link)`
   }
 `
 
-export const StyledLink = styled.a`
-  text-decoration: none;
-  cursor: pointer;
-  color: ${({ theme }) => theme.text3};
-  font-weight: 500;
-
-  :hover {
-    text-decoration: underline;
-  }
-
-  :focus {
-    outline: none;
-    text-decoration: none;
-  }
-
-  :active {
-    text-decoration: none;
-  }
-`
-
-const LinkIconWrapper = styled.a`
-  text-decoration: none;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-
-  :hover {
-    text-decoration: none;
-    opacity: 0.7;
-  }
-
-  :focus {
-    outline: none;
-    text-decoration: none;
-  }
-
-  :active {
-    text-decoration: none;
-  }
-`
-
-export const LinkIcon = styled(LinkIconFeather)`
-  height: 16px;
-  width: 18px;
-  margin-left: 10px;
-  stroke: ${({ theme }) => theme.text3};
-`
-
 export const TrashIcon = styled(Trash)`
   height: 16px;
   width: 18px;
@@ -175,66 +123,6 @@ export const UniTokenAnimated = styled.img`
   padding: 2rem 0 0 0;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
 `
-
-export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {
-  const { target, href } = event.currentTarget
-
-  const anonymizedHref = anonymizeLink(href)
-
-  // don't prevent default, don't redirect if it's a new tab
-  if (target === '_blank' || event.ctrlKey || event.metaKey) {
-    outboundLink({ label: anonymizedHref }, () => {
-      console.debug('Fired outbound link event', anonymizedHref)
-    })
-  } else {
-    event.preventDefault()
-    // send a ReactGA event and then trigger a location change
-    outboundLink({ label: anonymizedHref }, () => {
-      window.location.href = anonymizedHref
-    })
-  }
-}
-
-/**
- * Outbound link that handles firing google analytics events
- */
-export function ExternalLink({
-  target = '_blank',
-  href,
-  rel = 'noopener noreferrer',
-  onClickOptional,
-  ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
-  href: string
-  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
-}) {
-  return (
-    <StyledLink
-      target={target}
-      rel={rel}
-      href={href}
-      onClick={(event) => {
-        if (onClickOptional) onClickOptional(event)
-        handleClickExternalLink(event)
-        externalLinkAnalytics(href)
-      }}
-      {...rest}
-    />
-  )
-}
-
-export function ExternalLinkIcon({
-  target = '_blank',
-  href,
-  rel = 'noopener noreferrer',
-  ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  return (
-    <LinkIconWrapper target={target} rel={rel} href={href} onClick={handleClickExternalLink} {...rest}>
-      <LinkIcon />
-    </LinkIconWrapper>
-  )
-}
 
 const rotate = keyframes`
   from {

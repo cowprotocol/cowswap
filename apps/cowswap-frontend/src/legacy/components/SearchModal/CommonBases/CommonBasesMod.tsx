@@ -1,20 +1,17 @@
-import { Currency, Token } from '@uniswap/sdk-core'
+import { currencyId } from '@cowprotocol/common-utils'
+import { TokenSymbol, AutoRow } from '@cowprotocol/ui'
+import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { AutoRow } from 'legacy/components/Row'
 import { useFavouriteOrCommonTokens } from 'legacy/hooks/useFavouriteOrCommonTokens'
-import { currencyId } from 'legacy/utils/currencyId'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
-import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
+import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index'
 
 export const StyledScrollarea = styled.div`
   overflow-y: auto; // fallback for 'overlay'
@@ -28,35 +25,16 @@ export const StyledScrollarea = styled.div`
   `}
 `
 
-const formatAnalyticsEventProperties = (
-  currency: Currency,
-  tokenAddress: string | undefined,
-  searchQuery: string,
-  isAddressSearch: string | false
-) => ({
-  token_symbol: currency?.symbol,
-  token_chain_id: currency?.chainId,
-  ...(tokenAddress ? { token_address: tokenAddress } : {}),
-  is_suggested_token: true,
-  is_selected_from_list: false,
-  is_imported_by_user: false,
-  ...(isAddressSearch === false
-    ? { search_token_symbol_input: searchQuery }
-    : { search_token_address_input: isAddressSearch }),
-})
-
 const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({
   onSelect,
   selectedCurrency,
-  searchQuery,
-  isAddressSearch,
 }: {
   chainId?: number
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
-  searchQuery: string
-  isAddressSearch: string | false
+  searchQuery?: string
+  isAddressSearch?: string | false
 }) {
   const tokens = useFavouriteOrCommonTokens()
 
@@ -72,16 +50,9 @@ export default function CommonBases({
         <CommonBasesRow gap="4px">
           {tokens.map((currency: Currency) => {
             const isSelected = selectedCurrency?.equals(currency)
-            const tokenAddress = currency instanceof Token ? currency?.address : undefined
 
             return (
-              <TraceEvent
-                events={[Event.onClick, Event.onKeyPress]}
-                name={EventName.TOKEN_SELECTED}
-                properties={formatAnalyticsEventProperties(currency, tokenAddress, searchQuery, isAddressSearch)}
-                element={ElementName.COMMON_BASES_CURRENCY_BUTTON}
-                key={currencyId(currency)}
-              >
+              <>
                 <BaseWrapper
                   tabIndex={0}
                   onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
@@ -94,7 +65,7 @@ export default function CommonBases({
                     <TokenSymbol token={currency} length={6} />
                   </Text>
                 </BaseWrapper>
-              </TraceEvent>
+              </>
             )
           })}
         </CommonBasesRow>
