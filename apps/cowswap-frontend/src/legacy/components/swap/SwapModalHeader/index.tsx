@@ -1,5 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 
+import { INPUT_OUTPUT_EXPLANATION } from '@cowprotocol/common-const'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { RowBetween, RowFixed, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
@@ -10,31 +13,25 @@ import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
 import { AuxInformationContainer, TruncatedText } from 'legacy/components/swap/styleds'
 import { WarningProps } from 'legacy/components/SwapWarnings'
-import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
-import { Field } from 'legacy/state/swap/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { ThemedText } from 'legacy/theme'
-import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useWalletDetails } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { ArrowWrapper, HighFeeWarning, LightCard, LightCardType, StyledRateInfo, Wrapper } from './styled'
 
+import { Field } from '../../../state/types'
 import { FeeInformationTooltip } from '../FeeInformationTooltip'
 
 export function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'NoImpactWarning' | 'LightCard'>) {

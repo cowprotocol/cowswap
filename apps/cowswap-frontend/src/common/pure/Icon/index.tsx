@@ -1,10 +1,10 @@
+import iconInformation from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import iconAlert from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconDanger from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import iconInformation from 'legacy/assets/cow-swap/alert-circle.svg'
-import iconAlert from 'legacy/assets/cow-swap/alert.svg'
-import iconDanger from 'legacy/assets/cow-swap/alert.svg'
-import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
 import { UI } from 'common/constants/theme'
 
@@ -12,14 +12,14 @@ export enum IconType {
   ALERT = 'ALERT',
   INFORMATION = 'INFORMATION',
   DANGER = 'DANGER',
-  SUCCESS = 'SUCCESS'
+  SUCCESS = 'SUCCESS',
 }
 
 const IconTypeMap: Record<IconType, string> = {
   [IconType.ALERT]: iconAlert,
   [IconType.INFORMATION]: iconInformation,
   [IconType.DANGER]: iconDanger,
-  [IconType.SUCCESS]: iconSuccess
+  [IconType.SUCCESS]: iconSuccess,
 }
 
 interface IconProps {
@@ -42,7 +42,7 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
   min-width: ${({ size }) => size}px;
   min-height: ${({ size }) => size}px;
   border-radius: ${({ borderRadius }) => borderRadius};
-  background-color: ${({ bgColor }) => bgColor ? `var(${bgColor})` : 'transparent'};
+  background-color: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
   padding: ${({ padding }) => padding};
 
   > svg {

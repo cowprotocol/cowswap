@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 
 import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
-import { TokenAmount } from '@cowprotocol/ui'
+import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { useENS } from '@cowprotocol/ens'
+import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
@@ -12,18 +14,26 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { Icon } from 'common/pure/Icon'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
+import {
+  useHideReceiverWalletBanner,
+  useIsReceiverWalletBannerHidden,
+} from 'common/state/receiverWalletBannerVisibility'
 
 import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
+  IconType,
   StyledFiatAmount,
   Summary,
   SummaryInner,
