@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
@@ -85,6 +85,32 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   Arrow: StyledComponent<'div', DefaultTheme, Omit<PopoverContainerProps, 'color' | 'show'>, never> // gp mod
 }
 
+// TODO: reuse hook from @cowprotocol/common-hooks
+// Currently it's not possible because of dependency inversion
+function useInterval(callback: () => void, delay: null | number, leading = true) {
+  const savedCallback = useRef<() => void>()
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      const { current } = savedCallback
+      current && current()
+    }
+
+    if (delay !== null) {
+      if (leading) tick()
+      const id = setInterval(tick, delay)
+      return () => clearInterval(id)
+    }
+    return
+  }, [delay, leading])
+}
+
 export default function Popover({
   content,
   show,
@@ -119,13 +145,7 @@ export default function Popover({
     update && update()
   }, [update])
 
-  useEffect(() => {
-    if (!show) return
-
-    const interval = setInterval(updateCallback, 100)
-
-    return () => clearInterval(interval)
-  }, [])
+  useInterval(updateCallback, show ? 100 : null)
 
   return (
     <>
