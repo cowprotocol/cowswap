@@ -1,8 +1,9 @@
-import { TokenAmount, ButtonSecondary } from '@cowprotocol/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { ButtonSecondary } from '../ButtonSecondary'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
 import { InlineBanner, InlineBannerProps } from './index'
