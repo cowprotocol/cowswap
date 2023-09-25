@@ -47,7 +47,7 @@ export function SwapPriceDifferenceWarning({
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
   return (
-    <InlineBanner type={'savings'}>
+    <InlineBanner bannerType={'savings'}>
       {isTwapBetter ? (
         <>
           <strong>Maximizing Your Gains! {/*<InfoIcon content="TODO: set the tooltip content"></InfoIcon>*/}</strong>

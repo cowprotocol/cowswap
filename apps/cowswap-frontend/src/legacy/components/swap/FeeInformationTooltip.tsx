@@ -51,7 +51,7 @@ const FeeAmountAndFiat = styled.span`
   }
 `
 
-export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
+export function FeeInformationTooltip(props: FeeInformationTooltipProps) {
   const { trade, label, amountAfterFees, type, showHelper, fiatValue, showFiat = false, allowsOffchainSigning } = props
 
   const theme = useTheme()

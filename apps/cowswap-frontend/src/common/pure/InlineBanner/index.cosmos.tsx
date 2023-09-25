@@ -12,14 +12,14 @@ const Fixtures = {
   ),
   alert: (
     <DemoContainer>
-      <InlineBanner type="alert">
-        <strong>This is an alert banner (explicitly passed type).</strong>
+      <InlineBanner bannerType="alert">
+        <strong>This is an alert banner (explicitly passed bannerType).</strong>
       </InlineBanner>
     </DemoContainer>
   ),
   information: (
     <DemoContainer>
-      <InlineBanner type="information">
+      <InlineBanner bannerType="information">
         <strong>Token approval bundling</strong>
         <p>
           For your convenience, token approval and order placement will be bundled into a single transaction,
@@ -30,14 +30,14 @@ const Fixtures = {
   ),
   success: (
     <DemoContainer>
-      <InlineBanner type="success">
+      <InlineBanner bannerType="success">
         <strong>Operation completed successfully!</strong>
       </InlineBanner>
     </DemoContainer>
   ),
   danger: (
     <DemoContainer>
-      <InlineBanner type="danger">
+      <InlineBanner bannerType="danger">
         <strong>Something went wrong! Please try again.</strong>
       </InlineBanner>
     </DemoContainer>

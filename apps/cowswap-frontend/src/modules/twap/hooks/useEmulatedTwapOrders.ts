@@ -28,10 +28,13 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
     if (!refresher) return []
     if (!tokensByAddress) return []
 
-    return allTwapOrders
-      .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-      .map((order) => {
-        return mapTwapOrderToStoreOrder(order, tokensByAddress)
-      })
+    return allTwapOrders.reduce<Order[]>((acc, order) => {
+      if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
+        return acc
+      }
+
+      acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
+      return acc
+    }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
 }

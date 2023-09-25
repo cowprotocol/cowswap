@@ -7,10 +7,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
-import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import TradeGp from 'legacy/state/swap/TradeGp'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 
@@ -19,7 +16,10 @@ import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useButtonText } from './hooks'
 
+import { ConfirmOperationType } from '../../../state/types'
+import { TransactionConfirmationModal } from '../../TransactionConfirmationModal'
 import { LegacyConfirmationModalContent } from '../../TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { SwapModalHeader } from '../SwapModalHeader'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
