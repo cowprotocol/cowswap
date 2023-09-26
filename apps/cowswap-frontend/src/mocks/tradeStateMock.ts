@@ -50,6 +50,8 @@ export const outputCurrencyInfoMock: CurrencyInfo = {
 }
 
 export const tradeContextMock: TradeFlowContext = {
+  hasEnoughAllowance: undefined,
+  permitInfo: undefined,
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
@@ -68,7 +70,6 @@ export const tradeContextMock: TradeFlowContext = {
     appData: getAppData(),
   },
   rateImpact: 0,
-  appData: {} as any,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,

@@ -6,6 +6,7 @@ import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletI
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import { useIsTokenPermittable } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -32,6 +33,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
 
+  const isPermitSupported = !!useIsTokenPermittable(inputCurrency)
+
   const commonContext = {
     account,
     isWrapUnwrap,
@@ -42,6 +45,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     recipientEnsAddress,
     approvalState,
     tradeQuote,
+    isPermitSupported,
   }
 
   return useMemo(() => {

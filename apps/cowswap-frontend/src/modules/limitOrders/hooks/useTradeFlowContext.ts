@@ -1,5 +1,6 @@
 import { useAtomValue } from 'jotai'
 
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -14,6 +15,8 @@ import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useIsTokenPermittable } from 'modules/permit'
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
@@ -30,6 +33,14 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const permitInfo = useIsTokenPermittable(state.inputCurrency)
+
+  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const { enoughAllowance: hasEnoughAllowance } = useEnoughBalanceAndAllowance({
+    account,
+    amount: state.slippageAdjustedSellAmount || undefined,
+    checkAllowanceAddress,
+  })
 
   if (
     !chainId ||
@@ -62,8 +73,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
-    appData,
     rateImpact,
+    permitInfo,
+    hasEnoughAllowance,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,
