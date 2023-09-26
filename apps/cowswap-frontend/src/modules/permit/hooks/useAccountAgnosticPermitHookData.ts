@@ -26,7 +26,11 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
-    if (!params) return
+    if (!params) {
+      setData(undefined)
+
+      return
+    }
 
     generatePermitHook(params).then(setData)
   }, [params])
