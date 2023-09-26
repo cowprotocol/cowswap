@@ -36,7 +36,6 @@ export type PermitHookParams = {
 
 export type HandlePermitParams = Omit<PermitHookParams, 'permitInfo'> & {
   permitInfo: IsTokenPermittableResult
-  hasEnoughAllowance: undefined | boolean
   appData: AppDataInfo
 }
 

@@ -29,7 +29,6 @@ export async function swapFlow(
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
-      hasEnoughAllowance: input.hasEnoughAllowance,
 
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
