@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
@@ -22,6 +24,7 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
 
   svg > path {
     fill: ${({ theme }) => theme.alert};
+    stroke: none;
   }
 `
 
@@ -29,6 +32,7 @@ export const WarningContent = styled.div`
   max-width: 270px;
   padding: 10px;
   color: ${({ theme }) => theme.black};
+  background: ${({ theme }) => theme.alert};
 
   h3,
   p {
@@ -41,12 +45,20 @@ export const WarningContent = styled.div`
   }
 `
 
+export const StyledQuestionHelper = styled(QuestionHelper)`
+  margin: 0;
+`
+
 export const WarningParagraph = styled.div`
   margin-bottom: 20px;
 
   :last-child {
     margin-bottom: 0;
   }
+`
+
+export const WarningActionBox = styled.div`
+  margin-top: 15px;
 `
 
 export const RateValue = styled.span``
