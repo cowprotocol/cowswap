@@ -25,12 +25,8 @@ export async function swapFlow(
     return
   }
 
-  logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
-  tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)
-  input.swapConfirmManager.sendTransaction(input.context.trade)
-
   try {
-    logTradeFlow('SWAP FLOW', 'STEP 3: handle permit')
+    logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
       hasEnoughAllowance: input.hasEnoughAllowance,
@@ -41,6 +37,10 @@ export async function swapFlow(
       chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
     })
+
+    logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
+    tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)
+    input.swapConfirmManager.sendTransaction(input.context.trade)
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder(input.orderParams).finally(() => {

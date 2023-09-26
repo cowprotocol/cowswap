@@ -52,14 +52,10 @@ export async function tradeFlow(
     throw new PriceImpactDeclineError()
   }
 
-  logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
-  tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
-  beforeTrade?.()
-
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
   try {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: handle permit')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
     postOrderParams.appData = await handlePermit({
       permitInfo,
       hasEnoughAllowance,
@@ -69,6 +65,10 @@ export async function tradeFlow(
       chainId,
       appData,
     })
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
+    tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
+    beforeTrade?.()
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder({
