@@ -1,9 +1,9 @@
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
-import { resolveENSContentHash } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate, resolveENSContentHash } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -22,7 +22,9 @@ interface TokensListEnsCache {
   value: string
 }
 
-const tokensListEnsCachesAtom = atomWithStorage<{ [ensName: string]: TokensListEnsCache }>('tokensListEnsCaches:v1', {})
+const { atom: tokensListEnsCachesAtom, updateAtom: updateTokensListEnsCachesAtom } = atomWithPartialUpdate(
+  atomWithStorage<{ [ensName: string]: TokensListEnsCache }>('tokensListEnsCaches:v1', {})
+)
 
 const isCacheValid = ({ timestamp }: TokensListEnsCache) => Date.now() - timestamp < TOKENS_LIST_ENS_CACHE_TIMEOUT
 
@@ -30,7 +32,8 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
   const dispatch = useAppDispatch()
   const { chainId } = useWalletInfo()
 
-  const [tokensListEnsCaches, setTokensListEnsCaches] = useAtom(tokensListEnsCachesAtom)
+  const tokensListEnsCaches = useAtomValue(tokensListEnsCachesAtom)
+  const setTokensListEnsCaches = useSetAtom(updateTokensListEnsCachesAtom)
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(
@@ -40,21 +43,14 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
       return getTokenList(listUrl, (ensName: string) => {
         const cached = tokensListEnsCaches[ensName]
 
-        if (cached) {
-          // Return cached value if it's not stale
-          if (isCacheValid(cached)) {
-            return Promise.resolve(cached.value)
-          } else {
-            // Otherwise, remove it from the cache
-            const cacheCopy = { ...tokensListEnsCaches }
-            delete cacheCopy[ensName]
-            setTokensListEnsCaches(cacheCopy)
-          }
+        // Return cached value if it's not stale
+        if (cached && isCacheValid(cached)) {
+          return Promise.resolve(cached.value)
         }
 
         return resolveENSContentHash(ensName, MAINNET_PROVIDER).then((value) => {
           // Cache the fetched value
-          setTokensListEnsCaches({ ...tokensListEnsCaches, [ensName]: { timestamp: Date.now(), value } })
+          setTokensListEnsCaches({ [ensName]: { timestamp: Date.now(), value } })
 
           return value
         })
