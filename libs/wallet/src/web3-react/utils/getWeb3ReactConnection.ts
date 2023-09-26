@@ -11,20 +11,18 @@ import { gnosisSafeConnection } from '../connection/safe'
 import { tallyWalletConnection } from '../connection/tally'
 import { trezorConnection } from '../connection/trezor'
 import { trustWalletConnection } from '../connection/trust'
-import { walletConnectConnection } from '../connection/walletConnect'
 import { walletConnectConnectionV2 } from '../connection/walletConnectV2'
 import { Web3ReactConnection } from '../types'
 
 const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = {
   [ConnectionType.INJECTED]: injectedConnection,
   [ConnectionType.COINBASE_WALLET]: coinbaseWalletConnection,
-  [ConnectionType.WALLET_CONNECT]: walletConnectConnection,
   [ConnectionType.WALLET_CONNECT_V2]: walletConnectConnectionV2,
-  [ConnectionType.ZENGO]: walletConnectConnection,
+  [ConnectionType.ZENGO]: walletConnectConnectionV2,
   [ConnectionType.NETWORK]: networkConnection,
   [ConnectionType.GNOSIS_SAFE]: gnosisSafeConnection,
-  [ConnectionType.AMBIRE]: walletConnectConnection,
-  [ConnectionType.ALPHA]: walletConnectConnection,
+  [ConnectionType.AMBIRE]: walletConnectConnectionV2,
+  [ConnectionType.ALPHA]: walletConnectConnectionV2,
   [ConnectionType.TALLY]: tallyWalletConnection,
   [ConnectionType.TRUST]: trustWalletConnection,
   [ConnectionType.LEDGER]: ledgerConnection,

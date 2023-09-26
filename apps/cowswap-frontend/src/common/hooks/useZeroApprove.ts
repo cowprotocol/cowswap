@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useIsSafeWallet, walletConnectConnection } from '@cowprotocol/wallet'
+import { useIsSafeWallet, walletConnectConnectionV2 } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -44,7 +44,7 @@ export function useZeroApprove(currency: Currency) {
   const amountToApprove = CurrencyAmount.fromRawAmount(currency, 0)
   const approveCallback = useApproveCallback(amountToApprove, spender)
   const safeApiKit = useSafeApiKit()
-  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(async () => {

@@ -11,7 +11,6 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.INJECTED]: 'injected',
   [ConnectionType.INJECTED_WIDGET]: 'CowSwap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
-  [ConnectionType.WALLET_CONNECT]: 'WalletConnect',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect v2',
   [ConnectionType.NETWORK]: 'Network',
   [ConnectionType.GNOSIS_SAFE]: 'Safe',
@@ -41,7 +40,6 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.LEDGER]: LedgerIcon,
   [ConnectionType.TREZOR]: TrezorIcon,
   [ConnectionType.KEYSTONE]: KeystoneImage,
-  [ConnectionType.WALLET_CONNECT]: WalletConnectIcon,
   [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
 }
 
