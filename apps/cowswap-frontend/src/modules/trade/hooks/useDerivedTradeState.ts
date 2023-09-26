@@ -18,19 +18,13 @@ export function useDerivedTradeState(): { state?: TradeDerivedState } {
     if (!tradeTypeInfo) return {}
 
     if (tradeTypeInfo.tradeType === TradeType.SWAP) {
-      return {
-        state: swapDerivedState,
-      }
+      return { state: swapDerivedState }
     }
 
     if (tradeTypeInfo.tradeType === TradeType.ADVANCED_ORDERS) {
-      return {
-        state: advancedOrdersDerivedState,
-      }
+      return { state: advancedOrdersDerivedState }
     }
 
-    return {
-      state: limitOrdersDerivedState,
-    }
+    return { state: limitOrdersDerivedState }
   }, [tradeTypeInfo, swapDerivedState, limitOrdersDerivedState, advancedOrdersDerivedState])
 }
