@@ -16,7 +16,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const permitInfo = useIsTokenPermittable(sellCurrency, TradeType.SWAP)
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[baseProps.chainId || SupportedChainId.MAINNET]
-  const { enoughAllowance: hasEnoughAllowance } = useEnoughBalanceAndAllowance({
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account: baseProps.account,
     amount: baseProps.inputAmountWithSlippage,
     checkAllowanceAddress,
@@ -35,7 +35,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   return {
     ...baseContext,
     contract,
-    permitInfo,
-    hasEnoughAllowance,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
   }
 }

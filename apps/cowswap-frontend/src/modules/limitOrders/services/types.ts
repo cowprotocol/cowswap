@@ -6,7 +6,7 @@ import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { PermitInfo } from 'modules/permit'
+import { IsTokenPermittableResult } from 'modules/permit'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -19,8 +19,7 @@ export interface TradeFlowContext {
   provider: Web3Provider
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
-  permitInfo: PermitInfo | undefined
-  hasEnoughAllowance: boolean | undefined
+  permitInfo: IsTokenPermittableResult
 }
 
 export interface SafeBundleFlowContext extends TradeFlowContext {
