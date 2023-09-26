@@ -46,6 +46,9 @@ const orderActions: OrderActions = {
   toggleOrdersForCancellation() {
     console.log('toggleAllOrdersForCancellation')
   },
+  approveOrderToken() {
+    console.log('approveOrderToken ')
+  },
 }
 
 export default (
