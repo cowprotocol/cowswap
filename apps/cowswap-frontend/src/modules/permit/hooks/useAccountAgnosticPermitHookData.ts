@@ -39,9 +39,9 @@ function usePermitHookParams(): PermitHookParams | undefined {
   const { provider } = useWeb3React()
 
   const { state } = useDerivedTradeState()
-  const { inputCurrency } = state || {}
+  const { inputCurrency, tradeType } = state || {}
 
-  const permitInfo = useIsTokenPermittable(inputCurrency)
+  const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
     if (!inputCurrency || !provider || !permitInfo) return undefined
