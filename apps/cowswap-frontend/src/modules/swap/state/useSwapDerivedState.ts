@@ -5,6 +5,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
+import { TradeType } from 'modules/trade'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -49,6 +50,7 @@ export function useFillSwapDerivedState() {
     recipient,
     recipientAddress,
     orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
+    tradeType: TradeType.SWAP,
   })
 
   useEffect(() => {
