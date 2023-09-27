@@ -42,6 +42,9 @@ jobs:
           REACT_APP_AMPLITUDE_KEY=${{ secrets.REACT_APP_AMPLITUDE_KEY }}
           REACT_APP_LAUNCH_DARKLY_KEY=${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
           REACT_APP_WALLET_CONNECT_V1_BRIDGE=${{ secrets.REACT_APP_WALLET_CONNECT_V1_BRIDGE }}
+          REACT_APP_NETWORK_URL_1=${{ secrets.REACT_APP_NETWORK_URL_1 }}
+          REACT_APP_NETWORK_URL_100=${{ secrets.REACT_APP_NETWORK_URL_100 }}
+          REACT_APP_NETWORK_URL_5=${{ secrets.REACT_APP_NETWORK_URL_5 }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version
