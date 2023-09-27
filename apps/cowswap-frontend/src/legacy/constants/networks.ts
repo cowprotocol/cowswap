@@ -2,8 +2,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 function initRpcUrls(): Record<SupportedChainId, string> {
-  const { REACT_APP_INFURA_KEY, REACT_APP_NETWORK_URL_1, REACT_APP_NETWORK_URL_5, REACT_APP_NETWORK_URL_100 } =
-    process.env
+  const REACT_APP_INFURA_KEY = process.env.REACT_APP_INFURA_KEY
+  const REACT_APP_NETWORK_URL_1 = process.env.REACT_APP_NETWORK_URL_1
+  const REACT_APP_NETWORK_URL_5 = process.env.REACT_APP_NETWORK_URL_5
+  const REACT_APP_NETWORK_URL_100 = process.env.REACT_APP_NETWORK_URL_100
+
+  // const { REACT_APP_INFURA_KEY, REACT_APP_NETWORK_URL_1, REACT_APP_NETWORK_URL_5, REACT_APP_NETWORK_URL_100 } =
+  //   process.env
 
   console.log('DEBUG NETWORKS', {
     REACT_APP_INFURA_KEY,
