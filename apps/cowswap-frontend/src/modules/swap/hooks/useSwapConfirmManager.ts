@@ -8,11 +8,12 @@ import { swapConfirmAtom, SwapConfirmState } from 'modules/swap/state/swapConfir
 
 export interface SwapConfirmManager {
   setSwapError(swapErrorMessage: string): void
-  openSwapConfirmModal(tradeToConfirm: TradeGp): void
+  openSwapConfirmModal(tradeToConfirm: TradeGp, needsPermitSignature?: boolean): void
   acceptRateUpdates(tradeToConfirm: TradeGp): void
   closeSwapConfirm(): void
   sendTransaction(tradeToConfirm: TradeGp): void
   transactionSent(txHash: string): void
+  permitSigned(): void
 }
 
 export function useSwapConfirmManager(): SwapConfirmManager {
@@ -28,13 +29,14 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           return state
         })
       },
-      openSwapConfirmModal(tradeToConfirm: TradeGp) {
-        const state = {
+      openSwapConfirmModal(tradeToConfirm: TradeGp, needsPermitSignature?: boolean) {
+        const state: SwapConfirmState = {
           tradeToConfirm,
           attemptingTxn: false,
           swapErrorMessage: undefined,
           showConfirm: true,
           txHash: undefined,
+          permitSignatureState: needsPermitSignature ? 'needsSigning' : undefined,
         }
         console.debug('[Swap confirm state] openSwapConfirmModal: ', state)
         setSwapConfirmState(state)
@@ -46,6 +48,18 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           return state
         })
       },
+      permitSigned() {
+        setSwapConfirmState((prev) => {
+          if (prev.permitSignatureState === 'needsSigning') {
+            // Move to signed state only if previous state was good
+            // Set to undefined otherwise and make the action a no-op
+            const state: SwapConfirmState = { ...prev, permitSignatureState: 'signed' }
+            console.debug('[Swap confirm state] permitSigned: ', state)
+            return state
+          }
+          console.debug('[Swap confirm state] permitSigned was a no-op')
+          return prev
+        })
       },
       closeSwapConfirm() {
         setSwapConfirmState((prev) => {

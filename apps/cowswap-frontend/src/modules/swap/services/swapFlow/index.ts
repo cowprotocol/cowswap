@@ -36,6 +36,7 @@ export async function swapFlow(
       chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
     })
+    input.swapConfirmManager.permitSigned()
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)
