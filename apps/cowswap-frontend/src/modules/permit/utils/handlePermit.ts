@@ -1,5 +1,8 @@
 import { AppDataInfo, buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
-import { generatePermitHook, HandlePermitParams } from 'modules/permit'
+
+import { generatePermitHook } from './generatePermitHook'
+
+import { HandlePermitParams } from '../types'
 
 /**
  * Handle token permit
