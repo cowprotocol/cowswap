@@ -53,7 +53,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       SET_LIST,
       OPYN_LIST,
       ROLL_LIST,
-      // COINGECKO_LIST,
       CMC_ALL_LIST,
       CMC_STABLECOIN,
       KLEROS_LIST,
