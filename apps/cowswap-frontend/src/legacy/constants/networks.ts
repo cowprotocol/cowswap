@@ -5,27 +5,17 @@ function initRpcUrls(): Record<SupportedChainId, string> {
   const { REACT_APP_INFURA_KEY, REACT_APP_NETWORK_URL_1, REACT_APP_NETWORK_URL_5, REACT_APP_NETWORK_URL_100 } =
     process.env
 
-  console.log('process.env', process.env)
-
-  if (REACT_APP_NETWORK_URL_1 && REACT_APP_NETWORK_URL_5 && REACT_APP_NETWORK_URL_100) {
-    return {
-      [SupportedChainId.MAINNET]: REACT_APP_NETWORK_URL_1,
-      [SupportedChainId.GOERLI]: REACT_APP_NETWORK_URL_5,
-      [SupportedChainId.GNOSIS_CHAIN]: REACT_APP_NETWORK_URL_100,
-    }
+  if (!REACT_APP_INFURA_KEY && !(REACT_APP_NETWORK_URL_1 && !REACT_APP_NETWORK_URL_5 && REACT_APP_NETWORK_URL_100)) {
+    throw new Error(
+      `Either REACT_APP_INFURA_KEY or REACT_APP_NETWORK_URL_{1,5,100} environment variables must be defined`
+    )
   }
 
-  if (REACT_APP_INFURA_KEY) {
-    return {
-      [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-      [SupportedChainId.GOERLI]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-      [SupportedChainId.GNOSIS_CHAIN]: `https://rpc.gnosis.gateway.fm`,
-    }
+  return {
+    [SupportedChainId.MAINNET]: REACT_APP_NETWORK_URL_1 || `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+    [SupportedChainId.GNOSIS_CHAIN]: REACT_APP_NETWORK_URL_100 || `https://rpc.gnosis.gateway.fm`,
+    [SupportedChainId.GOERLI]: REACT_APP_NETWORK_URL_5 || `https://goerli.infura.io/v3/${INFURA_KEY}`,
   }
-
-  throw new Error(
-    `Either REACT_APP_NETWORK_URL_{1,5,100} or REACT_APP_INFURA_KEY environment variables must be defined`
-  )
 }
 
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
