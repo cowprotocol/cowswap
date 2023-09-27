@@ -5,7 +5,7 @@ function initRpcUrls(): Record<SupportedChainId, string> {
   const { REACT_APP_INFURA_KEY, REACT_APP_NETWORK_URL_1, REACT_APP_NETWORK_URL_5, REACT_APP_NETWORK_URL_100 } =
     process.env
 
-  if (!REACT_APP_INFURA_KEY && !(REACT_APP_NETWORK_URL_1 && !REACT_APP_NETWORK_URL_5 && REACT_APP_NETWORK_URL_100)) {
+  if (!REACT_APP_INFURA_KEY && !(REACT_APP_NETWORK_URL_1 && REACT_APP_NETWORK_URL_5 && REACT_APP_NETWORK_URL_100)) {
     throw new Error(
       `Either REACT_APP_INFURA_KEY or REACT_APP_NETWORK_URL_{1,5,100} environment variables must be defined`
     )
