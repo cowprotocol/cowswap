@@ -102,7 +102,7 @@ export function ConfirmSwapModal({
           bottomContent={modalBottom}
         />
       ),
-    [onDismiss, modalBottom, modalHeader, swapErrorMessage]
+    [swapErrorMessage, onDismiss, modalHeader, modalBottom]
   )
 
   return (
@@ -115,6 +115,8 @@ export function ConfirmSwapModal({
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
       operationType={ConfirmOperationType.ORDER_SIGN}
+      trade={trade}
+      swapConfirmState={swapConfirmState}
     />
   )
 }
