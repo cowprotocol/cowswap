@@ -3,7 +3,7 @@
   "fixtureFileSuffix": "cosmos",
   "watchDirs": ["src"],
   "port": 5001,
-  "exportPath": "./public/cosmos",
+  "exportPath": "../../build/cosmos",
   "publicUrl": "./",
   "plugins": ["react-cosmos-plugin-vite"],
   "vite": {
