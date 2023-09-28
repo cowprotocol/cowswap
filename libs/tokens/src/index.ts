@@ -1,1 +1,1 @@
-export const TOEKNS = 1
+export * from './const/tokensLists'

@@ -10,6 +10,7 @@ import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
+import { DEFAULT_TOKENS_LISTS } from '@cowprotocol/tokens'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -31,6 +32,8 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+
+console.log('SSSSS', DEFAULT_TOKENS_LISTS)
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

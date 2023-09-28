@@ -22,6 +22,7 @@
       "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
       "@cowprotocol/ens": ["../../../libs/ens/src/index.ts"],
       "@cowprotocol/core": ["../../../libs/core/src/index.ts"],
+      "@cowprotocol/tokens": ["../../../libs/tokens/src/index.ts"],
       "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"]
     }
   },
