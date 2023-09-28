@@ -1,3 +1,7 @@
+import { X } from 'react-feather'
+
+import * as styledEl from './styled'
+
 import { AllTokensList } from '../../pure/AllTokensList'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
 import { TokenWithLogo } from '../../types'
@@ -11,13 +15,15 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   const { favouriteTokens, allTokens } = props
 
   return (
-    <div>
-      <div>
+    <styledEl.Wrapper>
+      <styledEl.Header>
         <h3>Select a token</h3>
-        <button>x</button>
-      </div>
+        <button>
+          <X />
+        </button>
+      </styledEl.Header>
       <div>
-        <input type="text" placeholder="Search name or past address" />
+        <styledEl.SearchInput type="text" placeholder="Search name or past address" />
       </div>
       <div>
         <FavouriteTokensList tokens={favouriteTokens} />
@@ -28,6 +34,6 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       <div>
         <button>Manage Token Lists</button>
       </div>
-    </div>
+    </styledEl.Wrapper>
   )
 }

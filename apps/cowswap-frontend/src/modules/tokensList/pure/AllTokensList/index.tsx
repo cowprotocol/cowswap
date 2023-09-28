@@ -4,6 +4,7 @@ import { TokenWithLogo } from '../../types'
 
 export interface AllTokensListProps {
   tokens: TokenWithLogo[]
+  // balances: { [key: string]: CurrencyAmount<Token> }
 }
 
 export function AllTokensList(props: AllTokensListProps) {
