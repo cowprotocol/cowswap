@@ -30,9 +30,14 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
-  const beforeTrade = useCallback(() => {
+  const beforePermit = useCallback(() => {
     if (!tradeContext) return
 
+    tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext))
+  }, [tradeConfirmActions, tradeContext])
+
+  const beforeTrade = useCallback(() => {
+    if (!tradeContext) return
 
     tradeConfirmActions.onSign(buildTradeAmounts(tradeContext))
   }, [tradeContext, tradeConfirmActions])
@@ -58,8 +63,9 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforeTrade)
+    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforePermit, beforeTrade)
   }, [
+    beforePermit,
     beforeTrade,
     confirmPriceImpactWithoutFee,
     isSafeBundle,
