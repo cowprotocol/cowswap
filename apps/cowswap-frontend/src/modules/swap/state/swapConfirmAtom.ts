@@ -8,7 +8,7 @@ export interface SwapConfirmState {
   attemptingTxn: boolean
   swapErrorMessage: string | undefined
   txHash: string | undefined
-  permitSignatureState: undefined | 'needsSigning' | 'signed'
+  permitSignatureState: undefined | 'requested' | 'signed'
 }
 
 export const swapConfirmAtom = atom<SwapConfirmState>({
