@@ -21,7 +21,7 @@ export async function tradeFlow(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforeTrade?: () => void
+  beforePermit: () => void,
   beforeTrade: () => void
 ): Promise<string> {
   const {
@@ -56,6 +56,8 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
+    if (permitInfo) beforePermit()
+
     postOrderParams.appData = await handlePermit({
       permitInfo,
       inputToken: sellToken,
