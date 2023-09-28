@@ -1,10 +1,11 @@
 import { TokenSymbol } from '@cowprotocol/ui'
-import { Token } from '@uniswap/sdk-core'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
+import { TokenWithLogo } from '../../types'
+
 export interface FavouriteTokensListProps {
-  tokens: Token[]
+  tokens: TokenWithLogo[]
 }
 
 export function FavouriteTokensList(props: FavouriteTokensListProps) {
@@ -20,8 +21,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
         {tokens.map((token) => {
           return (
             <button key={token.address}>
-              {/*TODO: token logo*/}
-              <img />
+              <img src={token.logoURI} width={30} height={30} />
               <TokenSymbol token={token} />
             </button>
           )

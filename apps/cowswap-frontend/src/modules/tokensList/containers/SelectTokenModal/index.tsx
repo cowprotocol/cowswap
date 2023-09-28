@@ -1,11 +1,10 @@
-import { Token } from '@uniswap/sdk-core'
-
 import { AllTokensList } from '../../pure/AllTokensList'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
+import { TokenWithLogo } from '../../types'
 
 export interface SelectTokenModalProps {
-  allTokens: Token[]
-  favouriteTokens: Token[]
+  allTokens: TokenWithLogo[]
+  favouriteTokens: TokenWithLogo[]
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {

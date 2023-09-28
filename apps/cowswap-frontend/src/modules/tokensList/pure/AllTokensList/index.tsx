@@ -1,8 +1,9 @@
 import { TokenSymbol } from '@cowprotocol/ui'
-import { Token } from '@uniswap/sdk-core'
+
+import { TokenWithLogo } from '../../types'
 
 export interface AllTokensListProps {
-  tokens: Token[]
+  tokens: TokenWithLogo[]
 }
 
 export function AllTokensList(props: AllTokensListProps) {
@@ -13,8 +14,7 @@ export function AllTokensList(props: AllTokensListProps) {
       {tokens.map((token) => {
         return (
           <button key={token.address}>
-            {/*TODO: token logo*/}
-            <img />
+            <img src={token.logoURI} width={30} height={30} />
             <TokenSymbol token={token} />
           </button>
         )
