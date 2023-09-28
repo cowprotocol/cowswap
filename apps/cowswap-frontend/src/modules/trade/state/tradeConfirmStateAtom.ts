@@ -17,44 +17,38 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
 })
 
 export const setOpenTradeConfirmAtom = atom(null, (get, set) => {
-  set(tradeConfirmStateAtom, () => {
-    return {
-      isOpen: true,
-      error: null,
-      pendingTrade: null,
-      transactionHash: null,
-    }
-  })
+  set(tradeConfirmStateAtom, () => ({
+    isOpen: true,
+    error: null,
+    pendingTrade: null,
+    transactionHash: null,
+  }))
 })
 
 export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
-  set(tradeConfirmStateAtom, () => {
-    return {
-      ...get(tradeConfirmStateAtom),
-      isOpen: false,
-    }
-  })
+  set(tradeConfirmStateAtom, () => ({
+    ...get(tradeConfirmStateAtom),
+    isOpen: false,
+  }))
 })
 
 export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => {
-  set(tradeConfirmStateAtom, () => {
-    const currentState = get(tradeConfirmStateAtom)
+  set(tradeConfirmStateAtom, () => ({
+    ...get(tradeConfirmStateAtom),
+    error,
+    pendingTrade: null,
+    transactionHash: null,
+  }))
+})
 
-    return {
-      isOpen: currentState.isOpen,
-      error,
-      pendingTrade: null,
-      transactionHash: null,
-    }
-  })
 })
 
 export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
-  set(tradeConfirmStateAtom, () => {
-    const currentState = get(tradeConfirmStateAtom)
+  const currentState = get(tradeConfirmStateAtom)
 
+  set(tradeConfirmStateAtom, () => {
     return {
-      isOpen: currentState.isOpen,
+      ...currentState,
       error: null,
       pendingTrade,
       transactionHash: null,
@@ -63,14 +57,10 @@ export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: Tr
 })
 
 export const setTxHashTradeConfirmAtom = atom(null, (get, set, transactionHash: string) => {
-  set(tradeConfirmStateAtom, () => {
-    const currentState = get(tradeConfirmStateAtom)
-
-    return {
-      isOpen: currentState.isOpen,
-      error: null,
-      pendingTrade: null,
-      transactionHash,
-    }
-  })
+  set(tradeConfirmStateAtom, () => ({
+    ...get(tradeConfirmStateAtom),
+    error: null,
+    pendingTrade: null,
+    transactionHash,
+  }))
 })
