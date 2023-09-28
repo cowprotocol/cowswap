@@ -26,6 +26,6 @@ export const DEFAULT_PERMIT_DURATION = ms`5 years`
 
 export const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
   [TradeType.SWAP]: true,
-  [TradeType.LIMIT_ORDER]: false,
+  [TradeType.LIMIT_ORDER]: true, // TODO: temporary, for the modals. Should be turn on for real only when this is deployed https://github.com/cowprotocol/services/pull/1892
   [TradeType.ADVANCED_ORDERS]: false,
 }
