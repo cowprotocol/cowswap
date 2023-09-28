@@ -36,10 +36,10 @@ export const BodyWrapper = styled.div`
   justify-content: center;
   flex: 1 1 auto;
   z-index: 2;
-  padding: 5vh 16px 0;
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0' : '5vh 16px 0'};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: 0 10px 16px;
-  flex: none;
-`}
+    padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0' : '0 10px 16px'};
+    flex: none;
+  `}
 `

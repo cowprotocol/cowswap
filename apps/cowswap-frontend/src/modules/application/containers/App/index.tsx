@@ -29,14 +29,20 @@ export function App() {
 
       <styledEl.AppWrapper>
         <URLWarning />
-        <styledEl.HeaderWrapper>
-          <Header />
-        </styledEl.HeaderWrapper>
+
+        {/* Hide header for injected widget mode */}
+        {!isInjectedWidgetMode && (
+          <styledEl.HeaderWrapper>
+            <Header />
+          </styledEl.HeaderWrapper>
+        )}
+        
         <styledEl.BodyWrapper>
           <TopLevelModals />
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
+
         {isInjectedWidgetMode ? (
           <styledEl.MarginerBottom></styledEl.MarginerBottom>
         ) : (
@@ -44,6 +50,7 @@ export function App() {
             <Footer />
           </styledEl.FooterWrapper>
         )}
+        
       </styledEl.AppWrapper>
     </ErrorBoundary>
   )

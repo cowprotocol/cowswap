@@ -471,7 +471,6 @@ export const UniThemedGlobalStyle = css`
 
   html {
     color: var(${UI.COLOR_TEXT1});
-    background-color: var(${UI.COLOR_CONTAINER_BG_02});
   }
   body {
     min-height: 100vh;
@@ -489,8 +488,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${UniThemedGlobalStyle}
 
   html {
-    color: var(${UI.COLOR_TEXT1});
-    ${({ theme }) => theme.body.background}
+    background-color: ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
+    ${({ theme }) => !theme.isInjectedWidgetMode && theme.body.background};
   }
 
   *, *:after, *:before { box-sizing:border-box; }
