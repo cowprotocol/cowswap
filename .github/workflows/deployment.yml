@@ -6,13 +6,14 @@ on:
     branches: [main, develop]
     tags: [v*]
   workflow_dispatch: # Manually trigger it via UI/CLI/API
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-
   vercel-dev:
     # Deploys to Vercel dev environment
     name: Vercel dev
-    if: github.ref == 'refs/heads/develop'
+    # if: github.ref == 'refs/heads/develop'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
