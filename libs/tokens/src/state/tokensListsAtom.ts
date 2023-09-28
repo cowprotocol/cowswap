@@ -3,10 +3,7 @@ import { TokenListsByNetwork } from '../types'
 import { DEFAULT_TOKENS_LISTS } from '../const/tokensLists'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-export const tokensListsEnvironmentAtom = atom<{ chainId: SupportedChainId }>({
-  chainId: SupportedChainId.MAINNET,
-})
+import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
 
 export const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
 

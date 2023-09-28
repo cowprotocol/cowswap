@@ -1,5 +1,5 @@
 import { TokensListsUpdater } from '@cowprotocol/tokens'
-import { WalletUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
@@ -32,6 +32,8 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
+  const { chainId } = useWalletInfo()
+
   return (
     <>
       <WalletUpdater />
@@ -61,7 +63,7 @@ export function Updaters() {
       <InjectedWidgetUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
-      <TokensListsUpdater />
+      <TokensListsUpdater chainId={chainId} />
     </>
   )
 }

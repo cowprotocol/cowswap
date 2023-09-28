@@ -1,4 +1,4 @@
-import { TokenInfo } from '@uniswap/token-lists'
+import type { TokenInfo } from '@uniswap/token-lists'
 
 import { validateTokens } from './validateTokenList'
 

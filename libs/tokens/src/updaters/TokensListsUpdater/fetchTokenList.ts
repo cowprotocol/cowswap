@@ -1,4 +1,4 @@
-import { TokenList as UniTokenList } from '@uniswap/token-lists'
+import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
 import { contenthashToUri, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
@@ -12,6 +12,9 @@ export interface TokenListResult {
   list: UniTokenList
 }
 
+/**
+ * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
+ */
 export function fetchTokenList(list: TokenList): Promise<TokenListResult> {
   return getIsTokenListWithUrl(list) ? fetchTokenListByUrl(list) : fetchTokenListByEnsName(list)
 }
