@@ -13,6 +13,7 @@ import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { handleFollowPendingTxPopupAtom } from 'modules/wallet/state/followPendingTxPopupAtom'
 
+import { PermitModal } from 'common/containers/PermitModal'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
@@ -76,7 +77,14 @@ export function TransactionConfirmationModal({
 
   return (
     <CowModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
-      {attemptingTxn ? (
+      {showPermitModal(swapConfirmState) ? (
+        <PermitModal
+          onDismiss={onDismiss}
+          inputAmount={trade?.inputAmountWithoutFee}
+          outputAmount={trade?.outputAmountWithoutFee}
+          step={swapConfirmState?.permitSignatureState === 'signed' ? 'submit' : 'approve'}
+        />
+      ) : attemptingTxn ? (
         <LegacyConfirmationPendingContent
           chainId={chainId}
           operationType={operationType}
@@ -107,4 +115,8 @@ function getWidth(hash: string | undefined, showSurplus: boolean | null): number
     return 850
   }
   return 470
+}
+
+function showPermitModal(swapConfirmState: SwapConfirmState | undefined): boolean {
+  return !!swapConfirmState?.permitSignatureState
 }
