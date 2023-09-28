@@ -19,7 +19,7 @@ export interface TradeConfirmActions {
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
-  const setOpenTradeConfim = useSetAtom(setOpenTradeConfirmAtom)
+  const setOpenTradeConfirm = useSetAtom(setOpenTradeConfirmAtom)
   const setCloseTradeConfirm = useSetAtom(setCloseTradeConfirmAtom)
   const setErrorTradeConfirm = useSetAtom(setErrorTradeConfirmAtom)
   const setPendingTradeConfirm = useSetAtom(setPendingTradeConfirmAtom)
@@ -36,7 +36,7 @@ export function useTradeConfirmActions(): TradeConfirmActions {
       setTxHashTradeConfirm(transactionHash)
     },
     onOpen() {
-      setOpenTradeConfim()
+      setOpenTradeConfirm()
     },
     onDismiss() {
       setCloseTradeConfirm()
