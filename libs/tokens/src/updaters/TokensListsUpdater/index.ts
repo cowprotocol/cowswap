@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { activeTokensListsAtom } from '../../state/tokensListsAtom'
+import { activeTokensListsAtom } from '../../state/tokensListsStateAtom'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
