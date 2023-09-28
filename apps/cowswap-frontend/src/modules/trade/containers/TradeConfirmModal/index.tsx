@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { PermitModal } from 'common/containers/PermitModal'
 import { CowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
@@ -20,7 +21,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { isOpen, permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
 
   if (!account) return null
@@ -30,6 +31,21 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
       {(() => {
         if (error) {
           return <TransactionErrorContent message={error} onDismiss={onDismiss} />
+        }
+
+        if (pendingTrade && permitSignatureState) {
+          // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
+          // We could use this not just for permit, but for any token, even already approved
+          const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
+
+          return (
+            <PermitModal
+              inputAmount={pendingTrade.inputAmount}
+              outputAmount={pendingTrade.outputAmount}
+              step={step}
+              onDismiss={onDismiss}
+            />
+          )
         }
 
         if (pendingTrade) {
