@@ -6,9 +6,11 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import TradeGp from 'legacy/state/swap/TradeGp'
 import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
+import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { handleFollowPendingTxPopupAtom } from 'modules/wallet/state/followPendingTxPopupAtom'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -26,6 +28,8 @@ export interface ConfirmationModalProps {
   pendingText?: ReactNode
   currencyToAdd?: Currency | undefined
   operationType: ConfirmOperationType
+  trade?: TradeGp | undefined
+  swapConfirmState?: SwapConfirmState | undefined
 }
 
 export function TransactionConfirmationModal({
@@ -37,6 +41,8 @@ export function TransactionConfirmationModal({
   content,
   currencyToAdd,
   operationType,
+  trade,
+  swapConfirmState,
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
   const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
