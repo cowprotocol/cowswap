@@ -7,6 +7,7 @@ interface TradeConfirmModalState {
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
   error: string | null
+  permitSignatureState: undefined | 'requested' | 'signed'
 }
 
 export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
@@ -14,6 +15,7 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
   pendingTrade: null,
   transactionHash: null,
   error: null,
+  permitSignatureState: undefined,
 })
 
 export const setOpenTradeConfirmAtom = atom(null, (get, set) => {
@@ -22,6 +24,7 @@ export const setOpenTradeConfirmAtom = atom(null, (get, set) => {
     error: null,
     pendingTrade: null,
     transactionHash: null,
+    permitSignatureState: undefined,
   }))
 })
 
@@ -29,6 +32,7 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
   set(tradeConfirmStateAtom, () => ({
     ...get(tradeConfirmStateAtom),
     isOpen: false,
+    permitSignatureState: undefined,
   }))
 })
 
@@ -38,9 +42,16 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
     error,
     pendingTrade: null,
     transactionHash: null,
+    permitSignatureState: undefined,
   }))
 })
 
+export const setPermitSignatureRequestedTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
+  set(tradeConfirmStateAtom, () => ({
+    ...get(tradeConfirmStateAtom),
+    pendingTrade,
+    permitSignatureState: 'requested',
+  }))
 })
 
 export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
@@ -52,6 +63,9 @@ export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: Tr
       error: null,
       pendingTrade,
       transactionHash: null,
+      // Only move to the next state if coming in the right sequence.
+      // Otherwise, reset it
+      permitSignatureState: currentState.permitSignatureState === 'requested' ? 'signed' : undefined,
     }
   })
 })
