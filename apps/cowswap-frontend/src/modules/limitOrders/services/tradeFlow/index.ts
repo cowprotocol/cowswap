@@ -22,6 +22,7 @@ export async function tradeFlow(
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforeTrade?: () => void
+  beforeTrade: () => void
 ): Promise<string> {
   const {
     postOrderParams,
@@ -66,7 +67,8 @@ export async function tradeFlow(
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
-    beforeTrade?.()
+
+    beforeTrade()
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder({
