@@ -139,7 +139,7 @@ export const NewModalContentBottom = styled(NewModalContentTop)`
     font-size: var(${UI.FONT_SIZE_NORMAL});
   }
 `
-interface NewModalProps {
+export interface NewModalProps {
   maxWidth?: number
   minHeight?: number
   title?: string
