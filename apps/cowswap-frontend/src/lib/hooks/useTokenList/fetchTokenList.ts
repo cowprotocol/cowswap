@@ -1,7 +1,6 @@
 import { contenthashToUri, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
+import { validateTokenList } from '@cowprotocol/tokens'
 import type { TokenList } from '@uniswap/token-lists'
-
-import validateTokenList from './validateTokenList'
 
 export const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 

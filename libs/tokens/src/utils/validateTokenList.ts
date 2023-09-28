@@ -46,7 +46,7 @@ export async function validateTokens(json: TokenInfo[]): Promise<TokenInfo[]> {
  * Validates a token list.
  * @param json the TokenList to validate
  */
-export default async function validateTokenList(json: TokenList): Promise<TokenList> {
+export async function validateTokenList(json: TokenList): Promise<TokenList> {
   const validate = (await validator).getSchema(ValidationSchema.LIST)
   if (validate?.(json)) {
     return json

@@ -1,3 +1,4 @@
+import { TokensListsUpdater } from '@cowprotocol/tokens'
 import { WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
@@ -60,6 +61,7 @@ export function Updaters() {
       <InjectedWidgetUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
+      <TokensListsUpdater />
     </>
   )
 }
