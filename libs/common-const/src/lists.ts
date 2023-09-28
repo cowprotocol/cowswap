@@ -78,5 +78,3 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
 
 // Set what we want as the default list when no chain id available: default = MAINNET
 export const DEFAULT_NETWORK_FOR_LISTS = ChainId.MAINNET
-
-export const DEFAULT_LIST_OF_LISTS: string[] = []

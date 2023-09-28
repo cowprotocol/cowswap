@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
-import { sortByListPriority } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
@@ -72,30 +71,17 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
   const lists = useAllLists()
   return useMemo(() => {
     if (!urls) return {}
-    return (
-      urls
-        .slice()
-        // sort by priority so top priority goes last
-        .sort(sortByListPriority)
-        .reduce((allTokens, currentUrl) => {
-          const current = lists[currentUrl]?.current
-          if (!current) return allTokens
-          try {
-            return combineMaps(allTokens, tokensToChainTokenMap(current))
-          } catch (error: any) {
-            console.error('Could not show token list due to error', error)
-            return allTokens
-          }
-        }, {})
-    )
+    return urls.slice().reduce((allTokens, currentUrl) => {
+      const current = lists[currentUrl]?.current
+      if (!current) return allTokens
+      try {
+        return combineMaps(allTokens, tokensToChainTokenMap(current))
+      } catch (error: any) {
+        console.error('Could not show token list due to error', error)
+        return allTokens
+      }
+    }, {})
   }, [lists, urls])
-}
-
-// get all the tokens from active lists, combine with local default tokens
-export function useCombinedActiveList(): TokenAddressMap {
-  const activeListUrls = useActiveListUrls()
-  const activeTokens = useCombinedTokenMapFromUrls(activeListUrls)
-  return activeTokens
 }
 
 // list of tokens not supported on interface for various reasons, used to show warnings and prevent swaps and adds
@@ -109,16 +95,12 @@ export function useTokensListFromUrls(urls: string[] | undefined): TokenInfo[] {
   return useMemo(() => {
     if (!urls) return []
 
-    return (
-      urls
-        .slice()
-        // sort by priority so top priority goes last
-        .sort(sortByListPriority)
-        .map((url) => {
-          return lists?.[url]?.current?.tokens || []
-        })
-        .flat()
-    )
+    return urls
+      .slice()
+      .map((url) => {
+        return lists?.[url]?.current?.tokens || []
+      })
+      .flat()
   }, [lists, urls])
 }
 
