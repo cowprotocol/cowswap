@@ -13,6 +13,7 @@ export interface SwapConfirmManager {
   closeSwapConfirm(): void
   sendTransaction(tradeToConfirm: TradeGp): void
   transactionSent(txHash: string): void
+  requestPermitSignature(): void
   permitSigned(): void
 }
 
@@ -24,19 +25,19 @@ export function useSwapConfirmManager(): SwapConfirmManager {
     () => ({
       setSwapError(swapErrorMessage: string) {
         setSwapConfirmState((prev) => {
-          const state = { ...prev, swapErrorMessage, attemptingTxn: false }
+          const state = { ...prev, swapErrorMessage, attemptingTxn: false, permitSignatureState: undefined }
           console.debug('[Swap confirm state] setSwapError: ', state)
           return state
         })
       },
-      openSwapConfirmModal(tradeToConfirm: TradeGp, needsPermitSignature?: boolean) {
+      openSwapConfirmModal(tradeToConfirm: TradeGp) {
         const state: SwapConfirmState = {
           tradeToConfirm,
           attemptingTxn: false,
           swapErrorMessage: undefined,
           showConfirm: true,
           txHash: undefined,
-          permitSignatureState: needsPermitSignature ? 'needsSigning' : undefined,
+          permitSignatureState: undefined,
         }
         console.debug('[Swap confirm state] openSwapConfirmModal: ', state)
         setSwapConfirmState(state)
@@ -48,9 +49,16 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           return state
         })
       },
+      requestPermitSignature() {
+        setSwapConfirmState((prev) => {
+          const state: SwapConfirmState = { ...prev, permitSignatureState: 'requested' }
+          console.debug('[Swap confirm state] requestPermitSignature: ', state)
+          return state
+        })
+      },
       permitSigned() {
         setSwapConfirmState((prev) => {
-          if (prev.permitSignatureState === 'needsSigning') {
+          if (prev.permitSignatureState === 'requested') {
             // Move to signed state only if previous state was good
             // Set to undefined otherwise and make the action a no-op
             const state: SwapConfirmState = { ...prev, permitSignatureState: 'signed' }
@@ -63,7 +71,7 @@ export function useSwapConfirmManager(): SwapConfirmManager {
       },
       closeSwapConfirm() {
         setSwapConfirmState((prev) => {
-          const state = { ...prev, showConfirm: false }
+          const state = { ...prev, showConfirm: false, permitSignatureState: undefined }
           console.debug('[Swap confirm state] closeSwapConfirm: ', state)
           return state
         })
@@ -90,6 +98,7 @@ export function useSwapConfirmManager(): SwapConfirmManager {
             swapErrorMessage: undefined,
             showConfirm: !isExpertMode,
             txHash,
+            permitSignatureState: undefined,
           }
           console.debug('[Swap confirm state] transactionSent: ', state)
           return state
