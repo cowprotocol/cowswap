@@ -1,9 +1,11 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
 import { sendError } from '@cowprotocol/analytics'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
+
 
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
@@ -128,7 +130,10 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
 
           return (
             <AppWrapper>
+
+            {!isInjectedWidget() &&
               <HeaderWrapper>
+                <h1>Test!!!!!!!!!!!!!</h1>
                 <HeaderRow marginRight="0">
                   <a href={Routes.HOME}>
                     <UniIcon>
@@ -137,6 +142,8 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
                   </a>
                 </HeaderRow>
               </HeaderWrapper>
+            }
+
               <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
               <FooterWrapper>
                 <Footer />
