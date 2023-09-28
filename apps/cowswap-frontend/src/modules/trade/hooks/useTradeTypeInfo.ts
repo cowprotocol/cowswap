@@ -6,9 +6,9 @@ import { useMatch } from 'react-router-dom'
 import { Routes, RoutesValues, TRADE_WIDGET_PREFIX } from 'common/constants/routes'
 
 export enum TradeType {
-  SWAP,
-  LIMIT_ORDER,
-  ADVANCED_ORDERS,
+  SWAP = 'SWAP',
+  LIMIT_ORDER = 'LIMIT_ORDER',
+  ADVANCED_ORDERS = 'ADVANCED_ORDERS',
 }
 
 export interface TradeTypeInfo {

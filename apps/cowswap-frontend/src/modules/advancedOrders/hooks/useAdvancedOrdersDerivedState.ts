@@ -1,11 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 import {
-  AdvancedOrdersDerivedState,
   advancedOrdersAtom,
+  AdvancedOrdersDerivedState,
   advancedOrdersDerivedStateAtom,
 } from '../state/advancedOrdersAtom'
 
@@ -21,6 +22,6 @@ export function useFillAdvancedOrdersDerivedState() {
   const isUnlocked = rawState.isUnlocked
 
   useEffect(() => {
-    updateDerivedState({ ...derivedState, isUnlocked })
+    updateDerivedState({ ...derivedState, isUnlocked, tradeType: TradeType.ADVANCED_ORDERS })
   }, [derivedState, isUnlocked, updateDerivedState])
 }
