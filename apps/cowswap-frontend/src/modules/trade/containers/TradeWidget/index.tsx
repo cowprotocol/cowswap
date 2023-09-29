@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
 import { maxAmountSpend } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -122,6 +123,8 @@ export function TradeWidget(props: TradeWidgetProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const isMenuDropdown = !!isInjectedWidget();
+
   return (
     <styledEl.Container id={id}>
       <RecipientAddressUpdater />
@@ -138,7 +141,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <TradeWidgetLinks />
+            <TradeWidgetLinks isDropdown={isMenuDropdown} />
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 import { matchPath, useLocation } from 'react-router-dom'
@@ -36,41 +36,61 @@ const MENU_ITEMS: MenuItemConfig[] = [
 interface TradeWidgetLinksProps {
   highlightedBadgeText?: string
   highlightedBadgeType?: BadgeType
+  isDropdown?: boolean;
 }
 
-export function TradeWidgetLinks({ highlightedBadgeText, highlightedBadgeType }: TradeWidgetLinksProps) {
-  const tradeContext = useTradeRouteContext()
-  const location = useLocation()
+export function TradeWidgetLinks({
+  highlightedBadgeText,
+  highlightedBadgeType,
+  isDropdown = false
+}: TradeWidgetLinksProps) {
+  const tradeContext = useTradeRouteContext();
+  const location = useLocation();
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
 
-  const buildMenuItem = useCallback(
-    (item: MenuItemConfig) => {
-      const routePath = parameterizeTradeRoute(tradeContext, item.route)
+  const handleMenuItemClick = (_item: MenuItemConfig) => {
+    setDropdownVisible(false);
+  };
 
-      const isActive = !!matchPath(location.pathname, routePath)
+  const menuItems = MENU_ITEMS.map((item) => {
+    const routePath = parameterizeTradeRoute(tradeContext, item.route);
+    const isActive = !!matchPath(location.pathname, routePath);
 
-      const menuItem = (
-        <MenuItem
-          key={item.label}
-          routePath={routePath}
-          item={item}
-          isActive={isActive}
-          badgeText={item.badgeText || highlightedBadgeText}
-          badgeType={item.badgeType || highlightedBadgeType}
-        />
-      )
+    const menuItem = (
+      <MenuItem
+        key={item.label}
+        routePath={routePath}
+        item={item}
+        isActive={isActive}
+        badgeText={item.badgeText || highlightedBadgeText}
+        badgeType={item.badgeType || highlightedBadgeType}
+        onClick={() => handleMenuItemClick(item)}
+      />
+    );
 
-      return item.featureGuard ? (
-        <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
-          {menuItem}
-        </FeatureGuard>
-      ) : (
-        menuItem
-      )
-    },
-    [location.pathname, tradeContext, highlightedBadgeText, highlightedBadgeType]
-  )
+    return item.featureGuard ? (
+      <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
+        {menuItem}
+      </FeatureGuard>
+    ) : (
+      menuItem
+    );
+  });
 
-  return <styledEl.Wrapper>{MENU_ITEMS.map(buildMenuItem)}</styledEl.Wrapper>
+  return isDropdown ? (
+    <>
+      <styledEl.MenuItem onClick={() => setDropdownVisible(!isDropdownVisible)}>
+        <styledEl.Link to={menuItems.find(item => item.props.isActive)?.props.routePath || '#'}>
+          <Trans>
+            {menuItems.find(item => item.props.isActive)?.props.item.label + ' ⌄' || 'Select'}
+          </Trans>
+        </styledEl.Link>
+      </styledEl.MenuItem>
+      {isDropdownVisible && <styledEl.SelectMenu>{menuItems}</styledEl.SelectMenu>}
+    </>
+  ) : (
+    <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
+  );
 }
 
 const MenuItem = ({
@@ -79,14 +99,16 @@ const MenuItem = ({
   isActive,
   badgeText,
   badgeType,
+  onClick
 }: {
   routePath: string
   item: MenuItemConfig
   isActive: boolean
   badgeText?: string
   badgeType?: BadgeType
+  onClick: () => void
 }) => (
-  <styledEl.MenuItem isActive={isActive}>
+  <styledEl.MenuItem isActive={isActive} onClick={onClick}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {item.featureGuard && badgeText && (
@@ -96,4 +118,5 @@ const MenuItem = ({
       )}
     </styledEl.Link>
   </styledEl.MenuItem>
-)
+);
+
