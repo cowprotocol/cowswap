@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.47.1](https://github.com/cowprotocol/cowswap/compare/v1.47.0...v1.47.1) (2023-09-29)
+
+
+### Features
+
+* allow to change rpc nodes ([#3160](https://github.com/cowprotocol/cowswap/issues/3160)) ([b9b4be2](https://github.com/cowprotocol/cowswap/commit/b9b4be24ece99ddef83f351d47cc86a9ac3ff5da))
+* **orders-table:** approve order token from allowance warn tooltip ([#3144](https://github.com/cowprotocol/cowswap/issues/3144)) ([aa943bf](https://github.com/cowprotocol/cowswap/commit/aa943bf06ab2ba3bb3040bae96106b4463f1283a))
+* update approve button color ([#3169](https://github.com/cowprotocol/cowswap/issues/3169)) ([802f288](https://github.com/cowprotocol/cowswap/commit/802f288379329d6a526933be988e6669020bb872))
+
+
+### Bug Fixes
+
+* don't fetch tokens list ens hashes ([#3152](https://github.com/cowprotocol/cowswap/issues/3152)) ([49989f9](https://github.com/cowprotocol/cowswap/commit/49989f987e729749c17c64984ca3338f774198f9))
+* fix bad import ([8546bbc](https://github.com/cowprotocol/cowswap/commit/8546bbc6e792cd913511c87ecfa3ab7453648ce6))
+* **twap:** approve infinite amount ([#3141](https://github.com/cowprotocol/cowswap/issues/3141)) ([c5ab768](https://github.com/cowprotocol/cowswap/commit/c5ab768f85a0a463accaf436114fdcab7b538d80))
+
+
+### Miscellaneous Chores
+
+* **release:** hotfix 1.47.1 Merge pull request [#3171](https://github.com/cowprotocol/cowswap/issues/3171) from cowprotocol/hotfix/1.47.1 ([ce8671f](https://github.com/cowprotocol/cowswap/commit/ce8671fe3705f79a0bb73729855dfd59bbd48b52))
+
 ## [1.47.0](https://github.com/cowprotocol/cowswap/compare/v1.47.0-RC.0...v1.47.0) (2023-09-11)
 
 
