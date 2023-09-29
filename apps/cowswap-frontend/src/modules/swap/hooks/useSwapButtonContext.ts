@@ -1,9 +1,9 @@
 import {
-  useIsSmartContractWallet,
   useGnosisSafeInfo,
+  useIsBundlingSupported,
+  useIsSmartContractWallet,
   useWalletDetails,
   useWalletInfo,
-  useIsBundlingSupported,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -23,7 +23,7 @@ import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWrapNativeFlow } from 'modules/trade'
+import { TradeType, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -92,7 +92,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isBundlingSupported = useIsBundlingSupported()
-  const isPermitSupported = !!useIsTokenPermittable(currencyIn)
+  const isPermitSupported = !!useIsTokenPermittable(currencyIn, TradeType.SWAP)
 
   const swapButtonState = getSwapButtonState({
     account,
