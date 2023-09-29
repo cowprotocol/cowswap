@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 export const ButtonSecondary = styled.button`
   background: var(--cow-color-lightBlue-opacity-90);
-  color: var(--cow-color-lightBlue);
+  color: var(--cow-color-white);
   font-size: 12px;
   font-weight: 600;
   border: 0;
