@@ -28,12 +28,15 @@ yarn
 
 ## Run
 
+Start CoW Swap on the `http://localhost:3000`
+
 ```bash
-# You will be able to open CoW Swap in http://localhost:3000
 yarn start
 ```
 
 ## Build
+
+Build the project. The static files will be generated in the `build` folder.
 
 ```bash
 yarn build
@@ -45,9 +48,9 @@ yarn build
 yarn test
 ```
 
-# 🖼️ Widget
+# 🖼️ Widget Configurator
 
-This will start the widget configurator:
+Start the Widget Configurator will start the widget configurator:
 
 ```bash
 yarn start:widget
@@ -55,7 +58,7 @@ yarn start:widget
 
 # 🌌 Cosmos UI Library
 
-This will start a server on the `http://localhost:5000/`
+Start the Cosmos UI Library on the `http://localhost:5000`
 
 ```bash
 yarn run cosmos
@@ -133,14 +136,14 @@ Additionally, if you plan to run the E22 / Integration tests locally you must ha
 - `INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
 - `INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
 
-### API endpoints
+## Orderbook API Endpoints
 
-Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
+Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
 The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable ` {XDAI|GOERLI|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`.
 
 ## Price feeds
 
