@@ -1,5 +1,5 @@
 export { useAccountAgnosticPermitHookData } from './hooks/useAccountAgnosticPermitHookData'
 export { generatePermitHook } from './utils/generatePermitHook'
 export { useIsTokenPermittable } from './hooks/useIsTokenPermittable'
-export { handlePermit } from './utils/handlePermit'
+export * from './utils/handlePermit'
 export * from './types'
