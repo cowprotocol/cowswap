@@ -8,8 +8,11 @@ import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
+import { TradeType } from 'modules/trade'
+
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
+import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/atoms'
 import { IsTokenPermittableResult } from '../types'
 import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
@@ -21,9 +24,11 @@ import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
  * When it is not, returned type is `false`
  * When it is unknown, returned type is `undefined`
  *
- * @param token
  */
-export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermittableResult {
+export function useIsTokenPermittable(
+  token: Nullish<Currency>,
+  tradeType: Nullish<TradeType>
+): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
@@ -31,7 +36,10 @@ export function useIsTokenPermittable(token: Nullish<Currency>): IsTokenPermitta
   const isNative = token?.isNative
   const tokenName = token?.name || lowerCaseAddress || ''
 
-  const isPermitEnabled = useIsPermitEnabled(chainId)
+  // Avoid building permit info in the first place if order type is not supported
+  const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
+
+  const isPermitEnabled = useIsPermitEnabled(chainId) && isPermitSupported
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)

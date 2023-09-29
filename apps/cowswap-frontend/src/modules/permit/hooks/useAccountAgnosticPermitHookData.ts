@@ -26,7 +26,11 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
-    if (!params) return
+    if (!params) {
+      setData(undefined)
+
+      return
+    }
 
     generatePermitHook(params).then(setData)
   }, [params])
@@ -39,9 +43,9 @@ function usePermitHookParams(): PermitHookParams | undefined {
   const { provider } = useWeb3React()
 
   const { state } = useDerivedTradeState()
-  const { inputCurrency } = state || {}
+  const { inputCurrency, tradeType } = state || {}
 
-  const permitInfo = useIsTokenPermittable(inputCurrency)
+  const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
     if (!inputCurrency || !provider || !permitInfo) return undefined
