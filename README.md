@@ -144,19 +144,23 @@ To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` enviro
 
 ### Supported networks
 
-You can change the supported networks and their RPC endpoint.
-
-To have the interface default to a different network when a wallet is not connected:
-
-1. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`. This will be your default network id
-2. Define your own list of supported networks:
+You should set your own RPC endpoints by defining the following environment variables:
 
 ```ini
-REACT_APP_SUPPORTED_CHAIN_IDS="1,100,5"
+# Define your own RPC endpoints
 REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
+
+If you plan to use Infura, you can omit defining the RPC endpoints, and just define the `REACT_APP_INFURA_KEY` environment variable.
+
+```ini
+# Alternatively you can just define your Infura key (instead of defining the RPC endpoints)
+REACT_APP_INFURA_KEY={YOUR_INFURA_KEY}
+```
+
+````
 
 ### API endpoints
 
@@ -208,3 +212,4 @@ REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
+````

@@ -41,10 +41,9 @@ const QuestionHelperContainer = styled.span`
 
 export interface QuestionHelperProps extends Omit<TooltipProps, 'children' | 'show'> {
   className?: string
-  QuestionMark: () => JSX.Element // mod
+  QuestionMark: () => JSX.Element
 }
 
-// export default function QuestionHelper({ text }: { text: ReactNode; size?: number }) {
 export default function QuestionHelper({ text, className, QuestionMark, ...tooltipProps }: QuestionHelperProps) {
   const [show, setShow] = useState<boolean>(false)
   const [mouseLeaveTimeout, setMouseLeaveTimeout] = useState<NodeJS.Timeout | null>(null)

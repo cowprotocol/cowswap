@@ -8,7 +8,7 @@ import { renderTooltip } from 'legacy/components/Tooltip'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
-const QuestionMark = () => <SVG src={QuestionImage} />
+const DefaultQuestionMark = <SVG src={QuestionImage} />
 
 export const QuestionWrapper = styled.div`
   display: flex;
@@ -30,10 +30,11 @@ export const QuestionWrapper = styled.div`
 
 interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'QuestionMark'> {
   text: ReactNode
+  Icon?: JSX.Element
 }
 
-export default function QuestionHelper({ text, ...props }: EnhancedQuestionHelperProps) {
+export default function QuestionHelper({ text, Icon, ...props }: EnhancedQuestionHelperProps) {
   const tooltip = renderTooltip(text, props)
 
-  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />
+  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={() => Icon || DefaultQuestionMark} />
 }
