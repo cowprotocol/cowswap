@@ -5,6 +5,8 @@ import { Token } from '@uniswap/sdk-core'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
+import { AppDataInfo } from 'modules/appData'
+
 export type PermitType = 'dai-like' | 'eip-2612'
 
 export type SupportedPermitInfo = {
@@ -30,6 +32,12 @@ export type PermitHookParams = {
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
   account?: string
+}
+
+export type HandlePermitParams = Omit<PermitHookParams, 'permitInfo'> & {
+  permitInfo: IsTokenPermittableResult
+  hasEnoughAllowance: undefined | boolean
+  appData: AppDataInfo
 }
 
 export type PermitHookData = latest.CoWHook

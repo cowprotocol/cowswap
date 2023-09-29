@@ -3,10 +3,9 @@ import { Web3Provider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
-import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
-
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
+import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
@@ -14,17 +13,21 @@ import { PermitHookData, PermitHookParams } from '../types'
 const CACHE_PREFIX = 'permitCache:v0-'
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
 
-function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account } = params
-
-  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account}` : ''}`
-}
-
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData> {
   const permitKey = getCacheKey(params)
 
-  const cachedResult = localStorage.getItem(permitKey)
-  if (cachedResult) return JSON.parse(cachedResult)
+  const { chainId, provider, account, inputToken } = params
+
+  const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
+
+  // Always get the nonce for the real account, to know whether the cache should be invalidated
+  // Static account should never need to pre-check the nonce as it'll never change once cached
+  const nonce = account ? await eip2162Utils.getTokenNonce(inputToken.address, account) : undefined
+
+  const cachedResult = load(permitKey, nonce)
+  if (cachedResult) {
+    return cachedResult
+  }
 
   const cachedRequest = REQUESTS_CACHE[permitKey]
 
@@ -37,10 +40,12 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
     }
   }
 
-  const request = generatePermitHookRaw(params).then((permitHookData) => {
-    const permitHook = JSON.stringify(permitHookData)
+  const request = generatePermitHookRaw({ ...params, eip2162Utils, preFetchedNonce: nonce }).then((permitHookData) => {
+    // Store permit in the cache
+    save(permitKey, nonce, permitHookData)
 
-    localStorage.setItem(permitKey, permitHook)
+    // Remove consumed request to avoid stale data
+    delete REQUESTS_CACHE[permitKey]
 
     return permitHookData
   })
@@ -50,30 +55,27 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
-async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
-  const { inputToken, chainId, permitInfo, provider, account } = params
+async function generatePermitHookRaw(
+  params: PermitHookParams & { eip2162Utils: Eip2612PermitUtils; preFetchedNonce: number | undefined }
+): Promise<PermitHookData> {
+  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, preFetchedNonce } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
 
-  // TODO: verify whether cached result is still valid and renew it if needed
-
-  const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
-  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
-
   const owner = account || PERMIT_SIGNER.address
 
-  // TODO: check whether cached permit nonce matches current nonce and update it in case it doesnt
-
-  const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
+  // Only fetch the nonce in case it wasn't pre-fetched before
+  // That's the case for static account
+  const nonce = preFetchedNonce === undefined ? await eip2162Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const spender = GP_VAULT_RELAYER[chainId]
   const deadline = getPermitDeadline()
   const value = DEFAULT_PERMIT_VALUE
 
-  const callDataPromise =
+  const callData =
     permitInfo.type === 'eip-2612'
-      ? buildEip2162PermitCallData({
-          eip2162Utils: eip2612PermitUtils,
+      ? await buildEip2162PermitCallData({
+          eip2162Utils,
           callDataParams: [
             {
               owner,
@@ -87,8 +89,8 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             tokenAddress,
           ],
         })
-      : buildDaiLikePermitCallData({
-          eip2162Utils: eip2612PermitUtils,
+      : await buildDaiLikePermitCallData({
+          eip2162Utils,
           callDataParams: [
             {
               holder: owner,
@@ -103,8 +105,6 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             tokenAddress,
           ],
         })
-
-  const callData = await callDataPromise
 
   const gasLimit = await calculateGasLimit(callData, owner, tokenAddress, provider, !!account)
 
@@ -136,5 +136,61 @@ async function calculateGasLimit(
     console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
 
     return DEFAULT_PERMIT_GAS_LIMIT
+  }
+}
+
+function getCacheKey(params: PermitHookParams): string {
+  const { inputToken, chainId, account } = params
+
+  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
+}
+
+type CachedData = PermitHookData & {
+  nonce: number | undefined
+}
+
+/**
+ * Stores data based on `key` and `nonce`
+ */
+function save(key: string, nonce: number | undefined, data: PermitHookData): void {
+  const cachedData: CachedData = { nonce, ...data }
+
+  localStorage.setItem(key, JSON.stringify(cachedData))
+}
+
+/**
+ * Loads stored data if still valid
+ *
+ * Validity is based on `nonce` and only applies to real accounts
+ * Static data never gets invalidated
+ */
+function load(key: string, nonce: number | undefined): PermitHookData | undefined {
+  const cachedData = localStorage.getItem(key)
+
+  if (!cachedData) {
+    return undefined
+  }
+
+  try {
+    const parsedData: CachedData = JSON.parse(cachedData)
+
+    // Extract nonce out of cached data
+    const { nonce: storedNonce, ...permitHookData } = parsedData
+
+    // TODO: if one is defined while the other is not, should also ignore the cache
+    if (nonce !== undefined && storedNonce !== undefined && storedNonce < nonce) {
+      // When both nonces exist and stored is < than new, data is outdated
+
+      // Remove cache key
+      localStorage.removeItem(key)
+
+      return undefined
+    }
+
+    // Cache is valid, return it
+    return permitHookData
+  } catch {
+    // Failed to parse stored data, return nothing
+    return undefined
   }
 }

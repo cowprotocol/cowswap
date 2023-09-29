@@ -4,10 +4,9 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
-import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
-
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
+import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
 import { CheckIsTokenPermittableParams, EstimatePermitResult } from '../types'
@@ -99,23 +98,6 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
       return { error: e.message || e.toString() }
     }
   }
-}
-
-const PERMIT_UTILS_CACHE: Record<number, Eip2612PermitUtils> = {}
-
-function getPermitUtilsInstance(chainId: SupportedChainId, provider: Web3Provider): Eip2612PermitUtils {
-  const cached = PERMIT_UTILS_CACHE[chainId]
-
-  if (cached) {
-    return cached
-  }
-
-  const web3ProviderConnector = new PermitProviderConnector(provider, PERMIT_SIGNER)
-  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
-
-  PERMIT_UTILS_CACHE[chainId] = eip2612PermitUtils
-
-  return eip2612PermitUtils
 }
 
 // TODO: refactor and make DAI like tokens work

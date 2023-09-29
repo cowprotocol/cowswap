@@ -49,6 +49,7 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
+  isPermitSupported: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationLocalContext, TradeFormValidationCommonContext {}

@@ -1,5 +1,4 @@
-import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { isAddress } from '@cowprotocol/common-utils'
+import { isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
@@ -18,11 +17,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
+    isPermitSupported,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
 
-  const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+  const approvalRequired =
+    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
