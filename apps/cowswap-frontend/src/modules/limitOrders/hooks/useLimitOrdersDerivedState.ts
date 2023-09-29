@@ -2,10 +2,11 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import {
-  limitOrdersRawStateAtom,
   LimitOrdersDerivedState,
   limitOrdersDerivedStateAtom,
+  limitOrdersRawStateAtom,
 } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
@@ -20,6 +21,6 @@ export function useFillLimitOrdersDerivedState() {
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom)
 
   useEffect(() => {
-    updateDerivedState({ ...derivedState, isUnlocked })
+    updateDerivedState({ ...derivedState, isUnlocked, tradeType: TradeType.LIMIT_ORDER })
   }, [derivedState, updateDerivedState, isUnlocked])
 }
