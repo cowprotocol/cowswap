@@ -6,15 +6,19 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   background: var(${UI.COLOR_CONTAINER_BG_01});
-  padding: 20px;
   border-radius: 20px;
-  gap: 15px;
+`
+
+export const Row = styled.div`
+  margin: 0 20px 15px 20px;
 `
 
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 20px 20px 0 20px;
+  margin-bottom: 15px;
 
   > h3 {
     font-size: 16px;
@@ -62,5 +66,27 @@ export const SearchInput = styled.input`
   :focus {
     border: 1px solid var(${UI.COLOR_CONTAINER_BG_02});
     outline: none;
+  }
+`
+
+export const ActionButton = styled.button`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 20px 0;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(${UI.COLOR_TEXT1});
+  background: none;
+  border: 0;
+  outline: none;
+
+  &:hover {
+    opacity: 0.7;
   }
 `

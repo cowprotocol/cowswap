@@ -1,4 +1,6 @@
-import { X } from 'react-feather'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Edit, X } from 'react-feather'
 
 import * as styledEl from './styled'
 
@@ -9,10 +11,12 @@ import { TokenWithLogo } from '../../types'
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
+  balances: { [key: string]: CurrencyAmount<Currency> }
+  selectedToken?: TokenWithLogo
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
-  const { favouriteTokens, allTokens } = props
+  const { favouriteTokens, allTokens, selectedToken, balances } = props
 
   return (
     <styledEl.Wrapper>
@@ -22,17 +26,19 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           <X />
         </button>
       </styledEl.Header>
-      <div>
+      <styledEl.Row>
         <styledEl.SearchInput type="text" placeholder="Search name or past address" />
+      </styledEl.Row>
+      <styledEl.Row>
+        <FavouriteTokensList selectedToken={selectedToken} tokens={favouriteTokens} />
+      </styledEl.Row>
+      <div>
+        <AllTokensList selectedToken={selectedToken} tokens={allTokens} balances={balances} />
       </div>
       <div>
-        <FavouriteTokensList tokens={favouriteTokens} />
-      </div>
-      <div>
-        <AllTokensList tokens={allTokens} />
-      </div>
-      <div>
-        <button>Manage Token Lists</button>
+        <styledEl.ActionButton>
+          <Edit /> <span>Manage Token Lists</span>
+        </styledEl.ActionButton>
       </div>
     </styledEl.Wrapper>
   )

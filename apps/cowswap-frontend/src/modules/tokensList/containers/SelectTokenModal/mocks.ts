@@ -11,6 +11,15 @@ export const allTokensMock: TokenWithLogo[] = [
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png',
   },
   {
+    name: 'Basic Attention Token',
+    chainId: 5,
+    symbol: 'BAT',
+    decimals: 18,
+    address: '0x70cBa46d2e933030E2f274AE58c951C800548AeF',
+    logoURI:
+      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0D8775F648430679A709E98d2b0Cb6250d2887EF/logo.png',
+  },
+  {
     name: 'CoW Protocol Token',
     chainId: 5,
     symbol: 'COW',

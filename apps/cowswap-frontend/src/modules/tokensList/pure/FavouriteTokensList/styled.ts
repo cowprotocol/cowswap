@@ -37,14 +37,17 @@ export const TokensItem = styled.button`
   font-size: 16px;
   cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
   background-color: ${({ theme, disabled }) => disabled && theme.bg3};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 
   :hover {
     background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
   }
 
   > img {
-    width: 24px;
-    height: 24px;
-    border-radius: 24px;
+    --size: 24px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: var(${UI.COLOR_LIGHT_BLUE});
   }
 `
