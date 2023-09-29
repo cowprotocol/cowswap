@@ -1,6 +1,8 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { TradeType } from '../hooks/useTradeTypeInfo'
+
 export interface TradeDerivedState {
   readonly inputCurrency: Currency | null
   readonly outputCurrency: Currency | null
@@ -25,6 +27,7 @@ export interface TradeDerivedState {
   readonly recipient: string | null
   readonly recipientAddress: string | null
   readonly orderKind: OrderKind
+  readonly tradeType: TradeType | null
 }
 
 export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
@@ -40,4 +43,5 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   recipient: null,
   recipientAddress: null,
   orderKind: OrderKind.SELL,
+  tradeType: null,
 }
