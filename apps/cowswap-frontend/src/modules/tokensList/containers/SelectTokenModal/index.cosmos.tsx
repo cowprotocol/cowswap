@@ -4,7 +4,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { allTokensMock, favouriteTokensMock } from './mocks'
+import { allTokensMock, favouriteTokensMock } from '../../mocks'
 
 import { SelectTokenModal } from './index'
 

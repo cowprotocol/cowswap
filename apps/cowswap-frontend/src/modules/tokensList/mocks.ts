@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '../../types'
+import { TokenWithLogo } from './types'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -73,5 +73,16 @@ export const favouriteTokensMock: TokenWithLogo[] = [
     decimals: 18,
     address: '0x9e32c0EfF886B6Ccae99350Fd5e7002dCED55F15',
     logoURI: 'https://assets.coingecko.com/coins/images/2784/thumb/inKkF01.png?1605007034',
+  },
+].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
+
+export const customTokensMock: TokenWithLogo[] = [
+  {
+    name: 'Tether USD',
+    chainId: 5,
+    symbol: 'USDT',
+    decimals: 6,
+    address: '0x7b77F953e703E80CD97F6911385c0b1ceabC96Bc',
+    logoURI: undefined,
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
