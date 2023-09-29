@@ -128,9 +128,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       openNativeWrapModal()
     },
     openSwapConfirm() {
-      // TODO: move permit info and status to an atom
-      // We need to know before opening the confirmation modal if there's a cached permit
-      // and if it's valid to know what to show...
       trade && openSwapConfirmModal(trade)
     },
     toggleWalletModal,
