@@ -24,6 +24,7 @@ import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
+import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
@@ -127,11 +128,14 @@ export function OrdersTableWidget({
     [allOrders, cancelOrder]
   )
 
+  const approveOrderToken = useOrdersTableTokenApprove()
+
   const orderActions: OrderActions = {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
     toggleOrdersForCancellation,
+    approveOrderToken,
   }
 
   // Set page params initially once

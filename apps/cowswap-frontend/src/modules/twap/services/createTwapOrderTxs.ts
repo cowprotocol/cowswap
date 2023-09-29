@@ -1,3 +1,4 @@
+import { MaxUint256 } from '@ethersproject/constants'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
@@ -20,7 +21,7 @@ export function createTwapOrderTxs(
   const { sellAmount } = order
 
   const sellTokenAddress = sellAmount.currency.address
-  const sellAmountAtoms = sellAmount.quotient.toString()
+  const sellAmountAtoms = MaxUint256.toString()
 
   const txs: MetaTransactionData[] = []
 
