@@ -58,15 +58,18 @@ export function useSwapConfirmManager(): SwapConfirmManager {
       },
       permitSigned() {
         setSwapConfirmState((prev) => {
-          if (prev.permitSignatureState === 'requested') {
-            // Move to signed state only if previous state was good
-            // Set to undefined otherwise and make the action a no-op
-            const state: SwapConfirmState = { ...prev, permitSignatureState: 'signed' }
-            console.debug('[Swap confirm state] permitSigned: ', state)
-            return state
+          // Move to `signed` state only if previous state was `requested` - which means the order is using the permit
+          // Set to `undefined` otherwise
+          const permitSignatureState = prev.permitSignatureState === 'requested' ? 'signed' : undefined
+
+          const state: SwapConfirmState = {
+            ...prev,
+            permitSignatureState,
           }
-          console.debug('[Swap confirm state] permitSigned was a no-op')
-          return prev
+
+          console.debug('[Swap confirm state] permitSigned: ', state)
+
+          return state
         })
       },
       closeSwapConfirm() {
