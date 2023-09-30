@@ -11,15 +11,6 @@ export const Wrapper = styled.div`
   border-radius: 20px;
 `
 
-export const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  font-weight: 500;
-  font-size: 20px;
-  padding: 20px;
-`
-
 export const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
