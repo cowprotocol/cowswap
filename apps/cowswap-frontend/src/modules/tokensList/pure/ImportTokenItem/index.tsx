@@ -1,6 +1,7 @@
 import * as styledEl from './styled'
 
 import { TokenWithLogo } from '../../types'
+import { ImportButton } from '../commonElements'
 import { TokenInfo } from '../TokenInfo'
 
 export interface ImportTokenItemProps {
@@ -17,7 +18,7 @@ export function ImportTokenItem(props: ImportTokenItemProps) {
         <TokenInfo token={token} />
       </div>
       <div>
-        <styledEl.ImportButton onClick={() => importToken(token)}>Import</styledEl.ImportButton>
+        <ImportButton onClick={() => importToken(token)}>Import</ImportButton>
       </div>
     </styledEl.Wrapper>
   )

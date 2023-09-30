@@ -3,8 +3,7 @@ import { useState } from 'react'
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../../pure/ModalHeader'
-import { TokenList } from '../../pure/TokenListItem'
-import { TokenWithLogo } from '../../types'
+import { TokenList, TokenWithLogo } from '../../types'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 

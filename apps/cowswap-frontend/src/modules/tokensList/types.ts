@@ -13,3 +13,13 @@ export class TokenWithLogo extends Token {
     super(chainId, address, decimals, symbol, name, bypassChecksum)
   }
 }
+
+export interface TokenList {
+  id: string
+  name: string
+  logoUrl: string
+  url: string
+  enabled: boolean
+  tokensCount: number
+  version: string
+}

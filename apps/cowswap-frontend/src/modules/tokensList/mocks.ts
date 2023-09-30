@@ -1,4 +1,4 @@
-import { TokenWithLogo } from './types'
+import { TokenList, TokenWithLogo } from './types'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -95,3 +95,36 @@ export const customTokensMock: TokenWithLogo[] = [
       'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c/logo.png',
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
+
+export const listsMock: TokenList[] = [
+  {
+    id: '1',
+    name: 'CowSwap Goerli',
+    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json',
+    logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
+    tokensCount: 7,
+    enabled: true,
+    version: 'v0.0.0',
+  },
+  {
+    id: '2',
+    name: 'Compound',
+    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
+    logoUrl: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
+    tokensCount: 16,
+    enabled: false,
+    version: 'v0.2.1',
+  },
+]
+
+export const importListsMock: TokenList[] = [
+  {
+    id: '4',
+    name: 'CoW Swap',
+    url: 'https://files.cow.fi/tokens/CowSwap.json',
+    logoUrl: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    tokensCount: 113,
+    enabled: true,
+    version: 'v0.0.0',
+  },
+]

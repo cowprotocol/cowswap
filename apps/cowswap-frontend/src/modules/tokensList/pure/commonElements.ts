@@ -54,3 +54,20 @@ export const IconButton = styled.button`
     }
   }
 `
+
+export const ImportButton = styled.button`
+  ${blankButtonMixin};
+
+  background-color: var(${UI.COLOR_CONTAINER_BG_02});
+  color: var(${UI.COLOR_WHITE});
+  font-size: 16px;
+  font-weight: 600;
+  padding: 6px 15px;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: var(${UI.COLOR_LINK});
+  }
+`
