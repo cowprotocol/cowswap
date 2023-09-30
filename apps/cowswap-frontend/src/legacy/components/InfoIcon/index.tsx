@@ -2,20 +2,24 @@ import { ReactNode } from 'react'
 
 import { MouseoverTooltipContent, TooltipContainer } from '@cowprotocol/ui'
 
-import { Info } from 'react-feather'
+import { Info, HelpCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
-const StyledInfoIcon = styled(Info)`
-  opacity: 0.5;
-  stroke: var(${UI.COLOR_TEXT1});
-  line-height: 0;
-  vertical-align: middle;
-  transition: opacity 0.2s ease-in-out;
+const StyledIcon = styled.div`
+  display: inline-block;
 
-  :hover {
-    opacity: 1;
+  > svg {
+    opacity: 0.5;
+    stroke: var(${UI.COLOR_TEXT1});
+    line-height: 0;
+    vertical-align: middle;
+    transition: opacity 0.2s ease-in-out;
+
+    :hover {
+      opacity: 1;
+    }
   }
 `
 
@@ -28,15 +32,22 @@ const StyledTooltipContainer = styled(TooltipContainer)`
 
 export interface InfoIconProps {
   content: ReactNode
+  iconType?: 'info' | 'help'
   className?: string
 }
 
-export function InfoIcon(props: InfoIconProps) {
-  const content = <StyledTooltipContainer>{props.content}</StyledTooltipContainer>
+export function InfoIcon({ content, iconType = 'info', className }: InfoIconProps) {
+  const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (
-    <MouseoverTooltipContent wrap={false} content={content} placement="bottom">
-      <StyledInfoIcon className={props.className} size={16} />
+    <MouseoverTooltipContent wrap={false} content={tooltipContent} placement="bottom">
+      <StyledIcon>
+        {iconType === 'info' ? (
+          <Info className={className} size={16} />
+        ) : (
+          <HelpCircle className={className} size={16} />
+        )}
+      </StyledIcon>
     </MouseoverTooltipContent>
   )
 }
