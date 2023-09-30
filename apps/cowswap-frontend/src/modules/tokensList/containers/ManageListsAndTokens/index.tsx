@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
-import { ArrowLeft, X } from 'react-feather'
-
 import * as styledEl from './styled'
 
-import { IconButton } from '../../pure/commonElements'
+import { ModalHeader } from '../../pure/ModalHeader'
 import { TokenList } from '../../pure/TokenListItem'
 import { TokenWithLogo } from '../../types'
 import { ManageLists } from '../ManageLists'
@@ -20,21 +18,19 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
 
+  const onBack = () => {
+    console.log('TODO onBack')
+  }
+
+  const onClose = () => {
+    console.log('TODO onClose')
+  }
+
   return (
     <styledEl.Wrapper>
-      <styledEl.Header>
-        <div>
-          <IconButton>
-            <ArrowLeft />
-          </IconButton>
-        </div>
-        <div>Manage</div>
-        <div>
-          <IconButton>
-            <X />
-          </IconButton>
-        </div>
-      </styledEl.Header>
+      <ModalHeader onBack={onBack} onClose={onClose}>
+        Manage
+      </ModalHeader>
       <styledEl.TabsContainer>
         <styledEl.Tab active$={currentTab === 'lists'} onClick={() => setCurrentTab('lists')}>
           Lists

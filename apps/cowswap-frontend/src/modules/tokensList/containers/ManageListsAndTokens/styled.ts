@@ -24,6 +24,7 @@ export const TabsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
+  margin-top: 10px;
 
   > button {
     width: 50%;
