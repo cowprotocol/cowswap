@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
+import { blankButtonMixin } from '../commonElements'
+
 export const Wrapper = styled.div<{ $enabled: boolean }>`
   display: flex;
   flex-direction: row;
@@ -36,11 +38,7 @@ export const TokensInfo = styled.div`
 `
 
 export const SettingsButton = styled(MenuButton)`
-  background: none;
-  padding: 0;
-  margin: 0;
-  outline: none;
-  border: 0;
+  ${blankButtonMixin}
 `
 
 export const SettingsContainer = styled(MenuList)`

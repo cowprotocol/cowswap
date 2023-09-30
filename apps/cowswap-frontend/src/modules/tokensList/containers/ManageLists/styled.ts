@@ -5,10 +5,6 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-export const Box = styled.div`
-  margin: 20px;
-`
-
 export const ListsContainer = styled.div`
   padding-bottom: 20px;
 `

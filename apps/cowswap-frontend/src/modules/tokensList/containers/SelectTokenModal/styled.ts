@@ -2,6 +2,8 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
+import { blankButtonMixin } from '../../pure/commonElements'
+
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,6 +53,8 @@ export const SearchInput = styled.input`
 `
 
 export const ActionButton = styled.button`
+  ${blankButtonMixin};
+
   display: flex;
   width: 100%;
   align-items: center;
@@ -63,9 +67,6 @@ export const ActionButton = styled.button`
   font-size: 16px;
   font-weight: 500;
   color: var(${UI.COLOR_TEXT1});
-  background: none;
-  border: 0;
-  outline: none;
 
   &:hover {
     opacity: 0.7;

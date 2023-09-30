@@ -1,7 +1,26 @@
 import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
+
+export const blankButtonMixin = css`
+  background: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+`
+
+export const PrimaryInputBox = styled.div`
+  margin: 20px 0 10px 0;
+  padding: 0 20px 20px 20px;
+  border-bottom: 1px solid var(${UI.COLOR_GREY});
+`
 
 export const PrimaryInput = styled.input`
   width: 100%;
@@ -25,16 +44,7 @@ export const PrimaryInput = styled.input`
 `
 
 export const IconButton = styled.button`
-  background: none;
-  padding: 0;
-  margin: 0;
-  outline: none;
-  border: 0;
-  cursor: pointer;
-
-  &:disabled {
-    cursor: default;
-  }
+  ${blankButtonMixin}
 
   > svg {
     color: var(${UI.COLOR_TEXT1});

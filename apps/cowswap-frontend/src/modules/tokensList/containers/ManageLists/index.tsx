@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
 
-import { PrimaryInput } from '../../pure/commonElements'
+import { PrimaryInput, PrimaryInputBox } from '../../pure/commonElements'
 import { TokenList, TokenListItem } from '../../pure/TokenListItem'
 
 export interface ManageListsProps {
@@ -20,9 +20,9 @@ export function ManageLists(props: ManageListsProps) {
 
   return (
     <styledEl.Wrapper>
-      <styledEl.Box>
+      <PrimaryInputBox>
         <PrimaryInput type="text" placeholder="https:// or ipfs:// or ENS name" />
-      </styledEl.Box>
+      </PrimaryInputBox>
       <styledEl.ListsContainer>
         {lists.map((list) => (
           <TokenListItem key={list.id} list={list} viewList={viewList} removeList={removeList} />

@@ -8,6 +8,7 @@ import { Toggle } from 'legacy/components/Toggle'
 import * as styledEl from './styled'
 
 import { IconButton } from '../commonElements'
+import { TokenLogo } from '../TokenLogo'
 
 export interface TokenList {
   id: string
@@ -34,7 +35,7 @@ export function TokenListItem(props: TokenListItemProps) {
     <styledEl.Wrapper $enabled={isActive}>
       <styledEl.ListInfo>
         <div>
-          <img src={list.logoUrl} alt={list.name} width={36} height={36} />
+          <TokenLogo logoURI={list.logoUrl} size={36} />
         </div>
         <div>
           <styledEl.ListName>{list.name}</styledEl.ListName>

@@ -2,6 +2,8 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
+import { blankButtonMixin } from '../../pure/commonElements'
+
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
@@ -29,14 +31,11 @@ export const TabsContainer = styled.div`
 `
 
 export const Tab = styled.button<{ active$: boolean }>`
+  ${blankButtonMixin};
+
   color: var(${UI.COLOR_TEXT1});
   opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
-  background: none;
   padding: 10px;
-  margin: 0;
-  outline: none;
-  border: 0;
-  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
 

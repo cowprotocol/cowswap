@@ -85,4 +85,13 @@ export const customTokensMock: TokenWithLogo[] = [
     address: '0x7b77F953e703E80CD97F6911385c0b1ceabC96Bc',
     logoURI: undefined,
   },
+  {
+    name: 'Euro Coin',
+    chainId: 5,
+    symbol: 'EUROC',
+    decimals: 6,
+    address: '0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c',
+    logoURI:
+      'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c/logo.png',
+  },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
