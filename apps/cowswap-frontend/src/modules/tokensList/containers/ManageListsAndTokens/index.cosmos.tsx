@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { customTokensMock } from '../../mocks'
-import { TokenList } from '../ManageLists'
+import { TokenList } from '../../pure/TokenListItem'
 
 import { ManageListsAndTokens } from './index'
 
@@ -17,6 +17,7 @@ const lists: TokenList[] = [
     logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
     tokensCount: 7,
     enabled: true,
+    version: 'v0.0.0',
   },
   {
     id: '2',
@@ -25,6 +26,7 @@ const lists: TokenList[] = [
     logoUrl: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
     tokensCount: 16,
     enabled: false,
+    version: 'v0.2.1',
   },
 ]
 

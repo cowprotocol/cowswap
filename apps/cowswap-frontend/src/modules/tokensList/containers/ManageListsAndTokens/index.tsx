@@ -4,8 +4,10 @@ import { ArrowLeft, X } from 'react-feather'
 
 import * as styledEl from './styled'
 
+import { IconButton } from '../../pure/commonElements'
+import { TokenList } from '../../pure/TokenListItem'
 import { TokenWithLogo } from '../../types'
-import { ManageLists, TokenList } from '../ManageLists'
+import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 
 export interface ManageListsAndTokensProps {
@@ -19,25 +21,29 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
 
   return (
-    <div>
-      <div>
+    <styledEl.Wrapper>
+      <styledEl.Header>
         <div>
-          <ArrowLeft />
+          <IconButton>
+            <ArrowLeft />
+          </IconButton>
         </div>
         <div>Manage</div>
         <div>
-          <X />
+          <IconButton>
+            <X />
+          </IconButton>
         </div>
-      </div>
-      <div>
+      </styledEl.Header>
+      <styledEl.TabsContainer>
         <styledEl.Tab active$={currentTab === 'lists'} onClick={() => setCurrentTab('lists')}>
           Lists
         </styledEl.Tab>
         <styledEl.Tab active$={currentTab === 'tokens'} onClick={() => setCurrentTab('tokens')}>
           Tokens
         </styledEl.Tab>
-      </div>
+      </styledEl.TabsContainer>
       {currentTab === 'lists' ? <ManageLists lists={lists} /> : <ManageTokens tokens={customTokens} />}
-    </div>
+    </styledEl.Wrapper>
   )
 }

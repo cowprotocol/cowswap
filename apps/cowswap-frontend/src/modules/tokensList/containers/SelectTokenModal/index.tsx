@@ -5,6 +5,7 @@ import { Edit, X } from 'react-feather'
 import * as styledEl from './styled'
 
 import { AllTokensList } from '../../pure/AllTokensList'
+import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
 import { TokenWithLogo } from '../../types'
 
@@ -22,9 +23,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     <styledEl.Wrapper>
       <styledEl.Header>
         <h3>Select a token</h3>
-        <button>
+        <IconButton>
           <X />
-        </button>
+        </IconButton>
       </styledEl.Header>
       <styledEl.Row>
         <styledEl.SearchInput type="text" placeholder="Search name or past address" />

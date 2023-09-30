@@ -25,25 +25,6 @@ export const Header = styled.div`
     font-weight: 500;
     margin: 0;
   }
-
-  > button {
-    margin: 0;
-    padding: 0;
-    border: none;
-    outline: none;
-    background: none;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s ease-in-out;
-
-    > svg {
-      color: var(${UI.COLOR_TEXT1});
-    }
-
-    &:hover {
-      opacity: 1;
-    }
-  }
 `
 
 export const SearchInput = styled.input`

@@ -1,13 +1,7 @@
-import { Settings } from 'react-feather'
+import * as styledEl from './styled'
 
-export interface TokenList {
-  id: string
-  name: string
-  logoUrl: string
-  url: string
-  enabled: boolean
-  tokensCount: number
-}
+import { PrimaryInput } from '../../pure/commonElements'
+import { TokenList, TokenListItem } from '../../pure/TokenListItem'
 
 export interface ManageListsProps {
   lists: TokenList[]
@@ -16,28 +10,24 @@ export interface ManageListsProps {
 export function ManageLists(props: ManageListsProps) {
   const { lists } = props
 
+  const viewList = (id: string) => {
+    console.log('TODO viewList', id)
+  }
+
+  const removeList = (id: string) => {
+    console.log('TODO removeList', id)
+  }
+
   return (
-    <div>
-      <input type="text" placeholder="https:// or ipfs:// or ENS name" />
-      <div>
-        {lists.map((list) => {
-          return (
-            <div key={list.id}>
-              <div>
-                <div>
-                  <img src={list.logoUrl} alt={list.name} width={36} height={36} />
-                </div>
-                <div>
-                  <div>{list.name}</div>
-                  <div>
-                    {list.tokensCount} tokens <Settings />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
+    <styledEl.Wrapper>
+      <styledEl.Box>
+        <PrimaryInput type="text" placeholder="https:// or ipfs:// or ENS name" />
+      </styledEl.Box>
+      <styledEl.ListsContainer>
+        {lists.map((list) => (
+          <TokenListItem key={list.id} list={list} viewList={viewList} removeList={removeList} />
+        ))}
+      </styledEl.ListsContainer>
+    </styledEl.Wrapper>
   )
 }
