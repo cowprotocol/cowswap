@@ -72,3 +72,10 @@ export const ActionButton = styled.button`
     opacity: 0.7;
   }
 `
+
+export const TokenNotFound = styled.div`
+  color: var(${UI.COLOR_LINK});
+  font-weight: 500;
+  padding: 10px 0;
+  text-align: center;
+`
