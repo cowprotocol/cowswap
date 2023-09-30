@@ -15,6 +15,7 @@ const Fixtures = {
         list={importListsMock[0]}
         onBack={() => console.log('onBack')}
         onClose={() => console.log('onClose')}
+        onImport={() => console.log('onImport')}
       />
     </Wrapper>
   ),
