@@ -1,9 +1,10 @@
-import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
 
 import { TokenWithLogo } from '../../types'
+import { TokenInfo } from '../TokenInfo'
 
 export interface AllTokensListProps {
   tokens: TokenWithLogo[]
@@ -21,13 +22,7 @@ export function AllTokensList(props: AllTokensListProps) {
 
         return (
           <styledEl.TokenItem key={token.address} disabled={isTokenSelected} data-address={token.address}>
-            <styledEl.TokenInfo>
-              <styledEl.TokenLogo src={token.logoURI} alt={token.name} />
-              <div>
-                <TokenSymbol token={token} />
-                <styledEl.TokenName>{token.name}</styledEl.TokenName>
-              </div>
-            </styledEl.TokenInfo>
+            <TokenInfo token={token} />
             <span>
               <TokenAmount amount={balances[token.address.toLowerCase()]} />
             </span>
