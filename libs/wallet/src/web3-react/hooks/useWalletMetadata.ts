@@ -75,7 +75,7 @@ export function useWalletMetaData(): WalletMetaData {
       return METADATA_DISCONNECTED
     }
 
-    if (connectionType === ConnectionType.WALLET_CONNECT || connectionType === ConnectionType.WALLET_CONNECT_V2) {
+    if (connectionType === ConnectionType.WALLET_CONNECT_V2) {
       const wc = provider?.provider
 
       if ((wc as any)?.isWalletConnect) {

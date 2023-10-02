@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { ThemeContext } from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import Toggle from 'legacy/components/Toggle'
+import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsBoxTitle, SettingsBoxWrapper } from './styled'
 

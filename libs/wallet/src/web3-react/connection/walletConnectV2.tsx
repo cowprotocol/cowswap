@@ -27,9 +27,6 @@ import {
 import { WC_DISABLED_TEXT } from '../../constants'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 
-const TOOLTIP_TEXT =
-  'Currently in development and not widely adopted yet. If you are experiencing issues, contact your wallet provider.'
-
 export const walletConnectV2Option = {
   color: '#4196FC',
   icon: WalletConnectV2Image,
@@ -157,7 +154,7 @@ export function WalletConnectV2Option({ selectedWallet, tryActivation }: Connect
     !getIsAlphaWallet(walletName) &&
     !getIsTrustWallet(walletName)
 
-  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : TOOLTIP_TEXT
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : undefined
 
   return (
     <ConnectWalletOption
