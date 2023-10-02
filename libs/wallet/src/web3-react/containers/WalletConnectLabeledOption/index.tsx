@@ -2,10 +2,8 @@ import { ConnectWalletOption } from '../../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../../api/types'
 import { getConnectionName } from '../../../api/utils/connection'
 import { WC_DISABLED_TEXT } from '../../../constants'
-import { walletConnectConnection } from '../../connection/walletConnect'
 import { walletConnectConnectionV2 } from '../../connection/walletConnectV2'
 import { useWalletMetaData } from '../../hooks/useWalletMetadata'
-import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Connector } from '@web3-react/types'
 import { useIsActiveConnection } from '../../hooks/useIsActiveConnection'
 
@@ -31,9 +29,8 @@ export function WalletConnectLabeledOption({
   selectedWallet,
 }: WalletConnectLabeledOptionProps) {
   const { walletName } = useWalletMetaData()
-  const { walletConnectV1Enabled } = useFlags()
 
-  const connection = walletConnectV1Enabled ? walletConnectConnection : walletConnectConnectionV2
+  const connection = walletConnectConnectionV2
 
   const isWalletConnect = useIsActiveConnection(selectedWallet, connection)
   const isActive = isWalletConnect && checkWalletName(walletName)

@@ -9,7 +9,6 @@ const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
   [ConnectionType.INJECTED]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.INJECTED_WIDGET]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.COINBASE_WALLET]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.WALLET_CONNECT]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.WALLET_CONNECT_V2]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.NETWORK]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
