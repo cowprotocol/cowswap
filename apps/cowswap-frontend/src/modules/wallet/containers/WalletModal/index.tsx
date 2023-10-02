@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { changeWalletAnalytics } from '@cowprotocol/analytics'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-import { useWalletInfo, ConnectionType, getIsHardWareWallet, getWeb3ReactConnection } from '@cowprotocol/wallet'
+import { useWalletInfo, getIsHardWareWallet, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
@@ -89,21 +89,6 @@ export function WalletModal() {
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
         await connector.activate(getCurrentChainIdFromUrl())
-
-        const connection = getWeb3ReactConnection(connector)
-
-        // Important for balances to load when connected to Gnosis-chain via WalletConnect
-        if (connection.type === ConnectionType.WALLET_CONNECT) {
-          const provider: any = connector.provider
-
-          if (provider && provider.isWalletConnect) {
-            const { http, rpc, signer } = (connector as any).provider
-            const chainId = signer.connection.chainId
-            // don't default to SupportedChainId.Mainnet - throw instead
-            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
-            http.connection.url = rpc.custom[chainId]
-          }
-        }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
 

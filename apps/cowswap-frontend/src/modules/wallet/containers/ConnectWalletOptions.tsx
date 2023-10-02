@@ -13,7 +13,6 @@ import {
   LedgerOption,
   TrezorOption,
   TrustWalletOption,
-  WalletConnectOption,
   WalletConnectV2Option,
   getIsCoinbaseWallet,
   getIsInjected,
@@ -62,8 +61,6 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   const coinbaseWalletOption = <CoinbaseWalletOption {...connectionProps} />
 
-  const walletConnectionOption = (!isInjectedMobileBrowser && <WalletConnectOption {...connectionProps} />) ?? null
-
   const walletConnectionV2Option = (!isInjectedMobileBrowser && <WalletConnectV2Option {...connectionProps} />) ?? null
 
   // Wallet-connect based
@@ -82,8 +79,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      <FeatureGuard featureFlag="walletConnectV1Enabled">{walletConnectionOption}</FeatureGuard>
-      <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
+      {walletConnectionV2Option}
       {coinbaseWalletOption}
       {ledgerOption}
       <FeatureGuard featureFlag="trezorEnabled">{trezorOption}</FeatureGuard>
