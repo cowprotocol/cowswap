@@ -2,6 +2,8 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
+import { blankButtonMixin } from '../../pure/commonElements'
+
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,25 +26,6 @@ export const Header = styled.div`
     font-size: 16px;
     font-weight: 500;
     margin: 0;
-  }
-
-  > button {
-    margin: 0;
-    padding: 0;
-    border: none;
-    outline: none;
-    background: none;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s ease-in-out;
-
-    > svg {
-      color: var(${UI.COLOR_TEXT1});
-    }
-
-    &:hover {
-      opacity: 1;
-    }
   }
 `
 
@@ -70,6 +53,8 @@ export const SearchInput = styled.input`
 `
 
 export const ActionButton = styled.button`
+  ${blankButtonMixin};
+
   display: flex;
   width: 100%;
   align-items: center;
@@ -82,11 +67,15 @@ export const ActionButton = styled.button`
   font-size: 16px;
   font-weight: 500;
   color: var(${UI.COLOR_TEXT1});
-  background: none;
-  border: 0;
-  outline: none;
 
   &:hover {
     opacity: 0.7;
   }
+`
+
+export const TokenNotFound = styled.div`
+  color: var(${UI.COLOR_LINK});
+  font-weight: 500;
+  padding: 10px 0;
+  text-align: center;
 `

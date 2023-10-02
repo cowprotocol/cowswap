@@ -31,25 +31,3 @@ export const TokenItem = styled.button`
     background-color: ${({ disabled }) => !disabled && `var(${UI.COLOR_GREY})`};
   }
 `
-
-export const TokenLogo = styled.img`
-  --size: 36px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: var(${UI.COLOR_LIGHT_BLUE});
-`
-
-export const TokenInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  text-align: left;
-  gap: 16px;
-  font-weight: 500;
-`
-
-export const TokenName = styled.div`
-  font-size: 12px;
-  font-weight: 400;
-  color: var(${UI.COLOR_TEXT2});
-`
