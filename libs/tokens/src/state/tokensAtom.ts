@@ -6,9 +6,13 @@ import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
 
 export type TokensMap = { [tokenAddress: string]: TokenInfo }
 
-export const tokensMainnetAtom = atomWithStorage<TokensMap>('tokensMainnetAtom:v1', {})
-export const tokensGnosisChainAtom = atomWithStorage<TokensMap>('tokensGnosisChainAtom:v1', {})
-export const tokensGoerliAtom = atomWithStorage<TokensMap>('tokensGoerliAtom:v1', {})
+export type TokensState = { activeTokens: TokensMap; inactiveTokens: TokensMap }
+
+const defaultState: TokensState = { activeTokens: {}, inactiveTokens: {} }
+
+export const tokensMainnetAtom = atomWithStorage<TokensState>('tokensMainnetAtom:v1', { ...defaultState })
+export const tokensGnosisChainAtom = atomWithStorage<TokensState>('tokensGnosisChainAtom:v1', { ...defaultState })
+export const tokensGoerliAtom = atomWithStorage<TokensState>('tokensGoerliAtom:v1', { ...defaultState })
 
 const tokensAtomsByChainId: Record<SupportedChainId, typeof tokensMainnetAtom> = {
   [SupportedChainId.MAINNET]: tokensMainnetAtom,
@@ -22,7 +26,7 @@ export const tokensAtom = atom((get) => {
   return tokensAtomsByChainId[chainId]
 })
 
-export const setTokensAtom = atom(null, (get, set, state: TokensMap) => {
+export const setTokensAtom = atom(null, (get, set, state: TokensState) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
 
   set(tokensAtomsByChainId[chainId], state)
