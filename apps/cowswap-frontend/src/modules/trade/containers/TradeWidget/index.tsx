@@ -123,7 +123,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const isMenuDropdown = !!isInjectedWidget();
+  const isMenuDropdown = isInjectedWidget()
 
   return (
     <styledEl.Container id={id}>
