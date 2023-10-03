@@ -413,6 +413,7 @@ export const UniThemedGlobalStyle = css`
 
     // Icons
     ${UI.ICON_SIZE_NORMAL}: 24px;
+    ${UI.ICON_SIZE_LARGE}: 36px;
     ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
 
     // [STATE] Information (light blue)

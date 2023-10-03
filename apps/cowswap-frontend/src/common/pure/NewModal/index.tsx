@@ -12,10 +12,19 @@ const ModalInner = styled.div`
   width: 100%;
   height: auto;
   margin: auto;
+  background: transparent;
+  padding: 0;
+`
+
+const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  overflow-y: auto;
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW_NORMAL});
-  padding: 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 8vh 0 0;
@@ -24,15 +33,6 @@ const ModalInner = styled.div`
     border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
     box-shadow: none;
   `}
-`
-
-const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  background: var(${UI.MODAL_BACKDROP});
-  overflow-y: auto;
 
   ${ModalInner} {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
@@ -66,14 +66,14 @@ const IconX = styled.div`
   top: 18px;
   right: 18px;
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
   margin: 0 0 0 auto;
 
   > svg {
-    width: var(${UI.ICON_SIZE_NORMAL});
-    height: var(${UI.ICON_SIZE_NORMAL});
-    fill: var(${UI.ICON_COLOR_NORMAL});
+    width: var(${UI.ICON_SIZE_LARGE});
+    height: var(${UI.ICON_SIZE_LARGE});
+    color: var(${UI.ICON_COLOR_NORMAL});
   }
 
   &:hover {
