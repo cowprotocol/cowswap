@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
-import { TokenInfo } from '@uniswap/token-lists'
+import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export interface TokenListWithUrl {
   id: string // nanoid
@@ -32,14 +32,5 @@ export class TokenWithLogo extends Token {
   }
 }
 
-export interface TokenListInfo {
-  id: string
-  name: string
-  logoUrl: string
-  url: string
-  enabled: boolean
-  tokensCount: number
-  version: string
-}
+export interface TokenListInfo extends UniTokenList {}
 
-export type TokensMap = { [tokenAddress: string]: TokenInfo }

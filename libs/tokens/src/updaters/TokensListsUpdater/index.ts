@@ -1,14 +1,24 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { activeTokensListsAtom } from '../../state/tokensListsStateAtom'
+import {
+  activeTokensListsMapAtom,
+  allTokensListsAtom,
+  updateAllTokenListsInfoAtom,
+} from '../../state/tokensListsStateAtom'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from './fetchTokenList'
-import { setTokensAtom } from '../../state/tokensAtom'
+import { setTokensAtom, TokensMap } from '../../state/tokensAtom'
 import { tokensListsEnvironmentAtom } from '../../state/tokensListsEnvironmentAtom'
-import { TokensMap } from '../../types'
+import { TokenListInfo } from '../../types'
+
+type TokensAndListsUpdate = {
+  activeTokens: TokensMap
+  inactiveTokens: TokensMap
+  lists: { [id: string]: TokenListInfo }
+}
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
@@ -22,7 +32,9 @@ const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-update
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(tokensListsEnvironmentAtom)
   const setTokens = useSetAtom(setTokensAtom)
-  const lists = useAtomValue(activeTokensListsAtom)
+  const setTokenLists = useSetAtom(updateAllTokenListsInfoAtom)
+  const allTokensLists = useAtomValue(allTokensListsAtom)
+  const activeTokensListsMap = useAtomValue(activeTokensListsMapAtom)
 
   useEffect(() => {
     setEnvironment({ chainId: currentChainId })
@@ -30,11 +42,11 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
   // Fetch tokens lists once in 6 hours
   const swrResponse = useSWR<TokenListResult[] | null>(
-    ['TokensListsUpdater', lists, chainId],
+    ['TokensListsUpdater', allTokensLists, chainId],
     () => {
       if (!getIsTimeToUpdate(chainId)) return null
 
-      return Promise.allSettled(lists.map(fetchTokenList)).then(getFulfilledResults)
+      return Promise.allSettled(allTokensLists.map(fetchTokenList)).then(getFulfilledResults)
     },
     swrOptions
   )
@@ -45,18 +57,34 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
     if (isLoading || error || !data) return
 
-    const tokensMap = data.reduce<TokensMap>((acc, val) => {
-      val.list.tokens.forEach((token) => {
-        if (token.chainId === chainId) {
-          acc[token.address.toLowerCase()] = token
-        }
-      })
-      return acc
-    }, {})
+    const { activeTokens, inactiveTokens, lists } = data.reduce<TokensAndListsUpdate>(
+      (acc, val) => {
+        const isListEnabled = activeTokensListsMap[val.id]
 
-    setTokens(tokensMap)
+        acc.lists[val.id] = val.list
+
+        val.list.tokens.forEach((token) => {
+          if (token.chainId === chainId) {
+            const tokenAddress = token.address.toLowerCase()
+
+            if (isListEnabled) {
+              acc.activeTokens[tokenAddress] = token
+            } else {
+              acc.inactiveTokens[tokenAddress] = token
+            }
+          }
+        })
+
+        return acc
+      },
+      { activeTokens: {}, inactiveTokens: {}, lists: {} }
+    )
+
     localStorage.setItem(LAST_UPDATE_TIME_KEY(chainId), Date.now().toString())
-  }, [swrResponse, chainId, setTokens])
+
+    setTokenLists(lists)
+    setTokens({ activeTokens, inactiveTokens })
+  }, [swrResponse, chainId, setTokens, setTokenLists, activeTokensListsMap])
 
   return null
 }
