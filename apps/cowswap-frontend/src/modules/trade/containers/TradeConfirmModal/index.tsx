@@ -17,22 +17,24 @@ export interface TradeConfirmModalProps {
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
-  const { children } = props;
+  const { children } = props
 
-  const { chainId, account } = useWalletInfo();
-  const isSafeWallet = useIsSafeWallet();
-  const { isOpen, permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom);
-  const { onDismiss } = useTradeConfirmActions();
+  const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const { isOpen, permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { onDismiss } = useTradeConfirmActions()
 
-  if (!account) return null;
+  if (!account) return null
 
   const renderModalContent = () => {
     if (error) {
-      return <TransactionErrorContent message={error} onDismiss={onDismiss} />;
+      return <TransactionErrorContent message={error} onDismiss={onDismiss} />
     }
 
     if (pendingTrade && permitSignatureState) {
-      const step = permitSignatureState === 'signed' ? 'submit' : 'approve';
+      // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
+      // We could use this not just for permit, but for any token, even already approved
+      const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
       return (
         <PermitModal
           inputAmount={pendingTrade.inputAmount}
@@ -40,11 +42,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
           step={step}
           onDismiss={onDismiss}
         />
-      );
+      )
     }
 
     if (pendingTrade) {
-      return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />;
+      return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
     }
 
     if (transactionHash) {
@@ -56,11 +58,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
           onDismiss={onDismiss}
           hash={transactionHash}
         />
-      );
+      )
     }
 
-    return children;
-  };
+    return children
+  }
 
   const renderModal = () => {
     if (permitSignatureState) {
@@ -68,14 +70,14 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         <NewCowModal isOpen={isOpen} onDismiss={onDismiss}>
           {renderModalContent()}
         </NewCowModal>
-      );
+      )
     }
     return (
       <CowModal isOpen={isOpen} onDismiss={onDismiss}>
         {renderModalContent()}
       </CowModal>
-    );
-  };
+    )
+  }
 
-  return renderModal();
+  return renderModal()
 }
