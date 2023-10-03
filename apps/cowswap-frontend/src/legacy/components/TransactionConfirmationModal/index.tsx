@@ -6,7 +6,6 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import TradeGp from 'legacy/state/swap/TradeGp'
 import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
@@ -17,6 +16,7 @@ import { PermitModal } from 'common/containers/PermitModal'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
+import { TradeAmounts } from 'common/types'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 
@@ -29,7 +29,7 @@ export interface ConfirmationModalProps {
   pendingText?: ReactNode
   currencyToAdd?: Currency | undefined
   operationType: ConfirmOperationType
-  trade?: TradeGp | undefined
+  tradeAmounts?: TradeAmounts | undefined
   swapConfirmState?: SwapConfirmState | undefined
 }
 
@@ -42,7 +42,7 @@ export function TransactionConfirmationModal({
   content,
   currencyToAdd,
   operationType,
-  trade,
+  tradeAmounts,
   swapConfirmState,
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
@@ -80,8 +80,8 @@ export function TransactionConfirmationModal({
       {showPermitModal(swapConfirmState) ? (
         <PermitModal
           onDismiss={onDismiss}
-          inputAmount={trade?.inputAmountWithoutFee}
-          outputAmount={trade?.outputAmountWithoutFee}
+          inputAmount={tradeAmounts?.inputAmount}
+          outputAmount={tradeAmounts?.outputAmount}
           step={swapConfirmState?.permitSignatureState === 'signed' ? 'submit' : 'approve'}
         />
       ) : attemptingTxn ? (
