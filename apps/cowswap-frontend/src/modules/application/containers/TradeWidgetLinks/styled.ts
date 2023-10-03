@@ -89,7 +89,7 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
   font-size: 14px;
   font-weight: 500;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '5px 10px'};
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '7px' : '5px 10px'};
   background: transparent;
   transition: background 0.2 ease-in-out;
 
