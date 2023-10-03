@@ -2,6 +2,8 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { SelectTokenWidget } from 'modules/tokensList'
+
 import { ImportTokenModal } from 'common/containers/ImportTokenModal'
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
@@ -19,6 +21,7 @@ export function TradeWidgetModals() {
       {chainId && <ImportTokenModal chainId={chainId} />}
       {shouldZeroApprove && <ZeroApprovalModal />}
       <TradeApproveModal />
+      <SelectTokenWidget />
     </>
   )
 }

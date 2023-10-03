@@ -9,7 +9,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
-import { SelectTokenWidget, useOpenTokenSelectWidget } from 'modules/tokensList'
+import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
@@ -133,7 +133,6 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeFormValidationUpdater isExpertMode={isExpertMode} />
       <CommonTradeUpdater />
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
-      <SelectTokenWidget />
       {updaters}
 
       <styledEl.Container id={id}>
