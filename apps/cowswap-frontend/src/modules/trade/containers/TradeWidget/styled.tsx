@@ -26,7 +26,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0'};
   margin: 0;
 `
 

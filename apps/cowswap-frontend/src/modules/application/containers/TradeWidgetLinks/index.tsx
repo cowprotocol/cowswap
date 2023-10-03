@@ -51,6 +51,7 @@ export function TradeWidgetLinks({
   const [isDropdownVisible, setDropdownVisible] = useState(false)
 
   const handleMenuItemClick = (_item: MenuItemConfig) => {
+    if (menuItems.length === 1) return
     setDropdownVisible(false)
   }
 
@@ -67,6 +68,7 @@ export function TradeWidgetLinks({
         badgeText={item.badgeText || highlightedBadgeText}
         badgeType={item.badgeType || highlightedBadgeType}
         onClick={() => handleMenuItemClick(item)}
+        isDropdownVisible={isDropdownVisible}
       />
     )
 
@@ -79,13 +81,15 @@ export function TradeWidgetLinks({
     )
   })
 
+  const singleMenuItem = menuItems.length === 1;
+
   return isDropdown ? (
     <>
-      <styledEl.MenuItem onClick={() => setDropdownVisible(!isDropdownVisible)}>
+      <styledEl.MenuItem onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)} isDropdownVisible={isDropdownVisible}>
         <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
-            {menuItems.find((item) => item.props.isActive)?.props.item.label || 'Select'}{' '}
-            <SVG src={IMAGE_CARRET} title="select" />
+            {menuItems.find((item) => item.props.isActive)?.props.item.label}
+            {!singleMenuItem ? <SVG src={IMAGE_CARRET} title="select" /> : null}
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>
@@ -93,7 +97,7 @@ export function TradeWidgetLinks({
     </>
   ) : (
     <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
-  )
+  );
 }
 
 const MenuItem = ({
@@ -103,6 +107,7 @@ const MenuItem = ({
   badgeText,
   badgeType,
   onClick,
+  isDropdownVisible,
 }: {
   routePath: string
   item: MenuItemConfig
@@ -110,8 +115,9 @@ const MenuItem = ({
   badgeText?: string
   badgeType?: BadgeType
   onClick: () => void
+  isDropdownVisible: boolean
 }) => (
-  <styledEl.MenuItem isActive={isActive} onClick={onClick}>
+  <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {item.featureGuard && badgeText && (

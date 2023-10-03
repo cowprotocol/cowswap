@@ -50,7 +50,7 @@ export const Link = styled(NavLink)`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(${UI.COLOR_TEXT1_INACTIVE});
+  color: var(${UI.COLOR_TEXT1});
   gap: 4px;
   font-weight: inherit;
   line-height: 1;
@@ -66,7 +66,7 @@ export const Link = styled(NavLink)`
   }
 
   > svg > path {
-    fill: var(${UI.COLOR_TEXT1_INACTIVE});
+    fill: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -83,15 +83,19 @@ export const Wrapper = styled.div`
   }
 `
 
-export const MenuItem = styled.div<{ isActive?: boolean }>`
+export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
   display: flex;
   align-items: center;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '14px'};
+  font-weight: ${({ theme }) => theme.isInjectedWidgetMode ? '600' : '500'};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '7px' : '5px 10px'};
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '7px 0' : '5px 10px'};
   background: transparent;
-  transition: background 0.2 ease-in-out;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: var(${UI.COLOR_GREY});
+  }
 
   ${({ isActive }) =>
     isActive &&
@@ -105,6 +109,12 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
       ${Link} > ${Badge} {
         display: none;
       }
+  `}
+
+  ${({ isDropdownVisible }) =>
+    isDropdownVisible &&
+    css`
+      padding: 7px 10px;
     `}
 `
 
@@ -117,7 +127,7 @@ export const SelectMenu = styled.div`
   z-index: 100;
   left: 0;
   top: 0;
-  padding: 24px;
+  padding: 16px;
   gap: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '24px'};
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});

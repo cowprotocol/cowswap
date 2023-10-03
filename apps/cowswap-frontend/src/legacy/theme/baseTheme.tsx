@@ -489,7 +489,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   html {
     background-color: ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
-    ${({ theme }) => !theme.isInjectedWidgetMode && theme.body.background};
+    ${({ theme }) => theme.body.background};
   }
 
   *, *:after, *:before { box-sizing:border-box; }
