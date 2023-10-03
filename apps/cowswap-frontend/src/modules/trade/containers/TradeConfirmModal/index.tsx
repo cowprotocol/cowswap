@@ -1,11 +1,13 @@
 import { useAtomValue } from 'jotai'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { PermitModal } from 'common/containers/PermitModal'
 import { CowModal, NewCowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+import { TradeAmounts } from 'common/types'
 
 import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 
@@ -26,59 +28,85 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   if (!account) return null
 
-  const renderModalContent = () => {
-    if (error) {
-      return <TransactionErrorContent message={error} onDismiss={onDismiss} />
-    }
+  const Modal = permitSignatureState ? NewCowModal : CowModal
 
-    if (pendingTrade && permitSignatureState) {
-      // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
-      // We could use this not just for permit, but for any token, even already approved
-      const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
-      return (
-        <PermitModal
-          inputAmount={pendingTrade.inputAmount}
-          outputAmount={pendingTrade.outputAmount}
-          step={step}
-          onDismiss={onDismiss}
-          orderType={'Limit Order'}
-        />
-      )
-    }
+  return (
+    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+      <InnerComponent
+        chainId={chainId}
+        account={account}
+        error={error}
+        pendingTrade={pendingTrade}
+        transactionHash={transactionHash}
+        onDismiss={onDismiss}
+        permitSignatureState={permitSignatureState}
+        isSafeWallet={isSafeWallet}
+      >
+        {children}
+      </InnerComponent>
+    </Modal>
+  )
+}
 
-    if (pendingTrade) {
-      return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
-    }
+type InnerComponentProps = {
+  children: JSX.Element
+  chainId: SupportedChainId
+  account: string
+  error: string | null
+  pendingTrade: TradeAmounts | null
+  transactionHash: string | null
+  onDismiss: () => void
+  permitSignatureState: string | undefined
+  isSafeWallet: boolean
+}
 
-    if (transactionHash) {
-      return (
-        <OrderSubmittedContent
-          chainId={chainId}
-          account={account}
-          isSafeWallet={isSafeWallet}
-          onDismiss={onDismiss}
-          hash={transactionHash}
-        />
-      )
-    }
+function InnerComponent(props: InnerComponentProps) {
+  const {
+    account,
+    chainId,
+    children,
+    error,
+    isSafeWallet,
+    onDismiss,
+    pendingTrade,
+    permitSignatureState,
+    transactionHash,
+  } = props
 
-    return children
+  if (error) {
+    return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
 
-  const renderModal = () => {
-    if (permitSignatureState) {
-      return (
-        <NewCowModal isOpen={isOpen} onDismiss={onDismiss}>
-          {renderModalContent()}
-        </NewCowModal>
-      )
-    }
+  if (pendingTrade && permitSignatureState) {
+    // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
+    // We could use this not just for permit, but for any token, even already approved
+    const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
     return (
-      <CowModal isOpen={isOpen} onDismiss={onDismiss}>
-        {renderModalContent()}
-      </CowModal>
+      <PermitModal
+        inputAmount={pendingTrade.inputAmount}
+        outputAmount={pendingTrade.outputAmount}
+        step={step}
+        onDismiss={onDismiss}
+        orderType={'Limit Order'}
+      />
     )
   }
 
-  return renderModal()
+  if (pendingTrade) {
+    return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
+  }
+
+  if (transactionHash) {
+    return (
+      <OrderSubmittedContent
+        chainId={chainId}
+        account={account}
+        isSafeWallet={isSafeWallet}
+        onDismiss={onDismiss}
+        hash={transactionHash}
+      />
+    )
+  }
+
+  return children
 }
