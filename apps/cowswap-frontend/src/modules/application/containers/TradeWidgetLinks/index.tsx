@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
 import { Trans } from '@lingui/macro'
+import IMAGE_CARRET from 'assets/icon/carret.svg'
+import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
@@ -82,7 +84,7 @@ export function TradeWidgetLinks({
       <styledEl.MenuItem onClick={() => setDropdownVisible(!isDropdownVisible)}>
         <styledEl.Link to={menuItems.find(item => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
-            {menuItems.find(item => item.props.isActive)?.props.item.label + ' ⌄' || 'Select'}
+            {menuItems.find(item => item.props.isActive)?.props.item.label || 'Select'}  <SVG src={IMAGE_CARRET} title="select" />
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>

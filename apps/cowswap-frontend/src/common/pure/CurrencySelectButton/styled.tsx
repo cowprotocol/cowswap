@@ -3,6 +3,8 @@ import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
   display: flex;
   justify-content: space-between;
@@ -19,7 +21,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
       : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
-  border-radius: 16px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 6px;
   transition: background-color 0.15s ease-in-out;
   max-width: 190px;
