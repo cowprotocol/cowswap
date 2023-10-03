@@ -1,6 +1,7 @@
+import { TokenWithLogo } from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
-import { TokenWithLogo } from '../../types'
 import { ImportButton } from '../commonElements'
 import { TokenInfo } from '../TokenInfo'
 

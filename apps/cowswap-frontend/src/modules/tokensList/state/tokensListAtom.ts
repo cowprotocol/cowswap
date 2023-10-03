@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { TokenWithLogo } from '../types'
+import { TokenWithLogo } from '@cowprotocol/tokens'
 
 export type TokensByAddress = { [address: string]: TokenWithLogo }
 

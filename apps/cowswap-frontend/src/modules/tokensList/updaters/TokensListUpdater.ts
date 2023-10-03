@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/tokens'
+
 import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
-
-import { TokenWithLogo } from '../types'
 
 /**
  * This updater protects from redundant recalculations

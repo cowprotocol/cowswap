@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { TokenListInfo } from '@cowprotocol/tokens'
+
 import { Menu, MenuItem } from '@reach/menu-button'
 import { Settings } from 'react-feather'
 
@@ -7,12 +9,11 @@ import { Toggle } from 'legacy/components/Toggle'
 
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { IconButton } from '../commonElements'
-import { TokenListInfo } from '../TokenListInfo'
+import { TokenListDetails } from '../TokenListDetails'
 
 export interface TokenListItemProps {
-  list: TokenList
+  list: TokenListInfo
   removeList(id: string): void
   viewList(id: string): void
 }
@@ -25,7 +26,7 @@ export function TokenListItem(props: TokenListItemProps) {
 
   return (
     <styledEl.Wrapper $enabled={isActive}>
-      <TokenListInfo list={list}>
+      <TokenListDetails list={list}>
         <Menu>
           <styledEl.SettingsButton>
             <IconButton>
@@ -44,7 +45,7 @@ export function TokenListItem(props: TokenListItemProps) {
             </MenuItem>
           </styledEl.SettingsContainer>
         </Menu>
-      </TokenListInfo>
+      </TokenListDetails>
       <div>
         <Toggle isActive={isActive} toggle={() => setIsActive((state) => !state)} />
       </div>

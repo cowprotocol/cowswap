@@ -1,10 +1,9 @@
+import { TokenWithLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import * as styledEl from './styled'
-
-import { TokenWithLogo } from '../../types'
 
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]

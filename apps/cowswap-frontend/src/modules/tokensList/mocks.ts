@@ -1,4 +1,4 @@
-import { TokenList, TokenWithLogo } from './types'
+import { TokenListInfo, TokenWithLogo } from '@cowprotocol/tokens'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -96,7 +96,7 @@ export const customTokensMock: TokenWithLogo[] = [
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
 
-export const listsMock: TokenList[] = [
+export const listsMock: TokenListInfo[] = [
   {
     id: '1',
     name: 'CowSwap Goerli',
@@ -117,7 +117,7 @@ export const listsMock: TokenList[] = [
   },
 ]
 
-export const importListsMock: TokenList[] = [
+export const importListsMock: TokenListInfo[] = [
   {
     id: '4',
     name: 'CoW Swap',

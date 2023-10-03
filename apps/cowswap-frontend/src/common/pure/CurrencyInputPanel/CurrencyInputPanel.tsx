@@ -9,7 +9,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -36,13 +35,13 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
-  disableNonToken?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
+  openTokenSelectWidget(onCurrencySelection: (currency: Currency) => void): void
   topLabel?: string
 }
 
@@ -53,15 +52,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     currencyInfo,
     className,
     priceImpactParams,
-    disableNonToken = false,
     showSetMax = false,
     maxBalance,
     inputDisabled = false,
     inputTooltip,
-    onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
     isChainIdUnsupported,
+    openTokenSelectWidget,
+    onCurrencySelection,
     subsidyAndBalance = {
       subsidy: {
         tier: 0,
@@ -74,15 +73,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
   const disabled = !!props.disabled || isChainIdUnsupported
   const viewAmount = formatInputAmount(amount, balance, isIndependent)
-  const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
-  const onCurrencySelect = useCallback(
-    (currency: Currency) => {
-      onCurrencySelection(field, currency)
-    },
-    [onCurrencySelection, field]
-  )
   const onUserInputDispatch = useCallback(
     (typedValue: string) => {
       setTypedValue(typedValue)
@@ -137,7 +129,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
-              onClick={() => setCurrencySearchModalOpen(true)}
+              onClick={() => openTokenSelectWidget((currency) => onCurrencySelection(field, currency))}
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
             />
@@ -175,17 +167,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           subsidyAndBalance={subsidyAndBalance}
         />
       )}
-
-      <CurrencySearchModal
-        isOpen={isCurrencySearchModalOpen}
-        onDismiss={() => setCurrencySearchModalOpen(false)}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={currency}
-        otherSelectedCurrency={currency}
-        showCommonBases={true}
-        showCurrencyAmount={true}
-        disableNonToken={disableNonToken}
-      />
     </styledEl.OuterWrapper>
   )
 }

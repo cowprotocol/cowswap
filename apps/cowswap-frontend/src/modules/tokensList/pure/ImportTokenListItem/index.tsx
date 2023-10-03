@@ -1,12 +1,13 @@
+import { TokenListInfo } from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { ImportButton } from '../commonElements'
-import { TokenListInfo } from '../TokenListInfo'
+import { TokenListDetails } from '../TokenListDetails'
 
 export interface ImportTokenListItemProps {
-  list: TokenList
-  importList(list: TokenList): void
+  list: TokenListInfo
+  importList(list: TokenListInfo): void
 }
 
 export function ImportTokenListItem(props: ImportTokenListItemProps) {
@@ -14,7 +15,7 @@ export function ImportTokenListItem(props: ImportTokenListItemProps) {
 
   return (
     <styledEl.Wrapper>
-      <TokenListInfo list={list}></TokenListInfo>
+      <TokenListDetails list={list}></TokenListDetails>
       <div>
         <ImportButton>Import</ImportButton>
       </div>

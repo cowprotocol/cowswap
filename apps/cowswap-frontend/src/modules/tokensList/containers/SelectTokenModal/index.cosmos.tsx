@@ -28,6 +28,9 @@ const defaultProps = {
   balances,
   allTokens: allTokensMock,
   favouriteTokens: favouriteTokensMock,
+  onSelectToken() {
+    console.log('onSelectToken')
+  },
 }
 
 const Fixtures = {

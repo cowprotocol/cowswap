@@ -1,17 +1,18 @@
 import { ReactNode } from 'react'
 
+import { TokenListInfo } from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { TokenLogo } from '../TokenLogo'
 
 export interface TokenListItemProps {
-  list: TokenList
+  list: TokenListInfo
   className?: string
   children?: ReactNode
 }
 
-export function TokenListInfo(props: TokenListItemProps) {
+export function TokenListDetails(props: TokenListItemProps) {
   const { list, children, className } = props
 
   return (
