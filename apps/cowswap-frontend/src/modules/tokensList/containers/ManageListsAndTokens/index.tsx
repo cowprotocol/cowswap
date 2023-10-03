@@ -11,34 +11,42 @@ import { ManageTokens } from '../ManageTokens'
 export interface ManageListsAndTokensProps {
   lists: TokenListInfo[]
   customTokens: TokenWithLogo[]
+  onBack(): void
+  onDismiss(): void
 }
 
+const tokensInputPlaceholder = '0x0000'
+const listsInputPlaceholder = 'https:// or ipfs:// or ENS name'
+
 export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
-  const { lists, customTokens } = props
+  const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
+  // TODO: process input value
+  const [, setInputValue] = useState<string>('')
 
-  const onBack = () => {
-    console.log('TODO onBack')
-  }
-
-  const onClose = () => {
-    console.log('TODO onClose')
-  }
+  const isListsTab = currentTab === 'lists'
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onClose}>
+      <ModalHeader onBack={onBack} onClose={onDismiss}>
         Manage
       </ModalHeader>
       <styledEl.TabsContainer>
-        <styledEl.Tab active$={currentTab === 'lists'} onClick={() => setCurrentTab('lists')}>
+        <styledEl.Tab active$={isListsTab} onClick={() => setCurrentTab('lists')}>
           Lists
         </styledEl.Tab>
-        <styledEl.Tab active$={currentTab === 'tokens'} onClick={() => setCurrentTab('tokens')}>
+        <styledEl.Tab active$={!isListsTab} onClick={() => setCurrentTab('tokens')}>
           Tokens
         </styledEl.Tab>
       </styledEl.TabsContainer>
+      <styledEl.PrimaryInputBox>
+        <styledEl.PrimaryInput
+          type="text"
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
+        />
+      </styledEl.PrimaryInputBox>
       {currentTab === 'lists' ? <ManageLists lists={lists} /> : <ManageTokens tokens={customTokens} />}
     </styledEl.Wrapper>
   )

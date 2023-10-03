@@ -11,7 +11,12 @@ const Wrapper = styled.div`
 const Fixtures = {
   default: (
     <Wrapper>
-      <ManageListsAndTokens customTokens={customTokensMock} lists={listsMock} />
+      <ManageListsAndTokens
+        customTokens={customTokensMock}
+        lists={listsMock}
+        onBack={() => console.log('onBack')}
+        onDismiss={() => console.log('onDismiss')}
+      />
     </Wrapper>
   ),
 }

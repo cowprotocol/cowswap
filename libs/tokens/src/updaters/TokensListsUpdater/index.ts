@@ -61,7 +61,15 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
       (acc, val) => {
         const isListEnabled = activeTokensListsMap[val.id]
 
-        acc.lists[val.id] = val.list
+        acc.lists[val.id] = {
+          id: val.id,
+          name: val.list.name,
+          timestamp: val.list.timestamp,
+          enabled: isListEnabled,
+          version: JSON.stringify(val.list.version),
+          logoUrl: val.list.logoURI,
+          tokensCount: val.list.tokens.length,
+        }
 
         val.list.tokens.forEach((token) => {
           if (token.chainId === chainId) {

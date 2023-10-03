@@ -22,10 +22,21 @@ export interface SelectTokenModalProps {
   selectedToken?: TokenWithLogo
   defaultInputValue?: string
   onSelectToken(token: TokenWithLogo): void
+  onDismiss(): void
+  onOpenManageWidget(): void
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
-  const { defaultInputValue = '', favouriteTokens, allTokens, selectedToken, balances, onSelectToken } = props
+  const {
+    defaultInputValue = '',
+    favouriteTokens,
+    allTokens,
+    selectedToken,
+    balances,
+    onSelectToken,
+    onDismiss,
+    onOpenManageWidget,
+  } = props
 
   const networkName = useNetworkName()
 
@@ -85,7 +96,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     <styledEl.Wrapper>
       <styledEl.Header>
         <h3>Select a token</h3>
-        <IconButton>
+        <IconButton onClick={onDismiss}>
           <X />
         </IconButton>
       </styledEl.Header>
@@ -143,7 +154,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       )}
       <div>
-        <styledEl.ActionButton>
+        <styledEl.ActionButton onClick={onOpenManageWidget}>
           <Edit /> <span>Manage Token Lists</span>
         </styledEl.ActionButton>
       </div>

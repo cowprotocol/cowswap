@@ -5,6 +5,7 @@ import { UI } from 'common/constants/theme'
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
+  overflow: auto;
 `
 
 export const ListsContainer = styled.div`

@@ -11,6 +11,10 @@ const RowBox = styled.div`
   align-items: center;
 `
 
+export const Wrapper = styled.div`
+  overflow: auto;
+`
+
 export const Header = styled(RowBox)`
   padding: 20px;
 `

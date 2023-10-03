@@ -8,13 +8,14 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 export const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
 
-export const { atom: allTokenListsInfoAtom, updateAtom: updateAllTokenListsInfoAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, { [id: string]: TokenListInfo }>>('allTokenListsInfoAtom:v1', {
-    [SupportedChainId.MAINNET]: {},
-    [SupportedChainId.GNOSIS_CHAIN]: {},
-    [SupportedChainId.GOERLI]: {},
-  })
-)
+export const { atom: allTokenListsInfoByChainAtom, updateAtom: updateAllTokenListsInfoByChainAtom } =
+  atomWithPartialUpdate(
+    atomWithStorage<Record<SupportedChainId, { [id: string]: TokenListInfo }>>('allTokenListsInfoAtom:v1', {
+      [SupportedChainId.MAINNET]: {},
+      [SupportedChainId.GNOSIS_CHAIN]: {},
+      [SupportedChainId.GOERLI]: {},
+    })
+  )
 export const userAddedTokenListsAtom = atomWithStorage<TokenListsByNetwork>('userAddedTokenListsAtom:v1', {
   [SupportedChainId.MAINNET]: [],
   [SupportedChainId.GNOSIS_CHAIN]: [],
@@ -29,6 +30,19 @@ export const activeTokenListsIdsAtom = atomWithStorage<Record<SupportedChainId, 
     [SupportedChainId.GOERLI]: {},
   }
 )
+
+export const allTokenListsInfoAtom = atom((get) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+  const allTokenListsInfo = get(allTokenListsInfoByChainAtom)
+
+  return Object.values(allTokenListsInfo[chainId])
+})
+
+export const updateAllTokenListsInfoAtom = atom(null, (get, set, state: { [id: string]: TokenListInfo }) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+
+  set(updateAllTokenListsInfoByChainAtom, { [chainId]: state })
+})
 
 export const allTokensListsAtom = atom((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)

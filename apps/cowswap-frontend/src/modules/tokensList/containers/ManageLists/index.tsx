@@ -2,7 +2,6 @@ import { TokenListInfo } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
-import { PrimaryInput, PrimaryInputBox } from '../../pure/commonElements'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { LoadedTokenListItem } from '../../pure/LoadedTokenListItem'
 import { TokenListItem } from '../../pure/TokenListItem'
@@ -30,9 +29,6 @@ export function ManageLists(props: ManageListsProps) {
 
   return (
     <styledEl.Wrapper>
-      <PrimaryInputBox>
-        <PrimaryInput type="text" placeholder="https:// or ipfs:// or ENS name" />
-      </PrimaryInputBox>
       {!!loadedLists?.length && (
         <styledEl.ImportListsContainer>
           {loadedLists.map((list) => (
