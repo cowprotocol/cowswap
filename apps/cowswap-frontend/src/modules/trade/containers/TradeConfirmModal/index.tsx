@@ -41,6 +41,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
           outputAmount={pendingTrade.outputAmount}
           step={step}
           onDismiss={onDismiss}
+          orderType={'Limit Order'}
         />
       )
     }

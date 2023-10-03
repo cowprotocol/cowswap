@@ -83,6 +83,7 @@ export function TransactionConfirmationModal({
           inputAmount={tradeAmounts?.inputAmount}
           outputAmount={tradeAmounts?.outputAmount}
           step={swapConfirmState?.permitSignatureState === 'signed' ? 'submit' : 'approve'}
+          orderType={'Swap'}
         />
       ) : attemptingTxn ? (
         <LegacyConfirmationPendingContent

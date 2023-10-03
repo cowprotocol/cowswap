@@ -17,6 +17,7 @@ export type PermitModalProps = NewModalProps & {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
   step: 'approve' | 'submit'
+  orderType: 'Swap' | 'Limit Order'
   icon?: React.ReactNode
 }
 
@@ -25,7 +26,7 @@ export type PermitModalProps = NewModalProps & {
  * This is the pure component for cosmos
  */
 export function PermitModal(props: PermitModalProps) {
-  const { inputAmount, outputAmount, step, icon: inputIcon } = props
+  const { inputAmount, outputAmount, step, icon: inputIcon, orderType } = props
 
   const steps: StepProps[] = useMemo(
     () => [
@@ -56,9 +57,9 @@ export function PermitModal(props: PermitModalProps) {
           on CoW Swap
         </>
       ) : (
-        'Confirm Swap'
+        `Confirm ${orderType}`
       ),
-    [inputAmount?.currency, step]
+    [inputAmount?.currency, orderType, step]
   )
 
   const body = useMemo(
