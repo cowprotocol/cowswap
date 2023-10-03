@@ -5,7 +5,6 @@ import { AlertCircle } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { TokenWithLogo } from '../../types'
 import { ModalHeader } from '../ModalHeader'
 import { TokenLogo } from '../TokenLogo'
 

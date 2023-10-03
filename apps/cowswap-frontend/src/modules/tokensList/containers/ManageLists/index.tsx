@@ -1,15 +1,16 @@
+import { TokenListInfo } from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
 import { PrimaryInput, PrimaryInputBox } from '../../pure/commonElements'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { LoadedTokenListItem } from '../../pure/LoadedTokenListItem'
 import { TokenListItem } from '../../pure/TokenListItem'
-import { TokenList } from '../../types'
 
 export interface ManageListsProps {
-  lists: TokenList[]
-  loadedLists?: TokenList[]
-  listsToImport?: TokenList[]
+  lists: TokenListInfo[]
+  loadedLists?: TokenListInfo[]
+  listsToImport?: TokenListInfo[]
 }
 
 export function ManageLists(props: ManageListsProps) {
@@ -23,7 +24,7 @@ export function ManageLists(props: ManageListsProps) {
     console.log('TODO removeList', id)
   }
 
-  const importList = (list: TokenList) => {
+  const importList = (list: TokenListInfo) => {
     console.log('TODO importList', list.id)
   }
 

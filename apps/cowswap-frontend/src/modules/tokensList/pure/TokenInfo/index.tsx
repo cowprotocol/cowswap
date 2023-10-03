@@ -1,8 +1,8 @@
+import { TokenWithLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { TokenWithLogo } from '../../types'
 import { TokenLogo } from '../TokenLogo'
 
 export interface TokenInfoProps {

@@ -9,6 +9,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
+import { SelectTokenWidget, useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
@@ -38,7 +39,6 @@ export interface TradeWidgetActions {
 
 interface TradeWidgetParams {
   recipient: string | null
-  disableNonToken?: boolean
   isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
@@ -80,7 +80,6 @@ export function TradeWidget(props: TradeWidgetProps) {
     showRecipient,
     isTradePriceUpdating,
     isEoaEthFlow = false,
-    disableNonToken = false,
     priceImpact,
     recipient,
     disableQuotePolling = false,
@@ -94,6 +93,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
+  const openTokenSelectWidget = useOpenTokenSelectWidget()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
@@ -106,12 +106,12 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
-    disableNonToken,
     chainId,
     areCurrenciesLoading: currenciesLoadingInProgress,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
+    openTokenSelectWidget,
   }
 
   /**
@@ -133,6 +133,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <TradeFormValidationUpdater isExpertMode={isExpertMode} />
       <CommonTradeUpdater />
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
+      <SelectTokenWidget />
       {updaters}
 
       <styledEl.Container id={id}>

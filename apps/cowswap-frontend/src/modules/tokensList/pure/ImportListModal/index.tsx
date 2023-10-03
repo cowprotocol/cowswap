@@ -1,17 +1,17 @@
 import { useState } from 'react'
 
+import { TokenListInfo } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { ModalHeader } from '../ModalHeader'
 import { TokenLogo } from '../TokenLogo'
 
 export interface ImportListModalProps {
-  list: TokenList
+  list: TokenListInfo
   onImport(): void
   onBack(): void
   onClose(): void

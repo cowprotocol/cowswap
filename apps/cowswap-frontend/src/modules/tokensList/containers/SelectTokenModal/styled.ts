@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 20px;
+  width: 100%;
 `
 
 export const Row = styled.div`

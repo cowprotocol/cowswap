@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
+import { TokenListInfo, TokenWithLogo } from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../../pure/ModalHeader'
-import { TokenList, TokenWithLogo } from '../../types'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 
 export interface ManageListsAndTokensProps {
-  lists: TokenList[]
+  lists: TokenListInfo[]
   customTokens: TokenWithLogo[]
 }
 

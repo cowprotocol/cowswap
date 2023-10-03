@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-import { TokenWithLogo } from 'modules/tokensList/types'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 

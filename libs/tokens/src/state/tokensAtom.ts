@@ -1,10 +1,8 @@
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo } from '@uniswap/token-lists'
 import { atom } from 'jotai'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
-
-export type TokensMap = { [tokenAddress: string]: TokenInfo }
+import { TokensMap, TokenWithLogo } from '../types'
 
 export const tokensMainnetAtom = atomWithStorage<TokensMap>('tokensMainnetAtom:v1', {})
 export const tokensGnosisChainAtom = atomWithStorage<TokensMap>('tokensGnosisChainAtom:v1', {})
@@ -20,6 +18,18 @@ export const tokensAtom = atom((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
 
   return tokensAtomsByChainId[chainId]
+})
+
+export const tokensListAtom = atom<TokenWithLogo[]>((get) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+  const tokensMap = get(tokensAtomsByChainId[chainId])
+
+  return Object.values(tokensMap)
+    .sort((a, b) => (a.symbol > b.symbol ? 1 : -1))
+    .map(
+      (token) =>
+        new TokenWithLogo(token.logoURI, token.chainId, token.address, token.decimals, token.symbol, token.name)
+    )
 })
 
 export const setTokensAtom = atom(null, (get, set, state: TokensMap) => {

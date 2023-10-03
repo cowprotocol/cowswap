@@ -1,12 +1,13 @@
+import { TokenListInfo } from '@cowprotocol/tokens'
+
 import { CheckCircle } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
-import { TokenListInfo } from '../TokenListInfo'
+import { TokenListDetails } from '../TokenListDetails'
 
 export interface LoadedTokenListItemProps {
-  list: TokenList
+  list: TokenListInfo
 }
 
 export function LoadedTokenListItem(props: LoadedTokenListItemProps) {
@@ -14,7 +15,7 @@ export function LoadedTokenListItem(props: LoadedTokenListItemProps) {
 
   return (
     <styledEl.Wrapper>
-      <TokenListInfo list={list}></TokenListInfo>
+      <TokenListDetails list={list}></TokenListDetails>
       <div>
         <styledEl.LoadedInfo>
           <CheckCircle size={16} strokeWidth={2} />

@@ -6,8 +6,9 @@ import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from './fetchTokenList'
-import { setTokensAtom, TokensMap } from '../../state/tokensAtom'
+import { setTokensAtom } from '../../state/tokensAtom'
 import { tokensListsEnvironmentAtom } from '../../state/tokensListsEnvironmentAtom'
+import { TokensMap } from '../../types'
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 

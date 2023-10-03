@@ -1,4 +1,5 @@
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { TokenWithLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { ExternalLink, Trash } from 'react-feather'
@@ -7,7 +8,6 @@ import * as styledEl from './styled'
 
 import { PrimaryInput, PrimaryInputBox } from '../../pure/commonElements'
 import { TokenLogo } from '../../pure/TokenLogo'
-import { TokenWithLogo } from '../../types'
 
 export interface ManageTokensProps {
   tokens: TokenWithLogo[]

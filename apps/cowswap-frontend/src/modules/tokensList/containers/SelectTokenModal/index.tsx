@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useDebounce, useNetworkName } from '@cowprotocol/common-hooks'
+import { TokenWithLogo } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
@@ -13,17 +14,18 @@ import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
-import { TokenWithLogo } from '../../types'
+
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
   balances: { [key: string]: CurrencyAmount<Currency> }
   selectedToken?: TokenWithLogo
   defaultInputValue?: string
+  onSelectToken(token: TokenWithLogo): void
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
-  const { defaultInputValue = '', favouriteTokens, allTokens, selectedToken, balances } = props
+  const { defaultInputValue = '', favouriteTokens, allTokens, selectedToken, balances, onSelectToken } = props
 
   const networkName = useNetworkName()
 
@@ -133,9 +135,12 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         </div>
       )}
       {!debouncedInputValue && (
-        <div>
-          <AllTokensList selectedToken={selectedToken} tokens={allTokens} balances={balances} />
-        </div>
+        <AllTokensList
+          selectedToken={selectedToken}
+          tokens={allTokens}
+          balances={balances}
+          onSelectToken={onSelectToken}
+        />
       )}
       <div>
         <styledEl.ActionButton>
