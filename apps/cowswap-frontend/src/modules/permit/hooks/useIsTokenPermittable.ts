@@ -13,7 +13,7 @@ import { TradeType } from 'modules/trade'
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
-import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/atoms'
+import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
 import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
 
