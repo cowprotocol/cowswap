@@ -10,9 +10,9 @@ import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from './fetchTokenList'
-import { setTokensAtom, TokensMap } from '../../state/tokensAtom'
+import { setTokensAtom } from '../../state/tokensAtom'
 import { tokensListsEnvironmentAtom } from '../../state/tokensListsEnvironmentAtom'
-import { TokenListInfo } from '../../types'
+import { TokenListInfo, TokensMap } from '../../types'
 
 type TokensAndListsUpdate = {
   activeTokens: TokensMap

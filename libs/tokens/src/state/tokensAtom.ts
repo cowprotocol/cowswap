@@ -24,11 +24,11 @@ export const tokensAtom = atom((get) => {
   return tokensAtomsByChainId[chainId]
 })
 
-export const tokensListAtom = atom<TokenWithLogo[]>((get) => {
+export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
   const tokensMap = get(tokensAtomsByChainId[chainId])
 
-  return Object.values(tokensMap)
+  return Object.values(tokensMap.activeTokens)
     .sort((a, b) => (a.symbol > b.symbol ? 1 : -1))
     .map(
       (token) =>
