@@ -26,7 +26,7 @@ export type PermitModalProps = NewModalProps & {
  * This is the pure component for cosmos
  */
 export function PermitModal(props: PermitModalProps) {
-  const { inputAmount, outputAmount, step, icon: inputIcon, orderType } = props
+  const { inputAmount, outputAmount, step, icon: inputIcon, orderType, ...rest } = props
 
   const steps: StepProps[] = useMemo(
     () => [
@@ -74,7 +74,7 @@ export function PermitModal(props: PermitModalProps) {
   )
 
   return (
-    <NewModal>
+    <NewModal {...rest}>
       <NewModalContentTop paddingTop={90}>
         {icon}
         <span>
