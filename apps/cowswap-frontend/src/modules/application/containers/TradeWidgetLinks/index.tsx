@@ -38,25 +38,25 @@ const MENU_ITEMS: MenuItemConfig[] = [
 interface TradeWidgetLinksProps {
   highlightedBadgeText?: string
   highlightedBadgeType?: BadgeType
-  isDropdown?: boolean;
+  isDropdown?: boolean
 }
 
 export function TradeWidgetLinks({
   highlightedBadgeText,
   highlightedBadgeType,
-  isDropdown = false
+  isDropdown = false,
 }: TradeWidgetLinksProps) {
-  const tradeContext = useTradeRouteContext();
-  const location = useLocation();
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const tradeContext = useTradeRouteContext()
+  const location = useLocation()
+  const [isDropdownVisible, setDropdownVisible] = useState(false)
 
   const handleMenuItemClick = (_item: MenuItemConfig) => {
-    setDropdownVisible(false);
-  };
+    setDropdownVisible(false)
+  }
 
   const menuItems = MENU_ITEMS.map((item) => {
-    const routePath = parameterizeTradeRoute(tradeContext, item.route);
-    const isActive = !!matchPath(location.pathname, routePath);
+    const routePath = parameterizeTradeRoute(tradeContext, item.route)
+    const isActive = !!matchPath(location.pathname, routePath)
 
     const menuItem = (
       <MenuItem
@@ -68,7 +68,7 @@ export function TradeWidgetLinks({
         badgeType={item.badgeType || highlightedBadgeType}
         onClick={() => handleMenuItemClick(item)}
       />
-    );
+    )
 
     return item.featureGuard ? (
       <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
@@ -76,15 +76,16 @@ export function TradeWidgetLinks({
       </FeatureGuard>
     ) : (
       menuItem
-    );
-  });
+    )
+  })
 
   return isDropdown ? (
     <>
       <styledEl.MenuItem onClick={() => setDropdownVisible(!isDropdownVisible)}>
-        <styledEl.Link to={menuItems.find(item => item.props.isActive)?.props.routePath || '#'}>
+        <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
-            {menuItems.find(item => item.props.isActive)?.props.item.label || 'Select'}  <SVG src={IMAGE_CARRET} title="select" />
+            {menuItems.find((item) => item.props.isActive)?.props.item.label || 'Select'}{' '}
+            <SVG src={IMAGE_CARRET} title="select" />
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>
@@ -92,7 +93,7 @@ export function TradeWidgetLinks({
     </>
   ) : (
     <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
-  );
+  )
 }
 
 const MenuItem = ({
@@ -101,7 +102,7 @@ const MenuItem = ({
   isActive,
   badgeText,
   badgeType,
-  onClick
+  onClick,
 }: {
   routePath: string
   item: MenuItemConfig
@@ -120,5 +121,4 @@ const MenuItem = ({
       )}
     </styledEl.Link>
   </styledEl.MenuItem>
-);
-
+)
