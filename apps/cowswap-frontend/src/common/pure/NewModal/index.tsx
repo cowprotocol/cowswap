@@ -12,18 +12,9 @@ const ModalInner = styled.div`
   width: 100%;
   height: auto;
   margin: auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: var(${UI.BOX_SHADOW_NORMAL});
+  background: transparent;
   padding: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 8vh 0 0;
-    border-radius: 0;
-    border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
-    border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
-    box-shadow: none;
-  `}
+  position: relative;
 `
 
 const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
@@ -31,8 +22,18 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
   width: 100%;
   height: 100%;
   margin: auto;
-  background: var(${UI.MODAL_BACKDROP});
   overflow-y: auto;
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: var(${UI.BOX_SHADOW_NORMAL});
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0;
+    border-radius: 0;
+    border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    box-shadow: none;
+  `}
 
   ${ModalInner} {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
@@ -40,8 +41,7 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-width: 100%;
-      min-height: initial;
-      height: auto;
+      height: 100%;
     `}
   }
 `
@@ -62,18 +62,18 @@ const Heading = styled.h2`
 `
 
 const IconX = styled.div`
-  position: fixed;
-  top: 18px;
-  right: 18px;
+  position: absolute;
+  top: 16px;
+  right: 10px;
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
   margin: 0 0 0 auto;
 
   > svg {
     width: var(${UI.ICON_SIZE_NORMAL});
     height: var(${UI.ICON_SIZE_NORMAL});
-    fill: var(${UI.ICON_COLOR_NORMAL});
+    color: var(${UI.ICON_COLOR_NORMAL});
   }
 
   &:hover {
@@ -152,12 +152,12 @@ export function NewModal({ maxWidth = 450, minHeight = 450, title, children, onD
     <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
       <ModalInner>
         {title && <Heading>{title}</Heading>}
+        <IconX onClick={() => onDismiss && onDismiss()}>
+          <SVG src={CLOSE_ICON} />
+        </IconX>
+
         <NewModalContent>{children}</NewModalContent>
       </ModalInner>
-
-      <IconX onClick={() => onDismiss && onDismiss()}>
-        <SVG src={CLOSE_ICON} />
-      </IconX>
     </Wrapper>
   )
 }

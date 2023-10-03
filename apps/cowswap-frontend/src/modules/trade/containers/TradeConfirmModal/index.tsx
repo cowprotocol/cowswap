@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { PermitModal } from 'common/containers/PermitModal'
-import { CowModal } from 'common/pure/Modal'
+import { CowModal, NewCowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
@@ -26,47 +26,58 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   if (!account) return null
 
-  return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss}>
-      {(() => {
-        if (error) {
-          return <TransactionErrorContent message={error} onDismiss={onDismiss} />
-        }
+  const renderModalContent = () => {
+    if (error) {
+      return <TransactionErrorContent message={error} onDismiss={onDismiss} />
+    }
 
-        if (pendingTrade && permitSignatureState) {
-          // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
-          // We could use this not just for permit, but for any token, even already approved
-          const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
+    if (pendingTrade && permitSignatureState) {
+      // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
+      // We could use this not just for permit, but for any token, even already approved
+      const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
+      return (
+        <PermitModal
+          inputAmount={pendingTrade.inputAmount}
+          outputAmount={pendingTrade.outputAmount}
+          step={step}
+          onDismiss={onDismiss}
+        />
+      )
+    }
 
-          return (
-            <PermitModal
-              inputAmount={pendingTrade.inputAmount}
-              outputAmount={pendingTrade.outputAmount}
-              step={step}
-              onDismiss={onDismiss}
-            />
-          )
-        }
+    if (pendingTrade) {
+      return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
+    }
 
-        if (pendingTrade) {
-          return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
-        }
+    if (transactionHash) {
+      return (
+        <OrderSubmittedContent
+          chainId={chainId}
+          account={account}
+          isSafeWallet={isSafeWallet}
+          onDismiss={onDismiss}
+          hash={transactionHash}
+        />
+      )
+    }
 
-        // TODO: use <TransactionSubmittedContent/> for Swap
-        if (transactionHash) {
-          return (
-            <OrderSubmittedContent
-              chainId={chainId}
-              account={account}
-              isSafeWallet={isSafeWallet}
-              onDismiss={onDismiss}
-              hash={transactionHash}
-            />
-          )
-        }
+    return children
+  }
 
-        return children
-      })()}
-    </CowModal>
-  )
+  const renderModal = () => {
+    if (permitSignatureState) {
+      return (
+        <NewCowModal isOpen={isOpen} onDismiss={onDismiss}>
+          {renderModalContent()}
+        </NewCowModal>
+      )
+    }
+    return (
+      <CowModal isOpen={isOpen} onDismiss={onDismiss}>
+        {renderModalContent()}
+      </CowModal>
+    )
+  }
+
+  return renderModal()
 }
