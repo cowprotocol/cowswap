@@ -32,13 +32,6 @@ export const USDC_GOERLI = new Token(
   'USDC',
   'USD//C'
 )
-export const AMPL = new Token(
-  SupportedChainId.MAINNET,
-  '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
-  9,
-  'AMPL',
-  'Ampleforth'
-)
 export const DAI = new Token(
   SupportedChainId.MAINNET,
   '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -65,70 +58,6 @@ export const WBTC = new Token(
   'WBTC',
   'Wrapped BTC'
 )
-export const FEI = new Token(
-  SupportedChainId.MAINNET,
-  '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
-  18,
-  'FEI',
-  'Fei USD'
-)
-export const TRIBE = new Token(
-  SupportedChainId.MAINNET,
-  '0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B',
-  18,
-  'TRIBE',
-  'Tribe'
-)
-export const FRAX = new Token(
-  SupportedChainId.MAINNET,
-  '0x853d955aCEf822Db058eb8505911ED77F175b99e',
-  18,
-  'FRAX',
-  'Frax'
-)
-export const FXS = new Token(
-  SupportedChainId.MAINNET,
-  '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0',
-  18,
-  'FXS',
-  'Frax Share'
-)
-export const renBTC = new Token(
-  SupportedChainId.MAINNET,
-  '0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D',
-  8,
-  'renBTC',
-  'renBTC'
-)
-export const ETH2X_FLI = new Token(
-  SupportedChainId.MAINNET,
-  '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
-  18,
-  'ETH2x-FLI',
-  'ETH 2x Flexible Leverage Index'
-)
-export const sETH2 = new Token(
-  SupportedChainId.MAINNET,
-  '0xFe2e637202056d30016725477c5da089Ab0A043A',
-  18,
-  'sETH2',
-  'StakeWise Staked ETH2'
-)
-export const rETH2 = new Token(
-  SupportedChainId.MAINNET,
-  '0x20BC832ca081b91433ff6c17f85701B6e92486c5',
-  18,
-  'rETH2',
-  'StakeWise Reward ETH2'
-)
-export const SWISE = new Token(
-  SupportedChainId.MAINNET,
-  '0x48C3399719B582dD63eB5AADf12A40B4C3f52FA2',
-  18,
-  'SWISE',
-  'StakeWise'
-)
-
 export const WRAPPED_NATIVE_CURRENCY: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: WETH9[SupportedChainId.MAINNET],
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
@@ -184,8 +113,6 @@ export class GpEther extends Ether {
     if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
     throw new Error('Unsupported chain ID')
   }
-
-  private static _cachedExtendedEther: { [chainId: number]: NativeCurrency } = {}
 
   public static onChain = nativeOnChain
 }
