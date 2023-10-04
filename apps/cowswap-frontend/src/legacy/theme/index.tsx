@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   css,
@@ -15,7 +17,11 @@ import {
   themeVariables as baseThemeVariables,
 } from 'legacy/theme/baseTheme'
 
+import { useInjectedWidgetTheme } from 'common/hooks/useInjectedWidgetTheme'
+
+import { mapWidgetTheme } from './mapWidgetTheme'
 import { Colors } from './styled'
+
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
 export const MEDIA_WIDTHS = {
@@ -169,9 +175,17 @@ export function theme(darkmode: boolean): DefaultTheme {
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const darkMode = useIsDarkMode()
+  const injectedWidgetTheme = useInjectedWidgetTheme()
+
   const themeObject = useMemo(() => {
-    return theme(darkMode)
-  }, [darkMode])
+    const defaultTheme = theme(darkMode)
+
+    if (isInjectedWidget()) {
+      return mapWidgetTheme(injectedWidgetTheme, defaultTheme)
+    }
+
+    return defaultTheme
+  }, [darkMode, injectedWidgetTheme])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
