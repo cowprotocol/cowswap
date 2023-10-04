@@ -22,6 +22,8 @@ export const SettingsButton = styled(MenuButton)`
 `
 
 export const SettingsContainer = styled(MenuList)`
+  position: relative;
+  z-index: 12;
   background: var(${UI.COLOR_CONTAINER_BG_01});
   padding: 10px;
   border-radius: 10px;

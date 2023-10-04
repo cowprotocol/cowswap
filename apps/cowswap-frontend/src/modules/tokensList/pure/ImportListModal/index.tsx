@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { TokenListInfo } from '@cowprotocol/tokens'
+import { getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
@@ -12,19 +12,22 @@ import { TokenLogo } from '../TokenLogo'
 
 export interface ImportListModalProps {
   list: TokenListInfo
-  onImport(): void
+  onImport(list: TokenListInfo): void
   onBack(): void
-  onClose(): void
+  onDismiss(): void
 }
 
 export function ImportListModal(props: ImportListModalProps) {
-  const { list, onBack, onClose, onImport } = props
+  const { list, onBack, onDismiss, onImport } = props
 
   const [isAccepted, setIsAccepted] = useState(false)
 
+  const source = 'ensName' in list.source ? list.source.ensName : list.source.url
+  const viewLink = getTokenListViewLink(list.source)
+
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onClose}>
+      <ModalHeader onBack={onBack} onClose={onDismiss}>
         Import List
       </ModalHeader>
       <styledEl.ListInfo>
@@ -33,8 +36,8 @@ export function ImportListModal(props: ImportListModalProps) {
           <styledEl.ListTitle>
             {list.name} · {list.tokensCount} tokens
           </styledEl.ListTitle>
-          <styledEl.ListLink target="_blank" href={list.url} rel="noreferrer">
-            {list.url}
+          <styledEl.ListLink target="_blank" href={viewLink} rel="noreferrer">
+            {source}
           </styledEl.ListLink>
         </div>
       </styledEl.ListInfo>
@@ -56,7 +59,7 @@ export function ImportListModal(props: ImportListModalProps) {
         </div>
       </styledEl.Contents>
       <styledEl.ActionButtonWrapper>
-        <ButtonPrimary disabled={!isAccepted} onClick={onImport}>
+        <ButtonPrimary disabled={!isAccepted} onClick={() => onImport(list)}>
           Import
         </ButtonPrimary>
       </styledEl.ActionButtonWrapper>

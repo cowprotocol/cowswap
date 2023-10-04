@@ -101,34 +101,35 @@ export const listsMock: TokenListInfo[] = [
   {
     id: '1',
     name: 'CowSwap Goerli',
-    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json',
+    source: {
+      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json',
+    },
     logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
     tokensCount: 7,
-    enabled: true,
     version: 'v0.0.0',
     timestamp: '',
   },
   {
     id: '2',
     name: 'Compound',
-    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
+    source: {
+      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
+    },
     logoUrl: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
     tokensCount: 16,
-    enabled: false,
     version: 'v0.2.1',
     timestamp: '',
   },
 ]
 
-export const importListsMock: TokenListInfo[] = [
-  {
-    id: '4',
-    name: 'CoW Swap',
+export const importListsMock: TokenListInfo = {
+  id: '4',
+  name: 'CoW Swap',
+  source: {
     url: 'https://files.cow.fi/tokens/CowSwap.json',
-    logoUrl: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
-    tokensCount: 113,
-    enabled: true,
-    version: 'v0.0.0',
-    timestamp: '',
   },
-]
+  logoUrl: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+  tokensCount: 113,
+  version: 'v0.0.0',
+  timestamp: '',
+}

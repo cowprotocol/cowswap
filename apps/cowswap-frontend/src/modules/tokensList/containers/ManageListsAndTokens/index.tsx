@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenListInfo, useSearchToken } from '@cowprotocol/tokens'
+import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
+import { TokenListInfo, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
@@ -28,7 +29,33 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
 
   const isListsTab = currentTab === 'lists'
 
-  const searchResponse = useSearchToken(!isListsTab ? inputValue : null)
+  const tokenInput = !isListsTab ? inputValue : null
+  const listInput = isListsTab ? inputValue : null
+
+  const isTokenAddressValid = useMemo(() => {
+    if (!tokenInput) return true
+
+    return !!isAddress(tokenInput)
+  }, [tokenInput])
+
+  const isListUrlValid = useMemo(() => {
+    if (!listInput) return true
+
+    return uriToHttp(listInput).length > 0 || Boolean(parseENSAddress(listInput))
+  }, [listInput])
+
+  const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
+  const listSearchResponse = useSearchList(isListUrlValid ? listInput : null)
+
+  const setListsTab = () => {
+    setCurrentTab('lists')
+    setInputValue('')
+  }
+
+  const setTokensTab = () => {
+    setCurrentTab('tokens')
+    setInputValue('')
+  }
 
   return (
     <styledEl.Wrapper>
@@ -36,10 +63,10 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
         Manage
       </ModalHeader>
       <styledEl.TabsContainer>
-        <styledEl.Tab active$={isListsTab} onClick={() => setCurrentTab('lists')}>
+        <styledEl.Tab active$={isListsTab} onClick={setListsTab}>
           Lists
         </styledEl.Tab>
-        <styledEl.Tab active$={!isListsTab} onClick={() => setCurrentTab('tokens')}>
+        <styledEl.Tab active$={!isListsTab} onClick={setTokensTab}>
           Tokens
         </styledEl.Tab>
       </styledEl.TabsContainer>
@@ -49,11 +76,13 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
         />
+        {!isListUrlValid && <styledEl.InputError>Enter valid list location</styledEl.InputError>}
+        {!isTokenAddressValid && <styledEl.InputError>Enter valid token address</styledEl.InputError>}
       </styledEl.PrimaryInputBox>
       {currentTab === 'lists' ? (
-        <ManageLists lists={lists} />
+        <ManageLists listSearchResponse={listSearchResponse} lists={lists} />
       ) : (
-        <ManageTokens tokenSearchResponse={searchResponse} tokens={customTokens} />
+        <ManageTokens tokenSearchResponse={tokenSearchResponse} tokens={customTokens} />
       )}
     </styledEl.Wrapper>
   )

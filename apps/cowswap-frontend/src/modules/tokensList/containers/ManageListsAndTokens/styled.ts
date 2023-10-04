@@ -25,6 +25,12 @@ export const TabsContainer = styled.div`
   }
 `
 
+export const InputError = styled.div`
+  margin-top: 20px;
+  color: var(${UI.COLOR_RED});
+  font-weight: 500;
+`
+
 export const Tab = styled.button<{ active$: boolean }>`
   ${blankButtonMixin};
 

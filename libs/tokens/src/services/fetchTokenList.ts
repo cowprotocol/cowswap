@@ -3,13 +3,13 @@ import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
 import { contenthashToUri, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
 
-import { validateTokenList } from '../../utils/validateTokenList'
-import { TokenList, TokenListWithEnsName, TokenListWithUrl } from '../../types'
-import { getIsTokenListWithUrl } from '../../utils/getIsTokenListWithUrl'
+import { validateTokenList } from '../utils/validateTokenList'
+import { TokenList, TokenListSource, TokenListWithEnsName, TokenListWithUrl } from '../types'
+import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
 
 export interface TokenListResult {
   id: string
-  url: string
+  source: TokenListSource
   list: UniTokenList
 }
 
@@ -21,7 +21,14 @@ export function fetchTokenList(list: TokenList): Promise<TokenListResult> {
 }
 
 async function fetchTokenListByUrl(list: TokenListWithUrl): Promise<TokenListResult> {
-  return _fetchTokenList(list.id, [list.url])
+  return _fetchTokenList(list.id, [list.url]).then((result) => {
+    return {
+      ...result,
+      source: {
+        url: list.url,
+      },
+    }
+  })
 }
 
 async function fetchTokenListByEnsName(list: TokenListWithEnsName): Promise<TokenListResult> {
@@ -29,10 +36,17 @@ async function fetchTokenListByEnsName(list: TokenListWithEnsName): Promise<Toke
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
 
-  return _fetchTokenList(list.id, urls)
+  return _fetchTokenList(list.id, urls).then((result) => {
+    return {
+      ...result,
+      source: {
+        ensName: list.ensName,
+      },
+    }
+  })
 }
 
-async function _fetchTokenList(id: string, urls: string[]): Promise<TokenListResult> {
+async function _fetchTokenList(id: string, urls: string[]): Promise<Omit<TokenListResult, 'source'>> {
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i]
     const isLast = i === urls.length - 1
@@ -63,7 +77,6 @@ async function _fetchTokenList(id: string, urls: string[]): Promise<TokenListRes
 
     return {
       id,
-      url,
       list: await validateTokenList(json),
     }
   }

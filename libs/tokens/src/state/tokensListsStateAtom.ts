@@ -38,10 +38,25 @@ export const allTokenListsInfoAtom = atom((get) => {
   return Object.values(allTokenListsInfo[chainId])
 })
 
-export const updateAllTokenListsInfoAtom = atom(null, (get, set, state: { [id: string]: TokenListInfo }) => {
+export const upsertAllTokenListsInfoAtom = atom(null, (get, set, state: { [id: string]: TokenListInfo }) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
 
-  set(updateAllTokenListsInfoByChainAtom, { [chainId]: state })
+  set(updateAllTokenListsInfoByChainAtom, {
+    [chainId]: {
+      ...get(allTokenListsInfoByChainAtom)[chainId],
+      ...state,
+    },
+  })
+})
+export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: string) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+  const stateCopy = { ...get(allTokenListsInfoByChainAtom)[chainId] }
+
+  delete stateCopy[id]
+
+  set(updateAllTokenListsInfoByChainAtom, {
+    [chainId]: stateCopy,
+  })
 })
 
 export const allTokensListsAtom = atom((get) => {
@@ -61,7 +76,7 @@ export const activeTokensListsMapAtom = atom((get) => {
   return allTokensLists.reduce<{ [listId: string]: boolean }>((acc, tokenList) => {
     const isActive = tokenListsActive[tokenList.id]
 
-    acc[tokenList.id] = isActive === false ? false : !!tokenList.enabledByDefault
+    acc[tokenList.id] = typeof isActive === 'boolean' ? isActive : !!tokenList.enabledByDefault
 
     return acc
   }, {})

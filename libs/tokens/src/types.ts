@@ -1,6 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo } from '@uniswap/token-lists'
 
+export type TokenListSource = { ensName: string } | { url: string }
+
 export interface TokenListWithUrl {
   id: string // nanoid
   enabledByDefault?: boolean
@@ -18,12 +20,11 @@ export type TokenList = TokenListWithUrl | TokenListWithEnsName
 export type TokenListsByNetwork = Record<SupportedChainId, ReadonlyArray<TokenList>>
 
 export interface TokenListInfo {
+  source: TokenListSource
   id: string
   name: string
   timestamp: string
-  enabled: boolean
   version: string
-  url: string
   logoUrl?: string
   tokensCount: number
 }

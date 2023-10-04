@@ -1,18 +1,16 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import {
-  activeTokensListsMapAtom,
-  allTokensListsAtom,
-  updateAllTokenListsInfoAtom,
-} from '../../state/tokensListsStateAtom'
+import { allTokensListsAtom, upsertAllTokenListsInfoAtom } from '../../state/tokensListsStateAtom'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
-import { fetchTokenList, TokenListResult } from './fetchTokenList'
+import { fetchTokenList, TokenListResult } from '../../services/fetchTokenList'
 import { setTokensAtom } from '../../state/tokensAtom'
 import { tokensListsEnvironmentAtom } from '../../state/tokensListsEnvironmentAtom'
 import { TokenListInfo, TokensMap } from '../../types'
+import { buildTokenListInfo } from '../../utils/buildTokenListInfo'
+import { useActiveTokenListsIds } from '../../hooks/useActiveTokenListsIds'
 
 type TokensAndListsUpdate = {
   activeTokens: TokensMap
@@ -32,9 +30,9 @@ const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-update
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(tokensListsEnvironmentAtom)
   const setTokens = useSetAtom(setTokensAtom)
-  const setTokenLists = useSetAtom(updateAllTokenListsInfoAtom)
+  const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
   const allTokensLists = useAtomValue(allTokensListsAtom)
-  const activeTokensListsMap = useAtomValue(activeTokensListsMapAtom)
+  const activeTokensListsMap = useActiveTokenListsIds()
 
   useEffect(() => {
     setEnvironment({ chainId: currentChainId })
@@ -61,16 +59,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
       (acc, val) => {
         const isListEnabled = activeTokensListsMap[val.id]
 
-        acc.lists[val.id] = {
-          id: val.id,
-          url: val.url,
-          name: val.list.name,
-          timestamp: val.list.timestamp,
-          enabled: isListEnabled,
-          version: JSON.stringify(val.list.version),
-          logoUrl: val.list.logoURI,
-          tokensCount: val.list.tokens.length,
-        }
+        acc.lists[val.id] = buildTokenListInfo(val)
 
         val.list.tokens.forEach((token) => {
           if (token.chainId === chainId) {

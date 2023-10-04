@@ -1,8 +1,11 @@
 import { useAtomValue } from 'jotai'
-import { useState } from 'react'
+import { useSetAtom } from 'jotai/index'
+import { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
+  TokenListInfo,
+  useAddCustomTokenLists,
   useAllTokenListsInfo,
   useAllTokens,
   useFavouriteTokens,
@@ -12,11 +15,9 @@ import {
 
 import { CowModal } from 'common/pure/Modal'
 
-import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
-import { useResetTokenImport } from '../../hooks/useResetTokenImport'
-import { useToggleTokenSelectWidget } from '../../hooks/useToggleTokenSelectWidget'
+import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
-import { selectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
+import { selectTokenWidgetAtom, updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 import { SelectTokenModal } from '../SelectTokenModal'
 
@@ -24,12 +25,12 @@ import { SelectTokenModal } from '../SelectTokenModal'
 const balancesMock = {}
 
 export function SelectTokenWidget() {
-  const { open, onSelectToken, tokenToImport } = useAtomValue(selectTokenWidgetAtom)
+  const { open, onSelectToken, tokenToImport, listToImport } = useAtomValue(selectTokenWidgetAtom)
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
-  const closeTokenSelectWidget = useCloseTokenSelectWidget()
-  const toggleTokenSelectWidget = useToggleTokenSelectWidget()
-  const resetTokenImport = useResetTokenImport()
+  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
+
+  const addCustomTokenLists = useAddCustomTokenLists()
   const importTokenCallback = useImportTokenCallback()
 
   const allTokens = useAllTokens()
@@ -37,14 +38,34 @@ export function SelectTokenWidget() {
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllTokenListsInfo()
 
+  const closeTokenSelectWidget = useCallback(() => {
+    updateSelectTokenWidget({
+      open: false,
+      onSelectToken: undefined,
+      tokenToImport: undefined,
+      listToImport: undefined,
+    })
+  }, [updateSelectTokenWidget])
+
+  const resetTokenImport = () => {
+    updateSelectTokenWidget({
+      tokenToImport: undefined,
+    })
+  }
+
   const onDismiss = () => {
     setIsManageWidgetOpen(false)
     closeTokenSelectWidget()
   }
 
-  const importAndClose = (token: TokenWithLogo) => {
+  const importTokenAndClose = (token: TokenWithLogo) => {
     importTokenCallback(token)
     onDismiss()
+  }
+
+  const importListAndBack = (list: TokenListInfo) => {
+    addCustomTokenLists(list)
+    updateSelectTokenWidget({ listToImport: undefined })
   }
 
   if (tokenToImport) {
@@ -54,7 +75,20 @@ export function SelectTokenWidget() {
           token={tokenToImport}
           onDismiss={onDismiss}
           onBack={resetTokenImport}
-          onImport={importAndClose}
+          onImport={importTokenAndClose}
+        />
+      </CowModal>
+    )
+  }
+
+  if (listToImport) {
+    return (
+      <CowModal isOpen={true} onDismiss={onDismiss}>
+        <ImportListModal
+          list={listToImport}
+          onDismiss={onDismiss}
+          onBack={resetTokenImport}
+          onImport={importListAndBack}
         />
       </CowModal>
     )
@@ -77,7 +111,7 @@ export function SelectTokenWidget() {
           favouriteTokens={favouriteTokens}
           balances={balancesMock}
           onSelectToken={onSelectToken}
-          onDismiss={toggleTokenSelectWidget}
+          onDismiss={onDismiss}
           onOpenManageWidget={() => setIsManageWidgetOpen(true)}
         ></SelectTokenModal>
       )}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { TokenListInfo } from '@cowprotocol/tokens'
+import { getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 import { Settings } from 'react-feather'
@@ -14,15 +14,20 @@ import { TokenListDetails } from '../TokenListDetails'
 
 export interface TokenListItemProps {
   list: TokenListInfo
+  enabled: boolean
+  toggleList(id: string): void
   removeList(id: string): void
-  viewList(id: string): void
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { list, removeList, viewList } = props
+  const { list, removeList, toggleList, enabled } = props
 
-  // TODO: bind logic
-  const [isActive, setIsActive] = useState(list.enabled)
+  const [isActive, setIsActive] = useState(enabled)
+
+  const toggle = () => {
+    toggleList(list.id)
+    setIsActive((state) => !state)
+  }
 
   return (
     <styledEl.Wrapper $enabled={isActive}>
@@ -37,8 +42,12 @@ export function TokenListItem(props: TokenListItemProps) {
             <MenuItem onSelect={() => void 0}>
               <styledEl.ListVersion>{list.version}</styledEl.ListVersion>
             </MenuItem>
-            <MenuItem onSelect={() => viewList(list.id)}>
-              <styledEl.SettingsAction>View List</styledEl.SettingsAction>
+            <MenuItem onSelect={() => void 0}>
+              <styledEl.SettingsAction>
+                <a target="_blank" href={getTokenListViewLink(list.source)} rel="noreferrer">
+                  View List
+                </a>
+              </styledEl.SettingsAction>
             </MenuItem>
             <MenuItem onSelect={() => removeList(list.id)}>
               <styledEl.SettingsAction>Remove list</styledEl.SettingsAction>
@@ -47,7 +56,7 @@ export function TokenListItem(props: TokenListItemProps) {
         </Menu>
       </TokenListDetails>
       <div>
-        <Toggle isActive={isActive} toggle={() => setIsActive((state) => !state)} />
+        <Toggle isActive={isActive} toggle={toggle} />
       </div>
     </styledEl.Wrapper>
   )
