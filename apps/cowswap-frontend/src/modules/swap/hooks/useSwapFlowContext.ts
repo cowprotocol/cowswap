@@ -3,7 +3,7 @@ import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
-import { useIsTokenPermittable } from 'modules/permit'
+import { useGeneratePermitHook, useIsTokenPermittable } from 'modules/permit'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
@@ -14,6 +14,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const baseProps = useBaseFlowContextSetup()
   const sellCurrency = baseProps.trade?.inputAmount?.currency
   const permitInfo = useIsTokenPermittable(sellCurrency, TradeType.SWAP)
+  const generatePermitHook = useGeneratePermitHook()
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[baseProps.chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -36,5 +37,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     ...baseContext,
     contract,
     permitInfo: !enoughAllowance ? permitInfo : undefined,
+    generatePermitHook,
   }
 }

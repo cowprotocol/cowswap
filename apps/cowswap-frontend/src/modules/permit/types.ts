@@ -40,8 +40,10 @@ export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'pe
 
 export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
 
+export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo'> & {
   permitInfo: IsTokenPermittableResult
   appData: AppDataInfo
+  generatePermitHook: GeneratePermitHook
 }
 
 export type PermitHookData = latest.CoWHook

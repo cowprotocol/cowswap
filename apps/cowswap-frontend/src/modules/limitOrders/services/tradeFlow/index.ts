@@ -34,6 +34,7 @@ export async function tradeFlow(
     settlementContract,
     dispatch,
     isGnosisSafeWallet,
+    generatePermitHook,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData } = postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
@@ -61,10 +62,9 @@ export async function tradeFlow(
     postOrderParams.appData = await handlePermit({
       permitInfo,
       inputToken: sellToken,
-      provider,
       account,
-      chainId,
       appData,
+      generatePermitHook,
     })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')

@@ -1,7 +1,5 @@
 import { AppDataInfo, buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
 
-import { generatePermitHook } from './generatePermitHook'
-
 import { HandlePermitParams } from '../types'
 
 /**
@@ -15,18 +13,23 @@ import { HandlePermitParams } from '../types'
  * Returns the updated appData
  */
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
-  const { permitInfo, inputToken, provider, account, chainId, appData } = params
+  const { permitInfo, inputToken, account, appData, generatePermitHook } = params
 
   if (permitInfo) {
     // permitInfo will only be set if there's enough allowance
 
     const permitData = await generatePermitHook({
       inputToken,
-      provider,
       account,
-      chainId,
       permitInfo,
     })
+
+    if (!permitData) {
+      // Not able to generate permit data, remove it from the order
+      // TODO: maybe should throw instead?
+      console.warn(`[handlePermit] Unable to generate permit data`)
+      return updateHooksOnAppData(appData, undefined)
+    }
 
     const hooks = buildAppDataHooks([permitData])
 
