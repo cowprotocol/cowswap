@@ -17,6 +17,7 @@ const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const tradeContext: TradeFlowContext = {
   permitInfo: undefined,
+  generatePermitHook: () => Promise.resolve(undefined),
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
