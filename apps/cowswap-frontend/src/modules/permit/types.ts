@@ -31,10 +31,15 @@ export type PermitHookParams = {
   chainId: SupportedChainId
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
-  account?: string
+  eip2162Utils: Eip2612PermitUtils
+  account?: string | undefined
+  nonce?: number | undefined
 }
 
-export type HandlePermitParams = Omit<PermitHookParams, 'permitInfo'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'>
+
+export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+
   permitInfo: IsTokenPermittableResult
   appData: AppDataInfo
 }
