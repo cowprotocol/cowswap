@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenListInfo } from '@cowprotocol/tokens'
+import { TokenListInfo, useSearchToken } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
@@ -24,9 +24,11 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
   // TODO: process input value
-  const [, setInputValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>('')
 
   const isListsTab = currentTab === 'lists'
+
+  const searchResponse = useSearchToken(!isListsTab ? inputValue : null)
 
   return (
     <styledEl.Wrapper>
@@ -48,7 +50,11 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
           placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
         />
       </styledEl.PrimaryInputBox>
-      {currentTab === 'lists' ? <ManageLists lists={lists} /> : <ManageTokens tokens={customTokens} />}
+      {currentTab === 'lists' ? (
+        <ManageLists lists={lists} />
+      ) : (
+        <ManageTokens tokenSearchResponse={searchResponse} tokens={customTokens} />
+      )}
     </styledEl.Wrapper>
   )
 }

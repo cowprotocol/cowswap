@@ -6,7 +6,7 @@ export enum TokenSearchSource {
   InactiveList = 'InactiveList',
 }
 
-type TokenSearchResult = {
+export type TokenSearchResult = {
   source: TokenSearchSource
   tokens: TokenWithLogo[]
 }

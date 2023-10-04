@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 
 import { allTokensMock, favouriteTokensMock } from '../../mocks'
 
-import { SelectTokenModal } from './index'
+import { SelectTokenModal, SelectTokenModalProps } from './index'
 
 const Wrapper = styled.div`
   width: 450px;
@@ -23,13 +23,19 @@ const balances = allTokensMock.reduce<{ [key: string]: CurrencyAmount<Currency> 
   return acc
 }, {})
 
-const defaultProps = {
-  selectedToken,
-  balances,
+const defaultProps: SelectTokenModalProps = {
   allTokens: allTokensMock,
   favouriteTokens: favouriteTokensMock,
+  balances,
+  selectedToken,
   onSelectToken() {
     console.log('onSelectToken')
+  },
+  onOpenManageWidget() {
+    console.log('onOpenManageWidget')
+  },
+  onDismiss() {
+    console.log('onDismiss')
   },
 }
 

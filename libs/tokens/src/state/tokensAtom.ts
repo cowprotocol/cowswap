@@ -19,12 +19,6 @@ const tokensAtomsByChainId: Record<SupportedChainId, typeof tokensMainnetAtom> =
   [SupportedChainId.GOERLI]: tokensGoerliAtom,
 }
 
-export const tokensAtom = atom((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
-
-  return tokensAtomsByChainId[chainId]
-})
-
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
   const tokensMap = get(tokensAtomsByChainId[chainId])

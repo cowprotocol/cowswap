@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useDebounce, useNetworkName } from '@cowprotocol/common-hooks'
+import { useNetworkName } from '@cowprotocol/common-hooks'
+import { TokenSearchSource, useSearchToken } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
 
-import { searchToken, TokenSearchSource } from './searchToken'
 import * as styledEl from './styled'
 
+import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { AllTokensList } from '../../pure/AllTokensList'
 import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
@@ -22,8 +23,8 @@ export interface SelectTokenModalProps {
   selectedToken?: TokenWithLogo
   defaultInputValue?: string
   onSelectToken(token: TokenWithLogo): void
-  onDismiss(): void
   onOpenManageWidget(): void
+  onDismiss(): void
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
@@ -40,57 +41,51 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const networkName = useNetworkName()
 
-  const [isSearchInProgress, setIsSearchInProgress] = useState<boolean>(false)
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
-  const debouncedInputValue = useDebounce(inputValue, 500)
 
   const [tokensFromBlockChain, setTokensFromBlockChain] = useState<TokenWithLogo[]>([])
   const [tokensFromInactiveLists, setTokensFromInactiveLists] = useState<TokenWithLogo[]>([])
   const [tokensFromExternal, setTokensFromExternal] = useState<TokenWithLogo[]>([])
 
-  const importToken = (token: TokenWithLogo) => {
-    console.log('TODO: import token', token)
-  }
+  const addTokenImportCallback = useAddTokenImportCallback()
+
+  const searchResponse = useSearchToken(inputValue)
 
   const isTokenNotFound = useMemo(() => {
-    if (isSearchInProgress || !debouncedInputValue) return false
+    if (!searchResponse) return false
+
+    const { loading, result, error } = searchResponse
+
+    if (loading) return false
+
+    if (!result && !error) return false
 
     return tokensFromExternal.length === 0 && tokensFromBlockChain.length === 0 && tokensFromInactiveLists.length === 0
-  }, [debouncedInputValue, isSearchInProgress, tokensFromBlockChain, tokensFromInactiveLists, tokensFromExternal])
+  }, [searchResponse, tokensFromBlockChain, tokensFromInactiveLists, tokensFromExternal])
 
   useEffect(() => {
-    if (!debouncedInputValue) return
+    if (searchResponse?.loading || searchResponse?.error || !searchResponse?.result) {
+      setTokensFromBlockChain([])
+      setTokensFromInactiveLists([])
+      setTokensFromExternal([])
+      return
+    }
 
-    setIsSearchInProgress(true)
-    setTokensFromBlockChain([])
-    setTokensFromInactiveLists([])
-    setTokensFromExternal([])
+    const { source, tokens } = searchResponse.result
 
-    searchToken(debouncedInputValue)
-      .then((result) => {
-        if (!result) {
-          return
-        }
-
-        const { source, tokens } = result
-
-        if (source === TokenSearchSource.Blockchain) {
-          setTokensFromBlockChain(tokens)
-          return
-        }
-        if (source === TokenSearchSource.InactiveList) {
-          setTokensFromInactiveLists(tokens)
-          return
-        }
-        if (source === TokenSearchSource.External) {
-          setTokensFromExternal(tokens)
-          return
-        }
-      })
-      .finally(() => {
-        setIsSearchInProgress(false)
-      })
-  }, [debouncedInputValue])
+    if (source === TokenSearchSource.Blockchain) {
+      setTokensFromBlockChain(tokens)
+      return
+    }
+    if (source === TokenSearchSource.InactiveList) {
+      setTokensFromInactiveLists(tokens)
+      return
+    }
+    if (source === TokenSearchSource.External) {
+      setTokensFromExternal(tokens)
+      return
+    }
+  }, [searchResponse])
 
   return (
     <styledEl.Wrapper>
@@ -109,7 +104,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       <styledEl.Row>
-        <FavouriteTokensList selectedToken={selectedToken} tokens={favouriteTokens} />
+        <FavouriteTokensList onSelectToken={onSelectToken} selectedToken={selectedToken} tokens={favouriteTokens} />
       </styledEl.Row>
       {isTokenNotFound && (
         <styledEl.TokenNotFound>No tokens found for this name in {networkName}</styledEl.TokenNotFound>
@@ -117,7 +112,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       {tokensFromBlockChain.length > 0 && (
         <div>
           {tokensFromBlockChain.map((token) => {
-            return <ImportTokenItem token={token} importToken={importToken} />
+            return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
           })}
         </div>
       )}
@@ -128,7 +123,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           </TokenSourceTitle>
           <div>
             {tokensFromInactiveLists.map((token) => {
-              return <ImportTokenItem token={token} importToken={importToken} shadowed={true} />
+              return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
             })}
           </div>
         </div>
@@ -140,12 +135,12 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           </TokenSourceTitle>
           <div>
             {tokensFromExternal.map((token) => {
-              return <ImportTokenItem token={token} importToken={importToken} shadowed={true} />
+              return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
             })}
           </div>
         </div>
       )}
-      {!debouncedInputValue && (
+      {!inputValue && (
         <AllTokensList
           selectedToken={selectedToken}
           tokens={allTokens}

@@ -8,10 +8,11 @@ import * as styledEl from './styled'
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]
   selectedToken?: TokenWithLogo
+  onSelectToken(token: TokenWithLogo): void
 }
 
 export function FavouriteTokensList(props: FavouriteTokensListProps) {
-  const { tokens, selectedToken } = props
+  const { tokens, selectedToken, onSelectToken } = props
 
   return (
     <div>
@@ -24,7 +25,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
           const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
 
           return (
-            <styledEl.TokensItem key={token.address} disabled={isTokenSelected}>
+            <styledEl.TokensItem key={token.address} disabled={isTokenSelected} onClick={() => onSelectToken(token)}>
               <img src={token.logoURI} alt={token.name} />
               <TokenSymbol token={token} />
             </styledEl.TokensItem>

@@ -1,33 +1,36 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { ExternalLink, Trash } from 'react-feather'
 
 import * as styledEl from './styled'
 
+import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
+import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenLogo } from '../../pure/TokenLogo'
 
 export interface ManageTokensProps {
   tokens: TokenWithLogo[]
+  tokenSearchResponse: TokenSearchResponse | undefined
 }
 
 export function ManageTokens(props: ManageTokensProps) {
-  const { tokens } = props
+  const { tokens, tokenSearchResponse } = props
 
-  const clearAll = () => {
-    console.log('TODO clearAll')
-  }
-
-  const removeToken = (token: TokenWithLogo) => {
-    console.log('TODO removeToken', token.symbol)
-  }
+  const addTokenImportCallback = useAddTokenImportCallback()
+  const removeTokenCallback = useRemoveTokenCallback()
+  const resetUserTokensCallback = useResetUserTokensCallback()
 
   return (
     <styledEl.Wrapper>
+      {tokenSearchResponse?.result?.tokens?.map((token) => {
+        return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
+      })}
       <styledEl.Header>
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
-        <styledEl.LinkButton onClick={clearAll}>Clear all</styledEl.LinkButton>
+        {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}
       </styledEl.Header>
       <div>
         {tokens.map((token) => {
@@ -38,7 +41,7 @@ export function ManageTokens(props: ManageTokensProps) {
                 <TokenSymbol token={token} />
               </styledEl.TokenInfo>
               <div>
-                <styledEl.LinkButton onClick={() => removeToken(token)}>
+                <styledEl.LinkButton onClick={() => removeTokenCallback(token)}>
                   <Trash size={16} />
                 </styledEl.LinkButton>
                 <styledEl.LinkButton>

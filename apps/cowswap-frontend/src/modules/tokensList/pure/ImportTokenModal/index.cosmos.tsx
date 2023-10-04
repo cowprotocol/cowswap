@@ -14,7 +14,8 @@ const Fixtures = {
       <ImportTokenModal
         token={customTokensMock[0]}
         onBack={() => console.log('onBack')}
-        onClose={() => console.log('onClose')}
+        onDismiss={() => console.log('onClose')}
+        onImport={() => console.log('onImport')}
       />
     </Wrapper>
   ),

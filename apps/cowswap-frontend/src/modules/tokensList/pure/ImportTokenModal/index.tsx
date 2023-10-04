@@ -1,3 +1,4 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -11,15 +12,16 @@ import { TokenLogo } from '../TokenLogo'
 export interface ImportTokenModalProps {
   token: TokenWithLogo
   onBack(): void
-  onClose(): void
+  onDismiss(): void
+  onImport(token: TokenWithLogo): void
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
-  const { token, onBack, onClose } = props
+  const { token, onBack, onDismiss, onImport } = props
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onClose}>
+      <ModalHeader onBack={onBack} onClose={onDismiss}>
         Import token
       </ModalHeader>
       <styledEl.Contents>
@@ -43,7 +45,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
             <span>Unknown Source</span>
           </styledEl.UnknownSourceWarning>
         </styledEl.TokenInfo>
-        <ButtonPrimary>Import token</ButtonPrimary>
+        <ButtonPrimary onClick={() => onImport(token)}>Import token</ButtonPrimary>
       </styledEl.Contents>
     </styledEl.Wrapper>
   )
