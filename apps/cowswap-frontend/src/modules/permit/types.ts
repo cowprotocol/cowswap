@@ -67,3 +67,21 @@ export type CheckIsTokenPermittableParams = {
   chainId: SupportedChainId
   provider: Web3Provider
 }
+
+export type PermitCache = Record<string, string>
+
+export type CachedPermitData = {
+  hookData: PermitHookData
+  nonce: number | undefined
+}
+
+export type PermitCacheKeyParams = {
+  chainId: SupportedChainId
+  tokenAddress: string
+  account: string | undefined
+  nonce: number | undefined
+}
+
+export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
+
+export type GetPermitCacheParams = PermitCacheKeyParams
