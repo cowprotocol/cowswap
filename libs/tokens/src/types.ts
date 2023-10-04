@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 export interface TokenListWithUrl {
@@ -18,26 +17,13 @@ export type TokenList = TokenListWithUrl | TokenListWithEnsName
 
 export type TokenListsByNetwork = Record<SupportedChainId, ReadonlyArray<TokenList>>
 
-export class TokenWithLogo extends Token {
-  constructor(
-    public logoURI: string | undefined,
-    chainId: number,
-    address: string,
-    decimals: number,
-    symbol?: string,
-    name?: string,
-    bypassChecksum?: boolean
-  ) {
-    super(chainId, address, decimals, symbol, name, bypassChecksum)
-  }
-}
-
 export interface TokenListInfo {
   id: string
   name: string
   timestamp: string
   enabled: boolean
   version: string
+  url: string
   logoUrl?: string
   tokensCount: number
 }

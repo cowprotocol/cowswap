@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
 export enum TokenSearchSource {
   Blockchain = 'Blockchain',

@@ -2,7 +2,8 @@ import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
-import { TokensMap, TokenWithLogo } from '../types'
+import { TokensMap } from '../types'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
 export type TokensState = { activeTokens: TokensMap; inactiveTokens: TokensMap }
 

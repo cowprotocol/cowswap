@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useNetworkName } from '@cowprotocol/common-hooks'
-import { TokenWithLogo } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'

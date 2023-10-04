@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'

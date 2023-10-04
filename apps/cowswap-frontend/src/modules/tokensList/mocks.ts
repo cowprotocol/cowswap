@@ -1,4 +1,5 @@
-import { TokenListInfo, TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenListInfo } from '@cowprotocol/tokens'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -105,6 +106,7 @@ export const listsMock: TokenListInfo[] = [
     tokensCount: 7,
     enabled: true,
     version: 'v0.0.0',
+    timestamp: '',
   },
   {
     id: '2',
@@ -114,6 +116,7 @@ export const listsMock: TokenListInfo[] = [
     tokensCount: 16,
     enabled: false,
     version: 'v0.2.1',
+    timestamp: '',
   },
 ]
 
@@ -126,5 +129,6 @@ export const importListsMock: TokenListInfo[] = [
     tokensCount: 113,
     enabled: true,
     version: 'v0.0.0',
+    timestamp: '',
   },
 ]

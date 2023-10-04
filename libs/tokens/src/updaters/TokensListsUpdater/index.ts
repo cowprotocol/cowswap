@@ -63,6 +63,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
         acc.lists[val.id] = {
           id: val.id,
+          url: val.url,
           name: val.list.name,
           timestamp: val.list.timestamp,
           enabled: isListEnabled,

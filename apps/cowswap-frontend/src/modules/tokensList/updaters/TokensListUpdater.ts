@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 

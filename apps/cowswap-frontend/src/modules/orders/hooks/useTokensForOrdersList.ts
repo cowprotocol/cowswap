@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 

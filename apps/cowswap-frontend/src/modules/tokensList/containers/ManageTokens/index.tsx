@@ -1,5 +1,5 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { TokenWithLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { ExternalLink, Trash } from 'react-feather'

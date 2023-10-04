@@ -1,8 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokensMap, TokenWithLogo } from '../types'
+import { TokensMap } from '../types'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
 export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>('userAddedTokensAtom:v1', {
   [SupportedChainId.MAINNET]: {},

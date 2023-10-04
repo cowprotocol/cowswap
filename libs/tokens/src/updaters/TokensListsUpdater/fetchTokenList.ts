@@ -9,6 +9,7 @@ import { getIsTokenListWithUrl } from '../../utils/getIsTokenListWithUrl'
 
 export interface TokenListResult {
   id: string
+  url: string
   list: UniTokenList
 }
 
@@ -62,6 +63,7 @@ async function _fetchTokenList(id: string, urls: string[]): Promise<TokenListRes
 
     return {
       id,
+      url,
       list: await validateTokenList(json),
     }
   }

@@ -2,7 +2,7 @@
 // + logic for chainId switch to/from xDAI
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { XDAI_SYMBOL } from './constants'
+import { XDAI_SYMBOL } from '../tokens'
 
 const CURRENCY_SYMBOLS_XDAI = { native: XDAI_SYMBOL, wrapped: 'wxDAI' }
 const CURRENCY_SYMBOLS_ETH = { native: 'Ether', wrapped: 'WETH' }

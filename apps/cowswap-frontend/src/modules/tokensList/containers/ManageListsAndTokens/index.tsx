@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { TokenListInfo, TokenWithLogo } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenListInfo } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
