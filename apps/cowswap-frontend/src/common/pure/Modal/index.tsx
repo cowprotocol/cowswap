@@ -105,6 +105,7 @@ export const CowModal = styled(Modal)<{
     transition: max-width 0.4s ease;
     background-color: var(${UI.COLOR_CONTAINER_BG_01});
     overflow: hidden;
+    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100vh;
@@ -145,4 +146,9 @@ export const CowModal = styled(Modal)<{
       `}
     }
   }
+`
+
+export const NewCowModal = styled(Modal)`
+  width: 100vw;
+  height: 100vh;
 `

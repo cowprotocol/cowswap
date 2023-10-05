@@ -23,25 +23,59 @@ const WALLET_ICON = (
 )
 
 const PermitModalFixtures = {
-  'Pending permit signature': (
+  'SWAP: Pending permit signature': (
     <Wrapper>
-      <PermitModal inputAmount={INPUT_AMOUNT} outputAmount={OUTPUT_AMOUNT} step="approve" icon={WALLET_ICON} />
+      <PermitModal
+        inputAmount={INPUT_AMOUNT}
+        outputAmount={OUTPUT_AMOUNT}
+        step="approve"
+        icon={WALLET_ICON}
+        orderType={'Swap'}
+      />
     </Wrapper>
   ),
-  'Pending order signature': (
+  'SWAP: Pending order signature': (
     <Wrapper>
-      <PermitModal inputAmount={INPUT_AMOUNT} outputAmount={OUTPUT_AMOUNT} step="submit" icon={WALLET_ICON} />
+      <PermitModal
+        inputAmount={INPUT_AMOUNT}
+        outputAmount={OUTPUT_AMOUNT}
+        step="submit"
+        icon={WALLET_ICON}
+        orderType={'Swap'}
+      />
+    </Wrapper>
+  ),
+  'LIMIT: Pending permit signature': (
+    <Wrapper>
+      <PermitModal
+        inputAmount={INPUT_AMOUNT}
+        outputAmount={OUTPUT_AMOUNT}
+        step="approve"
+        icon={WALLET_ICON}
+        orderType={'Limit Order'}
+      />
+    </Wrapper>
+  ),
+  'LIMIT: Pending order signature': (
+    <Wrapper>
+      <PermitModal
+        inputAmount={INPUT_AMOUNT}
+        outputAmount={OUTPUT_AMOUNT}
+        step="submit"
+        icon={WALLET_ICON}
+        orderType={'Limit Order'}
+      />
     </Wrapper>
   ),
   // These two cases should happen, but including for completeness as the parameters allow it
   'Missing amounts on approve': (
     <Wrapper>
-      <PermitModal inputAmount={undefined} outputAmount={undefined} step="approve" />
+      <PermitModal inputAmount={undefined} outputAmount={undefined} step="approve" orderType={'Swap'} />
     </Wrapper>
   ),
   'Missing amounts on submit': (
     <Wrapper>
-      <PermitModal inputAmount={undefined} outputAmount={undefined} step="submit" />
+      <PermitModal inputAmount={undefined} outputAmount={undefined} step="submit" orderType={'Swap'} />
     </Wrapper>
   ),
 }

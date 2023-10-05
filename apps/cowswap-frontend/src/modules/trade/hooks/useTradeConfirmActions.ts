@@ -7,6 +7,7 @@ import {
   setErrorTradeConfirmAtom,
   setOpenTradeConfirmAtom,
   setPendingTradeConfirmAtom,
+  setPermitSignatureRequestedTradeConfirmAtom,
   setTxHashTradeConfirmAtom,
 } from '../state/tradeConfirmStateAtom'
 
@@ -15,15 +16,17 @@ export interface TradeConfirmActions {
   onError(error: string): void
   onSuccess(transactionHash: string): void
   onOpen(): void
+  requestPermitSignature(pendingTrade: TradeAmounts): void
   onDismiss(): void
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
-  const setOpenTradeConfim = useSetAtom(setOpenTradeConfirmAtom)
+  const setOpenTradeConfirm = useSetAtom(setOpenTradeConfirmAtom)
   const setCloseTradeConfirm = useSetAtom(setCloseTradeConfirmAtom)
   const setErrorTradeConfirm = useSetAtom(setErrorTradeConfirmAtom)
   const setPendingTradeConfirm = useSetAtom(setPendingTradeConfirmAtom)
   const setTxHashTradeConfirm = useSetAtom(setTxHashTradeConfirmAtom)
+  const setPermitSignatureRequested = useSetAtom(setPermitSignatureRequestedTradeConfirmAtom)
 
   return {
     onSign(pendingTrade: TradeAmounts) {
@@ -36,7 +39,10 @@ export function useTradeConfirmActions(): TradeConfirmActions {
       setTxHashTradeConfirm(transactionHash)
     },
     onOpen() {
-      setOpenTradeConfim()
+      setOpenTradeConfirm()
+    },
+    requestPermitSignature(pendingTrade: TradeAmounts) {
+      setPermitSignatureRequested(pendingTrade)
     },
     onDismiss() {
       setCloseTradeConfirm()
