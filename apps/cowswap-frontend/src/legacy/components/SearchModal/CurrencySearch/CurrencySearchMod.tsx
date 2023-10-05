@@ -3,6 +3,7 @@ import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo,
 import { searchByAddressAnalytics } from '@cowprotocol/analytics'
 import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
+import { getTokenSearchFilter } from '@cowprotocol/tokens'
 import { Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -30,7 +31,6 @@ import { ButtonText, CloseIcon, ThemedText } from 'legacy/theme'
 import { UI } from 'common/constants/theme'
 import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 
 import { ContentWrapper } from './index'
@@ -102,7 +102,7 @@ export function CurrencySearch({
   }, [isAddressSearch])
 
   const filteredTokens: Token[] = useMemo(() => {
-    return Object.values(allTokens).filter(getTokenFilter(debouncedQuery))
+    return Object.values(allTokens).filter(getTokenSearchFilter(debouncedQuery))
   }, [allTokens, debouncedQuery])
 
   const [balances, balancesIsLoading] = useAllTokenBalances()

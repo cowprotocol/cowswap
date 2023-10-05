@@ -5,7 +5,7 @@ export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 // Hooks
 export { useAllTokenListsInfo } from './hooks/useAllTokenListsInfo'
 export { useAddCustomTokenLists } from './hooks/useAddCustomTokenLists'
-export { useAllTokens } from './hooks/useAllTokens'
+export { useActiveTokens } from './hooks/useActiveTokens'
 export { useFavouriteTokens } from './hooks/useFavouriteTokens'
 export { useUserAddedTokens } from './hooks/useUserAddedTokens'
 export { useImportTokenCallback } from './hooks/useImportTokenCallback'
@@ -18,7 +18,8 @@ export * from './hooks/useSearchList'
 export * from './hooks/useSearchToken'
 
 // Services
-export * from './services/searchToken'
+export * from './services/searchTokensInApi'
 
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
+export { getTokenSearchFilter } from './utils/getTokenSearchFilter'

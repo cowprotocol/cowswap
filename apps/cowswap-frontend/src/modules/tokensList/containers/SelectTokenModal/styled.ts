@@ -12,6 +12,10 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
+export const TokensWrapper = styled.div`
+  overflow: auto;
+`
+
 export const Row = styled.div`
   margin: 0 20px 15px 20px;
 `

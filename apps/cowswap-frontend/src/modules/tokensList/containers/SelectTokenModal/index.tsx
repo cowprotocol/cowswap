@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useNetworkName } from '@cowprotocol/common-hooks'
-import { TokenSearchSource, useSearchToken } from '@cowprotocol/tokens'
+import { useSearchToken } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
@@ -43,49 +43,21 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
-  const [tokensFromBlockChain, setTokensFromBlockChain] = useState<TokenWithLogo[]>([])
-  const [tokensFromInactiveLists, setTokensFromInactiveLists] = useState<TokenWithLogo[]>([])
-  const [tokensFromExternal, setTokensFromExternal] = useState<TokenWithLogo[]>([])
-
   const addTokenImportCallback = useAddTokenImportCallback()
 
-  const searchResponse = useSearchToken(inputValue)
+  const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
+    useSearchToken(inputValue)
 
   const isTokenNotFound = useMemo(() => {
-    if (!searchResponse) return false
+    if (!inputValue || isLoading) return false
 
-    const { loading, result, error } = searchResponse
-
-    if (loading) return false
-
-    if (!result && !error) return false
-
-    return tokensFromExternal.length === 0 && tokensFromBlockChain.length === 0 && tokensFromInactiveLists.length === 0
-  }, [searchResponse, tokensFromBlockChain, tokensFromInactiveLists, tokensFromExternal])
-
-  useEffect(() => {
-    if (searchResponse?.loading || searchResponse?.error || !searchResponse?.result) {
-      setTokensFromBlockChain([])
-      setTokensFromInactiveLists([])
-      setTokensFromExternal([])
-      return
-    }
-
-    const { source, tokens } = searchResponse.result
-
-    if (source === TokenSearchSource.Blockchain) {
-      setTokensFromBlockChain(tokens)
-      return
-    }
-    if (source === TokenSearchSource.InactiveList) {
-      setTokensFromInactiveLists(tokens)
-      return
-    }
-    if (source === TokenSearchSource.External) {
-      setTokensFromExternal(tokens)
-      return
-    }
-  }, [searchResponse])
+    return (
+      !activeListsResult?.length &&
+      !inactiveListsResult?.length &&
+      !blockchainResult?.length &&
+      !externalApiResult?.length
+    )
+  }, [inputValue, isLoading, activeListsResult, inactiveListsResult, blockchainResult, externalApiResult])
 
   return (
     <styledEl.Wrapper>
@@ -109,45 +81,55 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       {isTokenNotFound && (
         <styledEl.TokenNotFound>No tokens found for this name in {networkName}</styledEl.TokenNotFound>
       )}
-      {tokensFromBlockChain.length > 0 && (
-        <div>
-          {tokensFromBlockChain.map((token) => {
-            return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
-          })}
-        </div>
-      )}
-      {tokensFromInactiveLists.length > 0 && (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
-            Expanded results from inactive Token Lists
-          </TokenSourceTitle>
+      <styledEl.TokensWrapper>
+        {inputValue && activeListsResult && (
+          <AllTokensList
+            selectedToken={selectedToken}
+            tokens={activeListsResult}
+            balances={balances}
+            onSelectToken={onSelectToken}
+          />
+        )}
+        {blockchainResult?.length ? (
           <div>
-            {tokensFromInactiveLists.map((token) => {
-              return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
+            {blockchainResult.map((token) => {
+              return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
             })}
           </div>
-        </div>
-      )}
-      {tokensFromExternal.length > 0 && (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from external sources.">
-            Additional Results from External Sources
-          </TokenSourceTitle>
+        ) : null}
+        {inactiveListsResult?.length ? (
           <div>
-            {tokensFromExternal.map((token) => {
-              return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
-            })}
+            <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
+              Expanded results from inactive Token Lists
+            </TokenSourceTitle>
+            <div>
+              {inactiveListsResult.map((token) => {
+                return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
+              })}
+            </div>
           </div>
-        </div>
-      )}
-      {!inputValue && (
-        <AllTokensList
-          selectedToken={selectedToken}
-          tokens={allTokens}
-          balances={balances}
-          onSelectToken={onSelectToken}
-        />
-      )}
+        ) : null}
+        {externalApiResult?.length ? (
+          <div>
+            <TokenSourceTitle tooltip="Tokens from external sources.">
+              Additional Results from External Sources
+            </TokenSourceTitle>
+            <div>
+              {externalApiResult.map((token) => {
+                return <ImportTokenItem token={token} importToken={addTokenImportCallback} shadowed={true} />
+              })}
+            </div>
+          </div>
+        ) : null}
+        {!inputValue && (
+          <AllTokensList
+            selectedToken={selectedToken}
+            tokens={allTokens}
+            balances={balances}
+            onSelectToken={onSelectToken}
+          />
+        )}
+      </styledEl.TokensWrapper>
       <div>
         <styledEl.ActionButton onClick={onOpenManageWidget}>
           <Edit /> <span>Manage Token Lists</span>

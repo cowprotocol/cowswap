@@ -3,12 +3,11 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { searchTokensInApi } from '@cowprotocol/tokens'
 
 import * as Sentry from '@sentry/react'
 import useSWR from 'swr'
 import { Nullish } from 'types'
-
-import { getTokens } from './api'
 
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 
@@ -78,7 +77,7 @@ const tokenLogoCache = atom<TokenLogoCache, [Pick<FetchTokensResult, 'chainId' |
 export function useProxyTokens(query: string): FetchTokensResult[] {
   const updateTokenLogoCache = useSetAtom(tokenLogoCache)
   const { data: apiResult } = useSWR<FetchTokensApiResult | null>(['uniswapTokens', query], () =>
-    isValidQuery(query) ? getTokens(query) : null
+    isValidQuery(query) ? searchTokensInApi(query) : null
   )
 
   try {

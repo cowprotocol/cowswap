@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, isTruthy } from '@cowprotocol/common-utils'
 import { TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
@@ -13,7 +13,7 @@ import { TokenLogo } from '../../pure/TokenLogo'
 
 export interface ManageTokensProps {
   tokens: TokenWithLogo[]
-  tokenSearchResponse: TokenSearchResponse | undefined
+  tokenSearchResponse: TokenSearchResponse
 }
 
 export function ManageTokens(props: ManageTokensProps) {
@@ -23,11 +23,19 @@ export function ManageTokens(props: ManageTokensProps) {
   const removeTokenCallback = useRemoveTokenCallback()
   const resetUserTokensCallback = useResetUserTokensCallback()
 
+  const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult } = tokenSearchResponse
+
+  const tokensToImport = [blockchainResult, inactiveListsResult, externalApiResult].filter(isTruthy).flat()
+
   return (
     <styledEl.Wrapper>
-      {tokenSearchResponse?.result?.tokens?.map((token) => {
-        return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
+      {activeListsResult?.map((token) => {
+        return <ImportTokenItem token={token} existing={true} />
       })}
+      {!activeListsResult?.length &&
+        tokensToImport?.map((token) => {
+          return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
+        })}
       <styledEl.Header>
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
         {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}

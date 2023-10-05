@@ -4,6 +4,8 @@ import { atom } from 'jotai'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
 import { TokensMap } from '../types'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { tokenMapToList } from '../utils/tokenMapToList'
+import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 export type TokensState = { activeTokens: TokensMap; inactiveTokens: TokensMap }
 
@@ -21,14 +23,17 @@ const tokensAtomsByChainId: Record<SupportedChainId, typeof tokensMainnetAtom> =
 
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
+  const userAddedTokens = get(userAddedTokensAtom)
   const tokensMap = get(tokensAtomsByChainId[chainId])
 
-  return Object.values(tokensMap.activeTokens)
-    .sort((a, b) => (a.symbol > b.symbol ? 1 : -1))
-    .map(
-      (token) =>
-        new TokenWithLogo(token.logoURI, token.chainId, token.address, token.decimals, token.symbol, token.name)
-    )
+  return tokenMapToList({ ...tokensMap.activeTokens, ...userAddedTokens[chainId] })
+})
+
+export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+  const tokensMap = get(tokensAtomsByChainId[chainId])
+
+  return tokenMapToList(tokensMap.inactiveTokens)
 })
 
 export const setTokensAtom = atom(null, (get, set, state: TokensState) => {

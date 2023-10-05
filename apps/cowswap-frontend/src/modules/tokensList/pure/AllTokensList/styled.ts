@@ -3,7 +3,6 @@ import styled from 'styled-components/macro'
 import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div`
-  overflow: auto;
   border-top: 1px solid var(${UI.COLOR_BORDER});
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `

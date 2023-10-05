@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
+import { getTokenSearchFilter } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
@@ -9,8 +10,6 @@ import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
 import { deserializeToken, useFavouriteTokens, useUserAddedTokens } from 'legacy/state/user/hooks'
 
 import { TokensByAddress, tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from '../../lib/hooks/useCurrency'
 import { TokenAmounts, useOnchainBalances } from '../../modules/tokens'
@@ -31,7 +30,7 @@ export function useSearchInactiveTokenLists(
 
   return useMemo(() => {
     if (!search || search.trim().length === 0) return []
-    const tokenFilter = getTokenFilter(search)
+    const tokenFilter = getTokenSearchFilter(search)
     const result: Token[] = []
     const addressSet: { [address: string]: true } = {}
 
