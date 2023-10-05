@@ -1,0 +1,102 @@
+import { useMemo } from 'react'
+
+import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import ICON_ARROW from 'assets/icon/arrow.svg'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+import { Nullish } from 'types'
+
+import { UI } from '../../constants/theme'
+import { IconSpinner } from '../IconSpinner'
+import { NewModal, NewModalContentBottom, NewModalContentTop, NewModalProps } from '../NewModal'
+import { Stepper, StepProps } from '../Stepper'
+
+export type PermitModalProps = NewModalProps & {
+  inputAmount: Nullish<CurrencyAmount<Currency>>
+  outputAmount: Nullish<CurrencyAmount<Currency>>
+  step: 'approve' | 'submit'
+  icon?: React.ReactNode
+}
+
+/**
+ * You probably want to use containers/PermitModal instead
+ * This is the pure component for cosmos
+ */
+export function PermitModal(props: PermitModalProps) {
+  const { inputAmount, outputAmount, step, icon: inputIcon } = props
+
+  const steps: StepProps[] = useMemo(
+    () => [
+      {
+        stepState: step === 'approve' ? 'loading' : 'finished',
+        stepNumber: 1,
+        label: 'Approve' + (step === 'approve' ? '' : 'd'),
+      },
+      { stepState: step === 'submit' ? 'loading' : 'active', stepNumber: 2, label: 'Submit' },
+    ],
+    [step]
+  )
+  const icon = useMemo(
+    () =>
+      step === 'approve' ? (
+        <IconSpinner currency={inputAmount?.currency} size={84} />
+      ) : (
+        <IconSpinner size={84}>{inputIcon}</IconSpinner>
+      ),
+    [inputAmount?.currency, inputIcon, step]
+  )
+
+  const title = useMemo(
+    () =>
+      step === 'approve' ? (
+        <>
+          Approve spending <TokenSymbol token={inputAmount?.currency} /> <br />
+          on CoW Swap
+        </>
+      ) : (
+        'Confirm Swap'
+      ),
+    [inputAmount?.currency, step]
+  )
+
+  const body = useMemo(
+    () =>
+      step === 'approve' ? null : (
+        <p>
+          <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} /> <ArrowRight src={ICON_ARROW} />{' '}
+          <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
+        </p>
+      ),
+    [inputAmount, outputAmount, step]
+  )
+
+  return (
+    <NewModal>
+      <NewModalContentTop paddingTop={90}>
+        {icon}
+        <span>
+          <h3>{title}</h3>
+          {body}
+        </span>
+      </NewModalContentTop>
+
+      <NewModalContentBottom>
+        <p>Sign (gas-free!) in your wallet...</p>
+        <Stepper maxWidth={'75%'} steps={steps} />
+      </NewModalContentBottom>
+    </NewModal>
+  )
+}
+
+const ArrowRight = styled(SVG)`
+  --size: 12px;
+  width: var(--size);
+  height: var(--size);
+  margin: auto;
+
+  > path {
+    fill: var(${UI.COLOR_TEXT2});
+  }
+`

@@ -16,7 +16,6 @@ const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const tradeContext: TradeFlowContext = {
-  hasEnoughAllowance: undefined,
   permitInfo: undefined,
   postOrderParams: {
     class: OrderClass.LIMIT,

@@ -37,7 +37,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const permitInfo = useIsTokenPermittable(state.inputCurrency, TradeType.LIMIT_ORDER)
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
-  const { enoughAllowance: hasEnoughAllowance } = useEnoughBalanceAndAllowance({
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: state.slippageAdjustedSellAmount || undefined,
     checkAllowanceAddress,
@@ -75,8 +75,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     dispatch,
     provider,
     rateImpact,
-    permitInfo,
-    hasEnoughAllowance,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

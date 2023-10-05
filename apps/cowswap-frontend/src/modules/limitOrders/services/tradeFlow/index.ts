@@ -29,7 +29,6 @@ export async function tradeFlow(
     permitInfo,
     provider,
     chainId,
-    hasEnoughAllowance,
     allowsOffchainSigning,
     settlementContract,
     dispatch,
@@ -58,7 +57,6 @@ export async function tradeFlow(
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
     postOrderParams.appData = await handlePermit({
       permitInfo,
-      hasEnoughAllowance,
       inputToken: sellToken,
       provider,
       account,

@@ -27,9 +27,10 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
+    if (input.permitInfo) input.swapConfirmManager.requestPermitSignature()
+
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
-      hasEnoughAllowance: input.hasEnoughAllowance,
 
       inputToken: input.context.trade.inputAmount.currency as Token,
       provider: input.orderParams.signer.provider as Web3Provider,
@@ -37,6 +38,7 @@ export async function swapFlow(
       chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
     })
+    input.swapConfirmManager.permitSigned()
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)

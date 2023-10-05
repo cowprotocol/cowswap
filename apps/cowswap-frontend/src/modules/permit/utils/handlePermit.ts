@@ -1,5 +1,8 @@
 import { AppDataInfo, buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
-import { generatePermitHook, HandlePermitParams } from 'modules/permit'
+
+import { generatePermitHook } from './generatePermitHook'
+
+import { HandlePermitParams } from '../types'
 
 /**
  * Handle token permit
@@ -12,12 +15,11 @@ import { generatePermitHook, HandlePermitParams } from 'modules/permit'
  * Returns the updated appData
  */
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
-  const { permitInfo, hasEnoughAllowance, inputToken, provider, account, chainId, appData } = params
+  const { permitInfo, inputToken, provider, account, chainId, appData } = params
 
-  if (permitInfo && !hasEnoughAllowance) {
-    // If token is permittable and there's not enough allowance, get the permit hook
+  if (permitInfo) {
+    // permitInfo will only be set if there's enough allowance
 
-    // TODO: maybe we need a modal to inform the user what they need to sign?
     const permitData = await generatePermitHook({
       inputToken,
       provider,

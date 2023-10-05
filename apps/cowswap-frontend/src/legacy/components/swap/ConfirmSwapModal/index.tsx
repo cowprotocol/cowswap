@@ -13,6 +13,7 @@ import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+import { TradeAmounts } from 'common/types'
 
 import { useButtonText } from './hooks'
 
@@ -102,7 +103,13 @@ export function ConfirmSwapModal({
           bottomContent={modalBottom}
         />
       ),
-    [onDismiss, modalBottom, modalHeader, swapErrorMessage]
+    [swapErrorMessage, onDismiss, modalHeader, modalBottom]
+  )
+
+  const tradeAmounts: TradeAmounts | undefined = useMemo(
+    () =>
+      trade ? { inputAmount: trade.inputAmountWithoutFee, outputAmount: trade.outputAmountWithoutFee } : undefined,
+    [trade]
   )
 
   return (
@@ -115,6 +122,8 @@ export function ConfirmSwapModal({
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
       operationType={ConfirmOperationType.ORDER_SIGN}
+      tradeAmounts={tradeAmounts}
+      swapConfirmState={swapConfirmState}
     />
   )
 }

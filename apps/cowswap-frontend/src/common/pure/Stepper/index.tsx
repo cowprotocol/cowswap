@@ -7,7 +7,7 @@ import { IconSpinner } from 'common/pure/IconSpinner'
 
 type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'
 
-interface StepProps {
+export interface StepProps {
   stepState: StepState
   stepNumber: number
   label: string
@@ -24,7 +24,11 @@ interface StepStyles {
 const stateStyles: Record<StepState, StepStyles> = {
   active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_TEXT1 },
   finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
-  disabled: { dotBackground: UI.COLOR_TEXT1_OPACITY_25, dotColor: UI.COLOR_TEXT1_OPACITY_25, labelColor: UI.COLOR_TEXT1_OPACITY_25 },
+  disabled: {
+    dotBackground: UI.COLOR_TEXT1_OPACITY_25,
+    dotColor: UI.COLOR_TEXT1_OPACITY_25,
+    labelColor: UI.COLOR_TEXT1_OPACITY_25,
+  },
   error: { dotBackground: UI.COLOR_DANGER_BG, dotColor: UI.COLOR_DANGER, labelColor: UI.COLOR_DANGER },
   loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_LINK },
   open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
@@ -81,7 +85,12 @@ const Step = styled.div<StepProps>`
     width: 100%;
     height: 1px;
     border: 0;
-    background: ${({ stepState }) => stepState === 'error' ? `var(${stateStyles['error'].dotBackground})` : stepState === 'finished' ? `var(${stateStyles['finished'].dotBackground})` : `var(${UI.COLOR_TEXT1_OPACITY_25})`};
+    background: ${({ stepState }) =>
+      stepState === 'error'
+        ? `var(${stateStyles['error'].dotBackground})`
+        : stepState === 'finished'
+        ? `var(${stateStyles['finished'].dotBackground})`
+        : `var(${UI.COLOR_TEXT1_OPACITY_25})`};
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   }
 
@@ -96,7 +105,7 @@ const Step = styled.div<StepProps>`
 
 const Wrapper = styled.div<{ maxWidth?: string; dotSize?: number }>`
   --dotSize: ${({ dotSize }) => `${dotSize}px`};
-  width: ${({ maxWidth }) => maxWidth ? maxWidth : '100%'};
+  width: ${({ maxWidth }) => (maxWidth ? maxWidth : '100%')};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -121,14 +130,9 @@ export function Stepper({ steps, maxWidth, dotSize = 21 }: StepperProps) {
             <IconSpinner spinnerWidth={1} size={dotSize} bgColor={stateStyles['loading'].dotBackground}>
               <i>{step.stepNumber}</i>
             </IconSpinner>
-          ) : <i>
-            {step.stepState === 'finished' ? (
-              <SVG src={ICON_CHECK} title='checkmark' />
-            ) : (
-              step.stepNumber
-            )}
-          </i>
-          }
+          ) : (
+            <i>{step.stepState === 'finished' ? <SVG src={ICON_CHECK} title="checkmark" /> : step.stepNumber}</i>
+          )}
           <small>{step.label}</small>
           <hr />
         </Step>
