@@ -1,4 +1,7 @@
 import { atom, useAtom } from 'jotai'
+import { useMemo } from 'react'
+
+import { uriToHttp } from '@cowprotocol/common-utils'
 
 import { Slash } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -22,17 +25,18 @@ export interface TokenLogoProps {
 export function TokenLogo({ logoURI, className, size = 36 }: TokenLogoProps) {
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
 
-  const hasError = invalidUrls[logoURI!]
+  const urls = useMemo(
+    () => (logoURI ? uriToHttp(logoURI).filter((url) => !invalidUrls[url]) : []),
+    [logoURI, invalidUrls]
+  )
 
-  const onError = () => setInvalidUrls({ ...invalidUrls, [logoURI!]: true })
+  const currentUrl = urls[0]
+
+  const onError = () => setInvalidUrls({ ...invalidUrls, [currentUrl]: true })
 
   return (
     <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
-      {hasError || !logoURI ? (
-        <Slash size={size} />
-      ) : (
-        <img src={logoURI} onError={onError} width={size} height={size} />
-      )}
+      {!currentUrl ? <Slash size={size} /> : <img src={currentUrl} onError={onError} width={size} height={size} />}
     </TokenLogoWrapper>
   )
 }
