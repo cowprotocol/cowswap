@@ -2,6 +2,9 @@ import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
 import { activeTokensAtom, inactiveTokensAtom } from '../state/tokensAtom'
 import { useDebounce } from '@cowprotocol/common-hooks'
+import { useWeb3React } from '@web3-react/core'
+import { TokenInfo } from '@uniswap/token-lists'
+import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import ms from 'ms.macro'
 import { getTokenSearchFilter } from '../utils/getTokenSearchFilter'
 import useSWR from 'swr'
@@ -9,6 +12,7 @@ import { searchTokensInApi, TokenSearchFromApiResult } from '../services/searchT
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tokensListsEnvironmentAtom } from '../state/tokensListsEnvironmentAtom'
 import { parseTokensFromApi } from '../utils/parseTokensFromApi'
+import { fetchTokenFromBlockchain } from '../utils/fetchTokenFromBlockchain'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1000ms`
@@ -32,8 +36,11 @@ const emptyResponse: TokenSearchResponse = {
 // TODO: implement search with debouncing and caching
 // TODO: add search from blockchain
 export function useSearchToken(input: string | null): TokenSearchResponse {
+  const { provider } = useWeb3React()
+
   const debouncedInputInList = useDebounce(input, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(input, IN_EXTERNALS_DEBOUNCE_TIME)
+
   const { chainId } = useAtomValue(tokensListsEnvironmentAtom)
   const activeTokens = useAtomValue(activeTokensAtom)
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
@@ -50,12 +57,21 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     return { tokensFromActiveLists, tokensFromInactiveLists }
   })
 
-  const { data: apiResult, isLoading } = useSWR<TokenSearchFromApiResult[] | null>(
+  const { data: apiResult, isLoading: apiIsLoading } = useSWR<TokenSearchFromApiResult[] | null>(
     ['searchTokensInApi', debouncedInputInExternals],
     () => {
       if (!debouncedInputInExternals) return null
 
       return searchTokensInApi(debouncedInputInExternals)
+    }
+  )
+
+  const { data: blockchainResult, isLoading: blockchainIsLoading } = useSWR<TokenInfo | null>(
+    ['fetchTokenFromBlockchain', debouncedInputInExternals],
+    () => {
+      if (!debouncedInputInExternals || !provider || !isAddress(debouncedInputInExternals)) return null
+
+      return fetchTokenFromBlockchain(debouncedInputInExternals, chainId, provider)
     }
   )
 
@@ -65,17 +81,41 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     return parseTokensFromApi(apiResult, chainId)
   }, [apiResult, chainId])
 
+  const tokenFromBlockChain = useMemo(() => {
+    if (!blockchainResult) return null
+
+    const isTokenAlreadyFound = [
+      inListsResult?.tokensFromActiveLists,
+      inListsResult?.tokensFromInactiveLists,
+      apiResultTokens,
+    ]
+      .filter(isTruthy)
+      .flat()
+      .find((token) => token.address.toLowerCase() === blockchainResult.address.toLowerCase())
+
+    if (isTokenAlreadyFound) return null
+
+    return new TokenWithLogo(
+      undefined,
+      blockchainResult.chainId,
+      blockchainResult.address,
+      blockchainResult.decimals,
+      blockchainResult.symbol,
+      blockchainResult.name
+    )
+  }, [blockchainResult, inListsResult, apiResultTokens])
+
   return useMemo(() => {
     if (!input) {
       return emptyResponse
     }
 
     return {
-      isLoading,
-      blockchainResult: null,
+      isLoading: apiIsLoading || blockchainIsLoading,
+      blockchainResult: tokenFromBlockChain ? [tokenFromBlockChain] : null,
       activeListsResult: inListsResult?.tokensFromActiveLists || null,
       inactiveListsResult: inListsResult?.tokensFromInactiveLists || null,
       externalApiResult: apiResultTokens,
     }
-  }, [input, inListsResult, apiResultTokens, isLoading])
+  }, [input, inListsResult, apiResultTokens, tokenFromBlockChain, apiIsLoading, blockchainIsLoading])
 }
