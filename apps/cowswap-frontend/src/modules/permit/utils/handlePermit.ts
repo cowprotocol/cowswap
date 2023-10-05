@@ -25,10 +25,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
     })
 
     if (!permitData) {
-      // Not able to generate permit data, remove it from the order
-      // TODO: maybe should throw instead?
-      console.warn(`[handlePermit] Unable to generate permit data`)
-      return updateHooksOnAppData(appData, undefined)
+      throw new Error(`Unable to generate permit data`)
     }
 
     const hooks = buildAppDataHooks([permitData])
