@@ -23,7 +23,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
     }
   }
 
-  const request = generatePermitHookRaw({ ...params, preFetchedNonce: params.nonce }).then((permitHookData) => {
+  const request = generatePermitHookRaw(params).then((permitHookData) => {
     // Remove consumed request to avoid stale data
     delete REQUESTS_CACHE[permitKey]
 
@@ -35,10 +35,8 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
-async function generatePermitHookRaw(
-  params: PermitHookParams & { preFetchedNonce: number | undefined }
-): Promise<PermitHookData> {
-  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, preFetchedNonce } = params
+async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
+  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
 
