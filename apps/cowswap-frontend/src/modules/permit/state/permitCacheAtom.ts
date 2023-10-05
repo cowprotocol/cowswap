@@ -72,13 +72,7 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
         // When both nonces exist and storedNonce < inputNonce, data is outdated
 
         // Remove cache key
-        set(atomToUpdate, (permitCache) => {
-          const newPermitCache = { ...permitCache }
-
-          delete newPermitCache[key]
-
-          return newPermitCache
-        })
+        set(atomToUpdate, removePermitCacheBuilder(key))
 
         return undefined
       }
@@ -89,13 +83,7 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   } catch (e) {
     // Failed to parse stored data, clear cache and return nothing
 
-    set(atomToUpdate, (permitCache) => {
-      const newPermitCache = { ...permitCache }
-
-      delete newPermitCache[key]
-
-      return newPermitCache
-    })
+    set(atomToUpdate, removePermitCacheBuilder(key))
 
     console.info(`[getPermitCacheAtom] failed to parse stored data`, cachedData, e)
 
@@ -107,4 +95,12 @@ function buildKey({ chainId, tokenAddress, account }: PermitCacheKeyParams) {
   const base = `${chainId}-${tokenAddress.toLowerCase()}`
 
   return account ? `${base}-${account.toLowerCase()}` : base
+}
+
+const removePermitCacheBuilder = (key: string) => (permitCache: PermitCache) => {
+  const newPermitCache = { ...permitCache }
+
+  delete newPermitCache[key]
+
+  return newPermitCache
 }
