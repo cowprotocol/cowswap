@@ -19,6 +19,14 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
 
 export const SettingsButton = styled(MenuButton)`
   ${blankButtonMixin}
+
+  > svg {
+    color: var(${UI.COLOR_TEXT1});
+
+    &:hover {
+      color: var(${UI.COLOR_TEXT2});
+    }
+  }
 `
 
 export const SettingsContainer = styled(MenuList)`

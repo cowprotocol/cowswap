@@ -5,12 +5,14 @@ export type TokenListSource = { ensName: string } | { url: string }
 
 export interface TokenListWithUrl {
   id: string // nanoid
+  priority?: number
   enabledByDefault?: boolean
   url: string
 }
 
 export interface TokenListWithEnsName {
   id: string // nanoid
+  priority?: number
   enabledByDefault?: boolean
   ensName: string
 }
@@ -25,6 +27,7 @@ export interface TokenListInfo {
   name: string
   timestamp: string
   version: string
+  priority?: number
   logoUrl?: string
   tokensCount: number
 }

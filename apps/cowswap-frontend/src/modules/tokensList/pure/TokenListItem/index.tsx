@@ -9,7 +9,6 @@ import { Toggle } from 'legacy/components/Toggle'
 
 import * as styledEl from './styled'
 
-import { IconButton } from '../commonElements'
 import { TokenListDetails } from '../TokenListDetails'
 
 export interface TokenListItemProps {
@@ -34,9 +33,7 @@ export function TokenListItem(props: TokenListItemProps) {
       <TokenListDetails list={list}>
         <Menu>
           <styledEl.SettingsButton>
-            <IconButton>
-              <Settings size={12} />
-            </IconButton>
+            <Settings size={12} />
           </styledEl.SettingsButton>
           <styledEl.SettingsContainer>
             <MenuItem onSelect={() => void 0}>

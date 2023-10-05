@@ -24,6 +24,10 @@ export const Title = styled.div`
   opacity: 0.65;
 `
 
+export const TokensWrapper = styled.div`
+  height: calc(100vh - 445px);
+`
+
 export const LinkButton = styled.button`
   ${blankButtonMixin};
 

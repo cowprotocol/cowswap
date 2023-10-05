@@ -9,6 +9,7 @@ import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
 
 export interface TokenListResult {
   id: string
+  priority?: number
   source: TokenListSource
   list: UniTokenList
 }
@@ -24,6 +25,7 @@ async function fetchTokenListByUrl(list: TokenListWithUrl): Promise<TokenListRes
   return _fetchTokenList(list.id, [list.url]).then((result) => {
     return {
       ...result,
+      priority: list.priority,
       source: {
         url: list.url,
       },
@@ -39,6 +41,7 @@ async function fetchTokenListByEnsName(list: TokenListWithEnsName): Promise<Toke
   return _fetchTokenList(list.id, urls).then((result) => {
     return {
       ...result,
+      priority: list.priority,
       source: {
         ensName: list.ensName,
       },

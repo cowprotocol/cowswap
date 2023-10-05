@@ -40,7 +40,7 @@ export function ManageTokens(props: ManageTokensProps) {
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
         {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}
       </styledEl.Header>
-      <div>
+      <styledEl.TokensWrapper>
         {tokens.map((token) => {
           return (
             <styledEl.TokenItem key={token.address}>
@@ -65,7 +65,7 @@ export function ManageTokens(props: ManageTokensProps) {
             </styledEl.TokenItem>
           )
         })}
-      </div>
+      </styledEl.TokensWrapper>
       <styledEl.TipText>Tip: Custom tokens are stored locally in your browser</styledEl.TipText>
     </styledEl.Wrapper>
   )

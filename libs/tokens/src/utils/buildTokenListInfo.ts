@@ -12,5 +12,6 @@ export function buildTokenListInfo(val: TokenListResult): TokenListInfo {
     version: `v${major}.${minor}.${patch}`,
     logoUrl: val.list.logoURI,
     tokensCount: val.list.tokens.length,
+    priority: val.priority,
   }
 }

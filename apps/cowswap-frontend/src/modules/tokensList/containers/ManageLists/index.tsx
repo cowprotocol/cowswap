@@ -27,29 +27,7 @@ export function ManageLists(props: ManageListsProps) {
   const removeCustomTokenLists = useRemoveCustomTokenLists()
   const toggleList = useToggleListCallback()
 
-  const { source, listToImport } = useMemo(() => {
-    const source = listSearchResponse.source
-
-    if (listSearchResponse.source === 'existing') {
-      return {
-        source,
-        loading: false,
-        listToImport: listSearchResponse.response,
-      }
-    } else {
-      if (!listSearchResponse.response) {
-        return { source, loading: false, list: null }
-      }
-
-      const { isLoading, data } = listSearchResponse.response
-
-      return {
-        source,
-        loading: isLoading,
-        listToImport: data || null,
-      }
-    }
-  }, [listSearchResponse])
+  const { source, listToImport } = useListSearchResponse(listSearchResponse)
 
   // TODO: add loading state
   return (
@@ -64,16 +42,48 @@ export function ManageLists(props: ManageListsProps) {
         </styledEl.ImportListsContainer>
       )}
       <styledEl.ListsContainer>
-        {lists.map((list) => (
-          <TokenListItem
-            key={list.id}
-            list={list}
-            enabled={activeTokenListsIds[list.id]}
-            removeList={removeCustomTokenLists}
-            toggleList={toggleList}
-          />
-        ))}
+        {lists
+          .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+          .map((list) => (
+            <TokenListItem
+              key={list.id}
+              list={list}
+              enabled={activeTokenListsIds[list.id]}
+              removeList={removeCustomTokenLists}
+              toggleList={toggleList}
+            />
+          ))}
       </styledEl.ListsContainer>
     </styledEl.Wrapper>
   )
+}
+
+function useListSearchResponse(listSearchResponse: ListSearchResponse): {
+  source: 'existing' | 'external'
+  loading: boolean
+  listToImport: TokenListInfo | null
+} {
+  return useMemo(() => {
+    const source = listSearchResponse.source
+
+    if (listSearchResponse.source === 'existing') {
+      return {
+        source,
+        loading: false,
+        listToImport: listSearchResponse.response,
+      }
+    } else {
+      if (!listSearchResponse.response) {
+        return { source, loading: false, listToImport: null }
+      }
+
+      const { isLoading, data } = listSearchResponse.response
+
+      return {
+        source,
+        loading: isLoading,
+        listToImport: data || null,
+      }
+    }
+  }, [listSearchResponse])
 }

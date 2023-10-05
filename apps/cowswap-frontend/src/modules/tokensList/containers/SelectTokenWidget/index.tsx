@@ -13,6 +13,8 @@ import {
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 
+import styled from 'styled-components/macro'
+
 import { CowModal } from 'common/pure/Modal'
 
 import { ImportListModal } from '../../pure/ImportListModal'
@@ -20,6 +22,14 @@ import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { selectTokenWidgetAtom, updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 import { SelectTokenModal } from '../SelectTokenModal'
+
+const Wrapper = styled.div`
+  width: 100%;
+
+  > div {
+    height: 100%;
+  }
+`
 
 // TODO: remove mock
 const balancesMock = {}
@@ -68,53 +78,57 @@ export function SelectTokenWidget() {
     updateSelectTokenWidget({ listToImport: undefined })
   }
 
-  if (tokenToImport) {
-    return (
-      <CowModal isOpen={true} onDismiss={onDismiss}>
-        <ImportTokenModal
-          token={tokenToImport}
-          onDismiss={onDismiss}
-          onBack={resetTokenImport}
-          onImport={importTokenAndClose}
-        />
-      </CowModal>
-    )
-  }
-
-  if (listToImport) {
-    return (
-      <CowModal isOpen={true} onDismiss={onDismiss}>
-        <ImportListModal
-          list={listToImport}
-          onDismiss={onDismiss}
-          onBack={resetTokenImport}
-          onImport={importListAndBack}
-        />
-      </CowModal>
-    )
-  }
-
   if (!onSelectToken) return null
 
   return (
     <CowModal isOpen={open} onDismiss={onDismiss}>
-      {isManageWidgetOpen ? (
-        <ManageListsAndTokens
-          lists={allTokenLists}
-          customTokens={userAddedTokens}
-          onDismiss={onDismiss}
-          onBack={() => setIsManageWidgetOpen(false)}
-        />
-      ) : (
-        <SelectTokenModal
-          allTokens={allTokens}
-          favouriteTokens={favouriteTokens}
-          balances={balancesMock}
-          onSelectToken={onSelectToken}
-          onDismiss={onDismiss}
-          onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-        ></SelectTokenModal>
-      )}
+      <Wrapper>
+        {(() => {
+          if (tokenToImport) {
+            return (
+              <ImportTokenModal
+                token={tokenToImport}
+                onDismiss={onDismiss}
+                onBack={resetTokenImport}
+                onImport={importTokenAndClose}
+              />
+            )
+          }
+
+          if (listToImport) {
+            return (
+              <ImportListModal
+                list={listToImport}
+                onDismiss={onDismiss}
+                onBack={resetTokenImport}
+                onImport={importListAndBack}
+              />
+            )
+          }
+
+          if (isManageWidgetOpen) {
+            return (
+              <ManageListsAndTokens
+                lists={allTokenLists}
+                customTokens={userAddedTokens}
+                onDismiss={onDismiss}
+                onBack={() => setIsManageWidgetOpen(false)}
+              />
+            )
+          }
+
+          return (
+            <SelectTokenModal
+              allTokens={allTokens}
+              favouriteTokens={favouriteTokens}
+              balances={balancesMock}
+              onSelectToken={onSelectToken}
+              onDismiss={onDismiss}
+              onOpenManageWidget={() => setIsManageWidgetOpen(true)}
+            ></SelectTokenModal>
+          )
+        })()}
+      </Wrapper>
     </CowModal>
   )
 }
