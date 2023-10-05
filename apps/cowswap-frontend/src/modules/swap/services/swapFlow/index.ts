@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers'
 import { Percent, Token } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -31,12 +30,10 @@ export async function swapFlow(
 
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
-
       inputToken: input.context.trade.inputAmount.currency as Token,
-      provider: input.orderParams.signer.provider as Web3Provider,
       account: input.orderParams.account,
-      chainId: input.orderParams.chainId,
       permitInfo: input.permitInfo,
+      generatePermitHook: input.generatePermitHook,
     })
     input.swapConfirmManager.permitSigned()
 

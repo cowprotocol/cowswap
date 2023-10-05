@@ -31,12 +31,19 @@ export type PermitHookParams = {
   chainId: SupportedChainId
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
-  account?: string
+  eip2162Utils: Eip2612PermitUtils
+  account?: string | undefined
+  nonce?: number | undefined
 }
 
-export type HandlePermitParams = Omit<PermitHookParams, 'permitInfo'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'>
+
+export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+
+export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo'> & {
   permitInfo: IsTokenPermittableResult
   appData: AppDataInfo
+  generatePermitHook: GeneratePermitHook
 }
 
 export type PermitHookData = latest.CoWHook
@@ -67,3 +74,21 @@ export type CheckIsTokenPermittableParams = {
   chainId: SupportedChainId
   provider: Web3Provider
 }
+
+export type PermitCache = Record<string, string>
+
+export type CachedPermitData = {
+  hookData: PermitHookData
+  nonce: number | undefined
+}
+
+export type PermitCacheKeyParams = {
+  chainId: SupportedChainId
+  tokenAddress: string
+  account: string | undefined
+  nonce: number | undefined
+}
+
+export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
+
+export type GetPermitCacheParams = PermitCacheKeyParams

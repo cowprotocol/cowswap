@@ -10,7 +10,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
-import { IsTokenPermittableResult } from 'modules/permit'
+import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
@@ -45,6 +45,7 @@ export interface BaseFlowContext {
 export type SwapFlowContext = BaseFlowContext & {
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
+  generatePermitHook: GeneratePermitHook
 }
 
 export type EthFlowContext = BaseFlowContext & {
