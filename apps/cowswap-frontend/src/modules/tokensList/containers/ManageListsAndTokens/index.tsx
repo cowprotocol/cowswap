@@ -24,7 +24,6 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
-  // TODO: process input value
   const [inputValue, setInputValue] = useState<string>('')
 
   const isListsTab = currentTab === 'lists'

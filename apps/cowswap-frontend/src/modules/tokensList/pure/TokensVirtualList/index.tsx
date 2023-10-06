@@ -1,11 +1,12 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useVirtual } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
+
+import { TokenAmounts } from 'modules/tokens'
 
 import { CommonListContainer } from '../commonElements'
 import { TokenListItem } from '../TokenListItem'
@@ -24,9 +25,10 @@ const scrollDelay = ms`400ms`
 export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
   selectedToken?: TokenWithLogo
-  balances: { [key: string]: CurrencyAmount<Currency> }
+  balances: TokenAmounts
   onSelectToken(token: TokenWithLogo): void
 }
+
 export function TokensVirtualList(props: TokensVirtualListProps) {
   const { allTokens, selectedToken, balances, onSelectToken } = props
 
@@ -52,15 +54,21 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     overscan: 5,
   })
 
+  const sortedTokens = useMemo(() => {
+    return allTokens.sort(tokensListSorter(balances))
+  }, [allTokens, balances])
+
+  const { virtualItems } = virtualizer
+
   return (
     <TokensWrapper ref={parentRef} onScroll={onScroll}>
       <TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
-        {virtualizer.virtualItems.map((virtualRow) => {
+        {virtualItems.map((virtualRow) => {
           return (
             <TokenListItem
               key={virtualRow.key}
               virtualRow={virtualRow}
-              token={allTokens[virtualRow.index]}
+              token={sortedTokens[virtualRow.index]}
               selectedToken={selectedToken}
               balances={balances}
               onSelectToken={onSelectToken}
@@ -70,4 +78,17 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
       </TokensInner>
     </TokensWrapper>
   )
+}
+
+function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: TokenWithLogo) => number {
+  return (a: TokenWithLogo, b: TokenWithLogo) => {
+    const aBalance = balances[a.address]
+    const bBalance = balances[b.address]
+
+    if (aBalance.value && bBalance.value) {
+      return +bBalance.value.toExact() - +aBalance.value.toExact()
+    }
+
+    return 0
+  }
 }

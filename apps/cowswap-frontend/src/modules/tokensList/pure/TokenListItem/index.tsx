@@ -1,6 +1,7 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { TokenAmounts } from 'modules/tokens'
 
 import * as styledEl from './styled'
 
@@ -11,7 +12,7 @@ import type { VirtualItem } from '@tanstack/react-virtual'
 export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: TokenWithLogo
-  balances: { [key: string]: CurrencyAmount<Currency> }
+  balances: TokenAmounts
   onSelectToken(token: TokenWithLogo): void
   virtualRow?: VirtualItem
 }
@@ -35,7 +36,7 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo token={token} />
       <span>
-        <TokenAmount amount={balances[token.address.toLowerCase()]} />
+        <TokenAmount amount={balances[token.address]?.value} />
       </span>
     </styledEl.TokenItem>
   )

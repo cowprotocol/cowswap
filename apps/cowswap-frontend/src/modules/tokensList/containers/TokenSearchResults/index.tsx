@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { useSearchToken } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
+
+import { TokenAmounts } from 'modules/tokens'
 
 import { UI } from 'common/constants/theme'
 
@@ -24,12 +25,15 @@ const TokenNotFound = styled.div`
   text-align: center;
 `
 
+const searchResultsLimit = 10
+
 export interface TokenSearchResultsProps {
   searchInput: string
-  balances: { [key: string]: CurrencyAmount<Currency> }
+  balances: TokenAmounts
   selectedToken?: TokenWithLogo
   onSelectToken(token: TokenWithLogo): void
 }
+
 export function TokenSearchResults({ searchInput, balances, selectedToken, onSelectToken }: TokenSearchResultsProps) {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
     useSearchToken(searchInput)
@@ -57,30 +61,37 @@ export function TokenSearchResults({ searchInput, balances, selectedToken, onSel
 
   return (
     <Wrapper>
+      {/*Tokens from active lists*/}
       {activeListsResult &&
-        activeListsResult.map((token) => (
-          <TokenListItem
-            key={token.address}
-            selectedToken={selectedToken}
-            token={token}
-            balances={balances}
-            onSelectToken={onSelectToken}
-          />
-        ))}
+        activeListsResult
+          .slice(0, searchResultsLimit)
+          .map((token) => (
+            <TokenListItem
+              key={token.address}
+              selectedToken={selectedToken}
+              token={token}
+              balances={balances}
+              onSelectToken={onSelectToken}
+            />
+          ))}
+
+      {/*Tokens from blockchain*/}
       {blockchainResult?.length ? (
         <div>
-          {blockchainResult.map((token) => {
+          {blockchainResult.slice(0, searchResultsLimit).map((token) => {
             return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
           })}
         </div>
       ) : null}
+
+      {/*Tokens from inactive lists*/}
       {inactiveListsResult?.length ? (
         <div>
           <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
             Expanded results from inactive Token Lists
           </TokenSourceTitle>
           <div>
-            {inactiveListsResult.map((token) => {
+            {inactiveListsResult.slice(0, searchResultsLimit).map((token) => {
               return (
                 <ImportTokenItem
                   key={token.address}
@@ -93,6 +104,8 @@ export function TokenSearchResults({ searchInput, balances, selectedToken, onSel
           </div>
         </div>
       ) : null}
+
+      {/*Tokens from external sources*/}
       {externalApiResult?.length ? (
         <div>
           <TokenSourceTitle tooltip="Tokens from external sources.">

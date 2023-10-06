@@ -1,9 +1,12 @@
 import { useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
+
+import { useOnchainBalances } from 'modules/tokens'
 
 import * as styledEl from './styled'
 
@@ -29,13 +32,16 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     favouriteTokens,
     allTokens,
     selectedToken,
-    balances,
     onSelectToken,
     onDismiss,
     onOpenManageWidget,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
+
+  const { account } = useWalletInfo()
+
+  const { amounts: balances } = useOnchainBalances({ account, tokens: allTokens })
 
   return (
     <styledEl.Wrapper>
