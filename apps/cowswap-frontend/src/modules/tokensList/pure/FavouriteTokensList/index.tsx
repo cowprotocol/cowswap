@@ -20,7 +20,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
         <h4>Favourite tokens</h4>
         <InfoIcon iconType="help" content="Your favourite saved tokens. Edit this list in your account page." />
       </styledEl.Header>
-      <styledEl.TokensList>
+      <div>
         {tokens.map((token) => {
           const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
 
@@ -31,7 +31,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
             </styledEl.TokensItem>
           )
         })}
-      </styledEl.TokensList>
+      </div>
     </div>
   )
 }

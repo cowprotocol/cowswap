@@ -30,11 +30,11 @@ export function ManageTokens(props: ManageTokensProps) {
   return (
     <styledEl.Wrapper>
       {activeListsResult?.map((token) => {
-        return <ImportTokenItem token={token} existing={true} />
+        return <ImportTokenItem key={token.address} token={token} existing={true} />
       })}
       {!activeListsResult?.length &&
         tokensToImport?.map((token) => {
-          return <ImportTokenItem token={token} importToken={addTokenImportCallback} />
+          return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
         })}
       <styledEl.Header>
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>

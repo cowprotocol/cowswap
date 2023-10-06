@@ -25,7 +25,7 @@ export const Title = styled.div`
 `
 
 export const TokensWrapper = styled.div`
-  height: calc(100vh - 445px);
+  height: calc(100vh - 450px);
 `
 
 export const LinkButton = styled.button`

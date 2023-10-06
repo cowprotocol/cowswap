@@ -12,12 +12,13 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-export const TokensWrapper = styled.div`
-  overflow: auto;
-`
-
 export const Row = styled.div`
   margin: 0 20px 15px 20px;
+`
+
+export const Separator = styled.div`
+  width: 100%;
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
 
 export const Header = styled.div`
@@ -76,11 +77,4 @@ export const ActionButton = styled.button`
   &:hover {
     opacity: 0.7;
   }
-`
-
-export const TokenNotFound = styled.div`
-  color: var(${UI.COLOR_LINK});
-  font-weight: 500;
-  padding: 10px 0;
-  text-align: center;
 `

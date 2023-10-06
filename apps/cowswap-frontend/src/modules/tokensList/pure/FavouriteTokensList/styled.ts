@@ -15,10 +15,6 @@ export const Header = styled.div`
   }
 `
 
-export const TokensList = styled.div`
-  margin: 10px 0;
-`
-
 export const TokensItem = styled.button`
   display: inline-flex;
   flex-direction: row;

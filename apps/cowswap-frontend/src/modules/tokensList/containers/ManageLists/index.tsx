@@ -12,7 +12,7 @@ import * as styledEl from './styled'
 
 import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
-import { TokenListItem } from '../../pure/TokenListItem'
+import { ListItem } from '../../pure/ListItem'
 
 export interface ManageListsProps {
   lists: TokenListInfo[]
@@ -45,7 +45,7 @@ export function ManageLists(props: ManageListsProps) {
         {lists
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
-            <TokenListItem
+            <ListItem
               key={list.id}
               list={list}
               enabled={activeTokenListsIds[list.id]}

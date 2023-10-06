@@ -43,3 +43,12 @@ export const ImportButton = styled.button`
     background-color: var(${UI.COLOR_LINK});
   }
 `
+
+export const CommonListContainer = styled.div`
+  display: block;
+  height: 100vh;
+  width: 100%;
+  overflow: auto;
+
+  ${({ theme }) => theme.colorScrollbar};
+`
