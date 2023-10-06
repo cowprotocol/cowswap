@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -11,19 +11,19 @@ import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable/const/tabs'
 import {
+  CheckboxCheckmark,
   TableHeader,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
-  CheckboxCheckmark,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { CheckHasValidPendingPermit } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
@@ -206,6 +206,7 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
+  checkHasValidPendingPermit: CheckHasValidPendingPermit
 }
 
 export function OrdersTable({
@@ -219,6 +220,7 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
+  checkHasValidPendingPermit,
 }: OrdersTableProps) {
   const location = useLocation()
   const [isRateInverted, setIsRateInverted] = useState(false)
@@ -423,6 +425,7 @@ export function OrdersTable({
                     isRateInverted={isRateInverted}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
+                    checkHasValidPendingPermit={checkHasValidPendingPermit}
                   />
                 )
               } else {
