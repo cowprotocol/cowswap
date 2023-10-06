@@ -23,8 +23,8 @@ export function getOrderParams(
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder
 ): OrderParams {
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
+  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
 
   const rateInfoParams: RateInfoParams = {
     chainId,
