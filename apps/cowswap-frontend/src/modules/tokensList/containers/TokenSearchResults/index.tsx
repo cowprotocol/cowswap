@@ -32,9 +32,18 @@ export interface TokenSearchResultsProps {
   balances: TokenAmounts
   selectedToken?: TokenWithLogo
   onSelectToken(token: TokenWithLogo): void
+  unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
+  permitCompatibleTokens: { [tokenAddress: string]: boolean }
 }
 
-export function TokenSearchResults({ searchInput, balances, selectedToken, onSelectToken }: TokenSearchResultsProps) {
+export function TokenSearchResults({
+  searchInput,
+  balances,
+  selectedToken,
+  onSelectToken,
+  unsupportedTokens,
+  permitCompatibleTokens,
+}: TokenSearchResultsProps) {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
     useSearchToken(searchInput)
 
@@ -63,17 +72,21 @@ export function TokenSearchResults({ searchInput, balances, selectedToken, onSel
     <Wrapper>
       {/*Tokens from active lists*/}
       {activeListsResult &&
-        activeListsResult
-          .slice(0, searchResultsLimit)
-          .map((token) => (
+        activeListsResult.slice(0, searchResultsLimit).map((token) => {
+          const addressLowerCase = token.address.toLowerCase()
+
+          return (
             <TokenListItem
               key={token.address}
+              isUnsupported={!!unsupportedTokens[addressLowerCase]}
+              isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
               selectedToken={selectedToken}
               token={token}
               balance={balances[token.address]?.value}
               onSelectToken={onSelectToken}
             />
-          ))}
+          )
+        })}
 
       {/*Tokens from blockchain*/}
       {blockchainResult?.length ? (

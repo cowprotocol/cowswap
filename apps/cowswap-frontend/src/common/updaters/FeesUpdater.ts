@@ -8,7 +8,7 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
@@ -148,7 +148,7 @@ export function FeesUpdater(): null {
   const isLoading = useIsBestQuoteLoading()
   const isEthFlow = useIsEoaEthFlow()
 
-  const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
+  const isUnsupportedTokenGp = useIsUnsupportedToken()
 
   const appData = useAppData()
 

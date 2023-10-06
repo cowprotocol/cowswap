@@ -10,18 +10,7 @@ import { getVersionUpgrade, TokenList, VersionUpgrade } from '@uniswap/token-lis
 
 import { createReducer } from '@reduxjs/toolkit'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
-
-import {
-  acceptListUpdate,
-  addGpUnsupportedToken,
-  addList,
-  disableList,
-  enableList,
-  fetchTokenList,
-  removeGpUnsupportedToken,
-  removeList,
-} from './actions'
+import { acceptListUpdate, addList, disableList, enableList, fetchTokenList, removeList } from './actions'
 
 import { updateVersion } from '../global/actions'
 
@@ -39,9 +28,6 @@ export interface ListsState {
 
   // currently active lists
   readonly activeListUrls: string[] | undefined
-
-  // unsupported tokens
-  readonly gpUnsupportedTokens: UnsupportedToken
 }
 
 export type ListsStateByNetwork = {
@@ -71,7 +57,6 @@ const setInitialListState = (chainId: ChainId): ListsState => ({
       }, {}),
   },
   activeListUrls: DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId],
-  gpUnsupportedTokens: {},
 })
 
 // MOD: change the intiialState shape
@@ -250,18 +235,6 @@ export default createReducer(initialState, (builder) =>
             return true
           })
         }
-
-        if (!state.gpUnsupportedTokens) {
-          state.gpUnsupportedTokens = {}
-        }
       }
     )
-    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
-      const state = baseState[chainId]
-      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
-    })
-    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
-      const state = baseState[chainId]
-      delete state.gpUnsupportedTokens[address.toLowerCase()]
-    })
 )

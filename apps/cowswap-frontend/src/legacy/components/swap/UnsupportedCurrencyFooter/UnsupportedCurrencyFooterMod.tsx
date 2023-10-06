@@ -12,7 +12,7 @@ import styled from 'styled-components/macro'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
@@ -76,7 +76,7 @@ export default function UnsupportedCurrencyFooter({
         })
       : []
 
-  const isUnsupportedToken = useIsUnsupportedTokenGp()
+  const isUnsupportedToken = useIsUnsupportedToken()
 
   return (
     <DetailsFooter show={show}>

@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 
 import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useUnsupportedTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { Currency } from '@uniswap/sdk-core'
@@ -10,17 +11,9 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { shallowEqual } from 'react-redux'
 import { Nullish } from 'types'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
 import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
-import {
-  addGpUnsupportedToken,
-  AddGpUnsupportedTokenParams,
-  removeGpUnsupportedToken,
-  RemoveGpUnsupportedTokenParams,
-} from './actions'
-
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { useAppSelector } from '../hooks'
 import { AppState } from '../index'
 
 export type TokenAddressMap = ChainTokenMap
@@ -127,51 +120,38 @@ export function useIsListActive(url: string): boolean {
   return Boolean(activeListUrls?.includes(url))
 }
 
-export function useGpUnsupportedTokens(): UnsupportedToken | null {
-  const { chainId } = useWalletInfo()
-
-  return useAppSelector((state) => (chainId ? state.lists[chainId]?.gpUnsupportedTokens : null))
-}
-
-export function useAddGpUnsupportedToken() {
-  const dispatch = useAppDispatch()
-
-  return useCallback((params: AddGpUnsupportedTokenParams) => dispatch(addGpUnsupportedToken(params)), [dispatch])
-}
-
-export function useRemoveGpUnsupportedToken() {
-  const dispatch = useAppDispatch()
-
-  return useCallback((params: RemoveGpUnsupportedTokenParams) => dispatch(removeGpUnsupportedToken(params)), [dispatch])
-}
-
-export function useIsUnsupportedTokenGp() {
-  const { chainId } = useWalletInfo()
-  const gpUnsupportedTokens = useGpUnsupportedTokens()
+export function useIsUnsupportedToken() {
+  const unsupportedTokens = useUnsupportedTokens()
 
   return useCallback(
     (address?: string) => {
-      if (!address || !chainId || !gpUnsupportedTokens) return false
+      const state = address && unsupportedTokens[address.toLowerCase()]
 
-      return gpUnsupportedTokens[address.toLowerCase()]
+      if (state) {
+        return {
+          ...state,
+          address,
+        }
+      }
+      return false
     },
-    [chainId, gpUnsupportedTokens]
+    [unsupportedTokens]
   )
 }
 
 export function useIsUnsupportedTokens() {
-  const gpUnsupportedTokens = useGpUnsupportedTokens()
+  const unsupportedTokens = useUnsupportedTokens()
 
   return useCallback(
     ({ sellToken, buyToken }: { sellToken: Nullish<string>; buyToken: Nullish<string> }) => {
-      if (!gpUnsupportedTokens) return false
+      if (!unsupportedTokens) return false
 
       return !!(
-        (sellToken && gpUnsupportedTokens[sellToken.toLowerCase()]) ||
-        (buyToken && gpUnsupportedTokens[buyToken.toLowerCase()])
+        (sellToken && unsupportedTokens[sellToken.toLowerCase()]) ||
+        (buyToken && unsupportedTokens[buyToken.toLowerCase()])
       )
     },
-    [gpUnsupportedTokens]
+    [unsupportedTokens]
   )
 }
 
@@ -179,7 +159,7 @@ export function useIsTradeUnsupported(
   inputCurrency: Currency | null | undefined,
   outputCurrency: Currency | null | undefined
 ): boolean {
-  const isUnsupportedToken = useIsUnsupportedTokenGp()
+  const isUnsupportedToken = useIsUnsupportedToken()
   const isInputCurrencyUnsupported = inputCurrency?.isNative ? false : !!isUnsupportedToken(inputCurrency?.address)
   const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !!isUnsupportedToken(outputCurrency?.address)
 

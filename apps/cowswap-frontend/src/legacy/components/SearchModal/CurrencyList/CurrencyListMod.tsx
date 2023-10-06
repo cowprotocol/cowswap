@@ -18,7 +18,7 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { LoadingRows } from 'legacy/components/SearchModal/styleds'
 import { useAllTokens, useIsUserAddedToken } from 'legacy/hooks/Tokens'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
@@ -266,7 +266,7 @@ export default function CurrencyList({
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const allTokens = useAllTokens()
-  const isUnsupportedToken = useIsUnsupportedTokenGp()
+  const isUnsupportedToken = useIsUnsupportedToken()
 
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     const result: (Currency | BreakLine)[] = [...currencies]

@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { TokenList, Version } from '@uniswap/token-lists'
+import { TokenList } from '@uniswap/token-lists'
 
 import { ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit'
 
@@ -48,8 +48,3 @@ export const disableList = createAction<WithChainIdAndUrl>('lists/disableList')
 
 // versioning
 export const acceptListUpdate = createAction<WithChainIdAndUrl>('lists/acceptListUpdate')
-export const rejectVersionUpdate = createAction<WithChainId & { version: Version }>('lists/rejectVersionUpdate')
-
-// add/remove unsupported token for gp
-export const addGpUnsupportedToken = createAction<AddGpUnsupportedTokenParams>('lists/addGpUnsupportedToken')
-export const removeGpUnsupportedToken = createAction<RemoveGpUnsupportedTokenParams>('lists/removeGpUnsupportedToken')

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useUnsupportedTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -26,6 +27,8 @@ export interface SelectTokenModalProps {
   onDismiss(): void
 }
 
+const permitCompatibleTokens: { [tokenAddress: string]: boolean } = {} // TODO: Make dynamic
+
 export function SelectTokenModal(props: SelectTokenModalProps) {
   const {
     defaultInputValue = '',
@@ -41,7 +44,17 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const { account } = useWalletInfo()
 
+  const unsupportedTokens = useUnsupportedTokens()
+
   const { amounts: balances } = useOnchainBalances({ account, tokens: allTokens })
+
+  const commonProps = {
+    permitCompatibleTokens,
+    unsupportedTokens,
+    onSelectToken,
+    selectedToken,
+    balances,
+  }
 
   return (
     <styledEl.Wrapper>
@@ -64,19 +77,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       </styledEl.Row>
       <styledEl.Separator />
       {inputValue ? (
-        <TokenSearchResults
-          searchInput={inputValue}
-          onSelectToken={onSelectToken}
-          selectedToken={selectedToken}
-          balances={balances}
-        />
+        <TokenSearchResults searchInput={inputValue} {...commonProps} />
       ) : (
-        <TokensVirtualList
-          allTokens={allTokens}
-          selectedToken={selectedToken}
-          balances={balances}
-          onSelectToken={onSelectToken}
-        />
+        <TokensVirtualList allTokens={allTokens} {...commonProps} />
       )}
       <styledEl.Separator />
       <div>

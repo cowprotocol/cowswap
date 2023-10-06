@@ -49,11 +49,13 @@ export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
   selectedToken?: TokenWithLogo
   balances: TokenAmounts
+  unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
+  permitCompatibleTokens: { [tokenAddress: string]: boolean }
   onSelectToken(token: TokenWithLogo): void
 }
 
 export function TokensVirtualList(props: TokensVirtualListProps) {
-  const { allTokens, selectedToken, balances, onSelectToken } = props
+  const { allTokens, selectedToken, balances, onSelectToken, unsupportedTokens, permitCompatibleTokens } = props
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -88,6 +90,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
       <TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
         {virtualItems.map((virtualRow) => {
           const token = sortedTokens[virtualRow.index]
+          const addressLowerCase = token.address.toLowerCase()
           const balance = balances[token.address]
 
           if (!balance || balance.loading) {
@@ -105,6 +108,8 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
               key={virtualRow.key}
               virtualRow={virtualRow}
               token={token}
+              isUnsupported={!!unsupportedTokens[addressLowerCase]}
+              isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
               selectedToken={selectedToken}
               balance={balance.value}
               onSelectToken={onSelectToken}
@@ -121,7 +126,7 @@ function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: TokenWi
     const aBalance = balances[a.address]
     const bBalance = balances[b.address]
 
-    if (aBalance.value && bBalance.value) {
+    if (aBalance?.value && bBalance?.value) {
       return +bBalance.value.toExact() - +aBalance.value.toExact()
     }
 

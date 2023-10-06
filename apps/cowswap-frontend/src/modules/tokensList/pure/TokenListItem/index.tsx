@@ -5,6 +5,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 
 import { TokenInfo } from '../TokenInfo'
+import { TokenTags } from '../TokenTags'
 
 import type { VirtualItem } from '@tanstack/react-virtual'
 
@@ -14,10 +15,12 @@ export interface TokenListItemProps {
   balance: CurrencyAmount<Token> | undefined
   onSelectToken(token: TokenWithLogo): void
   virtualRow?: VirtualItem
+  isUnsupported: boolean
+  isPermitCompatible: boolean
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { token, selectedToken, balance, onSelectToken, virtualRow } = props
+  const { token, selectedToken, balance, onSelectToken, virtualRow, isUnsupported, isPermitCompatible } = props
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
 
@@ -34,6 +37,7 @@ export function TokenListItem(props: TokenListItemProps) {
       }}
     >
       <TokenInfo token={token} />
+      <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
       <span>
         <TokenAmount amount={balance} />
       </span>
