@@ -1,5 +1,6 @@
 export * from './hooks/useAccountAgnosticPermitHookData'
 export * from './hooks/useIsTokenPermittable'
 export * from './hooks/useGeneratePermitHook'
+export * from './hooks/useCheckHasValidPendingPermit'
 export * from './utils/handlePermit'
 export * from './types'
