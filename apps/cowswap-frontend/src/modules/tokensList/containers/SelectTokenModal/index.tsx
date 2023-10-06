@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useUnsupportedTokens } from '@cowprotocol/tokens'
@@ -7,7 +7,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
 
-import { useOnchainBalances } from 'modules/tokens'
+import { OnchainState, TokenAmounts, useOnchainBalances } from 'modules/tokens'
+
+import { useNativeBalance } from 'common/hooks/useNativeBalance'
 
 import * as styledEl from './styled'
 
@@ -46,7 +48,26 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const unsupportedTokens = useUnsupportedTokens()
 
-  const { amounts: balances } = useOnchainBalances({ account, tokens: allTokens })
+  const nativeBalance = useNativeBalance()
+  const { amounts: onChainBalances, isLoading } = useOnchainBalances({ account, tokens: allTokens })
+
+  const balances: TokenAmounts | null = useMemo(() => {
+    if (!account || !onChainBalances) return null
+
+    if (!nativeBalance.data) return onChainBalances
+
+    const { data, error } = nativeBalance
+
+    const nativeOnChainState: OnchainState<CurrencyAmount<TokenWithLogo>> = {
+      value: data,
+      loading: isLoading,
+      error,
+      syncing: false,
+      valid: true,
+    }
+
+    return { ...onChainBalances, [data.currency.address]: nativeOnChainState }
+  }, [account, onChainBalances, nativeBalance, isLoading])
 
   const commonProps = {
     permitCompatibleTokens,

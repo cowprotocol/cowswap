@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { LoadingRows as BaseLoadingRows } from '@cowprotocol/ui'
 
 import { useVirtual } from '@tanstack/react-virtual'
@@ -48,7 +48,7 @@ const scrollDelay = ms`400ms`
 export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
   selectedToken?: string
-  balances: TokenAmounts
+  balances: TokenAmounts | null
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: { [tokenAddress: string]: boolean }
   onSelectToken(token: TokenWithLogo): void
@@ -80,7 +80,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   })
 
   const sortedTokens = useMemo(() => {
-    return allTokens.sort(tokensListSorter(balances))
+    return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
   }, [allTokens, balances])
 
   const { virtualItems } = virtualizer
@@ -91,9 +91,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
         {virtualItems.map((virtualRow) => {
           const token = sortedTokens[virtualRow.index]
           const addressLowerCase = token.address.toLowerCase()
-          const balance = balances[token.address]
+          const balance = balances ? balances[token.address] : null
 
-          if (!balance || balance.loading) {
+          if (balance?.loading) {
             return (
               <LoadingRows key={virtualRow.key}>
                 <div />
@@ -111,7 +111,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
               isUnsupported={!!unsupportedTokens[addressLowerCase]}
               isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
               selectedToken={selectedToken}
-              balance={balance.value}
+              balance={balance?.value}
               onSelectToken={onSelectToken}
             />
           )
@@ -121,10 +121,15 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   )
 }
 
+const nativeTokenAddress = NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase()
+
 function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: TokenWithLogo) => number {
   return (a: TokenWithLogo, b: TokenWithLogo) => {
     const aBalance = balances[a.address]
     const bBalance = balances[b.address]
+
+    // Native always first
+    if (a.address.toLowerCase() === nativeTokenAddress || b.address.toLowerCase() === nativeTokenAddress) return 1
 
     if (aBalance?.value && bBalance?.value) {
       return +bBalance.value.toExact() - +aBalance.value.toExact()

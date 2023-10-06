@@ -29,7 +29,7 @@ const searchResultsLimit = 10
 
 export interface TokenSearchResultsProps {
   searchInput: string
-  balances: TokenAmounts
+  balances: TokenAmounts | null
   selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
@@ -82,7 +82,7 @@ export function TokenSearchResults({
               isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
               selectedToken={selectedToken}
               token={token}
-              balance={balances[token.address]?.value}
+              balance={balances ? balances[token.address]?.value : undefined}
               onSelectToken={onSelectToken}
             />
           )

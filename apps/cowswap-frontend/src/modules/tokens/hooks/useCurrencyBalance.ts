@@ -17,6 +17,7 @@ import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 // TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**
+ * @deprecated Use useNativeBalance instead
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
 export function useNativeCurrencyBalances(
