@@ -47,7 +47,7 @@ const scrollDelay = ms`400ms`
 
 export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
   balances: TokenAmounts
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: { [tokenAddress: string]: boolean }

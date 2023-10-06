@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -41,7 +42,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
-  openTokenSelectWidget(onCurrencySelection: (currency: Currency) => void): void
+  openTokenSelectWidget(selectedToken: string | undefined, onCurrencySelection: (currency: Currency) => void): void
   topLabel?: string
 }
 
@@ -105,6 +106,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewAmount])
 
+  const selectedTokenAddress = currency
+    ? currency.isNative
+      ? NATIVE_CURRENCY_BUY_TOKEN[currency.chainId as SupportedChainId].address
+      : currency.address
+    : undefined
+
   const numericalInput = (
     <styledEl.NumericalInput
       className="token-amount-input"
@@ -129,7 +136,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
-              onClick={() => openTokenSelectWidget((currency) => onCurrencySelection(field, currency))}
+              onClick={() =>
+                openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+              }
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
             />

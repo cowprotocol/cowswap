@@ -7,7 +7,7 @@ import * as styledEl from './styled'
 
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
 }
 
@@ -22,7 +22,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
       </styledEl.Header>
       <div>
         {tokens.map((token) => {
-          const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
+          const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
           return (
             <styledEl.TokensItem key={token.address} disabled={isTokenSelected} onClick={() => onSelectToken(token)}>

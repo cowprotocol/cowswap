@@ -11,7 +11,7 @@ import type { VirtualItem } from '@tanstack/react-virtual'
 
 export interface TokenListItemProps {
   token: TokenWithLogo
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
   balance: CurrencyAmount<Token> | undefined
   onSelectToken(token: TokenWithLogo): void
   virtualRow?: VirtualItem
@@ -22,7 +22,7 @@ export interface TokenListItemProps {
 export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, virtualRow, isUnsupported, isPermitCompatible } = props
 
-  const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
+  const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
   return (
     <styledEl.TokenItem

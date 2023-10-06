@@ -8,6 +8,7 @@ import { Currency } from '@uniswap/sdk-core'
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(
   atom<{
     open: boolean
+    selectedToken?: string
     tokenToImport?: TokenWithLogo
     listToImport?: TokenListInfo
     onSelectToken?: (currency: Currency) => void

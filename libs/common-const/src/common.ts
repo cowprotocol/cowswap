@@ -1,12 +1,16 @@
 import networksJson from '@cowprotocol/contracts/networks.json'
 import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
-import { Fraction, Percent, Token } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@uniswap/sdk-core'
+
+import XDaiLogo from '@cowprotocol/assets/cow-swap/xdai.png'
+import EthereumLogo from '@cowprotocol/assets/images/ethereum-logo.png'
 
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
+import { TokenWithLogo } from './types'
 
 // TODO: move those consts to src/constants/common
 
@@ -88,12 +92,17 @@ export const COW_CONTRACT_ADDRESS: Record<number, string> = {
 
 // See https://github.com/cowprotocol/contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  // [ChainId.ROPSTEN]: new Token(ChainId.ROPSTEN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GOERLI]: new Token(ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  // [ChainId.KOVAN]: new Token(ChainId.KOVAN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GNOSIS_CHAIN]: new Token(ChainId.GNOSIS_CHAIN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'xDAI', 'xDAI'),
+export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
+  [ChainId.MAINNET]: new TokenWithLogo(EthereumLogo, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.GOERLI]: new TokenWithLogo(EthereumLogo, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.GNOSIS_CHAIN]: new TokenWithLogo(
+    XDaiLogo,
+    ChainId.GNOSIS_CHAIN,
+    NATIVE_CURRENCY_BUY_ADDRESS,
+    18,
+    'xDAI',
+    'xDAI'
+  ),
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'

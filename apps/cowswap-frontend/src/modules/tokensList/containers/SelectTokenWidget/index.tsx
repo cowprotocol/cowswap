@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 const balancesMock = {}
 
 export function SelectTokenWidget() {
-  const { open, onSelectToken, tokenToImport, listToImport } = useAtomValue(selectTokenWidgetAtom)
+  const { open, onSelectToken, tokenToImport, listToImport, selectedToken } = useAtomValue(selectTokenWidgetAtom)
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
   const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
@@ -50,6 +50,7 @@ export function SelectTokenWidget() {
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
       open: false,
+      selectedToken: undefined,
       onSelectToken: undefined,
       tokenToImport: undefined,
       listToImport: undefined,
@@ -118,6 +119,7 @@ export function SelectTokenWidget() {
 
           return (
             <SelectTokenModal
+              selectedToken={selectedToken}
               allTokens={allTokens}
               favouriteTokens={favouriteTokens}
               balances={balancesMock}

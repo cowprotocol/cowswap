@@ -20,7 +20,7 @@ export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
   balances: { [key: string]: CurrencyAmount<Currency> }
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
   defaultInputValue?: string
   onOpenManageWidget(): void
