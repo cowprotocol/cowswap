@@ -3,9 +3,6 @@ import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
-import XDaiLogo from '@cowprotocol/assets/cow-swap/xdai.png'
-import EthereumLogo from '@cowprotocol/assets/images/ethereum-logo.png'
-
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
@@ -93,10 +90,10 @@ export const COW_CONTRACT_ADDRESS: Record<number, string> = {
 // See https://github.com/cowprotocol/contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
-  [ChainId.MAINNET]: new TokenWithLogo(EthereumLogo, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GOERLI]: new TokenWithLogo(EthereumLogo, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.MAINNET]: new TokenWithLogo(undefined, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.GOERLI]: new TokenWithLogo(undefined, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GNOSIS_CHAIN]: new TokenWithLogo(
-    XDaiLogo,
+    undefined,
     ChainId.GNOSIS_CHAIN,
     NATIVE_CURRENCY_BUY_ADDRESS,
     18,

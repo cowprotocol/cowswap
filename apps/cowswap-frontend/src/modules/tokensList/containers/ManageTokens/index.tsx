@@ -45,7 +45,7 @@ export function ManageTokens(props: ManageTokensProps) {
           return (
             <styledEl.TokenItem key={token.address}>
               <styledEl.TokenInfo>
-                <TokenLogo logoURI={token.logoURI} size={20} />
+                <TokenLogo token={token} size={20} />
                 <TokenSymbol token={token} />
               </styledEl.TokenInfo>
               <div>

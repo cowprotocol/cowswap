@@ -9,10 +9,11 @@ import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
+import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
 
 // Mainnet
 export const USDT = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0xdac17f958d2ee523a2206206994597c13d831ec7/logo.png',
+  cowprotocolTokenUrl('0xdAC17F958D2ee523a2206206994597C13D831ec7', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   6,
@@ -20,7 +21,7 @@ export const USDT = new TokenWithLogo(
   'Tether USD'
 )
 export const WBTC = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599/logo.png',
+  cowprotocolTokenUrl('0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   8,
@@ -29,7 +30,7 @@ export const WBTC = new TokenWithLogo(
 )
 
 export const USDC_MAINNET = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png',
+  cowprotocolTokenUrl('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   6,
@@ -38,7 +39,7 @@ export const USDC_MAINNET = new TokenWithLogo(
 )
 
 export const DAI = new TokenWithLogo(
-  'https://raw.githubusercontent.com/centfinance/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
+  cowprotocolTokenUrl('0x6B175474E89094C44Da98b954EedeAC495271d0F', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   18,
@@ -47,7 +48,7 @@ export const DAI = new TokenWithLogo(
 )
 
 const GNO_MAINNET = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0x6810e776880c02933d47db1b9fc05908e5386b96/logo.png',
+  cowprotocolTokenUrl('0x6810e776880c02933d47db1b9fc05908e5386b96', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x6810e776880c02933d47db1b9fc05908e5386b96',
   18,
@@ -57,7 +58,7 @@ const GNO_MAINNET = new TokenWithLogo(
 
 const weth9Mainnet = WETH9[SupportedChainId.MAINNET]
 export const WETH_MAINNET = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/100/0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1/logo.png',
+  cowprotocolTokenUrl(weth9Mainnet.address, SupportedChainId.MAINNET),
   weth9Mainnet.chainId,
   weth9Mainnet.address,
   weth9Mainnet.decimals,
@@ -327,7 +328,7 @@ export const GNO: Record<SupportedChainId, TokenWithLogo> = {
 }
 
 export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/100/0xcB444e90D8198415266c6a2724b7900fb12FC56E/logo.png',
+  cowprotocolTokenUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
   SupportedChainId.GNOSIS_CHAIN,
   '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
   18,

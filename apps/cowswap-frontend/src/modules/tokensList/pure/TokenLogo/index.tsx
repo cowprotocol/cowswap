@@ -1,7 +1,9 @@
 import { atom, useAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { cowprotocolTokenUrl, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Slash } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -17,18 +19,28 @@ const TokenLogoWrapper = styled.div`
 `
 
 export interface TokenLogoProps {
-  logoURI: string | undefined
+  token?: TokenWithLogo
+  logoURI?: string
   className?: string
   size?: number
 }
 
-export function TokenLogo({ logoURI, className, size = 36 }: TokenLogoProps) {
+export function TokenLogo({ logoURI: _logoURI, token, className, size = 36 }: TokenLogoProps) {
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
 
-  const urls = useMemo(
-    () => (logoURI ? uriToHttp(logoURI).filter((url) => !invalidUrls[url]) : []),
-    [logoURI, invalidUrls]
-  )
+  const logoURI = _logoURI || token?.logoURI
+
+  const urls = useMemo(() => {
+    const fallbackUrl = token ? cowprotocolTokenUrl(token.address, token.chainId as SupportedChainId) : null
+
+    if (!logoURI) {
+      return fallbackUrl ? [fallbackUrl] : []
+    }
+
+    return uriToHttp(logoURI)
+      .filter((url) => !invalidUrls[url])
+      .concat(fallbackUrl || [])
+  }, [logoURI, token, invalidUrls])
 
   const currentUrl = urls[0]
 

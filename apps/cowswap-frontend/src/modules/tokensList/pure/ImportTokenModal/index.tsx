@@ -30,7 +30,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
           This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade.
         </p>
         <styledEl.TokenInfo>
-          <TokenLogo logoURI={token.logoURI} />
+          <TokenLogo token={token} />
           <styledEl.StyledTokenSymbol token={token} />
           <styledEl.TokenName>{token.name}</styledEl.TokenName>
           <a

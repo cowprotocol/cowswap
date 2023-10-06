@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
 import { TokensMap } from '../types'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
 import { tokenMapToList } from '../utils/tokenMapToList'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
@@ -24,8 +24,13 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const tokensMap = get(tokensAtomsByChainId)[chainId]
+  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
-  return tokenMapToList({ ...tokensMap.activeTokens, ...userAddedTokens[chainId] })
+  const tokens = tokenMapToList({ ...tokensMap.activeTokens, ...userAddedTokens[chainId] })
+
+  tokens.unshift(nativeToken)
+
+  return tokens
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {

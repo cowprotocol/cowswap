@@ -15,7 +15,7 @@ export function TokenInfo(props: TokenInfoProps) {
 
   return (
     <styledEl.Wrapper className={className}>
-      <TokenLogo logoURI={token.logoURI} />
+      <TokenLogo token={token} />
       <div>
         <TokenSymbol token={token} />
         <styledEl.TokenName>{token.name}</styledEl.TokenName>
