@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LoadingRows as BaseLoadingRows } from '@cowprotocol/ui'
 
 import { useVirtual } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
@@ -16,6 +17,28 @@ const TokensWrapper = styled(CommonListContainer)``
 const TokensInner = styled.div`
   width: 100%;
   position: relative;
+`
+
+const LoadingRows = styled(BaseLoadingRows)`
+  grid-column-gap: 0.5em;
+  grid-template-columns: repeat(12, 1fr);
+  max-width: 960px;
+  padding: 12px 20px;
+
+  & > div:nth-child(4n + 1) {
+    grid-column: 1 / 8;
+    height: 1em;
+    margin-bottom: 0.25em;
+  }
+  & > div:nth-child(4n + 2) {
+    grid-column: 12;
+    height: 1em;
+    margin-top: 0.25em;
+  }
+  & > div:nth-child(4n + 3) {
+    grid-column: 1 / 4;
+    height: 0.75em;
+  }
 `
 
 const estimateSize = () => 56
@@ -64,13 +87,26 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     <TokensWrapper ref={parentRef} onScroll={onScroll}>
       <TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
         {virtualItems.map((virtualRow) => {
+          const token = sortedTokens[virtualRow.index]
+          const balance = balances[token.address]
+
+          if (!balance || balance.loading) {
+            return (
+              <LoadingRows key={virtualRow.key}>
+                <div />
+                <div />
+                <div />
+              </LoadingRows>
+            )
+          }
+
           return (
             <TokenListItem
               key={virtualRow.key}
               virtualRow={virtualRow}
-              token={sortedTokens[virtualRow.index]}
+              token={token}
               selectedToken={selectedToken}
-              balances={balances}
+              balance={balance.value}
               onSelectToken={onSelectToken}
             />
           )

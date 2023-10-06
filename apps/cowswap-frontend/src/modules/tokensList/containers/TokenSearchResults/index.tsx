@@ -70,7 +70,7 @@ export function TokenSearchResults({ searchInput, balances, selectedToken, onSel
               key={token.address}
               selectedToken={selectedToken}
               token={token}
-              balances={balances}
+              balance={balances[token.address]?.value}
               onSelectToken={onSelectToken}
             />
           ))}
