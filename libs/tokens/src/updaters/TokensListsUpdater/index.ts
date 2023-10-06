@@ -80,7 +80,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
     localStorage.setItem(LAST_UPDATE_TIME_KEY(chainId), Date.now().toString())
 
-    setTokenLists(lists)
+    setTokenLists(chainId, lists)
     setTokens({ activeTokens, inactiveTokens })
   }, [swrResponse, chainId, setTokens, setTokenLists, activeTokensListsMap])
 

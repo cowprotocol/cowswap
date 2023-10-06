@@ -4,18 +4,17 @@ import { DEFAULT_TOKENS_LISTS } from '../const/tokensLists'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
-export const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
+const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
 
-export const { atom: allTokenListsInfoByChainAtom, updateAtom: updateAllTokenListsInfoByChainAtom } =
-  atomWithPartialUpdate(
-    atomWithStorage<Record<SupportedChainId, { [id: string]: TokenListInfo }>>('allTokenListsInfoAtom:v1', {
-      [SupportedChainId.MAINNET]: {},
-      [SupportedChainId.GNOSIS_CHAIN]: {},
-      [SupportedChainId.GOERLI]: {},
-    })
-  )
+const allTokenListsInfoByChainAtom = atomWithStorage<Record<SupportedChainId, { [id: string]: TokenListInfo }>>(
+  'allTokenListsInfoAtom:v1',
+  {
+    [SupportedChainId.MAINNET]: {},
+    [SupportedChainId.GNOSIS_CHAIN]: {},
+    [SupportedChainId.GOERLI]: {},
+  }
+)
 export const userAddedTokenListsAtom = atomWithStorage<TokenListsByNetwork>('userAddedTokenListsAtom:v1', {
   [SupportedChainId.MAINNET]: [],
   [SupportedChainId.GNOSIS_CHAIN]: [],
@@ -38,25 +37,27 @@ export const allTokenListsInfoAtom = atom((get) => {
   return Object.values(allTokenListsInfo[chainId])
 })
 
-export const upsertAllTokenListsInfoAtom = atom(null, (get, set, state: { [id: string]: TokenListInfo }) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+export const upsertAllTokenListsInfoAtom = atom(
+  null,
+  (get, set, chainId: SupportedChainId, update: { [id: string]: TokenListInfo }) => {
+    const state = get(allTokenListsInfoByChainAtom)
 
-  set(updateAllTokenListsInfoByChainAtom, {
-    [chainId]: {
-      ...get(allTokenListsInfoByChainAtom)[chainId],
+    set(allTokenListsInfoByChainAtom, {
       ...state,
-    },
-  })
-})
+      [chainId]: {
+        ...state[chainId],
+        ...update,
+      },
+    })
+  }
+)
 export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: string) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
-  const stateCopy = { ...get(allTokenListsInfoByChainAtom)[chainId] }
+  const stateCopy = { ...get(allTokenListsInfoByChainAtom) }
 
-  delete stateCopy[id]
+  delete stateCopy[chainId][id]
 
-  set(updateAllTokenListsInfoByChainAtom, {
-    [chainId]: stateCopy,
-  })
+  set(allTokenListsInfoByChainAtom, stateCopy)
 })
 
 export const allTokensListsAtom = atom((get) => {
