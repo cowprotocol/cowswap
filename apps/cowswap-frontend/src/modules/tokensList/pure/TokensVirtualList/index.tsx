@@ -1,62 +1,34 @@
 import { useCallback, useMemo, useRef } from 'react'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
-import { LoadingRows as BaseLoadingRows } from '@cowprotocol/ui'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useVirtual } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
-import styled from 'styled-components/macro'
 
-import { TokenAmounts } from 'modules/tokens'
+import * as styledEl from './styled'
 
+import { SelectTokenContext } from '../../types'
+import { tokensListSorter } from '../../utils/tokensListSorter'
 import { CommonListContainer } from '../commonElements'
 import { TokenListItem } from '../TokenListItem'
 
-const TokensWrapper = styled(CommonListContainer)``
-
-const TokensInner = styled.div`
-  width: 100%;
-  position: relative;
-`
-
-const LoadingRows = styled(BaseLoadingRows)`
-  grid-column-gap: 0.5em;
-  grid-template-columns: repeat(12, 1fr);
-  max-width: 960px;
-  padding: 12px 20px;
-
-  & > div:nth-child(4n + 1) {
-    grid-column: 1 / 8;
-    height: 1em;
-    margin-bottom: 0.25em;
-  }
-  & > div:nth-child(4n + 2) {
-    grid-column: 12;
-    height: 1em;
-    margin-top: 0.25em;
-  }
-  & > div:nth-child(4n + 3) {
-    grid-column: 1 / 4;
-    height: 0.75em;
-  }
-`
-
 const estimateSize = () => 56
+const threeDivs = () => (
+  <>
+    <div />
+    <div />
+    <div />
+  </>
+)
 
 const scrollDelay = ms`400ms`
 
-export interface TokensVirtualListProps {
+export interface TokensVirtualListProps extends SelectTokenContext {
   allTokens: TokenWithLogo[]
-  selectedToken?: string
-  balances: TokenAmounts | null
-  unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
-  permitCompatibleTokens: { [tokenAddress: string]: boolean }
-  onSelectToken(token: TokenWithLogo): void
 }
 
 export function TokensVirtualList(props: TokensVirtualListProps) {
   const { allTokens, selectedToken, balances, onSelectToken, unsupportedTokens, permitCompatibleTokens } = props
-
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -86,21 +58,15 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { virtualItems } = virtualizer
 
   return (
-    <TokensWrapper ref={parentRef} onScroll={onScroll}>
-      <TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
+    <CommonListContainer ref={parentRef} onScroll={onScroll}>
+      <styledEl.TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
         {virtualItems.map((virtualRow) => {
           const token = sortedTokens[virtualRow.index]
           const addressLowerCase = token.address.toLowerCase()
           const balance = balances ? balances[token.address] : null
 
           if (balance?.loading) {
-            return (
-              <LoadingRows key={virtualRow.key}>
-                <div />
-                <div />
-                <div />
-              </LoadingRows>
-            )
+            return <styledEl.LoadingRows key={virtualRow.key}>{threeDivs()}</styledEl.LoadingRows>
           }
 
           return (
@@ -116,25 +82,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
             />
           )
         })}
-      </TokensInner>
-    </TokensWrapper>
+      </styledEl.TokensInner>
+    </CommonListContainer>
   )
-}
-
-const nativeTokenAddress = NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase()
-
-function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: TokenWithLogo) => number {
-  return (a: TokenWithLogo, b: TokenWithLogo) => {
-    const aBalance = balances[a.address]
-    const bBalance = balances[b.address]
-
-    // Native always first
-    if (a.address.toLowerCase() === nativeTokenAddress || b.address.toLowerCase() === nativeTokenAddress) return 1
-
-    if (aBalance?.value && bBalance?.value) {
-      return +bBalance.value.toExact() - +aBalance.value.toExact()
-    }
-
-    return 0
-  }
 }

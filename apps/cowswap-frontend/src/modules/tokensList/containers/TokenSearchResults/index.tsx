@@ -1,12 +1,10 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useNetworkName } from '@cowprotocol/common-hooks'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
 
 import styled from 'styled-components/macro'
-
-import { TokenAmounts } from 'modules/tokens'
 
 import { UI } from 'common/constants/theme'
 
@@ -15,6 +13,7 @@ import { CommonListContainer } from '../../pure/commonElements'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenListItem } from '../../pure/TokenListItem'
 import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
+import { SelectTokenContext } from '../../types'
 
 const Wrapper = styled(CommonListContainer)``
 
@@ -27,13 +26,9 @@ const TokenNotFound = styled.div`
 
 const searchResultsLimit = 10
 
-export interface TokenSearchResultsProps {
+export interface TokenSearchResultsProps extends SelectTokenContext {
+  isEnterPressed: boolean
   searchInput: string
-  balances: TokenAmounts | null
-  selectedToken?: string
-  onSelectToken(token: TokenWithLogo): void
-  unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
-  permitCompatibleTokens: { [tokenAddress: string]: boolean }
 }
 
 export function TokenSearchResults({
@@ -43,6 +38,7 @@ export function TokenSearchResults({
   onSelectToken,
   unsupportedTokens,
   permitCompatibleTokens,
+  isEnterPressed,
 }: TokenSearchResultsProps) {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
     useSearchToken(searchInput)
@@ -65,6 +61,15 @@ export function TokenSearchResults({
 
     return searchCount === 0
   }, [isLoading, searchCount])
+
+  // On press Enter, select first token if only one token is found or it's fully matches to the search input
+  useEffect(() => {
+    if (!isEnterPressed || !searchInput || !activeListsResult) return
+
+    if (activeListsResult.length === 1 || doesTokenMatchSymbolOrAddress(activeListsResult[0], searchInput)) {
+      onSelectToken(activeListsResult[0])
+    }
+  }, [isEnterPressed, searchInput, activeListsResult, onSelectToken])
 
   if (isTokenNotFound) return <TokenNotFound>No tokens found for this name in {networkName}</TokenNotFound>
 

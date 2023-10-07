@@ -12,6 +12,7 @@ import { useBalancesForTokensList } from '../../hooks/useBalancesForTokensList'
 import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
 import { TokensVirtualList } from '../../pure/TokensVirtualList'
+import { SelectTokenContext } from '../../types'
 import { TokenSearchResults } from '../TokenSearchResults'
 
 export interface SelectTokenModalProps {
@@ -39,17 +40,23 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
+  const [isEnterPressed, setIsEnterPressed] = useState<boolean>(false)
 
   const unsupportedTokens = useUnsupportedTokens()
 
   const balances = useBalancesForTokensList(allTokens)
 
-  const commonProps = {
-    permitCompatibleTokens,
-    unsupportedTokens,
-    onSelectToken,
-    selectedToken,
+  const handleEnterPress = () => {
+    setIsEnterPressed(true)
+    setTimeout(() => setIsEnterPressed(false), 100)
+  }
+
+  const selectTokenContext: SelectTokenContext = {
     balances,
+    selectedToken,
+    onSelectToken,
+    unsupportedTokens,
+    permitCompatibleTokens,
   }
 
   return (
@@ -63,6 +70,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       <styledEl.Row>
         <styledEl.SearchInput
           value={inputValue}
+          onKeyDown={(e) => e.key === 'Enter' && handleEnterPress()}
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
           placeholder="Search name or past address"
@@ -73,9 +81,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       </styledEl.Row>
       <styledEl.Separator />
       {inputValue ? (
-        <TokenSearchResults searchInput={inputValue} {...commonProps} />
+        <TokenSearchResults searchInput={inputValue} isEnterPressed={isEnterPressed} {...selectTokenContext} />
       ) : (
-        <TokensVirtualList allTokens={allTokens} {...commonProps} />
+        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} />
       )}
       <styledEl.Separator />
       <div>
