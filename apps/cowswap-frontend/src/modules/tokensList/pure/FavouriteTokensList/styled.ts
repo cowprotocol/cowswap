@@ -38,12 +38,4 @@ export const TokensItem = styled.button`
   :hover {
     background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
   }
-
-  > img {
-    --size: 24px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-    background: var(${UI.COLOR_LIGHT_BLUE});
-  }
 `

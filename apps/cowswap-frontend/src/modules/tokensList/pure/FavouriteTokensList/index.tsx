@@ -5,6 +5,8 @@ import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import * as styledEl from './styled'
 
+import { TokenLogo } from '../TokenLogo'
+
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]
   selectedToken?: string
@@ -26,7 +28,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
 
           return (
             <styledEl.TokensItem key={token.address} disabled={isTokenSelected} onClick={() => onSelectToken(token)}>
-              <img src={token.logoURI} alt={token.name} />
+              <TokenLogo token={token} size={24} />
               <TokenSymbol token={token} />
             </styledEl.TokensItem>
           )

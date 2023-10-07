@@ -21,7 +21,7 @@ export const USDT = new TokenWithLogo(
   'Tether USD'
 )
 export const WBTC = new TokenWithLogo(
-  cowprotocolTokenUrl('0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', SupportedChainId.MAINNET),
+  cowprotocolTokenUrl('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   8,
@@ -30,7 +30,7 @@ export const WBTC = new TokenWithLogo(
 )
 
 export const USDC_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', SupportedChainId.MAINNET),
+  cowprotocolTokenUrl('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   6,
@@ -39,7 +39,7 @@ export const USDC_MAINNET = new TokenWithLogo(
 )
 
 export const DAI = new TokenWithLogo(
-  cowprotocolTokenUrl('0x6B175474E89094C44Da98b954EedeAC495271d0F', SupportedChainId.MAINNET),
+  cowprotocolTokenUrl('0x6b175474e89094c44da98b954eedeac495271d0f', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   18,
@@ -58,7 +58,7 @@ const GNO_MAINNET = new TokenWithLogo(
 
 const weth9Mainnet = WETH9[SupportedChainId.MAINNET]
 export const WETH_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl(weth9Mainnet.address, SupportedChainId.MAINNET),
+  cowprotocolTokenUrl(weth9Mainnet.address.toLowerCase(), SupportedChainId.MAINNET),
   weth9Mainnet.chainId,
   weth9Mainnet.address,
   weth9Mainnet.decimals,

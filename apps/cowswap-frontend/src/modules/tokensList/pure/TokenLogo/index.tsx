@@ -31,20 +31,34 @@ export function TokenLogo({ logoURI: _logoURI, token, className, size = 36 }: To
   const logoURI = _logoURI || token?.logoURI
 
   const urls = useMemo(() => {
-    const fallbackUrl = token ? cowprotocolTokenUrl(token.address, token.chainId as SupportedChainId) : null
+    // TODO: all images should be stored in the same format (lowercase)
+    const fallbackUrls = token
+      ? [
+          cowprotocolTokenUrl(token.address, token.chainId as SupportedChainId),
+          cowprotocolTokenUrl(token.address.toLowerCase(), token.chainId as SupportedChainId),
+        ]
+      : []
 
     if (!logoURI) {
-      return fallbackUrl ? [fallbackUrl] : []
+      return fallbackUrls
     }
 
-    return uriToHttp(logoURI)
-      .filter((url) => !invalidUrls[url])
-      .concat(fallbackUrl || [])
-  }, [logoURI, token, invalidUrls])
+    const urls = uriToHttp(logoURI)
 
-  const currentUrl = urls[0]
+    if (fallbackUrls.length) {
+      urls.push(...fallbackUrls.filter((url) => !urls.includes(url)))
+    }
 
-  const onError = () => setInvalidUrls({ ...invalidUrls, [currentUrl]: true })
+    return urls
+  }, [logoURI, token])
+
+  const validUrls = useMemo(() => urls.filter((url) => !invalidUrls[url]), [urls, invalidUrls])
+
+  const currentUrl = validUrls[0]
+
+  const onError = () => {
+    setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
+  }
 
   return (
     <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
