@@ -5,10 +5,10 @@ import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/commo
 import { isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
+import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
-import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'

@@ -1,15 +1,12 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useUnsupportedTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
-import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 
 import { shallowEqual } from 'react-redux'
-import { Nullish } from 'types'
 
 import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
@@ -118,52 +115,6 @@ export function useTokensListWithDefaults(): TokenInfo[] {
 export function useIsListActive(url: string): boolean {
   const activeListUrls = useActiveListUrls()
   return Boolean(activeListUrls?.includes(url))
-}
-
-export function useIsUnsupportedToken() {
-  const unsupportedTokens = useUnsupportedTokens()
-
-  return useCallback(
-    (address?: string) => {
-      const state = address && unsupportedTokens[address.toLowerCase()]
-
-      if (state) {
-        return {
-          ...state,
-          address,
-        }
-      }
-      return false
-    },
-    [unsupportedTokens]
-  )
-}
-
-export function useIsUnsupportedTokens() {
-  const unsupportedTokens = useUnsupportedTokens()
-
-  return useCallback(
-    ({ sellToken, buyToken }: { sellToken: Nullish<string>; buyToken: Nullish<string> }) => {
-      if (!unsupportedTokens) return false
-
-      return !!(
-        (sellToken && unsupportedTokens[sellToken.toLowerCase()]) ||
-        (buyToken && unsupportedTokens[buyToken.toLowerCase()])
-      )
-    },
-    [unsupportedTokens]
-  )
-}
-
-export function useIsTradeUnsupported(
-  inputCurrency: Currency | null | undefined,
-  outputCurrency: Currency | null | undefined
-): boolean {
-  const isUnsupportedToken = useIsUnsupportedToken()
-  const isInputCurrencyUnsupported = inputCurrency?.isNative ? false : !!isUnsupportedToken(inputCurrency?.address)
-  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !!isUnsupportedToken(outputCurrency?.address)
-
-  return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
 }
 
 export function useInactiveListUrls(): string[] {

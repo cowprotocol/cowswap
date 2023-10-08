@@ -10,10 +10,9 @@ import {
   getQuoteUnsupportedToken,
 } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
-import { useAddUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
+import { useAddUnsupportedToken, useIsUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { QuoteError } from 'legacy/state/price/actions'
 import { useQuoteDispatchers } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'

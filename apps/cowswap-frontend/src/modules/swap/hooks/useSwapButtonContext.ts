@@ -1,3 +1,4 @@
+import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
@@ -9,7 +10,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'

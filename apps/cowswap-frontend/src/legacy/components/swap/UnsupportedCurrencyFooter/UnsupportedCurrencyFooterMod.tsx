@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { ButtonEmpty } from '@cowprotocol/ui'
 import { AutoRow, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -12,7 +13,6 @@ import styled from 'styled-components/macro'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { useIsUnsupportedToken } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
