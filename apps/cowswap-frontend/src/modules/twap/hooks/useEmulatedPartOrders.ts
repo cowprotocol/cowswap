@@ -7,8 +7,6 @@ import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-
 import { twapOrdersAtom, TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'

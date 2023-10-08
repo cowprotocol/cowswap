@@ -4,7 +4,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { SelectTokenWidget } from 'modules/tokensList'
 
-import { ImportTokenModal } from 'common/containers/ImportTokenModal'
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -18,7 +17,8 @@ export function TradeWidgetModals() {
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} />}
+      {/*TODO: Refactor this to use the new tokens lib*/}
+      {/*{chainId && <ImportTokenModal chainId={chainId} />}*/}
       {shouldZeroApprove && <ZeroApprovalModal />}
       <TradeApproveModal />
       <SelectTokenWidget />

@@ -8,8 +8,6 @@ import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 

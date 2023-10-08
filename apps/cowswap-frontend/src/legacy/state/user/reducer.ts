@@ -67,13 +67,6 @@ export interface UserState {
   showSurveyPopup: boolean | undefined
 
   showDonationLink: boolean
-
-  // mod, favourite tokens
-  favouriteTokens: {
-    [chainId: number]: {
-      [address: string]: SerializedToken
-    }
-  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -105,13 +98,6 @@ function _initialStatePerChain(chainId: number) {
 
 const ALL_SUPPORTED_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN, SupportedChainId.GOERLI]
 
-function _initialSavedTokensState() {
-  return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
-    acc[chain] = _initialStatePerChain(chain)
-    return acc
-  }, {} as UserState['favouriteTokens'])
-}
-
 export const initialState: UserState = {
   selectedWallet: undefined,
   selectedWalletBackfilled: false,
@@ -132,8 +118,6 @@ export const initialState: UserState = {
   URLWarningVisible: true,
   showSurveyPopup: undefined,
   showDonationLink: true,
-  // mod, favourite tokens
-  favouriteTokens: _initialSavedTokensState(),
 }
 
 const userSlice = createSlice({
@@ -223,27 +207,6 @@ const userSlice = createSlice({
       state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     },
-    initFavouriteTokens(state, { payload: { chainId } }) {
-      if (!state.favouriteTokens?.[chainId]) {
-        state.favouriteTokens = _initialSavedTokensState()
-      }
-    },
-    toggleFavouriteToken(state, { payload: { serializedToken } }) {
-      const { chainId, address } = serializedToken
-
-      if (!state.favouriteTokens?.[chainId]) {
-        state.favouriteTokens = _initialSavedTokensState()
-      }
-
-      if (!state.favouriteTokens[chainId][address]) {
-        state.favouriteTokens[chainId][address] = serializedToken
-      } else {
-        delete state.favouriteTokens[chainId][address]
-      }
-    },
-    removeAllFavouriteTokens(state, { payload: { chainId } }) {
-      state.favouriteTokens[chainId] = _initialStatePerChain(chainId)
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(updateVersion, (state) => {
@@ -284,25 +247,14 @@ const userSlice = createSlice({
 
 export const {
   updateSelectedWallet,
-  addSerializedPair,
   addSerializedToken,
-  removeSerializedPair,
   removeSerializedToken,
-  updateHideClosedPositions,
   updateMatchesDarkMode,
-  updateShowDonationLink,
-  updateShowSurveyPopup,
-  updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
-  // MOD - legacy Uni code we want to keep
   updateRecipientToggleVisible,
-  toggleURLWarning,
-  toggleFavouriteToken,
-  removeAllFavouriteTokens,
-  initFavouriteTokens,
 } = userSlice.actions
 export default userSlice.reducer

@@ -7,7 +7,6 @@ import { MulticallUpdater } from 'legacy/state/multicall'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
-import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
@@ -17,7 +16,6 @@ import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
-import { ListsUpdater } from 'common/updaters/ListsUpdater'
 import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
@@ -38,8 +36,6 @@ export function Updaters() {
     <>
       <WalletUpdater />
       <HwAccountIndexUpdater />
-      <TokensListUpdater />
-      <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
       <FinalizeTxUpdater />

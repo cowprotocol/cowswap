@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -39,7 +39,7 @@ import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallbac
 import { ConfirmOperationType } from '../../state/types'
 
 type DataRowParams = {
-  tokenData: Token
+  tokenData: TokenWithLogo
   index: number
   balance?: CurrencyAmount<Token> | undefined
   closeModals: () => void

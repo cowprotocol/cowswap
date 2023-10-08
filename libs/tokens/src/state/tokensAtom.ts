@@ -7,6 +7,11 @@ import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-co
 import { tokenMapToList } from '../utils/tokenMapToList'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { favouriteTokensAtom } from './favouriteTokensAtom'
+
+export type TokensByAddress = { [address: string]: TokenWithLogo }
+
+export type TokensBySymbol = { [address: string]: TokenWithLogo[] }
 
 export type TokensState = { activeTokens: TokensMap; inactiveTokens: TokensMap }
 
@@ -23,10 +28,16 @@ const { atom: tokensAtomsByChainId, updateAtom: updateTokensAtom } = atomWithPar
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
+  const favouriteTokensState = get(favouriteTokensAtom)
+
   const tokensMap = get(tokensAtomsByChainId)[chainId]
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
-  const tokens = tokenMapToList({ ...tokensMap.activeTokens, ...userAddedTokens[chainId] })
+  const tokens = tokenMapToList({
+    ...tokensMap.activeTokens,
+    ...userAddedTokens[chainId],
+    ...favouriteTokensState[chainId],
+  })
 
   tokens.unshift(nativeToken)
 
@@ -44,4 +55,25 @@ export const setTokensAtom = atom(null, (get, set, state: TokensState) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
 
   set(updateTokensAtom, { [chainId]: state })
+})
+
+export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
+  return get(activeTokensAtom).reduce<TokensByAddress>((acc, token) => {
+    acc[token.address.toLowerCase()] = token
+    return acc
+  }, {})
+})
+
+export const tokensBySymbolAtom = atom<TokensBySymbol>((get) => {
+  return get(activeTokensAtom).reduce<TokensBySymbol>((acc, token) => {
+    if (!token.symbol) return acc
+
+    const symbol = token.symbol.toLowerCase()
+
+    acc[symbol] = acc[symbol] || []
+
+    acc[symbol].push(token)
+
+    return acc
+  }, {})
 })

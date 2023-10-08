@@ -3,8 +3,6 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { TokensByAddress } from '../state/tokensListAtom'
-
 export function getTokensByAddress(
   chainId: SupportedChainId,
   tokenId: string,

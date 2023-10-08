@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { useAllTokens, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 
-import { ContentWrapper as SearchInputFormatter } from 'legacy/components/SearchModal/CurrencySearch'
-import { TokenSearchInput } from 'legacy/components/Tokens/styled'
 import TokensTable from 'legacy/components/Tokens/TokensTable'
-import { useAllTokenBalances, useAllTokens } from 'legacy/hooks/Tokens'
-import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens } from 'legacy/state/user/hooks'
+import { useAllTokenBalances } from 'legacy/hooks/Tokens'
 import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -31,6 +29,8 @@ import {
   LeftSection,
   ClearSearchInput,
   Overview,
+  SearchInputFormatter,
+  TokenSearchInput,
 } from './styled'
 
 import { CardsLoader, CardsSpinner } from '../styled'
@@ -50,7 +50,6 @@ const PageView = {
 }
 
 export default function TokensOverview() {
-  useInitFavouriteTokens()
   const { chainId, account } = useWalletInfo()
   const { provider } = useWeb3React()
 
@@ -76,7 +75,7 @@ export default function TokensOverview() {
   const debouncedQuery = useDebounce(query, 300)
   const prevQuery = usePrevious(debouncedQuery)
 
-  const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
+  const removeAllFavouriteTokens = useResetFavouriteTokens()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const handleRestoreTokens = useCallback(() => {
@@ -98,7 +97,7 @@ export default function TokensOverview() {
   useOnClickOutside(node, isMenuOpen ? toggleMenu : undefined)
 
   const renderTableContent = useCallback(() => {
-    let tokensData: Token[] = []
+    let tokensData: TokenWithLogo[] = []
 
     if (selectedView === PageViewKeys.ALL_TOKENS) {
       tokensData = formattedTokens

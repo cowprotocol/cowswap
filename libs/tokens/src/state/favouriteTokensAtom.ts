@@ -33,7 +33,7 @@ const tokensListToMap = (list: TokenWithLogo[]) =>
     return acc
   }, {})
 
-export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>('favouriteTokensAtom:v1', {
+export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   [SupportedChainId.MAINNET]: tokensListToMap([
     DAI,
     COW[SupportedChainId.MAINNET],
@@ -56,7 +56,12 @@ export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, Toke
     DAI_GOERLI,
     USDC_GOERLI,
   ]),
-})
+}
+
+export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
+  'favouriteTokensAtom:v1',
+  DEFAULT_FAVOURITE_TOKENS
+)
 
 export const favouriteTokensListAtom = atom((get) => {
   const { chainId } = get(tokensListsEnvironmentAtom)
@@ -65,4 +70,26 @@ export const favouriteTokensListAtom = atom((get) => {
   return Object.values(favouriteTokensState[chainId]).map(
     (token) => new TokenWithLogo(token.logoURI, token.chainId, token.address, token.decimals, token.symbol, token.name)
   )
+})
+
+export const resetFavouriteTokensAtom = atom(null, (get, set) => {
+  set(favouriteTokensAtom, { ...DEFAULT_FAVOURITE_TOKENS })
+})
+
+export const toggleFavouriteTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
+  const { chainId } = get(tokensListsEnvironmentAtom)
+  const favouriteTokensState = get(favouriteTokensAtom)
+  const state = { ...favouriteTokensState[chainId] }
+  const tokenKey = token.address.toLowerCase()
+
+  if (state[tokenKey]) {
+    delete state[tokenKey]
+  } else {
+    state[tokenKey] = { ...token, name: token.name || '', symbol: token.symbol || '' }
+  }
+
+  set(favouriteTokensAtom, {
+    ...favouriteTokensState,
+    [chainId]: state,
+  })
 })

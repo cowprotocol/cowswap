@@ -1,5 +1,6 @@
 import { isTruthy } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { tokensByAddressAtom } from '@cowprotocol/tokens'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'
@@ -10,7 +11,6 @@ import { batchCancelOrdersPopup } from 'legacy/state/orders/middleware/batchCanc
 
 import { setTwapOrderStatusAtom, twapOrdersAtom } from './twapOrdersListAtom'
 
-import { tokensByAddressAtom } from '../../tokensList/state/tokensListAtom'
 import { TwapOrderStatus } from '../types'
 import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 

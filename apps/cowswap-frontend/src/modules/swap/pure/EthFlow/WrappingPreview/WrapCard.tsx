@@ -5,8 +5,6 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
-
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
@@ -24,7 +22,7 @@ interface WrapCardProps {
 
 export function WrapCard(props: WrapCardProps) {
   const { balance, amountToWrap, currency, chainId } = props
-  const hasLogoUri = currency.isNative || Boolean(currency instanceof WrappedTokenInfo && currency.logoURI)
+  const hasLogoUri = currency.isNative || Boolean((currency as never)['logoURI'])
 
   return (
     <styledEl.WrapCardWrapper>
