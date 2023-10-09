@@ -6649,11 +6649,6 @@
     "@typescript-eslint/types" "6.2.0"
     eslint-visitor-keys "^3.4.1"
 
-"@uniswap/default-token-list@^11.5.0":
-  version "11.5.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/default-token-list/-/default-token-list-11.5.0.tgz#a9c26837aa8ac179f23e7f5a13b5549c25238e61"
-  integrity sha512-ZlZZf9nFQze8aprGRZRmE+4wc0SzHpfGrlNwbp7ChP8Ajlrr72Ed+axO41shb65yEx2CxXn7twITVfw3/Ks61w==
-
 "@uniswap/redux-multicall@^1.1.5":
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/@uniswap/redux-multicall/-/redux-multicall-1.1.8.tgz#9cc5090305b10df68fb6162eb1ba7c2c762f5e7f"
