@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -33,7 +33,7 @@ export function useIsTokenPermittable(
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
-  const lowerCaseAddress = token?.wrapped?.address?.toLowerCase()
+  const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
   const tokenName = token?.name || lowerCaseAddress || ''
 

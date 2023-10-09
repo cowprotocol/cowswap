@@ -1,7 +1,7 @@
 import { Erc20, Weth } from '@cowprotocol/abis'
-import { GpEther as ETHER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
-import { calculateValidTo, getAddress } from '@cowprotocol/common-utils'
+import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -196,12 +196,11 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     return null
   }
 
-  const isBuyEth = ETHER.onChain(chainId).equals(trade.outputAmount.currency)
   const isGnosisSafeWallet = !!gnosisSafeInfo
 
-  const buyToken = isBuyEth
+  const buyToken = getIsNativeToken(trade.outputAmount.currency)
     ? NATIVE_CURRENCY_BUY_TOKEN[chainId as SupportedChainId]
-    : trade.outputAmount.currency.wrapped
+    : trade.outputAmount.currency
   const marketLabel = [sellToken?.symbol, buyToken.symbol].join(',')
 
   if (!sellToken || !buyToken) {

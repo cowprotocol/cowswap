@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useTokenContract, usePrevious } from '@cowprotocol/common-hooks'
-import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -225,7 +225,7 @@ export function useApproveCallback({
             addTransaction({
               hash: response.hash,
               summary: optionalParams?.transactionSummary || `Revoke ${token.symbol} approval from ${spender}`,
-              approval: { tokenAddress: token.wrapped.address, spender },
+              approval: { tokenAddress: getWrappedToken(token).address, spender },
             })
           })
           // .catch((error: Error) => {

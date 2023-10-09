@@ -150,59 +150,6 @@ export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
 }
 
-export class ExtendedEther extends Ether {
-  public get wrapped(): Token {
-    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
-    if (wrapped) return wrapped
-    throw new Error('Unsupported chain ID')
-  }
-
-  private static _cachedExtendedEther: { [chainId: number]: NativeCurrency } = {}
-
-  public static onChain(chainId: number): ExtendedEther {
-    return this._cachedExtendedEther[chainId] ?? (this._cachedExtendedEther[chainId] = new ExtendedEther(chainId))
-  }
-}
-
-function isGnosisChain(chainId: number): chainId is SupportedChainId.GNOSIS_CHAIN {
-  return chainId === SupportedChainId.GNOSIS_CHAIN
-}
-
-class GnosisChainNativeCurrency extends NativeCurrency {
-  equals(other: Currency): boolean {
-    return other.isNative && other.chainId === this.chainId
-  }
-
-  get wrapped(): Token {
-    if (!isGnosisChain(this.chainId)) throw new Error('Not Gnosis Chain')
-    return WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
-  }
-
-  public constructor(chainId: number) {
-    if (!isGnosisChain(chainId)) throw new Error('Not Gnosis Chain')
-    super(chainId, 18, XDAI_SYMBOL, XDAI_NAME)
-  }
-}
-
-const cachedNativeCurrency: { [chainId: number]: NativeCurrency } = {}
-export function nativeOnChain(chainId: number): NativeCurrency {
-  return (
-    cachedNativeCurrency[chainId] ??
-    (cachedNativeCurrency[chainId] = isGnosisChain(chainId)
-      ? new GnosisChainNativeCurrency(chainId)
-      : ExtendedEther.onChain(chainId))
-  )
-}
-
-export class GpEther extends Ether {
-  public get wrapped(): Token {
-    if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
-    throw new Error('Unsupported chain ID')
-  }
-
-  public static onChain = nativeOnChain
-}
-
 export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedChainId]?: string } } = {
   USDC: {
     [SupportedChainId.MAINNET]: USDC_MAINNET.address,

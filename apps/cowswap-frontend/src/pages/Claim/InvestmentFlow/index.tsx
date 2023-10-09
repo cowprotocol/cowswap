@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
 import RoundArrow from '@cowprotocol/assets/cow-swap/round-arrow.svg'
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -109,7 +110,7 @@ function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
 
   // Sum up all the vCowAmount being claimed
   return allClaims.reduce<typeof zeroVCow>(
-    (total, { vCowAmount }) => total.add(vCowAmount?.wrapped || zeroVCow),
+    (total, { vCowAmount }) => total.add(currencyAmountToTokenAmount(vCowAmount) || zeroVCow),
     zeroVCow
   )
 }

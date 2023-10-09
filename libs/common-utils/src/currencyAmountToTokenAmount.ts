@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { getIsNativeToken } from './getIsNativeToken'
+import { getWrappedToken } from './getWrappedToken'
 
 export function currencyAmountToTokenAmount(
   amount: CurrencyAmount<Currency> | null | undefined
@@ -10,5 +11,5 @@ export function currencyAmountToTokenAmount(
     return amount as CurrencyAmount<Token>
   }
 
-  return CurrencyAmount.fromFractionalAmount(amount.currency.wrapped, amount.numerator, amount.denominator)
+  return CurrencyAmount.fromFractionalAmount(getWrappedToken(amount.currency), amount.numerator, amount.denominator)
 }

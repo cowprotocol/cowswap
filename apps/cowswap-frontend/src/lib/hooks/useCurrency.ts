@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { TOKEN_SHORTHANDS } from '@cowprotocol/common-const'
 import { useBytes32TokenContract, useTokenContract } from '@cowprotocol/common-hooks'
-import { isAddress } from '@cowprotocol/common-utils'
+import { getWrappedToken, isAddress } from '@cowprotocol/common-utils'
 import { isChainAllowed, useWalletInfo } from '@cowprotocol/wallet'
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
@@ -114,7 +114,7 @@ export function useCurrencyFromMap(tokens: TokenMap, currencyId?: string | null)
   if (currencyId === null || currencyId === undefined || !chainAllowed) return null
 
   // this case so we use our builtin wrapped token instead of wrapped tokens on token lists
-  const wrappedNative = nativeCurrency?.wrapped
+  const wrappedNative = getWrappedToken(nativeCurrency)
   if (wrappedNative?.address?.toUpperCase() === currencyId?.toUpperCase()) return wrappedNative
 
   return isNative ? nativeCurrency : token

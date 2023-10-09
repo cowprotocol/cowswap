@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 
 import { addTokenToMetamaskAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getIsMetaMask } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -23,7 +24,7 @@ export function AddToMetamask(props: AddToMetamaskProps) {
 
   const [success, setSuccess] = useState<boolean | undefined>()
 
-  const token = currency?.wrapped
+  const token = currency && getWrappedToken(currency)
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {

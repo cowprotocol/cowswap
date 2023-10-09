@@ -41,27 +41,14 @@ export const WRAPPED_NATIVE_CURRENCY: Record<SupportedChainId, TokenWithLogo> = 
 }
 
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
-  [ChainId.MAINNET]: nativeTokenWithCustomWrapped(ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GOERLI]: nativeTokenWithCustomWrapped(ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GNOSIS_CHAIN]: nativeTokenWithCustomWrapped(
+  [ChainId.MAINNET]: new TokenWithLogo(undefined, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.GOERLI]: new TokenWithLogo(undefined, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.GNOSIS_CHAIN]: new TokenWithLogo(
+    undefined,
     ChainId.GNOSIS_CHAIN,
     NATIVE_CURRENCY_BUY_ADDRESS,
     18,
     'xDAI',
     'xDAI'
   ),
-}
-
-function nativeTokenWithCustomWrapped(
-  chainId: ChainId,
-  address: string,
-  decimals: number,
-  symbol: string,
-  name: string
-): TokenWithLogo {
-  const token = new TokenWithLogo(undefined, chainId, address, decimals, symbol, name)
-
-  token.customWrapped = WRAPPED_NATIVE_CURRENCY[chainId]
-
-  return token
 }

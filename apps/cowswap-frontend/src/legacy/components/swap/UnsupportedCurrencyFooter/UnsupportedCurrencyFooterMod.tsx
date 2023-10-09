@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { ButtonEmpty } from '@cowprotocol/ui'
 import { AutoRow, RowBetween } from '@cowprotocol/ui'
@@ -73,7 +73,7 @@ export default function UnsupportedCurrencyFooter({
   const tokens =
     chainId && currencies
       ? currencies.map((currency) => {
-          return currency?.wrapped
+          return currency && getWrappedToken(currency)
         })
       : []
 
