@@ -1,6 +1,6 @@
 export * from './hooks/useAccountAgnosticPermitHookData'
-export * from './hooks/useCheckHasValidPendingPermit'
 export * from './hooks/useGeneratePermitHook'
+export * from './hooks/useIsTokenPermittable'
 export * from './hooks/useOrdersPermitStatus'
 export * from './types'
 export * from './updaters/PendingPermitUpdater'
