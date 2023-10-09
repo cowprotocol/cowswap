@@ -23,7 +23,7 @@ import {
   TableRowCheckboxWrapper,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
-import { CheckHasValidPendingPermit } from 'modules/permit'
+import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
@@ -206,7 +206,7 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
-  checkHasValidPendingPermit: CheckHasValidPendingPermit
+  ordersPermitStatus: OrdersPermitStatus
 }
 
 export function OrdersTable({
@@ -220,7 +220,7 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
-  checkHasValidPendingPermit,
+  ordersPermitStatus,
 }: OrdersTableProps) {
   const location = useLocation()
   const [isRateInverted, setIsRateInverted] = useState(false)
@@ -412,6 +412,10 @@ export function OrdersTable({
               if (isParsedOrder(item)) {
                 const order = item
 
+                const orderParams = getOrderParams(chainId, balancesAndAllowances, order)
+
+                const hasValidPendingPermit = ordersPermitStatus[order.id]
+
                 return (
                   <OrderRow
                     key={order.id}
@@ -421,11 +425,11 @@ export function OrdersTable({
                     order={order}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
-                    orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                    orderParams={orderParams}
                     isRateInverted={isRateInverted}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
-                    checkHasValidPendingPermit={checkHasValidPendingPermit}
+                    hasValidPendingPermit={hasValidPendingPermit}
                   />
                 )
               } else {

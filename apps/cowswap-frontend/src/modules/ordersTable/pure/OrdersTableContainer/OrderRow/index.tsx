@@ -24,7 +24,6 @@ import {
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
-import { CheckHasValidPendingPermit } from 'modules/permit'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -149,7 +148,7 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: () => void
   orderActions: OrderActions
-  checkHasValidPendingPermit?: CheckHasValidPendingPermit | undefined
+  hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
 }
 
@@ -166,7 +165,7 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
-  checkHasValidPendingPermit,
+  hasValidPendingPermit,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -175,15 +174,6 @@ export function OrderRow({
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
-
-  const [hasValidPendingPermit, setHasValidPendingPermit] = useState<boolean | undefined>(undefined)
-
-  // TODO: do this properly! Maybe an atom & updater on modules/permit and consume it from there?
-  useEffect(() => {
-    if (checkHasValidPendingPermit && orderParams.hasEnoughAllowance === false) {
-      checkHasValidPendingPermit(order).then(setHasValidPendingPermit)
-    }
-  }, [checkHasValidPendingPermit, order, orderParams.hasEnoughAllowance])
 
   const withWarning =
     (hasEnoughBalance === false || (hasEnoughAllowance === false && hasValidPendingPermit === false)) &&

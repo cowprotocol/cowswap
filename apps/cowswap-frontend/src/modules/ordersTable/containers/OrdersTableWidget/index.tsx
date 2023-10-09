@@ -17,7 +17,7 @@ import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceipt
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
-import { useCheckHasValidPendingPermit } from 'modules/permit'
+import { useGetOrdersPermitStatus } from 'modules/permit'
 import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -78,7 +78,7 @@ export function OrdersTableWidget({
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
-  const checkHasValidPendingPermit = useCheckHasValidPendingPermit()
+  const ordersPermitStatus = useGetOrdersPermitStatus()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -174,7 +174,7 @@ export function OrdersTableWidget({
           allowsOffchainSigning={allowsOffchainSigning}
           orderType={orderType}
           pendingActivities={pendingActivity}
-          checkHasValidPendingPermit={checkHasValidPendingPermit}
+          ordersPermitStatus={ordersPermitStatus}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>

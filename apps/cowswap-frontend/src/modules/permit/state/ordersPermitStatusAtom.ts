@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
-export type OrdersPermitStatus = Record<string, boolean | undefined>
+import { OrdersPermitStatus } from '../types'
 
 export const ordersPermitStatusAtom = atomWithReset<OrdersPermitStatus>({})
 
