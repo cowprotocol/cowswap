@@ -2,7 +2,7 @@ const GNO = '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532'
 
 describe('Swap (mod)', () => {
   beforeEach(() => {
-    cy.visit('/#/swap')
+    cy.visit('/#/5/swap')
   })
 
   it('starts with wrapped native selected', () => {
