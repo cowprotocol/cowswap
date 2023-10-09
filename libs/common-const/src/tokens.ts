@@ -1,16 +1,12 @@
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
 import cowLogo from '@cowprotocol/assets/cow-swap/cow.svg'
-import gnoLogo from '@cowprotocol/assets/cow-swap/gno.png'
-import usdcLogo from '@cowprotocol/assets/cow-swap/usdc.png'
 import vCowLogo from '@cowprotocol/assets/cow-swap/vCOW.png'
-import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
 import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
-import { WETH_MAINNET, WRAPPED_NATIVE_CURRENCY, WXDAI } from './nativeAndWrappedTokens'
+import { WETH_MAINNET } from './nativeAndWrappedTokens'
 
 // Mainnet
 export const USDT = new TokenWithLogo(
@@ -158,12 +154,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
   },
 }
 
-function getTrustImage(mainnetAddress: string): string {
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${mainnetAddress}/logo.png`
-}
-
-const WETH_ADDRESS_MAINNET = WETH9[SupportedChainId.MAINNET].address
-
 /**
  * vCow token
  */
@@ -250,31 +240,6 @@ export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
   'EURe',
   'Monerium EUR emoney'
 )
-
-export const ADDRESS_IMAGE_OVERRIDE = {
-  // Goerli
-  [DAI_GOERLI.address]: getTrustImage(DAI.address),
-  [USDC_GOERLI.address]: getTrustImage(USDC_MAINNET.address),
-  [USDT_GOERLI.address]: getTrustImage(USDT.address),
-  [WBTC_GOERLI.address]: getTrustImage(WBTC.address),
-  [WETH9[SupportedChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
-  [V_COW_TOKEN_GOERLI.address]: vCowLogo,
-  [COW_TOKEN_GOERLI.address]: cowLogo,
-  [GNO_GOERLI.address]: gnoLogo,
-  [USDC_GOERLI.address]: usdcLogo,
-  [USDC_GNOSIS_CHAIN.address]: getTrustImage(USDC_MAINNET.address),
-  [WBTC_GNOSIS_CHAIN.address]: getTrustImage(WBTC.address),
-  [WXDAI.address]: wxDaiLogo,
-  [WETH_GNOSIS_CHAIN.address]: getTrustImage(WETH_ADDRESS_MAINNET),
-  [V_COW_TOKEN_XDAI.address]: vCowLogo,
-  [COW_TOKEN_XDAI.address]: cowLogo,
-  [GNO_GNOSIS_CHAIN.address]: gnoLogo,
-  [USDC_GNOSIS_CHAIN.address]: usdcLogo,
-  // Mainnet
-  [V_COW_TOKEN_MAINNET.address]: vCowLogo,
-  [COW_TOKEN_MAINNET.address]: cowLogo,
-  [WETH9[SupportedChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
-}
 
 /**
  * Addresses related to COW vesting for Locked GNO
