@@ -41,7 +41,7 @@ export function ManageLists(props: ManageListsProps) {
           />
         </styledEl.ImportListsContainer>
       )}
-      <styledEl.ListsContainer>
+      <styledEl.ListsContainer id="tokens-lists-table">
         {lists
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (

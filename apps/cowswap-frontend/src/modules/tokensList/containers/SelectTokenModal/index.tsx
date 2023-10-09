@@ -88,7 +88,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       )}
       <styledEl.Separator />
       <div>
-        <styledEl.ActionButton onClick={onOpenManageWidget}>
+        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
           <Edit /> <span>Manage Token Lists</span>
         </styledEl.ActionButton>
       </div>
