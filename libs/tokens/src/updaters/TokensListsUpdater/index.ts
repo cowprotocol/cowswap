@@ -7,7 +7,7 @@ import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from '../../services/fetchTokenList'
 import { setTokensAtom } from '../../state/tokens/tokensAtom'
-import { tokenListsEnvironmentAtom } from '../../state/tokenLists/tokenListsEnvironmentAtom'
+import { environmentAtom } from '../../state/environmentAtom'
 import { TokenListInfo, TokensMap } from '../../types'
 import { buildTokenListInfo } from '../../utils/buildTokenListInfo'
 import { useActiveTokenListsIds } from '../../hooks/useActiveTokenListsIds'
@@ -28,7 +28,7 @@ const swrOptions: SWRConfiguration = {
 const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-updater:last-update-time[${chainId}]`
 
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
-  const [{ chainId }, setEnvironment] = useAtom(tokenListsEnvironmentAtom)
+  const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
   const setTokens = useSetAtom(setTokensAtom)
   const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
   const allTokensLists = useAtomValue(allTokenListsAtom)

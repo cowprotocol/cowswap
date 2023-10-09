@@ -10,7 +10,7 @@ import { getTokenSearchFilter } from '../utils/getTokenSearchFilter'
 import useSWR from 'swr'
 import { searchTokensInApi, TokenSearchFromApiResult } from '../services/searchTokensInApi'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenListsEnvironmentAtom } from '../state/tokenLists/tokenListsEnvironmentAtom'
+import { environmentAtom } from '../state/environmentAtom'
 import { parseTokensFromApi } from '../utils/parseTokensFromApi'
 import { fetchTokenFromBlockchain } from '../utils/fetchTokenFromBlockchain'
 
@@ -41,7 +41,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const debouncedInputInList = useDebounce(input, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(input, IN_EXTERNALS_DEBOUNCE_TIME)
 
-  const { chainId } = useAtomValue(tokenListsEnvironmentAtom)
+  const { chainId } = useAtomValue(environmentAtom)
   const activeTokens = useAtomValue(activeTokensAtom)
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 

@@ -1,7 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
-import { tokenListsEnvironmentAtom } from '../tokenLists/tokenListsEnvironmentAtom'
+import { environmentAtom } from '../environmentAtom'
 
 export const unsupportedTokensAtom = atomWithStorage<
   Record<SupportedChainId, { [tokenAddress: string]: { dateAdded: number } }>
@@ -12,13 +12,13 @@ export const unsupportedTokensAtom = atomWithStorage<
 })
 
 export const currentUnsupportedTokensAtom = atom((get) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
 
   return get(unsupportedTokensAtom)[chainId]
 })
 
 export const addUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: string) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const tokenId = tokenAddress.toLowerCase()
   const tokenList = get(unsupportedTokensAtom)
 
@@ -34,7 +34,7 @@ export const addUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: strin
 })
 
 export const removeUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: string) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const tokenId = tokenAddress.toLowerCase()
   const tokenList = { ...get(unsupportedTokensAtom) }
 

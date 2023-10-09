@@ -3,7 +3,7 @@ import { TokenListInfo, TokenListsByNetwork } from '../../types'
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { tokenListsEnvironmentAtom } from './tokenListsEnvironmentAtom'
+import { environmentAtom } from '../environmentAtom'
 
 const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
 
@@ -31,7 +31,7 @@ export const activeTokenListsIdsAtom = atomWithStorage<Record<SupportedChainId, 
 )
 
 export const allTokenListsInfoAtom = atom((get) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const allTokenListsInfo = get(allTokenListsInfoByChainAtom)
 
   return Object.values(allTokenListsInfo[chainId])
@@ -52,7 +52,7 @@ export const upsertAllTokenListsInfoAtom = atom(
   }
 )
 export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: string) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const stateCopy = { ...get(allTokenListsInfoByChainAtom) }
 
   delete stateCopy[chainId][id]
@@ -61,7 +61,7 @@ export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: str
 })
 
 export const allTokenListsAtom = atom((get) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const defaultTokensLists = get(defaultTokensListsAtom)
   const userAddedTokenLists = get(userAddedTokenListsAtom)
 
@@ -69,7 +69,7 @@ export const allTokenListsAtom = atom((get) => {
 })
 
 export const activeTokenListsMapAtom = atom((get) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const allTokensLists = get(allTokenListsAtom)
   const activeTokenLists = get(activeTokenListsIdsAtom)
   const tokenListsActive = activeTokenLists[chainId]

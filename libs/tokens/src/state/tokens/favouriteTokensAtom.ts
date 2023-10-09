@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../../types'
-import { tokenListsEnvironmentAtom } from '../tokenLists/tokenListsEnvironmentAtom'
+import { environmentAtom } from '../environmentAtom'
 import {
   COW,
   DAI,
@@ -64,7 +64,7 @@ export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, Toke
 )
 
 export const favouriteTokensListAtom = atom((get) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const favouriteTokensState = get(favouriteTokensAtom)
 
   return Object.values(favouriteTokensState[chainId]).map(
@@ -77,7 +77,7 @@ export const resetFavouriteTokensAtom = atom(null, (get, set) => {
 })
 
 export const toggleFavouriteTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
-  const { chainId } = get(tokenListsEnvironmentAtom)
+  const { chainId } = get(environmentAtom)
   const favouriteTokensState = get(favouriteTokensAtom)
   const state = { ...favouriteTokensState[chainId] }
   const tokenKey = token.address.toLowerCase()
