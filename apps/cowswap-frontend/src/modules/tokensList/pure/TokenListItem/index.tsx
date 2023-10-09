@@ -27,7 +27,7 @@ export function TokenListItem(props: TokenListItemProps) {
   return (
     <styledEl.TokenItem
       key={token.address}
-      data-address={token.address}
+      data-address={token.address.toLowerCase()}
       disabled={isTokenSelected}
       onClick={() => onSelectToken(token)}
       $isVirtual={!!virtualRow}

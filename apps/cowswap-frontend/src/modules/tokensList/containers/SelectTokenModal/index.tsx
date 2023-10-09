@@ -69,6 +69,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       </styledEl.Header>
       <styledEl.Row>
         <styledEl.SearchInput
+          id="token-search-input"
           value={inputValue}
           onKeyDown={(e) => e.key === 'Enter' && handleEnterPress()}
           onChange={(e) => setInputValue(e.target.value)}

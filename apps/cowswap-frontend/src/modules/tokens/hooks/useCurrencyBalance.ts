@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { nativeOnChain } from '@cowprotocol/common-const'
 import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
-import { isAddress } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -89,21 +89,24 @@ export function useCurrencyBalances(
   currencies?: (Currency | undefined | null)[]
 ): (CurrencyAmount<Currency> | undefined)[] {
   const tokens = useMemo(
-    () => currencies?.filter((currency): currency is Token => currency?.isToken ?? false) ?? [],
+    () => currencies?.filter((currency): currency is Token => (currency && !getIsNativeToken(currency)) ?? false) ?? [],
     [currencies]
   )
 
   const tokenBalances = useTokenBalances(account, tokens)
-  const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency?.isNative) ?? false, [currencies])
+  const containsETH: boolean = useMemo(
+    () => currencies?.some((currency) => currency && getIsNativeToken(currency)) ?? false,
+    [currencies]
+  )
   const ethBalance = useNativeCurrencyBalances(useMemo(() => (containsETH ? [account] : []), [containsETH, account]))
 
   return useMemo(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined
-        if (currency.isToken) return tokenBalances[currency.address]?.value
-        if (currency.isNative) return ethBalance[account]
-        return undefined
+        if (getIsNativeToken(currency)) return ethBalance[account]
+
+        return tokenBalances[currency.address]?.value
       }) ?? [],
     [account, currencies, ethBalance, tokenBalances]
   )

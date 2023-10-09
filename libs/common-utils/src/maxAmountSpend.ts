@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+import { getIsNativeToken } from './getIsNativeToken'
 
 const MIN_NATIVE_CURRENCY_FOR_GAS: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
@@ -14,7 +15,7 @@ export function maxAmountSpend(
   canUseAllNative?: boolean
 ): CurrencyAmount<Currency> | undefined {
   if (!currencyAmount) return undefined
-  if (currencyAmount.currency.isNative && !canUseAllNative) {
+  if (getIsNativeToken(currencyAmount.currency) && !canUseAllNative) {
     if (JSBI.greaterThan(currencyAmount.quotient, MIN_NATIVE_CURRENCY_FOR_GAS)) {
       return CurrencyAmount.fromRawAmount(
         currencyAmount.currency,

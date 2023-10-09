@@ -4,9 +4,7 @@ import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
 
-import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
+import * as styledEl from './styled'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { CommonListContainer } from '../../pure/commonElements'
@@ -14,15 +12,6 @@ import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenListItem } from '../../pure/TokenListItem'
 import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
 import { SelectTokenContext } from '../../types'
-
-const Wrapper = styled(CommonListContainer)``
-
-const TokenNotFound = styled.div`
-  color: var(${UI.COLOR_LINK});
-  font-weight: 500;
-  padding: 10px 0;
-  text-align: center;
-`
 
 const searchResultsLimit = 10
 
@@ -71,10 +60,11 @@ export function TokenSearchResults({
     }
   }, [isEnterPressed, searchInput, activeListsResult, onSelectToken])
 
-  if (isTokenNotFound) return <TokenNotFound>No tokens found for this name in {networkName}</TokenNotFound>
+  if (isTokenNotFound)
+    return <styledEl.TokenNotFound>No tokens found for this name in {networkName}</styledEl.TokenNotFound>
 
   return (
-    <Wrapper>
+    <CommonListContainer id="currency-list">
       {/*Tokens from active lists*/}
       {activeListsResult &&
         activeListsResult.slice(0, searchResultsLimit).map((token) => {
@@ -95,11 +85,11 @@ export function TokenSearchResults({
 
       {/*Tokens from blockchain*/}
       {blockchainResult?.length ? (
-        <div>
+        <styledEl.ImportTokenWrapper id="currency-import">
           {blockchainResult.slice(0, searchResultsLimit).map((token) => {
             return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
           })}
-        </div>
+        </styledEl.ImportTokenWrapper>
       ) : null}
 
       {/*Tokens from inactive lists*/}
@@ -143,6 +133,6 @@ export function TokenSearchResults({
           </div>
         </div>
       ) : null}
-    </Wrapper>
+    </CommonListContainer>
   )
 }

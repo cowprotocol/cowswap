@@ -62,10 +62,7 @@ describe('Swap (mod)', () => {
   it('can find GNO and swap Native for GNO', () => {
     cy.get('#output-currency-input .open-currency-select-button').click()
     cy.get('#token-search-input').type('GNO')
-    cy.get(`.token-item-${GNO}`).should('be.visible')
-    cy.get(`.token-item-${GNO}`).click({ force: true })
-    cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
+    enterInputAmount(GNO, '0.5')
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')

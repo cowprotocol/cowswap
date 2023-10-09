@@ -6,7 +6,7 @@ export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return dep.symbol
     if (dep instanceof Token) return dep.address.toLowerCase()
-    if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.isNative
+    if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.chainId
     if (dep instanceof Percent) return dep.toFixed(6)
 
     return dep

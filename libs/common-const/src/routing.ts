@@ -13,10 +13,10 @@ import {
   WBTC,
   WBTC_GNOSIS_CHAIN,
   WETH_GNOSIS_CHAIN,
-  WRAPPED_NATIVE_CURRENCY,
   DAI_GOERLI,
   USDC_GOERLI,
 } from './tokens'
+import { WRAPPED_NATIVE_CURRENCY } from './nativeAndWrappedTokens'
 
 type ChainCurrencyList = {
   readonly [chainId: number]: Currency[]

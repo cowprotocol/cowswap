@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/analytics'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
-import { formatSymbol, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -243,10 +243,14 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // TODO: be careful! For native tokens we use symbol instead of address
   const currenciesIds: { [field in Field]?: string | null } = useMemo(
     () => ({
-      [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
-      [Field.OUTPUT]: currencies.OUTPUT?.isNative
-        ? currencies.OUTPUT.symbol
-        : currencies.OUTPUT?.address?.toLowerCase(),
+      [Field.INPUT]:
+        currencies.INPUT && getIsNativeToken(currencies.INPUT)
+          ? currencies.INPUT.symbol
+          : currencies.INPUT?.address?.toLowerCase(),
+      [Field.OUTPUT]:
+        currencies.OUTPUT && getIsNativeToken(currencies.OUTPUT)
+          ? currencies.OUTPUT.symbol
+          : currencies.OUTPUT?.address?.toLowerCase(),
     }),
     [currencies]
   )

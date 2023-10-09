@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
-import { formatInputAmount } from '@cowprotocol/common-utils'
+import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
 import { MouseoverTooltip } from '@cowprotocol/ui'
@@ -107,7 +107,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [viewAmount])
 
   const selectedTokenAddress = currency
-    ? currency.isNative
+    ? getIsNativeToken(currency)
       ? NATIVE_CURRENCY_BUY_TOKEN[currency.chainId as SupportedChainId].address
       : currency.address
     : undefined

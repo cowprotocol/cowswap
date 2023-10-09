@@ -10,6 +10,7 @@ import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
 import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
+import { WETH_MAINNET, WRAPPED_NATIVE_CURRENCY, WXDAI } from './nativeAndWrappedTokens'
 
 // Mainnet
 export const USDT = new TokenWithLogo(
@@ -56,28 +57,9 @@ const GNO_MAINNET = new TokenWithLogo(
   'Gnosis'
 )
 
-const weth9Mainnet = WETH9[SupportedChainId.MAINNET]
-export const WETH_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl(weth9Mainnet.address.toLowerCase(), SupportedChainId.MAINNET),
-  weth9Mainnet.chainId,
-  weth9Mainnet.address,
-  weth9Mainnet.decimals,
-  weth9Mainnet.symbol,
-  weth9Mainnet.name
-)
-
 // Gnosis chain
 export const XDAI_SYMBOL = 'XDAI'
 export const XDAI_NAME = 'xDai'
-// xDAI tokens
-export const WXDAI = new TokenWithLogo(
-  wxDaiLogo,
-  ChainId.GNOSIS_CHAIN,
-  '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
-  18,
-  'WXDAI',
-  'Wrapped XDAI'
-)
 export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
   USDT.logoURI,
   ChainId.GNOSIS_CHAIN,
@@ -152,14 +134,6 @@ export const WBTC_GOERLI = new TokenWithLogo(
   'WBTC',
   'Wrapped BTC'
 )
-export const WETH_GOERLI = new TokenWithLogo(
-  WETH_MAINNET.logoURI,
-  ChainId.GOERLI,
-  '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-  18,
-  'WETH',
-  'Wrapped Görli Ether'
-)
 
 const GNO_GOERLI = new TokenWithLogo(
   GNO_MAINNET.logoURI,
@@ -174,12 +148,6 @@ export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GOERLI]: USDC_GOERLI,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
-}
-
-export const WRAPPED_NATIVE_CURRENCY: Record<SupportedChainId, TokenWithLogo> = {
-  [SupportedChainId.MAINNET]: WETH_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
-  [SupportedChainId.GOERLI]: WETH_GOERLI,
 }
 
 export class ExtendedEther extends Ether {

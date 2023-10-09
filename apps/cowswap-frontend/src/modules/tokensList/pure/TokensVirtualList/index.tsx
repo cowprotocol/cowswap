@@ -58,7 +58,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { getVirtualItems } = virtualizer
 
   return (
-    <CommonListContainer ref={parentRef} onScroll={onScroll}>
+    <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
       <styledEl.TokensInner ref={wrapperRef} style={{ height: `${virtualizer.getTotalSize()}px` }}>
         {getVirtualItems().map((virtualRow) => {
           const token = sortedTokens[virtualRow.index]

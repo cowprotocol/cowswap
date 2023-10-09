@@ -27,7 +27,12 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
           const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
           return (
-            <styledEl.TokensItem key={token.address} disabled={isTokenSelected} onClick={() => onSelectToken(token)}>
+            <styledEl.TokensItem
+              key={token.address}
+              data-address={token.address.toLowerCase()}
+              disabled={isTokenSelected}
+              onClick={() => onSelectToken(token)}
+            >
               <TokenLogo token={token} size={24} />
               <TokenSymbol token={token} />
             </styledEl.TokensItem>

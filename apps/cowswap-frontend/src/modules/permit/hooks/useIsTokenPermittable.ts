@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -33,7 +34,7 @@ export function useIsTokenPermittable(
   const { provider } = useWeb3React()
 
   const lowerCaseAddress = token?.wrapped?.address?.toLowerCase()
-  const isNative = token?.isNative
+  const isNative = !!token && getIsNativeToken(token)
   const tokenName = token?.name || lowerCaseAddress || ''
 
   // Avoid building permit info in the first place if order type is not supported

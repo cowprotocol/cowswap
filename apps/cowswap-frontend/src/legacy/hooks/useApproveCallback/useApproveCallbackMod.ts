@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useTokenContract, usePrevious } from '@cowprotocol/common-hooks'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -58,7 +58,8 @@ export function useApproveCallback({
   amountToCheckAgainstAllowance,
 }: ApproveCallbackParams): ApproveCallbackState {
   const { account, chainId } = useWalletInfo()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
   const spenderCurrency = useCurrency(spender)
@@ -66,7 +67,7 @@ export function useApproveCallback({
   // check the current approval status
   const approvalStateBase: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
+    if (getIsNativeToken(amountToApprove.currency)) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -60,7 +61,7 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
-    const isNativeIn = !!context.derivedState.inputCurrency?.isNative
+    const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
 
     return (
       <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>

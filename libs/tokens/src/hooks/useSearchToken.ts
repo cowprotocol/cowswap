@@ -4,7 +4,7 @@ import { activeTokensAtom, inactiveTokensAtom } from '../state/tokens/tokensAtom
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { useWeb3React } from '@web3-react/core'
 import { TokenInfo } from '@uniswap/token-lists'
-import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 import ms from 'ms.macro'
 import { getTokenSearchFilter } from '../utils/getTokenSearchFilter'
 import useSWR from 'swr'
@@ -37,8 +37,8 @@ const emptyResponse: TokenSearchResponse = {
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const { provider } = useWeb3React()
 
-  const debouncedInputInList = useDebounce(input, IN_LISTS_DEBOUNCE_TIME)
-  const debouncedInputInExternals = useDebounce(input, IN_EXTERNALS_DEBOUNCE_TIME)
+  const debouncedInputInList = useDebounce(input?.toLowerCase(), IN_LISTS_DEBOUNCE_TIME)
+  const debouncedInputInExternals = useDebounce(input?.toLowerCase(), IN_EXTERNALS_DEBOUNCE_TIME)
 
   const { chainId } = useAtomValue(environmentAtom)
   const activeTokens = useAtomValue(activeTokensAtom)
@@ -83,17 +83,6 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const tokenFromBlockChain = useMemo(() => {
     if (!blockchainResult) return null
 
-    const isTokenAlreadyFound = [
-      inListsResult?.tokensFromActiveLists,
-      inListsResult?.tokensFromInactiveLists,
-      apiResultTokens,
-    ]
-      .filter(isTruthy)
-      .flat()
-      .find((token) => token.address.toLowerCase() === blockchainResult.address.toLowerCase())
-
-    if (isTokenAlreadyFound) return null
-
     return new TokenWithLogo(
       undefined,
       blockchainResult.chainId,
@@ -102,11 +91,25 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
       blockchainResult.symbol,
       blockchainResult.name
     )
-  }, [blockchainResult, inListsResult, apiResultTokens])
+  }, [blockchainResult])
 
   return useMemo(() => {
     if (!input) {
       return emptyResponse
+    }
+
+    const isTokenAlreadyFound = inListsResult?.tokensFromActiveLists.find(
+      (token) => token.address.toLowerCase() === input.toLowerCase()
+    )
+
+    if (isTokenAlreadyFound) {
+      return {
+        isLoading: apiIsLoading || blockchainIsLoading,
+        activeListsResult: inListsResult?.tokensFromActiveLists || null,
+        blockchainResult: null,
+        inactiveListsResult: null,
+        externalApiResult: null,
+      }
     }
 
     return {

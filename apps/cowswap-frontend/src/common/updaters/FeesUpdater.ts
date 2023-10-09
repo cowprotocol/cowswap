@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
@@ -160,8 +160,8 @@ export function FeesUpdater(): null {
   const { validTo } = useOrderValidTo()
 
   // prevents things like "USDC" being used as an address
-  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
-  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
+  const sellTokenAddressInvalid = sellCurrency && !getIsNativeToken(sellCurrency) && !isAddress(sellCurrencyId)
+  const buyTokenAddressInvalid = buyCurrency && !getIsNativeToken(buyCurrency) && !isAddress(buyCurrencyId)
 
   // Update if any parameter is changing
   useEffect(() => {
