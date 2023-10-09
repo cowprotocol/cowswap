@@ -31,7 +31,11 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
-import { getParsedOrderFromItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
+import {
+  getParsedOrderFromTableItem,
+  OrderTableItem,
+  tableItemsToOrders,
+} from '../../utils/orderTableGroupUtils'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -103,7 +107,7 @@ export function OrdersTableWidget({
   const tokens = useMemo(() => {
     const pendingOrders = isOpenOrdersTab ? ordersList.pending : []
 
-    return pendingOrders.map((item) => getParsedOrderFromItem(item).inputToken)
+    return pendingOrders.map((item) => getParsedOrderFromTableItem(item).inputToken)
   }, [isOpenOrdersTab, ordersList.pending])
 
   // Get effective balance

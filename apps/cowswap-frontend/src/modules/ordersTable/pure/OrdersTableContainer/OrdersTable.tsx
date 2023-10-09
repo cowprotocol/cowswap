@@ -40,7 +40,7 @@ import { getOrderParams } from './utils/getOrderParams'
 
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
 import {
-  getParsedOrderFromItem,
+  getParsedOrderFromTableItem,
   isParsedOrder,
   OrderTableItem,
   tableItemsToOrders,
@@ -263,14 +263,14 @@ export function OrdersTable({
   }, [showOrdersExplainerBanner])
 
   const cancellableOrders = useMemo(
-    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromItem(item))),
+    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
     [ordersPage]
   )
 
   const allOrdersSelected = useMemo(() => {
     if (!cancellableOrders.length) return false
 
-    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromItem(item).id])
+    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromTableItem(item).id])
   }, [cancellableOrders, selectedOrdersMap])
 
   const getPageUrl = useCallback((index: number) => buildOrdersTableUrl(location, { pageNumber: index }), [location])
@@ -402,7 +402,7 @@ export function OrdersTable({
 
           <Rows>
             {ordersPage.map((item) => {
-              const { inputToken, outputToken } = getParsedOrderFromItem(item)
+              const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
               const spotPrice = getSpotPrice({
                 chainId: chainId as SupportedChainId,
                 sellTokenAddress: inputToken.address,
