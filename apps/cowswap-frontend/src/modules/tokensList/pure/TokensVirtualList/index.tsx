@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
-import { useVirtual } from '@tanstack/react-virtual'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
 
 import * as styledEl from './styled'
@@ -44,9 +44,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     }, scrollDelay)
   }, [])
 
-  const virtualizer = useVirtual({
-    parentRef,
-    size: allTokens.length,
+  const virtualizer = useVirtualizer({
+    getScrollElement: () => parentRef.current,
+    count: allTokens.length,
     estimateSize,
     overscan: 5,
   })
@@ -55,12 +55,12 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
   }, [allTokens, balances])
 
-  const { virtualItems } = virtualizer
+  const { getVirtualItems } = virtualizer
 
   return (
     <CommonListContainer ref={parentRef} onScroll={onScroll}>
-      <styledEl.TokensInner ref={wrapperRef} style={{ height: `${virtualizer.totalSize}px` }}>
-        {virtualItems.map((virtualRow) => {
+      <styledEl.TokensInner ref={wrapperRef} style={{ height: `${virtualizer.getTotalSize()}px` }}>
+        {getVirtualItems().map((virtualRow) => {
           const token = sortedTokens[virtualRow.index]
           const addressLowerCase = token.address.toLowerCase()
           const balance = balances ? balances[token.address] : null
