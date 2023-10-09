@@ -2,10 +2,10 @@ export * from './types'
 export { validateTokenList, validateTokens } from './utils/validateTokenList'
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 
-// State
-
-export { tokensByAddressAtom, tokensBySymbolAtom } from './state/tokensAtom'
+// Types
 export type { TokensByAddress, TokensBySymbol } from './state/tokensAtom'
+export type { ListSearchResponse } from './hooks/useSearchList'
+export type { TokenSearchResponse } from './hooks/useSearchToken'
 
 // Hooks
 export { useAllTokenListsInfo } from './hooks/useAllTokenListsInfo'
@@ -28,11 +28,13 @@ export { useIsUnsupportedTokens } from './hooks/useIsUnsupportedTokens'
 export { useResetFavouriteTokens } from './hooks/useResetFavouriteTokens'
 export { useToggleFavouriteToken } from './hooks/useToggleFavouriteToken'
 export { useAllTokens } from './hooks/useAllTokens'
-export * from './hooks/useSearchList'
-export * from './hooks/useSearchToken'
+export { useTokenBySymbolOrAddress } from './hooks/useTokenBySymbolOrAddress'
+export { useAreThereTokensWithSameSymbol } from './hooks/useAreThereTokensWithSameSymbol'
+export { useSearchList } from './hooks/useSearchList'
+export { useSearchToken } from './hooks/useSearchToken'
 
 // Services
-export * from './services/searchTokensInApi'
+export { searchTokensInApi } from './services/searchTokensInApi'
 
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'

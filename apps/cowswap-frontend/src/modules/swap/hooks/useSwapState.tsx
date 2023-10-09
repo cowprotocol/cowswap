@@ -5,6 +5,8 @@ import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -26,9 +28,7 @@ import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
-import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 
 import { useSwapSlippage } from './useSwapSlippage'
 
