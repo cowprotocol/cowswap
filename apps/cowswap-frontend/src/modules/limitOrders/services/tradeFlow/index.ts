@@ -21,7 +21,8 @@ export async function tradeFlow(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforeTrade?: () => void
+  beforePermit: () => void,
+  beforeTrade: () => void
 ): Promise<string> {
   const {
     postOrderParams,
@@ -29,11 +30,11 @@ export async function tradeFlow(
     permitInfo,
     provider,
     chainId,
-    hasEnoughAllowance,
     allowsOffchainSigning,
     settlementContract,
     dispatch,
     isGnosisSafeWallet,
+    generatePermitHook,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData } = postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
@@ -56,19 +57,20 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
+    if (permitInfo) beforePermit()
+
     postOrderParams.appData = await handlePermit({
       permitInfo,
-      hasEnoughAllowance,
       inputToken: sellToken,
-      provider,
       account,
-      chainId,
       appData,
+      generatePermitHook,
     })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
-    beforeTrade?.()
+
+    beforeTrade()
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder({

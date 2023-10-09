@@ -1,6 +1,5 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
-import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
-import { FeatureFlag } from '@cowprotocol/common-utils'
+import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
 
 import { darken, transparentize } from 'polished'
 import styled from 'styled-components'
@@ -22,7 +21,7 @@ export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
 export interface TokenAmountProps {
   amount: Nullish<FractionLike>
   defaultValue?: string
-  tokenSymbol?: Nullish<TokenSymbolProps['token']>
+  tokenSymbol?: TokenSymbolProps['token']
   className?: string
   hideTokenSymbol?: boolean
   round?: boolean

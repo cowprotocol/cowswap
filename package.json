@@ -12,6 +12,7 @@
     "start": "nx run cowswap-frontend:serve",
     "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
     "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
+    "cosmos": "nx run cowswap-frontend:cosmos:run",
     "test": "nx run-many -t test --output-style=stream",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
