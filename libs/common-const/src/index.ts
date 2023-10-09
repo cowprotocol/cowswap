@@ -1,7 +1,6 @@
 export * from './types'
 export * from './common'
 export * from './locales'
-export * from './lists'
 export * from './tokens'
 export * from './intl'
 export * from './addresses'

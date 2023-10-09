@@ -102,7 +102,7 @@ export const listsMock: TokenListInfo[] = [
     id: '1',
     name: 'CowSwap Goerli',
     source: {
-      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json',
+      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
     },
     logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
     tokensCount: 7,

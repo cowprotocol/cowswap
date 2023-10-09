@@ -68,7 +68,7 @@
       "id": "VZ--hetNymtoeZ5QUVhRT",
       "priority": 1,
       "enabledByDefault": true,
-      "url": "https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json"
+      "url": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json"
     },
     {
       "id": "uJcgDR4A3MLQTrDsO34bA",
