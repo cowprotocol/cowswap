@@ -17,7 +17,7 @@ import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceipt
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
-import { useGetOrdersPermitStatus } from 'modules/permit'
+import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -31,8 +31,10 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
+import { getOrderParams } from '../../pure/OrdersTableContainer/utils/getOrderParams'
 import {
   getParsedOrderFromTableItem,
+  isParsedOrder,
   OrderTableItem,
   tableItemsToOrders,
 } from '../../utils/orderTableGroupUtils'
@@ -154,8 +156,23 @@ export function OrdersTableWidget({
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
+  const ordersToCheckPendingPermit = useMemo(() => {
+    // TODO: hook for this, or filter it inside the updater?
+    return ordersList.pending.reduce((acc: ParsedOrder[], item) => {
+      if (isParsedOrder(item)) {
+        const { hasEnoughAllowance } = getOrderParams(chainId, balancesAndAllowances, item)
+
+        if (hasEnoughAllowance === false) {
+          acc.push(item)
+        }
+      }
+      return acc
+    }, [])
+  }, [balancesAndAllowances, chainId, ordersList.pending])
+
   return (
     <>
+      <PendingPermitUpdater orders={ordersToCheckPendingPermit} />
       <ContentWrapper>
         <OrdersTableContainer
           chainId={chainId}
