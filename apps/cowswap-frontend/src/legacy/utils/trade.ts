@@ -19,7 +19,7 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getTrades, OrderID } from 'api/gnosisProtocol'
+import { getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 
 export type PostOrderParams = {
@@ -250,7 +250,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 }
 
 type OrderCancellationParams = {
-  orderId: OrderID
+  orderId: string
   account: string
   chainId: ChainId
   signer: Signer

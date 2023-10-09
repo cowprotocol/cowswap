@@ -6,10 +6,10 @@ import { Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/ac
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 
-import { getOrder, OrderID } from 'api/gnosisProtocol'
+import { getOrder } from 'api/gnosisProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 
-export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
+export type OrderLogPopupMixData = OrderFulfillmentData | string
 
 export function computeOrderSummary({
   orderFromStore,

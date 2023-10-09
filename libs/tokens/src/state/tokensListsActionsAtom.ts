@@ -31,7 +31,7 @@ export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) 
     },
   })
 
-  set(upsertAllTokenListsInfoAtom, { [id]: tokenList })
+  set(upsertAllTokenListsInfoAtom, chainId, { [id]: tokenList })
 })
 
 export const removeTokenListAtom = atom(null, (get, set, id: string) => {

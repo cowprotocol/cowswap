@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   width: 450px;
 `
 
-const selectedToken = favouriteTokensMock[0]
+const selectedToken = favouriteTokensMock[0].address
 
 const balances = allTokensMock.reduce<{ [key: string]: CurrencyAmount<Currency> }>((acc, token) => {
   acc[token.address.toLowerCase()] = CurrencyAmount.fromRawAmount(

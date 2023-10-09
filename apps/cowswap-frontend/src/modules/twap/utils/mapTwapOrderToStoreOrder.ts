@@ -1,3 +1,5 @@
+import { TokensByAddress } from '@cowprotocol/tokens'
+
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
