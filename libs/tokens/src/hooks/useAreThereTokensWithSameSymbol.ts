@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { tokensBySymbolAtom } from '../state/tokensAtom'
+import { tokensBySymbolAtom } from '../state/tokens/tokensAtom'
 
 export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string | null | undefined) => boolean {
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)

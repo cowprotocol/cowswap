@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
-import { TokenListInfo, TokenListsByNetwork } from '../types'
-import { DEFAULT_TOKENS_LISTS } from '../const/tokensLists'
+import { TokenListInfo, TokenListsByNetwork } from '../../types'
+import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
+import { tokenListsEnvironmentAtom } from './tokenListsEnvironmentAtom'
 
 const defaultTokensListsAtom = atom<TokenListsByNetwork>(DEFAULT_TOKENS_LISTS)
 
@@ -31,7 +31,7 @@ export const activeTokenListsIdsAtom = atomWithStorage<Record<SupportedChainId, 
 )
 
 export const allTokenListsInfoAtom = atom((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const allTokenListsInfo = get(allTokenListsInfoByChainAtom)
 
   return Object.values(allTokenListsInfo[chainId])
@@ -52,7 +52,7 @@ export const upsertAllTokenListsInfoAtom = atom(
   }
 )
 export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: string) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const stateCopy = { ...get(allTokenListsInfoByChainAtom) }
 
   delete stateCopy[chainId][id]
@@ -60,17 +60,17 @@ export const removeListFromAllTokenListsInfoAtom = atom(null, (get, set, id: str
   set(allTokenListsInfoByChainAtom, stateCopy)
 })
 
-export const allTokensListsAtom = atom((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+export const allTokenListsAtom = atom((get) => {
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const defaultTokensLists = get(defaultTokensListsAtom)
   const userAddedTokenLists = get(userAddedTokenListsAtom)
 
   return [...defaultTokensLists[chainId], ...userAddedTokenLists[chainId]]
 })
 
-export const activeTokensListsMapAtom = atom((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
-  const allTokensLists = get(allTokensListsAtom)
+export const activeTokenListsMapAtom = atom((get) => {
+  const { chainId } = get(tokenListsEnvironmentAtom)
+  const allTokensLists = get(allTokenListsAtom)
   const activeTokenLists = get(activeTokenListsIdsAtom)
   const tokenListsActive = activeTokenLists[chainId]
 

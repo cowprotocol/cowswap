@@ -1,13 +1,13 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { allTokensListsAtom, upsertAllTokenListsInfoAtom } from '../../state/tokensListsStateAtom'
+import { allTokenListsAtom, upsertAllTokenListsInfoAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from '../../services/fetchTokenList'
-import { setTokensAtom } from '../../state/tokensAtom'
-import { tokensListsEnvironmentAtom } from '../../state/tokensListsEnvironmentAtom'
+import { setTokensAtom } from '../../state/tokens/tokensAtom'
+import { tokenListsEnvironmentAtom } from '../../state/tokenLists/tokenListsEnvironmentAtom'
 import { TokenListInfo, TokensMap } from '../../types'
 import { buildTokenListInfo } from '../../utils/buildTokenListInfo'
 import { useActiveTokenListsIds } from '../../hooks/useActiveTokenListsIds'
@@ -28,10 +28,10 @@ const swrOptions: SWRConfiguration = {
 const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-updater:last-update-time[${chainId}]`
 
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
-  const [{ chainId }, setEnvironment] = useAtom(tokensListsEnvironmentAtom)
+  const [{ chainId }, setEnvironment] = useAtom(tokenListsEnvironmentAtom)
   const setTokens = useSetAtom(setTokensAtom)
   const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
-  const allTokensLists = useAtomValue(allTokensListsAtom)
+  const allTokensLists = useAtomValue(allTokenListsAtom)
   const activeTokensListsMap = useActiveTokenListsIds()
 
   useEffect(() => {

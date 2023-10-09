@@ -2,7 +2,7 @@ import useSWR, { SWRResponse } from 'swr'
 import { fetchTokenList } from '../services/fetchTokenList'
 import { parseENSAddress } from '@cowprotocol/common-utils'
 import { useAtomValue } from 'jotai'
-import { allTokenListsInfoAtom, allTokensListsAtom } from '../state/tokensListsStateAtom'
+import { allTokenListsInfoAtom, allTokenListsAtom } from '../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
 import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
 import { TokenListInfo } from '../types'
@@ -19,7 +19,7 @@ export type ListSearchResponse =
     }
 
 export function useSearchList(input: string | null): ListSearchResponse {
-  const allTokensLists = useAtomValue(allTokensListsAtom)
+  const allTokensLists = useAtomValue(allTokenListsAtom)
   const allTokensListsInfo = useAtomValue(allTokenListsInfoAtom)
 
   const listSource = useMemo(() => {

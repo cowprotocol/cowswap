@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { addUnsupportedTokenAtom } from '../state/unsupportedTokensAtom'
+import { addUnsupportedTokenAtom } from '../state/tokens/unsupportedTokensAtom'
 
 export function useAddUnsupportedToken() {
   return useSetAtom(addUnsupportedTokenAtom)

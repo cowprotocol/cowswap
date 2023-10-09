@@ -3,7 +3,7 @@ export { validateTokenList, validateTokens } from './utils/validateTokenList'
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 
 // Types
-export type { TokensByAddress, TokensBySymbol } from './state/tokensAtom'
+export type { TokensByAddress, TokensBySymbol } from './state/tokens/tokensAtom'
 export type { ListSearchResponse } from './hooks/useSearchList'
 export type { TokenSearchResponse } from './hooks/useSearchToken'
 

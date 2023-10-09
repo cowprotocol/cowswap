@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
-import { activeTokensAtom, inactiveTokensAtom } from '../state/tokensAtom'
+import { activeTokensAtom, inactiveTokensAtom } from '../state/tokens/tokensAtom'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { useWeb3React } from '@web3-react/core'
 import { TokenInfo } from '@uniswap/token-lists'
@@ -10,7 +10,7 @@ import { getTokenSearchFilter } from '../utils/getTokenSearchFilter'
 import useSWR from 'swr'
 import { searchTokensInApi, TokenSearchFromApiResult } from '../services/searchTokensInApi'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { tokensListsEnvironmentAtom } from '../state/tokensListsEnvironmentAtom'
+import { tokenListsEnvironmentAtom } from '../state/tokenLists/tokenListsEnvironmentAtom'
 import { parseTokensFromApi } from '../utils/parseTokensFromApi'
 import { fetchTokenFromBlockchain } from '../utils/fetchTokenFromBlockchain'
 
@@ -41,7 +41,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const debouncedInputInList = useDebounce(input, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(input, IN_EXTERNALS_DEBOUNCE_TIME)
 
-  const { chainId } = useAtomValue(tokensListsEnvironmentAtom)
+  const { chainId } = useAtomValue(tokenListsEnvironmentAtom)
   const activeTokens = useAtomValue(activeTokensAtom)
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 

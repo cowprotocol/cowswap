@@ -1,10 +1,10 @@
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
-import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
-import { TokensMap } from '../types'
+import { tokenListsEnvironmentAtom } from '../tokenLists/tokenListsEnvironmentAtom'
+import { TokensMap } from '../../types'
 import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenMapToList } from '../utils/tokenMapToList'
+import { tokenMapToList } from '../../utils/tokenMapToList'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
@@ -26,7 +26,7 @@ const { atom: tokensAtomsByChainId, updateAtom: updateTokensAtom } = atomWithPar
 )
 
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favouriteTokensState = get(favouriteTokensAtom)
 
@@ -45,14 +45,14 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const tokensMap = get(tokensAtomsByChainId)[chainId]
 
   return tokenMapToList(tokensMap.inactiveTokens)
 })
 
 export const setTokensAtom = atom(null, (get, set, state: TokensState) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
 
   set(updateTokensAtom, { [chainId]: state })
 })

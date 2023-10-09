@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokensMap } from '../types'
-import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
+import { TokensMap } from '../../types'
+import { tokenListsEnvironmentAtom } from '../tokenLists/tokenListsEnvironmentAtom'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>('userAddedTokensAtom:v1', {
@@ -12,7 +12,7 @@ export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, Toke
 })
 
 export const userAddedTokensListAtom = atom((get) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
 
   return Object.values(userAddedTokensState[chainId]).map(
@@ -21,7 +21,7 @@ export const userAddedTokensListAtom = atom((get) => {
 })
 
 export const addUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
 
   set(userAddedTokensAtom, {
@@ -31,7 +31,7 @@ export const addUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
 })
 
 export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
   const stateCopy = { ...userAddedTokensState[chainId] }
 
@@ -44,7 +44,7 @@ export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) =
 })
 
 export const resetUserTokenAtom = atom(null, (get, set) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
 
   set(userAddedTokensAtom, {

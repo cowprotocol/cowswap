@@ -1,17 +1,17 @@
 import { atom } from 'jotai'
 import { nanoid } from '@reduxjs/toolkit'
 
-import { tokensListsEnvironmentAtom } from './tokensListsEnvironmentAtom'
+import { tokenListsEnvironmentAtom } from './tokenListsEnvironmentAtom'
 import {
   activeTokenListsIdsAtom,
   removeListFromAllTokenListsInfoAtom,
   upsertAllTokenListsInfoAtom,
   userAddedTokenListsAtom,
-} from './tokensListsStateAtom'
-import { TokenListInfo } from '../types'
+} from './tokenListsStateAtom'
+import { TokenListInfo } from '../../types'
 
 export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokenLists = get(userAddedTokenListsAtom)
   const activeTokenListsIds = get(activeTokenListsIdsAtom)
   const id = nanoid()
@@ -35,7 +35,7 @@ export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) 
 })
 
 export const removeTokenListAtom = atom(null, (get, set, id: string) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const userAddedTokenLists = get(userAddedTokenListsAtom)
   const activeTokenListsIds = get(activeTokenListsIdsAtom)
   const activeTokenListsState = { ...activeTokenListsIds[chainId] }
@@ -56,7 +56,7 @@ export const removeTokenListAtom = atom(null, (get, set, id: string) => {
 })
 
 export const toggleListAtom = atom(null, (get, set, id: string) => {
-  const { chainId } = get(tokensListsEnvironmentAtom)
+  const { chainId } = get(tokenListsEnvironmentAtom)
   const activeTokenListsIds = get(activeTokenListsIdsAtom)
   const activeTokenListsState = { ...activeTokenListsIds[chainId] }
 
