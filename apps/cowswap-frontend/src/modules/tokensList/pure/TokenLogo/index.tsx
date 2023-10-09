@@ -54,7 +54,11 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
 
   return (
     <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
-      {!currentUrl ? <Slash size={size} /> : <img src={currentUrl} onError={onError} width={size} height={size} />}
+      {!currentUrl ? (
+        <Slash size={size} />
+      ) : (
+        <img alt="" src={currentUrl} onError={onError} width={size} height={size} />
+      )}
     </TokenLogoWrapper>
   )
 }

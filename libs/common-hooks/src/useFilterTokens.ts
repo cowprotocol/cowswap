@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
-
 import { isAddress } from '@cowprotocol/common-utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 

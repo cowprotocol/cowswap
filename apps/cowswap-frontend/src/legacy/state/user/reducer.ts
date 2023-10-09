@@ -1,16 +1,11 @@
-import { COMMON_BASES, DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowprotocol/common-const'
 import { ConnectionType } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
 
 import { createSlice } from '@reduxjs/toolkit'
 
 import { SerializedPair, SerializedToken } from './types'
 
 import { updateVersion } from '../global/actions'
-
-// MOD imports
-// import { serializeToken } from './hooks'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -72,31 +67,6 @@ export interface UserState {
 function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
 }
-
-// TODO: replace by the function from state/user/hooks.ts
-function serializeToken(token: Token): SerializedToken {
-  return {
-    chainId: token.chainId,
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name,
-  }
-}
-
-function _initialStatePerChain(chainId: number) {
-  return COMMON_BASES[chainId].reduce(
-    (acc2, curr) => {
-      acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
-      return acc2
-    },
-    {} as {
-      [address: string]: SerializedToken
-    }
-  )
-}
-
-const ALL_SUPPORTED_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN, SupportedChainId.GOERLI]
 
 export const initialState: UserState = {
   selectedWallet: undefined,
