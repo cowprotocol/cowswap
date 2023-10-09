@@ -25,10 +25,10 @@ import {
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { TokenLogo } from 'modules/tokensList'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
@@ -53,7 +53,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 }
 
 function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return <CurrencyLogo currency={amount.currency} size="28px" />
+  return <TokenLogo token={amount.currency} size={28} />
 }
 
 function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {

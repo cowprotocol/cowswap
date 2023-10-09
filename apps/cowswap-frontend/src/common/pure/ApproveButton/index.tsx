@@ -10,7 +10,7 @@ import { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { TokenLogo } from 'modules/tokensList'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
@@ -81,7 +81,7 @@ export function ApproveButton(props: ApproveButtonProps) {
             fontSize: '14px',
           }}
         >
-          <CurrencyLogo currency={currency} size={'24px'} style={{ flexShrink: 0 }} />
+          <TokenLogo token={currency} size={24} />
 
           {content}
         </span>

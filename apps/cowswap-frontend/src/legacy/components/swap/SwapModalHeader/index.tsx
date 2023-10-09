@@ -20,11 +20,11 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { ThemedText } from 'legacy/theme'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
+import { TokenLogo } from 'modules/tokensList'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { FiatValue } from 'common/pure/FiatValue'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -117,7 +117,9 @@ function SwapModalHeaderComponent({
           </RowBetween>
           <RowBetween align="center">
             <RowFixed gap={'0px'}>
-              <CurrencyLogo currency={trade.inputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+              <span style={{ marginRight: '12px' }}>
+                <TokenLogo token={trade.inputAmount.currency} size={20} />
+              </span>
               <Text fontSize={20} fontWeight={500}>
                 <TokenSymbol token={trade.inputAmount.currency} />
               </Text>
@@ -164,7 +166,9 @@ function SwapModalHeaderComponent({
           </RowBetween>
           <RowBetween align="flex-end">
             <RowFixed gap={'0px'}>
-              <CurrencyLogo currency={trade.outputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+              <span style={{ marginRight: '12px' }}>
+                <TokenLogo token={trade.outputAmount.currency} size={20} />
+              </span>
               <Text fontSize={20} fontWeight={500}>
                 <TokenSymbol token={trade.outputAmount.currency} />
               </Text>

@@ -178,7 +178,7 @@ export const TokensTableRow = ({
 
       <Cell>
         <Link to={tradeLink(tokenData)}>
-          <ResponsiveLogo currency={tokenData} />
+          <ResponsiveLogo token={tokenData} size={28} />
           <TokenText>
             <span>
               <b>

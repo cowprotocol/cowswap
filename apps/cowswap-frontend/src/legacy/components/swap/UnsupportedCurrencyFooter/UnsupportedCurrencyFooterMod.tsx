@@ -15,8 +15,9 @@ import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
+import { TokenLogo } from 'modules/tokensList'
+
 import { UI } from 'common/constants/theme'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
@@ -96,7 +97,7 @@ export default function UnsupportedCurrencyFooter({
                   <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
                     <AutoColumn gap="10px">
                       <AutoRow gap="5px" align="center">
-                        <CurrencyLogo currency={token} size={'24px'} />
+                        <TokenLogo token={token} size={24} />
                         <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
                       </AutoRow>
                       {chainId && (

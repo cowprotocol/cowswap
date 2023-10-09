@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -13,12 +14,12 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+import { TokenLogo } from 'modules/tokensList'
 
 import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Icon } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
@@ -259,8 +260,8 @@ export function ActivityDetails(props: {
   let outputToken = activityDerivedState?.order?.outputToken || null
 
   if (enhancedTransaction?.swapVCow || enhancedTransaction?.swapLockedGNOvCow) {
-    inputToken = V_COW[chainId]
-    outputToken = COW[chainId]
+    inputToken = V_COW[chainId as SupportedChainId]
+    outputToken = COW[chainId as SupportedChainId]
   }
 
   const isCustomRecipient = Boolean(order?.receiver && order.owner !== order.receiver)
@@ -283,15 +284,15 @@ export function ActivityDetails(props: {
           {/* Token Approval Currency Logo */}
           {!isOrder && singleToken && (
             <ActivityVisual>
-              <CurrencyLogo currency={singleToken} size={'24px'} />
+              <TokenLogo token={singleToken} size={24} />
             </ActivityVisual>
           )}
 
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <CurrencyLogo currency={inputToken} size={'24px'} />
-              <CurrencyLogo currency={outputToken} size={'24px'} />
+              <TokenLogo token={inputToken} size={24} />
+              <TokenLogo token={outputToken} size={24} />
             </ActivityVisual>
           )}
         </span>

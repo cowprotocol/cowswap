@@ -2,8 +2,9 @@ import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
+import { TokenLogo } from 'modules/tokensList'
+
 import { UI } from 'common/constants/theme'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 interface IconSpinnerProps {
   currency?: Currency | null
@@ -27,7 +28,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
   border-radius: ${({ size }) => size}px;
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     top: calc(-1 * ${({ spinnerWidth }) => spinnerWidth}px);
     left: calc(-1 * ${({ spinnerWidth }) => spinnerWidth}px);
@@ -71,14 +72,13 @@ export function IconSpinner({
   size = 24,
   children,
   bgColor = UI.COLOR_CONTAINER_BG_01,
-  spinnerWidth = 2
+  spinnerWidth = 2,
 }: IconSpinnerProps) {
-
   return (
     <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
       {(() => {
         if (currency) {
-          return <CurrencyLogo currency={currency} size="100%" />
+          return <TokenLogo token={currency} size={size} />
         } else if (image) {
           return <img src={image} alt="Spinning icon" width={size} height={size} />
         } else if (children) {

@@ -5,8 +5,6 @@ import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { OrderID } from 'api/gnosisProtocol'
-
 import {
   addOrUpdateOrders,
   AddOrUpdateOrdersParams,
@@ -45,6 +43,8 @@ import { isOrderExpired, partialOrderUpdate } from './utils'
 
 import { AppDispatch, AppState } from '../index'
 import { deserializeToken, serializeToken } from '../user/hooks'
+
+type OrderID = string
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]

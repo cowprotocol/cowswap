@@ -1,14 +1,17 @@
 import { atom, useAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { cowprotocolTokenUrl, TokenWithLogo } from '@cowprotocol/common-const'
+import { cowprotocolTokenUrl, NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
+
+import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
@@ -19,37 +22,26 @@ const TokenLogoWrapper = styled.div`
 `
 
 export interface TokenLogoProps {
-  token?: TokenWithLogo
+  token?: TokenWithLogo | Currency | null
   logoURI?: string
   className?: string
   size?: number
 }
 
-export function TokenLogo({ logoURI: _logoURI, token, className, size = 36 }: TokenLogoProps) {
+export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoProps) {
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
 
-  const logoURI = _logoURI || token?.logoURI
-
   const urls = useMemo(() => {
-    // TODO: all images should be stored in the same format (lowercase)
-    const fallbackUrls = token
-      ? [
-          cowprotocolTokenUrl(token.address, token.chainId as SupportedChainId),
-          cowprotocolTokenUrl(token.address.toLowerCase(), token.chainId as SupportedChainId),
-        ]
-      : []
+    // TODO: get rid of Currency usage and remove type casting
+    if (token) {
+      if (token instanceof NativeCurrency) {
+        return [cowprotocolTokenUrl(NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase(), token.chainId as SupportedChainId)]
+      }
 
-    if (!logoURI) {
-      return fallbackUrls
+      return getTokenLogoUrls(token as TokenWithLogo)
     }
 
-    const urls = uriToHttp(logoURI)
-
-    if (fallbackUrls.length) {
-      urls.push(...fallbackUrls.filter((url) => !urls.includes(url)))
-    }
-
-    return urls
+    return logoURI ? uriToHttp(logoURI) : []
   }, [logoURI, token])
 
   const validUrls = useMemo(() => urls.filter((url) => !invalidUrls[url]), [urls, invalidUrls])
