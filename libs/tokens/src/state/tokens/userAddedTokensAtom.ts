@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Token } from '@uniswap/sdk-core'
 
 export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>('userAddedTokensAtom:v1', {
   [SupportedChainId.MAINNET]: {},
@@ -20,13 +21,19 @@ export const userAddedTokensListAtom = atom((get) => {
   )
 })
 
-export const addUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
+export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
 
   set(userAddedTokensAtom, {
     ...userAddedTokensState,
-    [chainId]: { ...userAddedTokensState[chainId], [token.address.toLowerCase()]: token },
+    [chainId]: {
+      ...userAddedTokensState[chainId],
+      ...tokens.reduce<{ [key: string]: Token }>((acc, token) => {
+        acc[token.address.toLowerCase()] = token
+        return acc
+      }, {}),
+    },
   })
 })
 

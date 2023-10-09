@@ -32,6 +32,7 @@ export { useTokenBySymbolOrAddress } from './hooks/useTokenBySymbolOrAddress'
 export { useAreThereTokensWithSameSymbol } from './hooks/useAreThereTokensWithSameSymbol'
 export { useSearchList } from './hooks/useSearchList'
 export { useSearchToken } from './hooks/useSearchToken'
+export { useSearchNonExistentToken } from './hooks/useSearchNonExistentToken'
 
 // Services
 export { searchTokensInApi } from './services/searchTokensInApi'

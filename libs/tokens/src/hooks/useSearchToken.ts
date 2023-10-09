@@ -34,7 +34,6 @@ const emptyResponse: TokenSearchResponse = {
 }
 
 // TODO: implement search with debouncing and caching
-// TODO: add search from blockchain
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const { provider } = useWeb3React()
 

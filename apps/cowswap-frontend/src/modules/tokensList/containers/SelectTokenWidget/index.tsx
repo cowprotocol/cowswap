@@ -68,8 +68,8 @@ export function SelectTokenWidget() {
     closeTokenSelectWidget()
   }
 
-  const importTokenAndClose = (token: TokenWithLogo) => {
-    importTokenCallback(token)
+  const importTokenAndClose = (tokens: TokenWithLogo[]) => {
+    importTokenCallback(tokens)
     onDismiss()
   }
 
@@ -87,7 +87,7 @@ export function SelectTokenWidget() {
           if (tokenToImport) {
             return (
               <ImportTokenModal
-                token={tokenToImport}
+                tokens={[tokenToImport]}
                 onDismiss={onDismiss}
                 onBack={resetTokenImport}
                 onImport={importTokenAndClose}

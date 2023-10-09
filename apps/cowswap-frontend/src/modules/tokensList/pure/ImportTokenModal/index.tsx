@@ -10,14 +10,14 @@ import { ModalHeader } from '../ModalHeader'
 import { TokenLogo } from '../TokenLogo'
 
 export interface ImportTokenModalProps {
-  token: TokenWithLogo
-  onBack(): void
+  tokens: TokenWithLogo[]
+  onBack?(): void
   onDismiss(): void
-  onImport(token: TokenWithLogo): void
+  onImport(tokens: TokenWithLogo[]): void
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
-  const { token, onBack, onDismiss, onImport } = props
+  const { tokens, onBack, onDismiss, onImport } = props
 
   return (
     <styledEl.Wrapper>
@@ -29,23 +29,25 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
         <p>
           This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade.
         </p>
-        <styledEl.TokenInfo>
-          <TokenLogo token={token} />
-          <styledEl.StyledTokenSymbol token={token} />
-          <styledEl.TokenName>{token.name}</styledEl.TokenName>
-          <a
-            target="_blank"
-            href={getExplorerLink(token.chainId, token.address, ExplorerDataType.TOKEN)}
-            rel="noreferrer"
-          >
-            {token.address}
-          </a>
-          <styledEl.UnknownSourceWarning>
-            <AlertCircle size={14} />
-            <span>Unknown Source</span>
-          </styledEl.UnknownSourceWarning>
-        </styledEl.TokenInfo>
-        <ButtonPrimary onClick={() => onImport(token)}>Import token</ButtonPrimary>
+        {tokens.map((token) => (
+          <styledEl.TokenInfo>
+            <TokenLogo token={token} size={24} />
+            <styledEl.StyledTokenSymbol token={token} />
+            <styledEl.TokenName>{token.name}</styledEl.TokenName>
+            <a
+              target="_blank"
+              href={getExplorerLink(token.chainId, token.address, ExplorerDataType.TOKEN)}
+              rel="noreferrer"
+            >
+              {token.address}
+            </a>
+            <styledEl.UnknownSourceWarning>
+              <AlertCircle size={14} />
+              <span>Unknown Source</span>
+            </styledEl.UnknownSourceWarning>
+          </styledEl.TokenInfo>
+        ))}
+        <ButtonPrimary onClick={() => onImport(tokens)}>Import</ButtonPrimary>
       </styledEl.Contents>
     </styledEl.Wrapper>
   )

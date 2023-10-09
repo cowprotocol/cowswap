@@ -1,6 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { allTokenListsAtom, upsertAllTokenListsInfoAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import {
+  allTokenListsAtom,
+  tokenListsUpdatingAtom,
+  upsertAllTokenListsInfoAtom,
+} from '../../state/tokenLists/tokenListsStateAtom'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import ms from 'ms.macro'
@@ -30,6 +34,7 @@ const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-update
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
   const setTokens = useSetAtom(setTokensAtom)
+  const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
   const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
   const allTokensLists = useAtomValue(allTokenListsAtom)
   const activeTokensListsMap = useActiveTokenListsIds()
@@ -52,6 +57,8 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
   // Fullfil tokens map with tokens from fetched lists
   useEffect(() => {
     const { data, isLoading, error } = swrResponse
+
+    setTokenListsUpdating(isLoading)
 
     if (isLoading || error || !data) return
 
@@ -82,7 +89,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
     setTokenLists(chainId, lists)
     setTokens({ activeTokens, inactiveTokens })
-  }, [swrResponse, chainId, setTokens, setTokenLists, activeTokensListsMap])
+  }, [swrResponse, chainId, setTokens, setTokenLists, activeTokensListsMap, setTokenListsUpdating])
 
   return null
 }

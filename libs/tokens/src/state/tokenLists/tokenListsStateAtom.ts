@@ -15,6 +15,9 @@ const allTokenListsInfoByChainAtom = atomWithStorage<Record<SupportedChainId, { 
     [SupportedChainId.GOERLI]: {},
   }
 )
+
+export const tokenListsUpdatingAtom = atom<boolean>(false)
+
 export const userAddedTokenListsAtom = atomWithStorage<TokenListsByNetwork>('userAddedTokenListsAtom:v1', {
   [SupportedChainId.MAINNET]: [],
   [SupportedChainId.GNOSIS_CHAIN]: [],
