@@ -7,7 +7,7 @@ export interface OrderTableGroup {
 
 export type OrderTableItem = OrderTableGroup | ParsedOrder
 
-export const isParsedOrder = (item: OrderTableItem): item is ParsedOrder => item.hasOwnProperty('creationTime')
+export const isParsedOrder = (item: OrderTableItem): item is ParsedOrder => !('children' in item)
 
 export const getParsedOrderFromTableItem = (item: OrderTableItem): ParsedOrder =>
   isParsedOrder(item) ? item : item.parent
