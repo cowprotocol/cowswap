@@ -4,7 +4,7 @@ import { AccountElement } from 'legacy/components/Header/styled'
 
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { Wrapper as AccountWrapper } from 'modules/wallet/pure/Web3StatusInner/styled'
-import { Web3StatusConnect } from 'modules/wallet/pure/Web3StatusInner/styled'
+import { Web3StatusConnect, Web3StatusConnected } from 'modules/wallet/pure/Web3StatusInner/styled'
 
 import { UI } from 'common/constants/theme'
 
@@ -74,6 +74,10 @@ export const Header = styled.div`
     font-weight: inherit;
     font-size: inherit;
     margin: 0;
+  }
+
+  ${AccountElement} ${Web3StatusConnected} {
+    padding: 6px;
   }
 `
 

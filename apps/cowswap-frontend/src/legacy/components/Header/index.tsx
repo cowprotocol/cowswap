@@ -57,10 +57,11 @@ export const AccountElementComponent = ({ pendingActivity, handleOpenOrdersPanel
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
+  const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-      {account && !isChainIdUnsupported && userEthBalance && chainId && (
+      {!isInjectedWidgetMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>
