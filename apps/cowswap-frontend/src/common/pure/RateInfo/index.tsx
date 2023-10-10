@@ -18,7 +18,7 @@ import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
-  chainId: SupportedChainId | undefined
+  chainId: SupportedChainId
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
   outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
   activeRateFiatAmount: Nullish<CurrencyAmount<Currency>>

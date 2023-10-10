@@ -4,14 +4,14 @@ import { Erc20 } from '@cowprotocol/abis'
 import { getBytes32TokenContract, getTokenContract } from '@cowprotocol/common-hooks'
 import { retry } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { arrayify } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { parseBytes32String } from '@ethersproject/strings'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAddUserToken } from 'legacy/state/user/hooks'
-
-import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
@@ -30,6 +30,18 @@ export interface GetTokenInfoParams {
   account: string
 
   provider: JsonRpcProvider
+}
+
+// parse a name or symbol from a token response
+const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
+
+function parseStringOrBytes32(str: string | undefined, bytes32: string | undefined, defaultValue: string): string {
+  return str && str.length > 0
+    ? str
+    : // need to check for proper bytes string and valid terminator
+    bytes32 && BYTES32_REGEX.test(bytes32) && arrayify(bytes32)[31] === 0
+    ? parseBytes32String(bytes32)
+    : defaultValue
 }
 
 async function _getTokenContract(params: GetTokenInfoParams): Promise<Erc20> {
@@ -138,6 +150,7 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
 }
 
 /**
+ * @deprecated TODO: use libs/tokens
  * Hook that returns a callback which fetches data for a single token from the chain
  *
  * Alternative to hooks/Token/useToken where token address does not need to be known

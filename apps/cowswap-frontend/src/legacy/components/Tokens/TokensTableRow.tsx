@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
@@ -18,7 +19,6 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -39,7 +39,7 @@ import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallbac
 import { ConfirmOperationType } from '../../state/types'
 
 type DataRowParams = {
-  tokenData: Token
+  tokenData: TokenWithLogo
   index: number
   balance?: CurrencyAmount<Token> | undefined
   closeModals: () => void
@@ -178,7 +178,7 @@ export const TokensTableRow = ({
 
       <Cell>
         <Link to={tradeLink(tokenData)}>
-          <ResponsiveLogo currency={tokenData} />
+          <ResponsiveLogo token={tokenData} size={28} />
           <TokenText>
             <span>
               <b>

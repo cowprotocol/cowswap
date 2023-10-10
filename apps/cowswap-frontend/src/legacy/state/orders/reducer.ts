@@ -3,7 +3,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { Writable } from 'types'
 
-import { OrderID } from 'api/gnosisProtocol'
 import { getIsComposableCowDiscreteOrder } from 'utils/orderUtils/getIsComposableCowDiscreteOrder'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
@@ -36,7 +35,7 @@ import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 
 export interface OrderObject {
-  id: OrderID
+  id: string
   order: SerializedOrder
 }
 
@@ -50,7 +49,7 @@ export interface V2OrderObject {
 }
 
 // {order uuid => OrderObject} mapping
-type OrdersMap = Record<OrderID, OrderObject>
+type OrdersMap = Record<string, OrderObject>
 export type PartialOrdersMap = Partial<OrdersMap>
 
 export type OrderLists = {

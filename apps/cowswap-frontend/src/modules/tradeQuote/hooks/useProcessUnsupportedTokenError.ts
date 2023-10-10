@@ -1,28 +1,21 @@
 import { useCallback } from 'react'
 
 import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useAddGpUnsupportedToken } from 'legacy/state/lists/hooks'
+import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 
 export function useProcessUnsupportedTokenError() {
-  const { chainId } = useWalletInfo()
-  const addGpUnsupportedToken = useAddGpUnsupportedToken()
+  const addGpUnsupportedToken = useAddUnsupportedToken()
 
   return useCallback(
     (error: GpQuoteError, quoteParams: { sellToken: string; buyToken: string }) => {
       const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteParams)
 
       if (unsupportedTokenAddress) {
-        addGpUnsupportedToken({
-          chainId,
-          dateAdded: Date.now(),
-          address: unsupportedTokenAddress || '',
-        })
+        addGpUnsupportedToken(unsupportedTokenAddress)
       }
     },
-    [chainId, addGpUnsupportedToken]
+    [addGpUnsupportedToken]
   )
 }

@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -46,7 +47,9 @@ function EthFlow({
   const approvalState = useTradeApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
-  const approveCallback = useTradeApproveCallback(nativeInput?.wrapped)
+  const approveCallback = useTradeApproveCallback(
+    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined
+  )
   const ethFlowActions = useEthFlowActions({
     wrap: wrapCallback,
     approve: approveCallback,

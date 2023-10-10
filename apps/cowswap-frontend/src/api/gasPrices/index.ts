@@ -1,4 +1,4 @@
-import { DEFAULT_NETWORK_FOR_LISTS, GAS_API_KEYS, GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
+import { GAS_API_KEYS, GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
@@ -119,7 +119,7 @@ class GasFeeApi {
     return response.json()
   }
 
-  async getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
+  async getGasPrices(chainId: ChainId = ChainId.MAINNET): Promise<GasFeeEndpointResponse> {
     const data = await this.fetchData(chainId)
     const parsed = this.parseData(data, chainId)
 

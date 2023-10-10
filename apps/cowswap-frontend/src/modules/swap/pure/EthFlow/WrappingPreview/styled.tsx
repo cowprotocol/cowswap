@@ -9,9 +9,7 @@ export const WrapCardWrapper = styled.div`
   flex: 1;
   padding: 16px;
 
-  > img {
-    width: 42px;
-    height: 42px;
+  > div {
     margin: 0 0 14px;
     box-shadow: none;
   }
