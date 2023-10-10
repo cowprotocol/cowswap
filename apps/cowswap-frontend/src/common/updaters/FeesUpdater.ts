@@ -2,13 +2,13 @@ import { useEffect, useMemo } from 'react'
 
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
-import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
@@ -148,7 +148,7 @@ export function FeesUpdater(): null {
   const isLoading = useIsBestQuoteLoading()
   const isEthFlow = useIsEoaEthFlow()
 
-  const isUnsupportedTokenGp = useIsUnsupportedToken()
+  const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
   const appData = useAppData()
 
@@ -160,8 +160,8 @@ export function FeesUpdater(): null {
   const { validTo } = useOrderValidTo()
 
   // prevents things like "USDC" being used as an address
-  const sellTokenAddressInvalid = sellCurrency && !getIsNativeToken(sellCurrency) && !isAddress(sellCurrencyId)
-  const buyTokenAddressInvalid = buyCurrency && !getIsNativeToken(buyCurrency) && !isAddress(buyCurrencyId)
+  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
+  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
 
   // Update if any parameter is changing
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { COW, GNO } from '@cowprotocol/common-const'
-import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
 
@@ -31,7 +30,7 @@ const defaultProps: RowFeeProps & RowFeeContentProps = {
   feeUsd: '(≈$42.93)',
   feeCurrencySymbol: 'GNO',
   get feeFiatValue() {
-    return currencyAmountToTokenAmount(this.fee?.multiply('100')) || null
+    return this.fee?.multiply('100').wrapped || null
   },
   get feeToken() {
     return (this.fee?.toExact() || '-') + ' ' + this.feeCurrencySymbol

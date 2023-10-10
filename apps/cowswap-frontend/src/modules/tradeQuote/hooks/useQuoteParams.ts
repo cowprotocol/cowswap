@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
-import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -24,8 +24,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
   const sellToken = getAddress(inputCurrency)
-  const buyToken =
-    outputCurrency && getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
+  const buyToken = outputCurrency?.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
 

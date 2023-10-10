@@ -1,4 +1,4 @@
-import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
+import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -24,7 +24,7 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boolean {
   const { account } = useWalletInfo()
   const spender = useTradeSpenderAddress()
-  const token = amount ? getWrappedToken(amount.currency) : undefined
+  const token = amount?.currency.wrapped
   const tokens = token ? [token] : []
   const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
 

@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { nativeOnChain } from '@cowprotocol/common-const'
 import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isAddress } from '@cowprotocol/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -17,7 +17,6 @@ import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 // TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**
- * @deprecated Use useNativeBalance instead
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
 export function useNativeCurrencyBalances(
@@ -49,7 +48,7 @@ export function useNativeCurrencyBalances(
         const value = results?.[i]?.result?.[0]
         if (value && chainId)
           memo[lowerCaseAddress ? address.toLowerCase() : address] = CurrencyAmount.fromRawAmount(
-            NATIVE_CURRENCY_BUY_TOKEN[chainId],
+            nativeOnChain(chainId),
             JSBI.BigInt(value.toString())
           )
         return memo
@@ -89,24 +88,21 @@ export function useCurrencyBalances(
   currencies?: (Currency | undefined | null)[]
 ): (CurrencyAmount<Currency> | undefined)[] {
   const tokens = useMemo(
-    () => currencies?.filter((currency): currency is Token => (currency && !getIsNativeToken(currency)) ?? false) ?? [],
+    () => currencies?.filter((currency): currency is Token => currency?.isToken ?? false) ?? [],
     [currencies]
   )
 
   const tokenBalances = useTokenBalances(account, tokens)
-  const containsETH: boolean = useMemo(
-    () => currencies?.some((currency) => currency && getIsNativeToken(currency)) ?? false,
-    [currencies]
-  )
+  const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency?.isNative) ?? false, [currencies])
   const ethBalance = useNativeCurrencyBalances(useMemo(() => (containsETH ? [account] : []), [containsETH, account]))
 
   return useMemo(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined
-        if (getIsNativeToken(currency)) return ethBalance[account]
-
-        return tokenBalances[currency.address]?.value
+        if (currency.isToken) return tokenBalances[currency.address]?.value
+        if (currency.isNative) return ethBalance[account]
+        return undefined
       }) ?? [],
     [account, currencies, ethBalance, tokenBalances]
   )

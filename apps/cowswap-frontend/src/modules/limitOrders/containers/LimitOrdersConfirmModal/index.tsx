@@ -1,7 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -55,7 +54,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const buttonText = isSafeApprovalBundle ? (
     <>
       Confirm (Approve&nbsp;
-      <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
+      <TokenSymbol token={inputAmount?.currency.wrapped} length={6} />
       &nbsp;& Limit order)
     </>
   ) : (

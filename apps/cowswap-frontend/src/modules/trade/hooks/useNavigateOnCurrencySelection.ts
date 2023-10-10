@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
@@ -8,6 +7,8 @@ import { Field } from 'legacy/state/types'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
+
+import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 
 export type CurrencySelectionCallback = (
   field: Field,

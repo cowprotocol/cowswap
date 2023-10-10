@@ -1,5 +1,6 @@
 import { SyntheticEvent } from 'react'
 
+import { GpEther } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import { UserClaimData } from './hooks'
@@ -18,7 +19,7 @@ export type ClaimCommonTypes = {
 export type EnhancedUserClaimData = UserClaimData & {
   claimAmount: CurrencyAmount<Token>
   isFree: boolean
-  currencyAmount?: CurrencyAmount<Currency> | undefined
+  currencyAmount?: CurrencyAmount<Token | GpEther> | undefined
   price?: Price<Currency, Currency> | undefined
   cost?: CurrencyAmount<Currency> | undefined
 }

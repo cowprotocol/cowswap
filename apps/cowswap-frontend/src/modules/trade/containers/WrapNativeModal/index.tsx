@@ -1,7 +1,6 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
@@ -26,7 +25,7 @@ export function WrapNativeModal() {
   }, [setWrapNativeState])
 
   const inputCurrency = inputCurrencyAmount?.currency
-  const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
+  const isNativeIn = !!inputCurrency?.isNative
 
   const title = isNativeIn ? (
     <span>

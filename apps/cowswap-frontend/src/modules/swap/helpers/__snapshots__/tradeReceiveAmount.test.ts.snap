@@ -3,15 +3,12 @@
 exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 1`] = `
 {
   "amount": CurrencyAmount {
-    "currency": TokenWithLogo {
+    "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
       "chainId": 1,
       "decimals": 18,
       "isNative": false,
       "isToken": true,
-      "logoURI": {
-        "ReactComponent": "IconMock",
-      },
       "name": "CoW Protocol Token",
       "symbol": "COW",
     },
@@ -38,15 +35,12 @@ exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When sel
 exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 3`] = `
 {
   "amount": CurrencyAmount {
-    "currency": TokenWithLogo {
+    "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
       "chainId": 1,
       "decimals": 18,
       "isNative": false,
       "isToken": true,
-      "logoURI": {
-        "ReactComponent": "IconMock",
-      },
       "name": "CoW Protocol Token",
       "symbol": "COW",
     },
@@ -70,15 +64,12 @@ exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When sel
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 1`] = `
 {
   "amount": CurrencyAmount {
-    "currency": TokenWithLogo {
+    "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
       "chainId": 1,
       "decimals": 18,
       "isNative": false,
       "isToken": true,
-      "logoURI": {
-        "ReactComponent": "IconMock",
-      },
       "name": "CoW Protocol Token",
       "symbol": "COW",
     },
@@ -102,15 +93,12 @@ exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should 
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 2`] = `
 {
   "amount": CurrencyAmount {
-    "currency": TokenWithLogo {
+    "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
       "chainId": 1,
       "decimals": 18,
       "isNative": false,
       "isToken": true,
-      "logoURI": {
-        "ReactComponent": "IconMock",
-      },
       "name": "CoW Protocol Token",
       "symbol": "COW",
     },
@@ -134,15 +122,12 @@ exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should 
 exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 3`] = `
 {
   "amount": CurrencyAmount {
-    "currency": TokenWithLogo {
+    "currency": Token {
       "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
       "chainId": 1,
       "decimals": 18,
       "isNative": false,
       "isToken": true,
-      "logoURI": {
-        "ReactComponent": "IconMock",
-      },
       "name": "CoW Protocol Token",
       "symbol": "COW",
     },

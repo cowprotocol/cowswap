@@ -21,6 +21,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
+import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
@@ -28,7 +29,6 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useNativeBalance } from 'common/hooks/useNativeBalance'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
@@ -57,7 +57,7 @@ export default function Header() {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const { pendingActivity } = useCategorizeRecentActivity()
-  const userEthBalance = useNativeBalance()
+  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
@@ -157,9 +157,9 @@ export default function Header() {
             )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && !isChainIdUnsupported && userEthBalance.data && chainId && (
+              {account && !isChainIdUnsupported && userEthBalance && chainId && (
                 <BalanceText>
-                  <TokenAmount amount={userEthBalance.data} tokenSymbol={{ symbol: nativeToken }} />
+                  <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
                 </BalanceText>
               )}
               <Web3Status pendingActivities={pendingActivity} />

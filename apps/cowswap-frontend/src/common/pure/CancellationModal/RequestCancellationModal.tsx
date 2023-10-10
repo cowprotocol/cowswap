@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 
 import { ArrowRight, ArrowLeft } from 'react-feather'
 import { NavHashLink } from 'react-router-hash-link'
@@ -24,7 +23,7 @@ export type RequestCancellationModalProps = {
   onDismiss: () => void
   triggerCancellation: (type: CancellationType) => void
   txCost: BigNumber | null
-  nativeCurrency: TokenWithLogo
+  nativeCurrency: NativeCurrency
 }
 
 const Wrapper = styled.div`

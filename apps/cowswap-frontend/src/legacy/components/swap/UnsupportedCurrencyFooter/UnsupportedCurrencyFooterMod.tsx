@@ -1,8 +1,6 @@
 import { useState } from 'react'
 
-import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
-import { useIsUnsupportedToken } from '@cowprotocol/tokens'
-import { TokenLogo } from '@cowprotocol/tokens'
+import { getEtherscanLink } from '@cowprotocol/common-utils'
 import { ButtonEmpty } from '@cowprotocol/ui'
 import { AutoRow, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -14,9 +12,11 @@ import styled from 'styled-components/macro'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
@@ -72,11 +72,11 @@ export default function UnsupportedCurrencyFooter({
   const tokens =
     chainId && currencies
       ? currencies.map((currency) => {
-          return currency && getWrappedToken(currency)
+          return currency?.wrapped
         })
       : []
 
-  const isUnsupportedToken = useIsUnsupportedToken()
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
 
   return (
     <DetailsFooter show={show}>
@@ -96,7 +96,7 @@ export default function UnsupportedCurrencyFooter({
                   <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
                     <AutoColumn gap="10px">
                       <AutoRow gap="5px" align="center">
-                        <TokenLogo token={token} size={24} />
+                        <CurrencyLogo currency={token} size={'24px'} />
                         <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
                       </AutoRow>
                       {chainId && (

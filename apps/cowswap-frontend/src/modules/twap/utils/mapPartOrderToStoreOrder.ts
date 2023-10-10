@@ -1,7 +1,9 @@
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order } from 'legacy/state/orders/actions'
+
+import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
+import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
 
 import { computeOrderSummary } from 'common/updaters/orders/utils'
 
@@ -18,6 +20,7 @@ export function mapPartOrderToStoreOrder(
   parent: TwapOrderItem,
   tokensByAddress: TokensByAddress
 ): Order {
+  const chainId = item.chainId
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
 
@@ -30,8 +33,8 @@ export function mapPartOrderToStoreOrder(
       parentId: parent.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken: getTokensByAddress(chainId, enrichedOrder.sellToken, tokensByAddress),
+    outputToken: getTokensByAddress(chainId, enrichedOrder.buyToken, tokensByAddress),
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,

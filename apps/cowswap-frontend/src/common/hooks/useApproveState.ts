@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -16,7 +16,9 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined
 
-  return getWrappedToken(amountToApprove.currency)
+  if (amountToApprove.currency.isNative) return amountToApprove.currency.wrapped
+
+  return amountToApprove.currency
 }
 
 export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>, spender?: string): ApprovalState {

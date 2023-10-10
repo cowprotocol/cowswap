@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
+import { nativeOnChain } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { NativeCurrency } from '@uniswap/sdk-core'
 
-export const MAINNET_NATIVE_CURRENCY = NATIVE_CURRENCY_BUY_TOKEN[SupportedChainId.MAINNET]
+export const MAINNET_NATIVE_CURRENCY = nativeOnChain(SupportedChainId.MAINNET)
 
-export default function useNativeCurrency(): TokenWithLogo {
+export default function useNativeCurrency(): NativeCurrency {
   const { chainId } = useWalletInfo()
 
-  return useMemo(() => NATIVE_CURRENCY_BUY_TOKEN[chainId], [chainId])
+  return useMemo(() => nativeOnChain(chainId), [chainId])
 }

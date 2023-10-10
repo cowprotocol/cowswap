@@ -14,7 +14,6 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
-import { getWrappedToken } from '@cowprotocol/common-utils'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
@@ -127,6 +126,8 @@ const SlippageEmojiContainer = styled.span`
 export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
+
+// const THREE_DAYS_IN_SECONDS = ms`3 days` / 1000
 
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
   const { chainId } = useWalletInfo()
@@ -243,7 +244,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               isEoaEthFlow
-                ? getNativeSlippageTooltip([nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
+                ? getNativeSlippageTooltip([nativeCurrency.symbol, nativeCurrency.wrapped.symbol])
                 : getNonNativeSlippageTooltip()
             }
           />

@@ -1,5 +1,4 @@
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
-import { getWrappedToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSdk } from '@cowprotocol/wallet'
 import { TradeType } from '@uniswap/sdk-core'
@@ -12,7 +11,7 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
   const baseProps = useBaseFlowContextSetup()
-  const sellToken = baseProps.trade ? getWrappedToken(baseProps.trade.inputAmount.currency) : undefined
+  const sellToken = baseProps.trade ? baseProps.trade.inputAmount.currency.wrapped : undefined
   const settlementContract = useGP2SettlementContract()
   const spender = useTradeSpenderAddress()
   const safeAppsSdk = useSafeAppsSdk()

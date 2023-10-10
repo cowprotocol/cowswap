@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
-
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsNativeIn, useIsNativeOut } from './useIsNativeInOrOut'
@@ -9,7 +7,7 @@ import { useIsWrappedIn, useIsWrappedOut } from './useIsWrappedInOrOut'
 
 export function useNativeTokenContext() {
   const native = useNativeCurrency()
-  const wrappedToken = getWrappedToken(native)
+  const wrappedToken = native.wrapped
 
   const isNativeIn = useIsNativeIn()
   const isNativeOut = useIsNativeOut()

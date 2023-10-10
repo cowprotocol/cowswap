@@ -1,13 +1,13 @@
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { GpEther } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { EthFlowBannerContent, EthFlowBannerContentProps } from '.'
 
 const defaultProps: EthFlowBannerContentProps = {
-  native: NATIVE_CURRENCY_BUY_TOKEN[SupportedChainId.MAINNET],
+  native: GpEther.onChain(SupportedChainId.MAINNET),
   get wrapped() {
-    return getWrappedToken(this.native)
+    return this.native.wrapped as Token & { logoURI: string }
   },
   showBanner: true,
   hasEnoughWrappedBalance: false,

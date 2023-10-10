@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -61,7 +60,7 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
-    const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
+    const isNativeIn = !!context.derivedState.inputCurrency?.isNative
 
     return (
       <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
@@ -122,8 +121,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ExpertApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
+    const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.doTrade}>
@@ -134,8 +132,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
+    const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>

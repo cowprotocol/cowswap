@@ -1,6 +1,5 @@
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
-import { getWrappedToken } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
@@ -28,7 +27,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
 
   const baseContext = getFlowContext({
     baseProps,
-    sellToken: getWrappedToken(baseProps.trade.inputAmount.currency),
+    sellToken: baseProps.trade.inputAmount.currency.wrapped,
     kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 

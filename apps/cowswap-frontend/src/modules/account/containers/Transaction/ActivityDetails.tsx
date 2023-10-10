@@ -2,14 +2,12 @@ import { ReactNode } from 'react'
 
 import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
+import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -20,6 +18,7 @@ import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Icon } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
@@ -173,7 +172,7 @@ export function ActivityDetails(props: {
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
-  const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
+  const singleToken = useToken(tokenAddress) || null
 
   const getShowCancellationModal = useCancelOrder()
 
@@ -260,8 +259,8 @@ export function ActivityDetails(props: {
   let outputToken = activityDerivedState?.order?.outputToken || null
 
   if (enhancedTransaction?.swapVCow || enhancedTransaction?.swapLockedGNOvCow) {
-    inputToken = V_COW[chainId as SupportedChainId]
-    outputToken = COW[chainId as SupportedChainId]
+    inputToken = V_COW[chainId]
+    outputToken = COW[chainId]
   }
 
   const isCustomRecipient = Boolean(order?.receiver && order.owner !== order.receiver)
@@ -284,15 +283,15 @@ export function ActivityDetails(props: {
           {/* Token Approval Currency Logo */}
           {!isOrder && singleToken && (
             <ActivityVisual>
-              <TokenLogo token={singleToken} size={24} />
+              <CurrencyLogo currency={singleToken} size={'24px'} />
             </ActivityVisual>
           )}
 
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <TokenLogo token={inputToken} size={24} />
-              <TokenLogo token={outputToken} size={24} />
+              <CurrencyLogo currency={inputToken} size={'24px'} />
+              <CurrencyLogo currency={outputToken} size={'24px'} />
             </ActivityVisual>
           )}
         </span>
