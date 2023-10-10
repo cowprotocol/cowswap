@@ -32,6 +32,8 @@ export interface TokenListInfo {
   tokensCount: number
 }
 
+export type FetchedTokenList = { info: TokenListInfo; tokens: TokenInfo[] }
+
 export type TokensMap = { [address: string]: TokenInfo }
 
 export type ActiveTokensListsMap = { [listId: string]: boolean | undefined }

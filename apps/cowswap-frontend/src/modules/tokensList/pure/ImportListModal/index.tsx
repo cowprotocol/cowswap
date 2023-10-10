@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { TokenLogo, getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
+import { TokenLogo, getTokenListViewLink, FetchedTokenList } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
@@ -10,8 +10,8 @@ import * as styledEl from './styled'
 import { ModalHeader } from '../ModalHeader'
 
 export interface ImportListModalProps {
-  list: TokenListInfo
-  onImport(list: TokenListInfo): void
+  list: FetchedTokenList
+  onImport(list: FetchedTokenList): void
   onBack(): void
   onDismiss(): void
 }
@@ -21,8 +21,9 @@ export function ImportListModal(props: ImportListModalProps) {
 
   const [isAccepted, setIsAccepted] = useState(false)
 
-  const source = 'ensName' in list.source ? list.source.ensName : list.source.url
-  const viewLink = getTokenListViewLink(list.source)
+  const { info } = list
+  const source = 'ensName' in info.source ? info.source.ensName : info.source.url
+  const viewLink = getTokenListViewLink(info.source)
 
   return (
     <styledEl.Wrapper>
@@ -30,10 +31,10 @@ export function ImportListModal(props: ImportListModalProps) {
         Import List
       </ModalHeader>
       <styledEl.ListInfo>
-        <TokenLogo logoURI={list.logoUrl} size={36} />
+        <TokenLogo logoURI={info.logoUrl} size={36} />
         <div>
           <styledEl.ListTitle>
-            {list.name} · {list.tokensCount} tokens
+            {info.name} · {info.tokensCount} tokens
           </styledEl.ListTitle>
           <styledEl.ListLink target="_blank" href={viewLink} rel="noreferrer">
             {source}

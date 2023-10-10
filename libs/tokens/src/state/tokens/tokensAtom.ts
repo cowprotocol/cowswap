@@ -9,13 +9,20 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 
-export type TokensByAddress = { [address: string]: TokenWithLogo }
+export interface TokensByAddress {
+  [address: string]: TokenWithLogo
+}
 
-export type TokensBySymbol = { [address: string]: TokenWithLogo[] }
+export interface TokensBySymbol {
+  [address: string]: TokenWithLogo[]
+}
 
 type ListTokensState = { [listId: string]: TokensMap }
 
-export type TokensState = { activeTokens: ListTokensState; inactiveTokens: ListTokensState }
+export interface TokensState {
+  activeTokens: ListTokensState
+  inactiveTokens: ListTokensState
+}
 
 const defaultState: TokensState = { activeTokens: {}, inactiveTokens: {} }
 
@@ -65,6 +72,33 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
 
 export const setTokensAtom = atom(null, (get, set, chainId: SupportedChainId, state: TokensState) => {
   set(updateTokensAtom, { [chainId]: state })
+})
+
+export const addTokensFromImportedListAtom = atom(null, (get, set, listId: string, tokens: TokensMap) => {
+  const { chainId } = get(environmentAtom)
+  const tokensMap = get(tokensAtomsByChainId)[chainId]
+
+  set(updateTokensAtom, {
+    [chainId]: {
+      ...tokensMap,
+      activeTokens: {
+        ...tokensMap.activeTokens,
+        [listId]: tokens,
+      },
+    },
+  })
+})
+
+export const removeTokensOfListAtom = atom(null, (get, set, listId: string) => {
+  const { chainId } = get(environmentAtom)
+  const tokensMap = { ...get(tokensAtomsByChainId)[chainId] }
+
+  delete tokensMap.activeTokens[listId]
+  delete tokensMap.inactiveTokens[listId]
+
+  set(updateTokensAtom, {
+    [chainId]: tokensMap,
+  })
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {

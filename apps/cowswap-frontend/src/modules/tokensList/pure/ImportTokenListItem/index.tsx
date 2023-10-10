@@ -1,4 +1,4 @@
-import { TokenListInfo } from '@cowprotocol/tokens'
+import { FetchedTokenList } from '@cowprotocol/tokens'
 
 import { CheckCircle } from 'react-feather'
 
@@ -8,9 +8,9 @@ import { ImportButton } from '../commonElements'
 import { TokenListDetails } from '../TokenListDetails'
 
 export interface ImportTokenListItemProps {
-  list: TokenListInfo
+  list: FetchedTokenList
   source: 'existing' | 'external'
-  importList(list: TokenListInfo): void
+  importList(list: FetchedTokenList): void
 }
 
 export function ImportTokenListItem(props: ImportTokenListItemProps) {
@@ -18,7 +18,7 @@ export function ImportTokenListItem(props: ImportTokenListItemProps) {
 
   return (
     <styledEl.Wrapper>
-      <TokenListDetails list={list}></TokenListDetails>
+      <TokenListDetails list={list.info}></TokenListDetails>
       {source === 'existing' ? (
         <styledEl.LoadedInfo>
           <CheckCircle size={16} strokeWidth={2} />

@@ -5,8 +5,9 @@ import { useAtomValue } from 'jotai'
 import { allTokenListsInfoAtom, allTokenListsAtom } from '../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
 import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
-import { TokenListInfo } from '../types'
+import { FetchedTokenList, TokenListInfo } from '../types'
 import { buildTokenListInfo } from '../utils/buildTokenListInfo'
+import { TokenInfo } from '@uniswap/token-lists'
 
 export type ListSearchResponse =
   | {
@@ -15,7 +16,7 @@ export type ListSearchResponse =
     }
   | {
       source: 'external'
-      response: SWRResponse<TokenListInfo | null>
+      response: SWRResponse<FetchedTokenList | null>
     }
 
 export function useSearchList(input: string | null): ListSearchResponse {
@@ -41,12 +42,17 @@ export function useSearchList(input: string | null): ListSearchResponse {
     return list ? allTokensListsInfo.find((info) => info.id === list.id) : undefined
   }, [allTokensLists, allTokensListsInfo, input])
 
-  const response = useSWR<TokenListInfo | null>(
+  const response = useSWR<FetchedTokenList | null>(
     ['useSearchList', listSource, existingList],
     () => {
       if (!listSource || existingList) return null
 
-      return fetchTokenList(listSource).then(buildTokenListInfo)
+      return fetchTokenList(listSource).then((res) => {
+        const info = buildTokenListInfo(res)
+        const tokens = res.list.tokens
+
+        return { info, tokens }
+      })
     },
     {}
   )

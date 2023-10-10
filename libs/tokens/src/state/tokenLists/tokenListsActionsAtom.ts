@@ -9,19 +9,21 @@ import {
   upsertAllTokenListsInfoAtom,
   userAddedTokenListsAtom,
 } from './tokenListsStateAtom'
-import { TokenListInfo } from '../../types'
+import { FetchedTokenList, TokensMap } from '../../types'
+import { addTokensFromImportedListAtom, removeTokensOfListAtom } from '../tokens/tokensAtom'
 
-export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) => {
+export const addTokenListAtom = atom(null, (get, set, tokenList: FetchedTokenList) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedTokenListsAtom)
   const activeTokenListsIds = get(activeTokenListsIdsAtom)
   const id = nanoid()
+  const { info, tokens } = tokenList
 
-  tokenList.id = id
+  info.id = id
 
   set(userAddedTokenListsAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].concat({ ...tokenList.source, id }),
+    [chainId]: userAddedTokenLists[chainId].concat({ ...info.source, id }),
   })
 
   set(activeTokenListsIdsAtom, {
@@ -32,7 +34,17 @@ export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) 
     },
   })
 
-  set(upsertAllTokenListsInfoAtom, chainId, { [id]: tokenList })
+  set(upsertAllTokenListsInfoAtom, chainId, { [id]: info })
+
+  const tokensMap = tokens.reduce<TokensMap>((acc, token) => {
+    if (token.chainId === chainId) {
+      acc[token.address.toLowerCase()] = token
+    }
+
+    return acc
+  }, {})
+
+  set(addTokensFromImportedListAtom, id, tokensMap)
 })
 
 export const removeTokenListAtom = atom(null, (get, set, id: string) => {
@@ -54,6 +66,7 @@ export const removeTokenListAtom = atom(null, (get, set, id: string) => {
   })
 
   set(removeListFromAllTokenListsInfoAtom, id)
+  set(removeTokensOfListAtom, id)
 })
 
 export const toggleListAtom = atom(null, (get, set, id: string) => {

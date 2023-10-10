@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import {
+  FetchedTokenList,
   ListSearchResponse,
   TokenListInfo,
   useActiveTokenListsIds,
@@ -48,7 +49,7 @@ export function ManageLists(props: ManageListsProps) {
             <ListItem
               key={list.id}
               list={list}
-              enabled={activeTokenListsIds[list.id]}
+              enabled={!!activeTokenListsIds[list.id]}
               removeList={removeCustomTokenLists}
               toggleList={toggleList}
             />
@@ -61,7 +62,7 @@ export function ManageLists(props: ManageListsProps) {
 function useListSearchResponse(listSearchResponse: ListSearchResponse): {
   source: 'existing' | 'external'
   loading: boolean
-  listToImport: TokenListInfo | null
+  listToImport: FetchedTokenList | null
 } {
   return useMemo(() => {
     const source = listSearchResponse.source
@@ -70,7 +71,7 @@ function useListSearchResponse(listSearchResponse: ListSearchResponse): {
       return {
         source,
         loading: false,
-        listToImport: listSearchResponse.response,
+        listToImport: { info: listSearchResponse.response, tokens: [] },
       }
     } else {
       if (!listSearchResponse.response) {
