@@ -4,6 +4,7 @@ import { nanoid } from '@reduxjs/toolkit'
 import { environmentAtom } from '../environmentAtom'
 import {
   activeTokenListsIdsAtom,
+  activeTokenListsMapAtom,
   removeListFromAllTokenListsInfoAtom,
   upsertAllTokenListsInfoAtom,
   userAddedTokenListsAtom,
@@ -58,9 +59,11 @@ export const removeTokenListAtom = atom(null, (get, set, id: string) => {
 export const toggleListAtom = atom(null, (get, set, id: string) => {
   const { chainId } = get(environmentAtom)
   const activeTokenListsIds = get(activeTokenListsIdsAtom)
+  const activeTokenListsMap = get(activeTokenListsMapAtom)
+
   const activeTokenListsState = { ...activeTokenListsIds[chainId] }
 
-  activeTokenListsState[id] = !activeTokenListsState[id]
+  activeTokenListsState[id] = !activeTokenListsMap[id]
 
   set(activeTokenListsIdsAtom, {
     ...activeTokenListsIds,

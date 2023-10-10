@@ -13,9 +13,15 @@ export type TokensByAddress = { [address: string]: TokenWithLogo }
 
 export type TokensBySymbol = { [address: string]: TokenWithLogo[] }
 
-export type TokensState = { activeTokens: TokensMap; inactiveTokens: TokensMap }
+type ListTokensState = { [listId: string]: TokensMap }
+
+export type TokensState = { activeTokens: ListTokensState; inactiveTokens: ListTokensState }
 
 const defaultState: TokensState = { activeTokens: {}, inactiveTokens: {} }
+
+const listTokensToMap = (listTokens: ListTokensState): TokensMap => {
+  return Object.values(listTokens).reduce<TokensMap>((acc, tokens) => ({ ...acc, ...tokens }), {})
+}
 
 const { atom: tokensAtomsByChainId, updateAtom: updateTokensAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, TokensState>>('tokensAtomsByChainId:v1', {
@@ -24,6 +30,12 @@ const { atom: tokensAtomsByChainId, updateAtom: updateTokensAtom } = atomWithPar
     [SupportedChainId.GOERLI]: { ...defaultState },
   })
 )
+
+export const tokensStateAtom = atom<TokensState>((get) => {
+  const { chainId } = get(environmentAtom)
+
+  return get(tokensAtomsByChainId)[chainId]
+})
 
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
@@ -34,7 +46,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
   const tokens = tokenMapToList({
-    ...tokensMap.activeTokens,
+    ...listTokensToMap(tokensMap.activeTokens),
     ...userAddedTokens[chainId],
     ...favouriteTokensState[chainId],
   })
@@ -48,7 +60,7 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensAtomsByChainId)[chainId]
 
-  return tokenMapToList(tokensMap.inactiveTokens)
+  return tokenMapToList(listTokensToMap(tokensMap.inactiveTokens))
 })
 
 export const setTokensAtom = atom(null, (get, set, chainId: SupportedChainId, state: TokensState) => {

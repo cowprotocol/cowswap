@@ -33,3 +33,5 @@ export interface TokenListInfo {
 }
 
 export type TokensMap = { [address: string]: TokenInfo }
+
+export type ActiveTokensListsMap = { [listId: string]: boolean | undefined }

@@ -1,26 +1,27 @@
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import useSWR, { SWRConfiguration } from 'swr'
+import ms from 'ms.macro'
+import { useEffect } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { usePrevious } from '@cowprotocol/common-hooks'
 
 import {
   allTokenListsAtom,
   tokenListsUpdatingAtom,
   upsertAllTokenListsInfoAtom,
 } from '../../state/tokenLists/tokenListsStateAtom'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import useSWR, { SWRConfiguration } from 'swr'
-import ms from 'ms.macro'
-import { useEffect } from 'react'
 import { fetchTokenList, TokenListResult } from '../../services/fetchTokenList'
-import { setTokensAtom } from '../../state/tokens/tokensAtom'
+import { setTokensAtom, tokensStateAtom } from '../../state/tokens/tokensAtom'
 import { environmentAtom } from '../../state/environmentAtom'
-import { TokenListInfo, TokensMap } from '../../types'
-import { buildTokenListInfo } from '../../utils/buildTokenListInfo'
 import { useActiveTokenListsIds } from '../../hooks/useActiveTokenListsIds'
-
-type TokensAndListsUpdate = {
-  activeTokens: TokensMap
-  inactiveTokens: TokensMap
-  lists: { [id: string]: TokenListInfo }
-}
+import {
+  getFulfilledResults,
+  getIsTimeToUpdate,
+  LAST_UPDATE_TIME_KEY,
+  parseTokenListResults,
+  updateTokensLists,
+} from './helpers'
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
@@ -29,14 +30,13 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const defaultUpdateState: TokensAndListsUpdate = { activeTokens: {}, inactiveTokens: {}, lists: {} }
-
-const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-updater:last-update-time[${chainId}]`
-
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
   const allTokensLists = useAtomValue(allTokenListsAtom)
+  const tokensState = useAtomValue(tokensStateAtom)
+
   const activeTokensListsMap = useActiveTokenListsIds()
+  const prevActiveTokensListsMap = usePrevious(activeTokensListsMap)
 
   const setTokens = useSetAtom(setTokensAtom)
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
@@ -47,7 +47,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
   }, [setEnvironment, currentChainId])
 
   // Fetch tokens lists once in 6 hours
-  const swrResponse = useSWR<TokenListResult[] | null>(
+  const { data: fetchedTokens, isLoading } = useSWR<TokenListResult[] | null>(
     ['TokensListsUpdater', allTokensLists, chainId],
     () => {
       if (!getIsTimeToUpdate(chainId)) return null
@@ -57,57 +57,33 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
     swrOptions
   )
 
-  // Fullfil tokens map with tokens from fetched lists
+  // Fulfill tokens lists with tokens from fetched lists
   useEffect(() => {
-    const { data, isLoading, error } = swrResponse
-
     setTokenListsUpdating(isLoading)
 
-    if (isLoading || error || !data) return
+    if (isLoading || !fetchedTokens) return
 
-    const { activeTokens, inactiveTokens, lists } = data.reduce<TokensAndListsUpdate>((acc, val) => {
-      const isListEnabled = activeTokensListsMap[val.id]
-
-      acc.lists[val.id] = buildTokenListInfo(val)
-
-      val.list.tokens.forEach((token) => {
-        if (token.chainId === chainId) {
-          const tokenAddress = token.address.toLowerCase()
-
-          if (isListEnabled) {
-            acc.activeTokens[tokenAddress] = token
-          } else {
-            acc.inactiveTokens[tokenAddress] = token
-          }
-        }
-      })
-
-      return acc
-    }, defaultUpdateState)
+    const { activeTokens, inactiveTokens, lists } = parseTokenListResults(chainId, fetchedTokens, activeTokensListsMap)
 
     localStorage.setItem(LAST_UPDATE_TIME_KEY(chainId), Date.now().toString())
 
     setTokenLists(chainId, lists)
     setTokens(chainId, { activeTokens, inactiveTokens })
-  }, [swrResponse, chainId, setTokens, setTokenLists, activeTokensListsMap, setTokenListsUpdating])
+  }, [fetchedTokens, isLoading, chainId, setTokens, setTokenLists, setTokenListsUpdating, activeTokensListsMap])
+
+  // Update tokens state if active tokens lists map was changed
+  useEffect(() => {
+    // Do updates only when activeTokensListsMap is changed
+    if (prevActiveTokensListsMap === activeTokensListsMap) return
+    // Don't update when there are fetched tokens, because they will be updated in useEffect() above
+    if (fetchedTokens) return
+
+    const update = updateTokensLists(tokensState, activeTokensListsMap)
+
+    if (update) {
+      setTokens(chainId, update)
+    }
+  }, [fetchedTokens, chainId, activeTokensListsMap, prevActiveTokensListsMap, tokensState, setTokens])
 
   return null
-}
-
-const getIsTimeToUpdate = (chainId: SupportedChainId): boolean => {
-  const lastUpdateTime = +(localStorage.getItem(LAST_UPDATE_TIME_KEY(chainId)) || 0)
-
-  if (!lastUpdateTime) return true
-
-  return Date.now() - lastUpdateTime > TOKENS_LISTS_UPDATER_INTERVAL
-}
-
-const getFulfilledResults = (results: PromiseSettledResult<TokenListResult>[]) => {
-  return results.reduce<TokenListResult[]>((acc, val) => {
-    if (val.status === 'fulfilled') {
-      acc.push(val.value)
-    }
-
-    return acc
-  }, [])
 }
