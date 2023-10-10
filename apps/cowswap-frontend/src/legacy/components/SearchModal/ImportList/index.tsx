@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -21,7 +20,7 @@ export interface ImportProps {
 }
 
 export function ImportList(props: ImportProps) {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const dispatch = useDispatch()
 
   // wrap actions in dispatch and pass new 'chainId' prop here to avoid changing in children
