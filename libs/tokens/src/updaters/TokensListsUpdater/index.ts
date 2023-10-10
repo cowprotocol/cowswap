@@ -29,6 +29,8 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
+const defaultUpdateState: TokensAndListsUpdate = { activeTokens: {}, inactiveTokens: {}, lists: {} }
+
 const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-updater:last-update-time[${chainId}]`
 
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
@@ -62,28 +64,25 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
 
     if (isLoading || error || !data) return
 
-    const { activeTokens, inactiveTokens, lists } = data.reduce<TokensAndListsUpdate>(
-      (acc, val) => {
-        const isListEnabled = activeTokensListsMap[val.id]
+    const { activeTokens, inactiveTokens, lists } = data.reduce<TokensAndListsUpdate>((acc, val) => {
+      const isListEnabled = activeTokensListsMap[val.id]
 
-        acc.lists[val.id] = buildTokenListInfo(val)
+      acc.lists[val.id] = buildTokenListInfo(val)
 
-        val.list.tokens.forEach((token) => {
-          if (token.chainId === chainId) {
-            const tokenAddress = token.address.toLowerCase()
+      val.list.tokens.forEach((token) => {
+        if (token.chainId === chainId) {
+          const tokenAddress = token.address.toLowerCase()
 
-            if (isListEnabled) {
-              acc.activeTokens[tokenAddress] = token
-            } else {
-              acc.inactiveTokens[tokenAddress] = token
-            }
+          if (isListEnabled) {
+            acc.activeTokens[tokenAddress] = token
+          } else {
+            acc.inactiveTokens[tokenAddress] = token
           }
-        })
+        }
+      })
 
-        return acc
-      },
-      { activeTokens: {}, inactiveTokens: {}, lists: {} }
-    )
+      return acc
+    }, defaultUpdateState)
 
     localStorage.setItem(LAST_UPDATE_TIME_KEY(chainId), Date.now().toString())
 
