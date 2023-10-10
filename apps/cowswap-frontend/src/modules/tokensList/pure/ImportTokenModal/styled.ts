@@ -10,6 +10,7 @@ export const Wrapper = styled.div`
   width: 100%;
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: 20px;
+  overflow: auto;
 `
 
 export const Contents = styled.div`
@@ -33,6 +34,11 @@ export const TokenInfo = styled.div`
   text-align: center;
   gap: 10px;
   font-size: 14px;
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
 
 export const StyledTokenSymbol = styled(TokenSymbol)`

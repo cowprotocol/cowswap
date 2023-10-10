@@ -6,13 +6,13 @@ import styled from 'styled-components/macro'
 
 import { allTokensMock, favouriteTokensMock } from '../../mocks'
 
-import { SelectTokenModal } from './index'
+import { SelectTokenModal, SelectTokenModalProps } from './index'
 
 const Wrapper = styled.div`
   width: 450px;
 `
 
-const selectedToken = favouriteTokensMock[0]
+const selectedToken = favouriteTokensMock[0].address
 
 const balances = allTokensMock.reduce<{ [key: string]: CurrencyAmount<Currency> }>((acc, token) => {
   acc[token.address.toLowerCase()] = CurrencyAmount.fromRawAmount(
@@ -23,11 +23,20 @@ const balances = allTokensMock.reduce<{ [key: string]: CurrencyAmount<Currency> 
   return acc
 }, {})
 
-const defaultProps = {
-  selectedToken,
-  balances,
+const defaultProps: SelectTokenModalProps = {
   allTokens: allTokensMock,
   favouriteTokens: favouriteTokensMock,
+  balances,
+  selectedToken,
+  onSelectToken() {
+    console.log('onSelectToken')
+  },
+  onOpenManageWidget() {
+    console.log('onOpenManageWidget')
+  },
+  onDismiss() {
+    console.log('onDismiss')
+  },
 }
 
 const Fixtures = {

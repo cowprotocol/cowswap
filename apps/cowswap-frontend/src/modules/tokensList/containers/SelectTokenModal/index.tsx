@@ -1,144 +1,94 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 
-import { useDebounce, useNetworkName } from '@cowprotocol/common-hooks'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useUnsupportedTokens } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
 
-import { searchToken, TokenSearchSource } from './searchToken'
 import * as styledEl from './styled'
 
-import { AllTokensList } from '../../pure/AllTokensList'
+import { useAllTokensBalances } from '../../hooks/useAllTokensBalances'
 import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
-import { ImportTokenItem } from '../../pure/ImportTokenItem'
-import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
-import { TokenWithLogo } from '../../types'
+import { TokensVirtualList } from '../../pure/TokensVirtualList'
+import { SelectTokenContext } from '../../types'
+import { TokenSearchResults } from '../TokenSearchResults'
+
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
   balances: { [key: string]: CurrencyAmount<Currency> }
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
+  onSelectToken(token: TokenWithLogo): void
   defaultInputValue?: string
+  onOpenManageWidget(): void
+  onDismiss(): void
 }
 
+const permitCompatibleTokens: { [tokenAddress: string]: boolean } = {} // TODO: Make dynamic
+
 export function SelectTokenModal(props: SelectTokenModalProps) {
-  const { defaultInputValue = '', favouriteTokens, allTokens, selectedToken, balances } = props
+  const {
+    defaultInputValue = '',
+    favouriteTokens,
+    allTokens,
+    selectedToken,
+    onSelectToken,
+    onDismiss,
+    onOpenManageWidget,
+  } = props
 
-  const networkName = useNetworkName()
-
-  const [isSearchInProgress, setIsSearchInProgress] = useState<boolean>(false)
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
-  const debouncedInputValue = useDebounce(inputValue, 500)
+  const [isEnterPressed, setIsEnterPressed] = useState<boolean>(false)
 
-  const [tokensFromBlockChain, setTokensFromBlockChain] = useState<TokenWithLogo[]>([])
-  const [tokensFromInactiveLists, setTokensFromInactiveLists] = useState<TokenWithLogo[]>([])
-  const [tokensFromExternal, setTokensFromExternal] = useState<TokenWithLogo[]>([])
+  const unsupportedTokens = useUnsupportedTokens()
 
-  const importToken = (token: TokenWithLogo) => {
-    console.log('TODO: import token', token)
+  const balances = useAllTokensBalances()
+
+  const handleEnterPress = () => {
+    setIsEnterPressed(true)
+    setTimeout(() => setIsEnterPressed(false), 100)
   }
 
-  const isTokenNotFound = useMemo(() => {
-    if (isSearchInProgress || !debouncedInputValue) return false
-
-    return tokensFromExternal.length === 0 && tokensFromBlockChain.length === 0 && tokensFromInactiveLists.length === 0
-  }, [debouncedInputValue, isSearchInProgress, tokensFromBlockChain, tokensFromInactiveLists, tokensFromExternal])
-
-  useEffect(() => {
-    if (!debouncedInputValue) return
-
-    setIsSearchInProgress(true)
-    setTokensFromBlockChain([])
-    setTokensFromInactiveLists([])
-    setTokensFromExternal([])
-
-    searchToken(debouncedInputValue)
-      .then((result) => {
-        if (!result) {
-          return
-        }
-
-        const { source, tokens } = result
-
-        if (source === TokenSearchSource.Blockchain) {
-          setTokensFromBlockChain(tokens)
-          return
-        }
-        if (source === TokenSearchSource.InactiveList) {
-          setTokensFromInactiveLists(tokens)
-          return
-        }
-        if (source === TokenSearchSource.External) {
-          setTokensFromExternal(tokens)
-          return
-        }
-      })
-      .finally(() => {
-        setIsSearchInProgress(false)
-      })
-  }, [debouncedInputValue])
+  const selectTokenContext: SelectTokenContext = {
+    balances: balances[0],
+    selectedToken,
+    onSelectToken,
+    unsupportedTokens,
+    permitCompatibleTokens,
+  }
 
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
         <h3>Select a token</h3>
-        <IconButton>
+        <IconButton onClick={onDismiss}>
           <X />
         </IconButton>
       </styledEl.Header>
       <styledEl.Row>
         <styledEl.SearchInput
+          id="token-search-input"
           value={inputValue}
+          onKeyDown={(e) => e.key === 'Enter' && handleEnterPress()}
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
           placeholder="Search name or past address"
         />
       </styledEl.Row>
       <styledEl.Row>
-        <FavouriteTokensList selectedToken={selectedToken} tokens={favouriteTokens} />
+        <FavouriteTokensList onSelectToken={onSelectToken} selectedToken={selectedToken} tokens={favouriteTokens} />
       </styledEl.Row>
-      {isTokenNotFound && (
-        <styledEl.TokenNotFound>No tokens found for this name in {networkName}</styledEl.TokenNotFound>
+      <styledEl.Separator />
+      {inputValue ? (
+        <TokenSearchResults searchInput={inputValue} isEnterPressed={isEnterPressed} {...selectTokenContext} />
+      ) : (
+        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} />
       )}
-      {tokensFromBlockChain.length > 0 && (
-        <div>
-          {tokensFromBlockChain.map((token) => {
-            return <ImportTokenItem token={token} importToken={importToken} />
-          })}
-        </div>
-      )}
-      {tokensFromInactiveLists.length > 0 && (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
-            Expanded results from inactive Token Lists
-          </TokenSourceTitle>
-          <div>
-            {tokensFromInactiveLists.map((token) => {
-              return <ImportTokenItem token={token} importToken={importToken} shadowed={true} />
-            })}
-          </div>
-        </div>
-      )}
-      {tokensFromExternal.length > 0 && (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from external sources.">
-            Additional Results from External Sources
-          </TokenSourceTitle>
-          <div>
-            {tokensFromExternal.map((token) => {
-              return <ImportTokenItem token={token} importToken={importToken} shadowed={true} />
-            })}
-          </div>
-        </div>
-      )}
-      {!debouncedInputValue && (
-        <div>
-          <AllTokensList selectedToken={selectedToken} tokens={allTokens} balances={balances} />
-        </div>
-      )}
+      <styledEl.Separator />
       <div>
-        <styledEl.ActionButton>
+        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
           <Edit /> <span>Manage Token Lists</span>
         </styledEl.ActionButton>
       </div>

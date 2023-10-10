@@ -15,10 +15,6 @@ export const Header = styled.div`
   }
 `
 
-export const TokensList = styled.div`
-  margin: 10px 0;
-`
-
 export const TokensItem = styled.button`
   display: inline-flex;
   flex-direction: row;
@@ -41,13 +37,5 @@ export const TokensItem = styled.button`
 
   :hover {
     background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
-  }
-
-  > img {
-    --size: 24px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-    background: var(${UI.COLOR_LIGHT_BLUE});
   }
 `

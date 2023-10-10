@@ -11,20 +11,42 @@ const Wrapper = styled.div`
   background: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
+const emptyListSearchResponse = {
+  source: 'external',
+  response: {
+    isLoading: false,
+    data: undefined,
+    error: undefined,
+  },
+}
+
+const externalListSearchResponse = {
+  source: 'external',
+  response: {
+    isLoading: false,
+    data: importListsMock,
+    error: undefined,
+  },
+}
+const internalListSearchResponse = {
+  source: 'existing',
+  response: listsMock[0],
+}
+
 const Fixtures = {
   default: (
     <Wrapper>
-      <ManageLists lists={listsMock} />
+      <ManageLists lists={listsMock} listSearchResponse={emptyListSearchResponse as never} />
     </Wrapper>
   ),
   importList: (
     <Wrapper>
-      <ManageLists lists={listsMock} listsToImport={importListsMock} />
+      <ManageLists lists={listsMock} listSearchResponse={externalListSearchResponse as never} />
     </Wrapper>
   ),
   loadedLists: (
     <Wrapper>
-      <ManageLists lists={listsMock} loadedLists={importListsMock} />
+      <ManageLists lists={listsMock} listSearchResponse={internalListSearchResponse as never} />
     </Wrapper>
   ),
 }

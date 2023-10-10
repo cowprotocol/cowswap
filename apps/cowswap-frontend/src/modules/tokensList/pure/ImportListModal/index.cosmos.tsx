@@ -12,9 +12,9 @@ const Fixtures = {
   default: (
     <Wrapper>
       <ImportListModal
-        list={importListsMock[0]}
+        list={importListsMock}
         onBack={() => console.log('onBack')}
-        onClose={() => console.log('onClose')}
+        onDismiss={() => console.log('onDismiss')}
         onImport={() => console.log('onImport')}
       />
     </Wrapper>

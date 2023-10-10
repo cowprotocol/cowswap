@@ -1,56 +1,89 @@
+import { useMemo } from 'react'
+
+import {
+  ListSearchResponse,
+  TokenListInfo,
+  useActiveTokenListsIds,
+  useRemoveTokenList,
+  useToggleListCallback,
+} from '@cowprotocol/tokens'
+
 import * as styledEl from './styled'
 
-import { PrimaryInput, PrimaryInputBox } from '../../pure/commonElements'
+import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
-import { LoadedTokenListItem } from '../../pure/LoadedTokenListItem'
-import { TokenListItem } from '../../pure/TokenListItem'
-import { TokenList } from '../../types'
+import { ListItem } from '../../pure/ListItem'
 
 export interface ManageListsProps {
-  lists: TokenList[]
-  loadedLists?: TokenList[]
-  listsToImport?: TokenList[]
+  lists: TokenListInfo[]
+  listSearchResponse: ListSearchResponse
 }
 
 export function ManageLists(props: ManageListsProps) {
-  const { lists, loadedLists, listsToImport } = props
+  const { lists, listSearchResponse } = props
 
-  const viewList = (id: string) => {
-    console.log('TODO viewList', id)
-  }
+  const activeTokenListsIds = useActiveTokenListsIds()
+  const addListImport = useAddListImport()
+  const removeCustomTokenLists = useRemoveTokenList()
+  const toggleList = useToggleListCallback()
 
-  const removeList = (id: string) => {
-    console.log('TODO removeList', id)
-  }
+  const { source, listToImport } = useListSearchResponse(listSearchResponse)
 
-  const importList = (list: TokenList) => {
-    console.log('TODO importList', list.id)
-  }
-
+  // TODO: add loading state
   return (
     <styledEl.Wrapper>
-      <PrimaryInputBox>
-        <PrimaryInput type="text" placeholder="https:// or ipfs:// or ENS name" />
-      </PrimaryInputBox>
-      {!!loadedLists?.length && (
+      {listToImport && (
         <styledEl.ImportListsContainer>
-          {loadedLists.map((list) => (
-            <LoadedTokenListItem key={list.id} list={list} />
-          ))}
+          <ImportTokenListItem
+            source={source}
+            list={listToImport}
+            importList={() => listToImport && addListImport(listToImport)}
+          />
         </styledEl.ImportListsContainer>
       )}
-      {!!listsToImport?.length && (
-        <styledEl.ImportListsContainer>
-          {listsToImport.map((list) => (
-            <ImportTokenListItem key={list.id} list={list} importList={importList} />
+      <styledEl.ListsContainer id="tokens-lists-table">
+        {lists
+          .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+          .map((list) => (
+            <ListItem
+              key={list.id}
+              list={list}
+              enabled={activeTokenListsIds[list.id]}
+              removeList={removeCustomTokenLists}
+              toggleList={toggleList}
+            />
           ))}
-        </styledEl.ImportListsContainer>
-      )}
-      <styledEl.ListsContainer>
-        {lists.map((list) => (
-          <TokenListItem key={list.id} list={list} viewList={viewList} removeList={removeList} />
-        ))}
       </styledEl.ListsContainer>
     </styledEl.Wrapper>
   )
+}
+
+function useListSearchResponse(listSearchResponse: ListSearchResponse): {
+  source: 'existing' | 'external'
+  loading: boolean
+  listToImport: TokenListInfo | null
+} {
+  return useMemo(() => {
+    const source = listSearchResponse.source
+
+    if (listSearchResponse.source === 'existing') {
+      return {
+        source,
+        loading: false,
+        listToImport: listSearchResponse.response,
+      }
+    } else {
+      if (!listSearchResponse.response) {
+        return { source, loading: false, listToImport: null }
+      }
+
+      const { isLoading, data } = listSearchResponse.response
+
+      return {
+        source,
+        loading: isLoading,
+        listToImport: data || null,
+      }
+    }
+  }, [listSearchResponse])
 }
