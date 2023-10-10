@@ -9,8 +9,6 @@ import { useWeb3React } from '@web3-react/core'
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 
-import { ContentWrapper as SearchInputFormatter } from 'legacy/components/SearchModal/CurrencySearch'
-import { TokenSearchInput } from 'legacy/components/Tokens/styled'
 import TokensTable from 'legacy/components/Tokens/TokensTable'
 import { useAllTokenBalances, useAllTokens } from 'legacy/hooks/Tokens'
 import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens } from 'legacy/state/user/hooks'
@@ -31,6 +29,8 @@ import {
   LeftSection,
   ClearSearchInput,
   Overview,
+  SearchInputFormatter,
+  TokenSearchInput,
 } from './styled'
 
 import { CardsLoader, CardsSpinner } from '../styled'
