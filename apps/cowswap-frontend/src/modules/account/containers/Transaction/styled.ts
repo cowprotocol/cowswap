@@ -7,7 +7,6 @@ import styled, { css, keyframes } from 'styled-components/macro'
 import { LinkStyledButton } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
-import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`
@@ -270,8 +269,8 @@ export const StatusLabel = styled.div<{
     isPending || isPresignaturePending || isCreating
       ? theme.text1
       : color === 'success'
-        ? theme.success
-        : theme.attention};
+      ? theme.success
+      : theme.attention};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -291,13 +290,13 @@ export const StatusLabel = styled.div<{
   &::before {
     content: '';
     background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-    !isCancelling && (isPending || isCreating)
-      ? 'transparent'
-      : isPresignaturePending || (isPending && isTransaction)
+      !isCancelling && (isPending || isCreating)
+        ? 'transparent'
+        : isPresignaturePending || (isPending && isTransaction)
         ? theme.pending
         : color === 'success'
-          ? theme.success
-          : theme.attention};
+        ? theme.success
+        : theme.attention};
     position: absolute;
     left: 0;
     top: 0;
@@ -331,9 +330,9 @@ export const StatusLabel = styled.div<{
 
   > svg > path {
     fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
-    isPending || isPresignaturePending || isCreating
-      ? theme.text1
-      : color === 'success'
+      isPending || isPresignaturePending || isCreating
+        ? theme.text1
+        : color === 'success'
         ? theme.success
         : theme.attention};
   }
@@ -356,7 +355,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   }
 `
 
-export const OldTransactionState = styled(ExternalLink) <{ pending: boolean; success?: boolean }>`
+export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -477,21 +476,21 @@ export const ActivityVisual = styled.div`
   display: flex;
   margin: 0 0 6px;
 
-  ${StyledLogo} {
+  div {
     padding: 2px;
     box-sizing: content-box;
     box-shadow: none;
     background: ${({ theme }) => theme.white};
     color: ${({ theme }) =>
-    theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
+      theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
     border: 2px solid ${({ theme }) => theme.bg1};
   }
 
-  ${StyledLogo}:not(:first-child):last-child {
+  div:not(:first-child):last-child {
     margin: 0 0 0 -9px;
   }
 
-  &:hover ${StyledLogo} {
+  &:hover div {
     animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
     transform: translateZ(0);
   }
