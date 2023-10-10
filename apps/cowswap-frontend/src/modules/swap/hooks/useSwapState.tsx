@@ -12,7 +12,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
-import { useCurrency } from 'legacy/hooks/Tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
@@ -378,7 +377,7 @@ export function useIsFeeGreaterThanInput({
   fee: CurrencyAmount<Currency> | null
 } {
   const quote = useQuote({ chainId, token: address })
-  const feeToken = useCurrency(address)
+  const feeToken = useTokenBySymbolOrAddress(address)
 
   if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
 

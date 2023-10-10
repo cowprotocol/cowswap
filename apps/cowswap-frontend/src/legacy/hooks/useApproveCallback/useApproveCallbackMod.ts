@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 
 import { useTokenContract, usePrevious } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -12,7 +13,6 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { ConfirmOperationType } from '../../state/types'
-import { useCurrency } from '../Tokens'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 
@@ -62,7 +62,7 @@ export function useApproveCallback({
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
-  const spenderCurrency = useCurrency(spender)
+  const spenderCurrency = useTokenBySymbolOrAddress(spender)
 
   // check the current approval status
   const approvalStateBase: ApprovalState = useMemo(() => {

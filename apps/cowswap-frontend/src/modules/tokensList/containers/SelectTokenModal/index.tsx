@@ -8,7 +8,7 @@ import { Edit, X } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { useBalancesForTokensList } from '../../hooks/useBalancesForTokensList'
+import { useAllTokensBalances } from '../../hooks/useAllTokensBalances'
 import { IconButton } from '../../pure/commonElements'
 import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
 import { TokensVirtualList } from '../../pure/TokensVirtualList'
@@ -44,7 +44,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const unsupportedTokens = useUnsupportedTokens()
 
-  const balances = useBalancesForTokensList(allTokens)
+  const balances = useAllTokensBalances()
 
   const handleEnterPress = () => {
     setIsEnterPressed(true)
@@ -52,7 +52,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   }
 
   const selectTokenContext: SelectTokenContext = {
-    balances,
+    balances: balances[0],
     selectedToken,
     onSelectToken,
     unsupportedTokens,

@@ -4,11 +4,11 @@ import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -173,7 +173,7 @@ export function ActivityDetails(props: {
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
-  const singleToken = useToken(tokenAddress) || null
+  const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
   const getShowCancellationModal = useCancelOrder()
 

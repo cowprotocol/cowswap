@@ -11,10 +11,10 @@ import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 
 import TokensTable from 'legacy/components/Tokens/TokensTable'
-import { useAllTokenBalances } from 'legacy/hooks/Tokens'
 import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { useAllTokensBalances } from 'modules/tokensList'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -68,7 +68,7 @@ export default function TokensOverview() {
   const theme = useTheme()
   const allTokens = useAllTokens()
   const favouriteTokens = useFavouriteTokens()
-  const balances = useAllTokenBalances()
+  const balances = useAllTokensBalances()
 
   // search - takes precedence re:filtering
   const [query, setQuery] = useState<string>('')
