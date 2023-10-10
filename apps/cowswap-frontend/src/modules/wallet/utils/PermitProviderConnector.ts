@@ -64,7 +64,6 @@ export class PermitProviderConnector implements ProviderConnector {
           copy[key] = value
         }
       })
-      console.log(`bug--decodeABIParameters`, decodedValues, copy)
 
       return copy as T
     }

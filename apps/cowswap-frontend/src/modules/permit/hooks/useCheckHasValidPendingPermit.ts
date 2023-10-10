@@ -113,7 +113,7 @@ async function checkIsSingleCallDataAValidPermit(
     return recoveredOwner.toLowerCase() === order.owner.toLowerCase()
   } catch (e) {
     console.debug(
-      `bug--[checkHasValidPendingPermit] Failed to check permit validity for order ${order.id} with callData ${callData}`,
+      `[checkHasValidPendingPermit] Failed to check permit validity for order ${order.id} with callData ${callData}`,
       e
     )
     return false
