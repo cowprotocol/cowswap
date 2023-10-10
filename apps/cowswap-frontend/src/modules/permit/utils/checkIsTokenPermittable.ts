@@ -9,7 +9,7 @@ import { getPermitDeadline } from './getPermitDeadline'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
-import { CheckIsTokenPermittableParams, EstimatePermitResult } from '../types'
+import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -56,97 +56,121 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
 
   const owner = PERMIT_SIGNER.address
 
+  let nonce: number
+
   try {
-    const nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
-
-    const data = await buildEip2162PermitCallData({
-      eip2162Utils: eip2612PermitUtils,
-      callDataParams: [
-        {
-          ...EIP_2162_PERMIT_PARAMS,
-          owner,
-          spender,
-          nonce,
-        },
-        +chainId,
-        tokenName,
-        tokenAddress,
-      ],
-    })
-
-    const estimatedGas = await provider.estimateGas({
-      data,
-      from: owner,
-      to: tokenAddress,
-    })
-
-    const gasLimit = estimatedGas.toNumber()
-
-    // Sometimes tokens implement the permit interface but don't actually implement it
-    // This check filters out possible cases where that happened by excluding
-    // gas limit which are bellow a minimum threshold
-    return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
-      ? {
-          type: 'eip-2612',
-          gasLimit,
-        }
-      : false
+    nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
   } catch (e) {
+    console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
+
+    return false
+  }
+
+  const baseParams: BaseParams = {
+    chainId,
+    eip2612PermitUtils,
+    nonce,
+    spender,
+    tokenAddress,
+    tokenName,
+    walletAddress: owner,
+  }
+
+  try {
+    // Try to estimate with eip-2612 first
+    return await estimateTokenPermit({ ...baseParams, type: 'eip-2612', provider })
+  } catch (e) {
+    // Not eip-2612, try dai-like
     try {
-      return await estimateDaiLikeToken(tokenAddress, tokenName, chainId, owner, spender, provider, eip2612PermitUtils)
+      return await estimateTokenPermit({ ...baseParams, type: 'dai-like', provider })
     } catch (e) {
+      // Not dai-like either, return error
       return { error: e.message || e.toString() }
     }
   }
 }
 
-// TODO: refactor and make DAI like tokens work
-function estimateDaiLikeToken(
-  tokenAddress: string,
-  tokenName: string,
-  chainId: SupportedChainId,
-  walletAddress: string,
-  spender: string,
-  provider: Web3Provider,
+type BaseParams = {
+  tokenAddress: string
+  tokenName: string
+  chainId: SupportedChainId
+  walletAddress: string
+  spender: string
   eip2612PermitUtils: Eip2612PermitUtils
-): Promise<EstimatePermitResult> {
-  return eip2612PermitUtils.getPermitTypeHash(tokenAddress).then((permitTypeHash) => {
-    return permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH
-      ? eip2612PermitUtils
-          .getTokenNonce(tokenAddress, walletAddress)
-          .then((nonce) =>
-            buildDaiLikePermitCallData({
-              eip2162Utils: eip2612PermitUtils,
-              callDataParams: [
-                {
-                  ...DAI_LIKE_PERMIT_PARAMS,
-                  holder: walletAddress,
-                  spender,
-                  nonce,
-                },
-                chainId as number,
-                tokenName,
-                tokenAddress,
-              ],
-            })
-          )
-          .then((data) =>
-            provider.estimateGas({
-              data,
-              from: walletAddress,
-              to: tokenAddress,
-            })
-          )
-          .then((res) => {
-            const gasLimit = res.toNumber()
+  nonce: number
+}
 
-            return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
-              ? {
-                  gasLimit,
-                  type: 'dai-like',
-                }
-              : false
-          })
-      : false
+type EstimateParams = BaseParams & {
+  type: PermitType
+  provider: Web3Provider
+}
+
+async function estimateTokenPermit(params: EstimateParams) {
+  const { provider, chainId, walletAddress, tokenAddress, type } = params
+
+  const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
+
+  const data = await getCallDataFn(params)
+
+  if (!data) {
+    return false
+  }
+
+  const estimatedGas = await provider.estimateGas({
+    data,
+    from: walletAddress,
+    to: tokenAddress,
   })
+
+  const gasLimit = estimatedGas.toNumber()
+
+  return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
+    ? {
+        gasLimit,
+        type,
+      }
+    : false
+}
+
+async function getEip2612CallData(params: BaseParams): Promise<string> {
+  const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress } = params
+  return buildEip2162PermitCallData({
+    eip2162Utils: eip2612PermitUtils,
+    callDataParams: [
+      {
+        ...EIP_2162_PERMIT_PARAMS,
+        owner: walletAddress,
+        spender,
+        nonce,
+      },
+      +chainId,
+      tokenName,
+      tokenAddress,
+    ],
+  })
+}
+
+async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
+  const { eip2612PermitUtils, tokenAddress, walletAddress, spender, nonce, chainId, tokenName } = params
+
+  const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
+
+  if (permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH) {
+    return buildDaiLikePermitCallData({
+      eip2162Utils: eip2612PermitUtils,
+      callDataParams: [
+        {
+          ...DAI_LIKE_PERMIT_PARAMS,
+          holder: walletAddress,
+          spender,
+          nonce,
+        },
+        chainId as number,
+        tokenName,
+        tokenAddress,
+      ],
+    })
+  }
+
+  return false
 }
