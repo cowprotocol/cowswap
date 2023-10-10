@@ -29,6 +29,8 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useOrdersPanel } from 'common/hooks/useOrdersPanel'
+
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
@@ -49,6 +51,25 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
 
+// Todo: fix types
+export const AccountElementComponent = ({ pendingActivity, handleOpenOrdersPanel }: any) => {
+  const { account, chainId } = useWalletInfo()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
+  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
+
+  return (
+    <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
+      {account && !isChainIdUnsupported && userEthBalance && chainId && (
+        <BalanceText>
+          <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
+        </BalanceText>
+      )}
+      <Web3Status pendingActivities={pendingActivity} />
+    </AccountElement>
+  )
+}
+
 export default function Header() {
   const { account, chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
@@ -57,8 +78,6 @@ export default function Header() {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const { pendingActivity } = useCategorizeRecentActivity()
-  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAnalytics(!darkMode)
@@ -67,14 +86,7 @@ export default function Header() {
   const swapRawState = useSwapRawState()
   const { state: tradeState } = useTradeState()
 
-  const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
-  const handleOpenOrdersPanel = () => {
-    account && setIsOrdersPanelOpen(true)
-  }
-  const handleCloseOrdersPanel = () => {
-    setIsOrdersPanelOpen(false)
-    !isOrdersPanelOpen && removeBodyClass('noScroll')
-  }
+  const { isOrdersPanelOpen, handleOpenOrdersPanel, handleCloseOrdersPanel } = useOrdersPanel();
 
   const navigate = useNavigate()
 
@@ -140,14 +152,14 @@ export default function Header() {
               </UniIcon>
             </Title>
           )}
-          {!isInjectedWidgetMode && <MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
+          {<MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
         </HeaderRow>
 
         <HeaderControls>
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isInjectedWidgetMode && !isChainIdUnsupported && (
+            {!isChainIdUnsupported && (
               <CowBalanceButton
                 onClick={() => navigate('/account')}
                 account={account}
@@ -156,20 +168,11 @@ export default function Header() {
               />
             )}
 
-            <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && !isChainIdUnsupported && userEthBalance && chainId && (
-                <BalanceText>
-                  <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
-                </BalanceText>
-              )}
-              <Web3Status pendingActivities={pendingActivity} />
-            </AccountElement>
+            <AccountElementComponent pendingActivity={pendingActivity} handleOpenOrdersPanel={handleOpenOrdersPanel} />
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && !isInjectedWidgetMode && (
-          <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />
-        )}
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>

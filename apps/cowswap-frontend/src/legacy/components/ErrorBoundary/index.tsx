@@ -133,7 +133,6 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
 
             {!isInjectedWidget() &&
               <HeaderWrapper>
-                <h1>Test!!!!!!!!!!!!!</h1>
                 <HeaderRow marginRight="0">
                   <a href={Routes.HOME}>
                     <UniIcon>

@@ -329,7 +329,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       padding: 28px 10px;
       color: var(${UI.COLOR_TEXT1});
       border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
-    `};
+    `}
 
     > svg > path {
       fill: var(${UI.COLOR_TEXT2});
@@ -356,7 +356,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     &.expanded + ${MenuContent} {
       ${({ theme }) => theme.mediaWidth.upToLarge`
         border: 0;
-      `};
+      `}
     }
 
     &.ACTIVE {
@@ -418,9 +418,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     -webkit-overflow-scrolling: touch; // iOS scroll fix
     transform: translate3d(0,0,0); // iOS scroll fix
 
-    ${
-      isMobileMenuOpen &&
-      css`
+    ${isMobileMenuOpen && css`
         display: flex;
       `
     }
