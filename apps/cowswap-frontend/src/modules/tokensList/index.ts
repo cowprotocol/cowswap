@@ -1,6 +1,4 @@
 export { SelectTokenWidget } from './containers/SelectTokenWidget'
 export { AutoImportTokens } from './containers/AutoImportTokens'
 export { useOpenTokenSelectWidget } from './hooks/useOpenTokenSelectWidget'
-export { TokenLogo } from './pure/TokenLogo'
-export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { useAllTokensBalances } from './hooks/useAllTokensBalances'

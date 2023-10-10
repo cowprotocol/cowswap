@@ -1,8 +1,7 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { TokenAmounts } from 'modules/tokens'
-
-const nativeTokenAddress = NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase()
 
 export function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: TokenWithLogo) => number {
   return (a: TokenWithLogo, b: TokenWithLogo) => {
@@ -10,7 +9,7 @@ export function tokensListSorter(balances: TokenAmounts): (a: TokenWithLogo, b: 
     const bBalance = balances[b.address]
 
     // Native always first
-    if (a.address.toLowerCase() === nativeTokenAddress || b.address.toLowerCase() === nativeTokenAddress) return 1
+    if (getIsNativeToken(a) || getIsNativeToken(b)) return 1
 
     if (aBalance?.value && bBalance?.value) {
       return +bBalance.value.toExact() - +aBalance.value.toExact()

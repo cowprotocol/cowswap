@@ -3,11 +3,10 @@ import React, { useCallback, useState } from 'react'
 import { addTokenToMetamaskAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { getIsMetaMask } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import { getTokenLogoUrls } from 'modules/tokensList'
 
 import { AddToMetamask as AddToMetamaskPure } from '../../pure/AddToMetamask'
 

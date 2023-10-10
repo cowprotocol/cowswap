@@ -1,6 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, isTruthy } from '@cowprotocol/common-utils'
-import { TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
+import { TokenLogo, TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { ExternalLink, Trash } from 'react-feather'
@@ -9,7 +9,6 @@ import * as styledEl from './styled'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
-import { TokenLogo } from '../../pure/TokenLogo'
 
 export interface ManageTokensProps {
   tokens: TokenWithLogo[]

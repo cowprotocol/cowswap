@@ -1,8 +1,7 @@
+import { TokenLogo } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { TokenLogo } from 'modules/tokensList'
 
 import { UI } from 'common/constants/theme'
 

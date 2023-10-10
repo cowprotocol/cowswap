@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonEmpty } from '@cowprotocol/ui'
 import { AutoRow, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -14,8 +15,6 @@ import styled from 'styled-components/macro'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
-
-import { TokenLogo } from 'modules/tokensList'
 
 import { UI } from 'common/constants/theme'
 import { Modal } from 'common/pure/Modal'

@@ -40,3 +40,7 @@ export { searchTokensInApi } from './services/searchTokensInApi'
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
+export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
+
+// Pure components
+export { TokenLogo } from './pure/TokenLogo'

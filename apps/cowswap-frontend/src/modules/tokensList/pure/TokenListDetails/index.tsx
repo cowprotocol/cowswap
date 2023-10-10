@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
 import { TokenListInfo } from '@cowprotocol/tokens'
+import { TokenLogo } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
-
-import { TokenLogo } from '../TokenLogo'
 
 export interface TokenListItemProps {
   list: TokenListInfo

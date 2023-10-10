@@ -1,5 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
@@ -7,7 +8,6 @@ import { AlertCircle } from 'react-feather'
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../ModalHeader'
-import { TokenLogo } from '../TokenLogo'
 
 export interface ImportTokenModalProps {
   tokens: TokenWithLogo[]

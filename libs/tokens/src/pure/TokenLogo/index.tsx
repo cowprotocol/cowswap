@@ -9,15 +9,13 @@ import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 import { Slash } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
 const TokenLogoWrapper = styled.div`
   display: inline-block;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(--cow-container-bg-01);
   border-radius: 50%;
 `
 

@@ -5,6 +5,7 @@ import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import { TokenLogo } from 'modules/tokensList'
 
 import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'

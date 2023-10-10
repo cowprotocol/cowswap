@@ -1,11 +1,10 @@
+import { TokenLogo } from '@cowprotocol/tokens'
 import { BaseButton } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-
-import { TokenLogo } from 'modules/tokensList'
 
 import { UI } from 'common/constants/theme'
 

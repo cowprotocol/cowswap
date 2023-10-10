@@ -2,8 +2,6 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { getTokensByAddress } from 'modules/tokensList/utils/getTokensByAddress'
-
 import { computeOrderSummary } from 'common/updaters/orders/utils'
 
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
@@ -30,8 +28,8 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
       id: order.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: getTokensByAddress(order.chainId, enrichedOrder.sellToken, tokensByAddress),
-    outputToken: getTokensByAddress(order.chainId, enrichedOrder.buyToken, tokensByAddress),
+    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
+    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,

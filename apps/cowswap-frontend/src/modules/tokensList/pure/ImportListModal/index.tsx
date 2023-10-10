@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
+import { TokenLogo, getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
@@ -8,7 +8,6 @@ import { AlertTriangle } from 'react-feather'
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../ModalHeader'
-import { TokenLogo } from '../TokenLogo'
 
 export interface ImportListModalProps {
   list: TokenListInfo

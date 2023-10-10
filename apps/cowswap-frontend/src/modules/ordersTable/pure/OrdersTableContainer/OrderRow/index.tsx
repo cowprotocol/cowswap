@@ -5,6 +5,7 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
@@ -25,7 +26,6 @@ import {
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
-import { TokenLogo } from 'modules/tokensList'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'

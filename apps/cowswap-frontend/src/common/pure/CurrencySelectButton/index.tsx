@@ -1,10 +1,9 @@
+import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
-
-import { TokenLogo } from 'modules/tokensList'
 
 import * as styledEl from './styled'
 
