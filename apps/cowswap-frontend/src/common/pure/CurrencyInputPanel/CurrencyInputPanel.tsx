@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
-import { formatInputAmount } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
 import { MouseoverTooltip } from '@cowprotocol/ui'
@@ -9,7 +10,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -36,13 +36,13 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
-  disableNonToken?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
+  openTokenSelectWidget(selectedToken: string | undefined, onCurrencySelection: (currency: Currency) => void): void
   topLabel?: string
 }
 
@@ -53,15 +53,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     currencyInfo,
     className,
     priceImpactParams,
-    disableNonToken = false,
     showSetMax = false,
     maxBalance,
     inputDisabled = false,
     inputTooltip,
-    onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
     isChainIdUnsupported,
+    openTokenSelectWidget,
+    onCurrencySelection,
     subsidyAndBalance = {
       subsidy: {
         tier: 0,
@@ -74,15 +74,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
   const disabled = !!props.disabled || isChainIdUnsupported
   const viewAmount = formatInputAmount(amount, balance, isIndependent)
-  const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
-  const onCurrencySelect = useCallback(
-    (currency: Currency) => {
-      onCurrencySelection(field, currency)
-    },
-    [onCurrencySelection, field]
-  )
   const onUserInputDispatch = useCallback(
     (typedValue: string) => {
       setTypedValue(typedValue)
@@ -113,6 +106,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewAmount])
 
+  const selectedTokenAddress = currency
+    ? getIsNativeToken(currency)
+      ? NATIVE_CURRENCY_BUY_TOKEN[currency.chainId as SupportedChainId].address
+      : currency.address
+    : undefined
+
   const numericalInput = (
     <styledEl.NumericalInput
       className="token-amount-input"
@@ -137,7 +136,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
-              onClick={() => setCurrencySearchModalOpen(true)}
+              onClick={() =>
+                openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+              }
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
             />
@@ -175,17 +176,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           subsidyAndBalance={subsidyAndBalance}
         />
       )}
-
-      <CurrencySearchModal
-        isOpen={isCurrencySearchModalOpen}
-        onDismiss={() => setCurrencySearchModalOpen(false)}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={currency}
-        otherSelectedCurrency={currency}
-        showCommonBases={true}
-        showCurrencyAmount={true}
-        disableNonToken={disableNonToken}
-      />
     </styledEl.OuterWrapper>
   )
 }
