@@ -1,8 +1,11 @@
-export * from './types'
-export { validateTokenList, validateTokens } from './utils/validateTokenList'
+// Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 
+// Pure components
+export { TokenLogo } from './pure/TokenLogo'
+
 // Types
+export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/tokensAtom'
 export type { ListSearchResponse } from './hooks/useSearchList'
 export type { TokenSearchResponse } from './hooks/useSearchToken'
@@ -34,13 +37,6 @@ export { useSearchList } from './hooks/useSearchList'
 export { useSearchToken } from './hooks/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/useSearchNonExistentToken'
 
-// Services
-export { searchTokensInApi } from './services/searchTokensInApi'
-
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
-export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
-
-// Pure components
-export { TokenLogo } from './pure/TokenLogo'
