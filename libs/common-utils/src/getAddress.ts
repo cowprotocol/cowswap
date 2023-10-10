@@ -1,9 +1,10 @@
 import { Currency } from '@uniswap/sdk-core'
+import { getIsNativeToken } from './getIsNativeToken'
 
 export function getAddress(currency: Currency | null | undefined): string | null {
-  if (!currency || currency.isNative) {
+  if (!currency || getIsNativeToken(currency)) {
     return null
   }
 
-  return currency?.address || (currency as { tokenInfo?: { address?: string } })?.tokenInfo?.address || null
+  return currency.address
 }
