@@ -1,8 +1,11 @@
 import { shortenAddress } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
+import ICON_WALLET from 'assets/icon/wallet.svg'
+import SVG from 'react-inlinesvg'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
@@ -23,6 +26,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
+  const isInjectedWidgetMode = isInjectedWidget()
 
   if (!chainId) {
     return null
@@ -64,6 +68,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
       <Text>
         <Trans>Connect wallet</Trans>
       </Text>
+      {isInjectedWidgetMode && <SVG src={ICON_WALLET} title="Wallet" /> }
     </Web3StatusConnect>
   )
 }

@@ -51,7 +51,7 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
 
-// Todo: fix types
+// Todo: fix 'any' types
 export const AccountElementComponent = ({ pendingActivity, handleOpenOrdersPanel }: any) => {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()

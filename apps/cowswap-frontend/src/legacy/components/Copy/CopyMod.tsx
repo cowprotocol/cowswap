@@ -13,6 +13,7 @@ import { UI } from 'common/constants/theme'
 
 // MOD imports
 export const CopyIcon = styled(LinkStyledButton)`
+  --iconSize: var(${UI.ICON_SIZE_NORMAL});
   color: ${({ theme }) => theme.text3};
   flex-shrink: 0;
   display: flex;
@@ -22,8 +23,8 @@ export const CopyIcon = styled(LinkStyledButton)`
   font-size: 0.825rem;
   border-radius: 50%;
   background-color: transparent;
-  min-width: 20px;
-  min-height: 20px;
+  min-width: var(--iconSize);
+  min-height: var(--iconSize);
   align-self: flex-end;
   :hover,
   :active,
