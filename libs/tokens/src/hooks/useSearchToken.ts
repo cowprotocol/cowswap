@@ -78,12 +78,23 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
       }
     }
 
+    const foundTokens = tokensFromActiveLists.reduce<{ [address: string]: true }>((acc, val) => {
+      acc[val.address.toLowerCase()] = true
+      return acc
+    }, {})
+
+    const filterFoundTokens = (token: TokenWithLogo) => !foundTokens[token.address.toLowerCase()]
+
+    const inactiveListsResult = tokensFromInactiveLists.filter(filterFoundTokens)
+    const blockchainResult = tokenFromBlockChain ? [tokenFromBlockChain] : null
+    const externalApiResult = apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : null
+
     return {
       isLoading: apiIsLoading || blockchainIsLoading,
-      blockchainResult: tokenFromBlockChain ? [tokenFromBlockChain] : null,
       activeListsResult: tokensFromActiveLists,
-      inactiveListsResult: tokensFromInactiveLists,
-      externalApiResult: apiResultTokens || null,
+      inactiveListsResult,
+      blockchainResult,
+      externalApiResult,
     }
   }, [
     debouncedInputInList,

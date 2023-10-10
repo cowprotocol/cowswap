@@ -35,11 +35,12 @@ const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-update
 
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
+  const allTokensLists = useAtomValue(allTokenListsAtom)
+  const activeTokensListsMap = useActiveTokenListsIds()
+
   const setTokens = useSetAtom(setTokensAtom)
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
   const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
-  const allTokensLists = useAtomValue(allTokenListsAtom)
-  const activeTokensListsMap = useActiveTokenListsIds()
 
   useEffect(() => {
     setEnvironment({ chainId: currentChainId })
