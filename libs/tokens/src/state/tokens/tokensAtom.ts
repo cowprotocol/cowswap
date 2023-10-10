@@ -51,9 +51,7 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   return tokenMapToList(tokensMap.inactiveTokens)
 })
 
-export const setTokensAtom = atom(null, (get, set, state: TokensState) => {
-  const { chainId } = get(environmentAtom)
-
+export const setTokensAtom = atom(null, (get, set, chainId: SupportedChainId, state: TokensState) => {
   set(updateTokensAtom, { [chainId]: state })
 })
 
