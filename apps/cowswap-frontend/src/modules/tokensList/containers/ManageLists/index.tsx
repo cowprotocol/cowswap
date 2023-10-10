@@ -4,7 +4,7 @@ import {
   ListSearchResponse,
   TokenListInfo,
   useActiveTokenListsIds,
-  useRemoveCustomTokenLists,
+  useRemoveTokenList,
   useToggleListCallback,
 } from '@cowprotocol/tokens'
 
@@ -24,7 +24,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useActiveTokenListsIds()
   const addListImport = useAddListImport()
-  const removeCustomTokenLists = useRemoveCustomTokenLists()
+  const removeCustomTokenLists = useRemoveTokenList()
   const toggleList = useToggleListCallback()
 
   const { source, listToImport } = useListSearchResponse(listSearchResponse)

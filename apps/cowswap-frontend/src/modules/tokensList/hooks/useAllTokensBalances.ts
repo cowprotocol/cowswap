@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useActiveTokens } from '@cowprotocol/tokens'
+import { useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -16,7 +16,7 @@ const defaultBalancesState: [TokenAmounts, boolean] = [{}, false]
  */
 export function useAllTokensBalances(): [TokenAmounts, boolean] {
   const { account } = useWalletInfo()
-  const allTokens = useActiveTokens()
+  const allTokens = useAllTokens()
   const nativeBalance = useNativeBalance()
   const { amounts: onChainBalances, isLoading } = useOnchainBalances({ account, tokens: allTokens })
 

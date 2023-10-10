@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokensByAddress, useAllTokens } from '@cowprotocol/tokens'
+import { TokensByAddress, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -11,7 +11,7 @@ import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
-  const allTokens = useAllTokens()
+  const allTokens = useTokensByAddressMap()
   const getToken = useTokenLazy()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added

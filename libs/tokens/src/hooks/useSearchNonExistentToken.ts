@@ -5,12 +5,12 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 
 import { tokenListsUpdatingAtom } from '../state/tokenLists/tokenListsStateAtom'
-import { useAllTokens } from './useAllTokens'
+import { useTokensByAddressMap } from './useTokensByAddressMap'
 import { useSearchToken } from './useSearchToken'
 
 export function useSearchNonExistentToken(tokenAddress: string | null): TokenWithLogo | null {
   const tokenListsUpdating = useAtomValue(tokenListsUpdatingAtom)
-  const allTokens = useAllTokens()
+  const allTokens = useTokensByAddressMap()
 
   const isNotAddress = !isAddress(tokenAddress)
   const existingToken = tokenAddress ? allTokens[tokenAddress.toLowerCase()] : null

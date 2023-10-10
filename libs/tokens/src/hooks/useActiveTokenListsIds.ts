@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { activeTokenListsMapAtom } from '../state/tokenLists/tokenListsStateAtom'
 
 export function useActiveTokenListsIds() {

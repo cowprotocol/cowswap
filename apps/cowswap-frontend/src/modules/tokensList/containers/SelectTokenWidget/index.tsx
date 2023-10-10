@@ -6,7 +6,7 @@ import {
   TokenListInfo,
   useAddCustomTokenLists,
   useAllTokenListsInfo,
-  useActiveTokens,
+  useAllTokens,
   useFavouriteTokens,
   useImportTokenCallback,
   useUserAddedTokens,
@@ -42,7 +42,7 @@ export function SelectTokenWidget() {
   const addCustomTokenLists = useAddCustomTokenLists()
   const importTokenCallback = useImportTokenCallback()
 
-  const allTokens = useActiveTokens()
+  const allTokens = useAllTokens()
   const favouriteTokens = useFavouriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllTokenListsInfo()

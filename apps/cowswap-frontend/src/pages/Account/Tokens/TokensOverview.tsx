@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler }
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
-import { useAllTokens, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
+import { useTokensByAddressMap, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -66,7 +66,7 @@ export default function TokensOverview() {
   }, [])
 
   const theme = useTheme()
-  const allTokens = useAllTokens()
+  const allTokens = useTokensByAddressMap()
   const favouriteTokens = useFavouriteTokens()
   const balances = useAllTokensBalances()
 

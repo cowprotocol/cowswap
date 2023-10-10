@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useActiveTokens } from '@cowprotocol/tokens'
+import { useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -140,7 +140,7 @@ export function GpOrdersUpdater(): null {
   const clearOrderStorage = useClearOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
-  const allTokens = useActiveTokens()
+  const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
