@@ -1,24 +1,25 @@
 import { useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useUnsupportedTokens } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { UnsupportedTokensState } from '@cowprotocol/tokens'
 
 import { Edit, X } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { useAllTokensBalances } from '../../hooks/useAllTokensBalances'
-import { IconButton } from '../../pure/commonElements'
-import { FavouriteTokensList } from '../../pure/FavouriteTokensList'
-import { TokensVirtualList } from '../../pure/TokensVirtualList'
+import { TokenAmounts } from '../../../tokens'
+import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
-import { TokenSearchResults } from '../TokenSearchResults'
+import { IconButton } from '../commonElements'
+import { FavouriteTokensList } from '../FavouriteTokensList'
+import { TokensVirtualList } from '../TokensVirtualList'
 
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
-  balances: { [key: string]: CurrencyAmount<Currency> }
+  balances: TokenAmounts
+  unsupportedTokens: UnsupportedTokensState
+  balancesLoading: boolean
   selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
   defaultInputValue?: string
@@ -34,6 +35,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     favouriteTokens,
     allTokens,
     selectedToken,
+    balances,
+    balancesLoading,
+    unsupportedTokens,
     onSelectToken,
     onDismiss,
     onOpenManageWidget,
@@ -41,10 +45,6 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
   const [isEnterPressed, setIsEnterPressed] = useState<boolean>(false)
-
-  const unsupportedTokens = useUnsupportedTokens()
-
-  const [balances, balancesLoading] = useAllTokensBalances()
 
   const handleEnterPress = () => {
     setIsEnterPressed(true)
