@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, isTruthy } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { TokenLogo, TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
@@ -9,6 +11,15 @@ import * as styledEl from './styled'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
+
+const tokensListToMap = (tokens: TokenWithLogo[] | null) => {
+  if (!tokens) return {}
+
+  return tokens.reduce<Record<string, TokenWithLogo>>((acc, token) => {
+    acc[token.address.toLowerCase()] = token
+    return acc
+  }, {})
+}
 
 export interface ManageTokensProps {
   tokens: TokenWithLogo[]
@@ -24,7 +35,15 @@ export function ManageTokens(props: ManageTokensProps) {
 
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult } = tokenSearchResponse
 
-  const tokensToImport = [blockchainResult, inactiveListsResult, externalApiResult].filter(isTruthy).flat()
+  const tokensToImport = useMemo(() => {
+    const tokensMap = {
+      ...tokensListToMap(blockchainResult),
+      ...tokensListToMap(externalApiResult),
+      ...tokensListToMap(inactiveListsResult),
+    }
+
+    return Object.values(tokensMap)
+  }, [blockchainResult, externalApiResult, inactiveListsResult])
 
   return (
     <styledEl.Wrapper>

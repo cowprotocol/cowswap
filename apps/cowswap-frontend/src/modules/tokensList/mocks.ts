@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenListInfo } from '@cowprotocol/tokens'
+import { ListState } from '@cowprotocol/tokens'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -97,39 +97,45 @@ export const customTokensMock: TokenWithLogo[] = [
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
 
-export const listsMock: TokenListInfo[] = [
+export const listsMock: ListState[] = [
   {
     id: '1',
-    name: 'CowSwap Goerli',
     source: {
       url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
     },
-    logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
-    tokensCount: 7,
-    version: 'v0.0.0',
-    timestamp: '',
+    list: {
+      name: 'CowSwap Goerli',
+      logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
+      tokens: [1, 2, 3, 4, 5, 6, 7] as any[],
+      version: { major: 0, minor: 0, patch: 1 },
+      timestamp: '',
+    },
   },
   {
     id: '2',
-    name: 'Compound',
     source: {
       url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
     },
-    logoUrl: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
-    tokensCount: 16,
-    version: 'v0.2.1',
-    timestamp: '',
+    list: {
+      name: 'Compound',
+      logoURI: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
+      tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as any[],
+      version: { major: 0, minor: 2, patch: 1 },
+      timestamp: '',
+    },
   },
 ]
 
-export const importListsMock: TokenListInfo = {
+export const importListsMock: ListState = {
   id: '4',
-  name: 'CoW Swap',
   source: {
     url: 'https://files.cow.fi/tokens/CowSwap.json',
   },
-  logoUrl: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
-  tokensCount: 113,
-  version: 'v0.0.0',
-  timestamp: '',
+  list: {
+    name: 'CoW Swap',
+    logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],
+    version: { major: 1, minor: 0, patch: 5 },
+    timestamp: '',
+  },
 }
