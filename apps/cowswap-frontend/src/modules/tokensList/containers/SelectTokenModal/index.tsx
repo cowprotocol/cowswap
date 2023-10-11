@@ -44,7 +44,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
 
   const unsupportedTokens = useUnsupportedTokens()
 
-  const balances = useAllTokensBalances()
+  const [balances, balancesLoading] = useAllTokensBalances()
 
   const handleEnterPress = () => {
     setIsEnterPressed(true)
@@ -52,7 +52,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   }
 
   const selectTokenContext: SelectTokenContext = {
-    balances: balances[0],
+    balances,
+    balancesLoading,
     selectedToken,
     onSelectToken,
     unsupportedTokens,
