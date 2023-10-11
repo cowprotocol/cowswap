@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { activeTokensAtom } from '../state/tokens/tokensAtom'
+import { activeTokensAtom } from '../../state/tokens/allTokensAtom'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 

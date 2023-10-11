@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 
-import { tokenListsUpdatingAtom } from '../state/tokenLists/tokenListsStateAtom'
+import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useTokensByAddressMap } from './useTokensByAddressMap'
 import { useSearchToken } from './useSearchToken'
 

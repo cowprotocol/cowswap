@@ -1,11 +1,11 @@
 import useSWR, { SWRResponse } from 'swr'
-import { fetchTokenList } from '../services/fetchTokenList'
+import { fetchTokenList } from '../../services/fetchTokenList'
 import { parseENSAddress } from '@cowprotocol/common-utils'
 import { useAtomValue } from 'jotai'
-import { allListsSourcesAtom, listsStatesMapAtom } from '../state/tokenLists/tokenListsStateAtom'
+import { allListsSourcesAtom, listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
-import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
-import { ListState } from '../types'
+import { getIsTokenListWithUrl } from '../../utils/getIsTokenListWithUrl'
+import { ListState } from '../../types'
 
 export type ListSearchResponse =
   | {
