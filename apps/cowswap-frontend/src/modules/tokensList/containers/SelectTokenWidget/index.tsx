@@ -6,11 +6,11 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   getTokenListSource,
   ListState,
-  useAddCustomTokenLists,
+  useAddList,
   useAllListsList,
   useAllTokens,
   useFavouriteTokens,
-  useImportTokenCallback,
+  useAddUserToken,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 
@@ -41,8 +41,8 @@ export function SelectTokenWidget() {
 
   const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
 
-  const addCustomTokenLists = useAddCustomTokenLists()
-  const importTokenCallback = useImportTokenCallback()
+  const addCustomTokenLists = useAddList()
+  const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllTokens()
   const favouriteTokens = useFavouriteTokens()

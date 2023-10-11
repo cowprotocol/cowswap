@@ -1,7 +1,7 @@
 import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { TokensState } from '../../state/tokens/tokensAtom'
+import { TokensState } from '../../state/tokens/allTokensAtom'
 import { ListsEnabledState, ListState } from '../../types'
 
 type TokensAndListsUpdate = TokensState & {

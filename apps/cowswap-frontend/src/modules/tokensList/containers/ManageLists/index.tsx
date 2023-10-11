@@ -1,12 +1,6 @@
 import { useMemo } from 'react'
 
-import {
-  ListSearchResponse,
-  ListState,
-  useListsEnabledState,
-  useRemoveTokenList,
-  useToggleListCallback,
-} from '@cowprotocol/tokens'
+import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
@@ -30,8 +24,8 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeList = useRemoveTokenList()
-  const toggleList = useToggleListCallback()
+  const removeList = useRemoveList()
+  const toggleList = useToggleList()
 
   const { source, listToImport } = useListSearchResponse(listSearchResponse)
 

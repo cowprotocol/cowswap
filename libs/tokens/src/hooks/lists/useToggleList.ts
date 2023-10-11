@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
-import { toggleListAtom } from '../state/tokenLists/tokenListsActionsAtom'
+import { toggleListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { toggleListAnalytics } from '@cowprotocol/analytics'
-import { ListState } from '../types'
-import { getTokenListSource } from '../utils/getTokenListSource'
+import { ListState } from '../../types'
+import { getTokenListSource } from '../../utils/getTokenListSource'
 
-export function useToggleListCallback() {
+export function useToggleList() {
   const toggleList = useSetAtom(toggleListAtom)
 
   return (list: ListState, enabled: boolean) => {
