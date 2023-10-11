@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
