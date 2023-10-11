@@ -82,8 +82,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         <FavouriteTokensList onSelectToken={onSelectToken} selectedToken={selectedToken} tokens={favouriteTokens} />
       </styledEl.Row>
       <styledEl.Separator />
-      {inputValue ? (
-        <TokenSearchResults searchInput={inputValue} isEnterPressed={isEnterPressed} {...selectTokenContext} />
+      {inputValue.trim() ? (
+        <TokenSearchResults searchInput={inputValue.trim()} isEnterPressed={isEnterPressed} {...selectTokenContext} />
       ) : (
         <TokensVirtualList allTokens={allTokens} {...selectTokenContext} />
       )}
