@@ -1,7 +1,6 @@
 import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { TokensState } from '../../state/tokens/allTokensAtom'
 import { ListState } from '../../types'
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
