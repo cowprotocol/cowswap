@@ -1,8 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
+import { addListAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
+  getTokenListSource,
   ListState,
   useAddCustomTokenLists,
   useAllListsList,
@@ -76,6 +78,7 @@ export function SelectTokenWidget() {
   const importListAndBack = (list: ListState) => {
     addCustomTokenLists(list)
     updateSelectTokenWidget({ listToImport: undefined })
+    addListAnalytics('Success', getTokenListSource(list.source))
   }
 
   if (!onSelectToken) return null

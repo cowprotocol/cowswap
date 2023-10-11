@@ -30,7 +30,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeCustomTokenLists = useRemoveTokenList()
+  const removeList = useRemoveTokenList()
   const toggleList = useToggleListCallback()
 
   const { source, listToImport } = useListSearchResponse(listSearchResponse)
@@ -55,7 +55,7 @@ export function ManageLists(props: ManageListsProps) {
               key={list.id}
               list={list}
               enabled={!!activeTokenListsIds[list.id]}
-              removeList={removeCustomTokenLists}
+              removeList={removeList}
               toggleList={toggleList}
             />
           ))}

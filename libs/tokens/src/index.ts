@@ -40,3 +40,4 @@ export { useSearchNonExistentToken } from './hooks/useSearchNonExistentToken'
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
+export { getTokenListSource } from './utils/getTokenListSource'

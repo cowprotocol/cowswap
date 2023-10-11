@@ -14,8 +14,8 @@ import { TokenListDetails } from '../TokenListDetails'
 export interface TokenListItemProps {
   list: ListState
   enabled: boolean
-  toggleList(id: string): void
-  removeList(id: string): void
+  toggleList(list: ListState, enabled: boolean): void
+  removeList(list: ListState): void
 }
 
 export function ListItem(props: TokenListItemProps) {
@@ -24,7 +24,7 @@ export function ListItem(props: TokenListItemProps) {
   const [isActive, setIsActive] = useState(enabled)
 
   const toggle = () => {
-    toggleList(list.id)
+    toggleList(list, enabled)
     setIsActive((state) => !state)
   }
 
@@ -50,7 +50,7 @@ export function ListItem(props: TokenListItemProps) {
                 </a>
               </styledEl.SettingsAction>
             </MenuItem>
-            <MenuItem onSelect={() => removeList(list.id)}>
+            <MenuItem onSelect={() => removeList(list)}>
               <styledEl.SettingsAction>Remove list</styledEl.SettingsAction>
             </MenuItem>
           </styledEl.SettingsContainer>
