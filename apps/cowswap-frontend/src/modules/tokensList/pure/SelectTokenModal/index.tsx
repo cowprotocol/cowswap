@@ -75,7 +75,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           onKeyDown={(e) => e.key === 'Enter' && handleEnterPress()}
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
-          placeholder="Search name or past address"
+          placeholder="Search name or paste address"
         />
       </styledEl.Row>
       <styledEl.Row>
