@@ -1,13 +1,11 @@
-import { atomWithStorage } from 'jotai/utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { environmentAtom } from '../environmentAtom'
 import { TokensMap } from '../../types'
 import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
 import { tokenMapToList } from '../../utils/tokenMapToList'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
+import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo
@@ -17,31 +15,36 @@ export interface TokensBySymbol {
   [address: string]: TokenWithLogo[]
 }
 
-type ListTokensState = { [listId: string]: TokensMap }
-
 export interface TokensState {
-  activeTokens: ListTokensState
-  inactiveTokens: ListTokensState
+  activeTokens: TokensMap
+  inactiveTokens: TokensMap
 }
-
-const defaultState: TokensState = { activeTokens: {}, inactiveTokens: {} }
-
-const listTokensToMap = (listTokens: ListTokensState): TokensMap => {
-  return Object.values(listTokens).reduce<TokensMap>((acc, tokens) => ({ ...acc, ...tokens }), {})
-}
-
-const { atom: tokensAtomsByChainId, updateAtom: updateTokensAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, TokensState>>('tokensAtomsByChainId:v1', {
-    [SupportedChainId.MAINNET]: { ...defaultState },
-    [SupportedChainId.GNOSIS_CHAIN]: { ...defaultState },
-    [SupportedChainId.GOERLI]: { ...defaultState },
-  })
-)
 
 export const tokensStateAtom = atom<TokensState>((get) => {
   const { chainId } = get(environmentAtom)
+  const listsStatesList = get(listsStatesListAtom)
+  const listsEnabledState = get(listsEnabledStateAtom)
 
-  return get(tokensAtomsByChainId)[chainId]
+  return listsStatesList.reduce<TokensState>(
+    (acc, list) => {
+      const isListEnabled = listsEnabledState[list.id]
+
+      list.list.tokens.forEach((token) => {
+        if (token.chainId !== chainId) return
+
+        const tokenAddress = token.address.toLowerCase()
+
+        if (isListEnabled) {
+          acc.activeTokens[tokenAddress] = token
+        } else {
+          acc.inactiveTokens[tokenAddress] = token
+        }
+      })
+
+      return acc
+    },
+    { activeTokens: {}, inactiveTokens: {} }
+  )
 })
 
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
@@ -49,11 +52,11 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const userAddedTokens = get(userAddedTokensAtom)
   const favouriteTokensState = get(favouriteTokensAtom)
 
-  const tokensMap = get(tokensAtomsByChainId)[chainId]
+  const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
   const tokens = tokenMapToList({
-    ...listTokensToMap(tokensMap.activeTokens),
+    ...tokensMap.activeTokens,
     ...userAddedTokens[chainId],
     ...favouriteTokensState[chainId],
   })
@@ -64,41 +67,9 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(environmentAtom)
-  const tokensMap = get(tokensAtomsByChainId)[chainId]
+  const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToList(listTokensToMap(tokensMap.inactiveTokens))
-})
-
-export const setTokensAtom = atom(null, (get, set, chainId: SupportedChainId, state: TokensState) => {
-  set(updateTokensAtom, { [chainId]: state })
-})
-
-export const addTokensFromImportedListAtom = atom(null, (get, set, listId: string, tokens: TokensMap) => {
-  const { chainId } = get(environmentAtom)
-  const tokensMap = get(tokensAtomsByChainId)[chainId]
-
-  set(updateTokensAtom, {
-    [chainId]: {
-      ...tokensMap,
-      activeTokens: {
-        ...tokensMap.activeTokens,
-        [listId]: tokens,
-      },
-    },
-  })
-})
-
-export const removeTokensOfListAtom = atom(null, (get, set, listId: string) => {
-  const { chainId } = get(environmentAtom)
-  const tokensMap = { ...get(tokensAtomsByChainId)[chainId] }
-
-  delete tokensMap.activeTokens[listId]
-  delete tokensMap.inactiveTokens[listId]
-
-  set(updateTokensAtom, {
-    [chainId]: tokensMap,
-  })
+  return tokenMapToList(tokensMap.inactiveTokens)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {

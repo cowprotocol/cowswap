@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
 import {
-  FetchedTokenList,
   ListSearchResponse,
-  TokenListInfo,
-  useActiveTokenListsIds,
+  ListState,
+  useListsEnabledState,
   useRemoveTokenList,
   useToggleListCallback,
 } from '@cowprotocol/tokens'
@@ -15,15 +14,21 @@ import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
 
+interface ListSearchState {
+  source: 'existing' | 'external'
+  loading: boolean
+  listToImport: ListState | null
+}
+
 export interface ManageListsProps {
-  lists: TokenListInfo[]
+  lists: ListState[]
   listSearchResponse: ListSearchResponse
 }
 
 export function ManageLists(props: ManageListsProps) {
   const { lists, listSearchResponse } = props
 
-  const activeTokenListsIds = useActiveTokenListsIds()
+  const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
   const removeCustomTokenLists = useRemoveTokenList()
   const toggleList = useToggleListCallback()
@@ -59,32 +64,28 @@ export function ManageLists(props: ManageListsProps) {
   )
 }
 
-function useListSearchResponse(listSearchResponse: ListSearchResponse): {
-  source: 'existing' | 'external'
-  loading: boolean
-  listToImport: FetchedTokenList | null
-} {
+function useListSearchResponse(listSearchResponse: ListSearchResponse): ListSearchState {
   return useMemo(() => {
-    const source = listSearchResponse.source
+    const { source, response } = listSearchResponse
 
-    if (listSearchResponse.source === 'existing') {
+    if (source === 'existing') {
       return {
         source,
         loading: false,
-        listToImport: { info: listSearchResponse.response, tokens: [] },
+        listToImport: response,
       }
-    } else {
-      if (!listSearchResponse.response) {
-        return { source, loading: false, listToImport: null }
-      }
+    }
 
-      const { isLoading, data } = listSearchResponse.response
+    if (!response) {
+      return { source, loading: false, listToImport: null }
+    }
 
-      return {
-        source,
-        loading: isLoading,
-        listToImport: data || null,
-      }
+    const { isLoading, data } = response
+
+    return {
+      source,
+      loading: isLoading,
+      listToImport: data || null,
     }
   }, [listSearchResponse])
 }

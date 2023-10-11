@@ -2,26 +2,24 @@ import useSWR, { SWRResponse } from 'swr'
 import { fetchTokenList } from '../services/fetchTokenList'
 import { parseENSAddress } from '@cowprotocol/common-utils'
 import { useAtomValue } from 'jotai'
-import { allTokenListsInfoAtom, allTokenListsAtom } from '../state/tokenLists/tokenListsStateAtom'
+import { allListsSourcesAtom, listsStatesMapAtom } from '../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
 import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
-import { FetchedTokenList, TokenListInfo } from '../types'
-import { buildTokenListInfo } from '../utils/buildTokenListInfo'
-import { TokenInfo } from '@uniswap/token-lists'
+import { ListState } from '../types'
 
 export type ListSearchResponse =
   | {
       source: 'existing'
-      response: TokenListInfo
+      response: ListState
     }
   | {
       source: 'external'
-      response: SWRResponse<FetchedTokenList | null>
+      response: SWRResponse<ListState | null>
     }
 
 export function useSearchList(input: string | null): ListSearchResponse {
-  const allTokensLists = useAtomValue(allTokenListsAtom)
-  const allTokensListsInfo = useAtomValue(allTokenListsInfoAtom)
+  const allTokensLists = useAtomValue(allListsSourcesAtom)
+  const listsStatesMap = useAtomValue(listsStatesMapAtom)
 
   const listSource = useMemo(() => {
     if (!input) return null
@@ -39,20 +37,15 @@ export function useSearchList(input: string | null): ListSearchResponse {
       return getIsTokenListWithUrl(list) ? list.url === inputLowerCase : list.ensName === inputLowerCase
     })
 
-    return list ? allTokensListsInfo.find((info) => info.id === list.id) : undefined
-  }, [allTokensLists, allTokensListsInfo, input])
+    return list ? listsStatesMap[list.id] : undefined
+  }, [allTokensLists, listsStatesMap, input])
 
-  const response = useSWR<FetchedTokenList | null>(
+  const response = useSWR<ListState | null>(
     ['useSearchList', listSource, existingList],
     () => {
       if (!listSource || existingList) return null
 
-      return fetchTokenList(listSource).then((res) => {
-        const info = buildTokenListInfo(res)
-        const tokens = res.list.tokens
-
-        return { info, tokens }
-      })
+      return fetchTokenList(listSource)
     },
     {}
   )

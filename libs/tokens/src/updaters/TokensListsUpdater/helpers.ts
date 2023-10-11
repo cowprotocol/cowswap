@@ -1,13 +1,11 @@
 import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { buildTokenListInfo } from '../../utils/buildTokenListInfo'
-import { TokenListResult } from '../../services/fetchTokenList'
 import { TokensState } from '../../state/tokens/tokensAtom'
-import { ActiveTokensListsMap, TokenListInfo } from '../../types'
+import { ListsEnabledState, ListState } from '../../types'
 
 type TokensAndListsUpdate = TokensState & {
-  lists: { [id: string]: TokenListInfo }
+  lists: { [id: string]: ListState }
 }
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
@@ -22,8 +20,8 @@ export const getIsTimeToUpdate = (chainId: SupportedChainId): boolean => {
   return Date.now() - lastUpdateTime > TOKENS_LISTS_UPDATER_INTERVAL
 }
 
-export const getFulfilledResults = (results: PromiseSettledResult<TokenListResult>[]) => {
-  return results.reduce<TokenListResult[]>((acc, val) => {
+export const getFulfilledResults = (results: PromiseSettledResult<ListState>[]) => {
+  return results.reduce<ListState[]>((acc, val) => {
     if (val.status === 'fulfilled') {
       acc.push(val.value)
     }
@@ -33,33 +31,12 @@ export const getFulfilledResults = (results: PromiseSettledResult<TokenListResul
 }
 
 // Spread tokens from fetched lists to active and inactive tokens lists
-export function parseTokenListResults(
-  chainId: SupportedChainId,
-  fetchedTokens: TokenListResult[],
-  activeTokensListsMap: ActiveTokensListsMap
-): TokensAndListsUpdate {
+export function parseTokenListResults(chainId: SupportedChainId, fetchedTokens: ListState[]): TokensAndListsUpdate {
   return fetchedTokens.reduce<TokensAndListsUpdate>(
     (acc, val) => {
       const listId = val.id
-      const isListEnabled = activeTokensListsMap[listId]
 
-      acc.lists[listId] = buildTokenListInfo(val)
-
-      val.list.tokens.forEach((token) => {
-        if (token.chainId === chainId) {
-          const tokenAddress = token.address.toLowerCase()
-
-          if (isListEnabled) {
-            if (!acc.activeTokens[listId]) acc.activeTokens[listId] = {}
-
-            acc.activeTokens[listId][tokenAddress] = token
-          } else {
-            if (!acc.inactiveTokens[listId]) acc.inactiveTokens[listId] = {}
-
-            acc.inactiveTokens[listId][tokenAddress] = token
-          }
-        }
-      })
+      acc.lists[listId] = val
 
       return acc
     },
@@ -70,7 +47,7 @@ export function parseTokenListResults(
 // Move tokens from active to inactive and vice versa
 export function updateTokensLists(
   tokensState: TokensState,
-  activeTokensListsMap: ActiveTokensListsMap
+  activeTokensListsMap: ListsEnabledState
 ): TokensState | null {
   const { activeTokens, inactiveTokens } = tokensState
 

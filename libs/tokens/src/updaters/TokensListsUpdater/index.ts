@@ -4,24 +4,13 @@ import ms from 'ms.macro'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { usePrevious } from '@cowprotocol/common-hooks'
 
-import {
-  allTokenListsAtom,
-  tokenListsUpdatingAtom,
-  upsertAllTokenListsInfoAtom,
-} from '../../state/tokenLists/tokenListsStateAtom'
-import { fetchTokenList, TokenListResult } from '../../services/fetchTokenList'
-import { setTokensAtom, tokensStateAtom } from '../../state/tokens/tokensAtom'
+import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom } from '../../state/environmentAtom'
-import { useActiveTokenListsIds } from '../../hooks/useActiveTokenListsIds'
-import {
-  getFulfilledResults,
-  getIsTimeToUpdate,
-  LAST_UPDATE_TIME_KEY,
-  parseTokenListResults,
-  updateTokensLists,
-} from './helpers'
+import { getFulfilledResults, getIsTimeToUpdate, LAST_UPDATE_TIME_KEY } from './helpers'
+import { ListState } from '../../types'
+import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 
 const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
@@ -32,22 +21,17 @@ const swrOptions: SWRConfiguration = {
 
 export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
   const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
-  const allTokensLists = useAtomValue(allTokenListsAtom)
-  const tokensState = useAtomValue(tokensStateAtom)
+  const allTokensLists = useAtomValue(allListsSourcesAtom)
 
-  const activeTokensListsMap = useActiveTokenListsIds()
-  const prevActiveTokensListsMap = usePrevious(activeTokensListsMap)
-
-  const setTokens = useSetAtom(setTokensAtom)
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
-  const setTokenLists = useSetAtom(upsertAllTokenListsInfoAtom)
+  const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
     setEnvironment({ chainId: currentChainId })
   }, [setEnvironment, currentChainId])
 
   // Fetch tokens lists once in 6 hours
-  const { data: fetchedTokens, isLoading } = useSWR<TokenListResult[] | null>(
+  const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
     ['TokensListsUpdater', allTokensLists, chainId],
     () => {
       if (!getIsTimeToUpdate(chainId)) return null
@@ -61,29 +45,12 @@ export function TokensListsUpdater({ chainId: currentChainId }: { chainId: Suppo
   useEffect(() => {
     setTokenListsUpdating(isLoading)
 
-    if (isLoading || !fetchedTokens) return
-
-    const { activeTokens, inactiveTokens, lists } = parseTokenListResults(chainId, fetchedTokens, activeTokensListsMap)
+    if (isLoading || !listsStates) return
 
     localStorage.setItem(LAST_UPDATE_TIME_KEY(chainId), Date.now().toString())
 
-    setTokenLists(chainId, lists)
-    setTokens(chainId, { activeTokens, inactiveTokens })
-  }, [fetchedTokens, isLoading, chainId, setTokens, setTokenLists, setTokenListsUpdating, activeTokensListsMap])
-
-  // Update tokens state if active tokens lists map was changed
-  useEffect(() => {
-    // Do updates only when activeTokensListsMap is changed
-    if (prevActiveTokensListsMap === activeTokensListsMap) return
-    // Don't update when there are fetched tokens, because they will be updated in useEffect() above
-    if (fetchedTokens) return
-
-    const update = updateTokensLists(tokensState, activeTokensListsMap)
-
-    if (update) {
-      setTokens(chainId, update)
-    }
-  }, [fetchedTokens, chainId, activeTokensListsMap, prevActiveTokensListsMap, tokensState, setTokens])
+    upsertLists(chainId, listsStates)
+  }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating])
 
   return null
 }
