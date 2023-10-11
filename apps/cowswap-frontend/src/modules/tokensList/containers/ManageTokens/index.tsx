@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { TokenLogo, TokenSearchResponse, useRemoveTokenCallback, useResetUserTokensCallback } from '@cowprotocol/tokens'
+import { TokenLogo, TokenSearchResponse, useRemoveUserToken, useResetUserTokens } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { ExternalLink, Trash } from 'react-feather'
@@ -30,8 +30,8 @@ export function ManageTokens(props: ManageTokensProps) {
   const { tokens, tokenSearchResponse } = props
 
   const addTokenImportCallback = useAddTokenImportCallback()
-  const removeTokenCallback = useRemoveTokenCallback()
-  const resetUserTokensCallback = useResetUserTokensCallback()
+  const removeTokenCallback = useRemoveUserToken()
+  const resetUserTokensCallback = useResetUserTokens()
 
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult } = tokenSearchResponse
 

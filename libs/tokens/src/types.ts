@@ -23,6 +23,8 @@ export type ListsSourcesByNetwork = Record<SupportedChainId, ReadonlyArray<ListS
 
 export type TokensMap = { [address: string]: TokenInfo }
 
+export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: number } }
+
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
 export interface ListState {
