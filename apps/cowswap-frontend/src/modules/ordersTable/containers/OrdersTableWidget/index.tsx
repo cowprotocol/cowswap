@@ -2,7 +2,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -19,7 +18,7 @@ import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersRece
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
-import { BalancesAndAllowances, useBalancesAndAllowances } from 'modules/tokens'
+import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -27,18 +26,13 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
-import { getOrderParams } from '../../pure/OrdersTableContainer/utils/getOrderParams'
-import {
-  getParsedOrderFromTableItem,
-  isParsedOrder,
-  OrderTableItem,
-  tableItemsToOrders,
-} from '../../utils/orderTableGroupUtils'
+import { getParsedOrderFromTableItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -57,28 +51,6 @@ function toggleOrderInCancellationList(state: CancellableOrder[], order: Cancell
 const ContentWrapper = styled.div`
   width: 100%;
 `
-
-function useGetOrdersToCheckPendingPermit(
-  ordersList: OrdersTableList,
-  chainId: SupportedChainId,
-  balancesAndAllowances: BalancesAndAllowances
-) {
-  return useMemo(() => {
-    // Pick only the pending orders
-    return ordersList.pending.reduce((acc: ParsedOrder[], item) => {
-      // Only do it for regular orders (not TWAP)
-      if (isParsedOrder(item)) {
-        const { hasEnoughAllowance } = getOrderParams(chainId, balancesAndAllowances, item)
-
-        // Only if the order has not enough allowance
-        if (hasEnoughAllowance === false) {
-          acc.push(item)
-        }
-      }
-      return acc
-    }, [])
-  }, [balancesAndAllowances, chainId, ordersList.pending])
-}
 
 export interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
