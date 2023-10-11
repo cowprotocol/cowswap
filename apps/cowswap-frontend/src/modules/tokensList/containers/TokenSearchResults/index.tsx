@@ -55,8 +55,10 @@ export function TokenSearchResults({
   useEffect(() => {
     if (!isEnterPressed || !searchInput || !activeListsResult) return
 
-    if (activeListsResult.length === 1 || doesTokenMatchSymbolOrAddress(activeListsResult[0], searchInput)) {
-      onSelectToken(activeListsResult[0])
+    const matchedToken = activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, searchInput))
+
+    if (activeListsResult.length === 1 || matchedToken) {
+      onSelectToken(matchedToken || activeListsResult[0])
     }
   }, [isEnterPressed, searchInput, activeListsResult, onSelectToken])
 

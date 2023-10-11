@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { getTokenListViewLink, TokenListInfo } from '@cowprotocol/tokens'
+import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 import { Settings } from 'react-feather'
@@ -12,7 +12,7 @@ import * as styledEl from './styled'
 import { TokenListDetails } from '../TokenListDetails'
 
 export interface TokenListItemProps {
-  list: TokenListInfo
+  list: ListState
   enabled: boolean
   toggleList(id: string): void
   removeList(id: string): void
@@ -28,16 +28,20 @@ export function ListItem(props: TokenListItemProps) {
     setIsActive((state) => !state)
   }
 
+  const { major, minor, patch } = list.list.version
+
   return (
     <styledEl.Wrapper $enabled={isActive}>
-      <TokenListDetails list={list}>
+      <TokenListDetails list={list.list}>
         <Menu>
           <styledEl.SettingsButton>
             <Settings size={12} />
           </styledEl.SettingsButton>
           <styledEl.SettingsContainer>
             <MenuItem onSelect={() => void 0}>
-              <styledEl.ListVersion>{list.version}</styledEl.ListVersion>
+              <styledEl.ListVersion>
+                v{major}.{minor}.{patch}
+              </styledEl.ListVersion>
             </MenuItem>
             <MenuItem onSelect={() => void 0}>
               <styledEl.SettingsAction>

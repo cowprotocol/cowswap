@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
-import { TokenListInfo } from '@cowprotocol/tokens'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 import * as styledEl from './styled'
 
 export interface TokenListItemProps {
-  list: TokenListInfo
+  list: UniTokenList
   className?: string
   children?: ReactNode
 }
@@ -17,12 +17,12 @@ export function TokenListDetails(props: TokenListItemProps) {
   return (
     <styledEl.ListInfo className={className}>
       <div>
-        <TokenLogo logoURI={list.logoUrl} size={36} />
+        <TokenLogo logoURI={list.logoURI} size={36} />
       </div>
       <div>
         <styledEl.ListName>{list.name}</styledEl.ListName>
         <styledEl.TokensInfo>
-          {list.tokensCount} tokens {children}
+          {list.tokens.length} tokens {children}
         </styledEl.TokensInfo>
       </div>
     </styledEl.ListInfo>

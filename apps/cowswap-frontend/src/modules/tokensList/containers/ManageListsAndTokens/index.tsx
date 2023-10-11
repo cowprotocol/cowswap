@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
-import { TokenListInfo, useSearchList, useSearchToken } from '@cowprotocol/tokens'
+import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
@@ -11,7 +11,7 @@ import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 
 export interface ManageListsAndTokensProps {
-  lists: TokenListInfo[]
+  lists: ListState[]
   customTokens: TokenWithLogo[]
   onBack(): void
   onDismiss(): void

@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
-import { removeTokenListAtom } from '../state/tokenLists/tokenListsActionsAtom'
+import { removeListAtom } from '../state/tokenLists/tokenListsActionsAtom'
 
 export function useRemoveTokenList() {
-  return useSetAtom(removeTokenListAtom)
+  return useSetAtom(removeListAtom)
 }

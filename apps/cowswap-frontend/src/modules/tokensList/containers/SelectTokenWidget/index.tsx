@@ -3,9 +3,9 @@ import { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
-  TokenListInfo,
+  ListState,
   useAddCustomTokenLists,
-  useAllTokenListsInfo,
+  useAllListsList,
   useAllTokens,
   useFavouriteTokens,
   useImportTokenCallback,
@@ -45,7 +45,7 @@ export function SelectTokenWidget() {
   const allTokens = useAllTokens()
   const favouriteTokens = useFavouriteTokens()
   const userAddedTokens = useUserAddedTokens()
-  const allTokenLists = useAllTokenListsInfo()
+  const allTokenLists = useAllListsList()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -73,7 +73,7 @@ export function SelectTokenWidget() {
     onDismiss()
   }
 
-  const importListAndBack = (list: TokenListInfo) => {
+  const importListAndBack = (list: ListState) => {
     addCustomTokenLists(list)
     updateSelectTokenWidget({ listToImport: undefined })
   }
