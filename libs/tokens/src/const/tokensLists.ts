@@ -1,4 +1,4 @@
-import { TokenListsByNetwork } from '../types'
+import { ListsSourcesByNetwork } from '../types'
 import tokensList from './tokensList.json'
 
-export const DEFAULT_TOKENS_LISTS: TokenListsByNetwork = tokensList
+export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = tokensList

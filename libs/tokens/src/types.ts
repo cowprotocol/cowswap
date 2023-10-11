@@ -1,35 +1,34 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo } from '@uniswap/token-lists'
+import type { TokenInfo, TokenList as UniTokenList } from '@uniswap/token-lists'
 
-export type TokenListSource = { ensName: string } | { url: string }
+export type ListResource = { ensName: string } | { url: string }
 
-export interface TokenListWithUrl {
+export interface ListSourceConfigWithUrl {
   id: string // nanoid
   priority?: number
   enabledByDefault?: boolean
   url: string
 }
 
-export interface TokenListWithEnsName {
+export interface ListSourceConfigWithEnsName {
   id: string // nanoid
   priority?: number
   enabledByDefault?: boolean
   ensName: string
 }
 
-export type TokenList = TokenListWithUrl | TokenListWithEnsName
+export type ListSourceConfig = ListSourceConfigWithUrl | ListSourceConfigWithEnsName
 
-export type TokenListsByNetwork = Record<SupportedChainId, ReadonlyArray<TokenList>>
-
-export interface TokenListInfo {
-  source: TokenListSource
-  id: string
-  name: string
-  timestamp: string
-  version: string
-  priority?: number
-  logoUrl?: string
-  tokensCount: number
-}
+export type ListsSourcesByNetwork = Record<SupportedChainId, ReadonlyArray<ListSourceConfig>>
 
 export type TokensMap = { [address: string]: TokenInfo }
+
+export type ListsEnabledState = { [listId: string]: boolean | undefined }
+
+export interface ListState {
+  id: string
+  source: ListResource
+  list: UniTokenList
+  priority?: number
+  isEnabled?: boolean
+}
