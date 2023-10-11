@@ -167,6 +167,7 @@ export function OrdersTableContainer({
   children,
   orderType,
   pendingActivities,
+  ordersPermitStatus,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -233,6 +234,7 @@ export function OrdersTableContainer({
         balancesAndAllowances={balancesAndAllowances}
         getSpotPrice={getSpotPrice}
         orderActions={orderActions}
+        ordersPermitStatus={ordersPermitStatus}
       />
     )
   }
