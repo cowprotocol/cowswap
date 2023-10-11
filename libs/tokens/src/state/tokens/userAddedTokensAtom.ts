@@ -49,7 +49,7 @@ export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) =
   })
 })
 
-export const resetUserTokenAtom = atom(null, (get, set) => {
+export const resetUserTokensAtom = atom(null, (get, set) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
 

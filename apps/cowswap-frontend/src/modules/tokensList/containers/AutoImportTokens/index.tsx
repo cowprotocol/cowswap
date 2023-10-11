@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
-import { useImportTokenCallback, useSearchNonExistentToken } from '@cowprotocol/tokens'
+import { useAddUserToken, useSearchNonExistentToken } from '@cowprotocol/tokens'
 
 import { Nullish } from 'types'
 
@@ -17,7 +17,7 @@ export interface AutoImportTokensProps {
 export function AutoImportTokens({ inputToken, outputToken }: AutoImportTokensProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const importTokenCallback = useImportTokenCallback()
+  const importTokenCallback = useAddUserToken()
   const foundInputToken = useSearchNonExistentToken(inputToken || null)
   const foundOutputToken = useSearchNonExistentToken(outputToken || null)
 
