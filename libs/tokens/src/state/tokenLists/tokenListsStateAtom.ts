@@ -38,10 +38,12 @@ export const listsStatesMapAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const allTokenListsInfo = get(listsStatesByChainAtom)
 
-  return allTokenListsInfo[chainId]
+  return { ...allTokenListsInfo[chainId] }
 })
 
-export const listsStatesListAtom = atom((get) => Object.values(get(listsStatesMapAtom)))
+export const listsStatesListAtom = atom((get) => {
+  return Object.values(get(listsStatesMapAtom))
+})
 
 export const listsEnabledStateAtom = atom((get) => {
   const allTokensLists = get(allListsSourcesAtom)
