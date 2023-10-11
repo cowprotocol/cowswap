@@ -1,10 +1,9 @@
 import { atom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
+
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 import { OrdersPermitStatus } from '../types'
 
-export const ordersPermitStatusAtom = atomWithReset<OrdersPermitStatus>({})
-
-export const updateOrdersPermitStatusAtom = atom(null, (get, set, update: OrdersPermitStatus) =>
-  set(ordersPermitStatusAtom, { ...get(ordersPermitStatusAtom), ...update })
+export const { atom: ordersPermitStatusAtom, updateAtom: updateOrdersPermitStatusAtom } = atomWithPartialUpdate(
+  atom<OrdersPermitStatus>({})
 )
