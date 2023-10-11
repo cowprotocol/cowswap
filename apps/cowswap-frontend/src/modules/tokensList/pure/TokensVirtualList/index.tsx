@@ -28,7 +28,15 @@ export interface TokensVirtualListProps extends SelectTokenContext {
 }
 
 export function TokensVirtualList(props: TokensVirtualListProps) {
-  const { allTokens, selectedToken, balances, onSelectToken, unsupportedTokens, permitCompatibleTokens } = props
+  const {
+    allTokens,
+    selectedToken,
+    balances,
+    onSelectToken,
+    unsupportedTokens,
+    permitCompatibleTokens,
+    balancesLoading,
+  } = props
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -65,7 +73,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
           const addressLowerCase = token.address.toLowerCase()
           const balance = balances ? balances[token.address] : null
 
-          if (balance?.loading) {
+          if (balance?.loading || balancesLoading) {
             return <styledEl.LoadingRows key={virtualRow.key}>{threeDivs()}</styledEl.LoadingRows>
           }
 

@@ -1,27 +1,18 @@
-import type { TokenList as UniTokenList } from '@uniswap/token-lists'
-
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
 import { contenthashToUri, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
 
 import { validateTokenList } from '../utils/validateTokenList'
-import { TokenList, TokenListSource, TokenListWithEnsName, TokenListWithUrl } from '../types'
+import { ListSourceConfig, ListSourceConfigWithEnsName, ListSourceConfigWithUrl, ListState } from '../types'
 import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
-
-export interface TokenListResult {
-  id: string
-  priority?: number
-  source: TokenListSource
-  list: UniTokenList
-}
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
  */
-export function fetchTokenList(list: TokenList): Promise<TokenListResult> {
+export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
   return getIsTokenListWithUrl(list) ? fetchTokenListByUrl(list) : fetchTokenListByEnsName(list)
 }
 
-async function fetchTokenListByUrl(list: TokenListWithUrl): Promise<TokenListResult> {
+async function fetchTokenListByUrl(list: ListSourceConfigWithUrl): Promise<ListState> {
   return _fetchTokenList(list.id, [list.url]).then((result) => {
     return {
       ...result,
@@ -33,7 +24,7 @@ async function fetchTokenListByUrl(list: TokenListWithUrl): Promise<TokenListRes
   })
 }
 
-async function fetchTokenListByEnsName(list: TokenListWithEnsName): Promise<TokenListResult> {
+async function fetchTokenListByEnsName(list: ListSourceConfigWithEnsName): Promise<ListState> {
   const contentHashUri = await resolveENSContentHash(list.ensName, MAINNET_PROVIDER)
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
@@ -49,7 +40,7 @@ async function fetchTokenListByEnsName(list: TokenListWithEnsName): Promise<Toke
   })
 }
 
-async function _fetchTokenList(id: string, urls: string[]): Promise<Omit<TokenListResult, 'source'>> {
+async function _fetchTokenList(id: string, urls: string[]): Promise<Omit<ListState, 'source'>> {
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i]
     const isLast = i === urls.length - 1
