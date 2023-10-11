@@ -5,11 +5,20 @@ export function Configurator({ title }: { title: string }) {
     <Wrapper>
       <Sidebar>
         <h1>{title}</h1>
+        <select>
+          <option value="auto">Auto</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
       </Sidebar>
 
       <Content>
-        <p>Widget iFrame below:</p>
-        <iframe src="https://swap-dev-git-feat-cow-widget-cowswap.vercel.app/#/1/widget/swap/COW/WETH?sellAmount=1200&amp;theme=light" width="400px" height="640px" title="widget" />
+        <iframe
+          src="https://swap-dev-git-widget-ui-5b-cowswap.vercel.app/#/1/widget/swap/COW/WETH?sellAmount=1200&theme=light"
+          width="400px"
+          height="640px"
+          title="widget"
+        />
       </Content>
     </Wrapper>
   )
