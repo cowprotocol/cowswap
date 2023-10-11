@@ -12,17 +12,19 @@ import {
   useFavouriteTokens,
   useAddUserToken,
   useUserAddedTokens,
+  useUnsupportedTokens,
 } from '@cowprotocol/tokens'
 
 import styled from 'styled-components/macro'
 
 import { CowModal } from 'common/pure/Modal'
 
+import { useAllTokensBalances } from '../../hooks/useAllTokensBalances'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
+import { SelectTokenModal } from '../../pure/SelectTokenModal'
 import { selectTokenWidgetAtom, updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
-import { SelectTokenModal } from '../SelectTokenModal'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -31,9 +33,6 @@ const Wrapper = styled.div`
     height: 100%;
   }
 `
-
-// TODO: remove mock
-const balancesMock = {}
 
 export function SelectTokenWidget() {
   const { open, onSelectToken, tokenToImport, listToImport, selectedToken } = useAtomValue(selectTokenWidgetAtom)
@@ -48,6 +47,8 @@ export function SelectTokenWidget() {
   const favouriteTokens = useFavouriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
+  const [balances, balancesLoading] = useAllTokensBalances()
+  const unsupportedTokens = useUnsupportedTokens()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -122,10 +123,12 @@ export function SelectTokenWidget() {
 
           return (
             <SelectTokenModal
+              unsupportedTokens={unsupportedTokens}
               selectedToken={selectedToken}
               allTokens={allTokens}
               favouriteTokens={favouriteTokens}
-              balances={balancesMock}
+              balances={balances}
+              balancesLoading={balancesLoading}
               onSelectToken={onSelectToken}
               onDismiss={onDismiss}
               onOpenManageWidget={() => setIsManageWidgetOpen(true)}

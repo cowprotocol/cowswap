@@ -69,6 +69,8 @@ export const toggleListAtom = atom(null, (get, set, id: string) => {
   const listsEnabledState = get(listsEnabledStateAtom)
   const states = get(listsStatesMapAtom)
 
+  if (!states[id]) return
+
   const list = { ...states[id] }
 
   list.isEnabled = !listsEnabledState[id]

@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
-import { blankButtonMixin } from '../../pure/commonElements'
+import { blankButtonMixin } from '../commonElements'
 
 export const Wrapper = styled.div`
   display: flex;
