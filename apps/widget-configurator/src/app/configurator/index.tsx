@@ -162,7 +162,7 @@ export function Configurator({ title }: { title: string }) {
       renderInput={(params) => <TextField {...params} label="Network" />}
     />
 
-        <Divider variant="middle">Default selection</Divider>
+        <Divider variant="middle">Token selection</Divider>
 
         <Autocomplete
           value={sellToken}
