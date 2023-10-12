@@ -18,7 +18,8 @@ import Divider from '@mui/material/Divider'
 import EmbedDialog from './embedDialog'
 import Checkbox from '@mui/material/Checkbox'
 import ListItemText from '@mui/material/ListItemText'
-import SaveIcon from '@mui/icons-material/Save'
+// import SaveIcon from '@mui/icons-material/Save'
+import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 enum TradeMode {
@@ -100,6 +101,12 @@ export function Configurator({ title }: { title: string }) {
         <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
+
+        <Divider variant="middle">Wallet</Divider>
+
+        <LoadingButton loading={false} loadingPosition="start" startIcon={<WalletIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
+          Connect
+        </LoadingButton>
 
         <Divider variant="middle">General</Divider>
 
@@ -199,9 +206,9 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle" />
 
-        <LoadingButton loading={false} loadingPosition="start" startIcon={<SaveIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
+        {/* <LoadingButton loading={false} loadingPosition="start" startIcon={<SaveIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
           Refresh Widget
-        </LoadingButton>
+        </LoadingButton> */}
 
         <EmbedDialog />
 
