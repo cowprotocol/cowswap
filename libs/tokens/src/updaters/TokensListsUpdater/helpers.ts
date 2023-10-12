@@ -2,7 +2,7 @@ import ms from 'ms.macro'
 
 import { ListState } from '../../types'
 
-const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
+export const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
 export const getIsTimeToUpdate = (lastUpdateTime: number): boolean => {
   if (!lastUpdateTime) return true

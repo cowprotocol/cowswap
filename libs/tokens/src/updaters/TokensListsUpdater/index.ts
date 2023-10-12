@@ -1,6 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
-import ms from 'ms.macro'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -8,7 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom } from '../../state/environmentAtom'
-import { getFulfilledResults, getIsTimeToUpdate } from './helpers'
+import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 import { ListState } from '../../types'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
@@ -21,8 +20,6 @@ const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomW
     [SupportedChainId.GOERLI]: 0,
   })
 )
-
-const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: TOKENS_LISTS_UPDATER_INTERVAL,
