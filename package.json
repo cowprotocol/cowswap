@@ -67,6 +67,8 @@
     "@lingui/react": "^4.3.0",
     "@metamask/eth-sig-util": "^5.0.2",
     "@metamask/jazzicon": "^2.0.0",
+    "@mui/icons-material": "^5.14.13",
+    "@mui/lab": "^5.0.0-alpha.148",
     "@mui/material": "^5.14.13",
     "@popperjs/core": "^2.4.4",
     "@reach/dialog": "^0.18.0",

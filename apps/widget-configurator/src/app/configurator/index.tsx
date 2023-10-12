@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { ColorModeContext } from '../../main'
-import { useTheme } from '@mui/material/styles'
+// import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
-import Button from '@mui/material/Button'
+// import Button from '@mui/material/Button'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import MenuItem from '@mui/material/MenuItem'
@@ -18,6 +18,8 @@ import Divider from '@mui/material/Divider'
 import EmbedDialog from './embedDialog'
 import Checkbox from '@mui/material/Checkbox'
 import ListItemText from '@mui/material/ListItemText'
+import SaveIcon from '@mui/icons-material/Save'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 enum TradeMode {
   Swap = 1,
@@ -37,11 +39,15 @@ const TradeModeOptions = [
   { label: 'TWAP', value: TradeMode.TWAP },
 ]
 
-const NetworkOptions = ['Ethereum', 'Gnosis Chain']
+const NetworkOptions = [
+  { chainID: 1, label: 'Ethereum' },
+  { chainID: 100, label: 'Gnosis Chain' }
+];
+
 const TokenOptions = ['COW', 'USDC']
 
 export function Configurator({ title }: { title: string }) {
-  const theme = useTheme()
+  // const theme = useTheme()
   const { mode, toggleColorMode, setAutoMode } = React.useContext(ColorModeContext)
 
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(true)
@@ -53,6 +59,10 @@ export function Configurator({ title }: { title: string }) {
     } else {
       toggleColorMode()
     }
+
+    const url = new URL(iframeURL);
+    url.searchParams.set('theme', selectedTheme);
+    setIframeURL(url.toString());
   }
 
   const [tradeModes, setTradeModes] = React.useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
@@ -60,13 +70,29 @@ export function Configurator({ title }: { title: string }) {
     setTradeModes(event.target.value as TradeMode[])
   }
 
-  const [network, setNetwork] = React.useState<string | null>(NetworkOptions[0])
-  const [networkInput, setNetworkInput] = React.useState(NetworkOptions[0])
-
+  const [network, setNetwork] = React.useState<{ chainID: number; label: string } | null>(NetworkOptions[0]);
   const [sellToken, setSellToken] = React.useState<string | null>(TokenOptions[0])
-  const [sellTokenInput, setSellTokenInput] = React.useState(TokenOptions[0])
+  const [sellTokenAmount, setSellTokenAmount] = React.useState<number>(100000);
   const [buyToken, setBuyToken] = React.useState<string | null>(TokenOptions[0])
-  const [buyTokenInput, setBuyTokenInput] = React.useState(TokenOptions[1])
+  const [buyTokenAmount, setBuyTokenAmount] = React.useState<number>(100000);
+
+  const [iframeURL, setIframeURL] = React.useState<string>('');
+
+  const constructIframeURL = React.useCallback(() => {
+    if (network) {
+      return `https://swap-dev-git-widget-ui-5b-cowswap.vercel.app/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`;
+    }
+    return '';
+  }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network]);
+
+  React.useEffect(() => {
+    setIframeURL(constructIframeURL());
+  }, [constructIframeURL, network]);
+  
+  const handleWidgetRefreshClick = () => {
+    const newIframeURL = constructIframeURL();
+    setIframeURL(newIframeURL);
+  };
 
   return (
     <Box sx={WrapperStyled}>
@@ -74,6 +100,8 @@ export function Configurator({ title }: { title: string }) {
         <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
+
+        <Divider variant="middle">General</Divider>
 
         <FormControl sx={{ width: '100%' }}>
           <InputLabel id="select-theme">Theme</InputLabel>
@@ -93,8 +121,6 @@ export function Configurator({ title }: { title: string }) {
             ))}
           </Select>
         </FormControl>
-
-        <Divider />
 
         <FormControl sx={{ width: '100%' }}>
           <InputLabel id="trade-mode-label">Trade Modes</InputLabel>
@@ -125,75 +151,67 @@ export function Configurator({ title }: { title: string }) {
         </FormControl>
 
         <Autocomplete
-          value={network}
-          onChange={(event: any, newValue: string | null) => {
-            setNetwork(newValue)
-          }}
-          inputValue={networkInput}
-          onInputChange={(event, newInputValue) => {
-            setNetworkInput(newInputValue)
-          }}
-          id="controllable-states-demo"
-          options={NetworkOptions}
-          size="small"
-          renderInput={(params) => <TextField {...params} label="Network" />}
-        />
+      value={network}
+      onChange={(event: any, newValue: { chainID: number; label: string } | null) => {
+        setNetwork(newValue);
+      }}
+      getOptionLabel={(option) => option.label}
+      id="controllable-states-network"
+      options={NetworkOptions}
+      size="small"
+      renderInput={(params) => <TextField {...params} label="Network" />}
+    />
 
-        <Divider />
+        <Divider variant="middle">Default selection</Divider>
 
         <Autocomplete
           value={sellToken}
           onChange={(event: any, newValue: string | null) => {
             setSellToken(newValue)
           }}
-          inputValue={sellTokenInput}
+          inputValue={sellToken || ''}
           onInputChange={(event, newInputValue) => {
-            setSellTokenInput(newInputValue)
+            setSellToken(newInputValue)
           }}
-          id="controllable-states-demo"
+          id="controllable-states-selling-token"
           options={TokenOptions}
           size="small"
           renderInput={(params) => <TextField {...params} label="Sell Token" />}
         />
 
-        <TextField id="input-sellAmount" label="Sell amount" defaultValue="100000" size="small" />
+        <TextField id="input-sellTokenAmount" label="Sell amount" value={sellTokenAmount} onChange={(e) => setSellTokenAmount(Number(e.target.value))} size="small" />
 
         <Autocomplete
           value={buyToken}
           onChange={(event: any, newValue: string | null) => {
             setBuyToken(newValue)
           }}
-          inputValue={buyTokenInput}
+          inputValue={buyToken || ''}
           onInputChange={(event, newInputValue) => {
-            setBuyTokenInput(newInputValue)
+            setBuyTokenAmount(Number(newInputValue))
           }}
           id="buy-token-autocomplete"
           options={TokenOptions}
           renderInput={(params) => <TextField {...params} label="Buy Token" size="small" />}
         />
 
-        <TextField id="input-buyAmount" label="Buy amount" defaultValue="100000" size="small" />
+        <TextField id="input-buyTokenAmount" label="Buy amount" value={buyTokenAmount} onChange={(e) => setBuyTokenAmount(Number(e.target.value))} size="small" />
 
-        <Button variant="contained">Update</Button>
+        <Divider variant="middle" />
+
+        <LoadingButton loading={false} loadingPosition="start" startIcon={<SaveIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
+          Refresh Widget
+        </LoadingButton>
 
         <EmbedDialog />
 
         <Link href="#hide" onClick={() => setIsDrawerOpen(false)}>
           Hide configurator
         </Link>
-
-        <Button variant="contained" onClick={toggleColorMode}>
-          Toggle to {theme.palette.mode === 'dark' ? 'Light' : 'Dark'} Mode
-        </Button>
       </Drawer>
 
       <Box sx={ContentStyled}>
-        <iframe
-          src="https://swap-dev-git-widget-ui-5b-cowswap.vercel.app/#/1/widget/swap/COW/WETH?sellAmount=1200&theme=light"
-          width="400px"
-          height="640px"
-          title="widget"
-        />
+        <iframe src={iframeURL} width="400px" height="640px" title="widget" />
       </Box>
     </Box>
   )

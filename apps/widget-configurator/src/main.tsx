@@ -83,6 +83,7 @@ function MainApp() {
       mode === 'dark'
         ? {
             mode: 'dark' as PaletteMode,
+            tonalOffset: 0.2,
             primary: {
               main: 'rgb(202, 233, 255)',
             },
@@ -98,9 +99,13 @@ function MainApp() {
               paper: 'rgb(12, 38, 75)',
               default: 'rgb(12, 38, 75)',
             },
+            cow: {
+              background: 'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%) fixed'
+            }
           }
         : {
             mode: 'light' as PaletteMode,
+            tonalOffset: 0.5,
             primary: {
               main: 'rgb(5, 43, 101)',
             },
@@ -114,6 +119,9 @@ function MainApp() {
               default: '#CAE9FF',
               paper: '#ffffff',
             },
+            cow: {
+              background: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed'
+            }
           }
 
     return createTheme({
