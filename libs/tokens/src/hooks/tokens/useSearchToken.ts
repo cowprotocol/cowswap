@@ -47,20 +47,20 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   // Search in active and inactive lists
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
 
-  const isTokenAlreadyFound = useMemo(() => {
+  const isTokenAlreadyFoundByAddress = useMemo(() => {
     return tokensFromActiveLists.some((token) => token.address.toLowerCase() === debouncedInputInList)
   }, [debouncedInputInList, tokensFromActiveLists])
 
   // Search in external API
   const { data: apiResultTokens, isLoading: apiIsLoading } = useSearchTokensInApi(
     debouncedInputInExternals,
-    isTokenAlreadyFound
+    isTokenAlreadyFoundByAddress
   )
 
   // Search in Blockchain
   const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useFetchTokenFromBlockchain(
     debouncedInputInExternals,
-    isTokenAlreadyFound
+    isTokenAlreadyFoundByAddress
   )
 
   return useMemo(() => {
@@ -68,7 +68,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
       return emptyResponse
     }
 
-    if (isTokenAlreadyFound) {
+    if (isTokenAlreadyFoundByAddress) {
       return {
         ...emptyResponse,
         isLoading: apiIsLoading || blockchainIsLoading,
@@ -96,7 +96,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     }
   }, [
     debouncedInputInList,
-    isTokenAlreadyFound,
+    isTokenAlreadyFoundByAddress,
     tokensFromActiveLists,
     tokensFromInactiveLists,
     apiResultTokens,
@@ -126,11 +126,11 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   return inListsResult || emptyFromListsResult
 }
 
-function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFound: boolean) {
+function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
 
   return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
-    if (isTokenAlreadyFound || !input) {
+    if (isTokenAlreadyFoundByAddress || !input) {
       return null
     }
 
@@ -138,12 +138,12 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFound: bo
   })
 }
 
-function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFound: boolean) {
+function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
   const { provider } = useWeb3React()
 
   return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
-    if (isTokenAlreadyFound || !input || !provider || !isAddress(input)) {
+    if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
       return null
     }
 
