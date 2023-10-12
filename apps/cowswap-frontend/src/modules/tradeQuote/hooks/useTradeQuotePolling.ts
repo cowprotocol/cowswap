@@ -4,7 +4,7 @@ import { useLayoutEffect, useMemo } from 'react'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
-import { useIsUnsupportedTokens } from '@cowprotocol/tokens'
+import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
@@ -36,7 +36,7 @@ export function useTradeQuotePolling() {
 
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const getIsUnsupportedTokens = useIsUnsupportedTokens()
+  const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   useLayoutEffect(() => {

@@ -27,7 +27,7 @@ export { useRemoveUnsupportedToken } from './hooks/tokens/unsupported/useRemoveU
 export { useUnsupportedTokens } from './hooks/tokens/unsupported/useUnsupportedTokens'
 export { useIsTradeUnsupported } from './hooks/tokens/unsupported/useIsTradeUnsupported'
 export { useIsUnsupportedToken } from './hooks/tokens/unsupported/useIsUnsupportedToken'
-export { useIsUnsupportedTokens } from './hooks/tokens/unsupported/useIsUnsupportedTokens'
+export { useAreUnsupportedTokens } from './hooks/tokens/unsupported/useAreUnsupportedTokens'
 export { useResetFavouriteTokens } from './hooks/tokens/favourite/useResetFavouriteTokens'
 export { useToggleFavouriteToken } from './hooks/tokens/favourite/useToggleFavouriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'

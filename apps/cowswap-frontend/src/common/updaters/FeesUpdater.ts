@@ -148,7 +148,7 @@ export function FeesUpdater(): null {
   const isLoading = useIsBestQuoteLoading()
   const isEthFlow = useIsEoaEthFlow()
 
-  const isUnsupportedTokenGp = useIsUnsupportedToken()
+  const isUnsupportedToken = useIsUnsupportedToken()
 
   const appData = useAppData()
 
@@ -228,7 +228,7 @@ export function FeesUpdater(): null {
       }
     }
 
-    const unsupportedToken = isUnsupportedTokenGp(sellCurrencyId) || isUnsupportedTokenGp(buyCurrencyId)
+    const unsupportedToken = isUnsupportedToken(sellCurrencyId) || isUnsupportedToken(buyCurrencyId)
 
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
@@ -274,7 +274,7 @@ export function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    isUnsupportedTokenGp,
+    isUnsupportedToken,
     isLoading,
     setQuoteError,
     account,
