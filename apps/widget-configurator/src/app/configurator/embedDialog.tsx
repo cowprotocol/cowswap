@@ -31,7 +31,7 @@ export default function EmbedDialog() {
 
   return (
     <div>
-      <Button onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
+      <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
       {/* <Button onClick={handleClickOpen('body')}>scroll=body</Button> */}
       <Dialog
         open={open}

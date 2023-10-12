@@ -42,8 +42,8 @@ const TradeModeOptions = [
 
 const NetworkOptions = [
   { chainID: 1, label: 'Ethereum' },
-  { chainID: 100, label: 'Gnosis Chain' }
-];
+  { chainID: 100, label: 'Gnosis Chain' },
+]
 
 const TokenOptions = ['COW', 'USDC']
 
@@ -61,9 +61,9 @@ export function Configurator({ title }: { title: string }) {
       toggleColorMode()
     }
 
-    const url = new URL(iframeURL);
-    url.searchParams.set('theme', selectedTheme);
-    setIframeURL(url.toString());
+    const url = new URL(iframeURL)
+    url.searchParams.set('theme', selectedTheme)
+    setIframeURL(url.toString())
   }
 
   const [tradeModes, setTradeModes] = React.useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
@@ -71,29 +71,29 @@ export function Configurator({ title }: { title: string }) {
     setTradeModes(event.target.value as TradeMode[])
   }
 
-  const [network, setNetwork] = React.useState<{ chainID: number; label: string } | null>(NetworkOptions[0]);
+  const [network, setNetwork] = React.useState<{ chainID: number; label: string } | null>(NetworkOptions[0])
   const [sellToken, setSellToken] = React.useState<string | null>(TokenOptions[0])
-  const [sellTokenAmount, setSellTokenAmount] = React.useState<number>(100000);
+  const [sellTokenAmount, setSellTokenAmount] = React.useState<number>(100000)
   const [buyToken, setBuyToken] = React.useState<string | null>(TokenOptions[0])
-  const [buyTokenAmount, setBuyTokenAmount] = React.useState<number>(100000);
+  const [buyTokenAmount, setBuyTokenAmount] = React.useState<number>(100000)
 
-  const [iframeURL, setIframeURL] = React.useState<string>('');
+  const [iframeURL, setIframeURL] = React.useState<string>('')
 
   const constructIframeURL = React.useCallback(() => {
     if (network) {
-      return `https://swap-dev-git-widget-ui-5b-cowswap.vercel.app/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`;
+      return `https://swap-dev-git-widget-ui-5b-cowswap.vercel.app/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
     }
-    return '';
-  }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network]);
+    return ''
+  }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network])
 
   React.useEffect(() => {
-    setIframeURL(constructIframeURL());
-  }, [constructIframeURL, network]);
-  
+    setIframeURL(constructIframeURL())
+  }, [constructIframeURL, network])
+
   const handleWidgetRefreshClick = () => {
-    const newIframeURL = constructIframeURL();
-    setIframeURL(newIframeURL);
-  };
+    const newIframeURL = constructIframeURL()
+    setIframeURL(newIframeURL)
+  }
 
   return (
     <Box sx={WrapperStyled}>
@@ -104,7 +104,13 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">Wallet</Divider>
 
-        <LoadingButton loading={false} loadingPosition="start" startIcon={<WalletIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
+        <LoadingButton
+          loading={false}
+          loadingPosition="start"
+          startIcon={<WalletIcon />}
+          variant="contained"
+          onClick={handleWidgetRefreshClick}
+        >
           Connect
         </LoadingButton>
 
@@ -158,16 +164,16 @@ export function Configurator({ title }: { title: string }) {
         </FormControl>
 
         <Autocomplete
-      value={network}
-      onChange={(event: any, newValue: { chainID: number; label: string } | null) => {
-        setNetwork(newValue);
-      }}
-      getOptionLabel={(option) => option.label}
-      id="controllable-states-network"
-      options={NetworkOptions}
-      size="small"
-      renderInput={(params) => <TextField {...params} label="Network" />}
-    />
+          value={network}
+          onChange={(event: any, newValue: { chainID: number; label: string } | null) => {
+            setNetwork(newValue)
+          }}
+          getOptionLabel={(option) => option.label}
+          id="controllable-states-network"
+          options={NetworkOptions}
+          size="small"
+          renderInput={(params) => <TextField {...params} label="Network" />}
+        />
 
         <Divider variant="middle">Token selection</Divider>
 
@@ -186,7 +192,13 @@ export function Configurator({ title }: { title: string }) {
           renderInput={(params) => <TextField {...params} label="Sell Token" />}
         />
 
-        <TextField id="input-sellTokenAmount" label="Sell amount" value={sellTokenAmount} onChange={(e) => setSellTokenAmount(Number(e.target.value))} size="small" />
+        <TextField
+          id="input-sellTokenAmount"
+          label="Sell amount"
+          value={sellTokenAmount}
+          onChange={(e) => setSellTokenAmount(Number(e.target.value))}
+          size="small"
+        />
 
         <Autocomplete
           value={buyToken}
@@ -202,7 +214,13 @@ export function Configurator({ title }: { title: string }) {
           renderInput={(params) => <TextField {...params} label="Buy Token" size="small" />}
         />
 
-        <TextField id="input-buyTokenAmount" label="Buy amount" value={buyTokenAmount} onChange={(e) => setBuyTokenAmount(Number(e.target.value))} size="small" />
+        <TextField
+          id="input-buyTokenAmount"
+          label="Buy amount"
+          value={buyTokenAmount}
+          onChange={(e) => setBuyTokenAmount(Number(e.target.value))}
+          size="small"
+        />
 
         <Divider variant="middle" />
 
@@ -210,15 +228,19 @@ export function Configurator({ title }: { title: string }) {
           Refresh Widget
         </LoadingButton> */}
 
-        <EmbedDialog />
-
         <Link href="#hide" onClick={() => setIsDrawerOpen(false)}>
-          Hide configurator
+          Hide drawer
         </Link>
       </Drawer>
 
       <Box sx={ContentStyled}>
         <iframe src={iframeURL} width="400px" height="640px" title="widget" />
+
+        <Box sx={{ display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-between', alignItems: 'center', margin: '1.6rem 0 0', gap: '2.4rem'}}>
+        <Typography variant="body2">URL: {iframeURL}</Typography>
+        <EmbedDialog />
+        </Box>
+
       </Box>
     </Box>
   )
