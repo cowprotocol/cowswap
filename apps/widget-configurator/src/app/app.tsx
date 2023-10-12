@@ -1,18 +1,20 @@
-import styled from 'styled-components'
-
+import Box from '@mui/material/Box'
 import { Configurator } from './configurator'
+import { Theme } from '@mui/material/styles';
 
-const StyledApp = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-`
+const WrapperStyled = (theme: Theme) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  width: '100%',
+  background: theme.palette.background.paper,
+})
 
 export function App() {
   return (
-    <StyledApp>
-      <Configurator title="widget-configurator" />
-    </StyledApp>
+    <Box sx={WrapperStyled}>
+      <Configurator title="CoW Widget" />
+    </Box>
   )
 }
 

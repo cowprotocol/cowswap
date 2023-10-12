@@ -1,34 +1,37 @@
-import styled from 'styled-components'
+import { Theme } from '@mui/material/styles';
 
-export const Wrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  height: 100vh;
-  width: 100%;
-`
+export const DrawerStyled = (theme: Theme) => ({
+  width: '29rem',
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: '29rem',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexFlow: 'column wrap',
+    gap: '1.6rem',
+    height: '100%',
+    border: 0,
+    background: theme.palette.secondary.main,
+    boxShadow: 'rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem',
+    padding: '1.6rem',
+  },
+});
 
-export const Sidebar = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  height: 100%;
-  width: 29rem;
-  background: white;
-  box-shadow: rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem;
-`
+export const ContentStyled = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexFlow: 'column wrap',
+  height: '100%',
+  width: 'auto',
+  flex: '1 1 auto',
 
-export const Content = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column wrap;
-  height: 100%;
-  width: auto;
-  flex: 1 1 auto;
+  '& > iframe': {
+    border: 0,
+    margin: '0 auto',
+    borderRadius: '1.6rem',
+    overflow: 'hidden',
+  },
+}
 
-  > iframe {
-    border: 0;
-    margin: 0 auto;
-    border-radius: 1.6rem;
-    overflow: hidden;
-  }
-`
+export const WrapperStyled = { display: 'flex', flexFlow: 'row wrap', height: '100vh', width: '100%' }
