@@ -29,3 +29,5 @@ export const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
   [TradeType.LIMIT_ORDER]: true,
   [TradeType.ADVANCED_ORDERS]: false,
 }
+
+export const PENDING_ORDER_PERMIT_CHECK_INTERVAL = ms`1min`
