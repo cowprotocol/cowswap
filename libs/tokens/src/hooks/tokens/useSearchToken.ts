@@ -70,11 +70,9 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 
     if (isTokenAlreadyFound) {
       return {
+        ...emptyResponse,
         isLoading: apiIsLoading || blockchainIsLoading,
         activeListsResult: tokensFromActiveLists,
-        blockchainResult: null,
-        inactiveListsResult: null,
-        externalApiResult: null,
       }
     }
 
