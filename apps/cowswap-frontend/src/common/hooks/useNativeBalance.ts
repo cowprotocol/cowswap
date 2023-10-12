@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -20,7 +20,7 @@ export function useNativeBalance(): SWRResponse<CurrencyAmount<TokenWithLogo> | 
     () => {
       if (!account || !provider) return null
 
-      const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
+      const nativeToken = NATIVE_TOKEN[chainId]
 
       return provider.getBalance(account).then((res) => CurrencyAmount.fromRawAmount(nativeToken, res.toHexString()))
     },

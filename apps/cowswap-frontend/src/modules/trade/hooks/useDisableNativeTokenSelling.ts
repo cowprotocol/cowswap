@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeNavigate } from './useTradeNavigate'
@@ -20,8 +20,8 @@ export function useDisableNativeTokenSelling() {
   const navigate = useTradeNavigate()
 
   useEffect(() => {
-    const nativeToken = chainId ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : null
-    const wrappedToken = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : null
+    const nativeToken = chainId ? NATIVE_TOKEN[chainId] : null
+    const wrappedToken = chainId ? WRAPPED_NATIVE_TOKEN[chainId] : null
 
     if (!chainId || !nativeToken || !wrappedToken) return
 

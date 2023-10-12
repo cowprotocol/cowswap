@@ -30,7 +30,7 @@ import {
   GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
   MULTICALL_ADDRESS,
-  WRAPPED_NATIVE_CURRENCY,
+  WRAPPED_NATIVE_TOKEN,
 } from '@cowprotocol/common-const'
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 
@@ -68,11 +68,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 
 export function useWETHContract(withSignerIfPossible?: boolean) {
   const { chainId } = useWalletInfo()
-  return useContract<Weth>(
-    chainId ? WRAPPED_NATIVE_CURRENCY[chainId]?.address : undefined,
-    WethAbi,
-    withSignerIfPossible
-  )
+  return useContract<Weth>(chainId ? WRAPPED_NATIVE_TOKEN[chainId]?.address : undefined, WethAbi, withSignerIfPossible)
 }
 
 export function useERC721Contract(nftAddress?: string) {

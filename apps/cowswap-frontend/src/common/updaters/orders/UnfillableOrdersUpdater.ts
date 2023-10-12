@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
@@ -249,7 +249,7 @@ async function _getOrderPrice(
     amount,
     kind: order.kind,
     // we need to get wrapped token quotes (native quotes will fail)
-    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
+    sellToken: isEthFlow ? WRAPPED_NATIVE_TOKEN[chainId].address : order.sellToken,
     buyToken: order.buyToken,
     baseToken,
     quoteToken,

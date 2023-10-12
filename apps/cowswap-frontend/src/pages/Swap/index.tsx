@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_TOKEN as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'

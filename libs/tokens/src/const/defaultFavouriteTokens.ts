@@ -13,7 +13,7 @@ import {
   WBTC,
   WBTC_GNOSIS_CHAIN,
   WETH_GNOSIS_CHAIN,
-  WRAPPED_NATIVE_CURRENCY,
+  WRAPPED_NATIVE_TOKEN,
 } from '@cowprotocol/common-const'
 
 const tokensListToMap = (list: TokenWithLogo[]) =>
@@ -35,18 +35,18 @@ export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDC_MAINNET,
     USDT,
     WBTC,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.MAINNET],
   ]),
   [SupportedChainId.GNOSIS_CHAIN]: tokensListToMap([
     USDC_GNOSIS_CHAIN,
     COW[SupportedChainId.GNOSIS_CHAIN],
     EURE_GNOSIS_CHAIN,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.GNOSIS_CHAIN],
     WETH_GNOSIS_CHAIN,
     WBTC_GNOSIS_CHAIN,
   ]),
   [SupportedChainId.GOERLI]: tokensListToMap([
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.GOERLI],
     COW[SupportedChainId.GOERLI],
     DAI_GOERLI,
     USDC_GOERLI,

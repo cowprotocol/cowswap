@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { useInterfaceMulticall } from '@cowprotocol/common-hooks'
 import { getIsNativeToken, isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -49,7 +49,7 @@ export function useNativeCurrencyBalances(
         const value = results?.[i]?.result?.[0]
         if (value && chainId)
           memo[lowerCaseAddress ? address.toLowerCase() : address] = CurrencyAmount.fromRawAmount(
-            NATIVE_CURRENCY_BUY_TOKEN[chainId],
+            NATIVE_TOKEN[chainId],
             JSBI.BigInt(value.toString())
           )
         return memo

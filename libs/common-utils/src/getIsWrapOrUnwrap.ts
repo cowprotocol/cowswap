@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN, WRAPPED_NATIVE_TOKEN } from '@cowprotocol/common-const'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 
@@ -13,8 +13,8 @@ export function getIsWrapOrUnwrap(
 ): boolean {
   if (!inputCurrencyId || !outputCurrencyId) return false
 
-  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
-  const wrappedToken = WRAPPED_NATIVE_CURRENCY[chainId]
+  const nativeToken = NATIVE_TOKEN[chainId]
+  const wrappedToken = WRAPPED_NATIVE_TOKEN[chainId]
 
   const isNativeIn = doesTokenMatchSymbolOrAddress(nativeToken, inputCurrencyId)
   const isNativeOut = doesTokenMatchSymbolOrAddress(nativeToken, outputCurrencyId)

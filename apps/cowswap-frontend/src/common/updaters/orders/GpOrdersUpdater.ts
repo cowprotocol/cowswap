@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -112,7 +112,7 @@ function _getInputToken(
   sellToken: string,
   allTokens: { [address: string]: Token }
 ): ReturnType<typeof getTokenFromMapping> {
-  return isEthFlow ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
+  return isEthFlow ? NATIVE_TOKEN[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
 }
 
 function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token>, chainId: ChainId): Order[] {

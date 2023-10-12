@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { NATIVE_TOKEN, WRAPPED_NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { parsedQueryString } from '@cowprotocol/common-hooks'
 import { getIsNativeToken, getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -162,7 +162,7 @@ function getEthFlowOverridesOnSwitch(state: SwapState): Pick<SwapState, 'indepen
 
   const isNativeOut = getIsNativeToken(chainId, outputCurrencyId || '')
   const isWrapUnwrap = getIsWrapOrUnwrap(chainId, inputCurrencyId, outputCurrencyId)
-  const isWrappedIn = inputCurrencyId === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
+  const isWrappedIn = inputCurrencyId === WRAPPED_NATIVE_TOKEN[chainId].symbol?.toUpperCase()
 
   if (isWrapUnwrap) {
     return state
@@ -199,7 +199,7 @@ function getEthFlowOverridesOnSelect(
 ): Pick<SwapState, 'independentField' | 'typedValue'> {
   if (
     inputCurrencyId?.toUpperCase() ===
-    NATIVE_CURRENCY_BUY_TOKEN[(state.chainId as ChainId) || ChainId.MAINNET]?.symbol?.toUpperCase()
+    NATIVE_TOKEN[(state.chainId as ChainId) || ChainId.MAINNET]?.symbol?.toUpperCase()
   ) {
     const independentField = Field.INPUT
     const formerIndependentField = state.independentField

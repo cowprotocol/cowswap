@@ -16,7 +16,7 @@ import {
   DAI_GOERLI,
   USDC_GOERLI,
 } from './tokens'
-import { WRAPPED_NATIVE_CURRENCY } from './nativeAndWrappedTokens'
+import { WRAPPED_NATIVE_TOKEN } from './nativeAndWrappedTokens'
 
 type ChainCurrencyList = {
   readonly [chainId: number]: Currency[]
@@ -32,10 +32,10 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_MAINNET,
     USDT,
     WBTC,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.MAINNET],
   ],
   [SupportedChainId.GOERLI]: [
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.GOERLI],
     COW[SupportedChainId.GOERLI],
     DAI_GOERLI,
     USDC_GOERLI,
@@ -44,7 +44,7 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_GNOSIS_CHAIN,
     COW[SupportedChainId.GNOSIS_CHAIN],
     EURE_GNOSIS_CHAIN,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
+    WRAPPED_NATIVE_TOKEN[SupportedChainId.GNOSIS_CHAIN],
     WETH_GNOSIS_CHAIN,
     WBTC_GNOSIS_CHAIN,
   ],

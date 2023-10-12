@@ -34,13 +34,13 @@ export const WETH_GOERLI = new TokenWithLogo(
   'WETH',
   'Wrapped Görli Ether'
 )
-export const WRAPPED_NATIVE_CURRENCY: Record<SupportedChainId, TokenWithLogo> = {
+export const WRAPPED_NATIVE_TOKEN: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: WETH_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
   [SupportedChainId.GOERLI]: WETH_GOERLI,
 }
 
-export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
+export const NATIVE_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
   [ChainId.MAINNET]: new TokenWithLogo(undefined, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GOERLI]: new TokenWithLogo(undefined, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GNOSIS_CHAIN]: new TokenWithLogo(

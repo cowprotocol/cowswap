@@ -1,5 +1,5 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
-import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_TOKEN } from '@cowprotocol/common-const'
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { Order } from '@cowprotocol/contracts'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
@@ -47,7 +47,7 @@ export async function calculateUniqueOrderId(
   const orderDigest = hashOrder(domain, {
     ...order,
     validTo: MAX_VALID_TO_EPOCH,
-    sellToken: WRAPPED_NATIVE_CURRENCY[chainId].address,
+    sellToken: WRAPPED_NATIVE_TOKEN[chainId].address,
   } as Order)
   // Generate the orderId from owner, orderDigest, and max validTo
   const orderId = packOrderUidParams({
