@@ -12,7 +12,6 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { environmentAtom } from '../../state/environmentAtom'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
-import { tokenWithLogoFromToken } from '../../utils/tokenWithLogoFromToken'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
@@ -147,6 +146,6 @@ function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFo
       return null
     }
 
-    return fetchTokenFromBlockchain(input, chainId, provider).then(tokenWithLogoFromToken)
+    return fetchTokenFromBlockchain(input, chainId, provider).then(TokenWithLogo.fromToken)
   })
 }
