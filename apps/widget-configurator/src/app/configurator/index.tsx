@@ -1,8 +1,11 @@
 import * as React from 'react'
+import { ColorModeContext } from '../../main'
+import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
 import Button from '@mui/material/Button'
 import InputLabel from '@mui/material/InputLabel'
+import OutlinedInput from '@mui/material/OutlinedInput'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -13,36 +16,57 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import Divider from '@mui/material/Divider'
 import EmbedDialog from './embedDialog'
-import { ColorModeContext } from '../../main';
-import { useTheme } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox'
+import ListItemText from '@mui/material/ListItemText'
+
+enum TradeMode {
+  Swap = 1,
+  Limit = 2,
+  TWAP = 3,
+}
+
+const ThemeOptions = [
+  { label: 'Auto', value: 'auto' },
+  { label: 'Light', value: 'light' },
+  { label: 'Dark', value: 'dark' },
+]
+
+const TradeModeOptions = [
+  { label: 'Swap', value: TradeMode.Swap },
+  { label: 'Limit', value: TradeMode.Limit },
+  { label: 'TWAP', value: TradeMode.TWAP },
+]
+
+const NetworkOptions = ['Ethereum', 'Gnosis Chain']
+const TokenOptions = ['COW', 'USDC']
 
 export function Configurator({ title }: { title: string }) {
-  const [activeTheme, setActiveTheme] = React.useState('1')
+  const theme = useTheme()
+  const { mode, toggleColorMode, setAutoMode } = React.useContext(ColorModeContext)
+
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(true)
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setActiveTheme(event.target.value)
+  const handleThemeChange = (event: SelectChangeEvent) => {
+    const selectedTheme = event.target.value
+    if (selectedTheme === 'auto') {
+      setAutoMode()
+    } else {
+      toggleColorMode()
+    }
   }
 
-  enum Theme {
-    Auto = 1,
-    Light = 2,
-    Dark = 3,
+  const [tradeModes, setTradeModes] = React.useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
+  const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
+    setTradeModes(event.target.value as TradeMode[])
   }
-
-  const NetworkOptions = ['Ethereum', 'Gnosis Chain']
 
   const [network, setNetwork] = React.useState<string | null>(NetworkOptions[0])
   const [networkInput, setNetworkInput] = React.useState(NetworkOptions[0])
 
-  const TokenOptions = ['COW', 'USDC']
   const [sellToken, setSellToken] = React.useState<string | null>(TokenOptions[0])
   const [sellTokenInput, setSellTokenInput] = React.useState(TokenOptions[0])
   const [buyToken, setBuyToken] = React.useState<string | null>(TokenOptions[0])
   const [buyTokenInput, setBuyTokenInput] = React.useState(TokenOptions[1])
-
-  const theme = useTheme();  
-  const colorMode = React.useContext(ColorModeContext);
 
   return (
     <Box sx={WrapperStyled}>
@@ -56,19 +80,49 @@ export function Configurator({ title }: { title: string }) {
           <Select
             labelId="select-theme-label"
             id="select-theme"
-            value={activeTheme}
-            onChange={handleChange}
+            value={mode}
+            onChange={handleThemeChange}
             autoWidth
             label="Theme"
             size="small"
           >
-            <MenuItem value={Theme.Auto}>Auto</MenuItem>
-            <MenuItem value={Theme.Light}>Light</MenuItem>
-            <MenuItem value={Theme.Dark}>Dark</MenuItem>
+            {ThemeOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
-        <Divider light />
+        <Divider />
+
+        <FormControl sx={{ width: '100%' }}>
+          <InputLabel id="trade-mode-label">Trade Modes</InputLabel>
+          <Select
+            labelId="trade-mode-label"
+            id="trade-mode-select"
+            multiple
+            size="small"
+            value={tradeModes}
+            onChange={handleTradeModeChange}
+            input={<OutlinedInput id="trade-mode-select-outlined" label="Available trade modes" />}
+            renderValue={(selected) =>
+              (selected as number[])
+                .map((value) => {
+                  const option = TradeModeOptions.find((option) => option.value === value)
+                  return option ? option.label : ''
+                })
+                .join(', ')
+            }
+          >
+            {TradeModeOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                <Checkbox checked={tradeModes.indexOf(option.value) > -1} />
+                <ListItemText primary={option.label} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Autocomplete
           value={network}
@@ -84,6 +138,8 @@ export function Configurator({ title }: { title: string }) {
           size="small"
           renderInput={(params) => <TextField {...params} label="Network" />}
         />
+
+        <Divider />
 
         <Autocomplete
           value={sellToken}
@@ -126,10 +182,9 @@ export function Configurator({ title }: { title: string }) {
           Hide configurator
         </Link>
 
-        <Button variant="contained" onClick={colorMode.toggleColorMode}>
-  Toggle to {theme.palette.mode === 'dark' ? 'Light' : 'Dark'} Mode
-</Button>
-
+        <Button variant="contained" onClick={toggleColorMode}>
+          Toggle to {theme.palette.mode === 'dark' ? 'Light' : 'Dark'} Mode
+        </Button>
       </Drawer>
 
       <Box sx={ContentStyled}>
