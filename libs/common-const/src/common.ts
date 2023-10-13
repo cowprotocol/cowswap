@@ -155,10 +155,6 @@ export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
-// last wallet provider key used in local storage
-export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
-export const WAITING_TIME_RECONNECT_LAST_PROVIDER = 15000 // 15s
-
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
 // LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
