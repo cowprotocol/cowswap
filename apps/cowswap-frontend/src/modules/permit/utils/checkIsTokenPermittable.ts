@@ -61,9 +61,16 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
   try {
     nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
   } catch (e) {
+    if (e === 'nonce not supported' || e.message === 'nonce is NaN') {
+      // Here we know it's not supported, return false
+      // See https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L309
+      // and https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L325
+      return false
+    }
     console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
 
-    return false
+    // Otherwise, it might have been a network issue or another temporary failure, return error
+    return { error: e.message || e.toString() }
   }
 
   const baseParams: BaseParams = {
