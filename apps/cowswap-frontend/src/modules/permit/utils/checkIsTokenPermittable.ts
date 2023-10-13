@@ -112,7 +112,7 @@ type EstimateParams = BaseParams & {
   provider: Web3Provider
 }
 
-async function estimateTokenPermit(params: EstimateParams) {
+async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePermitResult> {
   const { provider, chainId, walletAddress, tokenAddress, type } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
