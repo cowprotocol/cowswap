@@ -1,6 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react'
 
-import { EXPIRED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -24,7 +23,6 @@ export function ExpiredOrdersUpdater(): null {
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string) => {
       const lowerCaseAccount = account.toLowerCase()
-      const now = Date.now()
 
       if (isUpdating.current) {
         return
@@ -37,12 +35,8 @@ export function ExpiredOrdersUpdater(): null {
         // - Owned by the current connected account
         // - Created in the last 5 min, no further
         // - Not yet refunded
-        const pending = expiredRef.current.filter(({ owner, creationTime: creationTimeString, refundHash }) => {
-          const creationTime = new Date(creationTimeString).getTime()
-
-          return (
-            owner.toLowerCase() === lowerCaseAccount && now - creationTime < EXPIRED_ORDERS_PENDING_TIME && !refundHash
-          )
+        const pending = expiredRef.current.filter(({ owner, refundHash }) => {
+          return owner.toLowerCase() === lowerCaseAccount && !refundHash
         })
 
         if (pending.length === 0) {
