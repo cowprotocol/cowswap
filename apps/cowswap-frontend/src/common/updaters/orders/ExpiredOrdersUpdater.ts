@@ -33,7 +33,6 @@ export function ExpiredOrdersUpdater(): null {
 
         // Filter orders:
         // - Owned by the current connected account
-        // - Created in the last 5 min, no further
         // - Not yet refunded
         const pending = expiredRef.current.filter(({ owner, refundHash }) => {
           return owner.toLowerCase() === lowerCaseAccount && !refundHash
