@@ -65,7 +65,7 @@ export const EmojiWrapper = styled.div`
 `
 
 const StyledMenu = styled.div`
-  margin: 0 0 0 auto;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;

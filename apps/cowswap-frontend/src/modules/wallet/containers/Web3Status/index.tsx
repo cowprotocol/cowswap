@@ -1,4 +1,4 @@
-import { STORAGE_KEY_LAST_PROVIDER } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -13,9 +13,12 @@ import { WalletModal } from '../WalletModal'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()
-  const { account, active, chainId } = useWalletInfo()
+  const { account, 
+    active, 
+    chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const error = useAppSelector(
     (state) => state.connection.errorByConnectionType[getWeb3ReactConnection(connector).type]
@@ -24,14 +27,12 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNotPendingOrder()
 
-  const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
-
-  if (!active && !latestProvider) {
+  if (!active) {
     return null
   }
 
   return (
-    <Wrapper>
+    <Wrapper isWidgetMode={isInjectedWidgetMode}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}
@@ -40,6 +41,7 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
         ensName={ensName}
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
+        isWidgetMode={isInjectedWidgetMode}
       />
       <WalletModal />
       <AccountSelectorModal />

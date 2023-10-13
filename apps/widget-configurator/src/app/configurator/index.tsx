@@ -164,9 +164,9 @@ export function Configurator({ title }: { title: string }) {
         </FormControl>
 
         <Autocomplete
-          value={network}
+          value={network || NetworkOptions[0]}
           onChange={(event: any, newValue: { chainID: number; label: string } | null) => {
-            setNetwork(newValue)
+            setNetwork(newValue || NetworkOptions[0])
           }}
           getOptionLabel={(option) => option.label}
           id="controllable-states-network"
@@ -236,11 +236,19 @@ export function Configurator({ title }: { title: string }) {
       <Box sx={ContentStyled}>
         <iframe src={iframeURL} width="400px" height="640px" title="widget" />
 
-        <Box sx={{ display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-between', alignItems: 'center', margin: '1.6rem 0 0', gap: '2.4rem'}}>
-        <Typography variant="body2">URL: {iframeURL}</Typography>
-        <EmbedDialog />
+        <Box
+          sx={{
+            display: 'flex',
+            flexFlow: 'column wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '1.6rem 0 0',
+            gap: '2.4rem',
+          }}
+        >
+          <Typography variant="body2">URL: {iframeURL}</Typography>
+          <EmbedDialog />
         </Box>
-
       </Box>
     </Box>
   )

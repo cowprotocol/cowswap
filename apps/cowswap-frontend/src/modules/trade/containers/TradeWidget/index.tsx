@@ -150,7 +150,7 @@ export function TradeWidget(props: TradeWidgetProps) {
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-            {isInjectedWidgetMode && <AccountElementComponent pendingActivity={pendingActivity} handleOpenOrdersPanel={handleOpenOrdersPanel} />}
+            {isInjectedWidgetMode && <AccountElementComponent isWidgetMode={isInjectedWidgetMode} pendingActivity={pendingActivity} handleOpenOrdersPanel={handleOpenOrdersPanel} />}
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 

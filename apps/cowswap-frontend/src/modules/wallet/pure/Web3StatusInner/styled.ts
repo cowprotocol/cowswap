@@ -19,31 +19,7 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
   }
 `
 
-export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
-  /* border: none; */
-  /* color: ${({ theme }) => theme.primaryText1}; */
-  /* font-weight: 500; */
-
-  /* :hover,
-  :focus {
-    border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
-    color: ${({ theme }) => theme.primaryText1};
-  } */
-
-  /* ${({ faded }) =>
-    faded &&
-    css`
-      background-color: ${({ theme }) => theme.primary5};
-      border: 1px solid ${({ theme }) => theme.primary5};
-      color: ${({ theme }) => theme.primaryText1};
-
-      :hover,
-      :focus {
-        border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
-        color: ${({ theme }) => darken(0.05, theme.primaryText1)};
-      }
-    `} */
-`
+export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>``
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
   background-color: var(${UI.COLOR_GREY});
@@ -64,13 +40,13 @@ export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean
     `}
 `
 
-export const Text = styled.p`
+export const Text = styled.p<{ isWidgetMode: boolean }>`
   flex: 1 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0 0.5rem 0 0.25rem;
-  font-size: 1rem;
+  margin: 0;
+  font-size: ${({ isWidgetMode }) => (isWidgetMode ? '15px' : '1rem')};
   width: fit-content;
   font-weight: 500;
 `
@@ -82,7 +58,7 @@ export const NetworkIcon = styled(Activity)`
   height: 16px;
 `
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ isWidgetMode: boolean }>`
   color: var(${UI.COLOR_TEXT1});
   height: 40px;
   width: 100%;
@@ -97,11 +73,12 @@ export const Wrapper = styled.div`
     margin: 0 auto;
   `};
 
-  button {
+  > button {
     height: auto;
     border-radius: 21px;
     padding: 6px 12px;
     width: max-content;
+    gap: 6px;
   }
 
   ${Web3StatusConnected} {

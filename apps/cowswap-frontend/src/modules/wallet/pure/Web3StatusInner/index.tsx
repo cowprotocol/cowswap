@@ -1,5 +1,4 @@
 import { shortenAddress } from '@cowprotocol/common-utils'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 
@@ -20,13 +19,13 @@ export interface Web3StatusInnerProps {
   connectWallet: () => void
   connectionType: ConnectionType
   ensName?: string | null
+  isWidgetMode: boolean
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
+  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet, isWidgetMode } = props
 
   const hasPendingTransactions = !!pendingCount
-  const isInjectedWidgetMode = isInjectedWidget()
 
   if (!chainId) {
     return null
@@ -36,7 +35,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     return (
       <Web3StatusError>
         <NetworkIcon />
-        <Text>
+        <Text isWidgetMode={isWidgetMode}>
           <Trans>Error</Trans>
         </Text>
       </Web3StatusError>
@@ -49,14 +48,14 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
         {hasPendingTransactions ? (
           <RowBetween>
             <FollowPendingTxPopup>
-              <Text>
+              <Text isWidgetMode={isWidgetMode}>
                 <Trans>{pendingCount} Pending</Trans>
               </Text>{' '}
             </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <Text>{ensName || shortenAddress(account)}</Text>
+          <Text isWidgetMode={isWidgetMode}>{ensName || shortenAddress(account)}</Text>
         )}
         {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>
@@ -65,10 +64,10 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
 
   return (
     <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
-      <Text>
+      <Text isWidgetMode={isWidgetMode}>
         <Trans>Connect wallet</Trans>
       </Text>
-      {isInjectedWidgetMode && <SVG src={ICON_WALLET} title="Wallet" /> }
+      {isWidgetMode && <SVG src={ICON_WALLET} title="Wallet" /> }
     </Web3StatusConnect>
   )
 }

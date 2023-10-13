@@ -4,7 +4,7 @@ import { AccountElement } from 'legacy/components/Header/styled'
 
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { Wrapper as AccountWrapper } from 'modules/wallet/pure/Web3StatusInner/styled'
-import { Web3StatusConnect, Web3StatusConnected } from 'modules/wallet/pure/Web3StatusInner/styled'
+import { Web3StatusConnect } from 'modules/wallet/pure/Web3StatusInner/styled'
 
 import { UI } from 'common/constants/theme'
 
@@ -35,11 +35,7 @@ export const Header = styled.div`
 
   ${AccountElement} {
     margin: 0 20px 0 auto;
-
-    &:hover {
-      border-color: transparent;
-      background: var(${UI.COLOR_GREY});
-    }
+    border: 0;
   }
 
   ${AccountElement} > ${AccountWrapper} {
@@ -48,14 +44,19 @@ export const Header = styled.div`
 
   ${AccountElement} ${Web3StatusConnect} {
     margin: 0;
-    padding: 0;
+    padding: 6px 12px;
     background: 0;
     border: 0;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-    color: var(${UI.COLOR_TEXT2});
-    transition: color 0.2s ease-in-out;
+    color: var(${UI.COLOR_TEXT1});
+    transition: all 0.2s ease-in-out;
     gap: 6px;
+    opacity: 0.7;
+
+    &:hover {
+      background: var(${UI.COLOR_GREY});
+    }
 
     > svg {
       --size: var(${UI.ICON_SIZE_SMALL});
@@ -64,20 +65,9 @@ export const Header = styled.div`
       margin: 0;
     }
 
-    &:hover {
-      color: var(${UI.COLOR_TEXT1});
+    > svg > path {
+      fill: var(${UI.COLOR_TEXT1});
     }
-  }
-
-  ${AccountElement} ${Web3StatusConnect} > p {
-    color: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    margin: 0;
-  }
-
-  ${AccountElement} ${Web3StatusConnected} {
-    padding: 6px;
   }
 `
 

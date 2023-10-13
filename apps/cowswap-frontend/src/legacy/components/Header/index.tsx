@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -52,20 +51,20 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 }
 
 // Todo: fix 'any' types
-export const AccountElementComponent = ({ pendingActivity, handleOpenOrdersPanel }: any) => {
+export const AccountElementComponent = ({ isWidgetMode, pendingActivity, handleOpenOrdersPanel }: any) => {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-      {!isInjectedWidgetMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
+      {!isWidgetMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>
       )}
+
       <Web3Status pendingActivities={pendingActivity} />
     </AccountElement>
   )
@@ -73,11 +72,8 @@ export const AccountElementComponent = ({ pendingActivity, handleOpenOrdersPanel
 
 export default function Header() {
   const { account, chainId } = useWalletInfo()
-  const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
-
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-
   const { pendingActivity } = useCategorizeRecentActivity()
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
@@ -141,7 +137,7 @@ export default function Header() {
       <HeaderModWrapper>
         <HeaderRow>
           {!injectedWidgetParams.hideLogo && (
-            <Title href={isInjectedWidgetMode ? undefined : Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+            <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
                   {injectedWidgetParams.logoUrl ? (
