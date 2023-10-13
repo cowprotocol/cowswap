@@ -32,24 +32,24 @@ export function ExpiredOrdersUpdater(): null {
       try {
         isUpdating.current = true
 
-        // Filter orders:
+        // Filter expired orders:
         // - Only eth-flow orders
         // - Owned by the current connected account
         // - Not yet refunded
-        const pending = expiredRef.current.filter(({ owner, refundHash, sellToken }) => {
+        const orderWithoutRefund = expiredRef.current.filter(({ owner, refundHash, sellToken }) => {
           const isEthFlowOrder = sellToken === NATIVE_CURRENCY_BUY_ADDRESS
 
           return isEthFlowOrder && owner.toLowerCase() === lowerCaseAccount && !refundHash
         })
 
-        if (pending.length === 0) {
+        if (orderWithoutRefund.length === 0) {
           // console.debug(`[CancelledOrdersUpdater] No orders are being expired`)
           return
         } else {
-          console.debug(`[ExpiredOrdersUpdater] Checking ${pending.length} recently expired orders...`)
+          console.debug(`[ExpiredOrdersUpdater] Checking ${orderWithoutRefund.length} recently expired orders...`)
         }
 
-        const ordersPromises = pending.map(({ id }) => getOrder(chainId, id))
+        const ordersPromises = orderWithoutRefund.map(({ id }) => getOrder(chainId, id))
 
         const resolvedPromises = await Promise.allSettled(ordersPromises)
 
