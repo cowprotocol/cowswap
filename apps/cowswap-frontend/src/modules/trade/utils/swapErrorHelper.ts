@@ -11,9 +11,15 @@ export function getSwapErrorMessage(error: Error): string {
     const defaultErrorMessage = getProviderErrorMessage(error)
 
     if (getIsOrderBookTypedError(error)) {
-      return error.body?.description || defaultErrorMessage
+      return capitalizeFirstLetter(error.body?.description) || defaultErrorMessage
     }
 
     return defaultErrorMessage
   }
+}
+
+function capitalizeFirstLetter(str: string): string {
+  if (!str) return str
+
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
