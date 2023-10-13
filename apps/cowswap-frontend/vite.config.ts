@@ -108,7 +108,7 @@ export default defineConfig(({ mode }) => {
          */
         '@walletconnect/ethereum-provider': path.resolve(
           __dirname,
-          '../../node_modules/@walletconnect/ethereum-provider/dist/umd/index.min.js'
+          '../../node_modules/@walletconnect/ethereum-provider/dist/index.umd.js'
         ),
         '@walletconnect/universal-provider': path.resolve(
           __dirname,
