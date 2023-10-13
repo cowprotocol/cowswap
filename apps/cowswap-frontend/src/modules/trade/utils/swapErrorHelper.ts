@@ -1,4 +1,4 @@
-import { getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { capitalizeFirstLetter, getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 import { getIsOrderBookTypedError } from 'api/gnosisProtocol'
 
@@ -16,10 +16,4 @@ export function getSwapErrorMessage(error: Error): string {
 
     return defaultErrorMessage
   }
-}
-
-function capitalizeFirstLetter(str: string): string {
-  if (!str) return str
-
-  return str.charAt(0).toUpperCase() + str.slice(1)
 }
