@@ -13,7 +13,6 @@ export type PermitType = 'dai-like' | 'eip-2612'
 
 export type SupportedPermitInfo = {
   type: PermitType
-  gasLimit: number
 }
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo

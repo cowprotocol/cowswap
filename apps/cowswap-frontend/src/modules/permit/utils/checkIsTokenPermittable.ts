@@ -136,7 +136,6 @@ async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePerm
 
   return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
     ? {
-        gasLimit,
         type,
       }
     : false
