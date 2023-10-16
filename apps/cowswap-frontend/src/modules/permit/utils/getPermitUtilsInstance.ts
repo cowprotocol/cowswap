@@ -24,14 +24,12 @@ export function getPermitUtilsInstance(
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
 
   if (!account && chainCache) {
-    console.log(`[getPermitUtilsInstance] Using cached chain utils for chain ${chainId}`, chainCache)
     return chainCache
   }
   const providerCacheKey = `${chainId}-${account}`
   const providerCache = PROVIDER_UTILS_CACHE.get(providerCacheKey)
 
   if (providerCache) {
-    console.log(`[getPermitUtilsInstance] Using cached provider utils for chain ${chainId}-${account}`, providerCache)
     return providerCache
   }
 
