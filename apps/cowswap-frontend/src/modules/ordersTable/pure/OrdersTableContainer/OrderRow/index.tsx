@@ -1,17 +1,17 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 
+import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import { ThemeContext } from 'styled-components/macro'
 
-import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
-import Loader from 'legacy/components/Loader'
-import { ZERO_FRACTION } from 'legacy/constants'
-import useTimeAgo from 'legacy/hooks/useTimeAgo'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
-import { getEtherscanLink } from 'legacy/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/EstimatedExecutionPrice'
@@ -30,11 +30,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RateInfo } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { getAddress } from 'utils/getAddress'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
@@ -151,6 +148,7 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: () => void
   orderActions: OrderActions
+  hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
 }
 
@@ -167,6 +165,7 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
+  hasValidPendingPermit,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -177,7 +176,7 @@ export function OrderRow({
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
   const withWarning =
-    (hasEnoughBalance === false || hasEnoughAllowance === false) &&
+    (hasEnoughBalance === false || (hasEnoughAllowance === false && hasValidPendingPermit === false)) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const theme = useContext(ThemeContext)
@@ -360,7 +359,7 @@ export function OrderRow({
                         {hasEnoughBalance === false && (
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
-                        {hasEnoughAllowance === false && (
+                        {hasEnoughAllowance === false && hasValidPendingPermit === false && (
                           <AllowanceWarning
                             approve={() => orderActions.approveOrderToken(order.inputToken)}
                             symbol={inputTokenSymbol}

@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { deepEqual } from '@cowprotocol/common-utils'
 
-import { deepEqual } from 'utils/deepEqual'
+import { useNavigate } from 'react-router-dom'
 
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'

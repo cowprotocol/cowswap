@@ -1,13 +1,14 @@
+import { V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { transparentize, lighten } from 'polished'
 import styled from 'styled-components/macro'
 
-import { V_COW } from 'legacy/constants/tokens'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { UI } from 'common/constants/theme'
 
 import { COW_SUBSIDY_DATA } from './constants'
 
@@ -24,7 +25,7 @@ const StyledSubsidyTable = styled.table`
   }
 
   tbody {
-    background: ${({ theme }) => theme.grey1};
+    background: var(${UI.COLOR_GREY});
     border-radius: 16px;
     border: 0;
   }
@@ -49,7 +50,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   }
 
   &:hover > td {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     background: ${({ theme }) => transparentize(0.9, theme.text1)};
   }
 
@@ -60,7 +61,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
     transition: background 0.3s ease-in-out;
   }
 

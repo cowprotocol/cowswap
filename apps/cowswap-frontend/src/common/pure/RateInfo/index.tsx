@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 
+import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -9,12 +11,9 @@ import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { UI } from 'common/constants/theme'
 import { usePrice } from 'common/hooks/usePrice'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
-import { getAddress } from 'utils/getAddress'
 
 const DEFAULT_DECIMALS = 4
 
@@ -60,7 +59,7 @@ const RateLabel = styled.div`
   color: ${({ theme }) => transparentize(0.2, theme.text1)};
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -68,7 +67,7 @@ const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
   background: ${({ theme }) => transparentize(0.9, theme.text1)};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   width: var(--size);
   height: var(--size);
   min-width: var(--size);

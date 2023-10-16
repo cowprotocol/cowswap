@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
 
+import Circle from '@cowprotocol/assets/images/blue-loader.svg'
+import { useENS } from '@cowprotocol/ens'
+import { ButtonSecondary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 
-import Circle from 'legacy/assets/images/blue-loader.svg'
-import { ButtonSecondary } from 'legacy/components/Button'
-import useENS from 'legacy/hooks/useENS'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { ClaimCommonTypes } from 'legacy/state/claim/types'
 import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
-import { ClaimCommonTypes } from './types'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void

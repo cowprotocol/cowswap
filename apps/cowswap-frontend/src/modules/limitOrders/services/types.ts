@@ -1,12 +1,12 @@
+import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20, GPv2Settlement } from '@cowswap/abis'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { AppDataInfo } from 'modules/appData'
+import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -16,10 +16,11 @@ export interface TradeFlowContext {
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number
-  appData: AppDataInfo
   provider: Web3Provider
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
+  permitInfo: IsTokenPermittableResult
+  generatePermitHook: GeneratePermitHook
 }
 
 export interface SafeBundleFlowContext extends TradeFlowContext {

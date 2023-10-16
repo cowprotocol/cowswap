@@ -1,5 +1,3 @@
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable } from 'legacy/components/Link'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -12,13 +10,11 @@ import ToC from './ToC'
 
 import { Footer } from '.'
 
-// AmplitudeAnalytics
-
 export default function ProtocolFaq() {
   const { toc, faqRef } = useToC()
 
   return (
-    <Trace page={PageName.FAQ_PROTOCOL_PAGE} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="Protocol FAQ" />
         <FaqMenu />
@@ -271,6 +267,6 @@ export default function ProtocolFaq() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

@@ -1,14 +1,18 @@
+import {
+  CODE_LINK,
+  DEFAULT_NETWORK_FOR_LISTS,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  GP_VAULT_RELAYER,
+} from '@cowprotocol/common-const'
+import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'legacy/constants'
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import { ExternalLink } from 'legacy/theme'
-import { getEtherscanLink } from 'legacy/utils'
-
-import { useWalletInfo } from 'modules/wallet'
+import { UI } from 'common/constants/theme'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'
@@ -67,7 +71,7 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   gap: 10px;
 `
 

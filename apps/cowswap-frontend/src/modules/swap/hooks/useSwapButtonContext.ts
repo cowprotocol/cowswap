@@ -1,13 +1,20 @@
+import {
+  useGnosisSafeInfo,
+  useIsBundlingSupported,
+  useIsSmartContractWallet,
+  useWalletDetails,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
-import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
+import { useIsTokenPermittable } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
@@ -16,18 +23,15 @@ import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWrapNativeFlow } from 'modules/trade'
+import { TradeType, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
-import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
+import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -87,16 +91,15 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const isEthFlowBundlingEnabled = useIsEthFlowBundlingEnabled()
+  const isBundlingSupported = useIsBundlingSupported()
+  const isPermitSupported = !!useIsTokenPermittable(currencyIn, TradeType.SWAP)
 
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
-    isTxBundlingEnabled,
-    isEthFlowBundlingEnabled,
+    isBundlingSupported,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
@@ -110,6 +113,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapCallbackError,
     trade,
     isBestQuoteLoading,
+    isPermitSupported,
   })
 
   return {

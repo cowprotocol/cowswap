@@ -2,8 +2,6 @@ import { lazy, Suspense } from 'react'
 
 import { useLocation, Outlet } from 'react-router-dom'
 
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { Loading } from 'legacy/components/FlashingLoading'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -35,7 +33,7 @@ function _getPropsFromRoute(route: string) {
 // Note: As we build these single pages, we will remove this component in the future
 export const AccountOverview = () => {
   return (
-    <Trace page={PageName.ACCOUNT_OVERVIEW_PAGE} shouldLogImpression>
+    <>
       <Container>
         <PageTitle title="Account Overview" />
         <CardsWrapper>
@@ -43,7 +41,7 @@ export const AccountOverview = () => {
           <Governance />
         </CardsWrapper>
       </Container>
-    </Trace>
+    </>
   )
 }
 

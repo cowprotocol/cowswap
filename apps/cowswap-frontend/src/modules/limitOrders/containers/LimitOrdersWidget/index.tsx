@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
@@ -15,7 +15,6 @@ import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWid
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -79,7 +78,6 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
-  const { partialFillsEnabled } = useFeatureFlags()
   const widgetActions = useLimitOrdersWidgetActions()
 
   const { showRecipient, expertMode: isExpertMode } = settingsState
@@ -125,7 +123,6 @@ export function LimitOrdersWidget() {
     isExpertMode,
     recipient,
     partiallyFillableOverride,
-    featurePartialFillsEnabled: partialFillsEnabled,
     rateInfoParams,
     priceImpact,
     tradeContext,
@@ -147,7 +144,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     isRateLoading,
     widgetActions,
     partiallyFillableOverride,
-    featurePartialFillsEnabled,
     showRecipient,
     isExpertMode,
     recipient,
@@ -169,7 +165,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     return isRateLoading
   }, [isRateLoading, inputCurrency, outputCurrency])
 
-  const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
+  const isPartiallyFillable = settingsState.partialFillsEnabled
 
   const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
 
@@ -220,7 +216,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
             <styledEl.StyledOrderType
               isPartiallyFillable={isPartiallyFillable}
               partiallyFillableOverride={partiallyFillableOverride}
-              featurePartialFillsEnabled={featurePartialFillsEnabled}
             />
           </styledEl.FooterBox>
         )}

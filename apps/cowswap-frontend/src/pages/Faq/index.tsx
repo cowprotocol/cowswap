@@ -1,7 +1,3 @@
-import { Link } from 'react-router-dom'
-
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
@@ -10,7 +6,10 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from 'legacy/constants'
+} from '@cowprotocol/common-const'
+
+import { Link } from 'react-router-dom'
+
 import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -58,7 +57,7 @@ export function Footer() {
 export default function Faq() {
   const { toc, faqRef } = useToC()
   return (
-    <Trace page={PageName.FAQ_OVERVIEW_PAGE} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="General FAQ" />
         <FaqMenu />
@@ -201,6 +200,6 @@ export default function Faq() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

@@ -1,8 +1,10 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
+import { ButtonError } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
-import { ButtonError } from 'legacy/components/Button'
+import { UI } from 'common/constants/theme'
 
 const Container = styled.div``
 const Instruction = styled.p`
@@ -17,7 +19,7 @@ const Input = styled.input`
   padding: 10px;
   border-radius: 4px;
   background: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   outline: none;
   font-size: 15px;
 

@@ -54,7 +54,7 @@ export function TwapSuggestionBanner({
     parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) + `?${TRADE_URL_SELL_AMOUNT_KEY}=${sellAmount}`
 
   return (
-    <InlineBanner type="alert">
+    <InlineBanner bannerType="alert">
       <strong>Minimize price impact with TWAP</strong>
       <p>
         The price impact is <b>{+priceImpact.toFixed(2)}%</b>. Consider breaking up your order using a{' '}

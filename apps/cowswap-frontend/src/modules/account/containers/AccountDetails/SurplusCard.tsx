@@ -1,13 +1,14 @@
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { ExternalLink } from 'legacy/theme'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { UI } from 'common/constants/theme'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -90,7 +91,7 @@ export function SurplusCard() {
     }
 
     ${InfoCard} > div > span > p {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
 
     ${InfoCard} > div > span > b {

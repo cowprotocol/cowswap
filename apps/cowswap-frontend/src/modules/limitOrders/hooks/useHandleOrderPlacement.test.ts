@@ -1,5 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { useIsBundlingSupported } from '@cowprotocol/wallet'
+
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -9,7 +11,6 @@ import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
-import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
 import { withModalProvider } from 'utils/withModalProvider'
@@ -25,15 +26,30 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
-jest.mock('common/hooks/featureFlags/useIsTxBundlingEnabled')
-jest.mock('legacy/components/analytics/hooks/useAnalyticsReporter.ts')
+jest.mock('@cowprotocol/wallet', () => {
+  const actual = jest.requireActual('@cowprotocol/wallet')
+
+  return new Proxy(actual, {
+    get: (target, property) => {
+      switch (property) {
+        case 'useIsBundlingSupported': {
+          return jest.fn()
+        }
+        default: {
+          return target[property]
+        }
+      }
+    },
+  })
+})
+jest.mock('common/hooks/useAnalyticsReporter')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
 
 const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
-const mockUseIsTxBundlingEnabled = useIsTxBundlingEnabled as jest.MockedFunction<typeof useIsTxBundlingEnabled>
+const mockIsBundlingSupported = useIsBundlingSupported as jest.MockedFunction<typeof useIsBundlingSupported>
 
 const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
@@ -57,6 +73,9 @@ const tradeConfirmActions: TradeConfirmActions = {
   onOpen() {
     console.log('onOpen')
   },
+  requestPermitSignature() {
+    console.log('requestPermitSignature')
+  },
 }
 
 describe('useHandleOrderPlacement', () => {
@@ -65,7 +84,7 @@ describe('useHandleOrderPlacement', () => {
     mockSafeBundleFlow.mockImplementation(() => Promise.resolve(''))
     mockUseSafeBundleFlowContext.mockImplementation(() => null)
     mockUseNeedsApproval.mockImplementation(() => false)
-    mockUseIsTxBundlingEnabled.mockImplementation(() => false)
+    mockIsBundlingSupported.mockImplementation(() => true)
   })
 
   it('When a limit order placed, then the recipient value should be deleted', async () => {

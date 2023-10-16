@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { Order, OrderInfoApi } from 'legacy/state/orders/actions'
 import { useOrdersById } from 'legacy/state/orders/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 

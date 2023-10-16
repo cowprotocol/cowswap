@@ -1,16 +1,14 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getVersionUpgrade, TokenList, VersionUpgrade } from '@uniswap/token-lists'
-
-import { createReducer } from '@reduxjs/toolkit'
-
 import {
   DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
-} from 'legacy/constants/lists'
-import { updateVersion } from 'legacy/state/global/actions'
-import { getChainIdValues } from 'legacy/utils/misc'
+} from '@cowprotocol/common-const'
+import { getChainIdValues } from '@cowprotocol/common-utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { getVersionUpgrade, TokenList, VersionUpgrade } from '@uniswap/token-lists'
+
+import { createReducer } from '@reduxjs/toolkit'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
 
@@ -24,6 +22,8 @@ import {
   removeGpUnsupportedToken,
   removeList,
 } from './actions'
+
+import { updateVersion } from '../global/actions'
 
 export interface ListsState {
   readonly byUrl: {

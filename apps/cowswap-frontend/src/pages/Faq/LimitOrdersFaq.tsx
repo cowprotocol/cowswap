@@ -1,6 +1,3 @@
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Page } from 'modules/application/pure/Page'
 
@@ -15,7 +12,7 @@ export default function LimitOrderFAQ() {
   const { toc, faqRef } = useToC()
 
   return (
-    <Trace page={PageName.FAQ_LIMIT_ORDERS_PAGE} shouldLogImpression>
+    <>
       <Wrapper ref={faqRef}>
         <PageTitle title="Limit orders FAQ" />
         <FaqMenu />
@@ -228,6 +225,6 @@ export default function LimitOrderFAQ() {
           </Content>
         </Page>
       </Wrapper>
-    </Trace>
+    </>
   )
 }

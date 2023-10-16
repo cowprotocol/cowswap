@@ -1,12 +1,12 @@
+import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
-import { isCowOrder } from 'legacy/utils'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 

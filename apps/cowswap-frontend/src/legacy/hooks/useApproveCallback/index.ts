@@ -1,16 +1,14 @@
 import { useMemo } from 'react'
 
+import { V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { ClaimType } from 'legacy/state/claim/hooks'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { EnhancedUserClaimData } from 'pages/Claim/types'
-
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
+
+import { ClaimType } from '../../state/claim/hooks/types'
+import { EnhancedUserClaimData } from '../../state/claim/types'
 
 export type OptionalApproveCallbackParams = {
   transactionSummary?: string

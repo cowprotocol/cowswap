@@ -1,9 +1,8 @@
+import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-
-import { rawToTokenAmount } from 'utils/rawToTokenAmount'
 
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null

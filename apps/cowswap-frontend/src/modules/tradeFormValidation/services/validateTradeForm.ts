@@ -1,7 +1,6 @@
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { isAddress } from 'legacy/utils'
+import { isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
-import { isFractionFalsy } from 'utils/isFractionFalsy'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
@@ -9,7 +8,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const {
     derivedTradeState,
     approvalState,
-    isTxBundlingEnabled,
+    isBundlingSupported,
     isWrapUnwrap,
     isExpertMode,
     isSupportedWallet,
@@ -18,11 +17,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
+    isPermitSupported,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
 
-  const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+  const approvalRequired =
+    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
@@ -77,11 +78,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (approvalRequired) {
-    if (isTxBundlingEnabled) {
-      if (isExpertMode) {
-        return TradeFormValidation.ExpertApproveAndSwap
-      }
-      return TradeFormValidation.ApproveAndSwap
+    if (isBundlingSupported) {
+      return isExpertMode ? TradeFormValidation.ExpertApproveAndSwap : TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
   }

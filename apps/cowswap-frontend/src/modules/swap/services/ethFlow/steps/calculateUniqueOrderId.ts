@@ -1,14 +1,15 @@
+import { CoWSwapEthFlow } from '@cowprotocol/abis'
+import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { Order } from '@cowprotocol/contracts'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-import { CoWSwapEthFlow } from '@cowswap/abis'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
-import { MAX_VALID_TO_EPOCH } from 'utils/time'
+import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderExists'
 
 export interface UniqueOrderIdResult {
   orderId: string
@@ -33,7 +34,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  checkInFlightOrderIdExists: (orderId: string) => boolean
+  checkEthFlowOrderExists: EthFlowOrderExistsCallback
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
@@ -59,11 +60,11 @@ export async function calculateUniqueOrderId(
     sellAmount: orderParams.inputAmount.quotient.toString(),
     fee: orderParams.feeAmount?.quotient.toString(),
   }
-  if (checkInFlightOrderIdExists(orderId)) {
+  if (await checkEthFlowOrderExists(orderId, orderDigest)) {
     logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ❌ Collision detected: ' + orderId, logParams)
 
     // Recursive call, increment one fee until we get an unique order Id
-    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkInFlightOrderIdExists)
+    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkEthFlowOrderExists)
   }
 
   logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ✅ Order Id is Unique' + orderId, logParams)

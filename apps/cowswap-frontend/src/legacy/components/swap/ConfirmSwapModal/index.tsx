@@ -1,23 +1,26 @@
 import { useCallback, useMemo } from 'react'
 
+import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
-import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
-import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
-import { useWalletDetails } from 'modules/wallet'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+import { TradeAmounts } from 'common/types'
 
 import { useButtonText } from './hooks'
+
+import { ConfirmOperationType } from '../../../state/types'
+import { TransactionConfirmationModal } from '../../TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from '../../TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { SwapModalHeader } from '../SwapModalHeader'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
@@ -100,7 +103,13 @@ export function ConfirmSwapModal({
           bottomContent={modalBottom}
         />
       ),
-    [onDismiss, modalBottom, modalHeader, swapErrorMessage]
+    [swapErrorMessage, onDismiss, modalHeader, modalBottom]
+  )
+
+  const tradeAmounts: TradeAmounts | undefined = useMemo(
+    () =>
+      trade ? { inputAmount: trade.inputAmountWithoutFee, outputAmount: trade.outputAmountWithoutFee } : undefined,
+    [trade]
   )
 
   return (
@@ -113,6 +122,8 @@ export function ConfirmSwapModal({
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
       operationType={ConfirmOperationType.ORDER_SIGN}
+      tradeAmounts={tradeAmounts}
+      swapConfirmState={swapConfirmState}
     />
   )
 }

@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import styled from 'styled-components/macro'
+import { renderTooltip } from '@cowprotocol/ui'
 
-import { renderTooltip } from 'legacy/components/Tooltip'
+import styled from 'styled-components/macro'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'

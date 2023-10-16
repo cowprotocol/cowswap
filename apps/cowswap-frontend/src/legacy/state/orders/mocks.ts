@@ -1,11 +1,11 @@
+import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { RADIX_DECIMAL } from 'legacy/constants'
-import store from 'legacy/state'
-import { serializeToken } from 'legacy/state/user/hooks'
-
 import { Order, OrderStatus, SerializedOrder, addPendingOrder, AddPendingOrderParams } from './actions'
+
+import { cowSwapStore } from '../index'
+import { serializeToken } from '../user/hooks'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -122,6 +122,6 @@ export const mockOrderDispatches = {
       },
     }
 
-    store.dispatch(addPendingOrder(actionParams))
+    cowSwapStore.dispatch(addPendingOrder(actionParams))
   },
 }

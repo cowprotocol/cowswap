@@ -1,10 +1,12 @@
 import React from 'react'
 
+import { isMobile } from '@cowprotocol/common-utils'
+
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
 
-import { isMobile } from 'legacy/utils/userAgent'
+import { UI } from 'common/constants/theme'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -20,6 +22,9 @@ interface ModalProps {
   children?: React.ReactNode
 }
 
+/**
+ * @deprecated use common/pure/NewModal instead
+ */
 export function Modal({
   isOpen,
   onDismiss,
@@ -90,7 +95,7 @@ export const CowModal = styled(Modal)<{
   padding?: string
 }>`
   > [data-reach-dialog-content] {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     width: 100%;
     max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
@@ -98,8 +103,9 @@ export const CowModal = styled(Modal)<{
     padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: var(${UI.COLOR_CONTAINER_BG_01});
     overflow: hidden;
+    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100vh;
@@ -116,7 +122,7 @@ export const CowModal = styled(Modal)<{
         left: 0;
         width: 100%;
         padding: 16px;
-        background: ${({ theme }) => theme.bg1};
+        background: var(${UI.COLOR_CONTAINER_BG_01});
         z-index: 20;
       `}
     }
@@ -140,4 +146,9 @@ export const CowModal = styled(Modal)<{
       `}
     }
   }
+`
+
+export const NewCowModal = styled(Modal)`
+  width: 100vw;
+  height: 100vh;
 `

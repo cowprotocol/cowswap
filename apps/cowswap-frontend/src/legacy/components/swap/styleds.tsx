@@ -1,12 +1,15 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
+import { TooltipContainer } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
-import { TooltipContainer } from 'legacy/components/Tooltip'
 import { ThemedText } from 'legacy/theme'
+
+import { UI } from 'common/constants/theme'
 
 import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
 
@@ -30,7 +33,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   margin-top: -14px;
   margin-bottom: -14px;
   left: 16px;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   z-index: 2;
   ${({ clickable }) =>
     clickable
@@ -183,7 +186,7 @@ export const AuxInformationContainer = styled.div<{
   showAux?: boolean
 }>`
   border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg2)};
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
 
   :focus,

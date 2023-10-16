@@ -3,7 +3,9 @@ import { useEffect, useMemo } from 'react'
 
 import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 
-import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from 'modules/tokensList/state/tokensListAtom'
+import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
+
+import { TokenWithLogo } from '../types'
 
 /**
  * This updater protects from redundant recalculations

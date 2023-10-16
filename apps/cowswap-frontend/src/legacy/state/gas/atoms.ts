@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { DEFAULT_GP_PRICE_STRATEGY } from 'legacy/constants'
+import { DEFAULT_GP_PRICE_STRATEGY } from '@cowprotocol/common-const'
 
 export type GpPriceStrategy = 'COWSWAP' | 'LEGACY'
 

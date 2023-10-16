@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
-import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { ethFlow } from 'modules/swap/services/ethFlow'
@@ -15,6 +14,7 @@ import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImp
 import { useEthFlowContext } from './useEthFlowContext'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useSwapFlowContext } from './useSwapFlowContext'
+import { useSwapActionHandlers } from './useSwapState'
 
 export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()

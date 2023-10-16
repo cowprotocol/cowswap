@@ -1,14 +1,7 @@
 import { useContext, useState } from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
-
-import { Trans } from '@lingui/macro'
-import { darken } from 'polished'
-import styled, { ThemeContext } from 'styled-components/macro'
-
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'legacy/components/analytics'
-import { AutoColumn } from 'legacy/components/Column'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
+import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import {
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
@@ -20,16 +13,24 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-} from 'legacy/constants'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+} from '@cowprotocol/common-const'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { darken } from 'polished'
+import styled, { ThemeContext } from 'styled-components/macro'
+
+import { AutoColumn } from 'legacy/components/Column'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useWalletInfo } from 'modules/wallet'
 
+import { UI } from 'common/constants/theme'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
@@ -47,7 +48,7 @@ enum DeadlineError {
 }
 
 export const FancyButton = styled.button`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   align-items: center;
   height: 2rem;
   border-radius: 36px;
@@ -57,7 +58,7 @@ export const FancyButton = styled.button`
   /* border: 1px solid ${({ theme }) => theme.bg3}; */
   border: 0; // mod
   outline: none;
-  /* background: ${({ theme }) => theme.bg1}; */
+  /* background: var(${UI.COLOR_CONTAINER_BG_01}); */
   background: ${({ theme }) => theme.bg2}; // mod
   :hover {
     /* border: 1px solid ${({ theme }) => theme.bg4}; */
@@ -84,7 +85,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
 `
 
 export const Input = styled.input`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   font-size: 16px;
   width: auto;
   outline: none;
@@ -301,7 +302,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               fontSize: '14px',
               paddingTop: '7px',
               // color: slippageError ? 'red' : '#F3841E',
-              color: slippageError ? theme.danger : theme.warning, // MOD
+              color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning, // MOD
             }}
           >
             {slippageError ? (

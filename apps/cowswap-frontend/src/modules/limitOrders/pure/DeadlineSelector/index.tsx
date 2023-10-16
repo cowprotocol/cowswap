@@ -1,10 +1,10 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
-
-import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 
 import {
   calculateMinMax,

@@ -1,12 +1,12 @@
+import { COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect, useValue } from 'react-cosmos/client'
 
-import { COW } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { CurrencyInputPanel, CurrencyInputPanelProps } from './CurrencyInputPanel'
 import { defaultCurrencyInputPanelProps } from './defaultCurrencyInputProps'
@@ -27,10 +27,7 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
     options: [Field.INPUT, Field.OUTPUT],
     defaultValue: Field.INPUT,
   })
-  const [priceImpactError] = useSelect('priceImpactParams.error', {
-    options: ['fetch-quote-error', 'insufficient-liquidity', 'fee-exceeds-sell-amount'],
-    defaultValue: 'fetch-quote-error',
-  })
+
   const [priceImpactRaw] = useValue('priceImpactParams.priceImpact', { defaultValue: 2 })
 
   const balance = CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18)

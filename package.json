@@ -10,14 +10,14 @@
   },
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
-    "preview": "nx run cowswap-frontend:preview",
-    "test": "nx run-many -t test -p $npm_package_config_enabledApps",
-    "e2e": "nx run-many -t e2e -p $npm_package_config_enabledApps",
-    "lint": "nx run-many -t lint -p $npm_package_config_enabledApps",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:build",
+    "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
     "cosmos:export": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:cosmos:export",
+    "cosmos": "nx run cowswap-frontend:cosmos:run",
+    "test": "nx run-many -t test --output-style=stream",
+    "e2e": "nx run-many -t e2e",
+    "lint": "nx run-many -t lint",
     "prebuild": "nx run cowswap-frontend:i18n",
-    "postbuild": "rm -rf build && mkdir build && mv dist/apps/cowswap-frontend/* build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
     "prepare": "husky install",
     "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
@@ -43,13 +43,14 @@
     ]
   },
   "dependencies": {
+    "@1inch/permit-signed-approvals-utils": "^1.4.8",
     "@amplitude/analytics-browser": "^1.1.4",
     "@babel/runtime": "^7.17.0",
     "@coinbase/wallet-sdk": "^3.3.0",
-    "@cowprotocol/app-data": "v0.2.7",
+    "@cowprotocol/app-data": "^1.1.0-RC.0",
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "^2.3.0",
+    "@cowprotocol/cow-sdk": "^3.0.0-rc.0",
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@ethersproject/bignumber": "^5.7.0",
@@ -87,17 +88,16 @@
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "@use-gesture/react": "^10.2.23",
-    "@web3-react/coinbase-wallet": "^8.2.0",
-    "@web3-react/core": "^8.2.0",
-    "@web3-react/eip1193": "^8.2.0",
-    "@web3-react/empty": "^8.2.0",
-    "@web3-react/gnosis-safe": "^8.2.0",
-    "@web3-react/metamask": "^8.2.1",
-    "@web3-react/network": "^8.2.0",
-    "@web3-react/types": "^8.2.0",
-    "@web3-react/url": "^8.2.0",
-    "@web3-react/walletconnect": "^8.2.0",
-    "@web3-react/walletconnect-v2": "^8.3.7",
+    "@walletconnect/ethereum-provider": "^2.10.2",
+    "@web3-react/coinbase-wallet": "^8.2.3",
+    "@web3-react/core": "^8.2.3",
+    "@web3-react/eip1193": "^8.2.3",
+    "@web3-react/empty": "^8.2.3",
+    "@web3-react/gnosis-safe": "^8.2.4",
+    "@web3-react/metamask": "^8.2.4",
+    "@web3-react/network": "^8.2.3",
+    "@web3-react/url": "^8.2.3",
+    "@web3-react/walletconnect-v2": "^8.5.1",
     "bnc-sdk": "^4.6.0",
     "buffer": "^6.0.3",
     "cids": "^1.0.0",
@@ -213,6 +213,7 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/coverage-c8": "~0.32.0",
     "@vitest/ui": "~0.32.0",
+    "@web3-react/types": "^8.2.3",
     "babel-jest": "^29.6.2",
     "babel-plugin-styled-components": "2.1.4",
     "babel-plugin-transform-import-meta": "^2.2.0",
@@ -249,65 +250,10 @@
     "vite": "~4.3.9",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-dts": "~2.3.0",
-    "vite-plugin-node-polyfills": "^0.11.1",
+    "vite-plugin-node-polyfills": "^0.12.0",
     "vite-plugin-pwa": "^0.16.4",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "~0.32.0"
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/build",
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "build:analyze": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "ipfs:build": {
-        "outputs": [
-          "{projectRoot}/build"
-        ]
-      },
-      "optimize-bundle": {
-        "outputs": [
-          "{projectRoot}/../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json"
-        ]
-      },
-      "i18n:extract": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "i18n": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "i18n:pseudo": {
-        "outputs": [
-          "{projectRoot}/src/locales"
-        ]
-      },
-      "cosmos:export": {
-        "outputs": [
-          "{projectRoot}/public/cosmos"
-        ]
-      },
-      "sitemap": {
-        "outputs": [
-          "{projectRoot}/public/sitemap.xml"
-        ]
-      },
-      "writeVersion": {
-        "outputs": [
-          "{projectRoot}/public/version.json"
-        ]
-      }
-    }
   }
 }

@@ -1,5 +1,10 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
+import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { TokenAmount, TokenSymbol, Loader, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -7,29 +12,19 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
-import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import Loader from 'legacy/components/Loader'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { LoadingRows } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { useAllTokens, useIsUserAddedToken } from 'legacy/hooks/Tokens'
-import useTheme from 'legacy/hooks/useTheme'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
 
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { Tag } from './styled' // mod
 
@@ -65,6 +60,7 @@ function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
 export const TagContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  flex-flow: row wrap;
 `
 
 export const TokenListLogoWrapper = styled.img`
@@ -92,8 +88,13 @@ function TokenTags({ currency }: { currency: Currency }) {
   return (
     <TagContainer>
       <MouseoverTooltip text={tag.description}>
-        <Tag key={tag.id}>{tag.name}</Tag>
+        <Tag key={tag.id}>
+          {tag.icon && <img src={tag.icon} alt={tag.name} />}
+          {tag.name}
+        </Tag>
       </MouseoverTooltip>
+
+      {/* If there are more than one tag, show the first one and a '...' tag */}
       {tags.length > 1 ? (
         <MouseoverTooltip
           text={tags
@@ -115,8 +116,8 @@ function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
-  eventProperties,
   isUnsupported, // gp-swap added
+  isPermitCompatible, // gp-swap added
   allTokens,
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
@@ -127,11 +128,15 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   showCurrencyAmount?: boolean
-  eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
+  isPermitCompatible: boolean // gp-added
   allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
-  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: {
+    currency: Currency
+    isUnsupported: boolean
+    isPermitCompatible: boolean
+  }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWalletInfo()
   const key = currencyKey(currency)
@@ -141,12 +146,7 @@ function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    <TraceEvent
-      events={[Event.onClick, Event.onKeyPress]}
-      name={EventName.TOKEN_SELECTED}
-      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-      element={ElementName.TOKEN_SELECTOR_ROW}
-    >
+    <>
       <MenuItem
         tabIndex={0}
         style={style}
@@ -170,14 +170,14 @@ function CurrencyRow({
           </ThemedText.DarkGray>
         </Column>
         {/* <TokenTags currency={currency} /> */}
-        <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
+        <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         {showCurrencyAmount && (
           <RowFixed style={{ justifySelf: 'flex-end' }}>
             {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
           </RowFixed>
         )}
       </MenuItem>
-    </TraceEvent>
+    </>
   )
 }
 
@@ -231,25 +231,6 @@ interface TokenRowProps {
   style: CSSProperties
 }
 
-const formatAnalyticsEventProperties = (
-  token: Token,
-  index: number,
-  data: any[],
-  searchQuery: string,
-  isAddressSearch: string | false
-) => ({
-  token_symbol: token?.symbol,
-  token_address: token?.address,
-  is_suggested_token: false,
-  is_selected_from_list: true,
-  scroll_position: '',
-  token_list_index: index,
-  token_list_length: data.length,
-  ...(isAddressSearch === false
-    ? { search_token_symbol_input: searchQuery }
-    : { search_token_address_input: isAddressSearch }),
-})
-
 // TODO: refactor the component
 export default function CurrencyList({
   height,
@@ -263,8 +244,6 @@ export default function CurrencyList({
   setImportToken,
   showCurrencyAmount,
   isLoading,
-  searchQuery,
-  isAddressSearch,
   additionalTokens,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
@@ -280,8 +259,8 @@ export default function CurrencyList({
   setImportToken: (token: Token) => void
   showCurrencyAmount?: boolean
   isLoading: boolean
-  searchQuery: string
-  isAddressSearch: string | false
+  searchQuery?: string
+  isAddressSearch?: string | false
   additionalTokens?: Currency[]
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
@@ -336,6 +315,7 @@ export default function CurrencyList({
       const showImport = index > currencies.length
 
       const isUnsupported = !!isUnsupportedToken(token?.address)
+      const isPermitCompatible = false // TODO: Make dynamic
 
       if (isLoading) {
         return (
@@ -361,8 +341,8 @@ export default function CurrencyList({
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
             isUnsupported={isUnsupported}
+            isPermitCompatible={isPermitCompatible} // gp-swap added
             showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />
         )
       } else {
@@ -378,8 +358,6 @@ export default function CurrencyList({
       showImportView,
       showCurrencyAmount,
       isLoading,
-      isAddressSearch,
-      searchQuery,
       isUnsupportedToken,
       BalanceComponent,
       TokenTagsComponent,

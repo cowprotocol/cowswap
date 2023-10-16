@@ -1,5 +1,4 @@
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowswap/abis'
-import { Erc20, Weth } from '@cowswap/abis'
+import { CoWSwapEthFlow, Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -11,9 +10,11 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
+import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
 
 export interface BaseFlowContext {
@@ -33,6 +34,7 @@ export interface BaseFlowContext {
     addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
   }
+  sellTokenContract: Erc20 | null
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager
@@ -42,12 +44,14 @@ export interface BaseFlowContext {
 
 export type SwapFlowContext = BaseFlowContext & {
   contract: GPv2Settlement
+  permitInfo: IsTokenPermittableResult
+  generatePermitHook: GeneratePermitHook
 }
 
 export type EthFlowContext = BaseFlowContext & {
   contract: CoWSwapEthFlow
   addTransaction: ReturnType<typeof useTransactionAdder>
-  checkInFlightOrderIdExists: (orderId: string) => boolean
+  checkEthFlowOrderExists: EthFlowOrderExistsCallback
   addInFlightOrderId: (orderId: string) => void
 }
 

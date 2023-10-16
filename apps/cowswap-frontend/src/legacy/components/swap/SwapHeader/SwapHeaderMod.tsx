@@ -1,15 +1,17 @@
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { RowBetween, RowFixed } from 'legacy/components/Row'
 import SettingsTab from 'legacy/components/Settings'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 
+import { UI } from 'common/constants/theme'
+
 const StyledSwapHeader = styled.div`
   width: 100%;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 `
 
 export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {

@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
+import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { Currency } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
@@ -8,23 +10,18 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { shallowEqual } from 'react-redux'
 import { Nullish } from 'types'
 
-import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
-import BROKEN_LIST from 'legacy/constants/tokenLists/broken.tokenlist.json'
-import UNSUPPORTED_TOKEN_LIST from 'legacy/constants/tokenLists/unsupported.tokenlist.json'
-import { AppState } from 'legacy/state'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { UnsupportedToken } from 'api/gnosisProtocol'
+import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
+
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
   removeGpUnsupportedToken,
   RemoveGpUnsupportedTokenParams,
-} from 'legacy/state/lists/actions'
-import sortByListPriority from 'legacy/utils/listSort'
+} from './actions'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { UnsupportedToken } from 'api/gnosisProtocol'
-import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
 
 export type TokenAddressMap = ChainTokenMap
 
@@ -34,11 +31,8 @@ type Mutable<T> = {
 
 export function useActiveListUrls(): string[] | undefined {
   const { chainId } = useWalletInfo()
-  const activeListUrls = useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
 
-  return useMemo(() => {
-    return activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url))
-  }, [chainId, activeListUrls])
+  return useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
 }
 
 export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
@@ -77,48 +71,22 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
   const lists = useAllLists()
   return useMemo(() => {
     if (!urls) return {}
-    return (
-      urls
-        .slice()
-        // sort by priority so top priority goes last
-        .sort(sortByListPriority)
-        .reduce((allTokens, currentUrl) => {
-          const current = lists[currentUrl]?.current
-          if (!current) return allTokens
-          try {
-            return combineMaps(allTokens, tokensToChainTokenMap(current))
-          } catch (error: any) {
-            console.error('Could not show token list due to error', error)
-            return allTokens
-          }
-        }, {})
-    )
+    return urls.slice().reduce((allTokens, currentUrl) => {
+      const current = lists[currentUrl]?.current
+      if (!current) return allTokens
+      try {
+        return combineMaps(allTokens, tokensToChainTokenMap(current))
+      } catch (error: any) {
+        console.error('Could not show token list due to error', error)
+        return allTokens
+      }
+    }, {})
   }, [lists, urls])
-}
-
-// get all the tokens from active lists, combine with local default tokens
-export function useCombinedActiveList(): TokenAddressMap {
-  const activeListUrls = useActiveListUrls()
-  const activeTokens = useCombinedTokenMapFromUrls(activeListUrls)
-  return activeTokens
 }
 
 // list of tokens not supported on interface for various reasons, used to show warnings and prevent swaps and adds
 export function useUnsupportedTokenList(): TokenAddressMap {
-  // get hard-coded broken tokens
-  const brokenListMap = useMemo(() => tokensToChainTokenMap(BROKEN_LIST), [])
-
-  // get hard-coded list of unsupported tokens
-  const localUnsupportedListMap = useMemo(() => tokensToChainTokenMap(UNSUPPORTED_TOKEN_LIST), [])
-
-  // get dynamic list of unsupported tokens
-  const loadedUnsupportedListMap = useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS[1])
-
-  // format into one token address map
-  return useMemo(
-    () => combineMaps(brokenListMap, combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)),
-    [brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap]
-  )
+  return useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS[1])
 }
 
 export function useTokensListFromUrls(urls: string[] | undefined): TokenInfo[] {
@@ -127,16 +95,12 @@ export function useTokensListFromUrls(urls: string[] | undefined): TokenInfo[] {
   return useMemo(() => {
     if (!urls) return []
 
-    return (
-      urls
-        .slice()
-        // sort by priority so top priority goes last
-        .sort(sortByListPriority)
-        .map((url) => {
-          return lists?.[url]?.current?.tokens || []
-        })
-        .flat()
-    )
+    return urls
+      .slice()
+      .map((url) => {
+        return lists?.[url]?.current?.tokens || []
+      })
+      .flat()
   }, [lists, urls])
 }
 

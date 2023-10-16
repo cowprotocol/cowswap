@@ -1,118 +1,22 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
-import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
+import { deserializeToken, useFavouriteTokens, useUserAddedTokens } from 'legacy/state/user/hooks'
 
 import { TokensByAddress, tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from 'modules/wallet'
 
-import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
-import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
-import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
-
-// reduce token map into standard address <-> Token mapping, optionally include user added tokens
-export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
-  const { chainId } = useWalletInfo()
-  const userAddedTokens = useUserAddedTokens()
-
-  return useMemo(() => {
-    if (!chainId) return {}
-
-    // reduce to just tokens
-    const mapWithoutUrls = Object.keys(tokenMap[chainId] ?? {}).reduce<{ [address: string]: Token }>(
-      (newMap, address) => {
-        newMap[address] = tokenMap[chainId][address].token
-        return newMap
-      },
-      {}
-    )
-
-    if (includeUserAdded) {
-      return (
-        userAddedTokens
-          // reduce into all ALL_TOKENS filtered by the current chain
-          .reduce<{ [address: string]: Token }>(
-            (tokenMap, token) => {
-              tokenMap[token.address] = token
-              return tokenMap
-            },
-            // must make a copy because reduce modifies the map, and we do not
-            // want to make a copy in every iteration
-            { ...mapWithoutUrls }
-          )
-      )
-    }
-
-    return mapWithoutUrls
-  }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
-}
+import { useCurrencyFromMap, useTokenFromMapOrNetwork } from '../../lib/hooks/useCurrency'
+import { TokenAmounts, useOnchainBalances } from '../../modules/tokens'
 
 export function useAllTokens(): TokensByAddress {
   return useAtomValue(tokensByAddressAtom)
-}
-
-type BridgeInfo = Record<
-  SupportedChainId,
-  {
-    tokenAddress: string
-    originBridgeAddress: string
-    destBridgeAddress: string
-  }
->
-
-export function useUnsupportedTokens(): { [address: string]: Token } {
-  const { chainId } = useWalletInfo()
-  const listsByUrl = useAllLists()
-  const unsupportedTokensMap = useUnsupportedTokenList()
-  const unsupportedTokens = useTokensFromMap(unsupportedTokensMap, false)
-
-  // checks the default L2 lists to see if `bridgeInfo` has an L1 address value that is unsupported
-  const l2InferredBlockedTokens: typeof unsupportedTokens = useMemo(() => {
-    if (!chainId) {
-      return {}
-    }
-
-    if (!listsByUrl) {
-      return {}
-    }
-
-    const listUrl = getChainInfo(chainId)?.defaultListUrl
-
-    if (!listUrl) {
-      return {}
-    }
-
-    const { current: list } = listsByUrl[listUrl]
-    if (!list) {
-      return {}
-    }
-
-    const unsupportedSet = new Set(Object.keys(unsupportedTokens))
-
-    return list.tokens.reduce((acc, tokenInfo) => {
-      const bridgeInfo = tokenInfo.extensions?.bridgeInfo as unknown as BridgeInfo
-      if (
-        bridgeInfo &&
-        bridgeInfo[SupportedChainId.MAINNET] &&
-        bridgeInfo[SupportedChainId.MAINNET].tokenAddress &&
-        unsupportedSet.has(bridgeInfo[SupportedChainId.MAINNET].tokenAddress)
-      ) {
-        const address = bridgeInfo[SupportedChainId.MAINNET].tokenAddress
-        // don't rely on decimals--it's possible that a token could be bridged w/ different decimals on the L2
-        return { ...acc, [address]: new Token(SupportedChainId.MAINNET, address, tokenInfo.decimals) }
-      }
-      return acc
-    }, {})
-  }, [chainId, listsByUrl, unsupportedTokens])
-
-  return { ...unsupportedTokens, ...l2InferredBlockedTokens }
 }
 
 export function useSearchInactiveTokenLists(
@@ -189,4 +93,32 @@ export function useToken(tokenAddress?: string | null): Token | null | undefined
 export function useCurrency(currencyId?: string | null): Currency | null | undefined {
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
+}
+
+// mimics useAllBalances
+export function useAllTokenBalances(): [TokenAmounts, boolean] {
+  const { account } = useWalletInfo()
+  const allTokens = useAllTokens()
+  // Mod, add favourite tokens to balances
+  const favTokens = useFavouriteTokens()
+
+  const allTokensArray = useMemo(() => {
+    const favTokensObj = favTokens.reduce(
+      (acc, cur: Token) => {
+        acc[cur.address] = cur
+        return acc
+      },
+      {} as {
+        [address: string]: Token
+      }
+    )
+
+    return Object.values({ ...favTokensObj, ...allTokens })
+  }, [allTokens, favTokens])
+
+  const { isLoading, amounts } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
+  return [amounts ?? {}, isLoading]
 }

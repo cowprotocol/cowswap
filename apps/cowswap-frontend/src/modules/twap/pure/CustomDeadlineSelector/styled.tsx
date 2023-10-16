@@ -1,10 +1,12 @@
+import { ButtonSecondary } from '@cowprotocol/ui'
+
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from 'legacy/components/Button'
-
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
 import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'
+
+import { UI } from 'common/constants/theme'
 
 export const ModalWrapper = styled.div`
   display: flex;
@@ -70,18 +72,18 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 
 export const CancelButton = styled(ButtonSecondary)`
   background: transparent;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   border: 1px solid ${({ theme }) => theme.text1};
 
   :hover {
     background: transparent;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     border: 1px solid ${({ theme }) => theme.text1};
   }
 `

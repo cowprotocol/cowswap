@@ -1,16 +1,14 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
+import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import * as Sentry from '@sentry/react'
 import useSWR from 'swr'
-
-import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
-import { isAddress } from 'legacy/utils'
+import { Nullish } from 'types'
 
 import { getTokens } from './api'
-
-import { Nullish } from '../../types'
 
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 

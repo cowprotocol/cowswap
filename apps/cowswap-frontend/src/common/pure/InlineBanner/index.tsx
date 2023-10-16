@@ -1,55 +1,74 @@
 import { ReactNode } from 'react'
 
-import { lighten, darken, transparentize } from 'polished'
-import SVG from 'react-inlinesvg'
-import styled, { useTheme } from 'styled-components/macro' // import useTheme
+import styled from 'styled-components/macro'
 
-import iconInformation from 'legacy/assets/cow-swap/alert-circle.svg'
-import iconAlert from 'legacy/assets/cow-swap/alert.svg'
-import iconDanger from 'legacy/assets/cow-swap/alert.svg'
-import iconSuccess from 'legacy/assets/cow-swap/check.svg'
+import { UI } from 'common/constants/theme'
+import { Icon, IconType } from 'common/pure/Icon'
+import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 
-type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
+export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
-interface BannerConfig {
-  colorKey: Exclude<BannerType, 'savings'>
-  icon?: string
+interface ColorEnums {
+  icon?: IconType
   iconText?: string
+  color: UI
+  bg: string
+  text: string
 }
 
-const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
+const colorEnumsMap: Record<BannerType, ColorEnums> = {
   alert: {
-    icon: iconAlert,
-    colorKey: 'alert',
+    icon: IconType.ALERT,
+    color: UI.COLOR_ALERT,
+    bg: UI.COLOR_ALERT_BG,
+    text: UI.COLOR_ALERT_TEXT,
   },
   information: {
-    icon: iconInformation,
-    colorKey: 'information',
+    icon: IconType.INFORMATION,
+    color: UI.COLOR_INFORMATION,
+    bg: UI.COLOR_INFORMATION_BG,
+    text: UI.COLOR_INFORMATION_TEXT,
   },
   success: {
-    icon: iconSuccess,
-    colorKey: 'success',
+    icon: IconType.SUCCESS,
+    color: UI.COLOR_SUCCESS,
+    bg: UI.COLOR_SUCCESS_BG,
+    text: UI.COLOR_SUCCESS_TEXT,
+  },
+  danger: {
+    icon: IconType.DANGER,
+    color: UI.COLOR_DANGER,
+    bg: UI.COLOR_DANGER_BG,
+    text: UI.COLOR_DANGER_TEXT,
   },
   savings: {
     iconText: '💸',
-    colorKey: 'success',
-  },
-  danger: {
-    icon: iconDanger,
-    colorKey: 'danger',
+    color: UI.COLOR_SUCCESS,
+    bg: UI.COLOR_SUCCESS_BG,
+    text: UI.COLOR_SUCCESS_TEXT,
   },
 }
 
-const Wrapper = styled.span<{ color: string }>`
+function getColorEnums(bannerType: BannerType): ColorEnums {
+  return colorEnumsMap[bannerType] || colorEnumsMap.alert
+}
+
+const Wrapper = styled.span<{
+  colorEnums: ColorEnums
+  borderRadius?: string
+  orientation?: BannerOrientation
+  iconSize?: number
+  padding?: string
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
-  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.1, color) : darken(0.2, color))};
+  background: ${({ colorEnums }) => `var(${colorEnums.bg})`};
+  color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
-  border-radius: 16px;
+  border-radius: ${({ borderRadius = '16px' }) => borderRadius};
   margin: auto;
-  padding: 16px;
+  padding: ${({ padding = '16px' }) => padding};
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -59,29 +78,10 @@ const Wrapper = styled.span<{ color: string }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-flow: column wrap;
+    flex-flow: ${({ orientation = BannerOrientation.Vertical }) =>
+      orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
     width: 100%;
-  }
-
-  > span > svg {
-    --size: 32px;
-    display: block;
-    min-width: var(--size);
-    min-height: var(--size);
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-    stroke: none !important;
-  }
-
-  > span > svg > path {
-    fill: ${({ color }) => color};
-  }
-
-  > span {
-    display: flex;
-    flex-flow: row wrap;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       flex-flow: column wrap;
@@ -93,7 +93,7 @@ const Wrapper = styled.span<{ color: string }>`
     display: flex;
     align-items: center;
     gap: 6px;
-    color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.2, color))};
+    color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   }
 
   > span > p {
@@ -101,7 +101,8 @@ const Wrapper = styled.span<{ color: string }>`
     margin: auto;
     padding: 0;
     width: 100%;
-    text-align: center;
+    text-align: ${({ orientation = BannerOrientation.Vertical }) =>
+      orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
   }
 
   > span > i {
@@ -115,19 +116,46 @@ export type InlineBannerProps = {
   children?: ReactNode
   className?: string
   hideIcon?: boolean
-  type?: BannerType
+  bannerType?: BannerType
+  borderRadius?: string
+  orientation?: BannerOrientation
+  iconSize?: number
+  iconPadding?: string
+  padding?: string
 }
 
-export function InlineBanner({ children, className, hideIcon, type = 'alert' }: InlineBannerProps) {
-  const theme = useTheme()
-  const config = BANNER_CONFIG[type]
-  const color = theme[config.colorKey]
+export function InlineBanner({
+  children,
+  className,
+  hideIcon,
+  bannerType = 'alert',
+  borderRadius,
+  orientation,
+  iconSize,
+  iconPadding,
+  padding,
+}: InlineBannerProps) {
+  const colorEnums = getColorEnums(bannerType)
 
   return (
-    <Wrapper className={className} color={color}>
+    <Wrapper
+      className={className}
+      colorEnums={colorEnums}
+      borderRadius={borderRadius}
+      orientation={orientation}
+      padding={padding}
+    >
       <span>
-        {!hideIcon && config.icon && <SVG src={config.icon} description={type} />}
-        {!hideIcon && config.iconText && <i>{config.iconText}</i>}
+        {!hideIcon && colorEnums.icon && (
+          <Icon
+            image={IconType.ALERT}
+            size={iconSize}
+            color={colorEnums.color}
+            description={bannerType}
+            padding={iconPadding}
+          />
+        )}
+        {!hideIcon && colorEnums.iconText && <i>{colorEnums.iconText}</i>}
         {children}
       </span>
     </Wrapper>

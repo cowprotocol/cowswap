@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ExternalLink } from '@cowprotocol/ui'
 
-import { ExternalLink } from 'legacy/theme'
+import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
 
@@ -74,7 +74,7 @@ export function FallbackHandlerWarning({
   if (isFallbackHandlerSetupAccepted) {
     return (
       <Wrapper>
-        <InlineBanner hideIcon={true} type="information">
+        <InlineBanner hideIcon={true} bannerType="information">
           <CheckboxWrapper>{fallbackHandlerCheckbox}</CheckboxWrapper>
         </InlineBanner>
       </Wrapper>
@@ -82,7 +82,7 @@ export function FallbackHandlerWarning({
   } else {
     return (
       <Wrapper>
-        <InlineBannerWithCheckbox type="alert">
+        <InlineBannerWithCheckbox bannerType="alert">
           <strong>Unsupported Safe detected</strong>
           <p>
             Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for

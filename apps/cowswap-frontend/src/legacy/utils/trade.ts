@@ -1,28 +1,26 @@
+import { NATIVE_CURRENCY_BUY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
+import { formatSymbol, formatTokenAmount, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
   OrderKind,
-  UnsignedOrder,
-  SigningScheme,
   OrderSigningUtils,
+  SigningScheme,
+  SupportedChainId as ChainId,
+  UnsignedOrder,
 } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { orderBookApi } from 'cowSdk'
 
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
-import { isAddress, shortenAddress } from 'legacy/utils/index'
 
 import { AppDataInfo } from 'modules/appData'
 
 import { getTrades, OrderID } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
-import { formatTokenAmount } from 'utils/amountFormat'
-import { formatSymbol } from 'utils/format'
 
 export type PostOrderParams = {
   account: string
@@ -158,6 +156,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     sellAmountBeforeFee,
     orderCreationHash,
     quoteId,
+    appData: { fullAppData },
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
@@ -172,6 +171,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     outputToken: buyToken,
     quoteId,
     class: additionalParams.class,
+    fullAppData,
 
     // Status
     status,
@@ -234,6 +234,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       signature,
       quoteId,
       appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
+      appDataHash: appData.appDataKeccak256,
     },
     { chainId }
   )

@@ -3,14 +3,14 @@ import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig, loadEnv, PluginOption, searchForWorkspaceRoot } from 'vite'
+import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-import * as path from 'path'
+import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
@@ -24,16 +24,6 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
-
-  // expose .env as process.env instead of import.meta since jest does not import meta yet
-  const envWithProcessPrefix = Object.entries(env).reduce((prev, [key, val]) => {
-    return {
-      ...prev,
-      ['process.env.' + key]: JSON.stringify(val),
-    }
-  }, {})
-
   const plugins = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
@@ -81,7 +71,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     define: {
-      ...envWithProcessPrefix,
+      ...getReactProcessEnv(mode),
     },
 
     assetsInclude: ['**/*.md'],
@@ -110,18 +100,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
-        /**
-         * Temporary fix for walletconnect
-         * https://github.com/Uniswap/web3-react/issues/861
-         */
-        '@walletconnect/ethereum-provider': path.resolve(
-          __dirname,
-          '../../node_modules/@walletconnect/ethereum-provider/dist/umd/index.min.js'
-        ),
-        '@walletconnect/universal-provider': path.resolve(
-          __dirname,
-          '../../node_modules/@walletconnect/universal-provider/dist/index.cjs.js'
-        ),
       },
     },
 
@@ -131,14 +109,9 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (id.includes('@1inch')) return '@1inch'
-            if (id.includes('@amplitude')) return '@amplitude'
-            if (id.includes('@cowprotocol')) return '@cowprotocol'
-            if (id.includes('@ethersproject')) return '@ethersproject'
-            if (id.includes('@metamask') || id.includes('elliptic')) return '@metamask'
             if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
-            if (id.includes('@walletconnect')) return '@walletconnect'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3'
           },

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { useWalletInfo } from 'modules/wallet'
+import { getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
 export function useIsWrapOrUnwrap(): boolean {
   const { chainId } = useWalletInfo()

@@ -1,12 +1,11 @@
+import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { parsedQueryString } from '@cowprotocol/common-hooks'
+import { getIsNativeToken, getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { createReducer } from '@reduxjs/toolkit'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { parsedQueryString } from 'legacy/hooks/useParsedQueryString'
 import {
-  Field,
   replaceOnlyTradeRawState,
   replaceSwapState,
   selectCurrency,
@@ -14,12 +13,10 @@ import {
   setRecipientAddress,
   switchCurrencies,
   typeInput,
-} from 'legacy/state/swap/actions'
-
-import { getIsNativeToken } from 'utils/getIsNativeToken'
-import { getIsWrapOrUnwrap } from 'utils/getIsWrapOrUnwrap'
-
+} from './actions'
 import { queryParametersToSwapState } from './utils'
+
+import { Field } from '../types'
 
 export interface SwapState {
   // Mod: added chainId

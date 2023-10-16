@@ -1,31 +1,25 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useSetAtom } from 'jotai'
 
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { useEthFlowContract } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { useEthFlowContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
-import {
-  addInFlightOrderIdAtom,
-  ethFlowInFlightOrderIdsAtom,
-} from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+
+import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
 
-  const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
-  const checkInFlightOrderIdExists = useCallback(
-    (orderId: string) => ethFlowInFlightOrderIds.includes(orderId),
-    [ethFlowInFlightOrderIds]
-  )
+  const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
   const baseContext = getFlowContext({
     baseProps,
@@ -39,7 +33,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     ...baseContext,
     contract,
     addTransaction,
-    checkInFlightOrderIdExists,
+    checkEthFlowOrderExists,
     addInFlightOrderId,
   }
 }

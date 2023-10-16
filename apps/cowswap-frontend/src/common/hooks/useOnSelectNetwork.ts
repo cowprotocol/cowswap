@@ -1,15 +1,14 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getWeb3ReactConnection } from '@cowprotocol/wallet'
+import { switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAddPopup, useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
-
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
 
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 

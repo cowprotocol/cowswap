@@ -1,13 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useTradeQuote } from 'modules/tradeQuote'
-
-import { FractionUtils } from 'utils/fractionUtils'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 

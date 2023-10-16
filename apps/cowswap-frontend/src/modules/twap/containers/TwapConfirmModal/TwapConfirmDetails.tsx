@@ -1,14 +1,14 @@
 import React from 'react'
 
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
-
-import { shortenAddress } from 'legacy/utils'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
-import { useWalletInfo } from 'modules/wallet'
 
 import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'

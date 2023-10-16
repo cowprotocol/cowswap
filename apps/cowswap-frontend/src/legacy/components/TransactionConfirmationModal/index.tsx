@@ -1,23 +1,24 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useCallback, useEffect } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { handleFollowPendingTxPopupAtom } from 'legacy/state/application/atoms'
+import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useSetIsConfirmationModalOpen } from 'modules/swap/state/surplusModal'
-import { useWalletInfo } from 'modules/wallet'
+import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
+import { handleFollowPendingTxPopupAtom } from 'modules/wallet/state/followPendingTxPopupAtom'
 
+import { PermitModal } from 'common/containers/PermitModal'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
+import { TradeAmounts } from 'common/types'
 
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
-import { ConfirmOperationType } from './types'
-
-export * from './types'
 
 export interface ConfirmationModalProps {
   isOpen: boolean
@@ -28,6 +29,8 @@ export interface ConfirmationModalProps {
   pendingText?: ReactNode
   currencyToAdd?: Currency | undefined
   operationType: ConfirmOperationType
+  tradeAmounts?: TradeAmounts | undefined
+  swapConfirmState?: SwapConfirmState | undefined
 }
 
 export function TransactionConfirmationModal({
@@ -39,6 +42,8 @@ export function TransactionConfirmationModal({
   content,
   currencyToAdd,
   operationType,
+  tradeAmounts,
+  swapConfirmState,
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
   const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
@@ -72,7 +77,15 @@ export function TransactionConfirmationModal({
 
   return (
     <CowModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={width}>
-      {attemptingTxn ? (
+      {showPermitModal(swapConfirmState) ? (
+        <PermitModal
+          onDismiss={onDismiss}
+          inputAmount={tradeAmounts?.inputAmount}
+          outputAmount={tradeAmounts?.outputAmount}
+          step={swapConfirmState?.permitSignatureState === 'signed' ? 'submit' : 'approve'}
+          orderType={'Swap'}
+        />
+      ) : attemptingTxn ? (
         <LegacyConfirmationPendingContent
           chainId={chainId}
           operationType={operationType}
@@ -103,4 +116,8 @@ function getWidth(hash: string | undefined, showSurplus: boolean | null): number
     return 850
   }
   return 470
+}
+
+function showPermitModal(swapConfirmState: SwapConfirmState | undefined): boolean {
+  return !!swapConfirmState?.permitSignatureState
 }

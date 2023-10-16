@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -12,10 +13,8 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
@@ -97,15 +96,13 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      <FeatureGuard featureFlag="advancedOrdersEnabled">
-        <TwapSuggestionBanner
-          chainId={chainId}
-          priceImpact={priceImpact}
-          buyingFiatAmount={buyingFiatAmount}
-          tradeUrlParams={tradeUrlParams}
-          sellAmount={trade?.inputAmount.toFixed(trade?.inputAmount?.currency?.decimals || 18)}
-        />
-      </FeatureGuard>
+      <TwapSuggestionBanner
+        chainId={chainId}
+        priceImpact={priceImpact}
+        buyingFiatAmount={buyingFiatAmount}
+        tradeUrlParams={tradeUrlParams}
+        sellAmount={trade?.inputAmount.toFixed(trade?.inputAmount?.currency?.decimals || 18)}
+      />
     </>
   )
 }, genericPropsChecker)

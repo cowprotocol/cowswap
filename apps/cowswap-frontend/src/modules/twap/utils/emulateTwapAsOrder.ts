@@ -22,7 +22,7 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
 
   const creationTime = new Date(item.executedDate || item.submissionDate)
   const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
-  const { executedSellAmount, executedBuyAmount, executedFeeAmount } = executionInfo.info
+  const { executedSellAmount = '0', executedBuyAmount = '0', executedFeeAmount = '0' } = executionInfo?.info || {}
 
   return {
     signingScheme: SigningScheme.EIP1271,

@@ -1,4 +1,4 @@
-import { ExternalLink } from 'legacy/theme'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
@@ -8,7 +8,7 @@ import { InlineBanner } from 'common/pure/InlineBanner'
 export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean }) {
   if (isSafeViaWc) {
     return (
-      <InlineBanner type="information">
+      <InlineBanner bannerType="information">
         <strong>Use Safe web app</strong>
         <p>
           Use the Safe web app for advanced trading. <br />
@@ -19,7 +19,7 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
   }
 
   return (
-    <InlineBanner type="alert">
+    <InlineBanner bannerType="alert">
       <strong>Unsupported wallet detected</strong>
       <p>
         TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?{' '}

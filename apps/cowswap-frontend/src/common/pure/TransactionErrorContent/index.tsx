@@ -1,8 +1,9 @@
+import { ButtonPrimary } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { CloseIcon } from 'legacy/theme'
 
 const Wrapper = styled.div`

@@ -33,6 +33,7 @@ export interface ParsedOrderExecutionData {
 
 export interface ParsedOrder {
   id: string
+  owner: string
   isCancelling: boolean | undefined
   receiver: string | undefined
   inputToken: Token
@@ -47,6 +48,7 @@ export interface ParsedOrder {
   creationTime: Date
   expirationTime: Date
   composableCowInfo?: ComposableCowInfo
+  fullAppData: Order['fullAppData']
 
   executionData: ParsedOrderExecutionData
 }
@@ -94,6 +96,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
 
   return {
     id: order.id,
+    owner: order.owner,
     isCancelling: order.isCancelling,
     inputToken: order.inputToken,
     outputToken: order.outputToken,
@@ -108,6 +111,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     receiver: order.receiver || undefined,
     creationTime,
     expirationTime,
+    fullAppData: order.fullAppData,
     executionData,
   }
 }

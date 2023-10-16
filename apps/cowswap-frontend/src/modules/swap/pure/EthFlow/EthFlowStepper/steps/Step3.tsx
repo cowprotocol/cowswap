@@ -1,17 +1,19 @@
 import React, { useMemo } from 'react'
 
+import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
+import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
+
 import styled from 'styled-components/macro'
 
-import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
-import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
-import Finish from 'legacy/assets/cow-swap/finish.svg'
-import Refund from 'legacy/assets/cow-swap/refund.svg'
+import { UI } from 'common/constants/theme'
 
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   font-weight: 500;
 `
 

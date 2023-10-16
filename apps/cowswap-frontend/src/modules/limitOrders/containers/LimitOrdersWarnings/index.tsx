@@ -1,7 +1,8 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -16,20 +17,21 @@ import {
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
+  BannerOrientation,
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
+  CustomRecipientWarningBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
@@ -103,13 +105,17 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     isSafeViaWc &&
     primaryFormValidation === TradeFormValidation.ApproveRequired
 
+  const { state } = useDerivedTradeState()
+  const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
+
   const isVisible =
     showPriceImpactWarning ||
     rateImpact < 0 ||
     showHighFeeWarning ||
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
-    shouldZeroApprove
+    shouldZeroApprove ||
+    showRecipientWarning
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -135,6 +141,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
+      {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning

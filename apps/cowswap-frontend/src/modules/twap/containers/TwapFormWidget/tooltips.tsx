@@ -1,9 +1,11 @@
+import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import ShieldImage from 'legacy/assets/cow-swap/protection.svg'
-
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+
+import { UI } from 'common/constants/theme'
 
 const IconImage = styled.div`
   display: flex;
@@ -12,7 +14,7 @@ const IconImage = styled.div`
 
   > svg {
     opacity: 0.5;
-    fill: ${({ theme }) => theme.text1};
+    fill: var(${UI.COLOR_TEXT1});
     margin: 0 3px 0 0;
   }
 `

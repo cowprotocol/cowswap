@@ -1,9 +1,9 @@
+import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { getAppData } from 'modules/appData'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -50,6 +50,8 @@ export const outputCurrencyInfoMock: CurrencyInfo = {
 }
 
 export const tradeContextMock: TradeFlowContext = {
+  permitInfo: undefined,
+  generatePermitHook: (() => void 0) as any,
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
@@ -68,7 +70,6 @@ export const tradeContextMock: TradeFlowContext = {
     appData: getAppData(),
   },
   rateImpact: 0,
-  appData: {} as any,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,

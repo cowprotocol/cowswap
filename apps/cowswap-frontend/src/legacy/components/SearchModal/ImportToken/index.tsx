@@ -1,3 +1,5 @@
+import { getEtherscanLink as getExplorerLink } from '@cowprotocol/common-utils'
+import { RowFixed, ExternalLink } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -8,12 +10,10 @@ import styled from 'styled-components/macro'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import { RowFixed } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme/components'
-import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
@@ -48,7 +48,7 @@ const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       position: sticky;
       top: 0;
-      background: ${({ theme }) => theme.bg1};
+      background: var(${UI.COLOR_CONTAINER_BG_01});
     `}
   }
 `

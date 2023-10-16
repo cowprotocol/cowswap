@@ -1,7 +1,9 @@
+import { ButtonPrimary } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
+import { UI } from 'common/constants/theme'
 
 export const BannerWrapper = styled.div`
   display: flex;
@@ -36,7 +38,7 @@ export const ClosedBannerWrapper = styled.div`
     cursor: pointer;
 
     > path {
-      fill: ${({ theme }) => theme.text1};
+      fill: var(${UI.COLOR_TEXT1});
     }
   }
 
@@ -45,7 +47,7 @@ export const ClosedBannerWrapper = styled.div`
   }
 
   &:hover > svg:last-child {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 

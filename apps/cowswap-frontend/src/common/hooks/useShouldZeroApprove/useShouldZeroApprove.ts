@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import { useTokenContract } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { useTokenContract } from 'legacy/hooks/useContract'
 
 import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 

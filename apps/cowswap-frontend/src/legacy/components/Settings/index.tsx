@@ -1,10 +1,11 @@
+import { RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-import { RowFixed } from 'legacy/components/Row'
+import { UI } from 'common/constants/theme'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 
@@ -12,8 +13,8 @@ const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
     border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
-    background-color: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    background-color: var(${UI.COLOR_CONTAINER_BG_01});
+    color: var(${UI.COLOR_TEXT1});
     padding: 0;
     margin: 0;
     top: 36px;
@@ -23,7 +24,7 @@ const Settings = styled(SettingsMod)`
 
   ${RowFixed} {
     > div {
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
       opacity: 0.85;
     }
   }
@@ -42,7 +43,7 @@ const Settings = styled(SettingsMod)`
     &:focus {
       cursor: pointer;
       outline: none;
-      color: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
     }
 
     svg {
@@ -57,7 +58,7 @@ const Settings = styled(SettingsMod)`
 
     &:hover svg > path,
     &:hover svg > circle {
-      stroke: ${({ theme }) => theme.text1};
+      stroke: var(${UI.COLOR_TEXT1});
     }
   }
 

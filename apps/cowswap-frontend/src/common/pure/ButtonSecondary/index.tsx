@@ -1,8 +1,10 @@
 import styled from 'styled-components/macro'
 
-export const ButtonSecondary = styled.button`
-  background: var(--cow-color-lightBlue-opacity-90);
-  color: var(--cow-color-white);
+import { UI } from 'common/constants/theme'
+
+export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: string }>`
+  background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});
+  color: var(${UI.COLOR_LIGHT_BLUE});
   font-size: 12px;
   font-weight: 600;
   border: 0;
@@ -10,12 +12,12 @@ export const ButtonSecondary = styled.button`
   border-radius: 12px;
   position: relative;
   transition: background 0.2s ease-in-out;
-  min-height: 35px;
-  padding: 0 12px;
+  min-height: ${({ minHeight = '35px' }) => minHeight};
+  padding: ${({ padding = '0 12px' }) => padding};
   cursor: pointer;
   white-space: nowrap;
 
   &:hover {
-    background: var(--cow-color-lightBlue-opacity-80);
+    background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_80});
   }
 `

@@ -1,10 +1,10 @@
+import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { isEnoughAmount } from 'utils/isEnoughAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {
@@ -23,8 +23,8 @@ export function getOrderParams(
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder
 ): OrderParams {
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
+  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
 
   const rateInfoParams: RateInfoParams = {
     chainId,

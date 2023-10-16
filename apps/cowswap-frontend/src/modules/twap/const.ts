@@ -1,9 +1,8 @@
+import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
-
-import { USDC } from 'legacy/constants/tokens'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 

@@ -2,20 +2,18 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
+import { atomWithPartialUpdate, resolveENSContentHash } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { nanoid } from '@reduxjs/toolkit'
 import ms from 'ms.macro'
 
-import { MAINNET_PROVIDER } from 'legacy/constants/networks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { fetchTokenList } from 'legacy/state/lists/actions'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
-import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
-import { atomWithPartialUpdate } from 'utils/jotai/atomWithPartialUpdate'
 
 const TOKENS_LIST_ENS_CACHE_TIMEOUT = ms`6h`
 

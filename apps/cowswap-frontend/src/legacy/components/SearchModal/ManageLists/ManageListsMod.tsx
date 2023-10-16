@@ -1,37 +1,35 @@
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { TokenList } from '@uniswap/token-lists'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from '@cowprotocol/analytics'
+import { useListColor, useTheme, useToggle, useOnClickOutside } from '@cowprotocol/common-hooks'
+import { parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
+import { Row, RowBetween, RowFixed, ButtonEmpty, ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { TokenList, Version } from '@uniswap/token-lists'
 
 import { t, Trans } from '@lingui/macro'
 import { CheckCircle, Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
-import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Column, { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
-import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
-import Toggle from 'legacy/components/Toggle'
-import { useListColor } from 'legacy/hooks/useColor'
+import { Toggle } from 'legacy/components/Toggle'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
-import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
-import listVersionLabel from 'legacy/utils/listVersionLabel'
+import { IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
-
+import { UI } from 'common/constants/theme'
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
-import parseENSAddress from 'lib/utils/parseENSAddress'
-import uriToHttp from 'lib/utils/uriToHttp'
 
 import { ListRowProps, RowWrapper, Card } from './index'
+
+function listVersionLabel(version: Version): string {
+  return `v${version.major}.${version.minor}.${version.patch}`
+}
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -53,7 +51,7 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   border-radius: 0.5rem;
   padding: 1rem;
   display: grid;

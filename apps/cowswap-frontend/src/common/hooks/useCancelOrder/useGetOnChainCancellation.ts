@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
-import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'

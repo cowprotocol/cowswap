@@ -1,12 +1,14 @@
 import { CSSProperties } from 'react'
 
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { AutoRow } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import { StyledListLogo } from 'legacy/components/ListLogo'
-import { AutoRow } from 'legacy/components/Row'
+
+import { UI } from 'common/constants/theme'
 
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 
@@ -31,7 +33,7 @@ const Wrapper = styled.div`
   }
 
   ${TokenSection} > svg {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 
   ${TokenSection} ${AutoRow} {
@@ -40,7 +42,7 @@ const Wrapper = styled.div`
   }
 
   ${AutoRow} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     margin: 0;
   }
 

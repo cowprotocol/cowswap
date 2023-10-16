@@ -1,5 +1,6 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -10,23 +11,23 @@ import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable/const/tabs'
 import {
+  CheckboxCheckmark,
   TableHeader,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
-  CheckboxCheckmark,
 } from 'modules/ordersTable/pure/OrdersTableContainer/styled'
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
+import { UI } from 'common/constants/theme'
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -39,7 +40,7 @@ import { getOrderParams } from './utils/getOrderParams'
 
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
 import {
-  getParsedOrderFromItem,
+  getParsedOrderFromTableItem,
   isParsedOrder,
   OrderTableItem,
   tableItemsToOrders,
@@ -150,7 +151,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -205,6 +206,7 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
+  ordersPermitStatus: OrdersPermitStatus
 }
 
 export function OrdersTable({
@@ -218,6 +220,7 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
+  ordersPermitStatus,
 }: OrdersTableProps) {
   const location = useLocation()
   const [isRateInverted, setIsRateInverted] = useState(false)
@@ -260,14 +263,14 @@ export function OrdersTable({
   }, [showOrdersExplainerBanner])
 
   const cancellableOrders = useMemo(
-    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromItem(item))),
+    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
     [ordersPage]
   )
 
   const allOrdersSelected = useMemo(() => {
     if (!cancellableOrders.length) return false
 
-    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromItem(item).id])
+    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromTableItem(item).id])
   }, [cancellableOrders, selectedOrdersMap])
 
   const getPageUrl = useCallback((index: number) => buildOrdersTableUrl(location, { pageNumber: index }), [location])
@@ -399,7 +402,7 @@ export function OrdersTable({
 
           <Rows>
             {ordersPage.map((item) => {
-              const { inputToken, outputToken } = getParsedOrderFromItem(item)
+              const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
               const spotPrice = getSpotPrice({
                 chainId: chainId as SupportedChainId,
                 sellTokenAddress: inputToken.address,
@@ -408,6 +411,10 @@ export function OrdersTable({
 
               if (isParsedOrder(item)) {
                 const order = item
+
+                const orderParams = getOrderParams(chainId, balancesAndAllowances, order)
+
+                const hasValidPendingPermit = ordersPermitStatus[order.id]
 
                 return (
                   <OrderRow
@@ -418,10 +425,11 @@ export function OrdersTable({
                     order={order}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
-                    orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                    orderParams={orderParams}
                     isRateInverted={isRateInverted}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
+                    hasValidPendingPermit={hasValidPendingPermit}
                   />
                 )
               } else {

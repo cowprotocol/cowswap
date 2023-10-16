@@ -1,19 +1,17 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useIsSafeWallet, walletConnectConnectionV2 } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { useIsSafeWallet } from 'modules/wallet'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-
-import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 import { pollUntil } from 'common/utils/pollUntil'
 
 import { useApproveCallback } from './useApproveCallback'
+import { useSafeApiKit } from './useSafeApiKit'
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 import { zeroApprovalState } from '../state/useZeroApprovalState'
@@ -46,7 +44,7 @@ export function useZeroApprove(currency: Currency) {
   const amountToApprove = CurrencyAmount.fromRawAmount(currency, 0)
   const approveCallback = useApproveCallback(amountToApprove, spender)
   const safeApiKit = useSafeApiKit()
-  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(async () => {

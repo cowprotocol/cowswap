@@ -1,12 +1,14 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonStar } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { ButtonStar } from 'legacy/components/Button'
-import useTheme from 'legacy/hooks/useTheme'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
+
+import { UI } from 'common/constants/theme'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;
@@ -38,7 +40,7 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
   return (
     <StyledButtonStar
       stroke={theme.text1}
-      fill={isFavouriteToken ? theme.text1 : undefined}
+      fill={isFavouriteToken ? `var(${UI.COLOR_TEXT1})` : undefined}
       onClick={handleFavouriteToken}
     />
   )

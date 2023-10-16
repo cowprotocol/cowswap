@@ -1,10 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
-import { Field } from 'legacy/state/swap/actions'
+import { Field } from 'legacy/state/types'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -14,8 +15,6 @@ import { TradeWidgetActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
-
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()

@@ -1,6 +1,7 @@
-import { useAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
+
+import { TokenSymbol } from '@cowprotocol/ui'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -15,10 +16,8 @@ import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
@@ -38,7 +37,6 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
-  const { partialFillsEnabled } = useFeatureFlags()
 
   const { amount: inputAmount } = inputCurrencyInfo
   const { amount: outputAmount } = outputCurrencyInfo
@@ -83,7 +81,6 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             settingsState={settingsState}
             executionPrice={executionPrice}
             partiallyFillableOverride={partiallyFillableOverride}
-            featurePartialFillsEnabled={partialFillsEnabled}
           />
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>

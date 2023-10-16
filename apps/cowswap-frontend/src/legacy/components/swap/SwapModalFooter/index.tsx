@@ -1,18 +1,19 @@
 import { ReactNode } from 'react'
 
+import { ButtonSize, ButtonError, AutoRow, RowBetween, RowFixed } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { ButtonError } from 'legacy/components/Button'
-import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
 import { SwapCallbackError } from 'legacy/components/swap/styleds'
-import { ButtonSize } from 'legacy/theme/enum'
+
+import { UI } from 'common/constants/theme'
 
 const Wrapper = styled.div`
   ${RowBetween} > div,
   ${RowFixed} > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

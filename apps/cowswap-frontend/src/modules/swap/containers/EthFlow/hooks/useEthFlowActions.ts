@@ -2,17 +2,18 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { useWalletInfo } from 'modules/wallet'
 
 import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
 
+import { useDerivedSwapInfo, useSwapActionHandlers } from '../../../hooks/useSwapState'
 import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {

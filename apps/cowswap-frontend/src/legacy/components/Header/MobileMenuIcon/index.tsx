@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?: number; lineSize?: number }>`
   z-index: 102;
   display: flex;
@@ -10,7 +12,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   height: ${({ height = 18 }) => `${height}px`};
 
   span {
-    background-color: ${({ theme }) => theme.text1};
+    background-color: var(${UI.COLOR_TEXT1});
     border-radius: 3px;
     height: ${({ lineSize = 2 }) => `${lineSize}px`};
     position: absolute;

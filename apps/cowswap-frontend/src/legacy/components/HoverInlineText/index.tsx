@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import styled from 'styled-components/macro'
+import { Tooltip } from '@cowprotocol/ui'
 
-import Tooltip from 'legacy/components/Tooltip'
+import styled from 'styled-components/macro'
 
 export const TextWrapper = styled.span<{
   margin: boolean

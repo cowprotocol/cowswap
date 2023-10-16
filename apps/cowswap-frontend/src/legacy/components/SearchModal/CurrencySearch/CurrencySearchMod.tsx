@@ -1,5 +1,10 @@
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { searchByAddressAnalytics } from '@cowprotocol/analytics'
+import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { Row } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { t, Trans } from '@lingui/macro'
@@ -8,27 +13,21 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
-import Row /* RowBetween , RowFixed */ from 'legacy/components/Row'
 import CommonBases from 'legacy/components/SearchModal/CommonBases'
 import CurrencyList from 'legacy/components/SearchModal/CurrencyList'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'legacy/components/SearchModal/styleds'
-import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'legacy/hooks/Tokens'
-import useDebounce from 'legacy/hooks/useDebounce'
-import useNetworkName from 'legacy/hooks/useNetworkName'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
-import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+import {
+  useAllTokenBalances,
+  useAllTokens,
+  useIsUserAddedToken,
+  useSearchInactiveTokenLists,
+  useToken,
+} from 'legacy/hooks/Tokens'
 import { ButtonText, CloseIcon, ThemedText } from 'legacy/theme'
-import { isAddress } from 'legacy/utils'
 
-import { useWalletInfo } from 'modules/wallet'
-
+import { UI } from 'common/constants/theme'
 import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
@@ -42,7 +41,7 @@ export const Footer = styled.div`
   padding: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
 `
 
 export interface CurrencySearchProps {
@@ -207,7 +206,7 @@ export function CurrencySearch({
   }, [])
 
   return (
-    <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
+    <>
       <ContentWrapper>
         <PaddedColumn style={{ padding: 0 }} gap="16px">
           <PaddedRow>
@@ -287,6 +286,6 @@ export function CurrencySearch({
           </Row>
         </Footer>
       </ContentWrapper>
-    </Trace>
+    </>
   )
 }

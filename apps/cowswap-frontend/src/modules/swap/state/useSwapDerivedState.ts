@@ -3,14 +3,16 @@ import { useEffect } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Field } from 'legacy/state/swap/actions'
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
+import { Field } from 'legacy/state/types'
 
+import { TradeType } from 'modules/trade'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
+
+import { useDerivedSwapInfo, useSwapState } from '../hooks/useSwapState'
 
 export function useSwapDerivedState(): SwapDerivedState {
   return useAtomValue(swapDerivedStateAtom)
@@ -48,6 +50,7 @@ export function useFillSwapDerivedState() {
     recipient,
     recipientAddress,
     orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
+    tradeType: TradeType.SWAP,
   })
 
   useEffect(() => {

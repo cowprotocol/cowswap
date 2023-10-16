@@ -1,7 +1,6 @@
+import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
 

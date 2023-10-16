@@ -1,17 +1,19 @@
+import { getChainInfo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AutoRow } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AutoRow } from 'legacy/components/Row'
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { ExternalLink, HideSmall } from 'legacy/theme'
+import { HideSmall } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
+import { UI } from 'common/constants/theme'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -74,19 +76,19 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
   ${BodyText},
   ${StyledArrowUpRight} {
-    color: ${({ theme }) => theme.text2};
-    stroke: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
+    stroke: var(${UI.COLOR_TEXT2});
     text-decoration: none;
     transition: transform 0.2s ease-in-out, stroke 0.2s ease-in-out, color 0.2s ease-in-out;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
 
     ${BodyText},
     ${StyledArrowUpRight} {
-      color: ${({ theme }) => theme.text1};
-      stroke: ${({ theme }) => theme.text1};
+      color: var(${UI.COLOR_TEXT1});
+      stroke: var(${UI.COLOR_TEXT1});
       transform: rotate(0);
     }
 

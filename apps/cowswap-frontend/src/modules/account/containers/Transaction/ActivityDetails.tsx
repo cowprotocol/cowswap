@@ -1,10 +1,12 @@
 import { ReactNode } from 'react'
 
+import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
+import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { useENS } from '@cowprotocol/ens'
+import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { V_COW, COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
@@ -12,25 +14,33 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { Icon } from 'common/pure/Icon'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import {
+  useHideReceiverWalletBanner,
+  useIsReceiverWalletBannerHidden,
+} from 'common/state/receiverWalletBannerVisibility'
 
 import { StatusDetails } from './StatusDetails'
 import {
+  ActivityVisual,
+  CreationTimeText,
+  FiatWrapper,
+  IconType,
+  StyledFiatAmount,
   Summary,
   SummaryInner,
   SummaryInnerRow,
-  TransactionInnerDetail,
   TextAlert,
+  TransactionInnerDetail,
   TransactionState as ActivityLink,
-  CreationTimeText,
-  ActivityVisual,
-  StyledFiatAmount,
-  FiatWrapper,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -171,6 +181,12 @@ export function ActivityDetails(props: {
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
+  const { name: receiverEnsName } = useENS(order?.receiver)
+
+  // Check if Custom Recipient Warning Banner should be visible
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
+  const hideCustomRecipientWarning = useHideReceiverWalletBanner()
+
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
@@ -247,8 +263,19 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId]
   }
 
+  const isCustomRecipient = Boolean(order?.receiver && order.owner !== order.receiver)
+
   return (
     <>
+      {/* Warning banner if custom recipient */}
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && (
+        <CustomRecipientWarningBanner
+          borderRadius={'12px 12px 0 0'}
+          orientation={BannerOrientation.Horizontal}
+          onDismiss={() => hideCustomRecipientWarning(id)}
+        />
+      )}
+
       <Summary>
         <span>
           {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
@@ -300,6 +327,23 @@ export function ActivityDetails(props: {
                   </>
                 )}
               </SummaryInnerRow>
+
+              {order && isCustomRecipient && (
+                <SummaryInnerRow>
+                  <b>Recipient:</b>
+                  <i>
+                    {isCustomRecipientWarningBannerVisible && (
+                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                    )}
+                    <ExternalLink
+                      href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
+                    >
+                      {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
+                    </ExternalLink>
+                  </i>
+                </SummaryInnerRow>
+              )}
+
               {surplusAmount?.greaterThan(0) && (
                 <SummaryInnerRow>
                   <b>Surplus</b>

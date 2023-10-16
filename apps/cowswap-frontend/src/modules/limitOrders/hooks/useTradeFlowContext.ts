@@ -1,22 +1,24 @@
 import { useAtomValue } from 'jotai'
 
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useGeneratePermitHook, useIsTokenPermittable } from 'modules/permit'
+import { useEnoughBalanceAndAllowance } from 'modules/tokens'
+import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
@@ -32,7 +34,15 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const { partialFillsEnabled } = useFeatureFlags()
+  const permitInfo = useIsTokenPermittable(state.inputCurrency, TradeType.LIMIT_ORDER)
+
+  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
+    account,
+    amount: state.slippageAdjustedSellAmount || undefined,
+    checkAllowanceAddress,
+  })
+  const generatePermitHook = useGeneratePermitHook()
 
   if (
     !chainId ||
@@ -56,8 +66,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
   const quoteId = quoteState.response?.id || undefined
 
-  // Depends on the feature flag to allow partial fills or not
-  const partiallyFillable = partialFillsEnabled && settingsState.partialFillsEnabled
+  const partiallyFillable = settingsState.partialFillsEnabled
 
   return {
     chainId,
@@ -66,8 +75,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
-    appData,
     rateImpact,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
+    generatePermitHook,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

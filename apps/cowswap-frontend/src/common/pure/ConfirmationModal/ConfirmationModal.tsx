@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { ContentWrapper, Modal } from 'common/pure/Modal'
 
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
@@ -10,7 +11,7 @@ import { ConfirmedButton } from '../ConfirmedButton'
 const ModalContentWrapper = styled(ContentWrapper)`
   flex: 1;
   padding: 1.5rem;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   border-radius: 1.5rem;
 `
 
@@ -20,7 +21,7 @@ const Description = styled.p`
 `
 
 const Warning = styled.strong`
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 `
 
 export interface ConfirmationModalProps {

@@ -1,26 +1,28 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 
+import {
+  showExpertModeConfirmationAnalytics,
+  toggleExpertModeAnalytics,
+  toggleRecepientAddressAnalytics,
+} from '@cowprotocol/analytics'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { RowBetween, RowFixed } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { Settings } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import {
-  showExpertModeConfirmationAnalytics,
-  toggleExpertModeAnalytics,
-  toggleRecepientAddressAnalytics,
-} from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
-import Toggle from 'legacy/components/Toggle'
+import { Toggle } from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
 import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { SettingsTabProp } from './index'
@@ -30,7 +32,7 @@ export const StyledMenuIcon = styled(Settings)`
   width: 20px;
 
   > * {
-    stroke: ${({ theme }) => theme.text2};
+    stroke: var(${UI.COLOR_TEXT2});
   }
 
   :hover {

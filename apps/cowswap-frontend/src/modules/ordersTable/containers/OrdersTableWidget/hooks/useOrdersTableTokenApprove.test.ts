@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { WETH_GOERLI } from '@cowprotocol/common-const'
 
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+import { renderHook } from '@testing-library/react-hooks'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 

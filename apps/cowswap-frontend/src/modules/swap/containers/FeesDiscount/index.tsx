@@ -1,14 +1,17 @@
+import { AutoRow } from '@cowprotocol/ui'
+import { MouseoverTooltipContent } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { SUBSIDY_INFO_MESSAGE } from 'legacy/components/CowSubsidyModal/constants'
-import { AutoRow } from 'legacy/components/Row'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
+
+import { UI } from 'common/constants/theme'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
@@ -16,9 +19,9 @@ interface FeesDiscountProps extends BoxProps {
 
 const DarkSpan = styled.span`
   padding: 2px 8px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
   border-radius: 5px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {

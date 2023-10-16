@@ -1,11 +1,8 @@
 import { SetStateAction } from 'jotai'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { COW, GNO } from '@cowprotocol/common-const'
+import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { COW, GNO } from 'legacy/constants/tokens'
 
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -19,6 +16,8 @@ const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const tradeContext: TradeFlowContext = {
+  permitInfo: undefined,
+  generatePermitHook: () => Promise.resolve(undefined),
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
@@ -37,7 +36,6 @@ const tradeContext: TradeFlowContext = {
     appData: getAppData(),
   },
   rateImpact: 0,
-  appData: {} as any,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
@@ -63,7 +61,6 @@ const Fixtures = {
       executionPrice={null}
       limitRateState={initLimitRateState()}
       partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
-      featurePartialFillsEnabled
     />
   ),
 }

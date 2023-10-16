@@ -1,17 +1,18 @@
+import { UNSUPPORTED_LIST_URLS } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
+import { Row, RowFixed, RowBetween } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TokenList } from '@uniswap/token-lists'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonPrimary } from 'legacy/components/Button'
 import CardUni from 'legacy/components/Card'
-import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { TextDot } from 'legacy/components/SearchModal/styleds'
-import { UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
 
-import { useWalletInfo } from 'modules/wallet'
+import { UI } from 'common/constants/theme'
 
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 
@@ -33,12 +34,12 @@ const Wrapper = styled.div`
 
     svg > path,
     svg > circle {
-      stroke: ${({ theme }) => theme.text1};
+      stroke: var(${UI.COLOR_TEXT1});
     }
   }
 
   ${PopoverContainer} {
-    background: ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_CONTAINER_BG_01});
   }
 `
 
@@ -54,18 +55,18 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 
   ${Row}, ${RowFixed}, ${RowBetween} {
     > div {
-      color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
+      color: ${({ active, theme }) => (active ? `var(${UI.COLOR_TEXT1})` : theme.text2)};
     }
   }
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
 
   ${Row},
   ${Row} > div > div,
   ${Row} > div > div > div {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${Row} > img {
@@ -76,7 +77,7 @@ export const Card = styled(CardUni)`
   }
 
   ${TextDot} {
-    background: ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_TEXT1});
   }
 
   ${ButtonPrimary} {

@@ -1,18 +1,17 @@
 import React from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
+import { FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import useTheme from 'legacy/hooks/useTheme'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
-
-import { FiatAmount } from 'common/pure/FiatAmount'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -52,7 +51,7 @@ const FeeAmountAndFiat = styled.span`
   }
 `
 
-export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
+export function FeeInformationTooltip(props: FeeInformationTooltipProps) {
   const { trade, label, amountAfterFees, type, showHelper, fiatValue, showFiat = false, allowsOffchainSigning } = props
 
   const theme = useTheme()

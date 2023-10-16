@@ -1,16 +1,10 @@
 import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import {
-  ClassifiedUserClaims,
-  useClaimDispatchers,
-  useClaimState,
-  useClassifiedUserClaims,
-} from 'legacy/state/claim/hooks'
-import { ClaimInfo } from 'legacy/state/claim/reducer'
-
-import { useWalletInfo } from 'modules/wallet'
+import { ClassifiedUserClaims, useClaimDispatchers, useClaimState, useClassifiedUserClaims } from './hooks'
+import { ClaimInfo } from './reducer'
 
 export default function Updater() {
   const { chainId } = useWalletInfo()

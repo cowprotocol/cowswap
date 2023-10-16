@@ -1,99 +1,37 @@
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-// eslint-disable-next-line no-restricted-imports
-import { t } from '@lingui/macro'
-import { transparentize } from 'polished'
+import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { LightGreyCard } from 'legacy/components/Card'
-import Column from 'legacy/components/Column'
-import { RowFixed } from 'legacy/components/Row'
 import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-import { StyledLogo } from 'common/pure/CurrencyLogo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-
 import CurrencyListMod, { StyledBalanceText, TagContainer } from './CurrencyListMod'
-import { Tag as TagMod } from './styled'
+import { Wrapper, Tag, TagLink } from './styled'
 
-const UNSUPPORTED_TOKEN_TAG = [
-  {
+enum Tags {
+  UNSUPPORTED = '0',
+  GAS_FREE = '1',
+}
+
+const TOKEN_TAGS: Record<Tags, TagInfo> = {
+  [Tags.UNSUPPORTED]: {
     name: 'Unsupported',
     description:
       'This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.',
     id: '0',
   },
-]
-
-const Tag = styled(TagMod)<{ tag?: TagInfo }>`
-  // Todo: Prevent usage of !important
-  background: ${({ tag, theme }) => (tag?.id === '0' ? transparentize(0.85, theme.danger) : theme.grey1)};
-  color: ${({ tag, theme }) => (tag?.id === '0' ? theme.danger : theme.text1)}!important;
-  max-width: 6.1rem;
-`
-
-const TagLink = styled(Tag)`
-  display: flex;
-  align-items: center;
-  font-size: x-small;
-  a {
-    color: inherit;
-    font-weight: bold;
-  }
-`
-
-const Wrapper = styled.div`
-  ${Column} {
-    > div {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 220px;
-      width: 100%;
-
-      // Token symbol name
-      &:first-of-type {
-        color: ${({ theme }) => theme.text1};
-      }
-
-      // Token full name
-      &:last-of-type {
-        color: ${({ theme }) => theme.text2};
-        font-weight: 400;
-      }
-
-      ${({ theme }) => theme.mediaWidth.upToSmall`
-        max-width: 140px;
-      `};
-    }
-  }
-
-  ${StyledLogo} {
-    height: 36px;
-    width: 36px;
-    border-radius: 36px;
-  }
-
-  ${TagMod} {
-    color: ${({ theme }) => theme.text2};
-  }
-
-  ${TagLink} {
-    color: ${({ theme }) => theme.text1};
-  }
-
-  ${LightGreyCard} {
-    background: ${({ theme }) => theme.bg1};
-  }
-
-  ${LightGreyCard} ${RowFixed} > div {
-    color: ${({ theme }) => theme.text1};
-  }
-`
+  [Tags.GAS_FREE]: {
+    name: 'Gas-free approval',
+    icon: ICON_GAS_FREE,
+    description: 'This token can be approved without spending gas, using the token Permit.',
+    id: '1',
+  },
+}
 
 export const MenuItem = styled(MenuItemMod)`
   &:hover {
@@ -101,53 +39,46 @@ export const MenuItem = styled(MenuItemMod)`
   }
 `
 
-function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[]; bg?: string }) {
-  const tag = tags[0]
-  return (
-    <TagContainer>
-      <MouseoverTooltip text={tag.description}>
-        <Tag tag={tag} key={tag.id}>
-          {tag.name}
-        </Tag>
-      </MouseoverTooltip>
-      {tags.length > 1 ? (
-        <MouseoverTooltip
-          text={tags
-            .slice(1)
-            .map(({ name, description }) => t`${name}: ${description}`)
-            .join('; \n')}
-        >
-          <Tag>...</Tag>
-        </MouseoverTooltip>
-      ) : null}
-      {children}
-    </TagContainer>
-  )
-}
+function TokenTags({ isUnsupported, isPermitCompatible }: { isUnsupported: boolean; isPermitCompatible?: boolean }) {
+  const tagsToShow: TagInfo[] = []
 
-function TokenTags({ /* currency, */ isUnsupported }: { /* currency: Currency; */ isUnsupported: boolean }) {
   if (isUnsupported) {
-    return (
-      <TagDescriptor tags={UNSUPPORTED_TOKEN_TAG}>
+    tagsToShow.push(TOKEN_TAGS[Tags.UNSUPPORTED])
+  } else if (isPermitCompatible) {
+    tagsToShow.push(TOKEN_TAGS[Tags.GAS_FREE])
+  }
+
+  if (tagsToShow.length === 0) {
+    return <span />
+  }
+
+  return (
+    <TagDescriptor tags={tagsToShow}>
+      {isUnsupported && (
         <TagLink>
           <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={(e) => e.stopPropagation()}>
             FAQ
           </HashLink>
         </TagLink>
-      </TagDescriptor>
-    )
-  }
+      )}
+    </TagDescriptor>
+  )
+}
 
-  return <span /> // MOD: return only UnsupportedToken tags
-
-  /* if (!(currency instanceof WrappedTokenInfo)) {
-    return <span />
-  }
-
-  const tags = currency.tags
-  if (!tags || tags.length === 0) return <span />
-
-  return <TagDescriptor tags={tags} /> */
+function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[] }) {
+  return (
+    <TagContainer>
+      {tags.map((tag) => (
+        <MouseoverTooltip key={tag.id} text={tag.description}>
+          <Tag tag={tag}>
+            {tag.icon ? <img src={tag.icon} alt={tag.name} /> : null}
+            {tag.name}
+          </Tag>
+        </MouseoverTooltip>
+      ))}
+      {children}
+    </TagContainer>
+  )
 }
 
 export function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {

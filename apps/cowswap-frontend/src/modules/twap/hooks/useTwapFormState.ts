@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
+import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useFallbackHandlerVerification } from './useFallbackHandlerVerification'
 

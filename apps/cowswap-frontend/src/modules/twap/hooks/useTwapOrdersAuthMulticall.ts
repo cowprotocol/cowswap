@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { ComposableCoW } from '@cowswap/abis'
+import { ComposableCoW } from '@cowprotocol/abis'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'

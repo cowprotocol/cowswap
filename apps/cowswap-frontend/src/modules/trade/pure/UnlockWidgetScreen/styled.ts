@@ -1,6 +1,8 @@
 import { transparentize, darken } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
@@ -10,7 +12,7 @@ export const Container = styled.div`
 export const TitleSection = styled.div`
   text-align: center;
   font-size: 20px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   margin: 24px auto 42px;
 
   > h3 {

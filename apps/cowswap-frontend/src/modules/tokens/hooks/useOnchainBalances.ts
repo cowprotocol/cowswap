@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 
-import { Erc20Interface, Erc20Abi } from '@cowswap/abis'
+import { Erc20Interface, Erc20Abi } from '@cowprotocol/abis'
+import { isAddress } from '@cowprotocol/common-utils'
 import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
-
-import { isAddress } from 'legacy/utils'
 
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 

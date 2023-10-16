@@ -1,13 +1,14 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useMachineTimeMs } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import ms from 'ms.macro'
 
-import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import { Order } from 'legacy/state/orders/actions'
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from 'modules/wallet'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
@@ -27,10 +28,13 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
     if (!refresher) return []
     if (!tokensByAddress) return []
 
-    return allTwapOrders
-      .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-      .map((order) => {
-        return mapTwapOrderToStoreOrder(order, tokensByAddress)
-      })
+    return allTwapOrders.reduce<Order[]>((acc, order) => {
+      if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
+        return acc
+      }
+
+      acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
+      return acc
+    }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
 }

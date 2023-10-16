@@ -1,24 +1,20 @@
 import { useCallback, useMemo } from 'react'
 
+import { V_COW } from '@cowprotocol/common-const'
+import { useVCowContract } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import JSBI from 'jsbi'
-
-import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
-import { V_COW, COW } from 'legacy/constants/tokens'
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { useVCowContract } from 'legacy/hooks/useContract'
-import { AppState } from 'legacy/state'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
-
-import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
+import { CallStateResult as Result, useSingleCallResult } from 'lib/hooks/multicall'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
+
+import { APPROVE_GAS_LIMIT_DEFAULT } from '../../hooks/useApproveCallback/useApproveCallbackMod'
+import { useTransactionAdder } from '../enhancedTransactions/hooks'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { AppState } from '../index'
+import { ConfirmOperationType } from '../types'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -155,50 +151,4 @@ export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
  */
 export function useSwapVCowStatus() {
   return useAppSelector((state: AppState) => state.cowToken.swapVCowStatus)
-}
-
-/**
- * Hook that returns COW balance
- */
-export function useCowBalance() {
-  const { chainId, account } = useWalletInfo()
-  const cowToken = chainId ? COW[chainId] : undefined
-  return useTokenBalance(account || undefined, cowToken)
-}
-
-/**
- * Hook that returns combined vCOW + COW balance + vCow from locked GNO
- */
-export function useCombinedBalance() {
-  const { chainId, account } = useWalletInfo()
-  const { total: vCowBalance } = useVCowData()
-  // const { allocated, claimed } = useCowFromLockedGnoBalances()
-  const cowBalance = useCowBalance()
-
-  // const lockedGnoBalance = useMemo(() => {
-  //   if (!allocated || !claimed) {
-  //     return
-  //   }
-
-  //   return JSBI.subtract(allocated.quotient, claimed.quotient)
-  // }, [allocated, claimed])
-
-  return useMemo(() => {
-    let tmpBalance = JSBI.BigInt(0)
-
-    const isLoading = !!(account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance))
-
-    const cow = COW[chainId]
-
-    if (account) {
-      if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
-      // if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
-      if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
-    }
-
-    // TODO: check COW vs vCOW
-    const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
-
-    return { balance, isLoading }
-  }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account])
 }

@@ -1,11 +1,14 @@
+import { ButtonSecondary } from '@cowprotocol/ui'
+import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from 'legacy/components/Button'
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import { ExternalLink, StyledLink } from 'legacy/theme'
+
+import { UI } from 'common/constants/theme'
 
 import {
   StatusLabelWrapper,
@@ -82,7 +85,7 @@ export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolea
   font-size: 0.825rem;
   display: flex;
   :hover {
-    color: ${({ theme }) => theme.text2};
+    color: var(${UI.COLOR_TEXT2});
   }
 `
 
@@ -127,7 +130,7 @@ export const WalletNameAddress = styled.div`
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   padding: 0;
   height: 100%;
   margin: 0 24px;
@@ -141,7 +144,7 @@ export const Wrapper = styled.div`
   ${AddressLink},
   ${CopyIcon},
   ${WalletAction} {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     opacity: 0.85;
     transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
     margin: auto;
@@ -168,7 +171,7 @@ export const Wrapper = styled.div`
     margin: 0 0 0 8px;
     align-self: center;
     font-size: 21px;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${WalletName} {
@@ -266,7 +269,7 @@ export const InfoCard = styled.div`
   justify-content: space-between;
   border-radius: 16px;
   padding: 24px;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_GREY});
 
   &:not(:first-child) {
     margin: 24px 0;
@@ -282,7 +285,7 @@ export const InfoCard = styled.div`
 `
 
 export const AccountSection = styled.div`
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
   padding: 0;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
 `
@@ -290,7 +293,7 @@ export const AccountSection = styled.div`
 export const AccountGroupingRow = styled.div`
   justify-content: space-between;
   align-items: center;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
 
   div {
     ${({ theme }) => theme.flexRowNoWrap}
@@ -312,7 +315,7 @@ export const AccountGroupingRow = styled.div`
 
 export const NoActivityMessage = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.text1};
+  color: var(${UI.COLOR_TEXT1});
   width: 100%;
   padding: 24px 0 0;
   text-align: center;
@@ -329,7 +332,7 @@ export const LowerSection = styled.div`
 
   > span {
     display: flex;
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     justify-content: space-between;
     padding: 0 0 12px;
 
@@ -367,7 +370,7 @@ export const LowerSection = styled.div`
   }
 
   > span > ${StyledLink} {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
     text-decoration: underline;
     font-size: 14px;
 
@@ -448,8 +451,8 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => theme.text1};
+  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  color: var(${UI.COLOR_TEXT1});
   padding: 6px 8px;
   font-size: 13px;
   margin: 0;
@@ -532,7 +535,7 @@ export const SurplusCardWrapper = styled.div`
   }
 
   ${InfoCard} > div > span > p {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 
   ${InfoCard} > div > span > b {
@@ -584,7 +587,7 @@ export const WalletIconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(--cow-color-text1);
+    --color: var(${UI.COLOR_TEXT1});
     fill: var(--color);
     stroke: var(--color);
     stroke-width: 0.5px;
@@ -592,8 +595,8 @@ export const WalletIconWrapper = styled.div`
 `
 
 interface WalletSelectorProps {
-  isHardWareWallet?: boolean;
-  onClick?: () => void;
+  isHardWareWallet?: boolean
+  onClick?: () => void
 }
 
 export const WalletSelector = styled.div<WalletSelectorProps>`
@@ -606,8 +609,8 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
   ${({ isHardWareWallet }) =>
     isHardWareWallet &&
     `
-    cursor: pointer; 
-    border: 1px solid var(--cow-color-text1-opacity-25);
+    cursor: pointer;
+    border: 1px solid var(${UI.COLOR_TEXT1_OPACITY_25});
     background: transparent;
     padding: 6px 10px;
 
@@ -618,14 +621,14 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
       height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-top: 4px solid var(--cow-color-text1);
+      border-top: 4px solid var(${UI.COLOR_TEXT1});
       margin-left: 8px;
       opacity: 0.5;
       transition: opacity 0.2s ease-in-out;
     }
 
     &:hover {
-      background: var(--cow-color-text1-opacity-25);
+      background: var(${UI.COLOR_TEXT1_OPACITY_25});
     }
 
     &:hover::after {

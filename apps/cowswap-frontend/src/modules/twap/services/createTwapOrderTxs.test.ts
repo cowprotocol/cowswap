@@ -1,8 +1,6 @@
+import { COW, WETH_GOERLI } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { COW } from 'legacy/constants/tokens'
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
@@ -12,6 +10,8 @@ import { createTwapOrderTxs } from './createTwapOrderTxs'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
+
+jest.mock('modules/permit')
 
 const APP_DATA_HASH = getAppData().appDataKeccak256
 

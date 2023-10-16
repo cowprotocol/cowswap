@@ -5,9 +5,9 @@ import { Token } from '@uniswap/sdk-core'
 
 import { createAction } from '@reduxjs/toolkit'
 
-import { SerializedToken } from 'legacy/state/user/types'
-
 import { ComposableCowInfo } from 'common/types'
+
+import { SerializedToken } from '../user/types'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -59,6 +59,10 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
 
   // Additional information from the order available in the API
   apiAdditionalInfo?: OrderInfoApi
+  // De-normalizing it as this is known at order placement time as `appData`,
+  // but when returned from the api is replaced with the `appDataHash`
+  // See this order response for example https://barn.api.cow.fi/goerli/api/v1/orders/0xc170856a42f38ba07a7af3ea8f299ea724ec0aa22445eb741cbad7f9dd4fcda05b0abe214ab7875562adee331deff0fe1912fe4265269bb1
+  fullAppData?: EnrichedOrder['fullAppData']
 
   // Wallet specific
   presignGnosisSafeTxHash?: string // Gnosis Safe tx

@@ -1,20 +1,21 @@
 import { useState } from 'react'
 
+import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { ButtonEmpty } from '@cowprotocol/ui'
+import { AutoRow, RowBetween } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { ButtonEmpty } from 'legacy/components/Button'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow, RowBetween } from 'legacy/components/Row'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
-import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
-import { getEtherscanLink } from 'legacy/utils'
+import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
-import { useWalletInfo } from 'modules/wallet'
-
+import { UI } from 'common/constants/theme'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Modal } from 'common/pure/Modal'
 
@@ -28,7 +29,7 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
   max-width: 400px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
   background-color: ${({ theme }) => theme.advancedBG};
   z-index: ${Z_INDEX.deprecated_zero};
 

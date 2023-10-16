@@ -53,6 +53,7 @@ const orderActions: OrderActions = {
 
 export default (
   <OrdersTableContainer
+    pendingActivities={[]}
     displayOrdersOnlyForSafeApp={false}
     pendingOrdersPrices={{}}
     chainId={1}
@@ -68,5 +69,6 @@ export default (
     getSpotPrice={() => null}
     orderActions={orderActions}
     orderType={TabOrderTypes.LIMIT}
+    ordersPermitStatus={{}}
   />
 )

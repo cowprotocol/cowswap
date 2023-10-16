@@ -1,3 +1,4 @@
+import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { transparentize, lighten, darken } from 'polished'
@@ -6,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { UI } from 'common/constants/theme'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
@@ -41,7 +42,7 @@ const ReadMoreLink = styled.a`
   text-decoration: underline;
 
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT1});
   }
 `
 

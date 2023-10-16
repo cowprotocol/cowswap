@@ -1,18 +1,21 @@
 import React from 'react'
 
+import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
+import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
+import { userAgent } from '@cowprotocol/common-utils'
+import { AutoRow } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import CowError from 'legacy/assets/cow-swap/CowError.png'
 import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
-import { CODE_LINK, DISCORD_LINK } from 'legacy/constants'
-import store, { AppState } from 'legacy/state'
+import { cowSwapStore, AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
-import { ExternalLink } from 'legacy/theme'
-import { userAgent } from 'legacy/utils/userAgent'
 
 import { Title } from 'modules/application/pure/Page'
+
+import { UI } from 'common/constants/theme'
 
 const FlexContainer = styled.div`
   display: flex;
@@ -37,14 +40,14 @@ const StyledParagraph = styled.p`
 `
 
 const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
   overflow: auto;
   white-space: pre;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
-  color: ${({ theme }) => theme.text2};
+  color: var(${UI.COLOR_TEXT2});
 
   /* MOD */
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -143,7 +146,7 @@ ${
     ? `## \`${relevantState}\` state
 
 \`\`\`json
-${JSON.stringify(store.getState()[relevantState], null, 2)}
+${JSON.stringify(cowSwapStore.getState()[relevantState], null, 2)}
 \`\`\`
 `
     : ''
