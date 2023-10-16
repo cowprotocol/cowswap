@@ -47,6 +47,11 @@ export const tokensStateAtom = atom<TokensState>((get) => {
   )
 })
 
+/**
+ * Returns a list of tokens that are active and sorted alphabetically
+ * The list includes: native token, user added tokens, favourite tokens and tokens from active lists
+ * Native token is always the first element in the list
+ */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)

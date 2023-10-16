@@ -39,6 +39,10 @@ const emptyResponse: TokenSearchResponse = {
 
 const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], tokensFromInactiveLists: [] }
 
+/**
+ * The hook is searching into 4 sources: active lists, inactive lists, external API, and blockchain
+ * useSWR is widely used inside to cache the search results
+ */
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const debouncedInputInList = useDebounce(input?.toLowerCase(), IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(input?.toLowerCase(), IN_EXTERNALS_DEBOUNCE_TIME)
