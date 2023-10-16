@@ -73,6 +73,9 @@ const tradeConfirmActions: TradeConfirmActions = {
   onOpen() {
     console.log('onOpen')
   },
+  requestPermitSignature() {
+    console.log('requestPermitSignature')
+  },
 }
 
 describe('useHandleOrderPlacement', () => {

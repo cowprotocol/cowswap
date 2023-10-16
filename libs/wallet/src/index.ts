@@ -43,7 +43,6 @@ export { InstallKeystoneOption, KeystoneOption } from './web3-react/connection/k
 export { LedgerOption } from './web3-react/connection/ledger'
 export { TrezorOption } from './web3-react/connection/trezor'
 export { TrustWalletOption } from './web3-react/connection/trust'
-export { WalletConnectOption } from './web3-react/connection/walletConnect'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
 export { AlphaOption } from './web3-react/connection/alpha'
 export { AmbireOption } from './web3-react/connection/ambire'
@@ -56,4 +55,4 @@ export * from './api/state'
 
 // Connections
 export { injectedConnection } from './web3-react/connection/injected'
-export { walletConnectConnection } from './web3-react/connection/walletConnect'
+export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'

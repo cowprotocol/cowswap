@@ -1,21 +1,23 @@
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TradeType } from '@uniswap/sdk-core'
+import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
-import { useIsTokenPermittable } from 'modules/permit'
+import { useGeneratePermitHook, useIsTokenPermittable } from 'modules/permit'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
+import { TradeType } from 'modules/trade'
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
   const baseProps = useBaseFlowContextSetup()
   const sellCurrency = baseProps.trade?.inputAmount?.currency
-  const permitInfo = useIsTokenPermittable(sellCurrency)
+  const permitInfo = useIsTokenPermittable(sellCurrency, TradeType.SWAP)
+  const generatePermitHook = useGeneratePermitHook()
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[baseProps.chainId || SupportedChainId.MAINNET]
-  const { enoughAllowance: hasEnoughAllowance } = useEnoughBalanceAndAllowance({
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account: baseProps.account,
     amount: baseProps.inputAmountWithSlippage,
     checkAllowanceAddress,
@@ -26,7 +28,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const baseContext = getFlowContext({
     baseProps,
     sellToken: baseProps.trade.inputAmount.currency.wrapped,
-    kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 
   if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) return null
@@ -34,7 +36,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   return {
     ...baseContext,
     contract,
-    permitInfo,
-    hasEnoughAllowance,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
+    generatePermitHook,
   }
 }

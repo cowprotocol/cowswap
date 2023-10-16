@@ -9,7 +9,7 @@ export function buildAppDataHooks(
   }
 
   return {
-    ...{ pre: preInteractionHooks || undefined },
-    ...{ post: postInteractionHooks || undefined },
+    ...(preInteractionHooks ? { pre: preInteractionHooks } : undefined),
+    ...(postInteractionHooks ? { post: postInteractionHooks } : undefined),
   }
 }

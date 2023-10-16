@@ -1,6 +1,6 @@
 import { ONE_FRACTION } from '@cowprotocol/common-const'
 import { CanonicalMarketParams, getCanonicalMarket } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
 
 interface PriceInformation {
   token: string
@@ -94,7 +94,7 @@ export default class TradeGp {
    * The output amount for the trade assuming no slippage.
    */
   readonly outputAmount: CurrencyAmount<Currency>
-  readonly outputAmountWithoutFee?: CurrencyAmount<Currency>
+  readonly outputAmountWithoutFee: CurrencyAmount<Currency>
   /**
    * Trade fee
    */

@@ -412,6 +412,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
 
     // Icons
+    ${UI.ICON_SIZE_LARGE}: 36px;
     ${UI.ICON_SIZE_NORMAL}: 20px;
     ${UI.ICON_SIZE_SMALL}: 16px;
     ${UI.ICON_SIZE_XSMALL}: 14px;

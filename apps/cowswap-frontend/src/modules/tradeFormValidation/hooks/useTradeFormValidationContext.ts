@@ -20,7 +20,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { state: derivedTradeState } = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
-  const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient } = derivedTradeState || {}
+  const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
   const approvalState = useTradeApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
@@ -33,7 +33,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
 
-  const isPermitSupported = !!useIsTokenPermittable(inputCurrency)
+  const isPermitSupported = !!useIsTokenPermittable(inputCurrency, tradeType)
 
   const commonContext = {
     account,

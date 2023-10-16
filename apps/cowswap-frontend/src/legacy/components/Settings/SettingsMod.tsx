@@ -15,7 +15,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import Toggle from 'legacy/components/Toggle'
+import { Toggle } from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'

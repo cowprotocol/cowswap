@@ -1,6 +1,7 @@
 import { getContract } from '@cowprotocol/common-utils'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
+import { BigNumber } from '@ethersproject/bignumber'
 import type { Web3Provider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
@@ -42,6 +43,31 @@ export class PermitProviderConnector implements ProviderConnector {
     return defaultAbiCoder.decode([type], hex)[0]
   }
   decodeABIParameters<T>(types: AbiInput[], hex: string): T {
-    return defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
+    const decodedValues = defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
+
+    // Ethersjs decodes numbers as BigNumber instances
+    // However, 1inch utils do not deal with BigNumber instances,
+    // so we need this mess to convert them to hex strings, which 1inch understands
+    // TODO: Any way to make this typing mess any cleaner?
+    if (decodedValues && typeof decodedValues === 'object') {
+      const copy: Record<string, any> = {}
+
+      Object.keys(decodedValues).forEach((key) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const value = decodedValues[key]
+        if (BigNumber.isBigNumber(value)) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          copy[key] = value.toHexString()
+        } else {
+          copy[key] = value
+        }
+      })
+
+      return copy as T
+    }
+
+    return decodedValues
   }
 }

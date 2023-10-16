@@ -1,33 +1,16 @@
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { Web3Provider } from '@ethersproject/providers'
 
-import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitDeadline } from './getPermitDeadline'
-import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
 
-const CACHE_PREFIX = 'permitCache:v0-'
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData> {
   const permitKey = getCacheKey(params)
-
-  const { chainId, provider, account, inputToken } = params
-
-  const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
-
-  // Always get the nonce for the real account, to know whether the cache should be invalidated
-  // Static account should never need to pre-check the nonce as it'll never change once cached
-  const nonce = account ? await eip2162Utils.getTokenNonce(inputToken.address, account) : undefined
-
-  const cachedResult = load(permitKey, nonce)
-  if (cachedResult) {
-    return cachedResult
-  }
 
   const cachedRequest = REQUESTS_CACHE[permitKey]
 
@@ -40,10 +23,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
     }
   }
 
-  const request = generatePermitHookRaw({ ...params, eip2162Utils, preFetchedNonce: nonce }).then((permitHookData) => {
-    // Store permit in the cache
-    save(permitKey, nonce, permitHookData)
-
+  const request = generatePermitHookRaw(params).then((permitHookData) => {
     // Remove consumed request to avoid stale data
     delete REQUESTS_CACHE[permitKey]
 
@@ -55,10 +35,8 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
-async function generatePermitHookRaw(
-  params: PermitHookParams & { eip2162Utils: Eip2612PermitUtils; preFetchedNonce: number | undefined }
-): Promise<PermitHookData> {
-  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, preFetchedNonce } = params
+async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
+  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
 
@@ -142,55 +120,5 @@ async function calculateGasLimit(
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account } = params
 
-  return `${CACHE_PREFIX}${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
-}
-
-type CachedData = PermitHookData & {
-  nonce: number | undefined
-}
-
-/**
- * Stores data based on `key` and `nonce`
- */
-function save(key: string, nonce: number | undefined, data: PermitHookData): void {
-  const cachedData: CachedData = { nonce, ...data }
-
-  localStorage.setItem(key, JSON.stringify(cachedData))
-}
-
-/**
- * Loads stored data if still valid
- *
- * Validity is based on `nonce` and only applies to real accounts
- * Static data never gets invalidated
- */
-function load(key: string, nonce: number | undefined): PermitHookData | undefined {
-  const cachedData = localStorage.getItem(key)
-
-  if (!cachedData) {
-    return undefined
-  }
-
-  try {
-    const parsedData: CachedData = JSON.parse(cachedData)
-
-    // Extract nonce out of cached data
-    const { nonce: storedNonce, ...permitHookData } = parsedData
-
-    // TODO: if one is defined while the other is not, should also ignore the cache
-    if (nonce !== undefined && storedNonce !== undefined && storedNonce < nonce) {
-      // When both nonces exist and stored is < than new, data is outdated
-
-      // Remove cache key
-      localStorage.removeItem(key)
-
-      return undefined
-    }
-
-    // Cache is valid, return it
-    return permitHookData
-  } catch {
-    // Failed to parse stored data, return nothing
-    return undefined
-  }
+  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
 }

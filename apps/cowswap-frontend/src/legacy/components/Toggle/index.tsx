@@ -8,22 +8,22 @@ import { UI } from 'common/constants/theme'
 
 const turnOnToggle = keyframes`
   from {
-    margin-left: 0em;
+    margin-left: 0;
     margin-right: 2.2em;
   }
   to {
     margin-left: 2.2em;
-    margin-right: 0em;
+    margin-right: 0;
   }
 `
 
 const turnOffToggle = keyframes`
   from {
     margin-left: 2.2em;
-    margin-right: 0em;
+    margin-right: 0;
   }
   to {
-    margin-left: 0em;
+    margin-left: 0;
     margin-right: 2.2em;
   }
 `
@@ -99,7 +99,7 @@ export interface ToggleProps extends WithClassName {
   isDisabled?: boolean // Mod
 }
 
-export default function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
+export function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
   const switchToggle = () => {

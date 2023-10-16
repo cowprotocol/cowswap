@@ -5,7 +5,7 @@ import { BalancesAndAllowances, BalancesAndAllowancesParams } from '../types'
 /**
  * Return the balances and allowances of the tokens.
  *
- * This hooks is different than the useOnchainBalancesAndAllowance one in the fact that the user might contain some
+ * This hook is different from the useOnchainBalancesAndAllowance one in the fact that the user might contain some
  * un-commited transaction that might affect the balances.
  */
 export function useBalancesAndAllowances(params: BalancesAndAllowancesParams): BalancesAndAllowances {

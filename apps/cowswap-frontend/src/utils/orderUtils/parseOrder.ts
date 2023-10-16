@@ -48,6 +48,7 @@ export interface ParsedOrder {
   creationTime: Date
   expirationTime: Date
   composableCowInfo?: ComposableCowInfo
+  fullAppData: Order['fullAppData']
 
   executionData: ParsedOrderExecutionData
 }
@@ -110,6 +111,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     receiver: order.receiver || undefined,
     creationTime,
     expirationTime,
+    fullAppData: order.fullAppData,
     executionData,
   }
 }

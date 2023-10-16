@@ -17,5 +17,5 @@ export function useIsWalletConnect(): boolean {
 export function getIsWalletConnect(connector: Connector): boolean {
   const connection = getWeb3ReactConnection(connector)
 
-  return [ConnectionType.WALLET_CONNECT, ConnectionType.WALLET_CONNECT_V2].includes(connection.type)
+  return ConnectionType.WALLET_CONNECT_V2 === connection.type
 }

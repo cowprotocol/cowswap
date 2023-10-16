@@ -28,7 +28,7 @@ export function StatusIcon({ connectionType }: StatusIconProps) {
     case ConnectionType.INJECTED:
       image = <Identicon />
       break
-    case ConnectionType.WALLET_CONNECT:
+    case ConnectionType.WALLET_CONNECT_V2:
       image = <img src={WalletConnectIcon} alt="WalletConnect" />
       break
     case ConnectionType.COINBASE_WALLET:
