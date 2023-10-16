@@ -10,8 +10,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-import * as path from 'path'
-
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
@@ -102,18 +100,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
-        /**
-         * Temporary fix for walletconnect
-         * https://github.com/Uniswap/web3-react/issues/861
-         */
-        '@walletconnect/ethereum-provider': path.resolve(
-          __dirname,
-          '../../node_modules/@walletconnect/ethereum-provider/dist/umd/index.min.js'
-        ),
-        '@walletconnect/universal-provider': path.resolve(
-          __dirname,
-          '../../node_modules/@walletconnect/universal-provider/dist/index.cjs.js'
-        ),
       },
     },
 
