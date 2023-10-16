@@ -13,9 +13,7 @@ import { WalletModal } from '../WalletModal'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()
-  const { account, 
-    active, 
-    chainId } = useWalletInfo()
+  const { account, active, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
   const isInjectedWidgetMode = isInjectedWidget()

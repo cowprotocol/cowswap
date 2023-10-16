@@ -528,6 +528,13 @@ export const ThemedGlobalStyle = createGlobalStyle`
     display: block!important;
   }
 
+    // Walletconnect V2 mobile override
+  body #wcm-modal.wcm-overlay {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: flex-start;
+    `
+  }
+
   a {
     text-decoration: none;
 
