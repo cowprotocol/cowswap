@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.48.0](https://github.com/cowprotocol/cowswap/compare/v1.47.1...v1.48.0) (2023-10-16)
+
+
+### Features
+
+* **permit:** allowance warning ([#3184](https://github.com/cowprotocol/cowswap/issues/3184)) ([f4700d9](https://github.com/cowprotocol/cowswap/commit/f4700d9ac34bf281f6efb9bcbc60bebacb8ac68f))
+* **permit:** disable permit for SC wallets ([#3213](https://github.com/cowprotocol/cowswap/issues/3213)) ([29e5178](https://github.com/cowprotocol/cowswap/commit/29e5178a4c15eb56568f5da0d0a30990a47bc76f))
+* **permit:** modals LIMIT ([#3164](https://github.com/cowprotocol/cowswap/issues/3164)) ([70e5653](https://github.com/cowprotocol/cowswap/commit/70e56534eaa17456e42e2ba30541537e44d76c78))
+* **permit:** modals SWAP ([#3158](https://github.com/cowprotocol/cowswap/issues/3158)) ([ed53662](https://github.com/cowprotocol/cowswap/commit/ed53662eedec3fb4ce3d880c9303df701f5059c1))
+* **permit:** refactor permit caching ([#3183](https://github.com/cowprotocol/cowswap/issues/3183)) ([e902e36](https://github.com/cowprotocol/cowswap/commit/e902e36d6d6320dfa1649a448a834df49f115ce4))
+* remove walletConnect v1 and use v2 by default ([#3156](https://github.com/cowprotocol/cowswap/issues/3156)) ([4b3fbc0](https://github.com/cowprotocol/cowswap/commit/4b3fbc0f6de2f89235cc69fdc6e7eaefb9bd12b6))
+* **tokens:** new UI component for token select modal ([#3166](https://github.com/cowprotocol/cowswap/issues/3166)) ([d5b69cd](https://github.com/cowprotocol/cowswap/commit/d5b69cd4716d1a77e94a4ecba808186e96ef4794))
+* **tokens:** new UI for tokens management ([#3174](https://github.com/cowprotocol/cowswap/issues/3174)) ([6c2c253](https://github.com/cowprotocol/cowswap/commit/6c2c2535a11707ad1cc30aa17bd003863d832faa))
+
+
+### Bug Fixes
+
+* **eth-flow:** update refund info for expired orders ([#3222](https://github.com/cowprotocol/cowswap/issues/3222)) ([dede0d0](https://github.com/cowprotocol/cowswap/commit/dede0d0431511ad1b1ed0548f6d42f881b0f95e0))
+* **permit:** improve permittable detection ([#3226](https://github.com/cowprotocol/cowswap/issues/3226)) ([79cb48a](https://github.com/cowprotocol/cowswap/commit/79cb48aa9cd21689d64e13fe57044c4f345c4118))
+* **swap:** handle errors from order posting API ([#3224](https://github.com/cowprotocol/cowswap/issues/3224)) ([99df6d2](https://github.com/cowprotocol/cowswap/commit/99df6d2ca9fd5040624977f385e03b2442587c15))
+
+## [1.47.1](https://github.com/cowprotocol/cowswap/compare/v1.47.0...v1.47.1) (2023-09-29)
+
+
+### Features
+
+* allow to change rpc nodes ([#3160](https://github.com/cowprotocol/cowswap/issues/3160)) ([b9b4be2](https://github.com/cowprotocol/cowswap/commit/b9b4be24ece99ddef83f351d47cc86a9ac3ff5da))
+* **orders-table:** approve order token from allowance warn tooltip ([#3144](https://github.com/cowprotocol/cowswap/issues/3144)) ([aa943bf](https://github.com/cowprotocol/cowswap/commit/aa943bf06ab2ba3bb3040bae96106b4463f1283a))
+* update approve button color ([#3169](https://github.com/cowprotocol/cowswap/issues/3169)) ([802f288](https://github.com/cowprotocol/cowswap/commit/802f288379329d6a526933be988e6669020bb872))
+
+
+### Bug Fixes
+
+* don't fetch tokens list ens hashes ([#3152](https://github.com/cowprotocol/cowswap/issues/3152)) ([49989f9](https://github.com/cowprotocol/cowswap/commit/49989f987e729749c17c64984ca3338f774198f9))
+* fix bad import ([8546bbc](https://github.com/cowprotocol/cowswap/commit/8546bbc6e792cd913511c87ecfa3ab7453648ce6))
+* **twap:** approve infinite amount ([#3141](https://github.com/cowprotocol/cowswap/issues/3141)) ([c5ab768](https://github.com/cowprotocol/cowswap/commit/c5ab768f85a0a463accaf436114fdcab7b538d80))
+
+
+### Miscellaneous Chores
+
+* **release:** hotfix 1.47.1 Merge pull request [#3171](https://github.com/cowprotocol/cowswap/issues/3171) from cowprotocol/hotfix/1.47.1 ([ce8671f](https://github.com/cowprotocol/cowswap/commit/ce8671fe3705f79a0bb73729855dfd59bbd48b52))
+
 ## [1.47.0](https://github.com/cowprotocol/cowswap/compare/v1.47.0-RC.0...v1.47.0) (2023-09-11)
 
 

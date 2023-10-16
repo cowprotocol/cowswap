@@ -61,9 +61,17 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
   try {
     nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
   } catch (e) {
+    if (e === 'nonce not supported' || e.message === 'nonce is NaN') {
+      console.debug(`[checkTokenIsPermittable] Not a permittable token ${tokenAddress}`, e?.message || e)
+      // Here we know it's not supported, return false
+      // See https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L309
+      // and https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L325
+      return false
+    }
     console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
 
-    return false
+    // Otherwise, it might have been a network issue or another temporary failure, return error
+    return { error: e.message || e.toString() }
   }
 
   const baseParams: BaseParams = {
@@ -81,10 +89,12 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
     return await estimateTokenPermit({ ...baseParams, type: 'eip-2612', provider })
   } catch (e) {
     // Not eip-2612, try dai-like
+    console.debug(`[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress}`, e)
     try {
       return await estimateTokenPermit({ ...baseParams, type: 'dai-like', provider })
     } catch (e) {
       // Not dai-like either, return error
+      console.debug(`[checkTokenIsPermittable] Failed to estimate dai-like permit for ${tokenAddress}`, e)
       return { error: e.message || e.toString() }
     }
   }
@@ -105,7 +115,7 @@ type EstimateParams = BaseParams & {
   provider: Web3Provider
 }
 
-async function estimateTokenPermit(params: EstimateParams) {
+async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePermitResult> {
   const { provider, chainId, walletAddress, tokenAddress, type } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData

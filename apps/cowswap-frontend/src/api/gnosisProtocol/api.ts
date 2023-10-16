@@ -5,7 +5,6 @@ import {
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
-  OrderBookApiError,
   OrderKind,
   OrderQuoteRequest,
   OrderQuoteResponse,
@@ -25,8 +24,10 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 
 import { getAppData } from 'modules/appData'
 
-import { ApiErrorCodes, ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { GpQuoteErrorDetails, mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
+
+import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -165,7 +166,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   }
 
   return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
-    if (isOrderbookTypedError(error)) {
+    if (getIsOrderBookTypedError(error)) {
       const errorObject = mapOperatorErrorToQuoteError(error.body)
 
       return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
@@ -173,13 +174,6 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
 
     return Promise.reject(error)
   })
-}
-
-export type OrderbookTypedError = OrderBookApiError<ApiErrorObject>
-
-function isOrderbookTypedError(e: any): e is OrderbookTypedError {
-  const error = e as OrderbookTypedError
-  return error.body.errorType !== undefined && error.body.description !== undefined
 }
 
 export async function getOrder(chainId: ChainId, orderId: string, env?: CowEnv): Promise<EnrichedOrder | null> {
