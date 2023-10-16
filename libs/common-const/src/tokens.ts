@@ -5,7 +5,7 @@ import vCowLogo from '@cowprotocol/assets/cow-swap/vCOW.png'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
-import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
+import { cowprotocolTokenUrl } from './cowprotocolTokenUrl'
 import { WETH_MAINNET } from './nativeAndWrappedTokens'
 
 // Mainnet

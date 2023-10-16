@@ -1,15 +1,10 @@
 import { cowprotocolTokenUrl, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { trustTokenLogoUrl } from './trustTokenLogoUrl'
 
 export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
-  const fallbackUrls = token?.address
-    ? [
-        cowprotocolTokenUrl(token.address, token.chainId as SupportedChainId),
-        cowprotocolTokenUrl(token.address.toLowerCase(), token.chainId as SupportedChainId),
-        cowprotocolTokenUrl(token.address.toLowerCase(), SupportedChainId.MAINNET),
-      ]
-    : []
+  const fallbackUrls = token?.address ? getTokenLogoFallbacks(token.address, token.chainId as SupportedChainId) : []
 
   if (!token?.logoURI) {
     return fallbackUrls
@@ -22,4 +17,13 @@ export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
   }
 
   return urls
+}
+
+function getTokenLogoFallbacks(address: string, chainId: SupportedChainId): string[] {
+  return [
+    cowprotocolTokenUrl(address, chainId),
+    cowprotocolTokenUrl(address.toLowerCase(), chainId),
+    cowprotocolTokenUrl(address.toLowerCase(), SupportedChainId.MAINNET),
+    trustTokenLogoUrl(address, chainId),
+  ]
 }

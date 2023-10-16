@@ -1,7 +1,7 @@
 import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenWithLogo } from './types'
 import { WETH9 } from '@uniswap/sdk-core'
-import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
+import { cowprotocolTokenUrl } from './cowprotocolTokenUrl'
 
 import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 
