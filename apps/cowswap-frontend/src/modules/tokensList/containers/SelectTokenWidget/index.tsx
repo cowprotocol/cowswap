@@ -73,6 +73,7 @@ export function SelectTokenWidget() {
 
   const importTokenAndClose = (tokens: TokenWithLogo[]) => {
     importTokenCallback(tokens)
+    onSelectToken?.(tokens[0])
     onDismiss()
   }
 
