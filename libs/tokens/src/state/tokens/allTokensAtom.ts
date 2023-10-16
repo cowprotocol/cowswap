@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { environmentAtom } from '../environmentAtom'
 import { TokensMap } from '../../types'
 import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenMapToList } from '../../utils/tokenMapToList'
+import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
@@ -60,7 +60,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
-  const tokens = tokenMapToList({
+  const tokens = tokenMapToListWithLogo({
     ...tokensMap.activeTokens,
     ...userAddedTokens[chainId],
     ...favouriteTokensState[chainId],
@@ -74,7 +74,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToList(tokensMap.inactiveTokens)
+  return tokenMapToListWithLogo(tokensMap.inactiveTokens)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
