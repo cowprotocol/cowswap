@@ -17,6 +17,11 @@ const TokenLogoWrapper = styled.div`
   display: inline-block;
   background: var(--cow-container-bg-01);
   border-radius: 50%;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export interface TokenLogoProps {
@@ -52,11 +57,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
 
   return (
     <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
-      {!currentUrl ? (
-        <Slash size={size} />
-      ) : (
-        <img alt="" src={currentUrl} onError={onError} width={size} height={size} />
-      )}
+      {!currentUrl ? <Slash size={size} /> : <img alt="" src={currentUrl} onError={onError} />}
     </TokenLogoWrapper>
   )
 }
