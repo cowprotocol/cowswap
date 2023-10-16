@@ -1,6 +1,6 @@
 {
   "name": "cowswap",
-  "version": "1.47.1",
+  "version": "1.48.0",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
