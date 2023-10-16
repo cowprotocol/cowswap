@@ -44,8 +44,9 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  * useSWR is widely used inside to cache the search results
  */
 export function useSearchToken(input: string | null): TokenSearchResponse {
-  const debouncedInputInList = useDebounce(input?.toLowerCase(), IN_LISTS_DEBOUNCE_TIME)
-  const debouncedInputInExternals = useDebounce(input?.toLowerCase(), IN_EXTERNALS_DEBOUNCE_TIME)
+  const inputLowerCase = input?.toLowerCase()
+  const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
+  const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
 
   // Search in active and inactive lists
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
