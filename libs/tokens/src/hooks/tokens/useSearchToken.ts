@@ -18,10 +18,10 @@ const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
 
 export type TokenSearchResponse = {
   isLoading: boolean
-  blockchainResult: TokenWithLogo[] | null
-  externalApiResult: TokenWithLogo[] | null
-  activeListsResult: TokenWithLogo[] | null
-  inactiveListsResult: TokenWithLogo[] | null
+  blockchainResult: TokenWithLogo[]
+  externalApiResult: TokenWithLogo[]
+  activeListsResult: TokenWithLogo[]
+  inactiveListsResult: TokenWithLogo[]
 }
 
 type FromListsResult = {
@@ -31,10 +31,10 @@ type FromListsResult = {
 
 const emptyResponse: TokenSearchResponse = {
   isLoading: false,
-  blockchainResult: null,
-  externalApiResult: null,
-  activeListsResult: null,
-  inactiveListsResult: null,
+  blockchainResult: [],
+  externalApiResult: [],
+  activeListsResult: [],
+  inactiveListsResult: [],
 }
 
 const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], tokensFromInactiveLists: [] }
@@ -83,8 +83,8 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     const filterFoundTokens = (token: TokenWithLogo) => !foundTokens[token.address.toLowerCase()]
 
     const inactiveListsResult = tokensFromInactiveLists.filter(filterFoundTokens)
-    const blockchainResult = tokenFromBlockChain ? [tokenFromBlockChain] : null
-    const externalApiResult = apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : null
+    const blockchainResult = tokenFromBlockChain ? [tokenFromBlockChain] : []
+    const externalApiResult = apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : []
 
     return {
       isLoading: apiIsLoading || blockchainIsLoading,

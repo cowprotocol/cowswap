@@ -36,14 +36,12 @@ export function TokenSearchResults({
 
   const networkName = useNetworkName()
 
-  const searchCount = useMemo(() => {
-    return [
-      activeListsResult?.length,
-      inactiveListsResult?.length,
-      blockchainResult?.length,
-      externalApiResult?.length,
-    ].reduce<number>((acc, cur) => acc + (cur ?? 0), 0)
-  }, [activeListsResult?.length, inactiveListsResult?.length, blockchainResult?.length, externalApiResult?.length])
+  const searchCount = [
+    activeListsResult.length,
+    inactiveListsResult.length,
+    blockchainResult.length,
+    externalApiResult.length,
+  ].reduce<number>((acc, cur) => acc + (cur ?? 0), 0)
 
   const isTokenNotFound = useMemo(() => {
     if (isLoading) return false

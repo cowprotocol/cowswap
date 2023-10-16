@@ -22,7 +22,6 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
 
     return (
       [foundToken.inactiveListsResult, foundToken.externalApiResult, foundToken.blockchainResult]
-        .filter(isTruthy)
         .flat()
         .filter(isTruthy)[0] || null
     )
