@@ -8,7 +8,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
-import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
+import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
 
 const EIP_2162_PERMIT_PARAMS = {
@@ -76,13 +76,18 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
 
   let version: string | undefined = undefined
 
-  try {
-    // Required by USDC-mainnet as its version is `2`.
-    // There might be other tokens that need this as well.
-    version = await eip2612PermitUtils.getTokenVersion(tokenAddress)
-  } catch (e) {
-    // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
-    console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress}`, e)
+  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress)) {
+    // If the token does not outright fails when calling with the `version` value
+    // returned by the contract, fetch it.
+
+    try {
+      // Required by USDC-mainnet as its version is `2`.
+      // There might be other tokens that need this as well.
+      version = await eip2612PermitUtils.getTokenVersion(tokenAddress)
+    } catch (e) {
+      // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
+      console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress}`, e)
+    }
   }
 
   const baseParams: BaseParams = {
