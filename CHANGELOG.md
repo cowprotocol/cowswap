@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.48.1](https://github.com/cowprotocol/cowswap/compare/v1.48.0...v1.48.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* **swap:** don't crash app when token decimals eq 0 ([#3228](https://github.com/cowprotocol/cowswap/issues/3228)) ([aad09c6](https://github.com/cowprotocol/cowswap/commit/aad09c6b71c1c0a8dabb1f3ea85292bed332dbc7))
+* **wc:** add back patch which fixes WC path issue ([#3230](https://github.com/cowprotocol/cowswap/issues/3230)) ([4f4b7d5](https://github.com/cowprotocol/cowswap/commit/4f4b7d56e1cf806d52f09875f95c0afa15a06985))
+
 ## [1.48.0](https://github.com/cowprotocol/cowswap/compare/v1.47.1...v1.48.0) (2023-10-16)
 
 
