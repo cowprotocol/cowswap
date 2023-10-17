@@ -68,7 +68,7 @@ export function TokenSearchResults({
     })
   }, [onInputPressEnter, updateSelectTokenWidget])
 
-  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found for in {networkName}</styledEl.TokenNotFound>
+  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found in {networkName}</styledEl.TokenNotFound>
 
   return (
     <CommonListContainer id="currency-list">
