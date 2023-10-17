@@ -7,7 +7,7 @@ export async function buildEip2162PermitCallData({
   callDataParams,
 }: BuildEip2162PermitCallDataParams): Promise<string> {
   const callData = await eip2162Utils.buildPermitCallData(...callDataParams)
-
+  console.log(`[buildEip2162PermitCallData]`, callDataParams, callData)
   // For some reason, the method above removes the permit selector prefix
   // https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L92
   // Adding it back
@@ -19,6 +19,7 @@ export async function buildDaiLikePermitCallData({
   callDataParams,
 }: BuildDaiLikePermitCallDataParams): Promise<string> {
   const callData = await eip2162Utils.buildDaiLikePermitCallData(...callDataParams)
+  console.log(`[buildDaiLikePermitCallData]`, callDataParams, callData)
 
   // Same as above, but for dai like
   // https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L140
