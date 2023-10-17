@@ -1,5 +1,6 @@
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
+export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 
 // Pure components
 export { TokenLogo } from './pure/TokenLogo'
