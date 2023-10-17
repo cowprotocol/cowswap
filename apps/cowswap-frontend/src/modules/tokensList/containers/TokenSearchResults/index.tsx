@@ -60,8 +60,7 @@ export function TokenSearchResults({
     }
   }, [isEnterPressed, searchInput, activeListsResult, onSelectToken])
 
-  if (isTokenNotFound)
-    return <styledEl.TokenNotFound>No tokens found for this name in {networkName}</styledEl.TokenNotFound>
+  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found for in {networkName}</styledEl.TokenNotFound>
 
   return (
     <CommonListContainer id="currency-list">
