@@ -7,6 +7,9 @@ import { importListsMock, listsMock } from '../../mocks'
 import { ManageLists } from './index'
 
 const Wrapper = styled.div`
+  max-height: 90vh;
+  margin: 20px auto;
+  display: flex;
   width: 450px;
   background: var(${UI.COLOR_CONTAINER_BG_01});
 `

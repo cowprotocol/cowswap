@@ -1,7 +1,6 @@
-import { TokenListSource } from '../types'
+import { ListResource } from '../types'
+import { getTokenListSource } from './getTokenListSource'
 
-export function getTokenListViewLink(source: TokenListSource): string {
-  const url = 'ensName' in source ? source.ensName : source.url
-
-  return `https://tokenlists.org/token-list?url=${url}`
+export function getTokenListViewLink(source: ListResource): string {
+  return `https://tokenlists.org/token-list?url=${getTokenListSource(source)}`
 }

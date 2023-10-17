@@ -1,69 +1,79 @@
 import { atom } from 'jotai'
 import { nanoid } from '@reduxjs/toolkit'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { environmentAtom } from '../environmentAtom'
 import {
-  activeTokenListsIdsAtom,
-  removeListFromAllTokenListsInfoAtom,
-  upsertAllTokenListsInfoAtom,
-  userAddedTokenListsAtom,
+  listsEnabledStateAtom,
+  listsStatesByChainAtom,
+  listsStatesMapAtom,
+  userAddedListsSourcesAtom,
 } from './tokenListsStateAtom'
-import { TokenListInfo } from '../../types'
+import { ListState } from '../../types'
 
-export const addTokenListAtom = atom(null, (get, set, tokenList: TokenListInfo) => {
-  const { chainId } = get(environmentAtom)
-  const userAddedTokenLists = get(userAddedTokenListsAtom)
-  const activeTokenListsIds = get(activeTokenListsIdsAtom)
-  const id = nanoid()
+export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, listsStates: ListState[]) => {
+  const globalState = get(listsStatesByChainAtom)
+  const chainState = globalState[chainId]
 
-  tokenList.id = id
+  const update = listsStates.reduce<{ [listId: string]: ListState }>((acc, list) => {
+    acc[list.id] = {
+      ...list,
+      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState[list.id]?.isEnabled,
+    }
 
-  set(userAddedTokenListsAtom, {
-    ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].concat({ ...tokenList.source, id }),
-  })
+    return acc
+  }, {})
 
-  set(activeTokenListsIdsAtom, {
-    ...activeTokenListsIds,
+  set(listsStatesByChainAtom, {
+    ...globalState,
     [chainId]: {
-      ...activeTokenListsIds[chainId],
-      [id]: true,
+      ...chainState,
+      ...update,
     },
   })
+})
+export const addListAtom = atom(null, (get, set, state: ListState) => {
+  const { chainId } = get(environmentAtom)
+  const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const id = nanoid()
 
-  set(upsertAllTokenListsInfoAtom, chainId, { [id]: tokenList })
+  state.id = id
+  state.isEnabled = true
+
+  set(userAddedListsSourcesAtom, {
+    ...userAddedTokenLists,
+    [chainId]: userAddedTokenLists[chainId].concat({ id, ...state.source }),
+  })
+
+  set(upsertListsAtom, chainId, [state])
 })
 
-export const removeTokenListAtom = atom(null, (get, set, id: string) => {
+export const removeListAtom = atom(null, (get, set, id: string) => {
   const { chainId } = get(environmentAtom)
-  const userAddedTokenLists = get(userAddedTokenListsAtom)
-  const activeTokenListsIds = get(activeTokenListsIdsAtom)
-  const activeTokenListsState = { ...activeTokenListsIds[chainId] }
+  const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
-  delete activeTokenListsState[id]
-
-  set(userAddedTokenListsAtom, {
+  set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
     [chainId]: userAddedTokenLists[chainId].filter((item) => item.id !== id),
   })
 
-  set(activeTokenListsIdsAtom, {
-    ...activeTokenListsIds,
-    [chainId]: activeTokenListsState,
-  })
+  const stateCopy = { ...get(listsStatesByChainAtom) }
 
-  set(removeListFromAllTokenListsInfoAtom, id)
+  delete stateCopy[chainId][id]
+
+  set(listsStatesByChainAtom, stateCopy)
 })
 
 export const toggleListAtom = atom(null, (get, set, id: string) => {
   const { chainId } = get(environmentAtom)
-  const activeTokenListsIds = get(activeTokenListsIdsAtom)
-  const activeTokenListsState = { ...activeTokenListsIds[chainId] }
+  const listsEnabledState = get(listsEnabledStateAtom)
+  const states = get(listsStatesMapAtom)
 
-  activeTokenListsState[id] = !activeTokenListsState[id]
+  if (!states[id]) return
 
-  set(activeTokenListsIdsAtom, {
-    ...activeTokenListsIds,
-    [chainId]: activeTokenListsState,
-  })
+  const list = { ...states[id] }
+
+  list.isEnabled = !listsEnabledState[id]
+
+  set(upsertListsAtom, chainId, [list])
 })

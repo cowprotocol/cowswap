@@ -1,12 +1,6 @@
 import { useMemo } from 'react'
 
-import {
-  ListSearchResponse,
-  TokenListInfo,
-  useActiveTokenListsIds,
-  useRemoveTokenList,
-  useToggleListCallback,
-} from '@cowprotocol/tokens'
+import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 
 import * as styledEl from './styled'
 
@@ -14,18 +8,24 @@ import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
 
+interface ListSearchState {
+  source: 'existing' | 'external'
+  loading: boolean
+  listToImport: ListState | null
+}
+
 export interface ManageListsProps {
-  lists: TokenListInfo[]
+  lists: ListState[]
   listSearchResponse: ListSearchResponse
 }
 
 export function ManageLists(props: ManageListsProps) {
   const { lists, listSearchResponse } = props
 
-  const activeTokenListsIds = useActiveTokenListsIds()
+  const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeCustomTokenLists = useRemoveTokenList()
-  const toggleList = useToggleListCallback()
+  const removeList = useRemoveList()
+  const toggleList = useToggleList()
 
   const { source, listToImport } = useListSearchResponse(listSearchResponse)
 
@@ -48,8 +48,8 @@ export function ManageLists(props: ManageListsProps) {
             <ListItem
               key={list.id}
               list={list}
-              enabled={activeTokenListsIds[list.id]}
-              removeList={removeCustomTokenLists}
+              enabled={!!activeTokenListsIds[list.id]}
+              removeList={removeList}
               toggleList={toggleList}
             />
           ))}
@@ -58,32 +58,28 @@ export function ManageLists(props: ManageListsProps) {
   )
 }
 
-function useListSearchResponse(listSearchResponse: ListSearchResponse): {
-  source: 'existing' | 'external'
-  loading: boolean
-  listToImport: TokenListInfo | null
-} {
+function useListSearchResponse(listSearchResponse: ListSearchResponse): ListSearchState {
   return useMemo(() => {
-    const source = listSearchResponse.source
+    const { source, response } = listSearchResponse
 
-    if (listSearchResponse.source === 'existing') {
+    if (source === 'existing') {
       return {
         source,
         loading: false,
-        listToImport: listSearchResponse.response,
+        listToImport: response,
       }
-    } else {
-      if (!listSearchResponse.response) {
-        return { source, loading: false, listToImport: null }
-      }
+    }
 
-      const { isLoading, data } = listSearchResponse.response
+    if (!response) {
+      return { source, loading: false, listToImport: null }
+    }
 
-      return {
-        source,
-        loading: isLoading,
-        listToImport: data || null,
-      }
+    const { isLoading, data } = response
+
+    return {
+      source,
+      loading: isLoading,
+      listToImport: data || null,
     }
   }, [listSearchResponse])
 }
