@@ -22,6 +22,7 @@ export interface SelectTokenModalProps {
   balancesLoading: boolean
   selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
+  onInputPressEnter?(): void
   defaultInputValue?: string
   onOpenManageWidget(): void
   onDismiss(): void
@@ -41,15 +42,10 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onSelectToken,
     onDismiss,
     onOpenManageWidget,
+    onInputPressEnter,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
-  const [isEnterPressed, setIsEnterPressed] = useState<boolean>(false)
-
-  const handleEnterPress = () => {
-    setIsEnterPressed(true)
-    setTimeout(() => setIsEnterPressed(false), 100)
-  }
 
   const selectTokenContext: SelectTokenContext = {
     balances,
@@ -72,7 +68,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         <styledEl.SearchInput
           id="token-search-input"
           value={inputValue}
-          onKeyDown={(e) => e.key === 'Enter' && handleEnterPress()}
+          onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
           placeholder="Search name or paste address"
@@ -83,7 +79,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       </styledEl.Row>
       <styledEl.Separator />
       {inputValue.trim() ? (
-        <TokenSearchResults searchInput={inputValue.trim()} isEnterPressed={isEnterPressed} {...selectTokenContext} />
+        <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
       ) : (
         <TokensVirtualList allTokens={allTokens} {...selectTokenContext} />
       )}

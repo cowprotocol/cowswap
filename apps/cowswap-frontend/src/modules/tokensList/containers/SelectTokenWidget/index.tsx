@@ -34,7 +34,8 @@ const Wrapper = styled.div`
 `
 
 export function SelectTokenWidget() {
-  const { open, onSelectToken, tokenToImport, listToImport, selectedToken } = useAtomValue(selectTokenWidgetAtom)
+  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
+    useAtomValue(selectTokenWidgetAtom)
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
   const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
@@ -130,6 +131,7 @@ export function SelectTokenWidget() {
               balances={balances}
               balancesLoading={balancesLoading}
               onSelectToken={onSelectToken}
+              onInputPressEnter={onInputPressEnter}
               onDismiss={onDismiss}
               onOpenManageWidget={() => setIsManageWidgetOpen(true)}
             ></SelectTokenModal>

@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react'
+import { useSetAtom } from 'jotai/index'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
@@ -11,12 +12,12 @@ import { CommonListContainer } from '../../pure/commonElements'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenListItem } from '../../pure/TokenListItem'
 import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
+import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { SelectTokenContext } from '../../types'
 
 const searchResultsLimit = 10
 
 export interface TokenSearchResultsProps extends SelectTokenContext {
-  isEnterPressed: boolean
   searchInput: string
 }
 
@@ -27,10 +28,11 @@ export function TokenSearchResults({
   onSelectToken,
   unsupportedTokens,
   permitCompatibleTokens,
-  isEnterPressed,
 }: TokenSearchResultsProps) {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
     useSearchToken(searchInput)
+
+  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
 
   const addTokenImportCallback = useAddTokenImportCallback()
 
@@ -50,15 +52,21 @@ export function TokenSearchResults({
   }, [isLoading, searchCount])
 
   // On press Enter, select first token if only one token is found or it's fully matches to the search input
-  useEffect(() => {
-    if (!isEnterPressed || !searchInput || !activeListsResult) return
+  const onInputPressEnter = useCallback(() => {
+    if (!searchInput || !activeListsResult) return
 
     const matchedToken = activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, searchInput))
 
     if (activeListsResult.length === 1 || matchedToken) {
       onSelectToken(matchedToken || activeListsResult[0])
     }
-  }, [isEnterPressed, searchInput, activeListsResult, onSelectToken])
+  }, [searchInput, activeListsResult, onSelectToken])
+
+  useEffect(() => {
+    updateSelectTokenWidget({
+      onInputPressEnter,
+    })
+  }, [onInputPressEnter, updateSelectTokenWidget])
 
   if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found for in {networkName}</styledEl.TokenNotFound>
 
