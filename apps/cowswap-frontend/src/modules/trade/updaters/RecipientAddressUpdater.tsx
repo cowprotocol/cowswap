@@ -10,9 +10,9 @@ export function RecipientAddressUpdater() {
 
   useEffect(() => {
     if (state?.recipientAddress !== recipientAddress) {
-      updateState?.({ recipientAddress })
+      updateState?.({ ...state, recipientAddress })
     }
-  }, [recipientAddress, state?.recipientAddress, updateState])
+  }, [recipientAddress, state, updateState])
 
   return null
 }
