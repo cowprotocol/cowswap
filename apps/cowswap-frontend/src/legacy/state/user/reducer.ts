@@ -3,8 +3,6 @@ import { ConnectionType } from '@cowprotocol/wallet'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import { SerializedPair, SerializedToken } from './types'
-
 import { updateVersion } from '../global/actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -42,19 +40,6 @@ export interface UserState {
   // deadline set by user in minutes, used in all txns
   userDeadline: number
 
-  tokens: {
-    [chainId: number]: {
-      [address: string]: SerializedToken
-    }
-  }
-
-  pairs: {
-    [chainId: number]: {
-      // keyed by token0Address:token1Address
-      [key: string]: SerializedPair
-    }
-  }
-
   timestamp: number
   URLWarningVisible: boolean
 
@@ -62,10 +47,6 @@ export interface UserState {
   showSurveyPopup: boolean | undefined
 
   showDonationLink: boolean
-}
-
-function pairKey(token0Address: string, token1Address: string) {
-  return `${token0Address};${token1Address}`
 }
 
 export const initialState: UserState = {
@@ -82,8 +63,6 @@ export const initialState: UserState = {
   userSlippageTolerance: 'auto',
   userSlippageToleranceHasBeenMigratedToAuto: true,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
-  tokens: {},
-  pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   showSurveyPopup: undefined,
@@ -134,41 +113,6 @@ const userSlice = createSlice({
     updateShowDonationLink(state, action) {
       state.showDonationLink = action.payload.showDonationLink
     },
-    addSerializedToken(state, { payload: { serializedToken } }) {
-      if (!state.tokens) {
-        state.tokens = {}
-      }
-      state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
-      state.tokens[serializedToken.chainId][serializedToken.address] = serializedToken
-      state.timestamp = currentTimestamp()
-    },
-    removeSerializedToken(state, { payload: { address, chainId } }) {
-      if (!state.tokens) {
-        state.tokens = {}
-      }
-      state.tokens[chainId] = state.tokens[chainId] || {}
-      delete state.tokens[chainId][address]
-      state.timestamp = currentTimestamp()
-    },
-    addSerializedPair(state, { payload: { serializedPair } }) {
-      if (
-        serializedPair.token0.chainId === serializedPair.token1.chainId &&
-        serializedPair.token0.address !== serializedPair.token1.address
-      ) {
-        const chainId = serializedPair.token0.chainId
-        state.pairs[chainId] = state.pairs[chainId] || {}
-        state.pairs[chainId][pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
-      }
-      state.timestamp = currentTimestamp()
-    },
-    removeSerializedPair(state, { payload: { chainId, tokenAAddress, tokenBAddress } }) {
-      if (state.pairs[chainId]) {
-        // just delete both keys if either exists
-        delete state.pairs[chainId][pairKey(tokenAAddress, tokenBAddress)]
-        delete state.pairs[chainId][pairKey(tokenBAddress, tokenAAddress)]
-      }
-      state.timestamp = currentTimestamp()
-    },
     // MOD - legacy Uni code we want to keep
     toggleURLWarning(state) {
       state.URLWarningVisible = !state.URLWarningVisible
@@ -217,8 +161,6 @@ const userSlice = createSlice({
 
 export const {
   updateSelectedWallet,
-  addSerializedToken,
-  removeSerializedToken,
   updateMatchesDarkMode,
   updateUserDarkMode,
   updateUserDeadline,

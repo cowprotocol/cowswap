@@ -42,3 +42,4 @@ export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentTo
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { getTokenListSource } from './utils/getTokenListSource'
+export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
