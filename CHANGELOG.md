@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.2](https://github.com/cowprotocol/cowswap/compare/v1.48.1...v1.48.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* **swap:** don't reset swap form on recipient ens input ([#3234](https://github.com/cowprotocol/cowswap/issues/3234)) ([9c1f2f1](https://github.com/cowprotocol/cowswap/commit/9c1f2f1b13597a4af5600c1c915bd59ecf14f578))
+
 ## [1.48.1](https://github.com/cowprotocol/cowswap/compare/v1.48.0...v1.48.1) (2023-10-17)
 
 
