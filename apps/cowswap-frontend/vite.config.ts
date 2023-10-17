@@ -70,6 +70,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    base: './',
     define: {
       ...getReactProcessEnv(mode),
     },
