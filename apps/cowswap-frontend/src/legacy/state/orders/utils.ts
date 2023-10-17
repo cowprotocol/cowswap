@@ -382,7 +382,7 @@ export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispat
       ...order,
       ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
       ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
-    },
+    } as UpdateOrderParamsAction['order'],
   }
   dispatch(updateOrder(params))
 }
