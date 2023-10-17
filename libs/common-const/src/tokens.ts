@@ -1,8 +1,5 @@
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import cowLogo from '@cowprotocol/assets/cow-swap/cow.svg'
-import vCowLogo from '@cowprotocol/assets/cow-swap/vCOW.png'
-
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
 import { cowprotocolTokenUrl } from './cowprotocolTokenUrl'
@@ -158,7 +155,7 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
  * vCow token
  */
 const V_COW_TOKEN_MAINNET = new TokenWithLogo(
-  vCowLogo,
+  undefined,
   SupportedChainId.MAINNET,
   V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
   18,
@@ -194,7 +191,7 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo> = {
  * Cow token
  */
 const COW_TOKEN_MAINNET = new TokenWithLogo(
-  cowLogo,
+  undefined,
   SupportedChainId.MAINNET,
   COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
   18,
