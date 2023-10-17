@@ -27,7 +27,7 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
   return listsStatesList.reduce<TokensState>(
     (acc, list) => {
-      const isListEnabled = listsEnabledState[list.id]
+      const isListEnabled = listsEnabledState[list.source]
 
       list.list.tokens.forEach((token) => {
         if (token.chainId !== chainId) return

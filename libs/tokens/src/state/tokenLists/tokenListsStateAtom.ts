@@ -6,12 +6,9 @@ import { ListsSourcesByNetwork, ListState } from '../../types'
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
 
-type TokenListsState = Record<SupportedChainId, { [listId: string]: ListState }>
+type TokenListsState = Record<SupportedChainId, { [source: string]: ListState }>
 
-// Sources
-const defaultListsSourcesAtom = atom<ListsSourcesByNetwork>(DEFAULT_TOKENS_LISTS)
-
-export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>('userAddedTokenListsAtom:v1', {
+export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>('userAddedTokenListsAtom:v2', {
   [SupportedChainId.MAINNET]: [],
   [SupportedChainId.GNOSIS_CHAIN]: [],
   [SupportedChainId.GOERLI]: [],
@@ -19,14 +16,13 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
 
 export const allListsSourcesAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
-  const defaultTokensLists = get(defaultListsSourcesAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
-  return [...defaultTokensLists[chainId], ...userAddedTokenLists[chainId]]
+  return [...DEFAULT_TOKENS_LISTS[chainId], ...userAddedTokenLists[chainId]]
 })
 
 // Lists states
-export const listsStatesByChainAtom = atomWithStorage<TokenListsState>('allTokenListsInfoAtom:v1', {
+export const listsStatesByChainAtom = atomWithStorage<TokenListsState>('allTokenListsInfoAtom:v2', {
   [SupportedChainId.MAINNET]: {},
   [SupportedChainId.GNOSIS_CHAIN]: {},
   [SupportedChainId.GOERLI]: {},
@@ -49,11 +45,11 @@ export const listsEnabledStateAtom = atom((get) => {
   const allTokensLists = get(allListsSourcesAtom)
   const listStates = get(listsStatesMapAtom)
 
-  return allTokensLists.reduce<{ [listId: string]: boolean }>((acc, tokenList) => {
-    const state = listStates[tokenList.id]
+  return allTokensLists.reduce<{ [source: string]: boolean }>((acc, tokenList) => {
+    const state = listStates[tokenList.source]
     const isActive = state?.isEnabled
 
-    acc[tokenList.id] = typeof isActive === 'boolean' ? isActive : !!tokenList.enabledByDefault
+    acc[tokenList.source] = typeof isActive === 'boolean' ? isActive : !!tokenList.enabledByDefault
 
     return acc
   }, {})
