@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.3](https://github.com/cowprotocol/cowswap/compare/v1.48.2...v1.48.3) (2023-10-18)
+
+
+### Bug Fixes
+
+* display trade menu item badge ([#3236](https://github.com/cowprotocol/cowswap/issues/3236)) ([9d54b0a](https://github.com/cowprotocol/cowswap/commit/9d54b0acc8fd1af409776d005a2858647db817c6))
+
 ## [1.48.2](https://github.com/cowprotocol/cowswap/compare/v1.48.1...v1.48.2) (2023-10-17)
 
 
