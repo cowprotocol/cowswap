@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.4](https://github.com/cowprotocol/cowswap/compare/v1.48.3...v1.48.4) (2023-10-18)
+
+
+### Bug Fixes
+
+* **permit:** add support for usdc mainnet ([#3231](https://github.com/cowprotocol/cowswap/issues/3231)) ([8de7cfc](https://github.com/cowprotocol/cowswap/commit/8de7cfc51e2324f75b968aee015a2488d4dd2ba9))
+
 ## [1.48.3](https://github.com/cowprotocol/cowswap/compare/v1.48.2...v1.48.3) (2023-10-18)
 
 
