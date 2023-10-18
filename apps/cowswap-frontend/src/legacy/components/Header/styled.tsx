@@ -5,7 +5,6 @@ import { Row, RowFixed } from '@cowprotocol/ui'
 import useScrollPosition from '@react-hook/window-scroll'
 import { transparentize, darken } from 'polished'
 import { NavLink } from 'react-router-dom'
-import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
@@ -52,43 +51,6 @@ export const HeaderControlsUni = styled.div`
   `};
 `
 
-export const BalanceTextUni = styled(Text)`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-export const BalanceText = styled(BalanceTextUni)`
-  font-weight: 500;
-  font-size: 13px;
-  padding: 0 6px 0 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
-    max-width: 100px;
-    text-overflow: ellipsis;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-`
-
-export const AccountElementUni = styled.div<{ active: boolean }>`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 12px;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
-  white-space: nowrap;
-  width: 100%;
-  cursor: pointer;
-
-  :focus {
-    border: 1px solid blue;
-  }
-`
-
 export const StyledNavLinkUni = styled(NavLink)`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: left;
@@ -110,27 +72,6 @@ export const StyledNavLinkUni = styled(NavLink)`
   :hover,
   :focus {
     color: ${({ theme }) => darken(0.1, theme.text1)};
-  }
-`
-
-export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
-  border-radius: 21px;
-  border: 2px solid transparent;
-  transition: border 0.2s ease-in-out;
-  pointer-events: auto;
-  width: auto;
-
-  &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    height: 100%;
-  `}
-
-  ${BalanceText} {
-    min-width: initial;
   }
 `
 

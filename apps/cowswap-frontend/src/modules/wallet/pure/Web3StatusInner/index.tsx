@@ -19,11 +19,10 @@ export interface Web3StatusInnerProps {
   connectWallet: () => void
   connectionType: ConnectionType
   ensName?: string | null
-  isWidgetMode: boolean
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet, isWidgetMode } = props
+  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
 
@@ -35,7 +34,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     return (
       <Web3StatusError>
         <NetworkIcon />
-        <Text isWidgetMode={isWidgetMode}>
+        <Text>
           <Trans>Error</Trans>
         </Text>
       </Web3StatusError>
@@ -48,14 +47,14 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
         {hasPendingTransactions ? (
           <RowBetween>
             <FollowPendingTxPopup>
-              <Text isWidgetMode={isWidgetMode}>
+              <Text>
                 <Trans>{pendingCount} Pending</Trans>
               </Text>{' '}
             </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <Text isWidgetMode={isWidgetMode}>{ensName || shortenAddress(account)}</Text>
+          <Text>{ensName || shortenAddress(account)}</Text>
         )}
         {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>
@@ -64,10 +63,10 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
 
   return (
     <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
-      <Text isWidgetMode={isWidgetMode}>
+      <Text>
         <Trans>Connect wallet</Trans>
       </Text>
-      {isWidgetMode && <SVG src={ICON_WALLET} title="Wallet" /> }
+      <SVG src={ICON_WALLET} title="Wallet" />
     </Web3StatusConnect>
   )
 }

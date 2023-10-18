@@ -1,4 +1,3 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -11,7 +10,11 @@ import { AccountSelectorModal } from '../AccountSelectorModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 import { WalletModal } from '../WalletModal'
 
-export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
+export interface Web3StatusProps {
+  pendingActivities: string[]
+  className?: string
+}
+export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   const { connector } = useWeb3React()
   const { account, 
     // active,
@@ -19,7 +22,6 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
     } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
-  const isInjectedWidgetMode = isInjectedWidget()
 
   const error = useAppSelector(
     (state) => state.connection.errorByConnectionType[getWeb3ReactConnection(connector).type]
@@ -33,7 +35,7 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
   // }
 
   return (
-    <Wrapper isWidgetMode={isInjectedWidgetMode}>
+    <Wrapper className={className}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}
@@ -42,7 +44,6 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
         ensName={ensName}
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
-        isWidgetMode={isInjectedWidgetMode}
       />
       <WalletModal />
       <AccountSelectorModal />

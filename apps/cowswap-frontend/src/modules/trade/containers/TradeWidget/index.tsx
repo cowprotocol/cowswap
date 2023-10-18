@@ -6,10 +6,9 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 
 import { t } from '@lingui/macro'
 
-import { AccountElementComponent } from 'legacy/components/Header'
+import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -19,7 +18,6 @@ import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useOrdersPanel } from 'common/hooks/useOrdersPanel'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
@@ -33,7 +31,6 @@ import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTo
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 import { WrapNativeModal } from '../WrapNativeModal'
-
 
 export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
@@ -131,7 +128,6 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
 
   const { pendingActivity } = useCategorizeRecentActivity()
-  const { isOrdersPanelOpen, handleOpenOrdersPanel, handleCloseOrdersPanel } = useOrdersPanel()
 
   return (
     <styledEl.Container id={id}>
@@ -150,7 +146,9 @@ export function TradeWidget(props: TradeWidgetProps) {
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-            {isInjectedWidgetMode && <AccountElementComponent isWidgetMode={isInjectedWidgetMode} pendingActivity={pendingActivity} handleOpenOrdersPanel={handleOpenOrdersPanel} />}
+            {isInjectedWidgetMode && (
+              <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
+            )}
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 
@@ -205,8 +203,6 @@ export function TradeWidget(props: TradeWidgetProps) {
           )}
         </styledEl.ContainerBox>
       </styledEl.Container>
-
-      {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
     </styledEl.Container>
   )
 }
