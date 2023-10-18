@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.0](https://github.com/cowprotocol/cowswap/compare/v1.48.4...v1.49.0) (2023-10-18)
+
+
+### Features
+
+* deploy to IPFS ([#3237](https://github.com/cowprotocol/cowswap/issues/3237)) ([e69af4d](https://github.com/cowprotocol/cowswap/commit/e69af4d7140e384180c98b4c5175b341a2e9a542))
+
 ## [1.48.4](https://github.com/cowprotocol/cowswap/compare/v1.48.3...v1.48.4) (2023-10-18)
 
 
