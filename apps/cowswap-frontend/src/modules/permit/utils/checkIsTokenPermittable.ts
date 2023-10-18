@@ -8,7 +8,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildP
 import { getPermitDeadline } from './getPermitDeadline'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
-import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER } from '../const'
+import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
 
 const EIP_2162_PERMIT_PARAMS = {
@@ -74,6 +74,22 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
     return { error: e.message || e.toString() }
   }
 
+  let version: string | undefined = undefined
+
+  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress)) {
+    // If the token does not outright fails when calling with the `version` value
+    // returned by the contract, fetch it.
+
+    try {
+      // Required by USDC-mainnet as its version is `2`.
+      // There might be other tokens that need this as well.
+      version = await eip2612PermitUtils.getTokenVersion(tokenAddress)
+    } catch (e) {
+      // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
+      console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress}`, e)
+    }
+  }
+
   const baseParams: BaseParams = {
     chainId,
     eip2612PermitUtils,
@@ -82,6 +98,7 @@ async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittablePa
     tokenAddress,
     tokenName,
     walletAddress: owner,
+    version,
   }
 
   try {
@@ -108,6 +125,7 @@ type BaseParams = {
   spender: string
   eip2612PermitUtils: Eip2612PermitUtils
   nonce: number
+  version: string | undefined
 }
 
 type EstimateParams = BaseParams & {
@@ -116,7 +134,7 @@ type EstimateParams = BaseParams & {
 }
 
 async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePermitResult> {
-  const { provider, chainId, walletAddress, tokenAddress, type } = params
+  const { provider, chainId, walletAddress, tokenAddress, type, version } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
 
@@ -136,14 +154,14 @@ async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePerm
 
   return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
     ? {
-        gasLimit,
         type,
+        version,
       }
     : false
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<string> {
-  const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress } = params
+  const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress, version } = params
   return buildEip2162PermitCallData({
     eip2162Utils: eip2612PermitUtils,
     callDataParams: [
@@ -156,12 +174,13 @@ async function getEip2612CallData(params: BaseParams): Promise<string> {
       +chainId,
       tokenName,
       tokenAddress,
+      version,
     ],
   })
 }
 
 async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
-  const { eip2612PermitUtils, tokenAddress, walletAddress, spender, nonce, chainId, tokenName } = params
+  const { eip2612PermitUtils, tokenAddress, walletAddress, spender, nonce, chainId, tokenName, version } = params
 
   const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
 
@@ -178,6 +197,7 @@ async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
         chainId as number,
         tokenName,
         tokenAddress,
+        version,
       ],
     })
   }
