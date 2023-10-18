@@ -30,11 +30,11 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0'};
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0 7px 0 0' : '0 5px 0 0'};
   margin: 0;
 
   ${AccountElement} {
-    margin: 0 20px 0 auto;
+    margin: 0 10px 0 auto;
     border: 0;
   }
 

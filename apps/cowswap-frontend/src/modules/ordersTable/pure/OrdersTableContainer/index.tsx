@@ -12,15 +12,19 @@ import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
+import { UI } from 'common/constants/theme'
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
-const OrdersBox = styled.div`
-  background: transparent;
-  border-radius: 16px;
-  padding: 0;
+const OrdersBox = styled.div<{ isWidgetMode: boolean }>`
+  background: ${({ isWidgetMode }) => (isWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+  border: none;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: none;
+  position: relative;
+  padding: ${({ isWidgetMode }) => (isWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
 `
@@ -170,6 +174,8 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
+
+  const isInjectedWidgetMode = isInjectedWidget()
   const content = () => {
     if (!isWalletConnected) {
       return (
@@ -245,7 +251,7 @@ export function OrdersTableContainer({
   }
 
   return (
-    <OrdersBox>
+    <OrdersBox isWidgetMode={isInjectedWidgetMode}>
       <Header>
         <h2>Your Orders</h2>
         <TabsContainer withSingleChild={!children}>

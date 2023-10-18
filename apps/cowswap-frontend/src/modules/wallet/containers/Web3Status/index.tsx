@@ -13,7 +13,10 @@ import { WalletModal } from '../WalletModal'
 
 export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
   const { connector } = useWeb3React()
-  const { account, active, chainId } = useWalletInfo()
+  const { account, 
+    // active,
+     chainId 
+    } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
   const isInjectedWidgetMode = isInjectedWidget()
@@ -25,9 +28,9 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNotPendingOrder()
 
-  if (!active) {
-    return null
-  }
+  // if (!active) {
+  //   return null
+  // }
 
   return (
     <Wrapper isWidgetMode={isInjectedWidgetMode}>

@@ -492,7 +492,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   html {
     background-color: ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
-    ${({ theme }) => theme.body.background};
+    ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : theme.body.background};
   }
 
   *, *:after, *:before { box-sizing:border-box; }
@@ -503,6 +503,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
       overflow: hidden;
     }
   }
+
+  /* body > #root {
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-color: ${({ theme }) => theme.darkMode? 'dark' : 'light'}; // Firefox only
+  } */
 
   ::selection {
     background: var(${UI.COLOR_CONTAINER_BG_02});
