@@ -89,7 +89,7 @@ const MenuItem = ({
   <styledEl.MenuItem isActive={isActive}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {item.featureGuard && badgeText && (
+      {badgeText && (
         <styledEl.Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
         </styledEl.Badge>
