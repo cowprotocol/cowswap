@@ -25,6 +25,9 @@ const Title = styled.div`
   align-items: center;
   justify-content: center;
   flex-grow: 1;
+  font-size: 18px;
+  font-weight: 600;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
 `
 
 export interface ModalHeaderProps {
