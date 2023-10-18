@@ -7,14 +7,14 @@ import URLWarning from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
 
+import { OrdersPanel } from 'modules/account'
 import { useInitializeUtm } from 'modules/utm'
 
+import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-
-import { useAnalyticsReporter } from '../../../../common/hooks/useAnalyticsReporter'
 
 export function App() {
   useAnalyticsReporter()
@@ -30,13 +30,15 @@ export function App() {
       <styledEl.AppWrapper>
         <URLWarning />
 
+        <OrdersPanel />
+
         {/* Hide header for injected widget mode */}
         {!isInjectedWidgetMode && (
           <styledEl.HeaderWrapper>
             <Header />
           </styledEl.HeaderWrapper>
         )}
-        
+
         <styledEl.BodyWrapper>
           <TopLevelModals />
           <RoutesApp />
@@ -50,7 +52,6 @@ export function App() {
             <Footer />
           </styledEl.FooterWrapper>
         )}
-        
       </styledEl.AppWrapper>
     </ErrorBoundary>
   )
