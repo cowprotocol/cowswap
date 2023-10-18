@@ -12,6 +12,7 @@ import { getAppDataHooks } from 'modules/appData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { CheckHasValidPendingPermit } from '../types'
+import { fixTokenName } from '../utils/fixTokenName'
 import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
 
 export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
@@ -80,7 +81,7 @@ async function checkIsSingleCallDataAValidPermit(
   tokenName: string,
   callData: string
 ): Promise<boolean | undefined> {
-  const params = { chainId, tokenName, tokenAddress, callData }
+  const params = { chainId, tokenName: fixTokenName(tokenName), tokenAddress, callData }
 
   let recoverPermitOwnerPromise: Promise<string> | undefined = undefined
 
