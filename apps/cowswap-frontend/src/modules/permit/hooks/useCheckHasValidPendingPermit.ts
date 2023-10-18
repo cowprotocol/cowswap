@@ -11,12 +11,16 @@ import { getAppDataHooks } from 'modules/appData'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { CheckHasValidPendingPermit } from '../types'
+import { useGetPermitInfo } from './useGetPermitInfo'
+
+import { CheckHasValidPendingPermit, PermitInfo, SupportedPermitInfo } from '../types'
+import { fixTokenName } from '../utils/fixTokenName'
 import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
 
 export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
+  const getPermitInfo = useGetPermitInfo(chainId)
 
   return useCallback(
     async (order: ParsedOrder): Promise<boolean | undefined> => {
@@ -25,7 +29,14 @@ export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
         return undefined
       }
 
-      return checkHasValidPendingPermit(order, provider, chainId)
+      const permitInfo = getPermitInfo(order.inputToken.address)
+
+      if (permitInfo === undefined) {
+        // Missing permit info, we can't tell
+        return undefined
+      }
+
+      return checkHasValidPendingPermit(order, provider, chainId, permitInfo)
     },
     [chainId, provider]
   )
@@ -34,7 +45,8 @@ export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
 async function checkHasValidPendingPermit(
   order: ParsedOrder,
   provider: Web3Provider,
-  chainId: SupportedChainId
+  chainId: SupportedChainId,
+  permitInfo: PermitInfo
 ): Promise<boolean> {
   const { fullAppData, partiallyFillable, executionData } = order
   const preHooks = getAppDataHooks(fullAppData)?.pre
@@ -44,7 +56,9 @@ async function checkHasValidPendingPermit(
     !preHooks ||
     // Permit is only executed for partially fillable orders in the first execution
     // Thus, if there is any amount executed, partiallyFillable permit is no longer valid
-    (partiallyFillable && executionData.filledAmount.gt('0'))
+    (partiallyFillable && executionData.filledAmount.gt('0')) ||
+    // Permit not supported, shouldn't even get this far
+    !permitInfo
   ) {
     // These cases we know for sure permit isn't valid or there is no permit
     return false
@@ -57,7 +71,7 @@ async function checkHasValidPendingPermit(
 
   const checkedHooks = await Promise.all(
     preHooks.map(({ callData }) =>
-      checkIsSingleCallDataAValidPermit(order, chainId, eip2162Utils, tokenAddress, tokenName, callData)
+      checkIsSingleCallDataAValidPermit(order, chainId, eip2162Utils, tokenAddress, tokenName, callData, permitInfo)
     )
   )
 
@@ -78,9 +92,10 @@ async function checkIsSingleCallDataAValidPermit(
   eip2162Utils: Eip2612PermitUtils,
   tokenAddress: string,
   tokenName: string,
-  callData: string
+  callData: string,
+  { version }: SupportedPermitInfo
 ): Promise<boolean | undefined> {
-  const params = { chainId, tokenName, tokenAddress, callData }
+  const params = { chainId, tokenName: fixTokenName(tokenName), tokenAddress, callData, version }
 
   let recoverPermitOwnerPromise: Promise<string> | undefined = undefined
 
