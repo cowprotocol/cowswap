@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.6](https://github.com/cowprotocol/cowswap/compare/v1.48.5...v1.48.6) (2023-10-18)
+
+
+### Bug Fixes
+
+* **permit:** usdc limit orders warning ([#3247](https://github.com/cowprotocol/cowswap/issues/3247)) ([d958d0f](https://github.com/cowprotocol/cowswap/commit/d958d0fefb6f18418fb596b75b872e5b381d915d))
+
 ## [1.48.5](https://github.com/cowprotocol/cowswap/compare/v1.48.4...v1.48.5) (2023-10-18)
 
 
