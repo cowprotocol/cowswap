@@ -30,9 +30,7 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()
 
-  const themeObject = useMemo(() => {
-    return theme(darkMode, isInjectedWidgetMode);
-  }, [darkMode, isInjectedWidgetMode]);
+  const themeObject = useMemo(() => theme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

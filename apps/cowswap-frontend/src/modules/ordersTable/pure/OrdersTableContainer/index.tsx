@@ -180,7 +180,7 @@ export function OrdersTableContainer({
           <h3>
             <Trans>Connect a wallet</Trans>
           </h3>
-          {!isInjectedWidget && (
+          {!isInjectedWidget() && (
             <>
               <p>
                 <Trans>
