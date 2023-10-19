@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.7](https://github.com/cowprotocol/cowswap/compare/v1.48.6...v1.48.7) (2023-10-19)
+
+
+### Bug Fixes
+
+* **swap:** periodically refresh unsupported tokens state ([#3252](https://github.com/cowprotocol/cowswap/issues/3252)) ([f5986a3](https://github.com/cowprotocol/cowswap/commit/f5986a30f850eead4eb633069967ac34947ab68e))
+
 ## [1.48.6](https://github.com/cowprotocol/cowswap/compare/v1.48.5...v1.48.6) (2023-10-18)
 
 
