@@ -22,6 +22,7 @@ import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
@@ -201,6 +202,8 @@ export function TradeWidget(props: TradeWidgetProps) {
               {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
             </>
           )}
+
+          {isInjectedWidgetMode && <PoweredFooter />}
         </styledEl.ContainerBox>
       </styledEl.Container>
     </styledEl.Container>
