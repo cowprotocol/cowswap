@@ -504,12 +504,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
 
-  /* body > #root {
-    overflow-x: hidden;
-    overflow-y: auto;
-    scrollbar-color: ${({ theme }) => theme.darkMode? 'dark' : 'light'}; // Firefox only
-  } */
-
   ::selection {
     background: var(${UI.COLOR_CONTAINER_BG_02});
     color: var(${UI.COLOR_WHITE});
