@@ -12,12 +12,12 @@ const Header = styled.div`
   font-weight: 500;
   font-size: 20px;
   padding: 10px 0;
+`
 
-  ${IconButton} {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+const StyledIconButton = styled(IconButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const Title = styled.div`
@@ -45,9 +45,9 @@ export function ModalHeader({ children, className, onBack, onClose }: ModalHeade
         </IconButton>
       <Title>{children}</Title>
       { onClose && <div>
-        <IconButton onClick={onClose}>
+        <StyledIconButton onClick={onClose}>
           <X />
-        </IconButton>
+        </StyledIconButton>
       </div>
       }
     </Header>

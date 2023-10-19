@@ -18,13 +18,14 @@ import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
-const OrdersBox = styled.div<{ isWidgetMode: boolean }>`
-  background: ${({ isWidgetMode }) => (isWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+const OrdersBox = styled.div`
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: none;
   position: relative;
-  padding: ${({ isWidgetMode }) => (isWidgetMode ? '16px' : '0')};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
 `
@@ -175,7 +176,6 @@ export function OrdersTableContainer({
   ordersPermitStatus,
 }: OrdersProps) {
 
-  const isInjectedWidgetMode = isInjectedWidget()
   const content = () => {
     if (!isWalletConnected) {
       return (
@@ -251,7 +251,7 @@ export function OrdersTableContainer({
   }
 
   return (
-    <OrdersBox isWidgetMode={isInjectedWidgetMode}>
+    <OrdersBox>
       <Header>
         <h2>Your Orders</h2>
         <TabsContainer withSingleChild={!children}>
