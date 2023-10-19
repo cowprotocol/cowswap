@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { generatePermitHook, getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -10,9 +11,7 @@ import {
   storePermitCacheAtom,
   userPermitCacheAtom,
 } from '../state/permitCacheAtom'
-import { GeneratePermitHook, GeneratePermitHookParams, PermitHookData } from '../types'
-import { generatePermitHook } from '../utils/generatePermitHook'
-import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
+import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 /**
  * Hook that returns callback to generate permit hook data
