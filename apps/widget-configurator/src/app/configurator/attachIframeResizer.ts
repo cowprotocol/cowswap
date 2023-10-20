@@ -31,7 +31,8 @@ export function AttachIframeResizer({ iframeId, originCheck }: IframeResizerProp
         Object.prototype.hasOwnProperty.call(data, 'height')
       ) {
         console.log('got iframeHeight ====>', data.height)
-        iframeElement.style.height = `${data.height}px`
+        iframeElement.style.height = 'auto' // Reset the iframe's height
+        iframeElement.style.height = `${data.height}px` // Adjust the height based on the content
       }
     }
 

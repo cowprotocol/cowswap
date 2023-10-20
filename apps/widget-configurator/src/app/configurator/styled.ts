@@ -31,6 +31,6 @@ export const ContentStyled = {
     border: 0,
     margin: '0 auto',
     borderRadius: '1.6rem',
-    overflow: 'hidden',
+    overflow: 'auto',
   },
 }
