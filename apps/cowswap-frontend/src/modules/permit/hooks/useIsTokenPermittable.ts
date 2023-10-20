@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { checkIsTokenPermittable, IsTokenPermittableResult } from '@cowprotocol/permit-utils'
+import { getTokenPermitInfo, IsTokenPermittableResult } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -52,22 +52,20 @@ export function useIsTokenPermittable(
       return
     }
 
-    checkIsTokenPermittable({ spender, tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then(
-      (result) => {
-        if (!result) {
-          // When falsy, we know it doesn't support permit. Cache it.
-          addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })
-        } else if ('error' in result) {
-          // When error, we don't know. Log and don't cache.
-          console.debug(
-            `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`
-          )
-        } else {
-          // Otherwise, we know it is permittable. Cache it.
-          addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
-        }
+    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
+      if (!result) {
+        // When falsy, we know it doesn't support permit. Cache it.
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })
+      } else if ('error' in result) {
+        // When error, we don't know. Log and don't cache.
+        console.debug(
+          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`
+        )
+      } else {
+        // Otherwise, we know it is permittable. Cache it.
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
-    )
+    })
   }, [addPermitInfo, chainId, isNative, isPermitEnabled, lowerCaseAddress, permitInfo, provider, spender, tokenName])
 
   if (isNative) {

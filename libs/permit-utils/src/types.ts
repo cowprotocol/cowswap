@@ -30,7 +30,7 @@ export type PermitHookData = latest.CoWHook
 
 type FailedToIdentify = { error: string }
 
-export type EstimatePermitResult =
+export type GetTokenPermitIntoResult =
   // When it's a permittable token:
   | SupportedPermitInfo
   // When something failed:
@@ -48,7 +48,7 @@ export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
   callDataParams: Parameters<Eip2612PermitUtils['buildDaiLikePermitCallData']>
 }
 
-export type CheckIsTokenPermittableParams = {
+export type GetTokenPermitInfoParams = {
   spender: string
   tokenAddress: string
   tokenName: string

@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
-import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
+import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 
@@ -22,9 +22,9 @@ const DAI_LIKE_PERMIT_PARAMS = {
   expiry: getPermitDeadline(),
 }
 
-const REQUESTS_CACHE: Record<string, Promise<EstimatePermitResult>> = {}
+const REQUESTS_CACHE: Record<string, Promise<GetTokenPermitIntoResult>> = {}
 
-export async function checkIsTokenPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
+export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { tokenAddress, chainId } = params
 
   const key = `${chainId}-${tokenAddress.toLowerCase()}`
@@ -42,7 +42,7 @@ export async function checkIsTokenPermittable(params: CheckIsTokenPermittablePar
   return request
 }
 
-async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
+async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { spender, tokenAddress, tokenName, chainId, provider } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
@@ -126,7 +126,7 @@ type EstimateParams = BaseParams & {
   provider: Web3Provider
 }
 
-async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePermitResult> {
+async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
   const { provider, chainId, walletAddress, tokenAddress, type, version } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData

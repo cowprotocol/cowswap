@@ -10,12 +10,12 @@ yarn add @cowprotocol/permit-utils
 
 ## Usage
 
-### `checkIsTokenPermittable`
+### `getTokenPermitInfo`
 
 ```typescript
-import { checkIsTokenPermittable } from "@cowprotocol/permit-utils"
+import { getTokenPermitInfo } from "@cowprotocol/permit-utils"
 
-const permitInfo = await checkIsTokenPermittable({
+const permitInfo = await getTokenPermitInfo({
   spender, tokenAddress, tokenName, chainId, provider
 })
 ```
