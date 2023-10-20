@@ -3,11 +3,11 @@ import type { Web3Provider } from '@ethersproject/providers'
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 
 const EIP_2162_PERMIT_PARAMS = {

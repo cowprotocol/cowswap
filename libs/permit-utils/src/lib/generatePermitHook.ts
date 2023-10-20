@@ -1,9 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers'
 
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
-
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
