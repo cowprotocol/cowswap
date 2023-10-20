@@ -14,7 +14,7 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
 /**
  * Cache by provider. Here we cache per provider as each account should have its own instance
  */
-const PROVIDER_UTILS_CACHE = new Map<Web3Provider, Eip2612PermitUtils>()
+const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
 export function getPermitUtilsInstance(
   chainId: SupportedChainId,
@@ -26,7 +26,8 @@ export function getPermitUtilsInstance(
   if (!account && chainCache) {
     return chainCache
   }
-  const providerCache = PROVIDER_UTILS_CACHE.get(provider)
+  const providerCacheKey = `${chainId}-${account}`
+  const providerCache = PROVIDER_UTILS_CACHE.get(providerCacheKey)
 
   if (providerCache) {
     return providerCache
@@ -36,9 +37,14 @@ export function getPermitUtilsInstance(
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
   if (!account) {
+    console.log(`[getPermitUtilsInstance] Set cached chain utils for chain ${chainId}`, eip2612PermitUtils)
     CHAIN_UTILS_CACHE.set(chainId, eip2612PermitUtils)
   } else {
-    PROVIDER_UTILS_CACHE.set(provider, eip2612PermitUtils)
+    console.log(
+      `[getPermitUtilsInstance] Set cached provider utils for chain ${chainId}-${account}`,
+      eip2612PermitUtils
+    )
+    PROVIDER_UTILS_CACHE.set(providerCacheKey, eip2612PermitUtils)
   }
 
   return eip2612PermitUtils
