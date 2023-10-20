@@ -140,3 +140,18 @@ export const SelectMenu = styled.div`
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 `
+
+export const SelectMenu = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  padding: 16px;
+  gap: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+`

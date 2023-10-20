@@ -7,6 +7,8 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
+
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
@@ -29,6 +31,14 @@ export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
+const UNSUPPORTED_TOKEN_TTL = ms`1h`
+
+/**
+ * Since a token might become supported, we should periodically (once in 1h) refresh its state
+ */
+const isUnsupportedTokenExpired = ({ dateAdded }: { dateAdded: number }) => {
+  return dateAdded + UNSUPPORTED_TOKEN_TTL < Date.now()
+}
 
 type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 
@@ -233,7 +243,9 @@ export function FeesUpdater(): null {
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
       // if no token is unsupported and needs refetching
-      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+      const hasToRefetch =
+        (!unsupportedToken || isUnsupportedTokenExpired(unsupportedToken)) &&
+        isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
       if (hasToRefetch) {
         // Decide if this is a new quote, or just a refresh

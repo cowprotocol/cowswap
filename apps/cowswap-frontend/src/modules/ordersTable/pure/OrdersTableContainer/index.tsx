@@ -175,7 +175,6 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
-
   const content = () => {
     if (!isWalletConnected) {
       return (

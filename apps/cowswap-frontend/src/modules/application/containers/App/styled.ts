@@ -37,10 +37,10 @@ export const BodyWrapper = styled.div`
   justify-content: center;
   flex: 1 1 auto;
   z-index: 2;
-  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '16px 16px 0' : '5vh 16px 0'};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px 16px 0' : '5vh 16px 0')};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: ${({ theme }) => theme.isInjectedWidgetMode ? '0 0 16px' : '0 10px 16px'};
+    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '0 10px 16px')};
     flex: none;
   `}
 `

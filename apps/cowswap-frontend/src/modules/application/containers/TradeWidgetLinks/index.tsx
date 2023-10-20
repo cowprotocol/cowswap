@@ -82,11 +82,14 @@ export function TradeWidgetLinks({
     )
   })
 
-  const singleMenuItem = menuItems.length === 1;
+  const singleMenuItem = menuItems.length === 1
 
   return isDropdown ? (
     <>
-      <styledEl.MenuItem onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)} isDropdownVisible={isDropdownVisible}>
+      <styledEl.MenuItem
+        onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
+        isDropdownVisible={isDropdownVisible}
+      >
         <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
             {menuItems.find((item) => item.props.isActive)?.props.item.label}
@@ -94,16 +97,17 @@ export function TradeWidgetLinks({
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>
-      
-      {isDropdownVisible && <styledEl.SelectMenu>
-        {isDropdownVisible && <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>}
-        {menuItems}
+
+      {isDropdownVisible && (
+        <styledEl.SelectMenu>
+          <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
+          {menuItems}
         </styledEl.SelectMenu>
-      }
+      )}
     </>
   ) : (
     <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
-  );
+  )
 }
 
 const MenuItem = ({
@@ -126,7 +130,7 @@ const MenuItem = ({
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {item.featureGuard && badgeText && (
+      {badgeText && (
         <styledEl.Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
         </styledEl.Badge>
