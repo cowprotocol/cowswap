@@ -1,15 +1,13 @@
-export * from './lib/buildPermitCallData'
+export * from './lib/checkIsCallDataAValidPermit'
 export * from './lib/checkIsTokenPermittable'
 export * from './lib/generatePermitHook'
 export * from './lib/getPermitUtilsInstance'
-export * from './lib/checkIsCallDataAValidPermit'
 
 export type {
-  PermitInfo,
-  SupportedPermitInfo,
-  GeneratePermitHook,
-  PermitHookParams,
-  PermitHookData,
-  PermitType,
   IsTokenPermittableResult,
+  PermitHookData,
+  PermitHookParams,
+  PermitInfo,
+  PermitType,
+  SupportedPermitInfo,
 } from './types'

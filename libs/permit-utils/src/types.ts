@@ -14,15 +14,7 @@ export type SupportedPermitInfo = {
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
 
-export type PermittableTokens = Record<SupportedChainId, Record<string, PermitInfo>>
-
 export type IsTokenPermittableResult = PermitInfo | undefined
-
-export type AddPermitTokenParams = {
-  chainId: SupportedChainId
-  tokenAddress: string
-  permitInfo: PermitInfo
-}
 
 export type PermitHookParams = {
   inputToken: Token
@@ -33,10 +25,6 @@ export type PermitHookParams = {
   account?: string | undefined
   nonce?: number | undefined
 }
-
-export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'>
-
-export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
 
 export type PermitHookData = latest.CoWHook
 
@@ -66,23 +54,3 @@ export type CheckIsTokenPermittableParams = {
   chainId: SupportedChainId
   provider: Web3Provider
 }
-
-export type PermitCache = Record<string, string>
-
-export type CachedPermitData = {
-  hookData: PermitHookData
-  nonce: number | undefined
-}
-
-export type PermitCacheKeyParams = {
-  chainId: SupportedChainId
-  tokenAddress: string
-  account: string | undefined
-  nonce: number | undefined
-}
-
-export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
-
-export type GetPermitCacheParams = PermitCacheKeyParams
-
-export type OrdersPermitStatus = Record<string, boolean | undefined>
