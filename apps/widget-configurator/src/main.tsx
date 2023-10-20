@@ -13,7 +13,7 @@ export const ColorModeContext = React.createContext({
   setAutoMode: () => {},
 })
 
-const globalStyles = (theme: Theme) => ({
+const globalStyles = (theme: Theme, mode: PaletteMode) => ({
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",
     fontDisplay: 'fallback',
@@ -28,7 +28,7 @@ const globalStyles = (theme: Theme) => ({
     padding: 0,
   },
   'html, body': {
-    height: 'auto',
+    height: '100%',
     width: '100%',
   },
   body: {
@@ -47,8 +47,10 @@ const globalStyles = (theme: Theme) => ({
     fontVariant: 'none',
     fontFeatureSettings: "'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on",
     WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-    background: theme.palette.cow.background,
     backgroundAttachment: 'fixed',
+    backgroundColor: theme.palette.cow.background,
+    background: mode === 'light' && theme.palette.cow.gradient,
+    backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
   },
 })
 
@@ -104,8 +106,9 @@ function MainApp() {
               default: 'rgb(12, 38, 75)',
             },
             cow: {
-              background:
-                'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%) fixed',
+              background: '#07162d',
+              gradient:
+                'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%)',
             },
           }
         : {
@@ -125,7 +128,8 @@ function MainApp() {
               paper: '#ffffff',
             },
             cow: {
-              background: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed',
+              background: '#ffffff',
+              gradient: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed',
             },
           }
 
@@ -139,7 +143,7 @@ function MainApp() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <GlobalStyles styles={globalStyles} />
+        <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
         <App />
       </ThemeProvider>
     </ColorModeContext.Provider>
