@@ -4,7 +4,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { PERMIT_SIGNER } from '../const'
-import { PermitProviderConnector } from './PermitProviderConnector'
+import { PermitProviderConnector } from '../utils/PermitProviderConnector'
 
 /**
  * Cache by network. Here we don't care about the provider as a static account will be used for the signature
