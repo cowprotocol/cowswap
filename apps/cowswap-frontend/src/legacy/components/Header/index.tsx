@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -10,11 +9,10 @@ import { useNavigate } from 'react-router-dom'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLarge, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 
-import { useAccountModalState } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
@@ -52,14 +50,11 @@ export default function Header() {
   }, [toggleDarkModeAux, darkMode])
   const swapRawState = useSwapRawState()
   const { state: tradeState } = useTradeState()
-  const { isOpen: isAccountModalOpen } = useAccountModalState()
 
   const navigate = useNavigate()
 
   const isUpToLarge = useMediaQuery(upToLarge)
-  const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
-  const isLargeAndUp = useMediaQuery(LargeAndUp)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
@@ -94,12 +89,6 @@ export default function Header() {
     handleMobileMenuOnClick,
     tradeContext: tradeMenuContext,
   }
-
-  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
-  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
-  useEffect(() => {
-    isMobileMenuOpen || isAccountModalOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-  }, [isAccountModalOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>

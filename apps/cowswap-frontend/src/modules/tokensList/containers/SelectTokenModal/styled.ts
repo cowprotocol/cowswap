@@ -36,7 +36,7 @@ export const SearchInput = styled.input`
   color: var(${UI.COLOR_TEXT1});
   padding: 16px;
   border: 1px solid var(${UI.COLOR_GREY});
-  -webkit-appearance: none;
+  appearance: none;
   transition: border 100ms;
   background: transparent;
 

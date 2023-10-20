@@ -11,7 +11,7 @@ const badgeBackgrounds: Record<BadgeType, string> = {
   alert2: `var(${UI.COLOR_ALERT2_BG})`,
   success: `var(${UI.COLOR_SUCCESS_BG})`,
   default: 'transparent', // text only
-};
+}
 
 const badgeColors: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFORMATION_TEXT})`,
@@ -19,7 +19,7 @@ const badgeColors: Record<BadgeType, string> = {
   alert2: `var(${UI.COLOR_ALERT2_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
   default: `var(${UI.COLOR_TEXT1_INACTIVE})`, // text only
-};
+}
 
 export const Badge = styled.div<{ type?: BadgeType }>`
   background: ${({ type }) => badgeBackgrounds[type || 'default']};
@@ -42,8 +42,8 @@ export const Badge = styled.div<{ type?: BadgeType }>`
 `
 
 Badge.defaultProps = {
-  type: 'default'
-};
+  type: 'default',
+}
 
 export const Link = styled(NavLink)`
   display: flex;
@@ -86,36 +86,44 @@ export const Wrapper = styled.div`
 export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
   display: flex;
   align-items: center;
-  font-size: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '14px'};
-  font-weight: ${({ theme }) => theme.isInjectedWidgetMode ? '600' : '500'};
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '7px 0' : '5px 10px'};
-  background: transparent;
-  transition: background 0.2s ease-in-out;
 
-  &:hover {
-    background: var(${UI.COLOR_GREY});
-  }
+  > a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '14px')};
+    font-weight: ${({ theme }) => (theme.isInjectedWidgetMode ? '600' : '500')};
+    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '7px' : '5px 10px')};
+    background: transparent;
+    transition: background 0.2s ease-in-out;
 
-  ${({ isActive }) =>
-    isActive &&
-    css`
+    &:hover {
       background: var(${UI.COLOR_GREY});
+    }
 
-      ${Link} {
-        color: var(${UI.COLOR_TEXT1});
-      }
+    ${({ isActive }) =>
+      isActive &&
+      css`
+        background: var(${UI.COLOR_GREY});
 
-      ${Link} > ${Badge} {
-        display: none;
-      }
-  `}
+        ${Link} {
+          color: var(${UI.COLOR_TEXT1});
+        }
 
-  ${({ isDropdownVisible }) =>
-    isDropdownVisible &&
-    css`
-      padding: 7px 10px;
-    `}
+        ${Link} > ${Badge} {
+          display: none;
+        }
+      `}
+
+    ${({ isDropdownVisible }) =>
+      isDropdownVisible &&
+      css`
+        padding: 16px;
+        width: 100%;
+      `}
+  }
 `
 
 export const SelectMenu = styled.div`
@@ -128,7 +136,7 @@ export const SelectMenu = styled.div`
   left: 0;
   top: 0;
   padding: 16px;
-  gap: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '24px'};
+  gap: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 `

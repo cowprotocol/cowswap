@@ -5,6 +5,7 @@ import IMAGE_CARRET from 'assets/icon/carret.svg'
 import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
+import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -50,7 +51,7 @@ export function TradeWidgetLinks({
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
 
-  const handleMenuItemClick = (_item: MenuItemConfig) => {
+  const handleMenuItemClick = (_item?: MenuItemConfig) => {
     if (menuItems.length === 1) return
     setDropdownVisible(false)
   }
@@ -81,11 +82,14 @@ export function TradeWidgetLinks({
     )
   })
 
-  const singleMenuItem = menuItems.length === 1;
+  const singleMenuItem = menuItems.length === 1
 
   return isDropdown ? (
     <>
-      <styledEl.MenuItem onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)} isDropdownVisible={isDropdownVisible}>
+      <styledEl.MenuItem
+        onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
+        isDropdownVisible={isDropdownVisible}
+      >
         <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
             {menuItems.find((item) => item.props.isActive)?.props.item.label}
@@ -93,11 +97,17 @@ export function TradeWidgetLinks({
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>
-      {isDropdownVisible && <styledEl.SelectMenu>{menuItems}</styledEl.SelectMenu>}
+
+      {isDropdownVisible && (
+        <styledEl.SelectMenu>
+          <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
+          {menuItems}
+        </styledEl.SelectMenu>
+      )}
     </>
   ) : (
     <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
-  );
+  )
 }
 
 const MenuItem = ({

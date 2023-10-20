@@ -81,7 +81,7 @@ export function Configurator({ title }: { title: string }) {
 
   const constructIframeURL = React.useCallback(() => {
     if (network) {
-      return `https://swap-dev-git-widget-ui-6-cowswap.vercel.app/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
+      return `http://localhost:3000/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
     }
     return ''
   }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network])

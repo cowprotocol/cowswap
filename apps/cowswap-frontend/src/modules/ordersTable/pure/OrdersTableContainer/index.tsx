@@ -12,15 +12,20 @@ import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
+import { UI } from 'common/constants/theme'
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 const OrdersBox = styled.div`
-  background: transparent;
-  border-radius: 16px;
-  padding: 0;
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+  border: none;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: none;
+  position: relative;
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
 `
@@ -180,7 +185,7 @@ export function OrdersTableContainer({
           <h3>
             <Trans>Connect a wallet</Trans>
           </h3>
-          {!isInjectedWidget() && (
+          {!isInjectedWidget && (
             <>
               <p>
                 <Trans>

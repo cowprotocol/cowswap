@@ -491,8 +491,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${UniThemedGlobalStyle}
 
   html {
-    background-color: ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
-    ${({ theme }) => theme.body.background};
+    background-color: ${({ theme }) =>
+      theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
+    ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.body.background)};
   }
 
   *, *:after, *:before { box-sizing:border-box; }
@@ -533,8 +534,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   body #wcm-modal.wcm-overlay {
     ${({ theme }) => theme.mediaWidth.upToSmall`
       align-items: flex-start;
-    `
-  }
+    `}
 
   a {
     text-decoration: none;
