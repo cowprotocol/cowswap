@@ -2,9 +2,9 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { IsTokenPermittableResult } from '@cowprotocol/permit-utils'
 
 import { permittableTokensAtom } from '../state/permittableTokensAtom'
+import { IsTokenPermittableResult } from '../types'
 
 /**
  * Returns a callback for getting PermitInfo for a given token

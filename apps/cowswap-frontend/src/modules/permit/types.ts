@@ -1,9 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { IsTokenPermittableResult, PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
+import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
 
 import { AppDataInfo } from 'modules/appData'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
+export type IsTokenPermittableResult = PermitInfo | undefined
 
 export type PermittableTokens = Record<SupportedChainId, Record<string, PermitInfo>>
 

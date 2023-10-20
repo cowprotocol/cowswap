@@ -3,11 +3,4 @@ export * from './lib/getTokenPermitInfo'
 export * from './lib/generatePermitHook'
 export * from './lib/getPermitUtilsInstance'
 
-export type {
-  IsTokenPermittableResult,
-  PermitHookData,
-  PermitHookParams,
-  PermitInfo,
-  PermitType,
-  SupportedPermitInfo,
-} from './types'
+export type { PermitHookData, PermitHookParams, PermitInfo, PermitType, SupportedPermitInfo } from './types'

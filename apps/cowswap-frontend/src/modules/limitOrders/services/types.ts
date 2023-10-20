@@ -1,13 +1,12 @@
 import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { IsTokenPermittableResult } from '@cowprotocol/permit-utils'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { GeneratePermitHook } from 'modules/permit'
+import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders

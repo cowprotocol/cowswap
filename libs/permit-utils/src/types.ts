@@ -13,8 +13,6 @@ export type SupportedPermitInfo = {
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
 
-export type IsTokenPermittableResult = PermitInfo | undefined
-
 export type PermitHookParams = {
   inputToken: Token
   spender: string

@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getTokenPermitInfo, IsTokenPermittableResult } from '@cowprotocol/permit-utils'
+import { getTokenPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -17,6 +17,7 @@ import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled
 
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
+import { IsTokenPermittableResult } from '../types'
 
 /**
  * Checks whether the token is permittable, and caches the result on localStorage
