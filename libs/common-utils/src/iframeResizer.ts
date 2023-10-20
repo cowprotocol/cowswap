@@ -1,5 +1,9 @@
 import { useEffect } from 'react'
 
+const MessageType = {
+  IFRAME_HEIGHT: 'iframeHeight',
+}
+
 export function IframeResizer() {
   useEffect(() => {
     let previousHeight = 0
@@ -8,7 +12,7 @@ export function IframeResizer() {
     const sendHeightUpdate = () => {
       const contentHeight = document.body.scrollHeight
       if (contentHeight !== previousHeight) {
-        window.parent.postMessage({ type: 'iframeHeight', height: contentHeight }, '*')
+        window.parent.postMessage({ type: MessageType.IFRAME_HEIGHT, height: contentHeight }, '*')
         previousHeight = contentHeight
       }
     }
