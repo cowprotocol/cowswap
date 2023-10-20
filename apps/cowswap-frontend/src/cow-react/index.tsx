@@ -7,6 +7,7 @@ import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
@@ -41,6 +42,7 @@ if (window.ethereum) {
 }
 
 const root = createRoot(document.getElementById('root')!)
+const isInjectedWidgetMode = isInjectedWidget()
 
 root.render(
   <StrictMode>
@@ -56,12 +58,18 @@ root.render(
                 <BlockNumberProvider>
                   <WithLDProvider>
                     <Updaters />
-                    <FeatureGuard featureFlag="cowFortuneEnabled">
-                      <FortuneWidget />
-                    </FeatureGuard>
+
+                    {!isInjectedWidgetMode && (
+                      <>
+                        <FeatureGuard featureFlag="cowFortuneEnabled">
+                          <FortuneWidget />
+                        </FeatureGuard>
+                        <AppziButton />
+                      </>
+                    )}
+
                     <Popups />
                     <SnackbarsWidget />
-                    <AppziButton />
                     <App />
                   </WithLDProvider>
                 </BlockNumberProvider>

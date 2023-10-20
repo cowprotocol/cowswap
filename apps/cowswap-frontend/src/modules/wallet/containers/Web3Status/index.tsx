@@ -10,7 +10,11 @@ import { AccountSelectorModal } from '../AccountSelectorModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 import { WalletModal } from '../WalletModal'
 
-export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
+export interface Web3StatusProps {
+  pendingActivities: string[]
+  className?: string
+}
+export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   const { connector } = useWeb3React()
   const { account, active, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -28,7 +32,7 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}

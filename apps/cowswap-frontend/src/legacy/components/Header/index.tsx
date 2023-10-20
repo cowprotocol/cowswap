@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from '@cowprotocol/ui'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -16,24 +14,21 @@ import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'leg
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 
-import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
+import { useAccountModalState } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
-import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  AccountElement,
-  BalanceText,
   CustomLogoImg,
   HeaderControls,
   HeaderElement,
@@ -45,20 +40,11 @@ import {
   Wrapper,
 } from './styled'
 
-const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
-  [ChainId.GNOSIS_CHAIN]: 'xDAI',
-}
-
 export default function Header() {
   const { account, chainId } = useWalletInfo()
-  const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
-
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-
   const { pendingActivity } = useCategorizeRecentActivity()
-  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const nativeToken = CHAIN_CURRENCY_LABELS[chainId] || 'ETH'
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAnalytics(!darkMode)
@@ -66,15 +52,7 @@ export default function Header() {
   }, [toggleDarkModeAux, darkMode])
   const swapRawState = useSwapRawState()
   const { state: tradeState } = useTradeState()
-
-  const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
-  const handleOpenOrdersPanel = () => {
-    account && setIsOrdersPanelOpen(true)
-  }
-  const handleCloseOrdersPanel = () => {
-    setIsOrdersPanelOpen(false)
-    !isOrdersPanelOpen && removeBodyClass('noScroll')
-  }
+  const { isOpen: isAccountModalOpen } = useAccountModalState()
 
   const navigate = useNavigate()
 
@@ -120,15 +98,15 @@ export default function Header() {
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
+    isMobileMenuOpen || isAccountModalOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+  }, [isAccountModalOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
           {!injectedWidgetParams.hideLogo && (
-            <Title href={isInjectedWidgetMode ? undefined : Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+            <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
                   {injectedWidgetParams.logoUrl ? (
@@ -140,14 +118,14 @@ export default function Header() {
               </UniIcon>
             </Title>
           )}
-          {!isInjectedWidgetMode && <MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
+          {<MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
         </HeaderRow>
 
         <HeaderControls>
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isInjectedWidgetMode && !isChainIdUnsupported && (
+            {!isChainIdUnsupported && (
               <CowBalanceButton
                 onClick={() => navigate('/account')}
                 account={account}
@@ -156,21 +134,11 @@ export default function Header() {
               />
             )}
 
-            <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && !isChainIdUnsupported && userEthBalance && chainId && (
-                <BalanceText>
-                  <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
-                </BalanceText>
-              )}
-              <Web3Status pendingActivities={pendingActivity} />
-            </AccountElement>
+            <AccountElement pendingActivities={pendingActivity} />
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && !isInjectedWidgetMode && (
-          <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />
-        )}
-        {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
       </HeaderModWrapper>
     </Wrapper>
   )

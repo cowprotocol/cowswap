@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -179,14 +180,18 @@ export function OrdersTableContainer({
           <h3>
             <Trans>Connect a wallet</Trans>
           </h3>
-          <p>
-            <Trans>
-              To use {orderType} orders, please connect your wallet <br />
-              to one of our supported networks.
-            </Trans>
-          </p>
+          {!isInjectedWidget() && (
+            <>
+              <p>
+                <Trans>
+                  To use {orderType} orders, please connect your wallet <br />
+                  to one of our supported networks.
+                </Trans>
+              </p>
 
-          <Web3Status pendingActivities={pendingActivities} />
+              <Web3Status pendingActivities={pendingActivities} />
+            </>
+          )}
         </Content>
       )
     }

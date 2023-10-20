@@ -1,10 +1,12 @@
 import { ReactNode, useEffect } from 'react'
 
 import { maxAmountSpend } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 
+import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
@@ -14,6 +16,7 @@ import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddress
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
@@ -122,6 +125,10 @@ export function TradeWidget(props: TradeWidgetProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const isInjectedWidgetMode = isInjectedWidget()
+
+  const { pendingActivity } = useCategorizeRecentActivity()
+
   return (
     <styledEl.Container id={id}>
       <RecipientAddressUpdater />
@@ -138,7 +145,10 @@ export function TradeWidget(props: TradeWidgetProps) {
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <TradeWidgetLinks />
+            <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
+            {isInjectedWidgetMode && (
+              <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
+            )}
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 

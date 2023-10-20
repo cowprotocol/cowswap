@@ -1,4 +1,3 @@
-import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
@@ -49,21 +48,31 @@ Badge.defaultProps = {
 export const Link = styled(NavLink)`
   display: flex;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
-  color: ${({ theme }) => transparentize(0.4, theme.text1)};
-  gap: 3px;
+  color: var(${UI.COLOR_TEXT1});
+  gap: 4px;
   font-weight: inherit;
   line-height: 1;
-  transition: color 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, fill 0.15s ease-in-out;
 
   &:hover {
     color: inherit;
+    text-decoration: none;
+
+    > svg > path {
+      fill: var(${UI.COLOR_TEXT1});
+    }
+  }
+
+  > svg > path {
+    fill: var(${UI.COLOR_TEXT1});
   }
 `
 
 export const Wrapper = styled.div`
   background: transparent;
-  border-radius: 16px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 0;
   display: flex;
   flex-flow: row wrap;
@@ -74,15 +83,19 @@ export const Wrapper = styled.div`
   }
 `
 
-export const MenuItem = styled.div<{ isActive?: boolean }>`
+export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
   display: flex;
   align-items: center;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 16px;
-  padding: 5px 10px;
+  font-size: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '14px'};
+  font-weight: ${({ theme }) => theme.isInjectedWidgetMode ? '600' : '500'};
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  padding: ${({ theme }) => theme.isInjectedWidgetMode ? '7px 0' : '5px 10px'};
   background: transparent;
-  transition: background 0.2 ease-in-out;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: var(${UI.COLOR_GREY});
+  }
 
   ${({ isActive }) =>
     isActive &&
@@ -96,5 +109,26 @@ export const MenuItem = styled.div<{ isActive?: boolean }>`
       ${Link} > ${Badge} {
         display: none;
       }
+  `}
+
+  ${({ isDropdownVisible }) =>
+    isDropdownVisible &&
+    css`
+      padding: 7px 10px;
     `}
+`
+
+export const SelectMenu = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  padding: 16px;
+  gap: ${({ theme }) => theme.isInjectedWidgetMode ? '16px' : '24px'};
+  background: var(${UI.COLOR_CONTAINER_BG_01});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 `

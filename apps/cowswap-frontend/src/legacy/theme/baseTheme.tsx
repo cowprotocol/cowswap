@@ -412,8 +412,10 @@ export const UniThemedGlobalStyle = css`
     ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
 
     // Icons
-    ${UI.ICON_SIZE_NORMAL}: 24px;
     ${UI.ICON_SIZE_LARGE}: 36px;
+    ${UI.ICON_SIZE_NORMAL}: 20px;
+    ${UI.ICON_SIZE_SMALL}: 16px;
+    ${UI.ICON_SIZE_XSMALL}: 14px;
     ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
 
     // [STATE] Information (light blue)
@@ -472,7 +474,6 @@ export const UniThemedGlobalStyle = css`
 
   html {
     color: var(${UI.COLOR_TEXT1});
-    background-color: var(${UI.COLOR_CONTAINER_BG_02});
   }
   body {
     min-height: 100vh;
@@ -490,8 +491,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${UniThemedGlobalStyle}
 
   html {
-    color: var(${UI.COLOR_TEXT1});
-    ${({ theme }) => theme.body.background}
+    background-color: ${({ theme }) => theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
+    ${({ theme }) => theme.body.background};
   }
 
   *, *:after, *:before { box-sizing:border-box; }
@@ -526,6 +527,13 @@ export const ThemedGlobalStyle = createGlobalStyle`
   body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
     display: block!important;
+  }
+
+    // Walletconnect V2 mobile override
+  body #wcm-modal.wcm-overlay {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: flex-start;
+    `
   }
 
   a {
