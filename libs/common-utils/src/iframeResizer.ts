@@ -1,19 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 const MessageType = {
   IFRAME_HEIGHT: 'iframeHeight',
 }
 
-export function IframeResizer() {
-  useEffect(() => {
-    let previousHeight = 0
+const TARGET_ORIGIN = '*' // Change to CoW specific origin in production
 
+export function IframeResizer() {
+  const previousHeightRef = useRef(0)
+
+  useEffect(() => {
     // Initial height calculation and message
     const sendHeightUpdate = () => {
       const contentHeight = document.body.scrollHeight
-      if (contentHeight !== previousHeight) {
-        window.parent.postMessage({ type: MessageType.IFRAME_HEIGHT, height: contentHeight }, '*')
-        previousHeight = contentHeight
+      if (contentHeight !== previousHeightRef.current) {
+        window.parent.postMessage({ type: MessageType.IFRAME_HEIGHT, height: contentHeight }, TARGET_ORIGIN)
+        previousHeightRef.current = contentHeight
       }
     }
     sendHeightUpdate()
@@ -23,8 +25,8 @@ export function IframeResizer() {
       sendHeightUpdate()
     })
 
-    // Start observing the entire body and its descendants for changes to the structure of the DOM
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true })
+    // Start observing the entire body for changes that might affect its height
+    observer.observe(document.body, { childList: true, subtree: true })
 
     // Cleanup: Disconnect the observer when the component is unmounted
     return () => {
