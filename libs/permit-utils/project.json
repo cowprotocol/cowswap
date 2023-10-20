@@ -1,5 +1,5 @@
 {
-  "name": "@cow-protocol/permit-utils",
+  "name": "@cowprotocol/permit-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/permit-utils/src",
   "projectType": "library",
@@ -12,7 +12,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs permit-utils {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs @cowprotocol/permit-utils {args.ver} {args.tag}",
       "dependsOn": ["build"]
     },
     "lint": {
