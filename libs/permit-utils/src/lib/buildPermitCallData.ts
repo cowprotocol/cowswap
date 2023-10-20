@@ -1,8 +1,7 @@
 import { DAI_PERMIT_SELECTOR, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 
-import { fixTokenName } from '../utils/fixTokenName'
-
 import { BuildDaiLikePermitCallDataParams, BuildEip2162PermitCallDataParams } from '../types'
+import { fixTokenName } from '../utils/fixTokenName'
 
 export async function buildEip2162PermitCallData({
   eip2162Utils,

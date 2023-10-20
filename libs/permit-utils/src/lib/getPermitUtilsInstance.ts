@@ -1,7 +1,7 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PERMIT_SIGNER } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -32,6 +32,7 @@ export function getPermitUtilsInstance(
     return providerCache
   }
 
+  // TODO: allow to receive the signer as a parameter
   const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 
