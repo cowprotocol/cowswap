@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/permit-utils",
+  "name": "permit-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/permit-utils/src",
   "projectType": "library",
