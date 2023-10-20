@@ -34,7 +34,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs abis {args.tag}",
+      "command": "node tools/scripts/publish.mjs abis {args.tag} {args.otp}",
       "dependsOn": ["build"]
     },
     "lint": {

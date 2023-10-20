@@ -29,7 +29,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs widget-react {args.tag}",
+      "command": "node tools/scripts/publish.mjs widget-react {args.tag} {args.otp}",
       "dependsOn": ["build"]
     },
     "test": {
