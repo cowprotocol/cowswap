@@ -12,7 +12,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs ui {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs ui {args.tag}",
       "dependsOn": ["build"]
     },
     "lint": {

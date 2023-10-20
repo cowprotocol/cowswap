@@ -7,12 +7,13 @@
  * You might need to authenticate with NPM before running this script.
  */
 
-import devkit from '@nx/devkit'
-import chalk from 'chalk'
+import devkit from "@nx/devkit";
+import chalk from "chalk";
 
-import { execSync } from 'child_process'
-import { readFileSync, writeFileSync } from 'fs'
-import path from 'path'
+import { execSync } from "child_process";
+import { readFileSync } from "fs";
+import path from "path";
+
 const { readCachedProjectGraph } = devkit
 
 function invariant(condition, message) {
@@ -22,16 +23,20 @@ function invariant(condition, message) {
   }
 }
 
-// Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag}
+// Executing publish script: node path/to/publish.mjs {name} --tag {tag}
 // Default "tag" to "next" so we won't publish the "latest" tag by accident.
-const [, , name, version, tag] = process.argv
+const [, , name, tag, otp] = process.argv
 
-// A simple SemVer validation to validate the version
-const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/
-invariant(
-  version && validVersion.test(version),
-  `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
-)
+// Fetch the version from "package.json" before publishing
+let version
+try {
+  const json = JSON.parse(readFileSync(`package.json`).toString())
+  version = json.version
+} catch (e) {
+  console.error(chalk.bold.red(`Error reading package.json file from library build output.`))
+  process.exit(1)
+}
+
 
 const graph = readCachedProjectGraph()
 const project = graph.nodes[name]
@@ -49,17 +54,10 @@ const copyReadmeCommand = `cp ${rootLib}/README.md ${outputPath}`
 console.log(chalk.bold.greenBright(copyReadmeCommand))
 process.chdir(outputPath)
 
-// Updating the version in "package.json" before publishing
-try {
-  const json = JSON.parse(readFileSync(`package.json`).toString())
-  json.version = version
-  writeFileSync(`package.json`, JSON.stringify(json, null, 2))
-} catch (e) {
-  console.error(chalk.bold.red(`Error reading package.json file from library build output.`))
-}
+
 
 // Execute "npm publish" to publish
-const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag}`
+const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag} ${otp? `--otp ${otp}`:''}`
 console.log(chalk.bold.greenBright(publishCommand))
 execSync(publishCommand)
 console.log('Published successfully 🎉')
