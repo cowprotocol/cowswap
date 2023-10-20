@@ -1,9 +1,8 @@
+import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { latest } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
-
-import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 export type PermitType = 'dai-like' | 'eip-2612'
 
@@ -18,6 +17,7 @@ export type IsTokenPermittableResult = PermitInfo | undefined
 
 export type PermitHookParams = {
   inputToken: Token
+  spender: string
   chainId: SupportedChainId
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
@@ -49,6 +49,7 @@ export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
 }
 
 export type CheckIsTokenPermittableParams = {
+  spender: string
   tokenAddress: string
   tokenName: string
   chainId: SupportedChainId

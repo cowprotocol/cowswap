@@ -1,15 +1,14 @@
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
-import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
+import { getPermitDeadline } from '../utils/getPermitDeadline'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -27,10 +26,6 @@ const REQUESTS_CACHE: Record<string, Promise<EstimatePermitResult>> = {}
 
 export async function checkIsTokenPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
   const { tokenAddress, chainId } = params
-  if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
-    // We shouldn't call this for the native token, but just in case
-    return false
-  }
 
   const key = `${chainId}-${tokenAddress.toLowerCase()}`
 
@@ -48,10 +43,7 @@ export async function checkIsTokenPermittable(params: CheckIsTokenPermittablePar
 }
 
 async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
-  const { tokenAddress, tokenName, chainId, provider } = params
-
-  // TODO: take this as a parameter
-  const spender = GP_VAULT_RELAYER[chainId]
+  const { spender, tokenAddress, tokenName, chainId, provider } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
