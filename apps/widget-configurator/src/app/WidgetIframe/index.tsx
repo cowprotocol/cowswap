@@ -17,7 +17,7 @@ export function WidgetIframe({ id, src }: WidgetIframeProps) {
 
       <Box sx={IframeInfo}>
         <Typography variant="body2">URL: {src}</Typography>
-        <EmbedDialog />
+        <EmbedDialog iframeUrl={src} />
       </Box>
     </Box>
   )

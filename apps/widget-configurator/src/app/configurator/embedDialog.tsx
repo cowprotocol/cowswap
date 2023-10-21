@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-export function EmbedDialog() {
+export function EmbedDialog({ iframeUrl }: { iframeUrl: string }) {
   const [open, setOpen] = useState(false)
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
 
@@ -31,6 +31,8 @@ export function EmbedDialog() {
     }
   }, [open])
 
+  const code = `<iframe src="${iframeUrl}"/>`
+
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
@@ -45,12 +47,7 @@ export function EmbedDialog() {
         <DialogTitle id="scroll-dialog-title">CoW Widget Embed</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            {[...new Array(50)]
-              .map(
-                () => `<embed type="text/html" src="snippet.html" width="500" height="200">
-                `
-              )
-              .join('\n')}
+            <code>{code}</code>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
