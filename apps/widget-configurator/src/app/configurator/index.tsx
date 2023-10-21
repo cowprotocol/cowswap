@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { AttachIframeResizer } from './attachIframeResizer'
-import { ColorModeContext } from '../../main'
 // import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
@@ -22,6 +21,7 @@ import ListItemText from '@mui/material/ListItemText'
 // import SaveIcon from '@mui/icons-material/Save'
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { ColorModeContext } from '../../theme/ColorModeContext'
 
 enum TradeMode {
   Swap = 1,
