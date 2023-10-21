@@ -1,26 +1,26 @@
-import * as React from 'react'
-import { AttachIframeResizer } from './attachIframeResizer'
-// import { useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
-// import Button from '@mui/material/Button'
-import InputLabel from '@mui/material/InputLabel'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import Typography from '@mui/material/Typography'
-import Drawer from '@mui/material/Drawer'
-import Link from '@mui/material/Link'
-import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
-import Divider from '@mui/material/Divider'
-import EmbedDialog from './embedDialog'
-import Checkbox from '@mui/material/Checkbox'
-import ListItemText from '@mui/material/ListItemText'
-// import SaveIcon from '@mui/icons-material/Save'
+import { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react'
+
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
+import Autocomplete from '@mui/material/Autocomplete'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Link from '@mui/material/Link'
+import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+
+import { AttachIframeResizer } from './attachIframeResizer'
+import { EmbedDialog } from './embedDialog'
+import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
+
 import { ColorModeContext } from '../../theme/ColorModeContext'
 
 enum TradeMode {
@@ -55,9 +55,9 @@ const TokenOptions = ['COW', 'USDC']
 
 export function Configurator({ title }: { title: string }) {
   // const theme = useTheme()
-  const { mode, toggleColorMode, setAutoMode } = React.useContext(ColorModeContext)
+  const { mode, toggleColorMode, setAutoMode } = useContext(ColorModeContext)
 
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
   const handleThemeChange = (event: SelectChangeEvent) => {
     const selectedTheme = event.target.value
@@ -72,27 +72,27 @@ export function Configurator({ title }: { title: string }) {
     setIframeURL(url.toString())
   }
 
-  const [tradeModes, setTradeModes] = React.useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
+  const [tradeModes, setTradeModes] = useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
   const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
     setTradeModes(event.target.value as TradeMode[])
   }
 
-  const [network, setNetwork] = React.useState<{ chainID: number; label: string } | null>(NetworkOptions[0])
-  const [sellToken, setSellToken] = React.useState<string | null>(TokenOptions[0])
-  const [sellTokenAmount, setSellTokenAmount] = React.useState<number>(100000)
-  const [buyToken, setBuyToken] = React.useState<string | null>(TokenOptions[0])
-  const [buyTokenAmount, setBuyTokenAmount] = React.useState<number>(100000)
+  const [network, setNetwork] = useState<{ chainID: number; label: string } | null>(NetworkOptions[0])
+  const [sellToken, setSellToken] = useState<string | null>(TokenOptions[0])
+  const [sellTokenAmount, setSellTokenAmount] = useState<number>(100000)
+  const [buyToken, setBuyToken] = useState<string | null>(TokenOptions[0])
+  const [buyTokenAmount, setBuyTokenAmount] = useState<number>(100000)
 
-  const [iframeURL, setIframeURL] = React.useState<string>('')
+  const [iframeURL, setIframeURL] = useState<string>('')
 
-  const constructIframeURL = React.useCallback(() => {
+  const constructIframeURL = useCallback(() => {
     if (network) {
       return `http://localhost:3000/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
     }
     return ''
   }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network])
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIframeURL(constructIframeURL())
   }, [constructIframeURL, network])
 
@@ -171,7 +171,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={network || NetworkOptions[0]}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: { chainID: number; label: string } | null) => {
+          onChange={(event: ChangeEvent<unknown>, newValue: { chainID: number; label: string } | null) => {
             setNetwork(newValue || NetworkOptions[0])
           }}
           getOptionLabel={(option: { chainID: number; label: string }) => option.label}
@@ -185,11 +185,11 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={sellToken}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: string | null) => {
+          onChange={(event: ChangeEvent<unknown>, newValue: string | null) => {
             setSellToken(newValue || '')
           }}
           inputValue={sellToken || ''}
-          onInputChange={(event: React.ChangeEvent<unknown>, newInputValue: string) => {
+          onInputChange={(event: ChangeEvent<unknown>, newInputValue: string) => {
             setSellToken(newInputValue)
           }}
           id="controllable-states-selling-token"
@@ -202,13 +202,13 @@ export function Configurator({ title }: { title: string }) {
           id="input-sellTokenAmount"
           label="Sell amount"
           value={sellTokenAmount}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSellTokenAmount(Number(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setSellTokenAmount(Number(e.target.value))}
           size="small"
         />
 
         <Autocomplete
           value={buyToken}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: string | null) => {
+          onChange={(event: ChangeEvent<unknown>, newValue: string | null) => {
             setBuyToken(newValue || '')
           }}
           inputValue={buyToken || ''}

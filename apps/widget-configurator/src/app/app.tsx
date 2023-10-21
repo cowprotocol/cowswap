@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
-import { Configurator } from './configurator'
 import { Theme } from '@mui/material/styles'
+
+import { Configurator } from './configurator'
 
 const WrapperStyled = (theme: Theme) => ({
   display: 'flex',

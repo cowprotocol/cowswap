@@ -1,13 +1,14 @@
-import { useMemo } from 'react'
-import { StrictMode } from 'react'
-import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
+import { StrictMode, useMemo } from 'react'
+
 import { CssBaseline, GlobalStyles } from '@mui/material'
+import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
 import { createRoot } from 'react-dom/client'
+
 import App from './app/app'
 import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
-import { darkPalette, lightPalette } from './theme/paletteOptions'
-import { useColorMode } from './theme/hooks/useColorMode'
 import { commonTypography } from './theme/commonTypography'
+import { useColorMode } from './theme/hooks/useColorMode'
+import { darkPalette, lightPalette } from './theme/paletteOptions'
 
 function Root() {
   const colorMode = useColorMode()

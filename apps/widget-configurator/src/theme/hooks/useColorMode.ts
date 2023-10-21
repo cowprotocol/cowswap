@@ -1,10 +1,13 @@
 import { useMemo, useState } from 'react'
-import useMediaQuery from '@mui/material/useMediaQuery'
+
 import { PaletteMode } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 interface ColorModeParams {
   mode: PaletteMode
+
   toggleColorMode(): void
+
   setAutoMode(): void
 }
 
