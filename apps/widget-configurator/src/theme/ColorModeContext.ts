@@ -3,10 +3,18 @@ import { createContext } from 'react'
 import { PaletteMode } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 
-export const ColorModeContext = createContext({
+export interface ColorModeParams {
+  mode: PaletteMode
+  toggleColorMode(): void
+  setAutoMode(): void
+  setMode(mode: PaletteMode): void
+}
+
+export const ColorModeContext = createContext<ColorModeParams>({
   mode: 'light' as PaletteMode,
   toggleColorMode: () => {},
   setAutoMode: () => {},
+  setMode: () => {},
 })
 
 export const globalStyles = (theme: Theme, mode: PaletteMode) => ({

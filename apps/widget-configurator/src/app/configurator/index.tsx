@@ -1,54 +1,71 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
-import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import { AttachIframeResizer } from './attachIframeResizer'
+import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
-import { TradeModesControl } from './controls/TradeModesControl'
-import { EmbedDialog } from './embedDialog'
-import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
+import { TRADE_MODES, TradeMode, TradeModesControl } from './controls/TradeModesControl'
+import { DrawerStyled, WrapperStyled } from './styled'
+import { buildIframeUrl } from './utils/buildIframeUrl'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
+import { WidgetIframe } from '../WidgetIframe'
 
-const TokenOptions = ['COW', 'USDC']
+const iframeId = 'cow-widget'
+const DEFAULT_STATE = {
+  sellToken: 'COW',
+  buyToken: 'USDC',
+  sellAmount: 100000,
+  buyAmount: 0,
+}
 
 export function Configurator({ title }: { title: string }) {
-  const { mode } = useContext(ColorModeContext)
+  const { mode, setMode } = useContext(ColorModeContext)
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
-  const [network] = networkControlState
-  const [sellToken, setSellToken] = useState<string | null>(TokenOptions[0])
-  const [sellTokenAmount, setSellTokenAmount] = useState<number>(100000)
-  const [buyToken, setBuyToken] = useState<string | null>(TokenOptions[0])
-  const [buyTokenAmount, setBuyTokenAmount] = useState<number>(100000)
+  const [{ chainId }] = networkControlState
 
-  const [iframeURL, setIframeURL] = useState<string>('')
+  // TODO: bind to iframe
+  const tradeModesState = useState<TradeMode[]>(TRADE_MODES)
 
-  const constructIframeURL = useCallback(() => {
-    if (network) {
-      return `http://localhost:3000/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
-    }
-    return ''
-  }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network])
+  const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
+  const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
+  const [sellToken, setSellToken] = sellTokenState
+  const [sellTokenAmount, setSellTokenAmount] = sellTokenAmountState
 
-  useEffect(() => {
-    setIframeURL(constructIframeURL())
-  }, [constructIframeURL, network])
+  const buyTokenState = useState<string>(DEFAULT_STATE.buyToken)
+  const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
+  const [buyToken, setBuyToken] = buyTokenState
+  const [buyTokenAmount, setBuyTokenAmount] = buyTokenAmountState
+
+  const iframeUrl = useMemo(() => {
+    return buildIframeUrl({
+      chainId,
+      sellTokenId: sellToken,
+      sellAmount: sellTokenAmount,
+      buyTokenId: buyToken,
+      buyAmount: buyTokenAmount,
+      theme: mode,
+    })
+  }, [chainId, sellToken, sellTokenAmount, buyToken, buyTokenAmount, mode])
 
   const handleWidgetRefreshClick = () => {
-    const newIframeURL = constructIframeURL()
-    setIframeURL(newIframeURL)
+    setMode('light')
+    setSellToken(DEFAULT_STATE.sellToken)
+    setSellTokenAmount(DEFAULT_STATE.sellAmount)
+
+    setBuyToken(DEFAULT_STATE.buyToken)
+    setBuyTokenAmount(DEFAULT_STATE.buyAmount)
   }
 
   return (
@@ -74,56 +91,19 @@ export function Configurator({ title }: { title: string }) {
 
         <ThemeControl />
 
-        <TradeModesControl />
+        <TradeModesControl state={tradeModesState} />
 
         <NetworkControl state={networkControlState} />
 
         <Divider variant="middle">Token selection</Divider>
 
-        <Autocomplete
-          value={sellToken}
-          onChange={(event: ChangeEvent<unknown>, newValue: string | null) => {
-            setSellToken(newValue || '')
-          }}
-          inputValue={sellToken || ''}
-          onInputChange={(event: ChangeEvent<unknown>, newInputValue: string) => {
-            setSellToken(newInputValue)
-          }}
-          id="controllable-states-selling-token"
-          options={TokenOptions}
-          size="small"
-          renderInput={(params) => <TextField {...params} label="Sell Token" />}
+        <CurrencyInputControl
+          label="Sell token"
+          tokenIdState={sellTokenState}
+          tokenAmountState={sellTokenAmountState}
         />
 
-        <TextField
-          id="input-sellTokenAmount"
-          label="Sell amount"
-          value={sellTokenAmount}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setSellTokenAmount(Number(e.target.value))}
-          size="small"
-        />
-
-        <Autocomplete
-          value={buyToken}
-          onChange={(event: ChangeEvent<unknown>, newValue: string | null) => {
-            setBuyToken(newValue || '')
-          }}
-          inputValue={buyToken || ''}
-          onInputChange={(event, newInputValue) => {
-            setBuyTokenAmount(Number(newInputValue))
-          }}
-          id="buy-token-autocomplete"
-          options={TokenOptions}
-          renderInput={(params) => <TextField {...params} label="Buy Token" size="small" />}
-        />
-
-        <TextField
-          id="input-buyTokenAmount"
-          label="Buy amount"
-          value={buyTokenAmount}
-          onChange={(e) => setBuyTokenAmount(Number(e.target.value))}
-          size="small"
-        />
+        <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
         <Divider variant="middle" />
 
@@ -136,26 +116,9 @@ export function Configurator({ title }: { title: string }) {
         </Link>
       </Drawer>
 
-      <Box sx={ContentStyled}>
-        <iframe id="cow-widget" src={iframeURL} width="400px" height="640px" title="widget" />
+      <WidgetIframe id={iframeId} src={iframeUrl} />
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexFlow: 'column wrap',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: '1.6rem 0 0',
-            gap: '2.4rem',
-            width: '100%',
-          }}
-        >
-          <Typography variant="body2">URL: {iframeURL}</Typography>
-          <EmbedDialog />
-        </Box>
-      </Box>
-
-      <AttachIframeResizer iframeId={'cow-widget'} />
+      <AttachIframeResizer iframeId={iframeId} />
     </Box>
   )
 }

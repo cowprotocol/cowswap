@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
@@ -8,14 +8,16 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-enum TradeMode {
+export enum TradeMode {
   Swap = 'Swap',
   Limit = 'Limit',
   TWAP = 'TWAP',
 }
 
-export function TradeModesControl() {
-  const [tradeModes, setTradeModes] = useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
+export const TRADE_MODES = [TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP]
+
+export function TradeModesControl({ state }: { state: [TradeMode[], Dispatch<SetStateAction<TradeMode[]>>] }) {
+  const [tradeModes, setTradeModes] = state
   const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
     setTradeModes(event.target.value as TradeMode[])
   }
