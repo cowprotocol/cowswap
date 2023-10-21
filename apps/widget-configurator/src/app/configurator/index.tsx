@@ -4,80 +4,30 @@ import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
 import Link from '@mui/material/Link'
-import ListItemText from '@mui/material/ListItemText'
-import MenuItem from '@mui/material/MenuItem'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import { AttachIframeResizer } from './attachIframeResizer'
+import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
+import { ThemeControl } from './controls/ThemeControl'
+import { TradeModesControl } from './controls/TradeModesControl'
 import { EmbedDialog } from './embedDialog'
 import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 
-enum TradeMode {
-  Swap = 1,
-  Limit = 2,
-  TWAP = 3,
-}
-
-const ThemeOptions = [
-  { label: 'Auto', value: 'auto' },
-  { label: 'Light', value: 'light' },
-  { label: 'Dark', value: 'dark' },
-]
-
-const TradeModeOptions = [
-  { label: 'Swap', value: TradeMode.Swap },
-  { label: 'Limit', value: TradeMode.Limit },
-  { label: 'TWAP', value: TradeMode.TWAP },
-]
-
-type NetworkOption = {
-  chainID: number
-  label: string
-}
-
-const NetworkOptions: NetworkOption[] = [
-  { chainID: 1, label: 'Ethereum' },
-  { chainID: 100, label: 'Gnosis Chain' },
-]
-
 const TokenOptions = ['COW', 'USDC']
 
 export function Configurator({ title }: { title: string }) {
-  // const theme = useTheme()
-  const { mode, toggleColorMode, setAutoMode } = useContext(ColorModeContext)
+  const { mode } = useContext(ColorModeContext)
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
-  const handleThemeChange = (event: SelectChangeEvent) => {
-    const selectedTheme = event.target.value
-    if (selectedTheme === 'auto') {
-      setAutoMode()
-    } else {
-      toggleColorMode()
-    }
-
-    const url = new URL(iframeURL)
-    url.searchParams.set('theme', selectedTheme)
-    setIframeURL(url.toString())
-  }
-
-  const [tradeModes, setTradeModes] = useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
-  const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
-    setTradeModes(event.target.value as TradeMode[])
-  }
-
-  const [network, setNetwork] = useState<{ chainID: number; label: string } | null>(NetworkOptions[0])
+  const networkControlState = useState<NetworkOption>(NetworkOptions[0])
+  const [network] = networkControlState
   const [sellToken, setSellToken] = useState<string | null>(TokenOptions[0])
   const [sellTokenAmount, setSellTokenAmount] = useState<number>(100000)
   const [buyToken, setBuyToken] = useState<string | null>(TokenOptions[0])
@@ -122,64 +72,11 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">General</Divider>
 
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="select-theme">Theme</InputLabel>
-          <Select
-            labelId="select-theme-label"
-            id="select-theme"
-            value={mode}
-            onChange={handleThemeChange}
-            autoWidth
-            label="Theme"
-            size="small"
-          >
-            {ThemeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <ThemeControl />
 
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="trade-mode-label">Trade Modes</InputLabel>
-          <Select
-            labelId="trade-mode-label"
-            id="trade-mode-select"
-            multiple
-            size="small"
-            value={tradeModes}
-            onChange={handleTradeModeChange}
-            input={<OutlinedInput id="trade-mode-select-outlined" label="Available trade modes" />}
-            renderValue={(selected) =>
-              (selected as number[])
-                .map((value) => {
-                  const option = TradeModeOptions.find((option) => option.value === value)
-                  return option ? option.label : ''
-                })
-                .join(', ')
-            }
-          >
-            {TradeModeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                <Checkbox checked={tradeModes.indexOf(option.value) > -1} />
-                <ListItemText primary={option.label} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <TradeModesControl />
 
-        <Autocomplete
-          value={network || NetworkOptions[0]}
-          onChange={(event: ChangeEvent<unknown>, newValue: { chainID: number; label: string } | null) => {
-            setNetwork(newValue || NetworkOptions[0])
-          }}
-          getOptionLabel={(option: { chainID: number; label: string }) => option.label}
-          id="controllable-states-network"
-          options={NetworkOptions}
-          size="small"
-          renderInput={(params) => <TextField {...params} label="Network" />}
-        />
+        <NetworkControl state={networkControlState} />
 
         <Divider variant="middle">Token selection</Divider>
 
