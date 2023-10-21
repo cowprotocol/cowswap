@@ -9,7 +9,6 @@ import { StrictMode } from 'react'
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
-import { IframeResizer } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 
@@ -80,8 +79,6 @@ root.render(
         </HashRouter>
       </AtomProvider>
     </Provider>
-
-    {isInjectedWidgetMode && <IframeResizer />}
   </StrictMode>
 )
 

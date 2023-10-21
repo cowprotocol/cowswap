@@ -5,10 +5,11 @@ import { deepEqual } from '@cowprotocol/common-utils'
 
 import { useNavigate } from 'react-router-dom'
 
+import { IframeResizer } from './IframeResizer'
+
+import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
-
-const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
 const messagesCache: { [method: string]: unknown } = {}
 
@@ -88,5 +89,5 @@ export function InjectedWidgetUpdater() {
     })
   }, [processEvent])
 
-  return null
+  return <IframeResizer />
 }

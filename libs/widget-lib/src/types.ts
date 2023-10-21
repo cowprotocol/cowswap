@@ -43,6 +43,7 @@ export interface CowSwapWidgetAppParams {
   logoUrl?: string
   hideLogo?: boolean
   hideNetworkSelector?: boolean
+  dynamicHeightEnabled?: boolean
   enabledTradeTypes?: TradeType[]
 }
 
