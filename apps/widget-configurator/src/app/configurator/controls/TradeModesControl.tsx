@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import { TradeType } from '@cowprotocol/widget-lib'
+
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -8,18 +10,10 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-export enum TradeMode {
-  Swap = 'Swap',
-  Limit = 'Limit',
-  TWAP = 'TWAP',
-}
-
-export const TRADE_MODES = [TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP]
-
-export function TradeModesControl({ state }: { state: [TradeMode[], Dispatch<SetStateAction<TradeMode[]>>] }) {
+export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] }) {
   const [tradeModes, setTradeModes] = state
-  const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
-    setTradeModes(event.target.value as TradeMode[])
+  const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>) => {
+    setTradeModes(event.target.value as TradeType[])
   }
 
   return (
@@ -35,7 +29,7 @@ export function TradeModesControl({ state }: { state: [TradeMode[], Dispatch<Set
         input={<OutlinedInput id="trade-mode-select-outlined" label="Available trade modes" />}
         renderValue={(selected) => selected.join(', ')}
       >
-        {Object.values(TradeMode).map((option) => (
+        {Object.values(TradeType).map((option) => (
           <MenuItem key={option} value={option}>
             <Checkbox checked={tradeModes.indexOf(option) > -1} />
             <ListItemText primary={option} />

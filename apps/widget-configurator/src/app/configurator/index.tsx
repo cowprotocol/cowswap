@@ -1,4 +1,12 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+
+import {
+  cowSwapWidget,
+  CowSwapWidgetParams,
+  CowSwapWidgetSettings,
+  TradeType,
+  UpdateWidgetCallback,
+} from '@cowprotocol/widget-lib'
 
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -8,18 +16,16 @@ import Drawer from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
-import { AttachIframeResizer } from './attachIframeResizer'
+import { TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
+import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
-import { TRADE_MODES, TradeMode, TradeModesControl } from './controls/TradeModesControl'
-import { DrawerStyled, WrapperStyled } from './styled'
-import { buildIframeUrl } from './utils/buildIframeUrl'
+import { TradeModesControl } from './controls/TradeModesControl'
+import { DrawerStyled, WrapperStyled, ContentStyled } from './styled'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { WidgetIframe } from '../WidgetIframe'
 
-const iframeId = 'cow-widget'
 const DEFAULT_STATE = {
   sellToken: 'COW',
   buyToken: 'USDC',
@@ -35,8 +41,11 @@ export function Configurator({ title }: { title: string }) {
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
   const [{ chainId }] = networkControlState
 
-  // TODO: bind to iframe
-  const tradeModesState = useState<TradeMode[]>(TRADE_MODES)
+  const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
+  const [currentTradeType] = tradeTypeState
+
+  const tradeModesState = useState<TradeType[]>(TRADE_MODES)
+  const [enabledTradeTypes] = tradeModesState
 
   const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
   const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
@@ -48,16 +57,43 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken, setBuyToken] = buyTokenState
   const [buyTokenAmount, setBuyTokenAmount] = buyTokenAmountState
 
-  const iframeUrl = useMemo(() => {
-    return buildIframeUrl({
-      chainId,
-      sellTokenId: sellToken,
-      sellAmount: sellTokenAmount,
-      buyTokenId: buyToken,
-      buyAmount: buyTokenAmount,
-      theme: mode,
-    })
-  }, [chainId, sellToken, sellTokenAmount, buyToken, buyTokenAmount, mode])
+  const iframeContainerRef = useRef<HTMLDivElement>(null)
+  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
+
+  useEffect(() => {
+    const widgetContainer = iframeContainerRef.current
+
+    if (!widgetContainer) return
+
+    const params: CowSwapWidgetParams = {
+      container: widgetContainer,
+      metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
+      width: 400,
+      height: 640,
+    }
+
+    const settings: CowSwapWidgetSettings = {
+      urlParams: {
+        theme: mode,
+        chainId,
+        env: 'local',
+        tradeType: currentTradeType,
+        tradeAssets: {
+          sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
+          buy: { asset: buyToken, amount: buyTokenAmount.toString() },
+        },
+      },
+      appParams: {
+        enabledTradeTypes,
+      },
+    }
+
+    if (updateWidgetRef.current) {
+      updateWidgetRef.current(settings)
+    } else {
+      updateWidgetRef.current = cowSwapWidget(params, settings)
+    }
+  }, [chainId, enabledTradeTypes, sellToken, sellTokenAmount, buyToken, buyTokenAmount, mode, currentTradeType])
 
   const handleWidgetRefreshClick = () => {
     setMode('light')
@@ -93,6 +129,8 @@ export function Configurator({ title }: { title: string }) {
 
         <TradeModesControl state={tradeModesState} />
 
+        <CurrentTradeTypeControl state={tradeTypeState} />
+
         <NetworkControl state={networkControlState} />
 
         <Divider variant="middle">Token selection</Divider>
@@ -116,9 +154,9 @@ export function Configurator({ title }: { title: string }) {
         </Link>
       </Drawer>
 
-      <WidgetIframe id={iframeId} src={iframeUrl} />
-
-      <AttachIframeResizer iframeId={iframeId} />
+      <Box sx={ContentStyled}>
+        <div ref={iframeContainerRef}></div>
+      </Box>
     </Box>
   )
 }

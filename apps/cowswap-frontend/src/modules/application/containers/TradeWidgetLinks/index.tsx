@@ -1,10 +1,13 @@
 import { useState } from 'react'
 
+import type { TradeType } from '@cowprotocol/widget-lib'
+
 import { Trans } from '@lingui/macro'
 import IMAGE_CARRET from 'assets/icon/carret.svg'
 import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
@@ -36,6 +39,12 @@ const MENU_ITEMS: MenuItemConfig[] = [
   },
 ]
 
+const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
+  swap: Routes.SWAP,
+  limit: Routes.LIMIT_ORDER,
+  advanced: Routes.ADVANCED_ORDERS,
+}
+
 interface TradeWidgetLinksProps {
   highlightedBadgeText?: string
   highlightedBadgeType?: BadgeType
@@ -50,13 +59,20 @@ export function TradeWidgetLinks({
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
+  const { enabledTradeTypes } = useInjectedWidgetParams()
 
   const handleMenuItemClick = (_item?: MenuItemConfig) => {
     if (menuItems.length === 1) return
     setDropdownVisible(false)
   }
 
-  const menuItems = MENU_ITEMS.map((item) => {
+  const enabledItems = MENU_ITEMS.filter((item) => {
+    if (!enabledTradeTypes?.length) return true
+
+    return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
+  })
+
+  const menuItems = enabledItems.map((item) => {
     const routePath = parameterizeTradeRoute(tradeContext, item.route)
     const isActive = !!matchPath(location.pathname, routePath)
 
