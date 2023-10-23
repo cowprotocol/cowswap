@@ -13,6 +13,7 @@ export type NetworkOption = {
 export const NetworkOptions: NetworkOption[] = [
   { chainId: SupportedChainId.MAINNET, label: 'Ethereum' },
   { chainId: SupportedChainId.GNOSIS_CHAIN, label: 'Gnosis Chain' },
+  { chainId: SupportedChainId.GOERLI, label: 'Goerli' },
 ]
 
 export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>] }) {

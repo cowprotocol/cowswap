@@ -1,13 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import {
-  cowSwapWidget,
-  CowSwapWidgetParams,
-  CowSwapWidgetSettings,
-  EthereumProvider,
-  TradeType,
-  UpdateWidgetCallback,
-} from '@cowprotocol/widget-lib'
+import { cowSwapWidget, EthereumProvider, TradeType, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
 
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -25,8 +18,11 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { EmbedDialog } from './embedDialog'
 import { useProvider } from './hooks/useProvider'
+import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
 import { DrawerStyled, WrapperStyled, ContentStyled } from './styled'
+import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 
@@ -69,35 +65,22 @@ export function Configurator({ title }: { title: string }) {
   const provider = useProvider()
   const providerRef = useRef<EthereumProvider | null>()
 
+  const state: ConfiguratorState = {
+    chainId,
+    theme: mode,
+    currentTradeType,
+    enabledTradeTypes,
+    sellToken,
+    sellTokenAmount,
+    buyToken,
+    buyTokenAmount,
+    isDynamicHeightEnabled,
+  }
+
+  const { params, settings } = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+
   useEffect(() => {
-    const widgetContainer = iframeContainerRef.current
-
-    if (!widgetContainer) return
-
-    const params: CowSwapWidgetParams = {
-      container: widgetContainer,
-      metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
-      width: 400,
-      height: 640,
-      provider: provider,
-    }
-
-    const settings: CowSwapWidgetSettings = {
-      urlParams: {
-        theme: mode,
-        chainId,
-        env: 'local',
-        tradeType: currentTradeType,
-        tradeAssets: {
-          sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-          buy: { asset: buyToken, amount: buyTokenAmount.toString() },
-        },
-      },
-      appParams: {
-        dynamicHeightEnabled: isDynamicHeightEnabled,
-        enabledTradeTypes,
-      },
-    }
+    if (!params.container) return
 
     // Re-initialize widget when provider is changed
     if (provider && providerRef.current !== provider) {
@@ -109,18 +92,7 @@ export function Configurator({ title }: { title: string }) {
     } else {
       updateWidgetRef.current = cowSwapWidget(params, settings)
     }
-  }, [
-    provider,
-    chainId,
-    enabledTradeTypes,
-    sellToken,
-    sellTokenAmount,
-    buyToken,
-    buyTokenAmount,
-    mode,
-    currentTradeType,
-    isDynamicHeightEnabled,
-  ])
+  }, [provider, params, settings])
 
   useEffect(() => {
     providerRef.current = provider
@@ -195,6 +167,8 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
+        <EmbedDialog params={params} settings={settings} />
+        <br />
         <div ref={iframeContainerRef}></div>
       </Box>
     </Box>
