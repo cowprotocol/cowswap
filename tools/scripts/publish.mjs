@@ -37,7 +37,6 @@ try {
   process.exit(1)
 }
 
-
 const graph = readCachedProjectGraph()
 const project = graph.nodes[name]
 
@@ -52,9 +51,8 @@ invariant(
 const rootLib = path.dirname(project.data.sourceRoot)
 const copyReadmeCommand = `cp ${rootLib}/README.md ${outputPath}`
 console.log(chalk.bold.greenBright(copyReadmeCommand))
+execSync(copyReadmeCommand)
 process.chdir(outputPath)
-
-
 
 // Execute "npm publish" to publish
 const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag} ${otp? `--otp ${otp}`:''}`
