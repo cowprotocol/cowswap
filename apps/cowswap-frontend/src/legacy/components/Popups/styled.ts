@@ -16,7 +16,6 @@ const Fader = styled.div`
 export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<DefaultTheme>> }>`
   display: inline-block;
   width: 100%;
-  //padding: 1em;
   background-color: var(${UI.COLOR_CONTAINER_BG_01});
   position: relative;
   border-radius: 10px;

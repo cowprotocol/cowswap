@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_LINK } from './common'
 
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import GoerliLogo from '@cowprotocol/assets/cow-swap/network-goerli-logo.svg'
@@ -40,7 +41,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     networkType: NetworkType.L1,
     docs: 'https://docs.cow.fi/',
     explorer: 'https://etherscan.io/',
-    infoLink: 'https://cow.fi/',
+    infoLink: COW_PROTOCOL_LINK,
     label: 'Ethereum',
     name: 'mainnet',
     explorerTitle: 'Etherscan',
@@ -51,7 +52,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     networkType: NetworkType.L1,
     docs: 'https://docs.cow.fi/',
     explorer: 'https://goerli.etherscan.io/',
-    infoLink: 'https://cow.fi/',
+    infoLink: COW_PROTOCOL_LINK,
     label: 'Görli',
     name: 'goerli',
     explorerTitle: 'Etherscan',
