@@ -70,10 +70,6 @@ export function Configurator({ title }: { title: string }) {
   const providerRef = useRef<EthereumProvider | null>()
 
   useEffect(() => {
-    providerRef.current = provider
-  }, [provider])
-
-  useEffect(() => {
     const widgetContainer = iframeContainerRef.current
 
     if (!widgetContainer) return
@@ -125,6 +121,10 @@ export function Configurator({ title }: { title: string }) {
     currentTradeType,
     isDynamicHeightEnabled,
   ])
+
+  useEffect(() => {
+    providerRef.current = provider
+  }, [provider])
 
   const handleWidgetRefreshClick = () => {
     setMode('light')
