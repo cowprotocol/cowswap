@@ -22,6 +22,7 @@ import ListItemText from '@mui/material/ListItemText'
 // import SaveIcon from '@mui/icons-material/Save'
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { SyntheticEvent } from 'react'
 
 enum TradeMode {
   Swap = 1,
@@ -171,7 +172,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={network || NetworkOptions[0]}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: { chainID: number; label: string } | null) => {
+          onChange={(event: SyntheticEvent, newValue: { chainID: number; label: string } | null) => {
             setNetwork(newValue || NetworkOptions[0])
           }}
           getOptionLabel={(option: { chainID: number; label: string }) => option.label}
@@ -185,8 +186,8 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={sellToken}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: string | null) => {
-            setSellToken(newValue || '')
+          onChange={(event: SyntheticEvent, newValue: string | null) => {
+            setSellToken(newValue)
           }}
           inputValue={sellToken || ''}
           onInputChange={(event: React.ChangeEvent<unknown>, newInputValue: string) => {
@@ -208,8 +209,8 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={buyToken}
-          onChange={(event: React.ChangeEvent<unknown>, newValue: string | null) => {
-            setBuyToken(newValue || '')
+          onChange={(event: SyntheticEvent, newValue: string | null) => {
+            setBuyToken(newValue)
           }}
           inputValue={buyToken || ''}
           onInputChange={(event, newInputValue) => {
