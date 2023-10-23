@@ -2,7 +2,15 @@ import { useMemo } from 'react'
 
 import { CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
 
+import { isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
+
+const getEnv = () => {
+  if (isLocalHost) return 'local'
+  if (isVercel) return 'dev'
+
+  return 'prod'
+}
 
 export function useWidgetParamsAndSettings(
   provider: EthereumProvider | undefined,
@@ -36,7 +44,7 @@ export function useWidgetParamsAndSettings(
       urlParams: {
         theme,
         chainId,
-        env: 'local',
+        env: getEnv(),
         tradeType: currentTradeType,
         tradeAssets: {
           sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
