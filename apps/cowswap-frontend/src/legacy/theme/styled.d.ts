@@ -129,6 +129,7 @@ declare module 'styled-components' {
 
   // Override theme
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
+    isInjectedWidgetMode: boolean
     shimmer: FlattenSimpleInterpolation
     colorScrollbar: FlattenSimpleInterpolation
     textShadow1: string

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
-import { getParsedOrderFromItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'
+import { getParsedOrderFromTableItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'
 
 export interface OrdersTableList {
   pending: OrderTableItem[]
@@ -11,8 +11,8 @@ export interface OrdersTableList {
 }
 
 const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
-  const aCreationTime = getParsedOrderFromItem(a).creationTime
-  const bCreationTime = getParsedOrderFromItem(b).creationTime
+  const aCreationTime = getParsedOrderFromTableItem(a).creationTime
+  const bCreationTime = getParsedOrderFromTableItem(b).creationTime
 
   return bCreationTime.getTime() - aCreationTime.getTime()
 }

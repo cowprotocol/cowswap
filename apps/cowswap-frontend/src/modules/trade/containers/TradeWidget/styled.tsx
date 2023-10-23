@@ -16,16 +16,17 @@ export const ContainerBox = styled.div`
   gap: 10px;
   background: var(${UI.COLOR_CONTAINER_BG_01});
   border: none;
-  border-radius: 16px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
+  position: relative;
 `
 
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0')};
   margin: 0;
 `
 

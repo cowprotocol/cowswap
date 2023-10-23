@@ -1,5 +1,5 @@
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
-import { isAddress, shortenAddress, formatTokenAmount, formatSymbol } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_BUY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
+import { formatSymbol, formatTokenAmount, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -156,6 +156,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     sellAmountBeforeFee,
     orderCreationHash,
     quoteId,
+    appData: { fullAppData },
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
@@ -170,6 +171,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     outputToken: buyToken,
     quoteId,
     class: additionalParams.class,
+    fullAppData,
 
     // Status
     status,

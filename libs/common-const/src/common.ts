@@ -99,7 +99,6 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
-export const EXPIRED_ORDERS_PENDING_TIME = ms`15min` // 15min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
 export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
@@ -118,6 +117,7 @@ const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
+export const COW_PROTOCOL_LINK = 'https://cow.fi/'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
@@ -154,10 +154,6 @@ export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
 
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100
-
-// last wallet provider key used in local storage
-export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
-export const WAITING_TIME_RECONNECT_LAST_PROVIDER = 15000 // 15s
 
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
