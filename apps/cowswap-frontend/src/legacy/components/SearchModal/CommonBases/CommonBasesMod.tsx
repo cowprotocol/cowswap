@@ -13,13 +13,12 @@ import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index'
 
-export const StyledScrollarea = styled.div`
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
-  padding: 0 20px 0;
-  overflow-y: hidden;
-  overflow-x: auto;
-  ${({ theme }) => theme.colorScrollbar};
+export const StyledTokenList = styled.div`
+  padding: 0 10px 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    overflow-x: scroll;
+  `}
 `
 
 const MAX_LENGTH_OVERFLOW = 12
@@ -43,7 +42,7 @@ export default function CommonBases({
         </Text>
         <QuestionHelper text={<Trans>Your favourite saved tokens. Edit this list in your account page.</Trans>} />
       </AutoRow>
-      <StyledScrollarea>
+      <StyledTokenList>
         <CommonBasesRow gap="4px">
           {tokens.map((currency: Currency) => {
             const isSelected = selectedCurrency?.equals(currency)
@@ -58,7 +57,7 @@ export default function CommonBases({
                   key={currencyId(currency)}
                 >
                   <CurrencyLogoFromList currency={currency} />
-                  <Text fontWeight={500} fontSize={16}>
+                  <Text fontWeight={500} fontSize={13}>
                     <TokenSymbol token={currency} length={6} />
                   </Text>
                 </BaseWrapper>
@@ -66,7 +65,7 @@ export default function CommonBases({
             )
           })}
         </CommonBasesRow>
-      </StyledScrollarea>
+      </StyledTokenList>
     </MobileWrapper>
   ) : null
 }
