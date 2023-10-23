@@ -5,11 +5,13 @@ import { CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@c
 import { ConfiguratorState } from '../types'
 
 export function useWidgetParamsAndSettings(
-  provider: EthereumProvider | null,
-  widgetContainer: HTMLDivElement,
+  provider: EthereumProvider | undefined,
+  widgetContainer: HTMLDivElement | null,
   configuratorState: ConfiguratorState
 ) {
   return useMemo(() => {
+    if (!widgetContainer) return null
+
     const {
       chainId,
       theme,
@@ -38,7 +40,7 @@ export function useWidgetParamsAndSettings(
         tradeType: currentTradeType,
         tradeAssets: {
           sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-          buy: { asset: buyToken, amount: buyTokenAmount.toString() },
+          buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
         },
       },
       appParams: {

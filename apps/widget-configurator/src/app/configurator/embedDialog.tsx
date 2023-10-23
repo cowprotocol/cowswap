@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { CSSProperties, useEffect, useRef, useState } from 'react'
 
 import { CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
 
@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-const CodeStyles = {
+const CodeStyles: CSSProperties = {
   whiteSpace: 'break-spaces',
   fontSize: '13px',
 }

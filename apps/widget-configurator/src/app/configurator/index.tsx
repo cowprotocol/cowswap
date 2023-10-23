@@ -77,10 +77,11 @@ export function Configurator({ title }: { title: string }) {
     isDynamicHeightEnabled,
   }
 
-  const { params, settings } = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+  const paramsAndSettings = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+  const { params, settings } = paramsAndSettings || {}
 
   useEffect(() => {
-    if (!params.container) return
+    if (!params?.container || !settings) return
 
     // Re-initialize widget when provider is changed
     if (provider && providerRef.current !== provider) {
@@ -167,7 +168,7 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        <EmbedDialog params={params} settings={settings} />
+        {params && settings && <EmbedDialog params={params} settings={settings} />}
         <br />
         <div ref={iframeContainerRef}></div>
       </Box>

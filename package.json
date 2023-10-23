@@ -11,7 +11,10 @@
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
     "start-widget": "nx run widget-configurator:serve",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
+    "build": "yarn run build-app",
+    "build-app": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
+    "build-widget": "nx build widget-configurator",
+    "ci:build": "yarn run build-app && yarn run build-widget",
     "ipfs:build": "PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "npx ipfs-deploy build -p pinata -O",
     "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
