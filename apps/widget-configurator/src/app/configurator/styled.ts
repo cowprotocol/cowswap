@@ -1,4 +1,6 @@
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles'
+
+export const WrapperStyled = { display: 'flex', flexFlow: 'column wrap', width: '100%' }
 
 export const DrawerStyled = (theme: Theme) => ({
   width: '29rem',
@@ -15,23 +17,20 @@ export const DrawerStyled = (theme: Theme) => ({
     boxShadow: 'rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem',
     padding: '1.6rem',
   },
-});
+})
 
 export const ContentStyled = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  flexFlow: 'column wrap',
-  height: '100%',
-  width: 'auto',
+  flexFlow: 'column',
   flex: '1 1 auto',
+  margin: '4.2rem auto',
 
-  '& > iframe': {
+  '> iframe': {
     border: 0,
     margin: '0 auto',
     borderRadius: '1.6rem',
-    overflow: 'hidden',
+    overflow: 'auto',
   },
 }
-
-export const WrapperStyled = { display: 'flex', flexFlow: 'row wrap', height: '100vh', width: '100%' }

@@ -5,14 +5,15 @@ import { CssBaseline, GlobalStyles, PaletteMode } from '@mui/material'
 import * as ReactDOM from 'react-dom/client'
 import App from './app/app'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { Theme } from '@mui/material/styles'
 
 export const ColorModeContext = React.createContext({
   mode: 'light' as PaletteMode,
   toggleColorMode: () => {},
-  setAutoMode: () => {}
-});
+  setAutoMode: () => {},
+})
 
-const globalStyles = {
+const globalStyles = (theme: Theme, mode: PaletteMode) => ({
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",
     fontDisplay: 'fallback',
@@ -26,9 +27,12 @@ const globalStyles = {
     margin: 0,
     padding: 0,
   },
-  'html, body, #root': {
+  'html, body': {
     height: '100%',
     width: '100%',
+  },
+  body: {
+    background: 'none',
   },
   html: {
     width: '100%',
@@ -43,10 +47,12 @@ const globalStyles = {
     fontVariant: 'none',
     fontFeatureSettings: "'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on",
     WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-    background: 'linear-gradient(45deg,#EAE9FF 14.64%,#CAE9FF 85.36%)',
     backgroundAttachment: 'fixed',
+    backgroundColor: theme.palette.cow.background,
+    background: mode === 'light' && theme.palette.cow.gradient,
+    backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
   },
-}
+})
 
 export enum ThemeMode {
   Auto = 1,
@@ -55,21 +61,21 @@ export enum ThemeMode {
 }
 
 function MainApp() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = React.useState<PaletteMode>(prefersDarkMode ? 'dark' : 'light');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  const [mode, setMode] = React.useState<PaletteMode>(prefersDarkMode ? 'dark' : 'light')
 
   const colorMode = React.useMemo(
     () => ({
       mode,
       toggleColorMode: () => {
-        setMode(prevMode => prevMode === 'light' ? 'dark' : 'light');
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
       },
       setAutoMode: () => {
-        setMode(prefersDarkMode ? 'dark' : 'light');
+        setMode(prefersDarkMode ? 'dark' : 'light')
       },
     }),
     [mode, prefersDarkMode]
-  );
+  )
 
   const theme = React.useMemo(() => {
     const commonTypography = {
@@ -100,8 +106,10 @@ function MainApp() {
               default: 'rgb(12, 38, 75)',
             },
             cow: {
-              background: 'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%) fixed'
-            }
+              background: '#07162d',
+              gradient:
+                'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%)',
+            },
           }
         : {
             mode: 'light' as PaletteMode,
@@ -120,8 +128,9 @@ function MainApp() {
               paper: '#ffffff',
             },
             cow: {
-              background: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed'
-            }
+              background: '#ffffff',
+              gradient: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed',
+            },
           }
 
     return createTheme({
@@ -134,7 +143,7 @@ function MainApp() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <GlobalStyles styles={globalStyles} />
+        <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
         <App />
       </ThemeProvider>
     </ColorModeContext.Provider>

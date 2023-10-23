@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { AttachIframeResizer } from './attachIframeResizer'
 import { ColorModeContext } from '../../main'
 // import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -41,7 +42,12 @@ const TradeModeOptions = [
   { label: 'TWAP', value: TradeMode.TWAP },
 ]
 
-const NetworkOptions = [
+type NetworkOption = {
+  chainID: number
+  label: string
+}
+
+const NetworkOptions: NetworkOption[] = [
   { chainID: 1, label: 'Ethereum' },
   { chainID: 100, label: 'Gnosis Chain' },
 ]
@@ -169,7 +175,7 @@ export function Configurator({ title }: { title: string }) {
           onChange={(event: SyntheticEvent, newValue: { chainID: number; label: string } | null) => {
             setNetwork(newValue || NetworkOptions[0])
           }}
-          getOptionLabel={(option) => option.label}
+          getOptionLabel={(option: { chainID: number; label: string }) => option.label}
           id="controllable-states-network"
           options={NetworkOptions}
           size="small"
@@ -184,7 +190,7 @@ export function Configurator({ title }: { title: string }) {
             setSellToken(newValue)
           }}
           inputValue={sellToken || ''}
-          onInputChange={(event, newInputValue) => {
+          onInputChange={(event: React.ChangeEvent<unknown>, newInputValue: string) => {
             setSellToken(newInputValue)
           }}
           id="controllable-states-selling-token"
@@ -197,7 +203,7 @@ export function Configurator({ title }: { title: string }) {
           id="input-sellTokenAmount"
           label="Sell amount"
           value={sellTokenAmount}
-          onChange={(e) => setSellTokenAmount(Number(e.target.value))}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSellTokenAmount(Number(e.target.value))}
           size="small"
         />
 
@@ -235,7 +241,7 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        <iframe src={iframeURL} width="400px" height="640px" title="widget" />
+        <iframe id="cow-widget" src={iframeURL} width="400px" height="640px" title="widget" />
 
         <Box
           sx={{
@@ -245,12 +251,15 @@ export function Configurator({ title }: { title: string }) {
             alignItems: 'center',
             margin: '1.6rem 0 0',
             gap: '2.4rem',
+            width: '100%',
           }}
         >
           <Typography variant="body2">URL: {iframeURL}</Typography>
           <EmbedDialog />
         </Box>
       </Box>
+
+      <AttachIframeResizer iframeId={'cow-widget'} />
     </Box>
   )
 }

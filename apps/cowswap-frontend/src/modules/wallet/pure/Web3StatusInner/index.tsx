@@ -45,7 +45,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
-          <RowBetween>
+          <RowBetween gap={'6px'}>
             <FollowPendingTxPopup>
               <Text>
                 <Trans>{pendingCount} Pending</Trans>
