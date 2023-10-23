@@ -56,6 +56,9 @@ export const globalStyles = (theme: Theme, mode: PaletteMode) => ({
     background: mode === 'light' && theme.palette.cow.gradient,
     backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
   },
+  'w3m-modal': {
+    zIndex: 1200,
+  },
 })
 
 export enum ThemeMode {
