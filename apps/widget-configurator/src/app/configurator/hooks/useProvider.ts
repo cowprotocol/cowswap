@@ -32,8 +32,12 @@ export function useProvider(): EthereumProvider | null {
 
 function getEthereumProvider(provider: EthereumProvider, onDisconnect: EventEmitter): EthereumProvider {
   return {
-    request: provider.request,
-    enable: provider.enable,
+    request(...args) {
+      return provider.request(...args)
+    },
+    enable(...args) {
+      return provider.enable(...args)
+    },
     on(event: string, args: unknown) {
       if (event === 'disconnect' || event === 'close') {
         return onDisconnect.on('disconnect', args)
