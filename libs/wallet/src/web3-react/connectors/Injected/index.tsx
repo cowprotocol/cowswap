@@ -150,13 +150,16 @@ export class InjectedWallet extends Connector {
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
-      provider.on('disconnect', (error: ProviderRpcError): void => {
+      const onDisconnect = (error: ProviderRpcError): void => {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.provider?.request({ method: 'PUBLIC_disconnectSite' })
 
         this.actions.resetState()
         this.onError?.(error)
-      })
+      }
+
+      provider.on('disconnect', onDisconnect)
+      provider.on('close', onDisconnect)
 
       provider.on('chainChanged', (chainId: string): void => {
         this.actions.update({ chainId: parseChainId(chainId) })
