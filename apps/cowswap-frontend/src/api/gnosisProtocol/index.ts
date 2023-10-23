@@ -1,6 +1,8 @@
 import * as realApi from './api'
 import * as mockApi from './mock'
 
+export { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
+
 const useMock = process.env.REACT_APP_MOCK === 'true'
 
 // Re-exporting the result, mocked or not.

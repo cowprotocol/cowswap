@@ -37,7 +37,7 @@ export const ResponsiveLogo = styled(TokenLogo)`
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `};
+  `}
 `
 
 export const Label = styled.div<{ end?: number }>`

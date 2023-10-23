@@ -7,6 +7,7 @@ import { Provider as AtomProvider } from 'jotai'
 import { StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
@@ -29,8 +30,10 @@ import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { IframeResizer } from 'utils/iframeResizer'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -41,6 +44,7 @@ if (window.ethereum) {
 }
 
 const root = createRoot(document.getElementById('root')!)
+const isInjectedWidgetMode = isInjectedWidget()
 
 root.render(
   <StrictMode>
@@ -56,12 +60,18 @@ root.render(
                 <BlockNumberProvider>
                   <WithLDProvider>
                     <Updaters />
-                    <FeatureGuard featureFlag="cowFortuneEnabled">
-                      <FortuneWidget />
-                    </FeatureGuard>
+
+                    {!isInjectedWidgetMode && (
+                      <>
+                        <FeatureGuard featureFlag="cowFortuneEnabled">
+                          <FortuneWidget />
+                        </FeatureGuard>
+                        <AppziButton />
+                      </>
+                    )}
+
                     <Popups />
                     <SnackbarsWidget />
-                    <AppziButton />
                     <App />
                   </WithLDProvider>
                 </BlockNumberProvider>
@@ -71,6 +81,8 @@ root.render(
         </HashRouter>
       </AtomProvider>
     </Provider>
+
+    {isInjectedWidgetMode && <IframeResizer />}
   </StrictMode>
 )
 

@@ -1,5 +1,4 @@
 import { atom } from 'jotai'
-import { nanoid } from '@reduxjs/toolkit'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { environmentAtom } from '../environmentAtom'
@@ -16,9 +15,9 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
   const chainState = globalState[chainId]
 
   const update = listsStates.reduce<{ [listId: string]: ListState }>((acc, list) => {
-    acc[list.id] = {
+    acc[list.source] = {
       ...list,
-      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState[list.id]?.isEnabled,
+      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState[list.source]?.isEnabled,
     }
 
     return acc
@@ -35,45 +34,43 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
 export const addListAtom = atom(null, (get, set, state: ListState) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
-  const id = nanoid()
 
-  state.id = id
   state.isEnabled = true
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].concat({ id, ...state.source }),
+    [chainId]: userAddedTokenLists[chainId].concat({ ...state }),
   })
 
   set(upsertListsAtom, chainId, [state])
 })
 
-export const removeListAtom = atom(null, (get, set, id: string) => {
+export const removeListAtom = atom(null, (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].filter((item) => item.id !== id),
+    [chainId]: userAddedTokenLists[chainId].filter((item) => item.source !== source),
   })
 
   const stateCopy = { ...get(listsStatesByChainAtom) }
 
-  delete stateCopy[chainId][id]
+  delete stateCopy[chainId][source]
 
   set(listsStatesByChainAtom, stateCopy)
 })
 
-export const toggleListAtom = atom(null, (get, set, id: string) => {
+export const toggleListAtom = atom(null, (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const listsEnabledState = get(listsEnabledStateAtom)
   const states = get(listsStatesMapAtom)
 
-  if (!states[id]) return
+  if (!states[source]) return
 
-  const list = { ...states[id] }
+  const list = { ...states[source] }
 
-  list.isEnabled = !listsEnabledState[id]
+  list.isEnabled = !listsEnabledState[source]
 
   set(upsertListsAtom, chainId, [list])
 })

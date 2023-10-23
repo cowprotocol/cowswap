@@ -20,29 +20,39 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
 `
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
-  /* border: none; */
-  /* color: ${({ theme }) => theme.primaryText1}; */
-  /* font-weight: 500; */
+  > svg {
+    display: ${({ theme }) => (theme.isInjectedWidgetMode ? '' : 'none')};
+  }
 
-  /* :hover,
-  :focus {
-    border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
-    color: ${({ theme }) => theme.primaryText1};
-  } */
+  ${({ theme }) =>
+    theme.isInjectedWidgetMode &&
+    `
+      margin: 0;
+      padding: 6px 12px;
+      background: 0;
+      border: 0;
+      font-size: 14px;
+      font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+      color: var(${UI.COLOR_TEXT1})!important;
+      transition: all 0.2s ease-in-out;
+      gap: 6px;
+      opacity: 0.7;
 
-  /* ${({ faded }) =>
-    faded &&
-    css`
-      background-color: ${({ theme }) => theme.primary5};
-      border: 1px solid ${({ theme }) => theme.primary5};
-      color: ${({ theme }) => theme.primaryText1};
-
-      :hover,
-      :focus {
-        border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
-        color: ${({ theme }) => darken(0.05, theme.primaryText1)};
+      &:hover {
+        background: var(${UI.COLOR_GREY});
       }
-    `} */
+
+      > svg {
+        --size: var(${UI.ICON_SIZE_SMALL});
+        height: var(--size);
+        width: var(--size);
+        margin: 0;
+      }
+
+      > svg > path {
+        fill: var(${UI.COLOR_TEXT1});
+      }
+  `}
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
@@ -69,8 +79,8 @@ export const Text = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0 0.5rem 0 0.25rem;
-  font-size: 1rem;
+  margin: 0;
+  font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '15px' : '1rem')};
   width: fit-content;
   font-weight: 500;
 `
@@ -84,8 +94,7 @@ export const NetworkIcon = styled(Activity)`
 
 export const Wrapper = styled.div`
   color: var(${UI.COLOR_TEXT1});
-  height: 40px;
-  width: 100%;
+  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '40px')};
   display: flex;
   padding: 0;
   margin: 0;
@@ -97,11 +106,12 @@ export const Wrapper = styled.div`
     margin: 0 auto;
   `};
 
-  button {
+  > button {
     height: auto;
     border-radius: 21px;
     padding: 6px 12px;
     width: max-content;
+    gap: 6px;
   }
 
   ${Web3StatusConnected} {

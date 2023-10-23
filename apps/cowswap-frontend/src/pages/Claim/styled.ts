@@ -1650,7 +1650,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
   width: 100%;
   height: 86px;
   padding: 0 24px;
-  border-radius: 24px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   margin: 0 0 12px;
   font-weight: bold;
   font-size: 21px;

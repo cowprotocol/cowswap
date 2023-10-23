@@ -65,6 +65,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             chainId as number,
             tokenName,
             tokenAddress,
+            permitInfo.version,
           ],
         })
       : await buildDaiLikePermitCallData({
@@ -81,6 +82,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             chainId as number,
             tokenName,
             tokenAddress,
+            permitInfo.version,
           ],
         })
 
