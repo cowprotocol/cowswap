@@ -11,7 +11,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
+import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
@@ -80,6 +80,7 @@ function _transformGpOrderToStoreOrder(
     summary: '',
     status,
     receiver: receiver || '',
+    fullAppData: order.fullAppData,
     apiAdditionalInfo: order,
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related

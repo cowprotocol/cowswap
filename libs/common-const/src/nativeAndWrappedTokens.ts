@@ -1,7 +1,7 @@
 import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenWithLogo } from './types'
 import { WETH9 } from '@uniswap/sdk-core'
-import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
+import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 
 import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
 
@@ -10,7 +10,7 @@ export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeee
 
 const weth9Mainnet = WETH9[SupportedChainId.MAINNET]
 export const WETH_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl(weth9Mainnet.address.toLowerCase(), SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl(weth9Mainnet.address.toLowerCase(), SupportedChainId.MAINNET),
   weth9Mainnet.chainId,
   weth9Mainnet.address,
   weth9Mainnet.decimals,

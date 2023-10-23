@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
-import { removeUnsupportedTokenAtom } from '../../../state/tokens/unsupportedTokensAtom'
+import { removeUnsupportedTokensAtom } from '../../../state/tokens/unsupportedTokensAtom'
 
 export function useRemoveUnsupportedToken() {
-  return useSetAtom(removeUnsupportedTokenAtom)
+  const removeUnsupportedToken = useSetAtom(removeUnsupportedTokensAtom)
+
+  return (tokenAddress: string) => removeUnsupportedToken([tokenAddress])
 }

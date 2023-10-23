@@ -7,10 +7,11 @@ export interface OrderTableGroup {
 
 export type OrderTableItem = OrderTableGroup | ParsedOrder
 
-export const isParsedOrder = (item: OrderTableItem): item is ParsedOrder => item.hasOwnProperty('creationTime')
+export const isParsedOrder = (item: OrderTableItem): item is ParsedOrder => !('children' in item)
 
-export const getParsedOrderFromItem = (item: OrderTableItem): ParsedOrder => (isParsedOrder(item) ? item : item.parent)
+export const getParsedOrderFromTableItem = (item: OrderTableItem): ParsedOrder =>
+  isParsedOrder(item) ? item : item.parent
 
 export function tableItemsToOrders(items: OrderTableItem[]): ParsedOrder[] {
-  return items.map(getParsedOrderFromItem)
+  return items.map(getParsedOrderFromTableItem)
 }
