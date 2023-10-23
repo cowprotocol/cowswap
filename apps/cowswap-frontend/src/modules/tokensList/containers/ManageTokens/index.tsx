@@ -12,9 +12,7 @@ import * as styledEl from './styled'
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 
-const tokensListToMap = (tokens: TokenWithLogo[] | null) => {
-  if (!tokens) return {}
-
+const tokensListToMap = (tokens: TokenWithLogo[]) => {
   return tokens.reduce<Record<string, TokenWithLogo>>((acc, token) => {
     acc[token.address.toLowerCase()] = token
     return acc

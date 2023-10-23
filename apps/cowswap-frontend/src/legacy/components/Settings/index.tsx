@@ -63,8 +63,9 @@ const Settings = styled(SettingsMod)`
   }
 
   ${StyledMenuIcon} {
-    height: 20px;
-    width: 20px;
+    --size: var(${UI.ICON_SIZE_NORMAL});
+    height: var(--size);
+    width: var(--size);
 
     > path,
     > circle {
@@ -79,7 +80,7 @@ const Settings = styled(SettingsMod)`
     animation: expertModeOn 3s normal forwards ease-in-out;
 
     span {
-      font-size: 20px;
+      font-size: var(${UI.ICON_SIZE_NORMAL});
 
       &::after {
         content: '🐮';

@@ -7,7 +7,7 @@ const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '32px')};

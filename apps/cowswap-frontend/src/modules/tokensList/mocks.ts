@@ -99,10 +99,8 @@ export const customTokensMock: TokenWithLogo[] = [
 
 export const listsMock: ListState[] = [
   {
-    id: '1',
-    source: {
-      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
-    },
+    source:
+      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
     list: {
       name: 'CowSwap Goerli',
       logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
@@ -112,10 +110,8 @@ export const listsMock: ListState[] = [
     },
   },
   {
-    id: '2',
-    source: {
-      url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
-    },
+    source:
+      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
     list: {
       name: 'Compound',
       logoURI: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
@@ -127,10 +123,7 @@ export const listsMock: ListState[] = [
 ]
 
 export const importListsMock: ListState = {
-  id: '4',
-  source: {
-    url: 'https://files.cow.fi/tokens/CowSwap.json',
-  },
+  source: 'https://files.cow.fi/tokens/CowSwap.json',
   list: {
     name: 'CoW Swap',
     logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',

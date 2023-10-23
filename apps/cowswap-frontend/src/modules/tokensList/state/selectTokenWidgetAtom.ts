@@ -12,5 +12,6 @@ export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetA
     tokenToImport?: TokenWithLogo
     listToImport?: ListState
     onSelectToken?: (currency: Currency) => void
+    onInputPressEnter?: () => void
   }>({ open: false })
 )
