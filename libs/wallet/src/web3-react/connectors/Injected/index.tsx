@@ -25,7 +25,9 @@ interface injectedWalletConstructorArgs {
   searchKeywords: string[]
 }
 
-function parseChainId(chainId: string) {
+function parseChainId(chainId: string | number): number {
+  if (typeof chainId === 'number') return chainId
+
   if (!chainId.startsWith('0x')) {
     return Number(chainId)
   }
@@ -50,7 +52,10 @@ export class InjectedWallet extends Connector {
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
   async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
     let cancelActivation: () => void
-    if (!this.provider?.isConnected?.()) cancelActivation = this.actions.startActivation()
+
+    if (!this.provider?.isConnected?.()) {
+      cancelActivation = this.actions.startActivation()
+    }
 
     return this.isomorphicInitialize()
       .then(async () => {
