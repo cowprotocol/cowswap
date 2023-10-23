@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 
 import { cowSwapStore } from 'legacy/state'
 import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { getOrderSubmitSummary } from 'legacy/utils/trade'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -54,6 +55,9 @@ export function useCreateTwapOrder() {
 
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+
+  // Halloween temporary
+  const darkMode = useIsDarkMode()
 
   return useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
@@ -123,7 +127,7 @@ export function useCreateTwapOrder() {
           outputAmount: twapOrder.buyAmount,
           feeAmount: undefined,
         })
-        getCowSoundSend().play()
+        getCowSoundSend(darkMode).play()
         dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
@@ -156,6 +160,7 @@ export function useCreateTwapOrder() {
       addTwapOrderToList,
       recipient,
       updateAdvancedOrdersState,
+      darkMode,
     ]
   )
 }
