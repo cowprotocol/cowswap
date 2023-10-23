@@ -5,12 +5,12 @@ import vCowLogo from '@cowprotocol/assets/cow-swap/vCOW.png'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { TokenWithLogo } from './types'
-import { cowprotocolTokenUrl } from './cowprotocolTokenLists'
+import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 import { WETH_MAINNET } from './nativeAndWrappedTokens'
 
 // Mainnet
 export const USDT = new TokenWithLogo(
-  cowprotocolTokenUrl('0xdAC17F958D2ee523a2206206994597C13D831ec7', SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl('0xdAC17F958D2ee523a2206206994597C13D831ec7', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   6,
@@ -18,7 +18,7 @@ export const USDT = new TokenWithLogo(
   'Tether USD'
 )
 export const WBTC = new TokenWithLogo(
-  cowprotocolTokenUrl('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   8,
@@ -27,7 +27,7 @@ export const WBTC = new TokenWithLogo(
 )
 
 export const USDC_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   6,
@@ -36,7 +36,7 @@ export const USDC_MAINNET = new TokenWithLogo(
 )
 
 export const DAI = new TokenWithLogo(
-  cowprotocolTokenUrl('0x6b175474e89094c44da98b954eedeac495271d0f', SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl('0x6b175474e89094c44da98b954eedeac495271d0f', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   18,
@@ -45,7 +45,7 @@ export const DAI = new TokenWithLogo(
 )
 
 const GNO_MAINNET = new TokenWithLogo(
-  cowprotocolTokenUrl('0x6810e776880c02933d47db1b9fc05908e5386b96', SupportedChainId.MAINNET),
+  cowprotocolTokenLogoUrl('0x6810e776880c02933d47db1b9fc05908e5386b96', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
   '0x6810e776880c02933d47db1b9fc05908e5386b96',
   18,
@@ -233,7 +233,7 @@ export const GNO: Record<SupportedChainId, TokenWithLogo> = {
 }
 
 export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
-  cowprotocolTokenUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
+  cowprotocolTokenLogoUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
   SupportedChainId.GNOSIS_CHAIN,
   '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
   18,
