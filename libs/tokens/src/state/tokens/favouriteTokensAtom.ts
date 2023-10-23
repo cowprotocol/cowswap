@@ -6,7 +6,6 @@ import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { DEFAULT_FAVOURITE_TOKENS } from '../../const/defaultFavouriteTokens'
-import { tokenWithLogoFromToken } from '../../utils/tokenWithLogoFromToken'
 
 export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
   'favouriteTokensAtom:v1',
@@ -17,7 +16,7 @@ export const favouriteTokensListAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const favouriteTokensState = get(favouriteTokensAtom)
 
-  return Object.values(favouriteTokensState[chainId]).map((token) => tokenWithLogoFromToken(token, token.logoURI))
+  return Object.values(favouriteTokensState[chainId]).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
 })
 
 export const resetFavouriteTokensAtom = atom(null, (get, set) => {
