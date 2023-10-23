@@ -4,7 +4,6 @@ import { useCallback, useState } from 'react'
 import { addListAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
-  getTokenListSource,
   ListState,
   useAddList,
   useAllListsList,
@@ -35,7 +34,8 @@ const Wrapper = styled.div`
 `
 
 export function SelectTokenWidget() {
-  const { open, onSelectToken, tokenToImport, listToImport, selectedToken } = useAtomValue(selectTokenWidgetAtom)
+  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
+    useAtomValue(selectTokenWidgetAtom)
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
   const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
@@ -73,13 +73,14 @@ export function SelectTokenWidget() {
 
   const importTokenAndClose = (tokens: TokenWithLogo[]) => {
     importTokenCallback(tokens)
+    onSelectToken?.(tokens[0])
     onDismiss()
   }
 
   const importListAndBack = (list: ListState) => {
     addCustomTokenLists(list)
     updateSelectTokenWidget({ listToImport: undefined })
-    addListAnalytics('Success', getTokenListSource(list.source))
+    addListAnalytics('Success', list.source)
   }
 
   if (!onSelectToken) return null
@@ -130,6 +131,7 @@ export function SelectTokenWidget() {
               balances={balances}
               balancesLoading={balancesLoading}
               onSelectToken={onSelectToken}
+              onInputPressEnter={onInputPressEnter}
               onDismiss={onDismiss}
               onOpenManageWidget={() => setIsManageWidgetOpen(true)}
             ></SelectTokenModal>

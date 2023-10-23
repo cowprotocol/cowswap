@@ -35,7 +35,7 @@ export const ImportButton = styled.button`
   font-size: 16px;
   font-weight: 600;
   padding: 6px 15px;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: 24px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 
