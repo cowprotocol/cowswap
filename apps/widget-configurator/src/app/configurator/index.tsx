@@ -21,6 +21,7 @@ import ListItemText from '@mui/material/ListItemText'
 // import SaveIcon from '@mui/icons-material/Save'
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { SyntheticEvent } from 'react'
 
 enum TradeMode {
   Swap = 1,
@@ -165,7 +166,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={network || NetworkOptions[0]}
-          onChange={(event: any, newValue: { chainID: number; label: string } | null) => {
+          onChange={(event: SyntheticEvent, newValue: { chainID: number; label: string } | null) => {
             setNetwork(newValue || NetworkOptions[0])
           }}
           getOptionLabel={(option) => option.label}
@@ -179,7 +180,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={sellToken}
-          onChange={(event: any, newValue: string | null) => {
+          onChange={(event: SyntheticEvent, newValue: string | null) => {
             setSellToken(newValue)
           }}
           inputValue={sellToken || ''}
@@ -202,7 +203,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Autocomplete
           value={buyToken}
-          onChange={(event: any, newValue: string | null) => {
+          onChange={(event: SyntheticEvent, newValue: string | null) => {
             setBuyToken(newValue)
           }}
           inputValue={buyToken || ''}
