@@ -46,9 +46,9 @@ export function ManageLists(props: ManageListsProps) {
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
             <ListItem
-              key={list.id}
+              key={list.source}
               list={list}
-              enabled={!!activeTokenListsIds[list.id]}
+              enabled={!!activeTokenListsIds[list.source]}
               removeList={removeList}
               toggleList={toggleList}
             />
