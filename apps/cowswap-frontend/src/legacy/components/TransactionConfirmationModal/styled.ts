@@ -312,11 +312,19 @@ export const StepsWrapper = styled.div`
     margin: auto;
     position: absolute;
     width: 100%;
-    max-width: 162px;
+    max-width: 35%;
     left: 0;
     right: 0;
     top: 32px;
     z-index: 1;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      max-width: 25%;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToVerySmall`
+      max-width: 20%;
+    `}
   }
 
   > hr::before {

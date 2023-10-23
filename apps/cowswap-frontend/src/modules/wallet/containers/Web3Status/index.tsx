@@ -1,4 +1,3 @@
-import { STORAGE_KEY_LAST_PROVIDER } from '@cowprotocol/common-const'
 import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -11,7 +10,11 @@ import { AccountSelectorModal } from '../AccountSelectorModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 import { WalletModal } from '../WalletModal'
 
-export function Web3Status({ pendingActivities }: { pendingActivities: string[] }) {
+export interface Web3StatusProps {
+  pendingActivities: string[]
+  className?: string
+}
+export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   const { connector } = useWeb3React()
   const { account, active, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -24,14 +27,12 @@ export function Web3Status({ pendingActivities }: { pendingActivities: string[] 
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNotPendingOrder()
 
-  const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
-
-  if (!active && !latestProvider) {
+  if (!active) {
     return null
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}
