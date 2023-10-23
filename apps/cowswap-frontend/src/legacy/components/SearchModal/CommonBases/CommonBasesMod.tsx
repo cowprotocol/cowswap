@@ -16,13 +16,10 @@ import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index'
 export const StyledScrollarea = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
-  padding: 0 20px;
+  padding: 0 20px 0;
+  overflow-y: hidden;
+  overflow-x: auto;
   ${({ theme }) => theme.colorScrollbar};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    overflow-y: hidden;
-    overflow-x: auto;
-  `}
 `
 
 const MAX_LENGTH_OVERFLOW = 12

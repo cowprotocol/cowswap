@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 
-import { EXPIRED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -24,7 +24,6 @@ export function ExpiredOrdersUpdater(): null {
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string) => {
       const lowerCaseAccount = account.toLowerCase()
-      const now = Date.now()
 
       if (isUpdating.current) {
         return
@@ -33,26 +32,24 @@ export function ExpiredOrdersUpdater(): null {
       try {
         isUpdating.current = true
 
-        // Filter orders:
+        // Filter expired orders:
+        // - Only eth-flow orders
         // - Owned by the current connected account
-        // - Created in the last 5 min, no further
         // - Not yet refunded
-        const pending = expiredRef.current.filter(({ owner, creationTime: creationTimeString, refundHash }) => {
-          const creationTime = new Date(creationTimeString).getTime()
+        const orderWithoutRefund = expiredRef.current.filter(({ owner, refundHash, sellToken }) => {
+          const isEthFlowOrder = sellToken === NATIVE_CURRENCY_BUY_ADDRESS
 
-          return (
-            owner.toLowerCase() === lowerCaseAccount && now - creationTime < EXPIRED_ORDERS_PENDING_TIME && !refundHash
-          )
+          return isEthFlowOrder && owner.toLowerCase() === lowerCaseAccount && !refundHash
         })
 
-        if (pending.length === 0) {
+        if (orderWithoutRefund.length === 0) {
           // console.debug(`[CancelledOrdersUpdater] No orders are being expired`)
           return
         } else {
-          console.debug(`[ExpiredOrdersUpdater] Checking ${pending.length} recently expired orders...`)
+          console.debug(`[ExpiredOrdersUpdater] Checking ${orderWithoutRefund.length} recently expired orders...`)
         }
 
-        const ordersPromises = pending.map(({ id }) => getOrder(chainId, id))
+        const ordersPromises = orderWithoutRefund.map(({ id }) => getOrder(chainId, id))
 
         const resolvedPromises = await Promise.allSettled(ordersPromises)
 

@@ -1,46 +1,42 @@
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
-import { contenthashToUri, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
+import { contenthashToUri, parseENSAddress, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
 
 import { validateTokenList } from '../utils/validateTokenList'
-import { ListSourceConfig, ListSourceConfigWithEnsName, ListSourceConfigWithUrl, ListState } from '../types'
-import { getIsTokenListWithUrl } from '../utils/getIsTokenListWithUrl'
+import { ListSourceConfig, ListState } from '../types'
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
  */
 export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
-  return getIsTokenListWithUrl(list) ? fetchTokenListByUrl(list) : fetchTokenListByEnsName(list)
+  const isEnsSource = parseENSAddress(list.source)
+  return isEnsSource ? fetchTokenListByEnsName(list) : fetchTokenListByUrl(list)
 }
 
-async function fetchTokenListByUrl(list: ListSourceConfigWithUrl): Promise<ListState> {
-  return _fetchTokenList(list.id, [list.url]).then((result) => {
+async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source]).then((result) => {
     return {
       ...result,
       priority: list.priority,
-      source: {
-        url: list.url,
-      },
+      source: list.source,
     }
   })
 }
 
-async function fetchTokenListByEnsName(list: ListSourceConfigWithEnsName): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.ensName, MAINNET_PROVIDER)
+async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
 
-  return _fetchTokenList(list.id, urls).then((result) => {
+  return _fetchTokenList(list.source, urls).then((result) => {
     return {
       ...result,
       priority: list.priority,
-      source: {
-        ensName: list.ensName,
-      },
+      source: list.source,
     }
   })
 }
 
-async function _fetchTokenList(id: string, urls: string[]): Promise<Omit<ListState, 'source'>> {
+async function _fetchTokenList(source: string, urls: string[]): Promise<ListState> {
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i]
     const isLast = i === urls.length - 1
@@ -70,7 +66,7 @@ async function _fetchTokenList(id: string, urls: string[]): Promise<Omit<ListSta
     const json = await response.json()
 
     return {
-      id,
+      source,
       list: await validateTokenList(json),
     }
   }

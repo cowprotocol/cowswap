@@ -3,6 +3,7 @@ import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo,
 import { searchByAddressAnalytics } from '@cowprotocol/analytics'
 import { useTheme, useDebounce, useNetworkName, useOnClickOutside, useToggle } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -205,6 +206,8 @@ export function CurrencySearch({
     inputRef.current?.focus()
   }, [])
 
+  const isInjectedWidgetMode = isInjectedWidget()
+
   return (
     <>
       <ContentWrapper>
@@ -278,13 +281,17 @@ export function CurrencySearch({
             </ThemedText.Main>
           </Column>
         )}
-        <Footer>
-          <Row justify="center">
-            <ButtonText onClick={showManageView} color={theme.primary1} className="list-token-manage-button">
-              <FooterButtonTextComponent theme={theme} />
-            </ButtonText>
-          </Row>
-        </Footer>
+
+        {!isInjectedWidgetMode && (
+          <Footer>
+            <Row justify="center">
+              <ButtonText onClick={showManageView} color={theme.primary1} className="list-token-manage-button">
+                <FooterButtonTextComponent theme={theme} />
+              </ButtonText>
+            </Row>
+          </Footer>
+        )}
+
       </ContentWrapper>
     </>
   )

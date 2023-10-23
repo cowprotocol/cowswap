@@ -8,6 +8,54 @@ import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
 
+export const TokenSearchInput = styled.input`
+  margin: 0;
+  font-size: 14px;
+  max-width: 280px;
+  width: 100%;
+  align-self: flex-end;
+  box-shadow: none;
+  background: var(${UI.COLOR_GREY});
+  color: var(${UI.COLOR_TEXT1});
+  border: 1px solid var(${UI.COLOR_BORDER});
+  border-radius: 21px;
+  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
+  appearance: none;
+  height: 44px;
+  padding: 0 16px;
+  outline: 0;
+
+  &:focus {
+    max-width: 500px;
+    outline: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      width: 100%;
+    `};
+  }
+
+  &::placeholder {
+    font-size: inherit;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
+  }
+
+  &:focus::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)};
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-width: 100%;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 12px !important;
+
+    &::placeholder {
+      font-size: 12px !important;
+    }
+  `};
+`
+
 export const Wrapper = styled.div`
   width: 100%;
   border: none;
@@ -37,7 +85,7 @@ export const ResponsiveLogo = styled(TokenLogo)`
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `};
+  `}
 `
 
 export const Label = styled.div<{ end?: number }>`
