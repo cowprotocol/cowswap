@@ -1,8 +1,9 @@
 import { buildWidgetUrl } from './urlUtils'
+import { TradeType } from './types'
 
 const defaultEnv = 'prod'
 const chainId = 1
-const tradeType = 'swap'
+const tradeType = TradeType.SWAP
 
 describe('buildWidgetUrl', () => {
   describe('env', () => {
