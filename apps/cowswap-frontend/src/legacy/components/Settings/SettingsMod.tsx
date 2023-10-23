@@ -28,8 +28,9 @@ import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 import { SettingsTabProp } from './index'
 
 export const StyledMenuIcon = styled(Settings)`
-  height: 20px;
-  width: 20px;
+  --size: var(${UI.ICON_SIZE_NORMAL});
+  height: var(--size);
+  width: var(--size);
 
   > * {
     stroke: var(${UI.COLOR_TEXT2});
@@ -48,7 +49,7 @@ export const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   border-radius: 0.5rem;
-  height: 20px;
+  height: var(${UI.ICON_SIZE_NORMAL});
 
   :hover,
   :focus {
@@ -64,7 +65,7 @@ export const EmojiWrapper = styled.div`
 `
 
 const StyledMenu = styled.div`
-  margin-left: 0.5rem;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;

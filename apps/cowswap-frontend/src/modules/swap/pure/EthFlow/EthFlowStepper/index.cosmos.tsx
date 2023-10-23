@@ -1,6 +1,7 @@
 import 'inter-ui' // TODO: We need to do a cosmos wrapper with the global styles! Will reiterate to remove this line
 
 import { useSelect } from 'react-cosmos/client'
+import styled from 'styled-components/macro'
 
 import { EthFlowStepper, EthFlowStepperProps, SmartOrderStatus } from '.'
 
@@ -376,6 +377,11 @@ const STEPS_BY_DESCRIPTION = STEPS.reduce<{ [description: string]: EthFlowSteppe
   return acc
 }, {})
 
+const Wrapper = styled.div`
+  width: 80%;
+  margin: 20px auto;
+`
+
 function Fixture() {
   const [stepDescription] = useSelect('steps', {
     options: STEPS.map((step) => step.description),
@@ -383,13 +389,13 @@ function Fixture() {
   const props = STEPS_BY_DESCRIPTION[stepDescription]
 
   return (
-    <>
+    <Wrapper>
       <EthFlowStepper {...props} />
       <h3>Params</h3>
       <div>
         <pre>{JSON.stringify(props, null, 2)}</pre>
       </div>
-    </>
+    </Wrapper>
   )
 }
 

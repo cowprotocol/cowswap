@@ -1,20 +1,16 @@
 import { useUnsupportedTokens } from './useUnsupportedTokens'
 import { useCallback } from 'react'
 
-export function useIsUnsupportedToken() {
+type NullishAddress = string | null | undefined
+
+export function useIsUnsupportedToken(): (address: NullishAddress) => boolean {
   const unsupportedTokens = useUnsupportedTokens()
 
   return useCallback(
-    (address?: string) => {
+    (address: NullishAddress) => {
       const state = address && unsupportedTokens[address.toLowerCase()]
 
-      if (state) {
-        return {
-          ...state,
-          address,
-        }
-      }
-      return false
+      return !!state
     },
     [unsupportedTokens]
   )

@@ -25,24 +25,27 @@ export const addUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: strin
   const tokenList = get(unsupportedTokensAtom)
 
   if (!tokenList[chainId][tokenId]) {
+    const update: UnsupportedTokensState = {
+      ...tokenList[chainId],
+      [tokenId]: { dateAdded: Date.now() },
+    }
+
     set(unsupportedTokensAtom, {
       ...tokenList,
-      [chainId]: {
-        ...tokenList[chainId],
-        [tokenId]: Date.now(),
-      },
+      [chainId]: update,
     })
   }
 })
 
-export const removeUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: string) => {
+export const removeUnsupportedTokensAtom = atom(null, (get, set, tokenAddresses: Array<string>) => {
   const { chainId } = get(environmentAtom)
-  const tokenId = tokenAddress.toLowerCase()
   const tokenList = { ...get(unsupportedTokensAtom) }
 
-  if (tokenList[chainId][tokenId]) {
-    delete tokenList[chainId][tokenId]
+  tokenAddresses.forEach((tokenAddress) => {
+    const tokenId = tokenAddress.toLowerCase()
 
-    set(unsupportedTokensAtom, tokenList)
-  }
+    delete tokenList[chainId][tokenId]
+  })
+
+  set(unsupportedTokensAtom, tokenList)
 })
