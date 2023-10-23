@@ -64,7 +64,7 @@ export function Configurator({ title }: { title: string }) {
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
 
-  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(false)
+  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(true)
 
   const provider = useProvider()
   const providerRef = useRef<EthereumProvider | null>()
