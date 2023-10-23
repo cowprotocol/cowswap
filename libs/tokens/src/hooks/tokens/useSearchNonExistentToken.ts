@@ -2,20 +2,18 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { isTruthy } from '@cowprotocol/common-utils'
 
 import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
-import { useTokensByAddressMap } from './useTokensByAddressMap'
 import { useSearchToken } from './useSearchToken'
+import { useTokenBySymbolOrAddress } from './useTokenBySymbolOrAddress'
 
-export function useSearchNonExistentToken(tokenAddress: string | null): TokenWithLogo | null {
+export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo | null {
   const tokenListsUpdating = useAtomValue(tokenListsUpdatingAtom)
-  const allTokens = useTokensByAddressMap()
 
-  const isNotAddress = !isAddress(tokenAddress)
-  const existingToken = tokenAddress ? allTokens[tokenAddress.toLowerCase()] : null
+  const existingToken = useTokenBySymbolOrAddress(tokenId)
 
-  const inputTokenToSearch = tokenListsUpdating || existingToken || !tokenAddress || isNotAddress ? null : tokenAddress
+  const inputTokenToSearch = tokenListsUpdating || existingToken ? null : tokenId
 
   const foundToken = useSearchToken(inputTokenToSearch)
 
@@ -24,7 +22,6 @@ export function useSearchNonExistentToken(tokenAddress: string | null): TokenWit
 
     return (
       [foundToken.inactiveListsResult, foundToken.externalApiResult, foundToken.blockchainResult]
-        .filter(isTruthy)
         .flat()
         .filter(isTruthy)[0] || null
     )

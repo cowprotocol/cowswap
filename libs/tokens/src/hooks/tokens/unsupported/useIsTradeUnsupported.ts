@@ -1,13 +1,11 @@
 import { Currency } from '@uniswap/sdk-core'
-import { useIsUnsupportedToken } from './useIsUnsupportedToken'
+import { getAddress } from '@cowprotocol/common-utils'
+import { useAreUnsupportedTokens } from './useAreUnsupportedTokens'
 
-export function useIsTradeUnsupported(
-  inputCurrency: Currency | null | undefined,
-  outputCurrency: Currency | null | undefined
-): boolean {
-  const isUnsupportedToken = useIsUnsupportedToken()
-  const isInputCurrencyUnsupported = inputCurrency?.isNative ? false : !!isUnsupportedToken(inputCurrency?.address)
-  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !!isUnsupportedToken(outputCurrency?.address)
+type NullishCurrency = Currency | null | undefined
 
-  return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
+export function useIsTradeUnsupported(inputCurrency: NullishCurrency, outputCurrency: NullishCurrency): boolean {
+  const areUnsupportedTokens = useAreUnsupportedTokens()
+
+  return areUnsupportedTokens({ sellToken: getAddress(inputCurrency), buyToken: getAddress(outputCurrency) })
 }
