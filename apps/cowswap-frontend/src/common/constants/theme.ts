@@ -24,6 +24,8 @@ export enum UI {
   
   // Icons
   ICON_SIZE_NORMAL = '--cow-icon-size-normal',
+  ICON_SIZE_SMALL = '--cow-icon-size-small',
+  ICON_SIZE_XSMALL = '--cow-icon-size-xsmall',
   ICON_SIZE_LARGE = '--cow-icon-size-large',
   ICON_COLOR_NORMAL = '--cow-icon-color-normal',
 

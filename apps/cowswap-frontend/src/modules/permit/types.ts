@@ -7,11 +7,13 @@ import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { AppDataInfo } from 'modules/appData'
 
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
 export type PermitType = 'dai-like' | 'eip-2612'
 
 export type SupportedPermitInfo = {
   type: PermitType
-  gasLimit: number
+  version: string | undefined // Some tokens have it different than `1`, and won't work without it
 }
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
@@ -92,3 +94,7 @@ export type PermitCacheKeyParams = {
 export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
 
 export type GetPermitCacheParams = PermitCacheKeyParams
+
+export type CheckHasValidPendingPermit = (order: ParsedOrder) => Promise<boolean | undefined>
+
+export type OrdersPermitStatus = Record<string, boolean | undefined>

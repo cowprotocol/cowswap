@@ -1,13 +1,16 @@
 import { DAI_PERMIT_SELECTOR, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 
+import { fixTokenName } from './fixTokenName'
+
 import { BuildDaiLikePermitCallDataParams, BuildEip2162PermitCallDataParams } from '../types'
 
 export async function buildEip2162PermitCallData({
   eip2162Utils,
   callDataParams,
 }: BuildEip2162PermitCallDataParams): Promise<string> {
-  const callData = await eip2162Utils.buildPermitCallData(...callDataParams)
+  const [permitParams, chainId, tokenName, ...rest] = callDataParams
 
+  const callData = await eip2162Utils.buildPermitCallData(permitParams, chainId, fixTokenName(tokenName), ...rest)
   // For some reason, the method above removes the permit selector prefix
   // https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L92
   // Adding it back

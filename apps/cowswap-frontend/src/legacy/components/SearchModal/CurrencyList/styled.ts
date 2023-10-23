@@ -75,17 +75,26 @@ export const Wrapper = styled.div`
       `};
     }
   }
+
   ${StyledLogo} {
-    height: 36px;
-    width: 36px;
-    border-radius: 36px;
+    --size: 36px;
+    height: var(--size);
+    width: var(--size);
+    border-radius: var(--size);
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      --size: 32px;
+    `};
   }
+
   ${TagLink} {
     color: var(${UI.COLOR_TEXT1});
   }
+
   ${LightGreyCard} {
     background: var(${UI.COLOR_CONTAINER_BG_01});
   }
+
   ${LightGreyCard} ${RowFixed} > div {
     color: var(${UI.COLOR_TEXT1});
   }

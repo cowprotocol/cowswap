@@ -62,13 +62,13 @@ export const MAIN_MENU: MenuTreeItem[] = [
           {
             id: MainMenuItemId.LIMIT_ORDERS,
             kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'Limit orders',
+            title: 'Limit',
             url: Routes.LIMIT_ORDER,
           },
           {
             id: MainMenuItemId.ADVANCED_ORDERS,
             kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'TWAP orders',
+            title: 'TWAP',
             url: Routes.ADVANCED_ORDERS,
           },
         ],

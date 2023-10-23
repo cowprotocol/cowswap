@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { environmentAtom } from '../environmentAtom'
 import { TokensMap } from '../../types'
 import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenMapToList } from '../../utils/tokenMapToList'
+import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
@@ -27,7 +27,7 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
   return listsStatesList.reduce<TokensState>(
     (acc, list) => {
-      const isListEnabled = listsEnabledState[list.id]
+      const isListEnabled = listsEnabledState[list.source]
 
       list.list.tokens.forEach((token) => {
         if (token.chainId !== chainId) return
@@ -47,6 +47,11 @@ export const tokensStateAtom = atom<TokensState>((get) => {
   )
 })
 
+/**
+ * Returns a list of tokens that are active and sorted alphabetically
+ * The list includes: native token, user added tokens, favourite tokens and tokens from active lists
+ * Native token is always the first element in the list
+ */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
@@ -55,7 +60,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
-  const tokens = tokenMapToList({
+  const tokens = tokenMapToListWithLogo({
     ...tokensMap.activeTokens,
     ...userAddedTokens[chainId],
     ...favouriteTokensState[chainId],
@@ -69,7 +74,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToList(tokensMap.inactiveTokens)
+  return tokenMapToListWithLogo(tokensMap.inactiveTokens)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
