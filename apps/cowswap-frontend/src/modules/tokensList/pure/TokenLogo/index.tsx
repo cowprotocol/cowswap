@@ -31,7 +31,7 @@ export function TokenLogo({ logoURI, className, size = 36 }: TokenLogoProps) {
       {hasError || !logoURI ? (
         <Slash size={size} />
       ) : (
-        <img src={logoURI} onError={onError} width={size} height={size} />
+        <img src={logoURI} onError={onError} width={size} height={size} alt="Token logo" />
       )}
     </TokenLogoWrapper>
   )

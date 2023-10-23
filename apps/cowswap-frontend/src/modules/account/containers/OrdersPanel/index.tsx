@@ -32,7 +32,7 @@ const SideBar = styled.div`
   margin: auto;
   bottom: 0;
   left: 0;
-  z-index: 102;
+  z-index: 5;
   padding: 0;
   cursor: default;
   overflow-y: hidden;

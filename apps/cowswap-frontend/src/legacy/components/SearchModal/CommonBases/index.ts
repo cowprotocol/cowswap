@@ -29,13 +29,25 @@ export const AutoColumn = styled(AutoColumnUni)`
   `}
 `
 
-export const CommonBasesRow = styled(AutoRow)`
+export const CommonBasesRow = styled(AutoRow)<{ gap?: string }>`
   margin: 0;
-  flex-flow: row nowrap;
-  overflow-x: scroll;
-  padding: 0 100px 5px 0;
+  flex-flow: row wrap;
+  padding: 0;
   position: relative;
-  ${({ theme }) => theme.colorScrollbar};
+
+  ${({ theme }) =>
+    theme.isInjectedWidgetMode &&
+    `
+    padding: 0 100px 0 10px;
+    flex-flow: row nowrap;
+    overflow-x: scroll;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 100px 0 10px;
+    flex-flow: row nowrap;
+    overflow-x: scroll;
+  `}
 `
 
 export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
@@ -59,23 +71,18 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
       margin: auto;
     }
 `}
-
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
-  max-height: 135px;
-  padding: 0;
 `
 
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
   border-radius: 10px;
   display: flex;
-  padding: 6px;
+  padding: 6px 8px;
   align-items: center;
   color: ${({ theme, disable }) => disable && theme.text3};
   background-color: ${({ theme, disable }) => disable && theme.bg3};
   filter: ${({ disable }) => disable && 'grayscale(1)'};
-  flex: 0 0 calc(33% - 8px);
+  flex: 0 1 auto;
   justify-content: center;
 
   &:hover {
