@@ -1,16 +1,10 @@
 import ms from 'ms.macro'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { TokensState } from '../../state/tokens/allTokensAtom'
 import { ListState } from '../../types'
 
-const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
+export const TOKENS_LISTS_UPDATER_INTERVAL = ms`6h`
 
-export const LAST_UPDATE_TIME_KEY = (chainId: SupportedChainId) => `tokens-lists-updater:last-update-time[${chainId}]`
-
-export const getIsTimeToUpdate = (chainId: SupportedChainId): boolean => {
-  const lastUpdateTime = +(localStorage.getItem(LAST_UPDATE_TIME_KEY(chainId)) || 0)
-
+export const getIsTimeToUpdate = (lastUpdateTime: number): boolean => {
   if (!lastUpdateTime) return true
 
   return Date.now() - lastUpdateTime > TOKENS_LISTS_UPDATER_INTERVAL

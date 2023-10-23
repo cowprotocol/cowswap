@@ -11,31 +11,45 @@ const Header = styled.div`
   justify-content: space-between;
   font-weight: 500;
   font-size: 20px;
-  padding: 20px;
-  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  padding: 10px 0;
+`
+
+const StyledIconButton = styled(IconButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  font-size: 18px;
+  font-weight: 600;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
 `
 
 export interface ModalHeaderProps {
   children: string
   onBack(): void
-  onClose(): void
+  onClose?(): void
   className?: string
 }
 
 export function ModalHeader({ children, className, onBack, onClose }: ModalHeaderProps) {
   return (
     <Header className={className}>
-      <div>
         <IconButton onClick={onBack}>
           <ArrowLeft />
         </IconButton>
-      </div>
-      <div>{children}</div>
-      <div>
-        <IconButton onClick={onClose}>
+      <Title>{children}</Title>
+      { onClose && <div>
+        <StyledIconButton onClick={onClose}>
           <X />
-        </IconButton>
+        </StyledIconButton>
       </div>
+      }
     </Header>
   )
 }

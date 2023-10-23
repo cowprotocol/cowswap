@@ -3,13 +3,12 @@ import { removeListAnalytics } from '@cowprotocol/analytics'
 
 import { removeListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { ListState } from '../../types'
-import { getTokenListSource } from '../../utils/getTokenListSource'
 
 export function useRemoveList() {
   const removeList = useSetAtom(removeListAtom)
 
   return (list: ListState) => {
-    removeList(list.id)
-    removeListAnalytics('Confirm', getTokenListSource(list.source))
+    removeList(list.source)
+    removeListAnalytics('Confirm', list.source)
   }
 }
