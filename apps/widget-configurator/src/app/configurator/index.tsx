@@ -4,6 +4,7 @@ import {
   cowSwapWidget,
   CowSwapWidgetParams,
   CowSwapWidgetSettings,
+  EthereumProvider,
   TradeType,
   UpdateWidgetCallback,
 } from '@cowprotocol/widget-lib'
@@ -66,6 +67,11 @@ export function Configurator({ title }: { title: string }) {
   const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(false)
 
   const provider = useProvider()
+  const providerRef = useRef<EthereumProvider | null>()
+
+  useEffect(() => {
+    providerRef.current = provider
+  }, [provider])
 
   useEffect(() => {
     const widgetContainer = iframeContainerRef.current
@@ -98,7 +104,7 @@ export function Configurator({ title }: { title: string }) {
     }
 
     // Re-initialize widget when provider is changed
-    if (provider) {
+    if (provider && providerRef.current !== provider) {
       updateWidgetRef.current = null
     }
 
