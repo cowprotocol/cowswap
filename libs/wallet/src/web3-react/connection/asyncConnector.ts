@@ -11,6 +11,11 @@ function initCustomProvider(self: AsyncConnector, connector: Connector, chainId:
   }
 
   self.events.emit(ASYNC_CUSTOM_PROVIDER_EVENT, self.customProvider)
+
+  // Update provider when network is changed on wallet side
+  connector.provider?.on('chainChanged', (chainIdHex: string) => {
+    initCustomProvider(self, connector, +chainIdHex)
+  })
 }
 
 /**

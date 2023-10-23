@@ -49,23 +49,24 @@ export const SearchInput = styled.input`
   align-items: center;
   width: 100%;
   white-space: nowrap;
-  background: none;
   border: none;
   outline: none;
-  border-radius: 20px;
-  color: var(${UI.COLOR_TEXT1});
   border-style: solid;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  -webkit-appearance: none;
-
-  font-size: 18px;
+  background: var(${UI.COLOR_GREY});
+  color: var(${UI.COLOR_TEXT1});
+  border: 1px solid var(${UI.COLOR_BORDER});
+  appearance: none;
+  font-size: 16px;
+  border-radius: 12px;
 
   ::placeholder {
-    color: ${({ theme }) => theme.text3};
+    color: var(${UI.COLOR_TEXT1});
+    opacity: 0.7;
   }
+
   transition: border 100ms;
   :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
+    border: 1px solid var(${UI.COLOR_LINK});
     outline: none;
   }
 `

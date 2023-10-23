@@ -30,13 +30,12 @@ export const AutoColumn = styled(AutoColumnUni)`
 `
 
 export const CommonBasesRow = styled(AutoRow)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-flow: row nowrap;
-    overflow-x: scroll;
-    padding: 0 100px 0 0;
-    position: relative;
-    ${({ theme }) => theme.colorScrollbar};
-  `}
+  margin: 0;
+  flex-flow: row nowrap;
+  overflow-x: scroll;
+  padding: 0 100px 5px 0;
+  position: relative;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
@@ -50,7 +49,6 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
     &::after {
       content: '';
       display: block;
-      // background: linear-gradient(to top, #163861 0%, rgba(22, 56, 97, 0) 100%);
       pointer-events: none;
       height: 40px;
       width: 100%;
@@ -61,14 +59,11 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
       margin: auto;
     }
 `}
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    /* display: none; */
-  `};
 
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   max-height: 135px;
-  padding-bottom: 20px;
+  padding: 0;
 `
 
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
@@ -76,19 +71,17 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   border-radius: 10px;
   display: flex;
   padding: 6px;
-
   align-items: center;
-  :hover {
-    cursor: ${({ disable }) => !disable && 'pointer'};
-    background-color: ${({ theme, disable }) => !disable && theme.bg4};
-  }
-
   color: ${({ theme, disable }) => disable && theme.text3};
   background-color: ${({ theme, disable }) => disable && theme.bg3};
   filter: ${({ disable }) => disable && 'grayscale(1)'};
-
   flex: 0 0 calc(33% - 8px);
   justify-content: center;
+
+  &:hover {
+    cursor: ${({ disable }) => !disable && 'pointer'};
+    background-color: ${({ theme, disable }) => !disable && theme.bg4};
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex: auto;

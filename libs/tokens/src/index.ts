@@ -1,5 +1,6 @@
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
+export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 
 // Pure components
 export { TokenLogo } from './pure/TokenLogo'
@@ -27,7 +28,7 @@ export { useRemoveUnsupportedToken } from './hooks/tokens/unsupported/useRemoveU
 export { useUnsupportedTokens } from './hooks/tokens/unsupported/useUnsupportedTokens'
 export { useIsTradeUnsupported } from './hooks/tokens/unsupported/useIsTradeUnsupported'
 export { useIsUnsupportedToken } from './hooks/tokens/unsupported/useIsUnsupportedToken'
-export { useIsUnsupportedTokens } from './hooks/tokens/unsupported/useIsUnsupportedTokens'
+export { useAreUnsupportedTokens } from './hooks/tokens/unsupported/useAreUnsupportedTokens'
 export { useResetFavouriteTokens } from './hooks/tokens/favourite/useResetFavouriteTokens'
 export { useToggleFavouriteToken } from './hooks/tokens/favourite/useToggleFavouriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
@@ -40,4 +41,4 @@ export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentTo
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
-export { getTokenListSource } from './utils/getTokenListSource'
+export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'

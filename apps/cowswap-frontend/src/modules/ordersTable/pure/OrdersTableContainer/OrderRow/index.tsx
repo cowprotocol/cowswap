@@ -148,6 +148,7 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: () => void
   orderActions: OrderActions
+  hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
 }
 
@@ -164,6 +165,7 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
+  hasValidPendingPermit,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -174,7 +176,7 @@ export function OrderRow({
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
   const withWarning =
-    (hasEnoughBalance === false || hasEnoughAllowance === false) &&
+    (hasEnoughBalance === false || (hasEnoughAllowance === false && hasValidPendingPermit === false)) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const theme = useContext(ThemeContext)
@@ -357,7 +359,7 @@ export function OrderRow({
                         {hasEnoughBalance === false && (
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
-                        {hasEnoughAllowance === false && (
+                        {hasEnoughAllowance === false && hasValidPendingPermit === false && (
                           <AllowanceWarning
                             approve={() => orderActions.approveOrderToken(order.inputToken)}
                             symbol={inputTokenSymbol}

@@ -69,5 +69,6 @@ export default (
     getSpotPrice={() => null}
     orderActions={orderActions}
     orderType={TabOrderTypes.LIMIT}
+    ordersPermitStatus={{}}
   />
 )
