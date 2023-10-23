@@ -1,10 +1,15 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import { getPermitCacheAtom, storePermitCacheAtom } from '../state/permitCacheAtom'
+import {
+  getPermitCacheAtom,
+  staticPermitCacheAtom,
+  storePermitCacheAtom,
+  userPermitCacheAtom,
+} from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams, PermitHookData } from '../types'
 import { generatePermitHook } from '../utils/generatePermitHook'
 import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
@@ -15,6 +20,15 @@ import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
 export function useGeneratePermitHook(): GeneratePermitHook {
   const getCachedPermit = useSetAtom(getPermitCacheAtom)
   const storePermit = useSetAtom(storePermitCacheAtom)
+
+  // Warming up stored atoms
+  //
+  // For some reason, atoms start always in the default state (`{}`) on load,
+  // even if localStorage contains data, wiping previously saved data.
+  // Here we force an individual read of each atom, which does populate them properly
+  useAtomValue(staticPermitCacheAtom)
+  useAtomValue(userPermitCacheAtom)
+
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 

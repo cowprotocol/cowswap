@@ -40,6 +40,21 @@ function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedC
 
 const currencyLogoCache = new Map<string, Array<string>>()
 
+const COW_PROTOCOL_REPO = 'cowprotocol/token-lists'
+function getLogoURI(currency: Currency | null): string | null {
+  if (!currency) return null
+
+  const logoURI = (currency as Currency & { logoURI: string }).logoURI
+
+  if (!logoURI) return null
+
+  // Always lowercase logo URI if it's from CoW Protocol repo
+  // Because CoW Protocol repo has all logos in lowercase
+  if (logoURI.includes(COW_PROTOCOL_REPO)) return logoURI.toLowerCase()
+
+  return logoURI
+}
+
 // TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
   const currencyAddress = currency ? (currency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : currency.address) : null
@@ -47,7 +62,7 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
   const externalLogo = useProxyTokenLogo(currency?.chainId, currencyAddress)
   const cacheKey = `${currencyAddress}|${currency?.chainId}`
   const cached = currencyLogoCache.get(cacheKey)
-  const logoURI = currency ? (currency as Currency & { logoURI: string }).logoURI : null
+  const logoURI = getLogoURI(currency || null)
   const imageOverride = currency?.isToken ? ADDRESS_IMAGE_OVERRIDE[currency.address] : null
 
   if (cached) {

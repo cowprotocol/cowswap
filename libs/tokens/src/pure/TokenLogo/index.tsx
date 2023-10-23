@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { cowprotocolTokenUrl, NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_BUY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
@@ -17,6 +17,11 @@ const TokenLogoWrapper = styled.div`
   display: inline-block;
   background: var(--cow-container-bg-01);
   border-radius: 50%;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export interface TokenLogoProps {
@@ -33,7 +38,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
     // TODO: get rid of Currency usage and remove type casting
     if (token) {
       if (token instanceof NativeCurrency) {
-        return [cowprotocolTokenUrl(NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase(), token.chainId as SupportedChainId)]
+        return [cowprotocolTokenLogoUrl(NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase(), token.chainId as SupportedChainId)]
       }
 
       return getTokenLogoUrls(token as TokenWithLogo)
@@ -52,11 +57,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
 
   return (
     <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
-      {!currentUrl ? (
-        <Slash size={size} />
-      ) : (
-        <img alt="" src={currentUrl} onError={onError} width={size} height={size} />
-      )}
+      {!currentUrl ? <Slash size={size} /> : <img alt="" src={currentUrl} onError={onError} />}
     </TokenLogoWrapper>
   )
 }

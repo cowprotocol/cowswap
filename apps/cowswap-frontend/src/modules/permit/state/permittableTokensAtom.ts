@@ -12,7 +12,7 @@ import { AddPermitTokenParams, PermittableTokens } from '../types'
  * Contains either the permit info with `type` and `gasLimit` when supported or
  * `false` when not supported
  */
-export const permittableTokensAtom = atomWithStorage<PermittableTokens>('permittableTokens:v0', {
+export const permittableTokensAtom = atomWithStorage<PermittableTokens>('permittableTokens:v1', {
   [SupportedChainId.MAINNET]: {},
   [SupportedChainId.GOERLI]: {},
   [SupportedChainId.GNOSIS_CHAIN]: {},

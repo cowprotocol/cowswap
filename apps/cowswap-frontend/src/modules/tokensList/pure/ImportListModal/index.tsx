@@ -21,7 +21,6 @@ export function ImportListModal(props: ImportListModalProps) {
 
   const [isAccepted, setIsAccepted] = useState(false)
 
-  const source = 'ensName' in list.source ? list.source.ensName : list.source.url
   const viewLink = getTokenListViewLink(list.source)
 
   return (
@@ -36,7 +35,7 @@ export function ImportListModal(props: ImportListModalProps) {
             {list.list.name} · {list.list.tokens.length} tokens
           </styledEl.ListTitle>
           <styledEl.ListLink target="_blank" href={viewLink} rel="noreferrer">
-            {source}
+            {list.source}
           </styledEl.ListLink>
         </div>
       </styledEl.ListInfo>

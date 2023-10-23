@@ -15,7 +15,7 @@ const ModalContentWrapper = styled.div`
   padding: 24px;
   color: var(${UI.COLOR_TEXT2});
   background-color: var(${UI.COLOR_CONTAINER_BG_01});
-  border-radius: 24px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
   > p {
     line-height: 1.4;

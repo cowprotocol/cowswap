@@ -156,6 +156,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     sellAmountBeforeFee,
     orderCreationHash,
     quoteId,
+    appData: { fullAppData },
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
@@ -170,6 +171,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     outputToken: buyToken,
     quoteId,
     class: additionalParams.class,
+    fullAppData,
 
     // Status
     status,
