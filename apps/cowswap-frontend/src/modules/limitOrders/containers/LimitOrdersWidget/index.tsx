@@ -264,6 +264,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
       )}
+      <div className="layer3-quest layer3-card" data-quest-id="halloween-cowswap"></div>
       {isUnlocked && <InfoBanner />}
     </>
   )

@@ -272,6 +272,7 @@ export function SwapWidget() {
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
         />
+        <div className="layer3-quest layer3-card" data-quest-id="halloween-cowswap"></div>
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
