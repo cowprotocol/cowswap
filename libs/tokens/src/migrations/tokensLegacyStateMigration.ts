@@ -32,7 +32,7 @@ function migrateLegacyTokensInUserState() {
 
   const userState = JSON.parse(userStateRaw)
 
-  if (userState?.tokens) {
+  if (userState?.tokens && Object.keys(userState.tokens).length > 0) {
     localStorage.setItem('userAddedTokensAtom:v1', JSON.stringify(userState.tokens))
   }
 
