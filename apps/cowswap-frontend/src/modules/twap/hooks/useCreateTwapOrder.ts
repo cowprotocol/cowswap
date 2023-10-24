@@ -56,7 +56,6 @@ export function useCreateTwapOrder() {
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
 
-  // Halloween temporary
   const darkMode = useIsDarkMode()
 
   return useCallback(

@@ -3,7 +3,8 @@ import styled from 'styled-components/macro'
 
 import { Polling } from 'legacy/components/Header/Polling'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import { footerImage } from 'legacy/theme/cowSwapAssets'
+
+import { footerImage } from 'common/constants/theme'
 
 import { Version } from '../Version'
 

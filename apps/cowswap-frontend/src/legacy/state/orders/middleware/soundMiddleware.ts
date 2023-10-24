@@ -4,6 +4,8 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess, isMobile } from 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
+import { HALLOWEEN_MODE } from 'common/constants/theme'
+
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
 import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
@@ -57,30 +59,31 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
-  // Halloween temporary
   const { userDarkMode, matchesDarkMode } = store.getState().user
   const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
 
-  let cowSound,
-    showLighningEffect = false
+  let cowSound
+  let showLighningEffect = false
+  const isHalloweenMode = HALLOWEEN_MODE && isDarkMode
+  const isHalloweenModeDesktop = HALLOWEEN_MODE && isDarkMode && !isMobile
   if (isPendingOrderAction(action)) {
     if (_shouldPlayPendingOrderSound(action.payload)) {
-      cowSound = getCowSoundSend(isDarkMode)
-      showLighningEffect = isDarkMode && !isMobile
+      cowSound = getCowSoundSend(isHalloweenMode)
+      showLighningEffect = isHalloweenModeDesktop
     }
   } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess(isDarkMode)
-    showLighningEffect = isDarkMode && !isMobile
+    cowSound = getCowSoundSuccess(isHalloweenMode)
+    showLighningEffect = isHalloweenModeDesktop
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
-      cowSound = getCowSoundError(isDarkMode)
+      cowSound = getCowSoundError(isHalloweenMode)
     }
   } else if (isBatchCancelOrderAction(action)) {
-    cowSound = getCowSoundError(isDarkMode)
+    cowSound = getCowSoundError(isHalloweenMode)
   } else if (isFailedTxAction(action)) {
-    cowSound = getCowSoundError(isDarkMode)
+    cowSound = getCowSoundError(isHalloweenMode)
   } else if (isUpdateOrderAction(action)) {
-    cowSound = _getUpdatedOrderSound(action.payload, isDarkMode)
+    cowSound = _getUpdatedOrderSound(action.payload, isHalloweenMode)
   }
 
   if (cowSound) {
@@ -115,10 +118,10 @@ function _shouldPlayExpiredOrderSound(
   })
 }
 
-function _getUpdatedOrderSound(payload: UpdateOrderParams, isDarkMode: boolean) {
+function _getUpdatedOrderSound(payload: UpdateOrderParams, isHalloweenMode: boolean) {
   if (!payload.order.isHidden) {
     // Trigger COW sound when an order is being updated to a non-hidden state
-    return getCowSoundSend(isDarkMode)
+    return getCowSoundSend(isHalloweenMode)
   }
   return undefined
 }
