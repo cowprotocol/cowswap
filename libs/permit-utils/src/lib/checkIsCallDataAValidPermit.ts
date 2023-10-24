@@ -1,12 +1,11 @@
 import { DAI_PERMIT_SELECTOR, Eip2612PermitUtils, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { SupportedPermitInfo } from '../types'
 import { fixTokenName } from '../utils/fixTokenName'
 
 export async function checkIsCallDataAValidPermit(
   owner: string,
-  chainId: SupportedChainId,
+  chainId: number,
   eip2162Utils: Eip2612PermitUtils,
   tokenAddress: string,
   tokenName: string,

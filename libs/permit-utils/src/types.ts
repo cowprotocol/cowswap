@@ -1,6 +1,5 @@
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { latest } from '@cowprotocol/app-data'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 
@@ -16,7 +15,7 @@ export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
 export type PermitHookParams = {
   inputToken: Token
   spender: string
-  chainId: SupportedChainId
+  chainId: number
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
   eip2162Utils: Eip2612PermitUtils
@@ -50,6 +49,6 @@ export type GetTokenPermitInfoParams = {
   spender: string
   tokenAddress: string
   tokenName: string
-  chainId: SupportedChainId
+  chainId: number
   provider: Web3Provider
 }

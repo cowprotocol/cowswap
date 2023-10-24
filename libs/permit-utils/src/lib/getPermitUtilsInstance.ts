@@ -1,7 +1,6 @@
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PERMIT_SIGNER } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -16,7 +15,7 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
 const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
 export function getPermitUtilsInstance(
-  chainId: SupportedChainId,
+  chainId: number,
   provider: Web3Provider,
   account?: string | undefined
 ): Eip2612PermitUtils {
