@@ -1,6 +1,6 @@
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { latest } from '@cowprotocol/app-data'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 
 export type PermitType = 'dai-like' | 'eip-2612'
@@ -17,7 +17,7 @@ export type PermitHookParams = {
   spender: string
   chainId: number
   permitInfo: SupportedPermitInfo
-  provider: Web3Provider
+  provider: JsonRpcProvider
   eip2162Utils: Eip2612PermitUtils
   account?: string | undefined
   nonce?: number | undefined
@@ -50,5 +50,5 @@ export type GetTokenPermitInfoParams = {
   tokenAddress: string
   tokenName: string
   chainId: number
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }

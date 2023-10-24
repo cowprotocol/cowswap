@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
@@ -16,7 +16,7 @@ const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
 export function getPermitUtilsInstance(
   chainId: number,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   account?: string | undefined
 ): Eip2612PermitUtils {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)

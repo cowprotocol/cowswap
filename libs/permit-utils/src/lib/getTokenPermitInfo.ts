@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -123,7 +123,7 @@ type BaseParams = {
 
 type EstimateParams = BaseParams & {
   type: PermitType
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }
 
 async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {

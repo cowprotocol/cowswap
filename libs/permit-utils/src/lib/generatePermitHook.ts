@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
@@ -96,7 +96,7 @@ async function calculateGasLimit(
   data: string,
   from: string,
   to: string,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   isUserAccount: boolean
 ): Promise<string> {
   try {
