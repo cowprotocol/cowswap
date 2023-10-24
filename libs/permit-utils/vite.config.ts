@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
@@ -14,6 +15,8 @@ export default defineConfig({
       tsConfigFilePath: path.join(__dirname, 'tsconfig.lib.json'),
       skipDiagnostics: true,
     }),
+
+    macrosPlugin(),
 
     viteTsConfigPaths({
       root: '../../../',
