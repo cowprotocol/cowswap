@@ -11,6 +11,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 
+import { HALLOWEEN_MODE } from 'common/constants/theme'
 import { UI } from 'common/constants/theme'
 
 const activeClassName = 'active'
@@ -238,8 +239,9 @@ export const HeaderElement = styled(HeaderElementUni)`
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
-  // Halloween temporary
+  // Halloween spider rag
   ${({ theme }) =>
+    HALLOWEEN_MODE &&
     theme.darkMode &&
     css`
       &::after {
@@ -445,7 +447,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
         display: flex;
       `
     }
-  `};
+  `}
 `
 
 export const TwitterLink = styled(StyledMenuButton)`

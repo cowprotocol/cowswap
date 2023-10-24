@@ -19,7 +19,6 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
     const { chainId, hash } = action.payload
     const transaction = store.getState().transactions[chainId][hash]
 
-    // Halloween temporary
     const { userDarkMode, matchesDarkMode } = store.getState().user
     const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
 
