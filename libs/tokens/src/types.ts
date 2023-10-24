@@ -7,7 +7,7 @@ export type ListSourceConfig = {
   source: string
 }
 
-export type ListsSourcesByNetwork = Record<SupportedChainId, ReadonlyArray<ListSourceConfig>>
+export type ListsSourcesByNetwork = Record<SupportedChainId, Array<ListSourceConfig>>
 
 export type TokensMap = { [address: string]: TokenInfo }
 
@@ -21,3 +21,5 @@ export interface ListState {
   priority?: number
   isEnabled?: boolean
 }
+
+export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState }>

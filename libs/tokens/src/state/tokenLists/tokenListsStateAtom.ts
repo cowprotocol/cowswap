@@ -2,11 +2,9 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ListsSourcesByNetwork, ListState } from '../../types'
+import { ListsSourcesByNetwork, TokenListsState } from '../../types'
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
-
-type TokenListsState = Record<SupportedChainId, { [source: string]: ListState }>
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>('userAddedTokenListsAtom:v2', {
   [SupportedChainId.MAINNET]: [],
