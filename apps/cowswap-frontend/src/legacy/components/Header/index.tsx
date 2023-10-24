@@ -27,7 +27,6 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { Routes } from 'common/constants/routes'
-import { HALLOWEEN_MODE } from 'common/constants/theme'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -135,7 +134,7 @@ export default function Header() {
                   {injectedWidgetParams.logoUrl ? (
                     <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
                   ) : (
-                    <SVG src={cowSwapLogo(darkMode, HALLOWEEN_MODE)} />
+                    <SVG src={cowSwapLogo(darkMode)} />
                   )}
                 </LogoImage>
               </UniIcon>
