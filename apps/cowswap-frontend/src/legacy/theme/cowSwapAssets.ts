@@ -1,6 +1,7 @@
-import { HALLOWEEN_MODE } from 'common/constants/theme'
 import FORTUNE_COOKIE_IMAGE_REGULAR from 'assets/images/fortune-cookie.png'
 import FORTUNE_COOKIE_IMAGE_HALLOWEEN from 'assets/images/fortuneCookieHalloween.svg'
+
+import { HALLOWEEN_MODE } from 'common/constants/theme'
 
 export function cowSwapLogo(darkMode: boolean): string {
   // Halloween version
