@@ -1,33 +1,37 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect, useRef, useState } from 'react'
 
-export default function EmbedDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+import Button from '@mui/material/Button'
+import Dialog, { DialogProps } from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+
+export function EmbedDialog({ iframeUrl }: { iframeUrl: string }) {
+  const [open, setOpen] = useState(false)
+  const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
 
   const handleClickOpen = (scrollType: DialogProps['scroll']) => () => {
-    setOpen(true);
-    setScroll(scrollType);
-  };
+    setOpen(true)
+    setScroll(scrollType)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
-  const descriptionElementRef = React.useRef<HTMLElement>(null);
-  React.useEffect(() => {
+  const descriptionElementRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
     if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
+      const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
-        descriptionElement.focus();
+        descriptionElement.focus()
       }
     }
-  }, [open]);
+  }, [open])
+
+  const code = `<iframe src="${iframeUrl}"/>`
 
   return (
     <div>
@@ -42,17 +46,8 @@ export default function EmbedDialog() {
       >
         <DialogTitle id="scroll-dialog-title">CoW Widget Embed</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
-          <DialogContentText
-            id="scroll-dialog-description"
-            ref={descriptionElementRef}
-            tabIndex={-1}
-          >
-            {[...new Array(50)]
-              .map(
-                () => `<embed type="text/html" src="snippet.html" width="500" height="200">
-                `,
-              )
-              .join('\n')}
+          <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
+            <code>{code}</code>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -61,5 +56,5 @@ export default function EmbedDialog() {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

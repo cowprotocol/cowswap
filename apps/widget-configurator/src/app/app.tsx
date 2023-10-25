@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box'
-import { Configurator } from './configurator'
-import { Theme } from '@mui/material/styles'
 
-const WrapperStyled = (theme: Theme) => ({
+import { Configurator } from './configurator'
+
+const WrapperStyled = {
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
   width: '100%',
-})
+}
 
 export function App() {
   return (

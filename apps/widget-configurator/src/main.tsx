@@ -1,137 +1,21 @@
-import * as React from 'react'
-import { StrictMode } from 'react'
-import { ThemeProvider, createTheme, PaletteOptions } from '@mui/material/styles'
-import { CssBaseline, GlobalStyles, PaletteMode } from '@mui/material'
-import * as ReactDOM from 'react-dom/client'
+import { StrictMode, useMemo } from 'react'
+
+import { CssBaseline, GlobalStyles } from '@mui/material'
+import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
+import { createRoot } from 'react-dom/client'
+
 import App from './app/app'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { Theme } from '@mui/material/styles'
+import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
+import { commonTypography } from './theme/commonTypography'
+import { useColorMode } from './theme/hooks/useColorMode'
+import { darkPalette, lightPalette } from './theme/paletteOptions'
 
-export const ColorModeContext = React.createContext({
-  mode: 'light' as PaletteMode,
-  toggleColorMode: () => {},
-  setAutoMode: () => {},
-})
+function Root() {
+  const colorMode = useColorMode()
+  const { mode } = colorMode
 
-const globalStyles = (theme: Theme, mode: PaletteMode) => ({
-  'html, input, textarea, button': {
-    fontFamily: "'Inter', sans-serif",
-    fontDisplay: 'fallback',
-  },
-  '@supports (font-variation-settings: normal)': {
-    'html, input, textarea, button': {
-      fontFamily: "'Inter var', sans-serif",
-    },
-  },
-  'html, body, a, button': {
-    margin: 0,
-    padding: 0,
-  },
-  'html, body': {
-    height: '100%',
-    width: '100%',
-  },
-  body: {
-    background: 'none',
-  },
-  html: {
-    width: '100%',
-    margin: 0,
-    fontSize: '62.5%',
-    textRendering: 'geometricPrecision',
-    WebkitFontSmoothing: 'antialiased',
-    MozOsxFontSmoothing: 'grayscale',
-    boxSizing: 'border-box',
-    overscrollBehaviorY: 'none',
-    scrollBehavior: 'smooth',
-    fontVariant: 'none',
-    fontFeatureSettings: "'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on",
-    WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-    backgroundAttachment: 'fixed',
-    backgroundColor: theme.palette.cow.background,
-    background: mode === 'light' && theme.palette.cow.gradient,
-    backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
-  },
-})
-
-export enum ThemeMode {
-  Auto = 1,
-  Light = 2,
-  Dark = 3,
-}
-
-function MainApp() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  const [mode, setMode] = React.useState<PaletteMode>(prefersDarkMode ? 'dark' : 'light')
-
-  const colorMode = React.useMemo(
-    () => ({
-      mode,
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
-      },
-      setAutoMode: () => {
-        setMode(prefersDarkMode ? 'dark' : 'light')
-      },
-    }),
-    [mode, prefersDarkMode]
-  )
-
-  const theme = React.useMemo(() => {
-    const commonTypography = {
-      htmlFontSize: 10,
-      button: {
-        textTransform: 'none' as const,
-      },
-    }
-
-    const palette: PaletteOptions =
-      mode === 'dark'
-        ? {
-            mode: 'dark' as PaletteMode,
-            tonalOffset: 0.2,
-            primary: {
-              main: 'rgb(202, 233, 255)',
-            },
-            secondary: {
-              main: 'rgb(39, 120, 242)',
-            },
-            text: {
-              primary: '#CAE9FF',
-              secondary: '#809ab1',
-              disabled: 'rgba(202,233,255,0.6)',
-            },
-            background: {
-              paper: 'rgb(12, 38, 75)',
-              default: 'rgb(12, 38, 75)',
-            },
-            cow: {
-              background: '#07162d',
-              gradient:
-                'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%)',
-            },
-          }
-        : {
-            mode: 'light' as PaletteMode,
-            tonalOffset: 0.5,
-            primary: {
-              main: 'rgb(5, 43, 101)',
-            },
-            secondary: {
-              main: 'rgb(39, 120, 242)',
-            },
-            text: {
-              primary: 'rgb(12, 38, 75)',
-            },
-            background: {
-              default: '#CAE9FF',
-              paper: '#ffffff',
-            },
-            cow: {
-              background: '#ffffff',
-              gradient: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed',
-            },
-          }
+  const theme = useMemo(() => {
+    const palette: PaletteOptions = mode === 'dark' ? darkPalette : lightPalette
 
     return createTheme({
       palette,
@@ -150,9 +34,9 @@ function MainApp() {
   )
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+const root = createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <StrictMode>
-    <MainApp />
+    <Root />
   </StrictMode>
 )
