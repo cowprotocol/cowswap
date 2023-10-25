@@ -257,6 +257,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
       />
+      <Layer3Banner />
       {tradeContext && (
         <LimitOrdersConfirmModal
           tradeContext={tradeContext}
@@ -265,7 +266,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
       )}
-      <Layer3Banner />
       {isUnlocked && <InfoBanner />}
     </>
   )
