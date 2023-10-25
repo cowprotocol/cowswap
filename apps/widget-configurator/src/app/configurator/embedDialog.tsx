@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+
 import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -7,7 +9,17 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-export function EmbedDialog({ iframeUrl }: { iframeUrl: string }) {
+const CodeStyles = {
+  whiteSpace: 'break-spaces',
+  fontSize: '13px',
+}
+
+export interface EmbedDialogProps {
+  params: CowSwapWidgetParams
+  settings: CowSwapWidgetSettings
+}
+
+export function EmbedDialog({ params, settings }: EmbedDialogProps) {
   const [open, setOpen] = useState(false)
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
 
@@ -31,7 +43,25 @@ export function EmbedDialog({ iframeUrl }: { iframeUrl: string }) {
     }
   }, [open])
 
-  const code = `<iframe src="${iframeUrl}"/>`
+  const paramsSanitized = {
+    ...params,
+    container: `<YOUR_CONTAINER>`,
+    provider: `<eip-1193 provider>`,
+  }
+
+  const code = `
+import { CowSwapWidgetParams, CowSwapWidgetSettings, cowSwapWidget } from '@cowprotocol/widget-lib'
+
+const params: CowSwapWidgetParams = ${JSON.stringify(paramsSanitized, null, 4)}
+
+const settings: CowSwapWidgetSettings = ${JSON.stringify(settings, null, 4)}
+
+const updateWidget = cowSwapWidget(params, settings)
+  `
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code)
+  }
 
   return (
     <div>
@@ -47,12 +77,12 @@ export function EmbedDialog({ iframeUrl }: { iframeUrl: string }) {
         <DialogTitle id="scroll-dialog-title">CoW Widget Embed</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            <code>{code}</code>
+            <code style={CodeStyles}>{code}</code>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Copy</Button>
+          <Button onClick={handleCopy}>Copy</Button>
         </DialogActions>
       </Dialog>
     </div>
