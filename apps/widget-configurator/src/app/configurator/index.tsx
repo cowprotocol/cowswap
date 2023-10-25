@@ -4,6 +4,7 @@ import {
   cowSwapWidget,
   CowSwapWidgetParams,
   CowSwapWidgetSettings,
+  EthereumProvider,
   TradeType,
   UpdateWidgetCallback,
 } from '@cowprotocol/widget-lib'
@@ -24,6 +25,7 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { useProvider } from './hooks/useProvider'
 import { DrawerStyled, WrapperStyled, ContentStyled } from './styled'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -62,7 +64,10 @@ export function Configurator({ title }: { title: string }) {
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
 
-  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(false)
+  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(true)
+
+  const provider = useProvider()
+  const providerRef = useRef<EthereumProvider | null>()
 
   useEffect(() => {
     const widgetContainer = iframeContainerRef.current
@@ -74,6 +79,7 @@ export function Configurator({ title }: { title: string }) {
       metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
       width: 400,
       height: 640,
+      provider: provider,
     }
 
     const settings: CowSwapWidgetSettings = {
@@ -93,12 +99,18 @@ export function Configurator({ title }: { title: string }) {
       },
     }
 
+    // Re-initialize widget when provider is changed
+    if (provider && providerRef.current !== provider) {
+      updateWidgetRef.current = null
+    }
+
     if (updateWidgetRef.current) {
       updateWidgetRef.current(settings)
     } else {
       updateWidgetRef.current = cowSwapWidget(params, settings)
     }
   }, [
+    provider,
     chainId,
     enabledTradeTypes,
     sellToken,
@@ -109,6 +121,10 @@ export function Configurator({ title }: { title: string }) {
     currentTradeType,
     isDynamicHeightEnabled,
   ])
+
+  useEffect(() => {
+    providerRef.current = provider
+  }, [provider])
 
   const handleWidgetRefreshClick = () => {
     setMode('light')
@@ -135,7 +151,7 @@ export function Configurator({ title }: { title: string }) {
           variant="contained"
           onClick={handleWidgetRefreshClick}
         >
-          Connect
+          <w3m-button />
         </LoadingButton>
 
         <Divider variant="middle">General</Divider>

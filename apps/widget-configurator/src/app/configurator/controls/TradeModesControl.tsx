@@ -13,6 +13,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] }) {
   const [tradeModes, setTradeModes] = state
   const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>) => {
+    if (!event.target.value.length) return
+
     setTradeModes(event.target.value as TradeType[])
   }
 
