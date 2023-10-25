@@ -1,0 +1,45 @@
+name: Publish
+
+on:
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
+    inputs:
+      lib:
+        description: Lib to publish
+        required: true
+        type: choice
+        options:
+          - permit-utils
+          # Add more publishable libs here
+      tag:
+        description: NPM package tag
+        required: false
+        type: choice
+        options:
+          - latest
+          - next
+        default: latest
+
+
+env:
+  NODE_VERSION: lts/gallium
+
+
+jobs:
+  publish-npm:
+    name: Publish NPM package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Publish
+        run: nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
