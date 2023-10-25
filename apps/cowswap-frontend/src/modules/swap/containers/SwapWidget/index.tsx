@@ -273,7 +273,7 @@ export function SwapWidget() {
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
         />
-        <Layer3Banner />
+        <Layer3Banner addMargin={true} />
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
