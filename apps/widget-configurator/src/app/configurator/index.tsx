@@ -11,8 +11,10 @@ import {
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
@@ -60,6 +62,8 @@ export function Configurator({ title }: { title: string }) {
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
 
+  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(false)
+
   useEffect(() => {
     const widgetContainer = iframeContainerRef.current
 
@@ -84,6 +88,7 @@ export function Configurator({ title }: { title: string }) {
         },
       },
       appParams: {
+        dynamicHeightEnabled: isDynamicHeightEnabled,
         enabledTradeTypes,
       },
     }
@@ -93,7 +98,17 @@ export function Configurator({ title }: { title: string }) {
     } else {
       updateWidgetRef.current = cowSwapWidget(params, settings)
     }
-  }, [chainId, enabledTradeTypes, sellToken, sellTokenAmount, buyToken, buyTokenAmount, mode, currentTradeType])
+  }, [
+    chainId,
+    enabledTradeTypes,
+    sellToken,
+    sellTokenAmount,
+    buyToken,
+    buyTokenAmount,
+    mode,
+    currentTradeType,
+    isDynamicHeightEnabled,
+  ])
 
   const handleWidgetRefreshClick = () => {
     setMode('light')
@@ -142,6 +157,15 @@ export function Configurator({ title }: { title: string }) {
         />
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
+
+        <Divider variant="middle">Advanced</Divider>
+
+        <FormControlLabel
+          control={
+            <Checkbox checked={isDynamicHeightEnabled} onChange={(e) => setDynamicHeightEnabled(e.target.checked)} />
+          }
+          label="Dynamic widget height"
+        />
 
         <Divider variant="middle" />
 
