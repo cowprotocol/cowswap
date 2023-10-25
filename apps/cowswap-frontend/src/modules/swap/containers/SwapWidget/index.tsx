@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { Layer3Banner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
@@ -272,7 +273,7 @@ export function SwapWidget() {
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
         />
-        <div className="layer3-quest layer3-card" data-quest-id="halloween-cowswap"></div>
+        <Layer3Banner />
         <NetworkAlert />
       </TradeWidgetContainer>
     </>

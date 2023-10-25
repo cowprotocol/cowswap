@@ -2,6 +2,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Layer3Banner } from '@cowprotocol/ui'
 
 import { Field } from 'legacy/state/types'
 
@@ -264,7 +265,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
       )}
-      <div className="layer3-quest layer3-card" data-quest-id="halloween-cowswap"></div>
+      <Layer3Banner />
       {isUnlocked && <InfoBanner />}
     </>
   )
