@@ -37,6 +37,7 @@ import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -273,7 +274,10 @@ export function SwapWidget() {
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
         />
-        <Layer3Banner addMargin={true} />
+        <FeatureGuard featureFlag="layer3BannerEnabled">
+          <Layer3Banner addMargin={true} />
+        </FeatureGuard>
+
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
