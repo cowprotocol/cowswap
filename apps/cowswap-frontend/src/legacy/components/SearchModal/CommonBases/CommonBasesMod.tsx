@@ -48,20 +48,18 @@ export default function CommonBases({
             const isSelected = selectedCurrency?.equals(currency)
 
             return (
-              <>
-                <BaseWrapper
-                  tabIndex={0}
-                  onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
-                  onClick={() => !isSelected && onSelect(currency)}
-                  disable={isSelected}
-                  key={currencyId(currency)}
-                >
-                  <CurrencyLogoFromList currency={currency} />
-                  <Text fontWeight={500} fontSize={13}>
-                    <TokenSymbol token={currency} length={6} />
-                  </Text>
-                </BaseWrapper>
-              </>
+              <BaseWrapper
+                tabIndex={0}
+                onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
+                onClick={() => !isSelected && onSelect(currency)}
+                disable={isSelected}
+                key={currencyId(currency)}
+              >
+                <CurrencyLogoFromList currency={currency} />
+                <Text fontWeight={500} fontSize={13}>
+                  <TokenSymbol token={currency} length={6} />
+                </Text>
+              </BaseWrapper>
             )
           })}
         </CommonBasesRow>
