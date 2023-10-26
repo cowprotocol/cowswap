@@ -5,8 +5,8 @@ export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  min-height: 100vh;
-  height: 100vh;
+  min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? '400px' : '100vh')};
+  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100vh')};
 `
 
 export const HeaderWrapper = styled.div`

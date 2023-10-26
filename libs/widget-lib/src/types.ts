@@ -25,9 +25,15 @@ export interface TradeAssets {
   buy: TradeAsset
 }
 
+export enum TradeType {
+  SWAP = 'swap',
+  LIMIT = 'limit',
+  ADVANCED = 'advanced',
+}
+
 export interface CowSwapWidgetUrlParams {
   chainId: number
-  tradeType: string
+  tradeType: TradeType
   env: CowSwapWidgetEnv
   tradeAssets?: TradeAssets
   theme?: CowSwapTheme
@@ -37,6 +43,8 @@ export interface CowSwapWidgetAppParams {
   logoUrl?: string
   hideLogo?: boolean
   hideNetworkSelector?: boolean
+  dynamicHeightEnabled?: boolean
+  enabledTradeTypes?: TradeType[]
 }
 
 export interface CowSwapWidgetSettings {

@@ -476,7 +476,7 @@ export const UniThemedGlobalStyle = css`
     color: var(${UI.COLOR_TEXT1});
   }
   body {
-    min-height: 100vh;
+    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
     scrollbar-color: ${({ theme }) => theme.colorScrollbar};
   }
 `
