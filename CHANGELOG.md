@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.0](https://github.com/cowprotocol/cowswap/compare/v1.48.8...v1.49.0) (2023-10-26)
+
+
+### Features
+
+* fix issue with sounds ([#3279](https://github.com/cowprotocol/cowswap/issues/3279)) ([52f9d65](https://github.com/cowprotocol/cowswap/commit/52f9d65804c9871a97b09da46d34516bc03c6cb0))
+
 ## [1.48.7](https://github.com/cowprotocol/cowswap/compare/v1.48.6...v1.48.7) (2023-10-19)
 
 
