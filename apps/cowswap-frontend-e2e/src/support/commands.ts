@@ -74,11 +74,11 @@ declare namespace Cypress {
      * @example cy.stubResponse({ url: '/api/v1/someEndpoint/', alias: 'endpoint', body: { foo: 'foo' } })
      */
     stubResponse({
-                   method,
-                   url,
-                   alias,
-                   body,
-                 }: {
+      method,
+      url,
+      alias,
+      body,
+    }: {
       method: 'GET' | 'POST' | 'DELETE'
       url: string
       alias?: string
@@ -92,10 +92,11 @@ function _clickOnToken(inputOrOutput: string) {
 }
 
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  cy.get('.token-item-' + tokenAddress)
+  cy.get(`#tokens-list button[data-address="${tokenAddress.toLowerCase()}"]`)
     .scrollIntoView()
     .should('be.visible')
-    .click({force: true})
+    .click({ force: true })
+
   cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
 }
 
@@ -128,16 +129,17 @@ function selectInput(tokenAddress: string) {
 function pickToken(symbol: string, role: string) {
   cy.get(`#${role}-currency-input .open-currency-select-button`).click()
   cy.get('#token-search-input').type(symbol)
-  cy.get('#currency-list').get('div').contains(symbol).click({force: true})
+  cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
 
 function enterInputAmount(tokenAddress: string, amount: number | string, selectToken = false) {
   // Choose whether to also select token
   // or just input amount
   if (selectToken) {
-    selectOutput(tokenAddress)
+    selectInput(tokenAddress)
   }
-  cy.get('#input-currency-input .token-amount-input').type(amount.toString(), {force: true, delay: 400})
+
+  cy.get('#input-currency-input .token-amount-input').type(amount.toString(), { force: true, delay: 400 })
 }
 
 function enterOutputAmount(tokenAddress: string, amount: number | string, selectToken = false) {
@@ -146,16 +148,21 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
   if (selectToken) {
     selectOutput(tokenAddress)
   }
-  cy.get('#input-currency-input .token-amount-output').type(amount.toString(), {force: true, delay: 400})
+  cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
-function stubResponse({method, url, alias = 'stubbedResponse', body}: {
-  method: string,
-  url: string,
-  alias?: string,
+function stubResponse({
+  method,
+  url,
+  alias = 'stubbedResponse',
+  body,
+}: {
+  method: string
+  url: string
+  alias?: string
   body?: any
 }) {
-  cy.intercept({method, url}, _responseHandlerFactory(body)).as(alias)
+  cy.intercept({ method, url }, _responseHandlerFactory(body)).as(alias)
 }
 
 Cypress.Commands.add('swapClickInputToken', clickInputToken)

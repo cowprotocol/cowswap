@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
+import { Loader } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -27,11 +28,15 @@ export function ManageLists(props: ManageListsProps) {
   const removeList = useRemoveList()
   const toggleList = useToggleList()
 
-  const { source, listToImport } = useListSearchResponse(listSearchResponse)
+  const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
 
-  // TODO: add loading state
   return (
     <styledEl.Wrapper>
+      {loading && (
+        <styledEl.LoaderWrapper>
+          <Loader />
+        </styledEl.LoaderWrapper>
+      )}
       {listToImport && (
         <styledEl.ImportListsContainer>
           <ImportTokenListItem
