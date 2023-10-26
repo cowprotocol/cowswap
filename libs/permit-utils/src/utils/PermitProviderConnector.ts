@@ -1,12 +1,11 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
+import { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { Wallet } from '@ethersproject/wallet'
-import { AbiInput } from 'web3-utils'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(private provider: JsonRpcProvider, private walletSigner?: Wallet | undefined) {}
