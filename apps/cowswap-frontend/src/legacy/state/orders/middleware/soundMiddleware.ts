@@ -59,8 +59,9 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
-  const { userDarkMode, matchesDarkMode } = store.getState().user
-  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
+  // const { userDarkMode, matchesDarkMode } = store.getState().user
+  // const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
+  const isDarkMode = true // TODO: revert after halloween
 
   let cowSound
   let showLighningEffect = false
