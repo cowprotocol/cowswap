@@ -2,6 +2,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Layer3Banner } from '@cowprotocol/ui'
 
 import { Field } from 'legacy/state/types'
 
@@ -15,6 +16,7 @@ import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWid
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -256,6 +258,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
       />
+      <FeatureGuard featureFlag="layer3BannerEnabled">
+        <Layer3Banner />
+      </FeatureGuard>
       {tradeContext && (
         <LimitOrdersConfirmModal
           tradeContext={tradeContext}
