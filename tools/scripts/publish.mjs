@@ -7,12 +7,12 @@
  * You might need to authenticate with NPM before running this script.
  */
 
-import devkit from "@nx/devkit";
-import chalk from "chalk";
+import devkit from '@nx/devkit'
+import chalk from 'chalk'
 
-import { execSync } from "child_process";
-import { readFileSync } from "fs";
-import path from "path";
+import { execSync } from 'child_process'
+import { readFileSync } from 'fs'
+import path from 'path'
 
 const { readCachedProjectGraph } = devkit
 
@@ -55,7 +55,7 @@ execSync(copyReadmeCommand)
 process.chdir(outputPath)
 
 // Execute "npm publish" to publish
-const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag} ${otp? `--otp ${otp}`:''}`
+const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag} ${otp ? `--otp ${otp}` : ''}`
 console.log(chalk.bold.greenBright(publishCommand))
 execSync(publishCommand)
 console.log('Published successfully 🎉')
