@@ -33,6 +33,9 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
     amount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
     fiatAmount: CurrencyAmount.fromRawAmount(currency, 12 * 10 ** 18),
   },
+  openTokenSelectWidget() {
+    /**/
+  },
   onCurrencySelection() {
     /**/
   },

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { VCow } from '@cowprotocol/abis'
-import { GpEther, V_COW } from '@cowprotocol/common-const'
+import { TokenWithLogo, V_COW } from '@cowprotocol/common-const'
 import { useIsMounted, useVCowContract } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, formatTokenAmount, isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -920,8 +920,8 @@ function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId, pric
 
   // Free claims will have tokenAndAmount === undefined
   // If it's not a free claim, store the price and calculate cost in investment token
-  if (tokenAndAmount?.amount && Number(tokenAndAmount.amount) > 0) {
-    data.price = _getPrice(tokenAndAmount)
+  if (tokenAndAmount?.amount && Number(tokenAndAmount.amount) > 0 && tokenAndAmount.token) {
+    data.price = _getPrice({ token: tokenAndAmount.token, amount: tokenAndAmount.amount })
     // get the currency amount using the price base currency (remember price was inverted)
     data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
 
@@ -932,7 +932,7 @@ function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId, pric
   return data
 }
 
-function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }) {
+function _getPrice({ token, amount }: { amount: string; token: TokenWithLogo }) {
   return new Price({
     baseAmount: ONE_VCOW,
     quoteAmount: CurrencyAmount.fromRawAmount(token, amount),

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useTokenContract } from '@cowprotocol/common-hooks'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -35,7 +35,7 @@ function toApprovalState(
   }
 
   // Native ETH is always approved
-  if (amountToApprove.currency.isNative) {
+  if (getIsNativeToken(amountToApprove.currency)) {
     return ApprovalState.APPROVED
   }
 
@@ -58,7 +58,8 @@ export function useApprovalStateForSpender(
   useIsPendingApproval: (token?: Token, spender?: string) => boolean
 ): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useIsPendingApproval(token, spender)
@@ -78,7 +79,8 @@ export function useApproval(
   () => Promise<{ response: TransactionResponse; tokenAddress: string; spenderAddress: string } | undefined>
 ] {
   const { chainId } = useWalletInfo()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
   // check the current approval status
   const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval).approvalState

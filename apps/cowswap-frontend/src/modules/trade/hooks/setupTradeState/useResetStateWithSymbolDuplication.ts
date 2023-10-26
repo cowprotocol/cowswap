@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 
+import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
-
-import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'

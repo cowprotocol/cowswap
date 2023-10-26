@@ -1,5 +1,5 @@
 import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
-import { isAddress } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getWrappedToken, isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -19,8 +19,14 @@ export function isWrappingTrade(
   const wethByChain = WRAPPED_NATIVE_CURRENCY[chainId]
 
   return Boolean(
-    (sellCurrency?.isNative && buyCurrency?.wrapped.equals(wethByChain)) ||
-      (buyCurrency?.isNative && sellCurrency?.wrapped.equals(wethByChain))
+    (sellCurrency &&
+      getIsNativeToken(sellCurrency) &&
+      buyCurrency &&
+      getWrappedToken(buyCurrency).equals(wethByChain)) ||
+      (buyCurrency &&
+        getIsNativeToken(buyCurrency) &&
+        sellCurrency &&
+        getWrappedToken(sellCurrency).equals(wethByChain))
   )
 }
 

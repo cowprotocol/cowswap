@@ -1,7 +1,12 @@
 import { wrapAnalytics } from '@cowprotocol/analytics'
 import { RADIX_HEX } from '@cowprotocol/common-const'
 import { getChainCurrencySymbols } from '@cowprotocol/common-const'
-import { calculateGasMargin, formatTokenAmount, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import {
+  calculateGasMargin,
+  formatTokenAmount,
+  getIsNativeToken,
+  isRejectRequestProviderError,
+} from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -59,7 +64,7 @@ export async function wrapUnwrapCallback(
     updateTradeState,
     tradeState,
   } = context
-  const isNativeIn = amount.currency.isNative
+  const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
   const operationType = isNativeIn ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
 
