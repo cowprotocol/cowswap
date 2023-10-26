@@ -6,19 +6,13 @@ import {
   onlyResolvesLast,
   getPromiseFulfilledValue,
   isPromiseFulfilled,
-  registerOnWindow,
   calculateValidTo,
   getQuoteUnsupportedToken,
 } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { useAddUnsupportedToken, useIsUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'
-import {
-  useAddGpUnsupportedToken,
-  useIsUnsupportedTokenGp,
-  useRemoveGpUnsupportedToken,
-} from 'legacy/state/lists/hooks'
 import { QuoteError } from 'legacy/state/price/actions'
 import { useQuoteDispatchers } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
@@ -38,7 +32,7 @@ import GpQuoteError, {
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
   error: unknown
-  addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
+  addUnsupportedToken: (tokenAddress: string) => void
 }
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
@@ -51,11 +45,9 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
-        addUnsupportedToken({
-          chainId: quoteData.chainId,
-          address: unsupportedTokenAddress || '',
-          dateAdded: Date.now(),
-        })
+        if (unsupportedTokenAddress) {
+          addUnsupportedToken(unsupportedTokenAddress)
+        }
 
         return 'unsupported-token'
       }
@@ -90,11 +82,9 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
-        addUnsupportedToken({
-          chainId: quoteData.chainId,
-          address: unsupportedTokenAddress || '',
-          dateAdded: Date.now(),
-        })
+        if (unsupportedTokenAddress) {
+          addUnsupportedToken(unsupportedTokenAddress)
+        }
 
         return 'unsupported-token'
       }
@@ -129,23 +119,14 @@ const getFastQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getFastQuo
  * @returns callback that fetches a new quote and update the state
  */
 export function useRefetchQuoteCallback() {
-  const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
+  const getIsUnsupportedToken = useIsUnsupportedToken()
   // dispatchers
   const { getNewQuote, refreshQuote, updateQuote, setQuoteError } = useQuoteDispatchers()
-  const addUnsupportedToken = useAddGpUnsupportedToken()
-  const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
+  const addUnsupportedToken = useAddUnsupportedToken()
+  const removeGpUnsupportedToken = useRemoveUnsupportedToken()
   const strategy = useGetGpPriceStrategy()
   const [deadline] = useUserTransactionTTL()
   const isEoaEthFlow = useIsEoaEthFlow()
-
-  registerOnWindow({
-    getNewQuote,
-    refreshQuote,
-    updateQuote,
-    setQuoteError,
-    addUnsupportedToken,
-    removeGpUnsupportedToken,
-  })
 
   return useCallback(
     async (params: QuoteParamsForFetching) => {
@@ -190,16 +171,17 @@ export function useRefetchQuoteCallback() {
             description: GpQuoteErrorDetails.ZeroPrice,
           })
 
-        const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
+        const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken)
+          ? sellToken
+          : getIsUnsupportedToken(buyToken)
+          ? buyToken
+          : null
         // can be a previously unsupported token which is now valid
         // so we check against map and remove it
         if (previouslyUnsupportedToken) {
           console.debug('[useRefetchPriceCallback]::Previously unsupported token now supported - re-enabling.')
 
-          removeGpUnsupportedToken({
-            chainId,
-            address: previouslyUnsupportedToken.address.toLowerCase(),
-          })
+          removeGpUnsupportedToken(previouslyUnsupportedToken)
         }
 
         // Update quote
@@ -264,7 +246,7 @@ export function useRefetchQuoteCallback() {
       isEoaEthFlow,
       deadline,
       strategy,
-      isUnsupportedTokenGp,
+      getIsUnsupportedToken,
       updateQuote,
       refreshQuote,
       getNewQuote,

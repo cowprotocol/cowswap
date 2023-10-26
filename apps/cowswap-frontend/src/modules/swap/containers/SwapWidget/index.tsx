@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
@@ -8,7 +9,6 @@ import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 

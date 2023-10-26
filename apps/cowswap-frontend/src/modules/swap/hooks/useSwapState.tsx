@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/analytics'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
-import { formatSymbol, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
-import { useCurrency } from 'legacy/hooks/Tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
@@ -26,9 +27,7 @@ import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
-import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 
 import { useSwapSlippage } from './useSwapSlippage'
 
@@ -243,10 +242,14 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // TODO: be careful! For native tokens we use symbol instead of address
   const currenciesIds: { [field in Field]?: string | null } = useMemo(
     () => ({
-      [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
-      [Field.OUTPUT]: currencies.OUTPUT?.isNative
-        ? currencies.OUTPUT.symbol
-        : currencies.OUTPUT?.address?.toLowerCase(),
+      [Field.INPUT]:
+        currencies.INPUT && getIsNativeToken(currencies.INPUT)
+          ? currencies.INPUT.symbol
+          : currencies.INPUT?.address?.toLowerCase(),
+      [Field.OUTPUT]:
+        currencies.OUTPUT && getIsNativeToken(currencies.OUTPUT)
+          ? currencies.OUTPUT.symbol
+          : currencies.OUTPUT?.address?.toLowerCase(),
     }),
     [currencies]
   )
@@ -374,7 +377,7 @@ export function useIsFeeGreaterThanInput({
   fee: CurrencyAmount<Currency> | null
 } {
   const quote = useQuote({ chainId, token: address })
-  const feeToken = useCurrency(address)
+  const feeToken = useTokenBySymbolOrAddress(address)
 
   if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
 

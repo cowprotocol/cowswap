@@ -1,4 +1,5 @@
-import { WalletUpdater } from '@cowprotocol/wallet'
+import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 import { MulticallUpdater } from 'legacy/state/multicall'
@@ -6,7 +7,6 @@ import { MulticallUpdater } from 'legacy/state/multicall'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
-import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
@@ -16,7 +16,6 @@ import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
-import { ListsUpdater } from 'common/updaters/ListsUpdater'
 import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
@@ -31,12 +30,12 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
+  const { chainId } = useWalletInfo()
+
   return (
     <>
       <WalletUpdater />
       <HwAccountIndexUpdater />
-      <TokensListUpdater />
-      <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
       <FinalizeTxUpdater />
@@ -60,6 +59,8 @@ export function Updaters() {
       <InjectedWidgetUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
+      <TokensListsUpdater chainId={chainId} />
+      <UnsupportedTokensUpdater />
     </>
   )
 }

@@ -2,9 +2,8 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useAllTokenBalances } from 'legacy/hooks/Tokens'
-
 import { TokenAmounts } from 'modules/tokens'
+import { useAllTokensBalances } from 'modules/tokensList'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
@@ -52,8 +51,10 @@ function getTokenComparator(balances: [TokenAmounts, boolean]): (tokenA: Token, 
 }
 
 export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const balances = useAllTokenBalances()
-  const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
+  const balances = useAllTokensBalances()
+
+  const comparator = useMemo(() => getTokenComparator(balances), [balances])
+
   return useMemo(() => {
     if (inverted) {
       return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1

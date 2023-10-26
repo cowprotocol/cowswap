@@ -1,11 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
-
-import { OrderID } from 'api/gnosisProtocol'
 
 import {
   addOrUpdateOrders,
@@ -44,7 +43,10 @@ import {
 import { isOrderExpired, partialOrderUpdate } from './utils'
 
 import { AppDispatch, AppState } from '../index'
-import { deserializeToken, serializeToken } from '../user/hooks'
+import { serializeToken } from '../user/hooks'
+import { SerializedToken } from '../user/types'
+
+type OrderID = string
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
@@ -108,6 +110,10 @@ function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
 
 function _isV3Order(orderObject: any): orderObject is OrderObject {
   return orderObject?.order?.inputToken !== undefined || orderObject?.order?.outputToken !== undefined
+}
+
+function deserializeToken(serializedToken: SerializedToken): TokenWithLogo {
+  return TokenWithLogo.fromToken(serializedToken, serializedToken.logoURI)
 }
 
 function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {

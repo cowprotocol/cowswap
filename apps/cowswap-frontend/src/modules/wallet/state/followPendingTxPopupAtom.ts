@@ -1,8 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage, selectAtom } from 'jotai/utils'
 
-import { OrderID } from 'api/gnosisProtocol'
-
 type FollowPendingTxPopup = {
   showPopup: boolean
   lastOrderPopupClosed: string | undefined
@@ -26,7 +24,7 @@ export const handleHidePopupPermanentlyAtom = atom(null, (_get, set, hidePopupPe
   set(followPendingTxPopupAtom, (prev) => ({ ...prev, hidePopupPermanently }))
 })
 
-export const handleCloseOrderPopupAtom = atom(null, (_get, set, orderIdClosed: OrderID) => {
+export const handleCloseOrderPopupAtom = atom(null, (_get, set, orderIdClosed: string) => {
   set(followPendingTxPopupAtom, (prev) => ({ ...prev, lastOrderPopupClosed: orderIdClosed }))
 })
 

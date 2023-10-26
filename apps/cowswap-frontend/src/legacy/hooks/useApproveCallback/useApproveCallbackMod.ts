@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
 import { useTokenContract, usePrevious } from '@cowprotocol/common-hooks'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -12,7 +13,6 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { ConfirmOperationType } from '../../state/types'
-import { useCurrency } from '../Tokens'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 
@@ -58,15 +58,16 @@ export function useApproveCallback({
   amountToCheckAgainstAllowance,
 }: ApproveCallbackParams): ApproveCallbackState {
   const { account, chainId } = useWalletInfo()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
-  const spenderCurrency = useCurrency(spender)
+  const spenderCurrency = useTokenBySymbolOrAddress(spender)
 
   // check the current approval status
   const approvalStateBase: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
+    if (getIsNativeToken(amountToApprove.currency)) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
@@ -224,7 +225,7 @@ export function useApproveCallback({
             addTransaction({
               hash: response.hash,
               summary: optionalParams?.transactionSummary || `Revoke ${token.symbol} approval from ${spender}`,
-              approval: { tokenAddress: token.wrapped.address, spender },
+              approval: { tokenAddress: getWrappedToken(token).address, spender },
             })
           })
           // .catch((error: Error) => {

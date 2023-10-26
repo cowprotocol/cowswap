@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react'
 
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowprotocol/ui'
 import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -9,8 +10,6 @@ import { CheckCircle, HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
@@ -81,7 +80,7 @@ export function ApproveButton(props: ApproveButtonProps) {
             fontSize: '14px',
           }}
         >
-          <CurrencyLogo currency={currency} size={'24px'} style={{ flexShrink: 0 }} />
+          <TokenLogo token={currency} size={24} />
 
           {content}
         </span>

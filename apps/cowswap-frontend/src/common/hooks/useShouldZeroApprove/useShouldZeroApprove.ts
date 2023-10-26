@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useTokenContract } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -15,9 +16,9 @@ import { useTradeSpenderAddress } from '../useTradeSpenderAddress'
 export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): boolean {
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
   const spender = useTradeSpenderAddress()
-  const tokenContract = useTokenContract(
-    amountToApprove && amountToApprove.currency.isToken ? amountToApprove.currency.address : undefined
-  )
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
+  const tokenContract = useTokenContract(token?.address)
   const approvalState = useApprovalStateForSpender(amountToApprove, spender, () => false) // ignore approval pending state
 
   useEffect(() => {

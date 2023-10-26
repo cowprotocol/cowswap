@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
-import { Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -13,6 +12,7 @@ import { ConfirmOperationType } from 'legacy/state/types'
 
 import { TokenAmounts } from 'modules/tokens'
 
+import { balanceComparator, useTokenComparator } from './sorting'
 import {
   Arrow,
   ArrowButton,
@@ -39,7 +39,7 @@ enum SORT_FIELD {
 type BalanceType = [TokenAmounts, boolean]
 
 type TokenTableParams = {
-  tokensData: Token[] | undefined
+  tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalanceType
   page: number
@@ -47,11 +47,6 @@ type TokenTableParams = {
   query: string
   prevQuery: string
   debouncedQuery: string
-}
-
-export enum TableType {
-  OVERVIEW = 'OVERVIEW',
-  FAVOURITE = 'FAVOURITE',
 }
 
 export default function TokenTable({
@@ -64,8 +59,6 @@ export default function TokenTable({
   prevQuery,
   debouncedQuery,
 }: TokenTableParams) {
-  // const { account } = useWalletInfo()
-
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
 

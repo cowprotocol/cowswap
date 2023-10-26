@@ -1,19 +1,19 @@
 import { useCallback, useMemo } from 'react'
 
-import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCY_BUY_TOKEN, SupportedLocale } from '@cowprotocol/common-const'
-import { calculateValidTo } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Percent, Token } from '@uniswap/sdk-core'
+import {
+  L2_DEADLINE_FROM_NOW,
+  NATIVE_CURRENCY_BUY_TOKEN,
+  SupportedLocale,
+  TokenWithLogo,
+} from '@cowprotocol/common-const'
+import { calculateValidTo, getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
 
 import {
-  addSerializedToken,
-  initFavouriteTokens,
-  removeAllFavouriteTokens,
-  removeSerializedToken,
-  toggleFavouriteToken,
   updateRecipientToggleVisible,
   updateUserDarkMode,
   updateUserDeadline,
@@ -26,16 +26,6 @@ import { SerializedToken } from './types'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { AppState } from '../index'
 import { setRecipient } from '../swap/actions'
-
-export function deserializeToken(serializedToken: SerializedToken): Token {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
-}
 
 export function useIsDarkMode(): boolean {
   const { userDarkMode, matchesDarkMode } = useAppSelector(
@@ -187,39 +177,6 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   return [deadline, setUserDeadline]
 }
 
-export function useAddUserToken(): (token: Token) => void {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (token: Token) => {
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
-
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
-    },
-    [dispatch]
-  )
-}
-
-export function useUserAddedTokens(): Token[] {
-  const { chainId } = useWalletInfo()
-  const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
-
-  return useMemo(() => {
-    if (!chainId) return []
-    const tokenMap: Token[] = serializedTokensMap?.[chainId]
-      ? Object.values(serializedTokensMap[chainId]).map(deserializeToken)
-      : []
-    return tokenMap
-  }, [serializedTokensMap, chainId])
-}
-
 export function useURLWarningVisible(): boolean {
   return useAppSelector((state: AppState) => state.user.URLWarningVisible)
 }
@@ -229,63 +186,21 @@ export function useOrderValidTo() {
   return useMemo(() => ({ validTo: calculateValidTo(deadline), deadline }), [deadline])
 }
 
-export function useFavouriteTokens(): Token[] {
-  const { chainId } = useWalletInfo()
-  const serializedTokensMap = useAppSelector(({ user: { favouriteTokens } }) => favouriteTokens)
-
-  return useMemo(() => {
-    if (!chainId) return []
-    const tokenMap: Token[] = serializedTokensMap?.[chainId]
-      ? Object.values(serializedTokensMap[chainId]).map(deserializeToken)
-      : []
-    return tokenMap
-  }, [serializedTokensMap, chainId])
-}
-
-export function useToggleFavouriteToken(): (token: Token) => void {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (token: Token) => {
-      dispatch(toggleFavouriteToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
-
-export function useRemoveAllFavouriteTokens(): () => void {
-  const { chainId } = useWalletInfo()
-  const dispatch = useAppDispatch()
-
-  return useCallback(() => {
-    if (chainId) {
-      dispatch(removeAllFavouriteTokens({ chainId }))
-    }
-  }, [dispatch, chainId])
-}
-
 export function useSelectedWallet(): string | undefined {
   return useAppSelector(({ user: { selectedWallet } }) => selectedWallet)
 }
 
-export function useInitFavouriteTokens(): void {
-  const { chainId } = useWalletInfo()
-  const dispatch = useAppDispatch()
-
-  return useMemo(() => {
-    if (chainId) {
-      dispatch(initFavouriteTokens({ chainId }))
-    }
-  }, [chainId, dispatch])
-}
-
-export function serializeToken(token: Currency): SerializedToken {
-  const address = token.isNative ? NATIVE_CURRENCY_BUY_TOKEN[token.chainId].address : token.address
+export function serializeToken(token: Currency | TokenWithLogo): SerializedToken {
+  const address = getIsNativeToken(token)
+    ? NATIVE_CURRENCY_BUY_TOKEN[token.chainId as SupportedChainId].address
+    : token.address
 
   return {
-    chainId: token.chainId,
     address,
+    logoURI: token instanceof TokenWithLogo ? token.logoURI : undefined,
+    chainId: token.chainId,
     decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name,
+    symbol: token.symbol || '',
+    name: token.name || '',
   }
 }
