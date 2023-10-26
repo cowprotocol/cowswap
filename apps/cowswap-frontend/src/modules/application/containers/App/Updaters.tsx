@@ -1,4 +1,4 @@
-import { TokensListsUpdater } from '@cowprotocol/tokens'
+import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
@@ -60,6 +60,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
+      <UnsupportedTokensUpdater />
     </>
   )
 }

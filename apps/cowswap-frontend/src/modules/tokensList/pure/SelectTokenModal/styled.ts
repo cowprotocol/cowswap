@@ -36,24 +36,29 @@ export const Header = styled.div`
 `
 
 export const SearchInput = styled.input`
-  width: 100%;
-  outline: none;
-  border-radius: 20px;
-  color: var(${UI.COLOR_TEXT1});
+  position: relative;
+  display: flex;
   padding: 16px;
-  border: 1px solid var(${UI.COLOR_GREY});
-  -webkit-appearance: none;
-  transition: border 100ms;
-  background: transparent;
-
-  font-size: 18px;
+  align-items: center;
+  width: 100%;
+  white-space: nowrap;
+  outline: none;
+  background: var(${UI.COLOR_GREY});
+  color: var(${UI.COLOR_TEXT1});
+  border: 1px solid var(${UI.COLOR_BORDER});
+  appearance: none;
+  font-size: 16px;
+  border-radius: 12px;
 
   ::placeholder {
-    color: var(${UI.COLOR_LINK});
+    color: var(${UI.COLOR_TEXT1});
+    opacity: 0.7;
   }
 
+  transition: border 100ms;
+
   :focus {
-    border: 1px solid var(${UI.COLOR_CONTAINER_BG_02});
+    border: 1px solid var(${UI.COLOR_LINK});
     outline: none;
   }
 `

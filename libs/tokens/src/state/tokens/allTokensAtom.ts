@@ -35,9 +35,13 @@ export const tokensStateAtom = atom<TokensState>((get) => {
         const tokenAddress = token.address.toLowerCase()
 
         if (isListEnabled) {
-          acc.activeTokens[tokenAddress] = token
+          if (!acc.activeTokens[tokenAddress]) {
+            acc.activeTokens[tokenAddress] = token
+          }
         } else {
-          acc.inactiveTokens[tokenAddress] = token
+          if (!acc.inactiveTokens[tokenAddress]) {
+            acc.inactiveTokens[tokenAddress] = token
+          }
         }
       })
 

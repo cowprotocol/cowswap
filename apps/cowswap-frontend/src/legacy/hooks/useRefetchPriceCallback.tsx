@@ -171,13 +171,17 @@ export function useRefetchQuoteCallback() {
             description: GpQuoteErrorDetails.ZeroPrice,
           })
 
-        const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken) || getIsUnsupportedToken(buyToken)
+        const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken)
+          ? sellToken
+          : getIsUnsupportedToken(buyToken)
+          ? buyToken
+          : null
         // can be a previously unsupported token which is now valid
         // so we check against map and remove it
         if (previouslyUnsupportedToken) {
           console.debug('[useRefetchPriceCallback]::Previously unsupported token now supported - re-enabling.')
 
-          removeGpUnsupportedToken(previouslyUnsupportedToken.address)
+          removeGpUnsupportedToken(previouslyUnsupportedToken)
         }
 
         // Update quote
