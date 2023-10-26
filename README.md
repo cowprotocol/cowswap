@@ -5,20 +5,18 @@ CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-- 🐮**Official Website**🐮: <https://swap.cow.fi/>
-
-  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
-
-- Protocol: <https://cow.fi>
-- Docs: <https://docs.cow.fi>
-- Stats: <https://dune.com/cowprotocol/cowswap>
-- Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
-- Discord: <https://discord.com/invite/cowprotocol>
-
-Please see the:
-
-- [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
-- [CoW Protocol: Services](https://github.com/cowprotocol/services)
+| **Platform**           | **Link**                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 🐮🐮 **CoW Swap** 🐮🐮 | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| CoW Swap (IPFS)        | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
+| CoW Swap (ENS)         | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
+| CoW Protocol           | [cow.fi](https://cow.fi)                                                                                      |
+| Docs                   | [docs.cow.fi](https://docs.cow.fi)                                                                            |
+| Governance (Snapshot)  | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
+| Stats                  | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Twitter                | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
+| Discord                | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
+| Forum                  | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
 # 🐮 Run CoW Swap
 
