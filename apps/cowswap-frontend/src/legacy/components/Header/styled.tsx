@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react'
 
-import SpiderRag from '@cowprotocol/assets/cow-swap/halloween-spider.svg'
 import { Row, RowFixed } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
@@ -10,7 +9,6 @@ import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 
-import { HALLOWEEN_MODE } from 'common/constants/theme'
 import { UI } from 'common/constants/theme'
 
 const activeClassName = 'active'
@@ -201,27 +199,6 @@ export const HeaderElement = styled(HeaderElementUni)`
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
-  // Halloween spider rag
-  ${({ theme }) =>
-    HALLOWEEN_MODE &&
-    theme.darkMode &&
-    css`
-      &::after {
-        content: '';
-        display: block;
-        background: url(${SpiderRag}) no-repeat center/contain;
-        height: 200px;
-        width: 200px;
-        position: fixed;
-        right: -42px;
-        top: 90px;
-        ${({ theme }) => theme.mediaWidth.upToSmall`
-          display: none;
-          content: none;
-        `};
-      }
-    `}
-
   ${HeaderFrame} {
     padding: 16px;
     display: flex;
@@ -232,7 +209,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
       ${
         isMobileMenuOpen &&
         css`
-          position: fixed;
+          position: absolute;
           top: 0;
           z-index: 3;
 

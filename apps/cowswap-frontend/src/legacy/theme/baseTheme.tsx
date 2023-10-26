@@ -11,7 +11,6 @@ import { colorsUniswap } from 'legacy/theme/colorsUniswap'
 import { Colors } from 'legacy/theme/styled'
 
 import { UI } from 'common/constants/theme'
-import { HALLOWEEN_MODE } from 'common/constants/theme'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
@@ -545,25 +544,4 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
 
-  // Halloween theme elements
-  ${
-    HALLOWEEN_MODE &&
-    css`
-      @keyframes blinker {
-        50% {
-          background: black;
-        }
-
-        100% {
-          background: white;
-        }
-      }
-
-      body.lightning {
-        filter: invert(1) grayscale(1);
-        animation: blinker 333ms linear infinite;
-      }
-    `
-  }
-  // ========================
 `
