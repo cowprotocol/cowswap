@@ -21,6 +21,8 @@ import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
+import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+
 import { useGetMarketDimension } from './useGetMarketDimension'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
@@ -58,6 +60,7 @@ export function useAnalyticsReporter() {
   const { connector } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const { walletName: _walletName } = useWalletDetails()
+  const injectedWidgetMetaData = useInjectedWidgetMetaData()
   const prevAccount = usePrevious(account)
 
   const marketDimension = useGetMarketDimension()
@@ -92,6 +95,15 @@ export function useAnalyticsReporter() {
     // Custom dimension 5 - market
     googleAnalytics.setDimension(Dimensions.market, marketDimension)
   }, [marketDimension])
+
+  useEffect(() => {
+    // Custom dimension 6 - injected widget app id
+    const injectedWidgetAppId = injectedWidgetMetaData
+      ? `${injectedWidgetMetaData.appKey}:${injectedWidgetMetaData.url}`
+      : ''
+
+    googleAnalytics.setDimension(Dimensions.injectedWidgetAppId, injectedWidgetAppId)
+  }, [injectedWidgetMetaData])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)
