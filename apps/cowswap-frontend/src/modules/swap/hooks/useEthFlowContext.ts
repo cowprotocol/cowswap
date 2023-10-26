@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { useEthFlowContract } from '@cowprotocol/common-hooks'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -23,7 +23,7 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const baseContext = getFlowContext({
     baseProps,
-    sellToken: baseProps.chainId ? NATIVE_CURRENCY_BUY_TOKEN[baseProps.chainId] : undefined,
+    sellToken: baseProps.chainId ? NATIVE_CURRENCY_BUY_TOKEN[baseProps.chainId as SupportedChainId] : undefined,
     kind: OrderKind.SELL,
   })
 

@@ -11,6 +11,10 @@ const RowBox = styled.div`
   align-items: center;
 `
 
+export const Wrapper = styled.div`
+  overflow: auto;
+`
+
 export const Header = styled(RowBox)`
   padding: 20px;
 `
@@ -18,6 +22,14 @@ export const Header = styled(RowBox)`
 export const Title = styled.div`
   font-weight: 600;
   opacity: 0.65;
+`
+
+export const TokensWrapper = styled.div`
+  height: calc(100vh - 450px);
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: calc(100vh - 350px);
+  `}
 `
 
 export const LinkButton = styled.button`

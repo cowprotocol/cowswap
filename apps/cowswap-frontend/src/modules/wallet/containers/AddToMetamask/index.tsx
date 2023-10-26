@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react'
 
 import { addTokenToMetamaskAnalytics } from '@cowprotocol/analytics'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { getIsMetaMask } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import useCurrencyLogoURIs from 'common/pure/CurrencyLogo/hooks/useCurrencyLogoURIs'
 
 import { AddToMetamask as AddToMetamaskPure } from '../../pure/AddToMetamask'
 
@@ -22,8 +23,8 @@ export function AddToMetamask(props: AddToMetamaskProps) {
 
   const [success, setSuccess] = useState<boolean | undefined>()
 
-  const token = currency?.wrapped
-  const logoURL = useCurrencyLogoURIs(token)[0]
+  const token = currency && getWrappedToken(currency)
+  const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
     if (!token?.symbol || !connector.watchAsset) return

@@ -1,6 +1,6 @@
-import { GpEther, USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { CLAIMS_REPO, FREE_CLAIM_TYPES, PAID_CLAIM_TYPES } from './const'
 import { ClaimInput, ClaimType, RepoClaims, UserClaims, VCowPrices } from './types'
@@ -100,10 +100,6 @@ export function getClaimKey(account: string, chainId: number): string {
   return `${chainId}:${account}`
 }
 
-export type PaidClaimTypeToPriceMap = {
-  [type in ClaimType]: { token: Token; amount: string } | undefined
-}
-
 export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
   switch (type) {
     case ClaimType.GnoOption:
@@ -111,7 +107,7 @@ export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
     case ClaimType.Investor:
       return USDC[chainId]
     case ClaimType.UserOption:
-      return GpEther.onChain(chainId)
+      return NATIVE_CURRENCY_BUY_TOKEN[chainId]
     case ClaimType.Advisor:
     case ClaimType.Airdrop:
     case ClaimType.Team:
@@ -125,11 +121,11 @@ export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
 export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainId, prices: VCowPrices) {
   switch (type) {
     case ClaimType.GnoOption:
-      return { token: claimTypeToToken(ClaimType.GnoOption, chainId) as Token, amount: prices.gno as string }
+      return { token: claimTypeToToken(ClaimType.GnoOption, chainId), amount: prices.gno as string }
     case ClaimType.Investor:
-      return { token: claimTypeToToken(ClaimType.Investor, chainId) as Token, amount: prices.usdc as string }
+      return { token: claimTypeToToken(ClaimType.Investor, chainId), amount: prices.usdc as string }
     case ClaimType.UserOption:
-      return { token: claimTypeToToken(ClaimType.UserOption, chainId) as GpEther, amount: prices.native as string }
+      return { token: claimTypeToToken(ClaimType.UserOption, chainId), amount: prices.native as string }
     default:
       return undefined
   }

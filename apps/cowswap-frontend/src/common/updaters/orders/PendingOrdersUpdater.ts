@@ -32,7 +32,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
-import { getOrder, OrderID } from 'api/gnosisProtocol'
+import { getOrder } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
@@ -49,7 +49,7 @@ import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusSt
  * @param signedOrdersIds ids of orders we know are already pre-signed
  * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
  */
-function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: OrderID[]) {
+function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
   return allPendingOrders
     .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id))
     .map((order) => order.id)
@@ -200,7 +200,7 @@ async function _updateOrders({
 
   if (presigned.length > 0) {
     // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned as OrderID[]
+    const presignedOrderIds = presigned as string[]
     const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
 
     if (ordersPresignaturePendingSigned.length > 0) {
@@ -213,14 +213,14 @@ async function _updateOrders({
 
   if (expired.length > 0) {
     expireOrdersBatch({
-      ids: expired as OrderID[],
+      ids: expired as string[],
       chainId,
     })
   }
 
   if (cancelled.length > 0) {
     cancelOrdersBatch({
-      ids: cancelled as OrderID[],
+      ids: cancelled as string[],
       chainId,
     })
   }
