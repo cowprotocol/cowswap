@@ -1,8 +1,10 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '@cowprotocol/common-utils'
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess, isMobile } from '@cowprotocol/common-utils'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import { HALLOWEEN_MODE } from 'common/constants/theme'
 
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
@@ -28,6 +30,16 @@ const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isAddPopup = isAnyOf(addPopup)
 
+function removeLightningEffect() {
+  document.body.classList.remove('lightning')
+}
+function addLightningEffect() {
+  document.body.classList.add('lightning')
+  setTimeout(() => {
+    removeLightningEffect()
+  }, 3000)
+}
+
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -47,27 +59,39 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
+  const { userDarkMode, matchesDarkMode } = store.getState().user
+  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
+
   let cowSound
+  let showLighningEffect = false
+  const isHalloweenMode = HALLOWEEN_MODE && isDarkMode
+  const isHalloweenModeDesktop = HALLOWEEN_MODE && isDarkMode && !isMobile
   if (isPendingOrderAction(action)) {
     if (_shouldPlayPendingOrderSound(action.payload)) {
-      cowSound = getCowSoundSend()
+      cowSound = getCowSoundSend(isHalloweenMode)
+      showLighningEffect = isHalloweenModeDesktop
     }
   } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+    cowSound = getCowSoundSuccess(isHalloweenMode)
+    showLighningEffect = isHalloweenModeDesktop
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
-      cowSound = getCowSoundError()
+      cowSound = getCowSoundError(isHalloweenMode)
     }
   } else if (isBatchCancelOrderAction(action)) {
-    cowSound = getCowSoundError()
+    cowSound = getCowSoundError(isHalloweenMode)
   } else if (isFailedTxAction(action)) {
-    cowSound = getCowSoundError()
+    cowSound = getCowSoundError(isHalloweenMode)
   } else if (isUpdateOrderAction(action)) {
-    cowSound = _getUpdatedOrderSound(action.payload)
+    cowSound = _getUpdatedOrderSound(action.payload, isHalloweenMode)
   }
 
   if (cowSound) {
+    if (showLighningEffect) {
+      setTimeout(addLightningEffect, 300)
+    }
     cowSound.play().catch((e) => {
+      removeLightningEffect()
       console.error('🐮 Moooooo sound cannot be played', e)
     })
   }
@@ -94,10 +118,10 @@ function _shouldPlayExpiredOrderSound(
   })
 }
 
-function _getUpdatedOrderSound(payload: UpdateOrderParams) {
+function _getUpdatedOrderSound(payload: UpdateOrderParams, isHalloweenMode: boolean) {
   if (!payload.order.isHidden) {
     // Trigger COW sound when an order is being updated to a non-hidden state
-    return getCowSoundSend()
+    return getCowSoundSend(isHalloweenMode)
   }
   return undefined
 }
