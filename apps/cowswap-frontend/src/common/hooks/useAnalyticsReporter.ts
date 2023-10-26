@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import {
   Dimensions,
@@ -76,6 +76,11 @@ export function useAnalyticsReporter() {
 
   const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
 
+  const injectedWidgetAppId = useMemo(
+    () => (injectedWidgetMetaData ? `${injectedWidgetMetaData.appKey}:${injectedWidgetMetaData.url}` : ''),
+    [injectedWidgetMetaData]
+  )
+
   useEffect(() => {
     // Custom dimension 2 - walletname
     googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
@@ -98,12 +103,8 @@ export function useAnalyticsReporter() {
 
   useEffect(() => {
     // Custom dimension 6 - injected widget app id
-    const injectedWidgetAppId = injectedWidgetMetaData
-      ? `${injectedWidgetMetaData.appKey}:${injectedWidgetMetaData.url}`
-      : ''
-
     googleAnalytics.setDimension(Dimensions.injectedWidgetAppId, injectedWidgetAppId)
-  }, [injectedWidgetMetaData])
+  }, [injectedWidgetAppId])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)
