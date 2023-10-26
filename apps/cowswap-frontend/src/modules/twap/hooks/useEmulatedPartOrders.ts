@@ -2,12 +2,11 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
+import { TokensByAddress } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
-
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
 import { twapOrdersAtom, TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'

@@ -50,40 +50,6 @@ function _assertFeeData(fee: GetQuoteResponse): void {
   expect(fee.quote).to.have.property('feeAmount')
 }
 
-/* Fee not currently being saved in local so commenting this out
- * for now - may be re-implemented in the future so keeping
-
-function _getLocalStorage(): Cypress.Chainable<Storage> {
-  return cy.window().then(window => window.localStorage)
-}
-
-function _getChainFeeStorage(
-  networkKey: string,
-  token?: string
-): Cypress.Chainable<{ [t: string]: FeeInformationObject }> {
-  return (
-    _getLocalStorage()
-      .its(FEE_QUOTES_LOCAL_STORAGE_KEY)
-      // To properly return this we need .should and an expectation
-      .should(feeQuotesStorage => {
-        expect(JSON.parse(feeQuotesStorage)).to.have.property(networkKey)
-        token && expect(JSON.parse(feeQuotesStorage)[RINKEBY]).to.have.property(token)
-      })
-      .then(fee => JSON.parse(fee)[networkKey])
-  )
-}
-
-function _assertFeeFetched(token: string): Cypress.Chainable {
-  return _getChainFeeStorage(RINKEBY, token).then(feeQuoteData => {
-    expect(feeQuoteData).to.exist
-    expect(feeQuoteData).to.have.property(token)
-
-    // THEN: The quote has the expected information
-    const fee = feeQuoteData[token].fee
-    _assertFeeData(fee)
-  })
-} */
-
 describe('Fee endpoint', () => {
   it('Returns the expected info', () => {
     const params = {
@@ -129,7 +95,7 @@ describe('Fee: Complex fetch and persist fee', () => {
 
     // GIVEN: user visits app, selects 0.1 WETH as sell, DAI as buy
     // and goes AFK
-    cy.visit('/#/swap')
+    cy.visit('/#/5/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -173,7 +139,7 @@ describe('Fee: simple checks it exists', () => {
     })
     // GIVEN: A user loads the swap page
     // WHEN: Select DAI token as output and sells 0.1 WETH
-    cy.visit('/#/swap')
+    cy.visit('/#/5/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -185,7 +151,7 @@ describe('Fee: simple checks it exists', () => {
 describe('Swap: Considering fee', () => {
   beforeEach(() => {
     // GIVEN: an initial selection of WETH-DAI
-    cy.visit('/#/swap')
+    cy.visit('/#/5/swap')
   })
 
   it("Uses Uniswap price, if there's no tip", () => {

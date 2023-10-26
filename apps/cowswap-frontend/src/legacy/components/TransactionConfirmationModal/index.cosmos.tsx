@@ -9,6 +9,7 @@ import { ConfirmOperationType } from 'legacy/state/types'
 import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 
 import { cowSwapStore } from '../../state'
+import { SerializedToken } from '../../state/user/types'
 
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()
 
@@ -46,8 +47,8 @@ cowSwapStore.dispatch(
     id: txHash,
     chainId: 5,
     order: {
-      inputToken: COW[SupportedChainId.MAINNET],
-      outputToken: GNO[SupportedChainId.MAINNET],
+      inputToken: COW[SupportedChainId.MAINNET] as SerializedToken,
+      outputToken: GNO[SupportedChainId.MAINNET] as SerializedToken,
       sellToken: COW[SupportedChainId.MAINNET].address,
       buyToken: GNO[SupportedChainId.MAINNET].address,
       sellAmount: '1000',

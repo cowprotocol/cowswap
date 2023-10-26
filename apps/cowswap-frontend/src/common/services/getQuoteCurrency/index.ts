@@ -2,6 +2,7 @@ import { DAI, USDC_MAINNET, USDT } from '@cowprotocol/common-const'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from '@cowprotocol/common-const'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -51,8 +52,12 @@ export function getQuoteCurrencyByStableCoin(
 
   const stableCoins = STABLE_COINS[chainId]
 
-  const inputAddress = inputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : inputCurrency.address.toLowerCase()
-  const outputAddress = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : outputCurrency.address.toLowerCase()
+  const inputAddress = getIsNativeToken(inputCurrency)
+    ? NATIVE_CURRENCY_BUY_ADDRESS
+    : inputCurrency.address.toLowerCase()
+  const outputAddress = getIsNativeToken(outputCurrency)
+    ? NATIVE_CURRENCY_BUY_ADDRESS
+    : outputCurrency.address.toLowerCase()
 
   const isInputStableCoin = stableCoins.includes(inputAddress)
   const isOutputStableCoin = stableCoins.includes(outputAddress)

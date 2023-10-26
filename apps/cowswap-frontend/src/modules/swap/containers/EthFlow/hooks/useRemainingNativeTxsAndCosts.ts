@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
@@ -83,7 +84,7 @@ export default function useRemainingNativeTxsAndCosts({
   // does the user have a lower than set threshold balance? show error
   const balanceChecks: BalanceChecks = useMemo(() => {
     // we only check this for native currencies, otherwise stop
-    if (!nativeInput?.currency.isNative) return undefined
+    if (nativeInput?.currency && !getIsNativeToken(nativeInput.currency)) return undefined
     const { multiTxCost, singleTxCost } = txCosts
 
     return {

@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
 import { useENSAddress } from '@cowprotocol/ens'
+import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useIsTokenPermittable } from 'modules/permit'
