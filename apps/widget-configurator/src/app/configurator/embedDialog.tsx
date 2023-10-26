@@ -75,12 +75,6 @@ const updateWidget = cowSwapWidget(params, settings)
       >
         <DialogTitle id="scroll-dialog-title">Snippet for CoW Widget</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
-          {/* 
-          <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            {/ * <code style={CodeStyles}>{code}</code> * /}
-            <SyntaxHighlighter children={code} language="javascript" style={dracula} />
-          </DialogContentText> 
-          */}
           <SyntaxHighlighter
             showLineNumbers={true}
             children={code}
