@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetEnv, CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
 
-import { isLocalHost, isVercel } from '../../../env'
+import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
-const getEnv = () => {
+const getEnv = (): CowSwapWidgetEnv => {
   if (isLocalHost) return 'local'
-  if (isVercel) return 'dev'
+  if (isDev) return 'dev'
+  if (isVercel) return 'vercel'
 
   return 'prod'
 }
