@@ -23,7 +23,6 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useNativeBalance } from 'common/hooks/useNativeBalance'
 
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'

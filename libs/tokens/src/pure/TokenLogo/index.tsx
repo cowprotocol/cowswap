@@ -17,6 +17,7 @@ const TokenLogoWrapper = styled.div`
   display: inline-block;
   background: var(--cow-container-bg-01);
   border-radius: 50%;
+  overflow: hidden;
 
   img {
     width: 100%;
