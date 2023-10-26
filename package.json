@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "nx run cowswap-frontend:serve",
-    "start-widget": "nx run widget-configurator:serve",
+    "start:widget": "nx run widget-configurator:serve",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx build cowswap-frontend",
     "ipfs:build": "PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "npx ipfs-deploy build -p pinata -O",
@@ -106,6 +106,7 @@
     "@web3-react/network": "^8.2.3",
     "@web3-react/url": "^8.2.3",
     "@web3-react/walletconnect-v2": "^8.5.1",
+    "@web3modal/wagmi": "^3.2.0-alpha.1",
     "bnc-sdk": "^4.6.0",
     "buffer": "^6.0.3",
     "cids": "^1.0.0",
@@ -156,6 +157,7 @@
     "react-router-dom": "^6.6.2",
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "react-virtualized-auto-sizer": "^1.0.2",
     "rebass": "^4.0.7",
     "redux": "^4.1.2",
@@ -173,6 +175,8 @@
     "use-async-memo": "^1.2.4",
     "use-count-up": "^2.2.5",
     "use-resize-observer": "^8.0.0",
+    "viem": "1.16.6",
+    "wagmi": "^1.4.5",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
@@ -206,6 +210,7 @@
     "@types/react-helmet": "^6.1.6",
     "@types/react-is": "18.2.1",
     "@types/react-router-hash-link": "^2.4.5",
+    "@types/react-syntax-highlighter": "^15.5.9",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/rebass": "^4.0.10",
     "@types/styled-components": "5.1.26",

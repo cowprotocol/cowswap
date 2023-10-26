@@ -19,13 +19,15 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
 
   sendMetaData(contentWindow, params.metaData)
 
+  applyDynamicHeight(iframe, params.height)
+
   if (provider) {
     const jsonRpcManager = new JsonRpcManager(contentWindow)
 
     jsonRpcManager.onConnect(provider)
   }
 
-  return (params: CowSwapWidgetSettings) => updateWidget(params, contentWindow)
+  return (newSettings: CowSwapWidgetSettings) => updateWidget(newSettings, contentWindow, iframe)
 }
 
 function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): HTMLIFrameElement {
@@ -41,9 +43,14 @@ function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettin
   return iframe
 }
 
-function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
-  const pathname = buildWidgetPath(params.urlParams)
-  const search = buildTradeAmountsQuery(params.urlParams).toString()
+function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, iframe: HTMLIFrameElement) {
+  const pathname = buildWidgetPath(settings.urlParams)
+  const search = buildTradeAmountsQuery(settings.urlParams).toString()
+
+  // Reset iframe height to default
+  if (!settings.appParams.dynamicHeightEnabled) {
+    iframe.style.height = ''
+  }
 
   contentWindow.postMessage(
     {
@@ -53,7 +60,7 @@ function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
         pathname,
         search,
       },
-      appParams: params.appParams,
+      appParams: settings.appParams,
     },
     '*'
   )
@@ -73,5 +80,17 @@ function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData) {
       },
       '*'
     )
+  })
+}
+
+function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight: number) {
+  window.addEventListener('message', (event) => {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'iframeHeight') {
+      return
+    }
+
+    const height = event.data.height || defaultHeight
+
+    iframe.style.height = `${height}px`
   })
 }

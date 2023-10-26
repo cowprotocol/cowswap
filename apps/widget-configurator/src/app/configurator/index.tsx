@@ -1,99 +1,110 @@
-import * as React from 'react'
-import { ColorModeContext } from '../../main'
-// import { useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
-// import Button from '@mui/material/Button'
-import InputLabel from '@mui/material/InputLabel'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import Typography from '@mui/material/Typography'
-import Drawer from '@mui/material/Drawer'
-import Link from '@mui/material/Link'
-import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
-import Divider from '@mui/material/Divider'
-import EmbedDialog from './embedDialog'
-import Checkbox from '@mui/material/Checkbox'
-import ListItemText from '@mui/material/ListItemText'
-// import SaveIcon from '@mui/icons-material/Save'
+import { useContext, useEffect, useRef, useState } from 'react'
+
+import { cowSwapWidget, EthereumProvider, TradeType, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
+
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { SyntheticEvent } from 'react'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
 
-enum TradeMode {
-  Swap = 1,
-  Limit = 2,
-  TWAP = 3,
+import { TRADE_MODES } from './consts'
+import { CurrencyInputControl } from './controls/CurrencyInputControl'
+import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
+import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
+import { ThemeControl } from './controls/ThemeControl'
+import { TradeModesControl } from './controls/TradeModesControl'
+import { EmbedDialog } from './embedDialog'
+import { useProvider } from './hooks/useProvider'
+import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
+import { DrawerStyled, WrapperStyled, ContentStyled } from './styled'
+import { ConfiguratorState } from './types'
+
+import { ColorModeContext } from '../../theme/ColorModeContext'
+
+const DEFAULT_STATE = {
+  sellToken: 'COW',
+  buyToken: 'USDC',
+  sellAmount: 100000,
+  buyAmount: 0,
 }
 
-const ThemeOptions = [
-  { label: 'Auto', value: 'auto' },
-  { label: 'Light', value: 'light' },
-  { label: 'Dark', value: 'dark' },
-]
-
-const TradeModeOptions = [
-  { label: 'Swap', value: TradeMode.Swap },
-  { label: 'Limit', value: TradeMode.Limit },
-  { label: 'TWAP', value: TradeMode.TWAP },
-]
-
-const NetworkOptions = [
-  { chainID: 1, label: 'Ethereum' },
-  { chainID: 100, label: 'Gnosis Chain' },
-]
-
-const TokenOptions = ['COW', 'USDC']
-
 export function Configurator({ title }: { title: string }) {
-  // const theme = useTheme()
-  const { mode, toggleColorMode, setAutoMode } = React.useContext(ColorModeContext)
+  const { mode, setMode } = useContext(ColorModeContext)
 
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
-  const handleThemeChange = (event: SelectChangeEvent) => {
-    const selectedTheme = event.target.value
-    if (selectedTheme === 'auto') {
-      setAutoMode()
+  const networkControlState = useState<NetworkOption>(NetworkOptions[0])
+  const [{ chainId }] = networkControlState
+
+  const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
+  const [currentTradeType] = tradeTypeState
+
+  const tradeModesState = useState<TradeType[]>(TRADE_MODES)
+  const [enabledTradeTypes] = tradeModesState
+
+  const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
+  const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
+  const [sellToken, setSellToken] = sellTokenState
+  const [sellTokenAmount, setSellTokenAmount] = sellTokenAmountState
+
+  const buyTokenState = useState<string>(DEFAULT_STATE.buyToken)
+  const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
+  const [buyToken, setBuyToken] = buyTokenState
+  const [buyTokenAmount, setBuyTokenAmount] = buyTokenAmountState
+
+  const iframeContainerRef = useRef<HTMLDivElement>(null)
+  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
+
+  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(true)
+
+  const provider = useProvider()
+  const providerRef = useRef<EthereumProvider | null>()
+
+  const state: ConfiguratorState = {
+    chainId,
+    theme: mode,
+    currentTradeType,
+    enabledTradeTypes,
+    sellToken,
+    sellTokenAmount,
+    buyToken,
+    buyTokenAmount,
+    isDynamicHeightEnabled,
+  }
+
+  const { params, settings } = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+
+  useEffect(() => {
+    if (!params.container) return
+
+    // Re-initialize widget when provider is changed
+    if (provider && providerRef.current !== provider) {
+      updateWidgetRef.current = null
+    }
+
+    if (updateWidgetRef.current) {
+      updateWidgetRef.current(settings)
     } else {
-      toggleColorMode()
+      updateWidgetRef.current = cowSwapWidget(params, settings)
     }
+  }, [provider, params, settings])
 
-    const url = new URL(iframeURL)
-    url.searchParams.set('theme', selectedTheme)
-    setIframeURL(url.toString())
-  }
-
-  const [tradeModes, setTradeModes] = React.useState<TradeMode[]>([TradeMode.Swap, TradeMode.Limit, TradeMode.TWAP])
-  const handleTradeModeChange = (event: SelectChangeEvent<TradeMode[]>) => {
-    setTradeModes(event.target.value as TradeMode[])
-  }
-
-  const [network, setNetwork] = React.useState<{ chainID: number; label: string } | null>(NetworkOptions[0])
-  const [sellToken, setSellToken] = React.useState<string | null>(TokenOptions[0])
-  const [sellTokenAmount, setSellTokenAmount] = React.useState<number>(100000)
-  const [buyToken, setBuyToken] = React.useState<string | null>(TokenOptions[0])
-  const [buyTokenAmount, setBuyTokenAmount] = React.useState<number>(100000)
-
-  const [iframeURL, setIframeURL] = React.useState<string>('')
-
-  const constructIframeURL = React.useCallback(() => {
-    if (network) {
-      return `http://localhost:3000/#/${network.chainID}/widget/swap/${sellToken}/${buyToken}?sellAmount=${sellTokenAmount}&buyAmount=${buyTokenAmount}&theme=${mode}`
-    }
-    return ''
-  }, [sellToken, buyToken, sellTokenAmount, buyTokenAmount, mode, network])
-
-  React.useEffect(() => {
-    setIframeURL(constructIframeURL())
-  }, [constructIframeURL, network])
+  useEffect(() => {
+    providerRef.current = provider
+  }, [provider])
 
   const handleWidgetRefreshClick = () => {
-    const newIframeURL = constructIframeURL()
-    setIframeURL(newIframeURL)
+    setMode('light')
+    setSellToken(DEFAULT_STATE.sellToken)
+    setSellTokenAmount(DEFAULT_STATE.sellAmount)
+
+    setBuyToken(DEFAULT_STATE.buyToken)
+    setBuyTokenAmount(DEFAULT_STATE.buyAmount)
   }
 
   return (
@@ -112,115 +123,36 @@ export function Configurator({ title }: { title: string }) {
           variant="contained"
           onClick={handleWidgetRefreshClick}
         >
-          Connect
+          <w3m-button />
         </LoadingButton>
 
         <Divider variant="middle">General</Divider>
 
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="select-theme">Theme</InputLabel>
-          <Select
-            labelId="select-theme-label"
-            id="select-theme"
-            value={mode}
-            onChange={handleThemeChange}
-            autoWidth
-            label="Theme"
-            size="small"
-          >
-            {ThemeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <ThemeControl />
 
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="trade-mode-label">Trade Modes</InputLabel>
-          <Select
-            labelId="trade-mode-label"
-            id="trade-mode-select"
-            multiple
-            size="small"
-            value={tradeModes}
-            onChange={handleTradeModeChange}
-            input={<OutlinedInput id="trade-mode-select-outlined" label="Available trade modes" />}
-            renderValue={(selected) =>
-              (selected as number[])
-                .map((value) => {
-                  const option = TradeModeOptions.find((option) => option.value === value)
-                  return option ? option.label : ''
-                })
-                .join(', ')
-            }
-          >
-            {TradeModeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                <Checkbox checked={tradeModes.indexOf(option.value) > -1} />
-                <ListItemText primary={option.label} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <TradeModesControl state={tradeModesState} />
 
-        <Autocomplete
-          value={network || NetworkOptions[0]}
-          onChange={(event: SyntheticEvent, newValue: { chainID: number; label: string } | null) => {
-            setNetwork(newValue || NetworkOptions[0])
-          }}
-          getOptionLabel={(option) => option.label}
-          id="controllable-states-network"
-          options={NetworkOptions}
-          size="small"
-          renderInput={(params) => <TextField {...params} label="Network" />}
-        />
+        <CurrentTradeTypeControl state={tradeTypeState} />
+
+        <NetworkControl state={networkControlState} />
 
         <Divider variant="middle">Token selection</Divider>
 
-        <Autocomplete
-          value={sellToken}
-          onChange={(event: SyntheticEvent, newValue: string | null) => {
-            setSellToken(newValue)
-          }}
-          inputValue={sellToken || ''}
-          onInputChange={(event, newInputValue) => {
-            setSellToken(newInputValue)
-          }}
-          id="controllable-states-selling-token"
-          options={TokenOptions}
-          size="small"
-          renderInput={(params) => <TextField {...params} label="Sell Token" />}
+        <CurrencyInputControl
+          label="Sell token"
+          tokenIdState={sellTokenState}
+          tokenAmountState={sellTokenAmountState}
         />
 
-        <TextField
-          id="input-sellTokenAmount"
-          label="Sell amount"
-          value={sellTokenAmount}
-          onChange={(e) => setSellTokenAmount(Number(e.target.value))}
-          size="small"
-        />
+        <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
-        <Autocomplete
-          value={buyToken}
-          onChange={(event: SyntheticEvent, newValue: string | null) => {
-            setBuyToken(newValue)
-          }}
-          inputValue={buyToken || ''}
-          onInputChange={(event, newInputValue) => {
-            setBuyTokenAmount(Number(newInputValue))
-          }}
-          id="buy-token-autocomplete"
-          options={TokenOptions}
-          renderInput={(params) => <TextField {...params} label="Buy Token" size="small" />}
-        />
+        <Divider variant="middle">Advanced</Divider>
 
-        <TextField
-          id="input-buyTokenAmount"
-          label="Buy amount"
-          value={buyTokenAmount}
-          onChange={(e) => setBuyTokenAmount(Number(e.target.value))}
-          size="small"
+        <FormControlLabel
+          control={
+            <Checkbox checked={isDynamicHeightEnabled} onChange={(e) => setDynamicHeightEnabled(e.target.checked)} />
+          }
+          label="Dynamic widget height"
         />
 
         <Divider variant="middle" />
@@ -235,21 +167,9 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        <iframe src={iframeURL} width="400px" height="640px" title="widget" />
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexFlow: 'column wrap',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: '1.6rem 0 0',
-            gap: '2.4rem',
-          }}
-        >
-          <Typography variant="body2">URL: {iframeURL}</Typography>
-          <EmbedDialog />
-        </Box>
+        <EmbedDialog params={params} settings={settings} />
+        <br />
+        <div ref={iframeContainerRef}></div>
       </Box>
     </Box>
   )
