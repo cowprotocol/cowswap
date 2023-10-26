@@ -8,7 +8,7 @@ import { ConfiguratorState } from '../types'
 const getEnv = (): CowSwapWidgetEnv => {
   if (isLocalHost) return 'local'
   if (isDev) return 'dev'
-  if (isVercel) return 'vercel'
+  if (isVercel) return 'pr'
 
   return 'prod'
 }
