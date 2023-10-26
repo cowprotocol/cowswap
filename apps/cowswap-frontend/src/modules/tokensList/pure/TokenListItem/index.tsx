@@ -1,53 +1,46 @@
-import { useState } from 'react'
-
-import { Menu, MenuItem } from '@reach/menu-button'
-import { Settings } from 'react-feather'
-
-import { Toggle } from 'legacy/components/Toggle'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenAmount } from '@cowprotocol/ui'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
-import { IconButton } from '../commonElements'
-import { TokenListInfo } from '../TokenListInfo'
+import { TokenInfo } from '../TokenInfo'
+import { TokenTags } from '../TokenTags'
+
+import type { VirtualItem } from '@tanstack/react-virtual'
 
 export interface TokenListItemProps {
-  list: TokenList
-  removeList(id: string): void
-  viewList(id: string): void
+  token: TokenWithLogo
+  selectedToken?: string
+  balance: CurrencyAmount<Token> | undefined
+  onSelectToken(token: TokenWithLogo): void
+  virtualRow?: VirtualItem
+  isUnsupported: boolean
+  isPermitCompatible: boolean
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { list, removeList, viewList } = props
+  const { token, selectedToken, balance, onSelectToken, virtualRow, isUnsupported, isPermitCompatible } = props
 
-  // TODO: bind logic
-  const [isActive, setIsActive] = useState(list.enabled)
+  const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
   return (
-    <styledEl.Wrapper $enabled={isActive}>
-      <TokenListInfo list={list}>
-        <Menu>
-          <styledEl.SettingsButton>
-            <IconButton>
-              <Settings size={12} />
-            </IconButton>
-          </styledEl.SettingsButton>
-          <styledEl.SettingsContainer>
-            <MenuItem onSelect={() => void 0}>
-              <styledEl.ListVersion>{list.version}</styledEl.ListVersion>
-            </MenuItem>
-            <MenuItem onSelect={() => viewList(list.id)}>
-              <styledEl.SettingsAction>View List</styledEl.SettingsAction>
-            </MenuItem>
-            <MenuItem onSelect={() => removeList(list.id)}>
-              <styledEl.SettingsAction>Remove list</styledEl.SettingsAction>
-            </MenuItem>
-          </styledEl.SettingsContainer>
-        </Menu>
-      </TokenListInfo>
-      <div>
-        <Toggle isActive={isActive} toggle={() => setIsActive((state) => !state)} />
-      </div>
-    </styledEl.Wrapper>
+    <styledEl.TokenItem
+      key={token.address}
+      data-address={token.address.toLowerCase()}
+      disabled={isTokenSelected}
+      onClick={() => onSelectToken(token)}
+      $isVirtual={!!virtualRow}
+      style={{
+        height: virtualRow ? `${virtualRow.size}px` : undefined,
+        transform: virtualRow ? `translateY(${virtualRow.start}px)` : undefined,
+      }}
+    >
+      <TokenInfo token={token} />
+      <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
+      <span>
+        <TokenAmount amount={balance} />
+      </span>
+    </styledEl.TokenItem>
   )
 }

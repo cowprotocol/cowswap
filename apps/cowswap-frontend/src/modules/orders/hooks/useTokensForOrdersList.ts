@@ -1,20 +1,25 @@
 import { useCallback, useRef } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { fetchTokenFromBlockchain, TokensByAddress, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
-
-import { useAllTokens } from 'legacy/hooks/Tokens'
-import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
-
-import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
-import { TokenWithLogo } from 'modules/tokensList/types'
+import { useWeb3React } from '@web3-react/core'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
-  const allTokens = useAllTokens()
-  const getToken = useTokenLazy()
+  const { provider } = useWeb3React()
+  const allTokens = useTokensByAddressMap()
+
+  const getToken = useCallback(
+    async (address: string) => {
+      if (!provider) return null
+      return fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
+    },
+    [chainId, provider]
+  )
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked

@@ -7,3 +7,10 @@ export const Wrapper = styled.div`
   margin: 20px;
   padding: 0 10px;
 `
+
+export const LoadedInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+`

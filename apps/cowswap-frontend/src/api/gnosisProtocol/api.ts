@@ -49,18 +49,6 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 }
 const API_NAME = 'CoW Protocol'
-/**
- * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
- * where orderDigest = keccak256(orderStruct). bytes32.
- */
-export type OrderID = string
-
-export interface UnsupportedToken {
-  [token: string]: {
-    address: string
-    dateAdded: number
-  }
-}
 
 function _getProfileApiBaseUrl(chainId: ChainId): string {
   const baseUrl = PROFILE_API_BASE_URL[chainId]

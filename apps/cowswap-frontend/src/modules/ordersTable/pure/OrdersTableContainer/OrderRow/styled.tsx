@@ -146,12 +146,12 @@ export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
   display: flex;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
 
-  > img,
+  > div,
   > svg {
     border: 2px solid ${({ theme }) => theme.grey1};
   }
 
-  > img:last-child,
+  > div:last-child,
   > svg:last-child {
     margin: 0 0 0 -14px;
   }

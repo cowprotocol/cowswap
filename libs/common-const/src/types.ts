@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { TokenInfo } from '@uniswap/token-lists'
+import type { TokenInfo } from '@uniswap/token-lists'
 
 export class TokenWithLogo extends Token {
   static fromToken(token: Token | TokenInfo, logoURI?: string): TokenWithLogo {

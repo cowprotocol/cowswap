@@ -1,40 +1,41 @@
 import { useState } from 'react'
 
+import { TokenLogo, getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { ModalHeader } from '../ModalHeader'
-import { TokenLogo } from '../TokenLogo'
 
 export interface ImportListModalProps {
-  list: TokenList
-  onImport(): void
+  list: ListState
+  onImport(list: ListState): void
   onBack(): void
-  onClose(): void
+  onDismiss(): void
 }
 
 export function ImportListModal(props: ImportListModalProps) {
-  const { list, onBack, onClose, onImport } = props
+  const { list, onBack, onDismiss, onImport } = props
 
   const [isAccepted, setIsAccepted] = useState(false)
 
+  const viewLink = getTokenListViewLink(list.source)
+
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onClose}>
+      <ModalHeader onBack={onBack} onClose={onDismiss}>
         Import List
       </ModalHeader>
       <styledEl.ListInfo>
-        <TokenLogo logoURI={list.logoUrl} size={36} />
+        <TokenLogo logoURI={list.list.logoURI} size={36} />
         <div>
           <styledEl.ListTitle>
-            {list.name} · {list.tokensCount} tokens
+            {list.list.name} · {list.list.tokens.length} tokens
           </styledEl.ListTitle>
-          <styledEl.ListLink target="_blank" href={list.url} rel="noreferrer">
-            {list.url}
+          <styledEl.ListLink target="_blank" href={viewLink} rel="noreferrer">
+            {list.source}
           </styledEl.ListLink>
         </div>
       </styledEl.ListInfo>
@@ -56,7 +57,7 @@ export function ImportListModal(props: ImportListModalProps) {
         </div>
       </styledEl.Contents>
       <styledEl.ActionButtonWrapper>
-        <ButtonPrimary disabled={!isAccepted} onClick={onImport}>
+        <ButtonPrimary disabled={!isAccepted} onClick={() => onImport(list)}>
           Import
         </ButtonPrimary>
       </styledEl.ActionButtonWrapper>

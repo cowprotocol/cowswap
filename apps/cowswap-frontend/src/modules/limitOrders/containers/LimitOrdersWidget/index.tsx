@@ -236,7 +236,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   const params = {
-    disableNonToken: false,
     compactView: false,
     disableNativeSelling: true,
     isExpertMode,

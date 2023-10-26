@@ -199,7 +199,7 @@ function getEthFlowOverridesOnSelect(
 ): Pick<SwapState, 'independentField' | 'typedValue'> {
   if (
     inputCurrencyId?.toUpperCase() ===
-    NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET]?.symbol?.toUpperCase()
+    NATIVE_CURRENCY_BUY_TOKEN[(state.chainId as ChainId) || ChainId.MAINNET]?.symbol?.toUpperCase()
   ) {
     const independentField = Field.INPUT
     const formerIndependentField = state.independentField

@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BigNumber } from '@ethersproject/bignumber'
-import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
@@ -14,7 +14,7 @@ export type CancellationModalContext = {
   summary: string | undefined | null
   error: string | null
   txCost: BigNumber | null
-  nativeCurrency: NativeCurrency
+  nativeCurrency: TokenWithLogo
   isPendingSignature: boolean
   onDismiss: (() => void) | null
   triggerCancellation: ((type: CancellationType) => Promise<void>) | null

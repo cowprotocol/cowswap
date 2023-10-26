@@ -1,4 +1,3 @@
-import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
@@ -13,33 +12,6 @@ export const blankButtonMixin = css`
 
   &:disabled {
     cursor: default;
-  }
-`
-
-export const PrimaryInputBox = styled.div`
-  margin: 20px 0 10px 0;
-  padding: 0 20px 20px 20px;
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
-`
-
-export const PrimaryInput = styled.input`
-  width: 100%;
-  border: none;
-  background: var(${UI.COLOR_GREY});
-  font-size: 18px;
-  border-radius: 20px;
-  padding: 16px;
-  color: var(${UI.COLOR_TEXT1});
-  outline: none;
-
-  ::placeholder {
-    color: var(${UI.COLOR_TEXT1});
-  }
-
-  &:focus {
-    ::placeholder {
-      color: ${({ theme }) => transparentize(0.7, theme.text1)};
-    }
   }
 `
 
@@ -63,11 +35,20 @@ export const ImportButton = styled.button`
   font-size: 16px;
   font-weight: 600;
   padding: 6px 15px;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: 24px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
     background-color: var(${UI.COLOR_LINK});
   }
+`
+
+export const CommonListContainer = styled.div`
+  display: block;
+  height: 100vh;
+  width: 100%;
+  overflow: auto;
+
+  ${({ theme }) => theme.colorScrollbar};
 `

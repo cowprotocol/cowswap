@@ -1,9 +1,8 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
-
-import { TokenWithLogo } from '../../types'
-import { TokenLogo } from '../TokenLogo'
 
 export interface TokenInfoProps {
   token: TokenWithLogo
@@ -15,7 +14,7 @@ export function TokenInfo(props: TokenInfoProps) {
 
   return (
     <styledEl.Wrapper className={className}>
-      <TokenLogo logoURI={token.logoURI} />
+      <TokenLogo token={token} />
       <div>
         <TokenSymbol token={token} />
         <styledEl.TokenName>{token.name}</styledEl.TokenName>

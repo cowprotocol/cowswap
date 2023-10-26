@@ -1,4 +1,4 @@
-import { cowprotocolTokenUrl, TokenWithLogo } from '@cowprotocol/common-const'
+import { cowprotocolTokenLogoUrl, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { trustTokenLogoUrl } from './trustTokenLogoUrl'
@@ -21,9 +21,8 @@ export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
 
 function getTokenLogoFallbacks(address: string, chainId: SupportedChainId): string[] {
   return [
-    cowprotocolTokenUrl(address, chainId),
-    cowprotocolTokenUrl(address.toLowerCase(), chainId),
-    cowprotocolTokenUrl(address.toLowerCase(), SupportedChainId.MAINNET),
+    cowprotocolTokenLogoUrl(address.toLowerCase(), chainId),
+    cowprotocolTokenLogoUrl(address.toLowerCase(), SupportedChainId.MAINNET),
     trustTokenLogoUrl(address, chainId),
   ]
 }

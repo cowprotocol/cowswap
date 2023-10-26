@@ -19,7 +19,7 @@ export interface OrderParams {
 const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 
 export function getOrderParams(
-  chainId: SupportedChainId | undefined,
+  chainId: SupportedChainId,
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder
 ): OrderParams {
