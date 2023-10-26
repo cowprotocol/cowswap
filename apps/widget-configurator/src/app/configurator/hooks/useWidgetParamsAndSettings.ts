@@ -30,7 +30,7 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      isDynamicHeightEnabled,
+      dynamicHeightEnabled,
     } = configuratorState
 
     const params: CowSwapWidgetParams = {
@@ -53,7 +53,7 @@ export function useWidgetParamsAndSettings(
         },
       },
       appParams: {
-        dynamicHeightEnabled: isDynamicHeightEnabled,
+        dynamicHeightEnabled,
         enabledTradeTypes,
       },
     }

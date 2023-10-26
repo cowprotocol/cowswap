@@ -70,7 +70,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    isDynamicHeightEnabled: true,
+    dynamicHeightEnabled: true,
   }
 
   const paramsAndSettings = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
