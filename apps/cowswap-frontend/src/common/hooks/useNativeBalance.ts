@@ -7,7 +7,7 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 const swrOptions: SWRConfiguration = {
-  refreshInterval: ms`1m`,
+  refreshInterval: ms`30s`,
   revalidateOnFocus: false,
 }
 

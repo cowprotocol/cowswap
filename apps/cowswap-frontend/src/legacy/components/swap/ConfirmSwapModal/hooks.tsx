@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -24,7 +25,7 @@ export function useButtonText(slippageAdjustedSellAmount: Nullish<CurrencyAmount
     } else if (isSafeApprovalBundle) {
       return (
         <>
-          Confirm (Approve&nbsp;{<TokenSymbol token={sellCurrency?.wrapped} length={6} />}
+          Confirm (Approve&nbsp;{<TokenSymbol token={sellCurrency && getWrappedToken(sellCurrency)} length={6} />}
           &nbsp;and Swap)
         </>
       )

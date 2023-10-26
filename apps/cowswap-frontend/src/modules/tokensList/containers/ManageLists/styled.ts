@@ -10,6 +10,11 @@ export const ListsContainer = styled.div`
   padding-bottom: 20px;
 `
 
+export const LoaderWrapper = styled.div`
+  text-align: center;
+  margin: 20px 0 10px 0;
+`
+
 export const ImportListsContainer = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `

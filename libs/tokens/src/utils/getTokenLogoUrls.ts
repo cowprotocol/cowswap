@@ -21,7 +21,6 @@ export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
 
 function getTokenLogoFallbacks(address: string, chainId: SupportedChainId): string[] {
   return [
-    cowprotocolTokenLogoUrl(address, chainId),
     cowprotocolTokenLogoUrl(address.toLowerCase(), chainId),
     cowprotocolTokenLogoUrl(address.toLowerCase(), SupportedChainId.MAINNET),
     trustTokenLogoUrl(address, chainId),

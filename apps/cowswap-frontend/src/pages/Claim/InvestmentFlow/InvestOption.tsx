@@ -9,6 +9,7 @@ import {
   tryParseCurrencyAmount,
   formatTokenAmount,
   formatSymbol,
+  getIsNativeToken,
 } from '@cowprotocol/common-utils'
 import { Loader, loadingOpacityMixin, ButtonSize, TokenAmount, ButtonConfirmed, Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -122,7 +123,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   )
 
   const token = currencyAmount?.currency
-  const isNative = token?.isNative
+  const isNative = !!token && getIsNativeToken(token)
   const balance = useCurrencyBalance(account || undefined, token)
 
   const gasPrice = useGasPrices(isNative ? chainId : undefined)

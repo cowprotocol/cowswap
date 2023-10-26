@@ -3,8 +3,6 @@ import { TokenWithLogo } from './types'
 import { WETH9 } from '@uniswap/sdk-core'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 
-import wxDaiLogo from '@cowprotocol/assets/cow-swap/wxdai.png'
-
 // See https://github.com/cowprotocol/contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
@@ -19,7 +17,7 @@ export const WETH_MAINNET = new TokenWithLogo(
 )
 // xDAI tokens
 export const WXDAI = new TokenWithLogo(
-  wxDaiLogo,
+  undefined,
   ChainId.GNOSIS_CHAIN,
   '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
   18,

@@ -1,4 +1,4 @@
-import { isEnoughAmount, getAddress } from '@cowprotocol/common-utils'
+import { isEnoughAmount, getAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -39,8 +39,8 @@ const DEFAULT_BALANCE_AND_ALLOWANCE = { enoughBalance: undefined, enoughAllowanc
  */
 export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
   const { account, amount, checkAllowanceAddress } = params
-  const isNativeCurrency = amount?.currency.isNative
-  const token = amount?.currency.wrapped
+  const isNativeCurrency = !!amount?.currency && getIsNativeToken(amount?.currency)
+  const token = amount?.currency && getWrappedToken(amount.currency)
 
   const { balances, allowances } = useBalancesAndAllowances({
     account,
@@ -88,8 +88,8 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
     return DEFAULT_BALANCE_AND_ALLOWANCE
   }
 
-  const isNativeCurrency = amount?.currency.isNative
-  const token = amount?.currency.wrapped
+  const isNativeCurrency = !!amount?.currency && getIsNativeToken(amount?.currency)
+  const token = amount?.currency && getWrappedToken(amount.currency)
   const tokenAddress = getAddress(token)
 
   const enoughBalance = _enoughBalance(tokenAddress, amount, balances, isNativeCurrency, nativeBalance)
