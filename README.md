@@ -96,6 +96,14 @@ yarn ui:build
 yarn ui:test
 ```
 
+## Widget
+
+This will start the widget configurator:
+
+```bash
+yarn start:widget
+```
+
 ## Configuring the environment
 
 The app has some default configuration, but it's highly encouraged to define your own.

@@ -6,13 +6,10 @@ import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-
-const CodeStyles = {
-  whiteSpace: 'break-spaces',
-  fontSize: '13px',
-}
+import SyntaxHighlighter from 'react-syntax-highlighter'
+// eslint-disable-next-line no-restricted-imports
+import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 export interface EmbedDialogProps {
   params: CowSwapWidgetParams
@@ -68,17 +65,23 @@ const updateWidget = cowSwapWidget(params, settings)
       <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
       {/* <Button onClick={handleClickOpen('body')}>scroll=body</Button> */}
       <Dialog
+        fullWidth
+        maxWidth="lg"
         open={open}
         onClose={handleClose}
         scroll={scroll}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">CoW Widget Embed</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">Snippet for CoW Widget</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
-          <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            <code style={CodeStyles}>{code}</code>
-          </DialogContentText>
+          <SyntaxHighlighter
+            showLineNumbers={true}
+            children={code}
+            language="typescript"
+            style={nightOwl}
+            customStyle={{ fontSize: '0.8em' }}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
