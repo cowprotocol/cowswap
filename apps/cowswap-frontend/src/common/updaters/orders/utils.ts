@@ -9,7 +9,9 @@ import { stringToCurrency } from 'legacy/state/swap/extension'
 import { getOrder } from 'api/gnosisProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 
-export type OrderLogPopupMixData = OrderFulfillmentData | string
+type OrderID = string
+
+export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
 export function computeOrderSummary({
   orderFromStore,
