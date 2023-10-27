@@ -61,7 +61,6 @@
     "@davatar/react": "1.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/experimental": "^5.7.0",
     "@ethvault/iframe-provider": "^0.1.10",
     "@fontsource/ibm-plex-mono": "^4.5.1",
