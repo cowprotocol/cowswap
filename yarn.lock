@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@1inch/permit-signed-approvals-utils@^1.4.8":
-  version "1.4.8"
-  resolved "https://registry.yarnpkg.com/@1inch/permit-signed-approvals-utils/-/permit-signed-approvals-utils-1.4.8.tgz#d5d20e9e8a763f2649945aef8b843034a9a92c52"
-  integrity sha512-1U9U/tdvZpp9ZXaNmiiehu6S2EIYV3A4c1pj48oPcObRaWxX0QSDCrEHh95eJ0ND9y7QgvdlOy8DSAWUmxZOhA==
+"@1inch/permit-signed-approvals-utils@^1.4.10":
+  version "1.4.10"
+  resolved "http://localhost:4873/@1inch/permit-signed-approvals-utils/-/permit-signed-approvals-utils-1.4.10.tgz#f5b869c50bdc40f54577ca2260440d31bf2c7dac"
+  integrity sha512-wWRO5h0a2rzQgIbbNrq1wtGhmDKsLq7DwuT3qfuXCrt6mfkEAem9EJnT8Q09mCGOY/mLUQhEorKbbcHOEGi/7A==
   dependencies:
     "@metamask/eth-sig-util" "^4.0.1"
     web3 "^1.5.1"
@@ -1509,10 +1509,10 @@
   dependencies:
     chalk "^4.1.0"
 
-"@cowprotocol/app-data@^1.1.0-RC.0":
-  version "1.1.0-RC.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-1.1.0-RC.0.tgz#ac4e5d7a036c4033df431e07f7670e47be7662fd"
-  integrity sha512-tQrFTTXu2beVrPnHlB1YsRfYpmK9wvYpqJXsdHlXisuTm38EGPMSIAxV9NxYFbqlbslmYvBX7uSFPO70kMrN9g==
+"@cowprotocol/app-data@^1.1.0":
+  version "1.1.0"
+  resolved "http://localhost:4873/@cowprotocol/app-data/-/app-data-1.1.0.tgz#38d91a79388220bc1ff99d2b6d0d3e3cce38e8f9"
+  integrity sha512-r55wyVrVnyq32KcswGN+1q5jTIfkLq4NlhibLWpe8px05lqvHA/RXRLO8lTkK7WFtlbO4iSnQqkIs4wqLc80kg==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
@@ -12313,7 +12313,7 @@ ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.2, ethereum
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@5.7.2, ethers@^5.1.4, ethers@^5.7.0:
+ethers@5.7.2, ethers@^5.7.0, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
