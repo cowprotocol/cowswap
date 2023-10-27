@@ -179,9 +179,10 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
   const injectedWidgetTheme = useInjectedWidgetPalette()
 
   const themeObject = useMemo(() => {
-    const defaultTheme = theme(darkMode, injectedWidgetTheme)
+    const widgetMode = isInjectedWidget()
+    const defaultTheme = theme(darkMode, widgetMode)
 
-    if (isInjectedWidget()) {
+    if (widgetMode) {
       return mapWidgetTheme(injectedWidgetTheme, defaultTheme)
     }
 
