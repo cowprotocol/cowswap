@@ -127,14 +127,18 @@ One simple way to do this, is by defining your own `REACT_APP_INFURA_KEY` enviro
 
 Alternatively you can define the RPC URLs directly with the following environment variables:
 
-- `REACT_APP_NETWORK_URL_1`
-- `REACT_APP_NETWORK_URL_5`
-- `REACT_APP_NETWORK_URL_100`
+```ini
+REACT_APP_NETWORK_URL_1: https://...
+REACT_APP_NETWORK_URL_5: https://...
+REACT_APP_NETWORK_URL_100: https://...
+```
 
-Additionally, if you plan to run the E22 / Integration tests locally you must have define:
+Additionally, if you plan to run the integration tests locally you must define:
 
-- `INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
-- `INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
+```ini
+INTEGRATION_TESTS_INFURA_KEY: YOUR_INFURA_KEY
+INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
+```
 
 ## Orderbook API Endpoints
 
@@ -143,7 +147,11 @@ handing them to the solvers.
 
 The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`.
+The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`:
+
+```ini
+REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
+```
 
 ## Price feeds
 
