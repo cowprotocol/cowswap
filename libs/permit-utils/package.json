@@ -8,4 +8,12 @@
     "@cowprotocol/app-data": "^1.1.0",
     "tslib": "^2.6.1"
   },
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  }
 }
