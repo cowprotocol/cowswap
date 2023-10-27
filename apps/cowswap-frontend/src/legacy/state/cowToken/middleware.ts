@@ -19,10 +19,6 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
     const { chainId, hash } = action.payload
     const transaction = store.getState().transactions[chainId][hash]
 
-    // const { userDarkMode, matchesDarkMode } = store.getState().user
-    // const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
-    const isDarkMode = true // TODO: revert after halloween
-
     if (transaction.swapVCow || transaction.swapLockedGNOvCow) {
       const status = transaction.receipt?.status
 
@@ -32,13 +28,13 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
       )
 
       if (status === 1 && transaction.replacementType !== 'cancel') {
-        cowSound = getCowSoundSuccess(isDarkMode)
+        cowSound = getCowSoundSuccess()
 
         if (transaction.swapVCow) {
           store.dispatch(setSwapVCowStatus(SwapVCowStatus.CONFIRMED))
         }
       } else {
-        cowSound = getCowSoundError(isDarkMode)
+        cowSound = getCowSoundError()
 
         if (transaction.swapVCow) {
           store.dispatch(setSwapVCowStatus(SwapVCowStatus.INITIAL))

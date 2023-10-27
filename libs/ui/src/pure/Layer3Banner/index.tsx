@@ -6,6 +6,7 @@ const Wrapper = styled.div<Layer3BannerProps>`
 `
 
 export interface Layer3BannerProps {
+  questId: string
   addMargin?: boolean
 }
 
@@ -15,7 +16,7 @@ export function Layer3Banner(props: Layer3BannerProps) {
       <Helmet>
         <script src="https://layer3.xyz/embed.js" defer></script>
       </Helmet>
-      <div className="layer3-quest layer3-card" data-quest-id="halloween-cowswap"></div>
+      <div className="layer3-quest layer3-card" data-quest-id={props.questId}></div>
     </Wrapper>
   )
 }

@@ -11,6 +11,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+import { shallowEqual } from 'react-redux'
 
 import {
   updateRecipientToggleVisible,
@@ -27,16 +28,15 @@ import { AppState } from '../index'
 import { setRecipient } from '../swap/actions'
 
 export function useIsDarkMode(): boolean {
-  return true
-  // const { userDarkMode, matchesDarkMode } = useAppSelector(
-  //   ({ user: { matchesDarkMode, userDarkMode } }) => ({
-  //     userDarkMode,
-  //     matchesDarkMode,
-  //   }),
-  //   shallowEqual
-  // )
+  const { userDarkMode, matchesDarkMode } = useAppSelector(
+    ({ user: { matchesDarkMode, userDarkMode } }) => ({
+      userDarkMode,
+      matchesDarkMode,
+    }),
+    shallowEqual
+  )
 
-  // return userDarkMode === null ? matchesDarkMode : userDarkMode
+  return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

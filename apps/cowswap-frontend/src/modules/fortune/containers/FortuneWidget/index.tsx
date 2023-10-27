@@ -3,6 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
+import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { useInterval } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -23,7 +24,6 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { fortuneCookieImage } from 'common/constants/theme'
 import { UI } from 'common/constants/theme'
 import { SuccessBanner } from 'pages/Claim/styled'
 
@@ -77,7 +77,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     --size: 90%;
     content: '';
     display: block;
-    background: ${({ theme }) => `url(${fortuneCookieImage(theme.darkMode)}) no-repeat center 100% / contain`};
+    background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
     width: var(--size);
     height: var(--size);
     transition: transform 0.3s ease-in-out;
