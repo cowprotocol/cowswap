@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
 
