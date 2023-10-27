@@ -50,7 +50,6 @@
   },
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.4.10",
-    "@amplitude/analytics-browser": "^1.1.4",
     "@babel/runtime": "^7.17.0",
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/app-data": "^1.1.0",
