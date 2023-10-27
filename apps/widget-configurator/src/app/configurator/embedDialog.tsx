@@ -11,11 +11,6 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line no-restricted-imports
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-const CodeStyles: CSSProperties = {
-  whiteSpace: 'break-spaces',
-  fontSize: '13px',
-}
-
 export interface EmbedDialogProps {
   params: CowSwapWidgetParams
   settings: CowSwapWidgetSettings
