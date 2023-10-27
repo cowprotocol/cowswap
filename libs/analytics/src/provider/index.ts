@@ -13,6 +13,7 @@ const DIMENSION_MAP = {
   [Dimensions.customBrowserType]: 'dimension3',
   [Dimensions.userAddress]: 'dimension4',
   [Dimensions.market]: 'dimension5',
+  [Dimensions.injectedWidgetAppId]: 'dimension6',
 }
 
 type DimensionKey = keyof typeof DIMENSION_MAP
@@ -30,6 +31,7 @@ export class GAProvider {
       customBrowserType: '',
       userAddress: '',
       market: '',
+      injectedWidgetAppId: '',
     }
   }
 
