@@ -1,3 +1,5 @@
+import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
@@ -9,7 +11,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
@@ -77,7 +78,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
-  const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : inputAmount
+  const wrapUnwrapAmount = isNativeInSwap ? currencyAmountToTokenAmount(inputAmount) || undefined : inputAmount
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapNativeFlow()
   const approvalState = useTradeApproveState(slippageAdjustedSellAmount || null)
@@ -139,7 +140,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
   const { currencies } = useDerivedSwapInfo()
   const { account } = useWalletInfo()
-  const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
+  const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT && getWrappedToken(currencies.INPUT))
 
   // is an native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))

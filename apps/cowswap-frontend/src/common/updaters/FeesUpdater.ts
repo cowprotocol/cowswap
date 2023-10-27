@@ -2,15 +2,13 @@ import { useEffect, useMemo } from 'react'
 
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
+import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import ms from 'ms.macro'
-
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
@@ -31,14 +29,6 @@ export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
-const UNSUPPORTED_TOKEN_TTL = ms`1h`
-
-/**
- * Since a token might become supported, we should periodically (once in 1h) refresh its state
- */
-const isUnsupportedTokenExpired = ({ dateAdded }: { dateAdded: number }) => {
-  return dateAdded + UNSUPPORTED_TOKEN_TTL < Date.now()
-}
 
 type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 
@@ -158,7 +148,7 @@ export function FeesUpdater(): null {
   const isLoading = useIsBestQuoteLoading()
   const isEthFlow = useIsEoaEthFlow()
 
-  const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
+  const isUnsupportedToken = useIsUnsupportedToken()
 
   const appData = useAppData()
 
@@ -170,8 +160,8 @@ export function FeesUpdater(): null {
   const { validTo } = useOrderValidTo()
 
   // prevents things like "USDC" being used as an address
-  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
-  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
+  const sellTokenAddressInvalid = sellCurrency && !getIsNativeToken(sellCurrency) && !isAddress(sellCurrencyId)
+  const buyTokenAddressInvalid = buyCurrency && !getIsNativeToken(buyCurrency) && !isAddress(buyCurrencyId)
 
   // Update if any parameter is changing
   useEffect(() => {
@@ -238,14 +228,12 @@ export function FeesUpdater(): null {
       }
     }
 
-    const unsupportedToken = isUnsupportedTokenGp(sellCurrencyId) || isUnsupportedTokenGp(buyCurrencyId)
+    const unsupportedToken = isUnsupportedToken(sellCurrencyId) || isUnsupportedToken(buyCurrencyId)
 
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
       // if no token is unsupported and needs refetching
-      const hasToRefetch =
-        (!unsupportedToken || isUnsupportedTokenExpired(unsupportedToken)) &&
-        isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
       if (hasToRefetch) {
         // Decide if this is a new quote, or just a refresh
@@ -286,7 +274,7 @@ export function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    isUnsupportedTokenGp,
+    isUnsupportedToken,
     isLoading,
     setQuoteError,
     account,

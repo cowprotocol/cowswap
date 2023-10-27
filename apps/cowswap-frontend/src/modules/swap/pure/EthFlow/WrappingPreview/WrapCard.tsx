@@ -1,39 +1,22 @@
-import { CHAIN_INFO, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
-
-import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
-
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
-
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-
-const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
-  filter: invert(1);
-`
 
 interface WrapCardProps {
   currency: Currency
   balance?: CurrencyAmount<Currency>
   amountToWrap?: CurrencyAmount<Currency>
-  chainId?: SupportedChainId
 }
 
 export function WrapCard(props: WrapCardProps) {
-  const { balance, amountToWrap, currency, chainId } = props
-  const hasLogoUri = currency.isNative || Boolean(currency instanceof WrappedTokenInfo && currency.logoURI)
+  const { balance, amountToWrap, currency } = props
 
   return (
     <styledEl.WrapCardWrapper>
       {/* logo */}
-      {!hasLogoUri && chainId && currency.equals(WRAPPED_NATIVE_CURRENCY[chainId]) ? (
-        <BackupTokenImg alt="token-img" src={CHAIN_INFO[chainId].logoUrl} />
-      ) : (
-        <CurrencyLogo currency={currency} size="24px" />
-      )}
+      <TokenLogo token={currency} size={42} />
       {/* amount to wrap/unwrap */}
       <styledEl.BalanceLabel>
         <strong>

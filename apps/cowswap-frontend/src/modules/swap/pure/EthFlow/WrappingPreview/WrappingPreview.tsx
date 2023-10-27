@@ -15,21 +15,20 @@ export type WrappingPreviewProps = {
   wrapped: Currency
   wrappedBalance: CurrencyAmount<Currency> | undefined
   amount: CurrencyAmount<Currency> | undefined
-  chainId?: number
 }
 
 export const WrappingPreview = (props: WrappingPreviewProps) => {
-  const { nativeBalance, native, wrapped, wrappedBalance, amount, chainId } = props
+  const { nativeBalance, native, wrapped, wrappedBalance, amount } = props
 
   return (
     <styledEl.WrappingPreviewContainer>
       {/* To Wrap */}
-      <WrapCard balance={nativeBalance} currency={native} amountToWrap={amount} chainId={chainId} />
+      <WrapCard balance={nativeBalance} currency={native} amountToWrap={amount} />
 
       <ArrowRight size={18} color={COLOUR_SHEET.primary1} />
 
       {/* Wrap Outcome */}
-      <WrapCard balance={wrappedBalance} currency={wrapped} amountToWrap={amount} chainId={chainId} />
+      <WrapCard balance={wrappedBalance} currency={wrapped} amountToWrap={amount} />
     </styledEl.WrappingPreviewContainer>
   )
 }

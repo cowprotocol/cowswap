@@ -1,9 +1,4 @@
-import {
-  CODE_LINK,
-  DEFAULT_NETWORK_FOR_LISTS,
-  GP_SETTLEMENT_CONTRACT_ADDRESS,
-  GP_VAULT_RELAYER,
-} from '@cowprotocol/common-const'
+import { CODE_LINK, GP_SETTLEMENT_CONTRACT_ADDRESS, GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -116,7 +111,7 @@ const VersionsLinkWrapper = styled.span`
 `
 
 export const Version = ({ className }: { className?: string }) => {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   return (
     <StyledPolling className={className}>
       {/* it's hardcoded anyways */}

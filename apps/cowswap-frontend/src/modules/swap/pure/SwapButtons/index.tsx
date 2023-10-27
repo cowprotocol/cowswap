@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
-import { GpEther } from '@cowprotocol/common-const'
-import { genericPropsChecker } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -72,8 +72,8 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
   [SwapButtonState.TransferToSmartContract]: (props: SwapButtonsContext) => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>
-        Buying {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
-        currently supported
+        Buying {NATIVE_CURRENCY_BUY_TOKEN[(props.chainId as SupportedChainId) || SupportedChainId.MAINNET].symbol} with
+        smart contract wallets is not currently supported
       </Trans>
     </GreyCard>
   ),
@@ -150,7 +150,14 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
         <Trans>
-          Approve&nbsp;{<TokenSymbol token={props.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap
+          Approve&nbsp;
+          {
+            <TokenSymbol
+              token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)}
+              length={6}
+            />
+          }
+          &nbsp;and Swap
         </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
@@ -159,7 +166,14 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
       <styledEl.SwapButtonBox>
         <Trans>
-          Confirm (Approve&nbsp;{<TokenSymbol token={props.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
+          Confirm (Approve&nbsp;
+          {
+            <TokenSymbol
+              token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)}
+              length={6}
+            />
+          }
+          &nbsp;and Swap)
         </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>

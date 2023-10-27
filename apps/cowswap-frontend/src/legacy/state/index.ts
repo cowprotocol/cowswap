@@ -1,9 +1,7 @@
-import { DEFAULT_NETWORK_FOR_LISTS } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
-
-// import { composableOrdersPopupMiddleware } from 'modules/twap/state/composableOrdersPopupMiddleware'
 
 import application from './application/reducer'
 import claim from './claim/reducer'
@@ -13,7 +11,6 @@ import cowToken from './cowToken/reducer'
 import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
 import { updateVersion } from './global/actions'
-import lists from './lists/reducer'
 import logs from './logs/slice'
 import { multicall } from './multicall'
 import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
@@ -32,7 +29,6 @@ const reducers = {
   multicall: multicall.reducer,
   logs,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
-  lists,
   orders,
   price,
   gas,
@@ -41,7 +37,7 @@ const reducers = {
   cowToken,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'gas', 'affiliate', 'profile', 'swap']
 
 export const cowSwapStore = configureStore({
   reducer: reducers,
@@ -59,7 +55,7 @@ export const cowSwapStore = configureStore({
 })
 
 // this instantiates the app / reducers in several places using the default chainId
-cowSwapStore.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
+cowSwapStore.dispatch(updateVersion({ chainId: SupportedChainId.MAINNET }))
 
 // TODO: this is new, should we enable it?
 // setupListeners(store.dispatch)

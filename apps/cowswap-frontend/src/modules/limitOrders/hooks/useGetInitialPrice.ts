@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getAddress } from '@cowprotocol/common-utils'
+import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
@@ -26,7 +26,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
   }
 
   try {
-    if (currency.isNative || !currencyAddress) {
+    if (getIsNativeToken(currency) || !currencyAddress) {
       return parsePrice(1, currency)
     }
 

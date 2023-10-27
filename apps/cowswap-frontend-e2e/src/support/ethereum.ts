@@ -5,28 +5,30 @@ import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
+const CHAIN_ID = 5
+const CHAIN_NAME = 'goerli'
+
 const INTEGRATION_TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
 assert(INTEGRATION_TEST_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
 
 const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
-assert(INTEGRATION_TESTS_INFURA_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
+
+const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID)
+
+const PROVIDER_URL = NETWORK_URL || `https://${CHAIN_NAME}.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`
+
+assert(
+  PROVIDER_URL,
+  `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_INFURA_KEY=${INTEGRATION_TESTS_INFURA_KEY}`
+)
 
 // address of the above key
 export const TEST_ADDRESS_NEVER_USE = new Wallet(INTEGRATION_TEST_PRIVATE_KEY).address
 
-export const TEST_ADDRESS_NEVER_USE_SHORTENED = `${TEST_ADDRESS_NEVER_USE.substr(
-  0,
-  6
-)}...${TEST_ADDRESS_NEVER_USE.substr(-4, 4)}`
-
-// Mod
-const chainId = 5
-const chainName = 'goerli'
-
 // Redefined bridge to fix a supper annoying issue making some contract calls to fail
 //  See https://github.com/ethers-io/ethers.js/issues/1683
 class CustomizedBridge extends Eip1193Bridge {
-  chainId = chainId // Mod
+  chainId = CHAIN_ID
 
   async sendAsync(...args: any[]) {
     console.debug('sendAsync called', ...args)
@@ -56,9 +58,9 @@ class CustomizedBridge extends Eip1193Bridge {
     }
     if (method === 'eth_chainId') {
       if (isCallbackForm) {
-        callback(null, { result: `0x${chainId}` })
+        callback(null, { result: `0x${CHAIN_ID}` })
       } else {
-        return Promise.resolve(`0x${chainId}`)
+        return Promise.resolve(`0x${CHAIN_ID}`)
       }
     }
     try {
@@ -106,7 +108,7 @@ class CustomizedBridge extends Eip1193Bridge {
   }
 }
 
-const provider = new JsonRpcProvider(`https://${chainName}.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`, chainId) // Mod
+const provider = new JsonRpcProvider(PROVIDER_URL, CHAIN_ID)
 const signer = new Wallet(INTEGRATION_TEST_PRIVATE_KEY, provider)
 
 export const injected = new CustomizedBridge(signer, provider)

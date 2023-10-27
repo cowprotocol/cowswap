@@ -1,5 +1,5 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
-import { formatSymbol, formatTokenAmount, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { isAddress, shortenAddress, formatTokenAmount, formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -19,7 +19,7 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getTrades, OrderID } from 'api/gnosisProtocol'
+import { getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 
 export type PostOrderParams = {
@@ -125,7 +125,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     quoteId,
     order: {
       sellToken: sellTokenAddress,
-      buyToken: buyToken.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : buyToken.address,
+      buyToken: getIsNativeToken(buyToken) ? NATIVE_CURRENCY_BUY_ADDRESS : buyToken.address,
       sellAmount,
       buyAmount,
       validTo,
@@ -252,7 +252,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 }
 
 type OrderCancellationParams = {
-  orderId: OrderID
+  orderId: string
   account: string
   chainId: ChainId
   signer: Signer

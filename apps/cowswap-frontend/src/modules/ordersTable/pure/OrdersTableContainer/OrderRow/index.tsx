@@ -5,6 +5,7 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
@@ -28,7 +29,6 @@ import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { ButtonSecondary } from 'common/pure/ButtonSecondary'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
@@ -53,7 +53,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 }
 
 function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return <CurrencyLogo currency={amount.currency} size="28px" />
+  return <TokenLogo token={amount.currency} size={28} />
 }
 
 function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {

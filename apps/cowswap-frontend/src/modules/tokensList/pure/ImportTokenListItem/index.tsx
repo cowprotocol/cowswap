@@ -1,23 +1,34 @@
+import { ListState } from '@cowprotocol/tokens'
+
+import { CheckCircle } from 'react-feather'
+
 import * as styledEl from './styled'
 
-import { TokenList } from '../../types'
 import { ImportButton } from '../commonElements'
-import { TokenListInfo } from '../TokenListInfo'
+import { TokenListDetails } from '../TokenListDetails'
 
 export interface ImportTokenListItemProps {
-  list: TokenList
-  importList(list: TokenList): void
+  list: ListState
+  source: 'existing' | 'external'
+  importList(list: ListState): void
 }
 
 export function ImportTokenListItem(props: ImportTokenListItemProps) {
-  const { list } = props
+  const { list, source, importList } = props
 
   return (
     <styledEl.Wrapper>
-      <TokenListInfo list={list}></TokenListInfo>
-      <div>
-        <ImportButton>Import</ImportButton>
-      </div>
+      <TokenListDetails list={list.list}></TokenListDetails>
+      {source === 'existing' ? (
+        <styledEl.LoadedInfo>
+          <CheckCircle size={16} strokeWidth={2} />
+          <span>Loaded</span>
+        </styledEl.LoadedInfo>
+      ) : (
+        <div>
+          <ImportButton onClick={() => importList(list)}>Import</ImportButton>
+        </div>
+      )}
     </styledEl.Wrapper>
   )
 }

@@ -1,18 +1,19 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import * as styledEl from './styled'
 
-import { TokenWithLogo } from '../../types'
-
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]
-  selectedToken?: TokenWithLogo
+  selectedToken?: string
+  onSelectToken(token: TokenWithLogo): void
 }
 
 export function FavouriteTokensList(props: FavouriteTokensListProps) {
-  const { tokens, selectedToken } = props
+  const { tokens, selectedToken, onSelectToken } = props
 
   return (
     <div>
@@ -20,18 +21,23 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
         <h4>Favourite tokens</h4>
         <InfoIcon iconType="help" content="Your favourite saved tokens. Edit this list in your account page." />
       </styledEl.Header>
-      <styledEl.TokensList>
+      <styledEl.List>
         {tokens.map((token) => {
-          const isTokenSelected = token.address.toLowerCase() === selectedToken?.address.toLowerCase()
+          const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
           return (
-            <styledEl.TokensItem key={token.address} disabled={isTokenSelected}>
-              <img src={token.logoURI} alt={token.name} />
+            <styledEl.TokensItem
+              key={token.address}
+              data-address={token.address.toLowerCase()}
+              disabled={isTokenSelected}
+              onClick={() => onSelectToken(token)}
+            >
+              <TokenLogo token={token} size={24} />
               <TokenSymbol token={token} />
             </styledEl.TokensItem>
           )
         })}
-      </styledEl.TokensList>
+      </styledEl.List>
     </div>
   )
 }

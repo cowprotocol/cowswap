@@ -34,7 +34,7 @@ export function TokenSourceTitle(props: TokenSourceTitleProps) {
   return (
     <Wrapper>
       <Title>
-        <img src={TokenListLogo} alt="Token logo" />
+        <img src={TokenListLogo} alt="" />
         {children}
       </Title>
       <div>
