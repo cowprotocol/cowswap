@@ -3,6 +3,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_TOKENS_LISTS } from '../const/tokensLists'
 
 const MIGRATION_KEY = 'TOKENS_REFACTORING_MIGRATED'
+const BA_SEC_LIST =
+  'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 export function tokensLegacyStateMigration() {
   // Run migration only once
@@ -79,8 +81,9 @@ function migrateLegacyTokenLists() {
       if (!list || !list.current) return
 
       const isListInDefaults = defaultLists.find((defaultList) => defaultList.source === listSource)
+      const isBaSecList = BA_SEC_LIST.toLowerCase() === listSource.toLowerCase()
 
-      if (isListInDefaults) return
+      if (isListInDefaults || isBaSecList) return
 
       userAddedListsSources[chainId].push({
         source: listSource,
