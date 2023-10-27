@@ -1,3 +1,9 @@
+import { tokensLegacyStateMigration } from './migrations/tokensLegacyStateMigration'
+
+// Run migrations first of all
+// TODO: remove it after 30.01.2024
+tokensLegacyStateMigration()
+
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'

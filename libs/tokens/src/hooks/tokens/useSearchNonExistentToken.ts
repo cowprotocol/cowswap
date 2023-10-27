@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isTruthy } from '@cowprotocol/common-utils'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 
 import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useSearchToken } from './useSearchToken'
@@ -23,7 +23,7 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
     return (
       [foundToken.inactiveListsResult, foundToken.externalApiResult, foundToken.blockchainResult]
         .flat()
-        .filter(isTruthy)[0] || null
+        .filter((token) => !!token && doesTokenMatchSymbolOrAddress(token, inputTokenToSearch))[0] || null
     )
   }, [inputTokenToSearch, foundToken])
 }
