@@ -5,18 +5,18 @@ CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-| **Platform**           | **Link**                                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮🐮 **CoW Swap** 🐮🐮 | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
-| CoW Swap (IPFS)        | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
-| CoW Swap (ENS)         | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
-| CoW Protocol           | [cow.fi](https://cow.fi)                                                                                      |
-| Docs                   | [docs.cow.fi](https://docs.cow.fi)                                                                            |
-| Governance (Snapshot)  | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                  | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
-| Twitter                | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
-| Discord                | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
-| Forum                  | [forum.cow.fi](https://forum.cow.fi)                                                                          |
+| **Platform**          | **Link**                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
+| CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
+| CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
+| Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
+| Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Twitter               | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
+| Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
+| Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
 # 🐮 Run CoW Swap
 
@@ -28,7 +28,7 @@ yarn
 
 ## Run
 
-Start CoW Swap on the `http://localhost:3000`
+Start CoW Swap on `http://localhost:3000`
 
 ```bash
 yarn start
@@ -50,7 +50,7 @@ yarn test
 
 # 🖼️ Widget Configurator
 
-Start the Widget Configurator will start the widget configurator:
+Start the Widget Configurator will start the widget configurator on http://127.0.0.1:4200/widget-configurator
 
 ```bash
 yarn start:widget
@@ -58,7 +58,7 @@ yarn start:widget
 
 # 🌌 Cosmos UI Library
 
-Start the Cosmos UI Library on the `http://localhost:5000`
+Start the Cosmos UI Library on http://localhost:5000
 
 ```bash
 yarn run cosmos
@@ -68,7 +68,7 @@ yarn run cosmos
 
 ## Integration test
 
-> Make sure you add the required environment varianbles to your `.env.local` file with:
+> ⚠️ To run the tests. Make sure you add the required environment varianbles to your `.env.local` file with:
 >
 > - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
 > - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
