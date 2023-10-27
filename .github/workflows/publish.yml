@@ -40,6 +40,6 @@ jobs:
           cache: yarn
 
       - name: Publish
-        run: nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
+        run: npx nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
