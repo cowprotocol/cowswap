@@ -1,15 +1,26 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetEnv, CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
 
+import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
+const getEnv = (): CowSwapWidgetEnv => {
+  if (isLocalHost) return 'local'
+  if (isDev) return 'dev'
+  if (isVercel) return 'pr'
+
+  return 'prod'
+}
+
 export function useWidgetParamsAndSettings(
-  provider: EthereumProvider | null,
-  widgetContainer: HTMLDivElement,
+  provider: EthereumProvider | undefined,
+  widgetContainer: HTMLDivElement | null,
   configuratorState: ConfiguratorState
 ) {
   return useMemo(() => {
+    if (!widgetContainer) return null
+
     const {
       chainId,
       theme,
@@ -19,7 +30,7 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      isDynamicHeightEnabled,
+      dynamicHeightEnabled,
     } = configuratorState
 
     const params: CowSwapWidgetParams = {
@@ -34,15 +45,15 @@ export function useWidgetParamsAndSettings(
       urlParams: {
         theme,
         chainId,
-        env: 'local',
+        env: getEnv(),
         tradeType: currentTradeType,
         tradeAssets: {
           sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-          buy: { asset: buyToken, amount: buyTokenAmount.toString() },
+          buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
         },
       },
       appParams: {
-        dynamicHeightEnabled: isDynamicHeightEnabled,
+        dynamicHeightEnabled,
         enabledTradeTypes,
       },
     }

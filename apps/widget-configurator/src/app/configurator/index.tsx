@@ -5,10 +5,8 @@ import { cowSwapWidget, EthereumProvider, TradeType, UpdateWidgetCallback } from
 import WalletIcon from '@mui/icons-material/Wallet'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
@@ -60,8 +58,6 @@ export function Configurator({ title }: { title: string }) {
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
 
-  const [isDynamicHeightEnabled, setDynamicHeightEnabled] = useState(true)
-
   const provider = useProvider()
   const providerRef = useRef<EthereumProvider | null>()
 
@@ -74,13 +70,14 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    isDynamicHeightEnabled,
+    dynamicHeightEnabled: true,
   }
 
-  const { params, settings } = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+  const paramsAndSettings = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+  const { params, settings } = paramsAndSettings || {}
 
   useEffect(() => {
-    if (!params.container) return
+    if (!params?.container || !settings) return
 
     // Re-initialize widget when provider is changed
     if (provider && providerRef.current !== provider) {
@@ -146,15 +143,6 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
-        <Divider variant="middle">Advanced</Divider>
-
-        <FormControlLabel
-          control={
-            <Checkbox checked={isDynamicHeightEnabled} onChange={(e) => setDynamicHeightEnabled(e.target.checked)} />
-          }
-          label="Dynamic widget height"
-        />
-
         <Divider variant="middle" />
 
         {/* <LoadingButton loading={false} loadingPosition="start" startIcon={<SaveIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
@@ -167,7 +155,7 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        <EmbedDialog params={params} settings={settings} />
+        {params && settings && <EmbedDialog params={params} settings={settings} />}
         <br />
         <div ref={iframeContainerRef}></div>
       </Box>

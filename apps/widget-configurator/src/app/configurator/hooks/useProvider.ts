@@ -8,10 +8,10 @@ import EventEmitter from 'events'
 
 const onDisconnect = new EventEmitter()
 
-export function useProvider(): EthereumProvider | null {
+export function useProvider(): EthereumProvider | undefined {
   const config = useConfig()
   const { isDisconnected } = useAccount()
-  const [provider, setProvider] = useState<EthereumProvider | null>(null)
+  const [provider, setProvider] = useState<EthereumProvider | undefined>(undefined)
 
   useEffect(() => {
     return config.subscribe(({ connector }) => {
@@ -38,7 +38,7 @@ function getEthereumProvider(provider: EthereumProvider, onDisconnect: EventEmit
     enable(...args) {
       return provider.enable(...args)
     },
-    on(event: string, args: unknown) {
+    on(event: string, args: never) {
       if (event === 'disconnect' || event === 'close') {
         return onDisconnect.on('disconnect', args)
       } else {

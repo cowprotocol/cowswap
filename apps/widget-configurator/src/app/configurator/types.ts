@@ -12,5 +12,5 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
-  isDynamicHeightEnabled: boolean
+  dynamicHeightEnabled: boolean
 }

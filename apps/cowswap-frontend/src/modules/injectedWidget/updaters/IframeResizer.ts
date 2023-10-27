@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
@@ -9,7 +9,7 @@ export function IframeResizer() {
   const { dynamicHeightEnabled } = useInjectedWidgetParams()
   const previousHeightRef = useRef(0)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!dynamicHeightEnabled) return
 
     // Initial height calculation and message

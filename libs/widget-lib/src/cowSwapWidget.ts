@@ -27,6 +27,10 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
     jsonRpcManager.onConnect(provider)
   }
 
+  iframe.addEventListener('load', () => {
+    updateWidget(settings, contentWindow, iframe)
+  })
+
   return (newSettings: CowSwapWidgetSettings) => updateWidget(newSettings, contentWindow, iframe)
 }
 

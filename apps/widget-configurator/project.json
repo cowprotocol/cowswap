@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/widget-configurator"
+        "outputPath": "build/widget-configurator"
       },
       "configurations": {
         "development": {
