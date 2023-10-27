@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+
 import {
   LimitOrdersDerivedState,
   limitOrdersDerivedStateAtom,
@@ -17,7 +19,7 @@ export function useFillLimitOrdersDerivedState() {
   const rawState = useAtomValue(limitOrdersRawStateAtom)
   const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)
 
-  const isUnlocked = rawState.isUnlocked
+  const isUnlocked = rawState.isUnlocked || isInjectedWidget()
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom)
 
   useEffect(() => {

@@ -21,6 +21,7 @@ describe('soundMiddleware', () => {
       orders: {
         1: 'mock orders',
       },
+      user: { userDarkMode: false },
     } as any)
     jest.clearAllMocks()
   })
@@ -31,6 +32,7 @@ describe('soundMiddleware', () => {
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
       when(mockStore.getState()).thenReturn({
         orders: {},
+        user: { userDarkMode: false },
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -114,6 +116,7 @@ describe('soundMiddleware', () => {
             },
           },
         },
+        user: { userDarkMode: false },
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -139,6 +142,7 @@ describe('soundMiddleware', () => {
             },
           },
         },
+        user: { userDarkMode: false },
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))

@@ -5,10 +5,10 @@ import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeApp } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+
 import { addAppDataToUploadQueueAtom, appDataHooksAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
-
-import { injectedWidgetMetaDataAtom } from '../injectedWidget/state/injectedWidgetMetaDataAtom'
 
 const APP_CODE = process.env.REACT_APP_APP_CODE
 
@@ -17,7 +17,7 @@ export function useAppData(): AppDataInfo | null {
 }
 
 export function useAppCode(): string | null {
-  const injectedWidgetMetaData = useAtomValue(injectedWidgetMetaDataAtom)
+  const injectedWidgetMetaData = useInjectedWidgetMetaData()
   const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
