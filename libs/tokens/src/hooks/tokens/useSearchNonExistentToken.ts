@@ -23,9 +23,7 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
     return (
       [foundToken.inactiveListsResult, foundToken.externalApiResult, foundToken.blockchainResult]
         .flat()
-        .filter((token) => {
-          return !!token && doesTokenMatchSymbolOrAddress(token, inputTokenToSearch)
-        })[0] || null
+        .filter((token) => !!token && doesTokenMatchSymbolOrAddress(token, inputTokenToSearch))[0] || null
     )
   }, [inputTokenToSearch, foundToken])
 }
