@@ -17,7 +17,7 @@ import {
   themeVariables as baseThemeVariables,
 } from 'legacy/theme/baseTheme'
 
-import { useInjectedWidgetTheme } from 'common/hooks/useInjectedWidgetTheme'
+import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
 import { Colors } from './styled'
@@ -176,7 +176,7 @@ export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): Default
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const darkMode = useIsDarkMode()
-  const injectedWidgetTheme = useInjectedWidgetTheme()
+  const injectedWidgetTheme = useInjectedWidgetPalette()
 
   const themeObject = useMemo(() => {
     const defaultTheme = theme(darkMode, injectedWidgetTheme)

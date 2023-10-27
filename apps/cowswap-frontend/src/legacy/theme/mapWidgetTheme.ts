@@ -1,9 +1,14 @@
+import type { InjectedWidgetPalette } from '@cowprotocol/widget-lib'
+
 import { css, DefaultTheme } from 'styled-components/macro'
 
-import { InjectedWidgetTheme } from 'common/hooks/useInjectedWidgetTheme'
-
 // Map the provided data from consumer to styled-components theme
-export function mapWidgetTheme(widgetTheme: InjectedWidgetTheme, defaultTheme: DefaultTheme): DefaultTheme {
+export function mapWidgetTheme(
+  widgetTheme: InjectedWidgetPalette | undefined,
+  defaultTheme: DefaultTheme
+): DefaultTheme {
+  if (!widgetTheme) return defaultTheme
+
   return {
     ...defaultTheme,
     bg3: widgetTheme.widgetBackground,

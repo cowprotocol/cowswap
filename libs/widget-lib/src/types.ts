@@ -39,12 +39,20 @@ export interface CowSwapWidgetUrlParams {
   theme?: CowSwapTheme
 }
 
+export interface InjectedWidgetPalette {
+  primaryColor: string
+  screenBackground: string
+  widgetBackground: string
+  textColor: string
+}
+
 export interface CowSwapWidgetAppParams {
   logoUrl?: string
   hideLogo?: boolean
   hideNetworkSelector?: boolean
   dynamicHeightEnabled?: boolean
   enabledTradeTypes?: TradeType[]
+  palette?: InjectedWidgetPalette
 }
 
 export interface CowSwapWidgetSettings {
