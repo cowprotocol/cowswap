@@ -1,4 +1,4 @@
-import { Percent, Token } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -30,7 +30,7 @@ export async function swapFlow(
 
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
-      inputToken: input.context.trade.inputAmount.currency as Token,
+      inputToken: input.context.trade.inputAmount.currency,
       account: input.orderParams.account,
       permitInfo: input.permitInfo,
       generatePermitHook: input.generatePermitHook,

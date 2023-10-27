@@ -1,18 +1,21 @@
-import { getContract } from '@cowprotocol/common-utils'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+
+import { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { Web3Provider } from '@ethersproject/providers'
+import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { Wallet } from '@ethersproject/wallet'
 
-import { AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
-import { AbiInput } from 'web3-utils'
-
 export class PermitProviderConnector implements ProviderConnector {
-  constructor(private provider: Web3Provider, private walletSigner?: Wallet | undefined) {}
+  constructor(private provider: JsonRpcProvider, private walletSigner?: Wallet | undefined) {}
+
+  private getContract(address: string, abi: ContractInterface, provider: JsonRpcProvider): Contract {
+    return new Contract(address, abi, provider)
+  }
 
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
-    const contract = getContract(address || '', abi, this.provider)
+    const contract = this.getContract(address || '', abi, this.provider)
 
     return contract.interface.encodeFunctionData(methodName, methodParams)
   }
@@ -42,6 +45,7 @@ export class PermitProviderConnector implements ProviderConnector {
   decodeABIParameter<T>(type: string, hex: string): T {
     return defaultAbiCoder.decode([type], hex)[0]
   }
+
   decodeABIParameters<T>(types: AbiInput[], hex: string): T {
     const decodedValues = defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
 
@@ -50,7 +54,7 @@ export class PermitProviderConnector implements ProviderConnector {
     // so we need this mess to convert them to hex strings, which 1inch understands
     // TODO: Any way to make this typing mess any cleaner?
     if (decodedValues && typeof decodedValues === 'object') {
-      const copy: Record<string, any> = {}
+      const copy: Record<string, unknown> = {}
 
       Object.keys(decodedValues).forEach((key) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

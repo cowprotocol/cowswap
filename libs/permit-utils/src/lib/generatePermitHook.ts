@@ -1,11 +1,9 @@
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { Web3Provider } from '@ethersproject/providers'
-
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
-import { getPermitDeadline } from './getPermitDeadline'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { getPermitDeadline } from '../utils/getPermitDeadline'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
 
@@ -36,7 +34,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
-  const { inputToken, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
+  const { inputToken, spender, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
   const tokenAddress = inputToken.address
   const tokenName = inputToken.name || tokenAddress
 
@@ -46,7 +44,6 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   // That's the case for static account
   const nonce = preFetchedNonce === undefined ? await eip2162Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
-  const spender = GP_VAULT_RELAYER[chainId]
   const deadline = getPermitDeadline()
   const value = DEFAULT_PERMIT_VALUE
 
@@ -99,7 +96,7 @@ async function calculateGasLimit(
   data: string,
   from: string,
   to: string,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   isUserAccount: boolean
 ): Promise<string> {
   try {

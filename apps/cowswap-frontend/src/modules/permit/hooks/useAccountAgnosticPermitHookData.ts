@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
+import { PermitHookData } from '@cowprotocol/permit-utils'
 
 import { useDerivedTradeState } from 'modules/trade'
 
@@ -9,7 +9,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useGeneratePermitHook } from './useGeneratePermitHook'
 import { useIsTokenPermittable } from './useIsTokenPermittable'
 
-import { GeneratePermitHookParams, PermitHookData } from '../types'
+import { GeneratePermitHookParams } from '../types'
 
 /**
  * Returns PermitHookData using an account agnostic signer if inputCurrency is permittable
@@ -44,10 +44,10 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
   const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
-    if (!inputCurrency || !permitInfo) return undefined
+    if (!inputCurrency || !('address' in inputCurrency) || !permitInfo) return undefined
 
     return {
-      inputToken: inputCurrency as Token,
+      inputToken: { address: inputCurrency.address, name: inputCurrency.name },
       permitInfo,
     }
   }, [inputCurrency, permitInfo])

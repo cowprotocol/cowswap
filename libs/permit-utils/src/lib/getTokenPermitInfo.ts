@@ -1,15 +1,14 @@
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from './buildPermitCallData'
-import { getPermitDeadline } from './getPermitDeadline'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
-import { CheckIsTokenPermittableParams, EstimatePermitResult, PermitType } from '../types'
+import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitType } from '../types'
+import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { getPermitDeadline } from '../utils/getPermitDeadline'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -23,14 +22,10 @@ const DAI_LIKE_PERMIT_PARAMS = {
   expiry: getPermitDeadline(),
 }
 
-const REQUESTS_CACHE: Record<string, Promise<EstimatePermitResult>> = {}
+const REQUESTS_CACHE: Record<string, Promise<GetTokenPermitIntoResult>> = {}
 
-export async function checkIsTokenPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
+export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { tokenAddress, chainId } = params
-  if (NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase() === tokenAddress.toLowerCase()) {
-    // We shouldn't call this for the native token, but just in case
-    return false
-  }
 
   const key = `${chainId}-${tokenAddress.toLowerCase()}`
 
@@ -47,10 +42,8 @@ export async function checkIsTokenPermittable(params: CheckIsTokenPermittablePar
   return request
 }
 
-async function actuallyCheckTokenIsPermittable(params: CheckIsTokenPermittableParams): Promise<EstimatePermitResult> {
-  const { tokenAddress, tokenName, chainId, provider } = params
-
-  const spender = GP_VAULT_RELAYER[chainId]
+async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
+  const { spender, tokenAddress, tokenName, chainId, provider } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
@@ -130,10 +123,10 @@ type BaseParams = {
 
 type EstimateParams = BaseParams & {
   type: PermitType
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }
 
-async function estimateTokenPermit(params: EstimateParams): Promise<EstimatePermitResult> {
+async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
   const { provider, chainId, walletAddress, tokenAddress, type, version } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData

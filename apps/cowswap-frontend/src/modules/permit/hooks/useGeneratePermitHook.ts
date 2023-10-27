@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { generatePermitHook, getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -10,9 +12,7 @@ import {
   storePermitCacheAtom,
   userPermitCacheAtom,
 } from '../state/permitCacheAtom'
-import { GeneratePermitHook, GeneratePermitHookParams, PermitHookData } from '../types'
-import { generatePermitHook } from '../utils/generatePermitHook'
-import { getPermitUtilsInstance } from '../utils/getPermitUtilsInstance'
+import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 /**
  * Hook that returns callback to generate permit hook data
@@ -31,6 +31,8 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
+
+  const spender = GP_VAULT_RELAYER[chainId]
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
@@ -57,6 +59,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
       const hookData = await generatePermitHook({
         chainId,
         inputToken,
+        spender,
         provider,
         permitInfo,
         eip2162Utils,
@@ -68,6 +71,6 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       return hookData
     },
-    [storePermit, chainId, getCachedPermit, provider]
+    [provider, chainId, getCachedPermit, spender, storePermit]
   )
 }

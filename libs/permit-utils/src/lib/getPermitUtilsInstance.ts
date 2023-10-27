@@ -1,11 +1,9 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
-import { PermitProviderConnector } from 'modules/wallet/utils/PermitProviderConnector'
-
 import { PERMIT_SIGNER } from '../const'
+import { PermitProviderConnector } from '../utils/PermitProviderConnector'
 
 /**
  * Cache by network. Here we don't care about the provider as a static account will be used for the signature
@@ -17,8 +15,8 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
 const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
 export function getPermitUtilsInstance(
-  chainId: SupportedChainId,
-  provider: Web3Provider,
+  chainId: number,
+  provider: JsonRpcProvider,
   account?: string | undefined
 ): Eip2612PermitUtils {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
@@ -33,6 +31,7 @@ export function getPermitUtilsInstance(
     return providerCache
   }
 
+  // TODO: allow to receive the signer as a parameter
   const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
   const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
 

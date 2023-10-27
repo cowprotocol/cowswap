@@ -39,6 +39,7 @@
       "@cowprotocol/common-utils": ["libs/common-utils/src/index.ts"],
       "@cowprotocol/core": ["libs/core/src/index.ts"],
       "@cowprotocol/ens": ["libs/ens/src/index.ts"],
+      "@cowprotocol/permit-utils": ["libs/permit-utils/src/index.ts"],
       "@cowprotocol/snackbars": ["libs/snackbars/src/index.ts"],
       "@cowprotocol/tokens": ["libs/tokens/src/index.ts"],
       "@cowprotocol/ui": ["libs/ui/src/index.ts"],
