@@ -145,7 +145,7 @@ INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
 Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
-The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
+The reference implementation of the API is [CoW Protocol Services](https://github.com/cowprotocol/services).
 
 The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`:
 
