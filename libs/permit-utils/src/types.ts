@@ -1,7 +1,6 @@
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { latest } from '@cowprotocol/app-data'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { Token } from '@uniswap/sdk-core'
 
 export type PermitType = 'dai-like' | 'eip-2612'
 
@@ -12,8 +11,14 @@ export type SupportedPermitInfo = {
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
 
+// Local TokenInfo definition to not depend on external libs just for this
+type TokenInfo = {
+  address: string
+  name: string | undefined
+}
+
 export type PermitHookParams = {
-  inputToken: Token
+  inputToken: TokenInfo
   spender: string
   chainId: number
   permitInfo: SupportedPermitInfo
