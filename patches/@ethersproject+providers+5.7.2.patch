@@ -1,0 +1,34 @@
+diff --git a/node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js b/node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js
+index 02f6b39..cc6e6ca 100644
+--- a/node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js
++++ b/node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js
+@@ -407,9 +407,9 @@ export class JsonRpcProvider extends BaseProvider {
+         if (!this._cache["detectNetwork"]) {
+             this._cache["detectNetwork"] = this._uncachedDetectNetwork();
+             // Clear this cache at the beginning of the next event loop
+-            setTimeout(() => {
+-                this._cache["detectNetwork"] = null;
+-            }, 0);
++            // setTimeout(() => {
++            //     this._cache["detectNetwork"] = null;
++            // }, 0);
+         }
+         return this._cache["detectNetwork"];
+     }
+diff --git a/node_modules/@ethersproject/providers/src.ts/json-rpc-provider.ts b/node_modules/@ethersproject/providers/src.ts/json-rpc-provider.ts
+index de4957f..b6f7304 100644
+--- a/node_modules/@ethersproject/providers/src.ts/json-rpc-provider.ts
++++ b/node_modules/@ethersproject/providers/src.ts/json-rpc-provider.ts
+@@ -448,9 +448,9 @@ export class JsonRpcProvider extends BaseProvider {
+             this._cache["detectNetwork"] = this._uncachedDetectNetwork();
+ 
+             // Clear this cache at the beginning of the next event loop
+-            setTimeout(() => {
+-                this._cache["detectNetwork"] = null;
+-            }, 0);
++            // setTimeout(() => {
++            //     this._cache["detectNetwork"] = null;
++            // }, 0);
+         }
+         return this._cache["detectNetwork"];
+     }
