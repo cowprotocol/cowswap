@@ -55,6 +55,12 @@ export function useWidgetParamsAndSettings(
       appParams: {
         dynamicHeightEnabled,
         enabledTradeTypes,
+        // palette: {
+        //   primaryColor: '#d9258e',
+        //   screenBackground: '#c7860f',
+        //   widgetBackground: '#eed4a7',
+        //   textColor: '#413931',
+        // },
       },
     }
 
