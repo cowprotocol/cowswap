@@ -50,7 +50,7 @@ yarn test
 
 # 🖼️ Widget Configurator
 
-Start the Widget Configurator will start the widget configurator on http://127.0.0.1:4200/widget-configurator
+Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
 
 ```bash
 yarn start:widget
