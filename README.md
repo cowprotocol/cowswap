@@ -5,18 +5,18 @@ CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-| **Platform**           | **Link**                                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮🐮 **CoW Swap** 🐮🐮 | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
-| CoW Swap (IPFS)        | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
-| CoW Swap (ENS)         | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
-| CoW Protocol           | [cow.fi](https://cow.fi)                                                                                      |
-| Docs                   | [docs.cow.fi](https://docs.cow.fi)                                                                            |
-| Governance (Snapshot)  | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                  | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
-| Twitter                | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
-| Discord                | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
-| Forum                  | [forum.cow.fi](https://forum.cow.fi)                                                                          |
+| **Platform**          | **Link**                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
+| CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
+| CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
+| Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
+| Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Twitter               | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
+| Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
+| Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
 # 🐮 Run CoW Swap
 
@@ -28,12 +28,15 @@ yarn
 
 ## Run
 
+Start CoW Swap on `http://localhost:3000`
+
 ```bash
-# You will be able to open CoW Swap in http://localhost:3000
 yarn start
 ```
 
 ## Build
+
+Build the project. The static files will be generated in the `build` folder.
 
 ```bash
 yarn build
@@ -45,9 +48,9 @@ yarn build
 yarn test
 ```
 
-# 🖼️ Widget
+# 🖼️ Widget Configurator
 
-This will start the widget configurator:
+Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
 
 ```bash
 yarn start:widget
@@ -55,7 +58,7 @@ yarn start:widget
 
 # 🌌 Cosmos UI Library
 
-This will start a server on the `http://localhost:5000/`
+Start the Cosmos UI Library on http://localhost:5000
 
 ```bash
 yarn run cosmos
@@ -65,7 +68,7 @@ yarn run cosmos
 
 ## Integration test
 
-> Make sure you add the required environment varianbles to your `.env.local` file with:
+> ⚠️ To run the tests. Make sure you add the required environment varianbles to your `.env.local` file with:
 >
 > - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
 > - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
@@ -124,23 +127,31 @@ One simple way to do this, is by defining your own `REACT_APP_INFURA_KEY` enviro
 
 Alternatively you can define the RPC URLs directly with the following environment variables:
 
-- `REACT_APP_NETWORK_URL_1`
-- `REACT_APP_NETWORK_URL_5`
-- `REACT_APP_NETWORK_URL_100`
+```ini
+REACT_APP_NETWORK_URL_1: https://...
+REACT_APP_NETWORK_URL_5: https://...
+REACT_APP_NETWORK_URL_100: https://...
+```
 
-Additionally, if you plan to run the E22 / Integration tests locally you must have define:
+Additionally, if you plan to run the integration tests locally you must define:
 
-- `INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
-- `INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
+```ini
+INTEGRATION_TESTS_INFURA_KEY: YOUR_INFURA_KEY
+INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
+```
 
-### API endpoints
+## Orderbook API Endpoints
 
-Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
+Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
-The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
+The reference implementation of the API is [CoW Protocol Services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable ` {XDAI|GOERLI|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`:
+
+```ini
+REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
+```
 
 ## Price feeds
 
