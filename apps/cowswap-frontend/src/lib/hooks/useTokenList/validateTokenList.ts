@@ -7,20 +7,23 @@ enum ValidationSchema {
   TOKENS = 'tokens',
 }
 
-const validator = new Promise<Ajv>(async (resolve) => {
-  const [ajv, schema] = await Promise.all([import('ajv'), import('@uniswap/token-lists/src/tokenlist.schema.json')])
-  const validator = new ajv.default({ allErrors: true })
-    .addSchema(schema, ValidationSchema.LIST)
-    // Adds a meta scheme of Pick<TokenList, 'tokens'>
-    .addSchema(
-      {
-        ...schema,
-        $id: schema.$id + '#tokens',
-        required: ['tokens'],
-      },
-      ValidationSchema.TOKENS
-    )
-  resolve(validator)
+const validator = new Promise<Ajv>((resolve) => {
+  Promise.all([import('ajv'), import('@uniswap/token-lists/src/tokenlist.schema.json')]).then((res) => {
+    const [ajv, schema] = res
+
+    const validator = new ajv.default({ allErrors: true })
+      .addSchema(schema, ValidationSchema.LIST)
+      // Adds a meta scheme of Pick<TokenList, 'tokens'>
+      .addSchema(
+        {
+          ...schema,
+          $id: schema.$id + '#tokens',
+          required: ['tokens'],
+        },
+        ValidationSchema.TOKENS
+      )
+    resolve(validator)
+  })
 })
 
 function getValidationErrors(validate: ValidateFunction | undefined): string {

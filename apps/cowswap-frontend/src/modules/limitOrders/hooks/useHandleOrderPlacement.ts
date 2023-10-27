@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -31,15 +30,16 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
+  const beforePermit = useCallback(() => {
+    if (!tradeContext) return
+
+    tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext))
+  }, [tradeConfirmActions, tradeContext])
+
   const beforeTrade = useCallback(() => {
     if (!tradeContext) return
 
-    const tradeAmounts: TradeAmounts = {
-      inputAmount: tradeContext.postOrderParams.inputAmount,
-      outputAmount: tradeContext.postOrderParams.outputAmount,
-    }
-
-    tradeConfirmActions.onSign(tradeAmounts)
+    tradeConfirmActions.onSign(buildTradeAmounts(tradeContext))
   }, [tradeContext, tradeConfirmActions])
 
   const tradeFn = useCallback(async () => {
@@ -63,8 +63,9 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforeTrade)
+    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforePermit, beforeTrade)
   }, [
+    beforePermit,
     beforeTrade,
     confirmPriceImpactWithoutFee,
     isSafeBundle,
@@ -94,4 +95,11 @@ export function useHandleOrderPlacement(
         }
       })
   }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
+}
+
+function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
+  return {
+    inputAmount: tradeContext.postOrderParams.inputAmount,
+    outputAmount: tradeContext.postOrderParams.outputAmount,
+  }
 }

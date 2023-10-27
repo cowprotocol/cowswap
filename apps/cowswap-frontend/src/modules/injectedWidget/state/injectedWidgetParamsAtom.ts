@@ -1,9 +1,5 @@
 import { atom } from 'jotai'
 
-export interface InjectedWidgetParams {
-  logoUrl?: string
-  hideLogo?: boolean
-  hideNetworkSelector?: boolean
-}
+import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
-export const injectedWidgetParamsAtom = atom<InjectedWidgetParams>({})
+export const injectedWidgetParamsAtom = atom<CowSwapWidgetAppParams>({})

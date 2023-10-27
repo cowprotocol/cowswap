@@ -161,13 +161,14 @@ export const ThemedText = {
   },
 }
 
-export function theme(darkmode: boolean): DefaultTheme {
+export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
     ...getTheme(darkmode),
     ...colorsTheme,
+    isInjectedWidgetMode,
 
-    // Overide Theme
+    // Override Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
   }
@@ -178,7 +179,7 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
   const injectedWidgetTheme = useInjectedWidgetTheme()
 
   const themeObject = useMemo(() => {
-    const defaultTheme = theme(darkMode)
+    const defaultTheme = theme(darkMode, injectedWidgetTheme)
 
     if (isInjectedWidget()) {
       return mapWidgetTheme(injectedWidgetTheme, defaultTheme)

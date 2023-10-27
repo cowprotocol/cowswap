@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { useDerivedTradeState } from 'modules/trade'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
+import { useGeneratePermitHook } from './useGeneratePermitHook'
 import { useIsTokenPermittable } from './useIsTokenPermittable'
 
-import { PermitHookData, PermitHookParams } from '../types'
-import { generatePermitHook } from '../utils/generatePermitHook'
+import { GeneratePermitHookParams, PermitHookData } from '../types'
 
 /**
  * Returns PermitHookData using an account agnostic signer if inputCurrency is permittable
@@ -21,7 +19,8 @@ import { generatePermitHook } from '../utils/generatePermitHook'
  * If not permittable or not able to tell, returns undefined
  */
 export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
-  const params = usePermitHookParams()
+  const params = useGeneratePermitHookParams()
+  const generatePermitHook = useGeneratePermitHook()
 
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
@@ -33,28 +32,23 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
     }
 
     generatePermitHook(params).then(setData)
-  }, [params])
+  }, [generatePermitHook, params])
 
   return data
 }
 
-function usePermitHookParams(): PermitHookParams | undefined {
-  const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
-
+function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
   const { state } = useDerivedTradeState()
   const { inputCurrency, tradeType } = state || {}
 
   const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
-    if (!inputCurrency || !provider || !permitInfo) return undefined
+    if (!inputCurrency || !permitInfo) return undefined
 
     return {
-      chainId,
-      provider,
       inputToken: inputCurrency as Token,
       permitInfo,
     }
-  }, [inputCurrency, provider, permitInfo, chainId])
+  }, [inputCurrency, permitInfo])
 }

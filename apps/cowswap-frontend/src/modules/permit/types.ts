@@ -7,11 +7,13 @@ import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { AppDataInfo } from 'modules/appData'
 
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
 export type PermitType = 'dai-like' | 'eip-2612'
 
 export type SupportedPermitInfo = {
   type: PermitType
-  gasLimit: number
+  version: string | undefined // Some tokens have it different than `1`, and won't work without it
 }
 type UnsupportedPermitInfo = false
 export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
@@ -31,13 +33,19 @@ export type PermitHookParams = {
   chainId: SupportedChainId
   permitInfo: SupportedPermitInfo
   provider: Web3Provider
-  account?: string
+  eip2162Utils: Eip2612PermitUtils
+  account?: string | undefined
+  nonce?: number | undefined
 }
 
-export type HandlePermitParams = Omit<PermitHookParams, 'permitInfo'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'>
+
+export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+
+export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo'> & {
   permitInfo: IsTokenPermittableResult
-  hasEnoughAllowance: undefined | boolean
   appData: AppDataInfo
+  generatePermitHook: GeneratePermitHook
 }
 
 export type PermitHookData = latest.CoWHook
@@ -68,3 +76,25 @@ export type CheckIsTokenPermittableParams = {
   chainId: SupportedChainId
   provider: Web3Provider
 }
+
+export type PermitCache = Record<string, string>
+
+export type CachedPermitData = {
+  hookData: PermitHookData
+  nonce: number | undefined
+}
+
+export type PermitCacheKeyParams = {
+  chainId: SupportedChainId
+  tokenAddress: string
+  account: string | undefined
+  nonce: number | undefined
+}
+
+export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
+
+export type GetPermitCacheParams = PermitCacheKeyParams
+
+export type CheckHasValidPendingPermit = (order: ParsedOrder) => Promise<boolean | undefined>
+
+export type OrdersPermitStatus = Record<string, boolean | undefined>

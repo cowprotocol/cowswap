@@ -16,7 +16,8 @@ export const TokenSearchInput = styled.input`
   align-self: flex-end;
   box-shadow: none;
   background: var(${UI.COLOR_GREY});
-  border: 1px solid ${({ theme }) => theme.bg1};
+  color: var(${UI.COLOR_TEXT1});
+  border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
   transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
   appearance: none;
@@ -26,7 +27,6 @@ export const TokenSearchInput = styled.input`
 
   &:focus {
     max-width: 500px;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
     outline: 0;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -35,7 +35,7 @@ export const TokenSearchInput = styled.input`
   }
 
   &::placeholder {
-    font-size: 14px !important;
+    font-size: inherit;
     color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
   }
 
@@ -88,7 +88,7 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `};
+  `}
 `
 
 export const Label = styled.div<{ end?: number }>`

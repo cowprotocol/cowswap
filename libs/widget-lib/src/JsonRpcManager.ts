@@ -2,7 +2,7 @@ import { EthereumProvider, JsonRpcRequest } from './types'
 
 const JSON_PRC_V = '2.0'
 const TARGET_ORIGIN = '*'
-const EVENTS = ['connect', 'disconnect', 'chainChanged', 'accountsChanged']
+const EVENTS = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 
 export class JsonRpcManager {
   ethereumProvider: EthereumProvider | null = null

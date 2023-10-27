@@ -13,15 +13,11 @@ import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index'
 
-export const StyledScrollarea = styled.div`
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
-  padding: 0 20px;
-  ${({ theme }) => theme.colorScrollbar};
+export const StyledTokenList = styled.div`
+  padding: 0 10px 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    overflow-y: hidden;
-    overflow-x: auto;
+    overflow-x: scroll;
   `}
 `
 
@@ -46,30 +42,28 @@ export default function CommonBases({
         </Text>
         <QuestionHelper text={<Trans>Your favourite saved tokens. Edit this list in your account page.</Trans>} />
       </AutoRow>
-      <StyledScrollarea>
+      <StyledTokenList>
         <CommonBasesRow gap="4px">
           {tokens.map((currency: Currency) => {
             const isSelected = selectedCurrency?.equals(currency)
 
             return (
-              <>
-                <BaseWrapper
-                  tabIndex={0}
-                  onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
-                  onClick={() => !isSelected && onSelect(currency)}
-                  disable={isSelected}
-                  key={currencyId(currency)}
-                >
-                  <CurrencyLogoFromList currency={currency} />
-                  <Text fontWeight={500} fontSize={16}>
-                    <TokenSymbol token={currency} length={6} />
-                  </Text>
-                </BaseWrapper>
-              </>
+              <BaseWrapper
+                tabIndex={0}
+                onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
+                onClick={() => !isSelected && onSelect(currency)}
+                disable={isSelected}
+                key={currencyId(currency)}
+              >
+                <CurrencyLogoFromList currency={currency} />
+                <Text fontWeight={500} fontSize={13}>
+                  <TokenSymbol token={currency} length={6} />
+                </Text>
+              </BaseWrapper>
             )
           })}
         </CommonBasesRow>
-      </StyledScrollarea>
+      </StyledTokenList>
     </MobileWrapper>
   ) : null
 }

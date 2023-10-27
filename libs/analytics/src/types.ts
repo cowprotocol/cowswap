@@ -33,6 +33,7 @@ export enum Dimensions {
   customBrowserType = 'customBrowserType',
   userAddress = 'userAddress',
   market = 'market',
+  injectedWidgetAppId = 'injectedWidgetAppId',
 }
 
 export type AnalyticsOrderType = OrderClass | 'TWAP'

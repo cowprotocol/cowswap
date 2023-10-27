@@ -15,7 +15,7 @@ import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useIsTokenPermittable } from 'modules/permit'
+import { useGeneratePermitHook, useIsTokenPermittable } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -37,11 +37,12 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const permitInfo = useIsTokenPermittable(state.inputCurrency, TradeType.LIMIT_ORDER)
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
-  const { enoughAllowance: hasEnoughAllowance } = useEnoughBalanceAndAllowance({
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: state.slippageAdjustedSellAmount || undefined,
     checkAllowanceAddress,
   })
+  const generatePermitHook = useGeneratePermitHook()
 
   if (
     !chainId ||
@@ -75,8 +76,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     dispatch,
     provider,
     rateImpact,
-    permitInfo,
-    hasEnoughAllowance,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
+    generatePermitHook,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

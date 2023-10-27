@@ -65,9 +65,8 @@ export function ListsUpdater(): null {
             throw new Error('unexpected no version bump')
           case VersionUpgrade.PATCH:
           case VersionUpgrade.MINOR:
-            const min = minVersionBump(list.current.tokens, list.pendingUpdate.tokens)
             // automatically update minor/patch as long as bump matches the min update
-            if (bump >= min) {
+            if (bump >= minVersionBump(list.current.tokens, list.pendingUpdate.tokens)) {
               dispatch(acceptListUpdate({ chainId, url: listUrl }))
             } else {
               console.error(

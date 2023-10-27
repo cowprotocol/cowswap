@@ -62,13 +62,13 @@ export const MAIN_MENU: MenuTreeItem[] = [
           {
             id: MainMenuItemId.LIMIT_ORDERS,
             kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'Limit orders',
+            title: 'Limit',
             url: Routes.LIMIT_ORDER,
           },
           {
             id: MainMenuItemId.ADVANCED_ORDERS,
             kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'TWAP orders',
+            title: 'TWAP',
             url: Routes.ADVANCED_ORDERS,
           },
         ],
@@ -150,7 +150,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
       {
         sectionTitle: 'Other',
         links: [
-          { kind: MenuItemKind.DARK_MODE_BUTTON },
+          // { kind: MenuItemKind.DARK_MODE_BUTTON },
           { id: MainMenuItemId.OTHER_COW_RUNNER, title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
           { id: MainMenuItemId.OTHER_MEV_SLICER, title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
           {

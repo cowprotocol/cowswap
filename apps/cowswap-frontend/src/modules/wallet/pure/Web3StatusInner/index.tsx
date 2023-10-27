@@ -3,6 +3,8 @@ import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
+import ICON_WALLET from 'assets/icon/wallet.svg'
+import SVG from 'react-inlinesvg'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
@@ -43,7 +45,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
-          <RowBetween>
+          <RowBetween gap="6px">
             <FollowPendingTxPopup>
               <Text>
                 <Trans>{pendingCount} Pending</Trans>
@@ -64,6 +66,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
       <Text>
         <Trans>Connect wallet</Trans>
       </Text>
+      <SVG src={ICON_WALLET} title="Wallet" />
     </Web3StatusConnect>
   )
 }
