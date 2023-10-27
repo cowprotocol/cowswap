@@ -15,11 +15,11 @@ import { HandlePermitParams } from '../types'
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
   const { permitInfo, inputToken, account, appData, generatePermitHook } = params
 
-  if (permitInfo) {
+  if (permitInfo && 'address' in inputToken) {
     // permitInfo will only be set if there's NOT enough allowance
 
     const permitData = await generatePermitHook({
-      inputToken,
+      inputToken: { address: inputToken.address, name: inputToken.name },
       account,
       permitInfo,
     })

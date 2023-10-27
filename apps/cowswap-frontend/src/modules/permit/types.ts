@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
+import { Currency } from '@uniswap/sdk-core'
 
 import { AppDataInfo } from 'modules/appData'
 
@@ -19,10 +20,11 @@ export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'pe
 
 export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
 
-export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo'> & {
+export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | 'inputToken'> & {
   permitInfo: IsTokenPermittableResult
   appData: AppDataInfo
   generatePermitHook: GeneratePermitHook
+  inputToken: Currency
 }
 
 export type PermitCache = Record<string, string>
