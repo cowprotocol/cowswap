@@ -1,9 +1,12 @@
+import { getAddress, getEtherscanLink, isMobile } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
+
+import { UI } from 'common/constants/theme'
 
 import * as styledEl from './styled'
 
@@ -18,6 +21,16 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   const { currency, onClick, loading, readonlyMode = false } = props
   const $stubbed = !currency || false
 
+  const explorerLink = currency ? getEtherscanLink(currency.chainId, 'token', getAddress(currency) || '') : ''
+
+  const CurrencyName = (
+    <styledEl.TokenNameLink target="_blank" href={explorerLink} rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+      {currency?.name || ''}
+    </styledEl.TokenNameLink>
+  )
+
+  const CurrencyLogo = currency ? <TokenLogo token={currency} size={24} /> : <div></div>
+
   return (
     <styledEl.CurrencySelectWrapper
       className="open-currency-select-button"
@@ -26,7 +39,16 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
       isLoading={loading}
       $stubbed={$stubbed}
     >
-      {currency ? <TokenLogo token={currency} size={24} /> : <div></div>}
+      {isMobile ? (
+        CurrencyLogo
+      ) : (
+        <styledEl.QuestionHelperStyled
+          bgColor={`var(${UI.COLOR_CONTAINER_BG_01})`}
+          placement="left"
+          text={CurrencyName}
+          Icon={CurrencyLogo}
+        />
+      )}
       <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
         {currency ? <TokenSymbol token={currency} length={40} /> : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>

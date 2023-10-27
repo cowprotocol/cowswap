@@ -3,6 +3,8 @@ import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
 import { UI } from 'common/constants/theme'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
@@ -62,4 +64,22 @@ export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
     white-space: normal;
     text-align: left;
   `};
+`
+
+export const QuestionHelperStyled = styled(QuestionHelper)`
+  margin-left: 0;
+
+  > div > div {
+    width: auto;
+    height: auto;
+  }
+`
+
+export const TokenNameLink = styled.a`
+  text-decoration: none;
+  color: var(${UI.COLOR_TEXT1});
+
+  &:hover {
+    text-decoration: underline;
+  }
 `
