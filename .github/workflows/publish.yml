@@ -40,6 +40,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: yarn
 
+      - name: Install Nx
+        run: npm install nx --no-save
+
       - name: Publish
         run: npm exec nx --yes -- publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
         env:
