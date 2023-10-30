@@ -42,26 +42,22 @@ export function useWidgetParamsAndSettings(
     }
 
     const settings: CowSwapWidgetSettings = {
-      urlParams: {
-        theme,
-        chainId,
-        env: getEnv(),
-        tradeType: currentTradeType,
-        tradeAssets: {
-          sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-          buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-        },
+      theme,
+      chainId,
+      env: getEnv(),
+      tradeType: currentTradeType,
+      tradeAssets: {
+        sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
+        buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       },
-      appParams: {
-        dynamicHeightEnabled,
-        enabledTradeTypes,
-        // palette: {
-        //   primaryColor: '#d9258e',
-        //   screenBackground: '#c7860f',
-        //   widgetBackground: '#eed4a7',
-        //   textColor: '#413931',
-        // },
-      },
+      dynamicHeightEnabled,
+      enabledTradeTypes,
+      // palette: {
+      //   primaryColor: '#d9258e',
+      //   screenBackground: '#c7860f',
+      //   widgetBackground: '#eed4a7',
+      //   textColor: '#413931',
+      // },
     }
 
     return { params, settings }

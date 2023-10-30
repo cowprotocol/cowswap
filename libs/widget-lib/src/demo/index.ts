@@ -1,13 +1,13 @@
 import { ProviderMode } from './ProviderMode'
 import { Settings } from './Settings'
 
-import { cowSwapWidget, CowSwapWidgetAppParams, CowSwapWidgetUrlParams, EthereumProvider } from '../index'
+import { cowSwapWidget, CowSwapWidgetSettings, EthereumProvider, TradeType } from '../index'
 
-const urlParams: CowSwapWidgetUrlParams = {
+const urlParams: CowSwapWidgetSettings = {
   env: 'local',
   chainId: 1,
   theme: 'light',
-  tradeType: 'swap',
+  tradeType: TradeType.SWAP,
   tradeAssets: {
     sell: {
       // asset: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
@@ -19,8 +19,6 @@ const urlParams: CowSwapWidgetUrlParams = {
     },
   },
 }
-
-const appParams: CowSwapWidgetAppParams = {}
 
 function init(provider?: EthereumProvider) {
   const updateWidget = cowSwapWidget(
@@ -34,7 +32,7 @@ function init(provider?: EthereumProvider) {
         url: 'https://swap.cow.fi/assets/injected-widget/',
       },
     },
-    { urlParams, appParams }
+    urlParams
   )
 
   Settings(updateWidget)

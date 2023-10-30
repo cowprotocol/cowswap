@@ -10,27 +10,23 @@ export function Settings(updateWidget: UpdateWidgetCallback) {
     const appSettingsState = Object.fromEntries(new FormData(appSettingsForm) as never)
 
     updateWidget({
-      urlParams: {
-        env: tradeSettingsState['env'],
-        chainId: tradeSettingsState['chainId'],
-        theme: tradeSettingsState['theme'],
-        tradeType: tradeSettingsState['tradeType'],
-        tradeAssets: {
-          sell: {
-            asset: tradeSettingsState['tradeAssets.sell.asset'],
-            amount: tradeSettingsState['tradeAssets.sell.amount'],
-          },
-          buy: {
-            asset: tradeSettingsState['tradeAssets.buy.asset'],
-            amount: tradeSettingsState['tradeAssets.buy.amount'],
-          },
+      env: tradeSettingsState['env'],
+      chainId: tradeSettingsState['chainId'],
+      theme: tradeSettingsState['theme'],
+      tradeType: tradeSettingsState['tradeType'],
+      tradeAssets: {
+        sell: {
+          asset: tradeSettingsState['tradeAssets.sell.asset'],
+          amount: tradeSettingsState['tradeAssets.sell.amount'],
+        },
+        buy: {
+          asset: tradeSettingsState['tradeAssets.buy.asset'],
+          amount: tradeSettingsState['tradeAssets.buy.amount'],
         },
       },
-      appParams: {
-        logoUrl: appSettingsState['logoUrl'],
-        hideLogo: appSettingsState['hideLogo'],
-        hideNetworkSelector: appSettingsState['hideNetworkSelector'],
-      },
+      logoUrl: appSettingsState['logoUrl'],
+      hideLogo: appSettingsState['hideLogo'],
+      hideNetworkSelector: appSettingsState['hideNetworkSelector'],
     })
   }
 

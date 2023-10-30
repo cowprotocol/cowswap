@@ -17,4 +17,4 @@ const chains = [mainnet, gnosis, goerli]
 
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
-createWeb3Modal({ wagmiConfig, projectId, chains })
+export const web3Modal = createWeb3Modal({ wagmiConfig, projectId, chains })
