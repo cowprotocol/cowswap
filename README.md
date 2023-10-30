@@ -64,7 +64,7 @@ yarn build:widget
 Start the Cosmos UI Library on http://localhost:5000
 
 ```bash
-yarn run cosmos
+yarn start:cosmos
 ```
 
 # 🤓 Development
