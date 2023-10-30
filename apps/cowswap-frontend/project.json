@@ -8,6 +8,7 @@
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
+      "dependsOn": ["i18n:compile"],
       "options": {
         "outputPath": "build/cowswap"
       },
@@ -71,6 +72,28 @@
       "options": {
         "buildTarget": "cowswap-frontend:build"
       }
+    },
+
+    "i18n": {
+      "executor": "nx:noop",
+      "dependsOn": ["i18n:compile"]
+    },
+    "i18n:compile": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["i18n:extract"],
+      "options": {
+        "command": "npx lingui compile"
+      },
+      "inputs": ["{projectRoot}/src/locales/*.po"],
+      "outputs": ["{projectRoot}/src/locales/*.js"]
+    },
+    "i18n:extract": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
+      },
+      "inputs": ["{workspaceRoot}/apps/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"],
+      "outputs": ["{projectRoot}/src/locales/*.po"]
     }
   },
   "tags": []

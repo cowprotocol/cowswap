@@ -21,14 +21,15 @@
     "ci:build": "yarn run build:cowswap && yarn run build-widget",
     "ipfs:build": "PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "npx ipfs-deploy build -p pinata -O",
+    "i18n": "nx run-many -t i18n",
     "preview": "cross-env NODE_OPTIONS=--max-old-space-size=32768 nx run cowswap-frontend:preview",
     "test": "yarn test:all",
     "test:all": "nx run-many -t test",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
-    "prebuild-app": "nx run cowswap-frontend:i18n",
+    "prebuild-app": "yarn i18n",
     "prepare": "husky install",
-    "postinstall": "yarn run patch-package",
+    "postinstall": "yarn run patch-package && yarn i18n",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
   "browser": {
