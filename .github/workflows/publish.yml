@@ -56,6 +56,6 @@ jobs:
 
       - name: Publish
         working-directory: ${{ env.DESTINATION_PATH }}
-        run: publish --tag ${{ inputs.tag }}
+        run: npm publish --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
