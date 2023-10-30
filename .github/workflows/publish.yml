@@ -45,11 +45,11 @@ jobs:
       - name: Install Nx
         run: yarn add nx
 
-      - name: Create destination path
-        run: mkdir -p ${{ env.DESTINATION_PATH }}
+      - name: Build
+        run: yarn nx build ${{ inputs.lib }}
 
       - name: Copy .npmrc to destination
-        run: cp /home/runner/work/_temp/.npmrc ${{ env.DESTINATION_PATH }}/
+        run: cp ${{ env.NPM_CONFIG_USERCONFIG }} ${{ env.DESTINATION_PATH }}/
 
       - name: Publish
         run: yarn nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
