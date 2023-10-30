@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
       - name: Install Nx
@@ -45,6 +46,12 @@ jobs:
 
       - name: Build
         run: yarn nx build ${{ inputs.lib }}
+
+      - name: Copy .npmrc to lib folder
+        run: cp .npmrc dist/libs/${{ inputs.lib }}/
+
+      - name: Show contents of lib folder
+        run: echo `ls -C dist/libs/${{ inputs.lib }}/`
 
       - name: Publish (without helper script)
         working-directory: dist/libs/${{ inputs.lib }}
