@@ -1,6 +1,6 @@
 # CoW Swap React widget
 
-React component that creates a CoW Swap widget. It is based on [https://npmjs.com/package/@cowprotocol/widget-lib])https://npmjs.com/package/@cowprotocol/widget-lib)
+React component that creates a CoW Swap widget. It is based on [https://npmjs.com/package/@cowprotocol/widget-lib](https://npmjs.com/package/@cowprotocol/widget-lib)
 
 ## Use it
 
@@ -17,8 +17,7 @@ yarn add @cowprotocol/widget-react
 Import component and some convenient types
 
 ```ts
-import { CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
-import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
+import { CowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-react'
 ```
 
 Prepare the config for the widget:
@@ -30,12 +29,9 @@ const cowSwapWidgetParams: CowSwapWidgetParams = {
 }
 
 const cowSwapWidgetSettings: CowSwapWidgetSettings = {
-  urlParams: {
-    chainId: 1,
-    tradeType: 'swap',
-    env: 'local',
-  },
-  appParams: {},
+  chainId: 1,
+  tradeType: 'swap',
+  env: 'local',
 }
 ```
 

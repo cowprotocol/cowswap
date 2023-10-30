@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
@@ -12,8 +12,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 export interface EmbedDialogProps {
-  params: CowSwapWidgetParams
-  settings: CowSwapWidgetSettings
+  params: CowSwapWidgetProps['params']
+  settings: CowSwapWidgetProps['settings']
 }
 
 export function EmbedDialog({ params, settings }: EmbedDialogProps) {

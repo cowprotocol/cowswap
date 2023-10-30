@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import { TradeType } from '@cowprotocol/widget-lib'
+import type { TradeType } from '@cowprotocol/widget-lib'
 
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'

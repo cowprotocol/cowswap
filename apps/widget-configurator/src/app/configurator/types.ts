@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TradeType } from '@cowprotocol/widget-lib'
+import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
