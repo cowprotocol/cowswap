@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - permit-utils
+          - widget-lib
           # Add more publishable libs here
       tag:
         description: NPM package tag
