@@ -53,6 +53,6 @@ jobs:
         run: echo `pwd`
 
       - name: Publish (without helper script)
-        run: npm publish --access public --tag ${{ input.tag }}
+        run: npm publish --access public --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
