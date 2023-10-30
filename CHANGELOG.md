@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.11](https://github.com/cowprotocol/cowswap/compare/v1.48.10...v1.48.11) (2023-10-30)
+
+
+### Bug Fixes
+
+* fix og:image ([#3297](https://github.com/cowprotocol/cowswap/issues/3297)) ([5171bca](https://github.com/cowprotocol/cowswap/commit/5171bca00e9364a14c0710b24ab6236f5636c539))
+
 ## [1.48.10](https://github.com/cowprotocol/cowswap/compare/v1.48.9...v1.48.10) (2023-10-30)
 
 
