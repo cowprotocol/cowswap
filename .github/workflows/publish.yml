@@ -47,7 +47,9 @@ jobs:
         run: yarn nx build ${{ inputs.lib }}
 
       - name: What's here?
-        run: find .. -type d -depth 2
+        run: |
+          echo `ls -C`
+          echo `find .. -type d -depth 2`
 
       - name: Change to lib dir
         run: cd dist/libs/${{ inputs.lib }}
