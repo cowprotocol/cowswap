@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.10](https://github.com/cowprotocol/cowswap/compare/v1.48.9...v1.48.10) (2023-10-30)
+
+
+### Features
+
+* change og image to halloween ([#3294](https://github.com/cowprotocol/cowswap/issues/3294)) ([3780fd5](https://github.com/cowprotocol/cowswap/commit/3780fd5a4cb6f745a801f80a3fb1450d67d591af))
+
 ## [1.48.7](https://github.com/cowprotocol/cowswap/compare/v1.48.6...v1.48.7) (2023-10-19)
 
 
