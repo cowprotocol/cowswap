@@ -41,6 +41,11 @@ const settings: CowSwapWidgetSettings = {
 cowSwapWidget(params, settings)
 ```
 
+## App key
+You must specify the `appKey` parameter when initializing the widget. This parameter is used to identify the source of orders.  
+The key must be a UTF8 string of up to 50 chars.  
+It will be a part of orders meta-data, see more in the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
+
 ## Wallet provider
 
 You can pass the wallet provider from your application to seamlessly use the widget as part of your application.
@@ -110,6 +115,11 @@ cowSwapWidget(params, {})
 | `palette`              | `CowSwapWidgetPalette` | (Optional) Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.          |
 
 ```typescript
+export interface CowSwapWidgetMetaData {
+  appKey: string
+  url: string
+}
+
 interface TradeAsset {
   asset: string
   amount?: string
