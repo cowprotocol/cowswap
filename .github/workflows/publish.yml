@@ -46,9 +46,10 @@ jobs:
       - name: Build
         run: yarn nx build ${{ inputs.lib }}
 
+      - name: Change to lib dir
+        run: cd dist/libs/${{ inputs.lib }}
+
       - name: Publish (without helper script)
-        run: >
-          cd dist/libs/${{ inputs.lib }}
-          npm publish --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
