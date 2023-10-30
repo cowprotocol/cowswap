@@ -51,7 +51,11 @@ jobs:
       - name: Copy .npmrc to destination
         run: cp ${{ env.NPM_CONFIG_USERCONFIG }} ${{ env.DESTINATION_PATH }}/
 
+      - name: Copy README
+        run: cp libs/${{ inputs.lib }}/README.md ${{ env.DESTINATION_PATH }}/
+
       - name: Publish
-        run: yarn nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
+        working-directory: ${{ env.DESTINATION_PATH }}
+        run: publish --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
