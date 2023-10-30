@@ -26,6 +26,9 @@ export const Title = styled.div`
 
 export const TokensWrapper = styled.div`
   height: calc(100vh - 450px);
+  overflow: auto;
+
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: calc(100vh - 350px);
