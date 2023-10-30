@@ -53,7 +53,11 @@ yarn test
 Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
 
 ```bash
+# Start
 yarn start:widget
+
+# Build
+yarn build:widget
 ```
 
 # 🌌 Cosmos UI Library
