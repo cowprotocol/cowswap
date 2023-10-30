@@ -159,11 +159,10 @@ CoW Swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
-| Name             | Environment variable                 | Type                         | Description                                                                           |
-| ---------------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------- |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`    | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation. |
-| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.  |
-| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                |
+| Name      | Environment variable                 | Type                         | Description                                                                          |
+| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+| **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
+| **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
 ## Metadata attached to orders (AppData)
 
@@ -171,7 +170,7 @@ The app will attach some metadata to all orders.
 
 This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
 
-The format of the JSON follows this typescript format: <src/utils/metadata.ts>
+The format of the JSON follows the format defined in [@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
 
 To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
 
