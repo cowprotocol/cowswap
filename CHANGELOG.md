@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.49.0](https://github.com/cowprotocol/cowswap/compare/v1.48.9...v1.49.0) (2023-10-30)
+## [1.48.10](https://github.com/cowprotocol/cowswap/compare/v1.48.9...v1.48.10) (2023-10-30)
 
 
 ### Features
