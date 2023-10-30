@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "build"
+        "outputPath": "build/cowswap"
       },
       "configurations": {
         "development": {
