@@ -15,7 +15,7 @@
     "postinstall": "yarn run i18n",
     "cosmos:clear": "rm -rf ./public/cosmos",
     "cosmos:run": "yarn run _cosmos:run",
-    "cosmos:export": "cross-env NODE_ENV=development npx cosmos-export",
+    "build:cosmos": "cross-env NODE_ENV=development npx cosmos-export",
     "_cosmos:run": "yarn cosmos:clear && npx cosmos"
   },
   "browser": {
