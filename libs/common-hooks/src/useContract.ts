@@ -35,6 +35,7 @@ import {
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Web3Provider } from '@ethersproject/providers'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 
@@ -42,10 +43,12 @@ const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
-  withSignerIfPossible = true
+  withSignerIfPossible = true,
+  customProvider?: Web3Provider
 ): T | null {
-  const { provider } = useWeb3React()
+  const { provider: defaultProvider } = useWeb3React()
   const { account, chainId } = useWalletInfo()
+  const provider = customProvider || defaultProvider
 
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
@@ -91,8 +94,13 @@ export function useEIP2612Contract(tokenAddress?: string): Contract | null {
   return useContract(tokenAddress, Eip2612Abi, false)
 }
 
-export function useInterfaceMulticall() {
-  return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, MulticallABI, false) as UniswapInterfaceMulticall
+export function useInterfaceMulticall(customProvider?: Web3Provider) {
+  return useContract<UniswapInterfaceMulticall>(
+    MULTICALL_ADDRESS,
+    MulticallABI,
+    false,
+    customProvider
+  ) as UniswapInterfaceMulticall
 }
 
 export function useEthFlowContract(): CoWSwapEthFlow | null {
