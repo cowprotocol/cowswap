@@ -41,7 +41,7 @@ jobs:
           cache: yarn
 
       - name: Install Nx
-        run: npm install nx --no-save
+        run: yarn add nx
 
       - name: Publish
         run: npm exec nx --yes -- publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
