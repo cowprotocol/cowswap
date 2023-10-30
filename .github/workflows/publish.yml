@@ -23,6 +23,7 @@ on:
 
 env:
   NODE_VERSION: lts/gallium
+  DESTINATION_PATH: dist/libs/${{ inputs.lib }}
 
 
 jobs:
@@ -41,23 +42,16 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
-      - name: What's in .npmrc?
-        run: cat /home/runner/work/_temp/.npmrc
-
       - name: Install Nx
         run: yarn add nx
 
-      - name: Build
-        run: yarn nx build ${{ inputs.lib }}
+      - name: Create destination path
+        run: mkdir -p ${{ env.DESTINATION_PATH }}
 
-      - name: Copy .npmrc to lib folder
-        run: cp /home/runner/work/_temp/.npmrc dist/libs/${{ inputs.lib }}/
+      - name: Copy .npmrc to destination
+        run: cp /home/runner/work/_temp/.npmrc ${{ env.DESTINATION_PATH }}/
 
-      - name: Show contents of lib folder
-        run: echo `ls -C dist/libs/${{ inputs.lib }}/`
-
-      - name: Publish (without helper script)
-        working-directory: dist/libs/${{ inputs.lib }}
-        run: npm publish --access public --tag ${{ inputs.tag }}
+      - name: Publish
+        run: yarn nx publish ${{ inputs.lib }} --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
