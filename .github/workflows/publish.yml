@@ -41,6 +41,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
+      - name: What's in .npmrc?
+        run: cat /home/runner/work/_temp/.npmrc
+
       - name: Install Nx
         run: yarn add nx
 
@@ -48,7 +51,7 @@ jobs:
         run: yarn nx build ${{ inputs.lib }}
 
       - name: Copy .npmrc to lib folder
-        run: cp .npmrc dist/libs/${{ inputs.lib }}/
+        run: cp /home/runner/work/_temp/.npmrc dist/libs/${{ inputs.lib }}/
 
       - name: Show contents of lib folder
         run: echo `ls -C dist/libs/${{ inputs.lib }}/`
