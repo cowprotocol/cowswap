@@ -54,6 +54,9 @@ export default defineConfig(({ mode }) => {
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
+      workbox: {
+        navigateFallbackDenylist: [/widget-configurator*/, /cosmos*/],
+      },
     }),
   ]
 
