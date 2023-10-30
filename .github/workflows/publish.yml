@@ -49,6 +49,9 @@ jobs:
       - name: Change to lib dir
         run: cd dist/libs/${{ inputs.lib }}
 
+      - name: Where am I?
+        run: echo `pwd`
+
       - name: Publish (without helper script)
         run: npm publish --access public --tag ${{ input.tag }}
         env:
