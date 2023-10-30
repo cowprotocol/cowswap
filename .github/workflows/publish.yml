@@ -46,18 +46,8 @@ jobs:
       - name: Build
         run: yarn nx build ${{ inputs.lib }}
 
-      - name: What's here?
-        run: |
-          echo `ls -C`
-          echo `find .. -type d -depth 2`
-
-      - name: Change to lib dir
-        run: cd dist/libs/${{ inputs.lib }}
-
-      - name: Where am I?
-        run: echo `pwd`
-
       - name: Publish (without helper script)
+        working-directory: dist/libs/${{ inputs.lib }}
         run: npm publish --access public --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
