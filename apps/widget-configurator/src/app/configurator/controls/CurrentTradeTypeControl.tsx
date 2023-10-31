@@ -9,20 +9,20 @@ import Select from '@mui/material/Select'
 
 import { TRADE_MODES } from '../consts'
 
-const label = 'Current trade type'
+const LABEL = 'Current trade type'
 
 export function CurrentTradeTypeControl({ state }: { state: [TradeType, Dispatch<SetStateAction<TradeType>>] }) {
   const [tradeType, setTradeType] = state
 
   return (
     <FormControl sx={{ width: '100%' }}>
-      <InputLabel>{label}</InputLabel>
+      <InputLabel>{LABEL}</InputLabel>
       <Select
         id="select-trade-type"
         value={tradeType}
         onChange={(event) => setTradeType(event.target.value as TradeType)}
         autoWidth
-        label={label}
+        label={LABEL}
         size="small"
       >
         {TRADE_MODES.map((option) => (

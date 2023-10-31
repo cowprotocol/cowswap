@@ -22,8 +22,6 @@ import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import ToC from './ToC'
 
-// AmplitudeAnalytics
-
 export interface TocSection {
   section: TocItem
   items: TocItem[]

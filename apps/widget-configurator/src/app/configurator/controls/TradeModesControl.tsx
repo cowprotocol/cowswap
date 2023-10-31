@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-const label = 'Trade Modes'
+const LABEL = 'Trade Modes'
 export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] }) {
   const [tradeModes, setTradeModes] = state
   const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>) => {
@@ -21,14 +21,14 @@ export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<Set
 
   return (
     <FormControl sx={{ width: '100%' }}>
-      <InputLabel>{label}</InputLabel>
+      <InputLabel>{LABEL}</InputLabel>
       <Select
         id="trade-mode-select"
         multiple
         size="small"
         value={tradeModes}
         onChange={handleTradeModeChange}
-        input={<OutlinedInput id="trade-mode-select-outlined" label={label} />}
+        input={<OutlinedInput id="trade-mode-select-outlined" label={LABEL} />}
         renderValue={(selected) => selected.join(', ')}
       >
         {Object.values(TradeType).map((option) => (
