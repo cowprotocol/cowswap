@@ -1,8 +1,8 @@
 import { registerOnWindow } from './misc'
 
 const DEFAULT_ENVIRONMENTS_REGEX: Record<Envs, string> = {
-  LOCAL: '^(:?localhost:d{2,5}|(?:127|192)(?:.[0-9]{1,3}){3})',
-  PR: '^prd+--cowswap.review|^(swap-dev-git-[wd-]+|swap-w{9}-)cowswap.vercel.app',
+  LOCAL: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
+  PR: '^pr\\d+--cowswap\\.review|^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap\\.vercel\\.app',
   DEV: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
   STAGING: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
   PROD: '^(swap.cow.fi|swap-prod.vercel.app)$',
@@ -27,6 +27,8 @@ export interface EnvironmentChecks {
 }
 
 export function checkEnvironment(host: string, path: string): EnvironmentChecks {
+  const ensRegex = getRegex('ENS')
+
   return {
     // Project environments
     isLocal: getRegex('LOCAL').test(host),
@@ -34,7 +36,7 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
     isPr: getRegex('PR').test(host),
     isStaging: getRegex('STAGING').test(host),
     isProd: getRegex('PROD').test(host),
-    isEns: getRegex('ENS').test(host),
+    isEns: ensRegex.test(host) || ensRegex.test(path),
 
     // Environment used for Backend workflow
     // The latest stable version pointing to the DEV api

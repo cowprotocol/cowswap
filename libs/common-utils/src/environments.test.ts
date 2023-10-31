@@ -67,8 +67,8 @@ describe('Detect environments using host and path', () => {
   describe('Is Staging', () => {
     const isStaging = { ...DEFAULT_ENVIRONMENTS_CHECKS, isStaging: true }
 
-    it('cowswap.staging.gnosisdev.com', () => {
-      expect(checkEnvironment('cowswap.staging.gnosisdev.com', '')).toEqual(isStaging)
+    it('staging.swap.cow.fi', () => {
+      expect(checkEnvironment('staging.swap.cow.fi', '')).toEqual(isStaging)
     })
   })
 
@@ -76,15 +76,15 @@ describe('Detect environments using host and path', () => {
     const isPr = { ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true }
 
     it('pr<NUMBER>--cowswap.review.gnosisdev.com', () => {
-      expect(checkEnvironment('pr1291--cowswap.review.gnosisdev.com', '')).toEqual(isPr)
+      expect(checkEnvironment('swap-dev-git-improve-quote-updater-cowswap.vercel.app', '')).toEqual(isPr)
     })
   })
 
   describe('Is Development', () => {
     const isDevelopment = { ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true }
 
-    it('cowswap.dev.gnosisdev.com', () => {
-      expect(checkEnvironment('cowswap.dev.gnosisdev.com', '')).toEqual(isDevelopment)
+    it('dev.swap.cow.fi', () => {
+      expect(checkEnvironment('dev.swap.cow.fi', '')).toEqual(isDevelopment)
     })
   })
 
