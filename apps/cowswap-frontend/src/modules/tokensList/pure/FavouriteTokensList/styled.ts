@@ -16,11 +16,9 @@ export const Header = styled.div`
 `
 
 export const List = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: block;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: block;
     white-space: nowrap;
     overflow-x: scroll;
     ${theme.colorScrollbar};
@@ -33,7 +31,7 @@ export const TokensItem = styled.button`
   align-items: center;
   gap: 6px;
   justify-content: center;
-  margin: 5px 5px 5px 0;
+  margin: 5px 10px 5px 0;
   background: none;
   outline: none;
   padding: 6px 10px;
