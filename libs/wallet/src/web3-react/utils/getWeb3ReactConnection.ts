@@ -41,5 +41,11 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
     return connection
   }
 
-  return connectionTypeToConnection[c]
+  const connection = connectionTypeToConnection[c]
+
+  if (!connection) {
+    throw Error('unsupported connector')
+  }
+
+  return connection
 }
