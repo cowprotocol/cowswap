@@ -21,7 +21,6 @@ const plugins = [
 ]
 
 export default defineConfig({
-  base: 'widget-configurator',
   cacheDir: '../../node_modules/.vite/widget-configurator',
 
   server: {
