@@ -93,7 +93,7 @@ describe('Swap (mod)', () => {
       cy.get('#toggle-recipient-mode-button').click()
     })
 
-    it.only('Recipient is visible', () => {
+    it('Recipient is visible', () => {
       cy.get('#recipient').should('exist')
     })
   })
