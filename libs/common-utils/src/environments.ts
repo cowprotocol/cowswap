@@ -49,6 +49,15 @@ const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironm
   window.location.pathname
 )
 
+export const ALL_ENVIRONMENTS: EnvironmentName[] = [
+  'local',
+  'development',
+  'pr',
+  'staging',
+  'production',
+  'barn',
+  'ens',
+]
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'barn' | 'ens'
 
 export const environmentName: EnvironmentName | undefined = (function () {
