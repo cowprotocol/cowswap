@@ -10,7 +10,7 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/cowswap',
+  setupFilesAfterEnv: ['../../jest.setup.ts'],
   setupFiles: ['dotenv/config'],
-  setupFilesAfterEnv: ['./src/setupTests.ts'],
   transformIgnorePatterns: ['node_modules/(?!@ledgerhq/connect-kit-loader)'],
 }

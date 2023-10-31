@@ -6,16 +6,12 @@ on:
     types: [opened, synchronize]
 
 env:
-  REPO_NAME_SLUG: cowswap
-  PR_NUMBER: ${{ github.event.number }}
   NODE_VERSION: lts/gallium
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
   REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-  REACT_APP_AMPLITUDE_KEY: ${{ secrets.REACT_APP_AMPLITUDE_KEY }}
+  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
 
 jobs:
   setup:
@@ -88,7 +84,6 @@ jobs:
 
       - name: Unit Test
         run: yarn test
-
 
       # - name: Coveralls
       #   uses: coverallsapp/github-action@v1.1.2
@@ -186,8 +181,6 @@ jobs:
       #     path: |
       #       cypress-custom/videos
       #       cypress-custom/screenshots
-
-
 
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
