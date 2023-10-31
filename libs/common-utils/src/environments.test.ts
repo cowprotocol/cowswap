@@ -20,7 +20,7 @@ describe('Detect environments using host and path', () => {
     })
   })
 
-  describe.only('Is production', () => {
+  describe('Is production', () => {
     const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
 
     it('swap.cow.fi', () => {
