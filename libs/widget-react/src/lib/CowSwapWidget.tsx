@@ -2,32 +2,41 @@ import { useEffect, useRef } from 'react'
 
 import {
   cowSwapWidget,
-  CowSwapWidgetParams as CowSwapWidgetParamsAux,
+  CowSwapWidgetParams,
   CowSwapWidgetSettings,
+  EthereumProvider,
+  UpdateWidgetCallback,
 } from '@cowprotocol/widget-lib'
 
-export type CowSwapWidgetParams = Omit<CowSwapWidgetParamsAux, 'container'>
 export interface CowSwapWidgetProps {
-  params: CowSwapWidgetParams
+  params: Omit<CowSwapWidgetParams, 'container'>
   settings: CowSwapWidgetSettings
+  provider?: EthereumProvider
 }
 
-export function CowSwapWidget(props: CowSwapWidgetProps) {
-  const cowWidgetRef = useRef(null)
+export function CowSwapWidget({ params, settings, provider }: CowSwapWidgetProps) {
+  const providerRef = useRef<EthereumProvider | null>()
+  const iframeContainerRef = useRef<HTMLDivElement>(null)
+  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
 
   useEffect(() => {
-    if (cowWidgetRef.current) {
-      const { params, settings } = props
+    if (!iframeContainerRef.current) return
 
-      cowSwapWidget(
-        {
-          ...params,
-          container: cowWidgetRef.current,
-        },
-        settings
-      )
+    // Re-initialize widget when provider is changed
+    if (provider && providerRef.current !== provider) {
+      updateWidgetRef.current = null
     }
-  }, [cowWidgetRef, props])
 
-  return <div ref={cowWidgetRef}></div>
+    if (updateWidgetRef.current) {
+      updateWidgetRef.current(settings)
+    } else {
+      updateWidgetRef.current = cowSwapWidget({ ...params, container: iframeContainerRef.current }, settings)
+    }
+  }, [provider, params, settings])
+
+  useEffect(() => {
+    providerRef.current = provider
+  }, [provider])
+
+  return <div ref={iframeContainerRef}></div>
 }

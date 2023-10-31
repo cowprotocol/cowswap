@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetEnv, CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetEnv, EthereumProvider } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -15,12 +16,9 @@ const getEnv = (): CowSwapWidgetEnv => {
 
 export function useWidgetParamsAndSettings(
   provider: EthereumProvider | undefined,
-  widgetContainer: HTMLDivElement | null,
   configuratorState: ConfiguratorState
 ) {
   return useMemo(() => {
-    if (!widgetContainer) return null
-
     const {
       chainId,
       theme,
@@ -33,15 +31,14 @@ export function useWidgetParamsAndSettings(
       dynamicHeightEnabled,
     } = configuratorState
 
-    const params: CowSwapWidgetParams = {
-      container: widgetContainer,
+    const params: CowSwapWidgetProps['params'] = {
       metaData: { appKey: '<YOUR_APP_ID>', url: '<https://YOUR_APP_URL>' },
       width: 400,
       height: 640,
       provider,
     }
 
-    const settings: CowSwapWidgetSettings = {
+    const settings: CowSwapWidgetProps['settings'] = {
       theme,
       chainId,
       env: getEnv(),
@@ -61,5 +58,5 @@ export function useWidgetParamsAndSettings(
     }
 
     return { params, settings }
-  }, [provider, widgetContainer, configuratorState])
+  }, [provider, configuratorState])
 }

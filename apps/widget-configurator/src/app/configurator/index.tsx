@@ -1,6 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { cowSwapWidget, EthereumProvider, TradeType, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
+import { TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -17,7 +18,7 @@ import { TradeModesControl } from './controls/TradeModesControl'
 import { EmbedDialog } from './embedDialog'
 import { useProvider } from './hooks/useProvider'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import { DrawerStyled, WrapperStyled, ContentStyled, WalletConnectionWrapper } from './styled'
+import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -54,11 +55,7 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const iframeContainerRef = useRef<HTMLDivElement>(null)
-  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
-
   const provider = useProvider()
-  const providerRef = useRef<EthereumProvider | null>()
 
   const state: ConfiguratorState = {
     chainId,
@@ -72,27 +69,8 @@ export function Configurator({ title }: { title: string }) {
     dynamicHeightEnabled: true,
   }
 
-  const paramsAndSettings = useWidgetParamsAndSettings(provider, iframeContainerRef.current, state)
+  const paramsAndSettings = useWidgetParamsAndSettings(provider, state)
   const { params, settings } = paramsAndSettings || {}
-
-  useEffect(() => {
-    if (!params?.container || !settings) return
-
-    // Re-initialize widget when provider is changed
-    if (provider && providerRef.current !== provider) {
-      updateWidgetRef.current = null
-    }
-
-    if (updateWidgetRef.current) {
-      updateWidgetRef.current(settings)
-    } else {
-      updateWidgetRef.current = cowSwapWidget(params, settings)
-    }
-  }, [provider, params, settings])
-
-  useEffect(() => {
-    providerRef.current = provider
-  }, [provider])
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -139,9 +117,13 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        {params && settings && <EmbedDialog params={params} settings={settings} />}
-        <br />
-        <div ref={iframeContainerRef}></div>
+        {params && settings && (
+          <>
+            <EmbedDialog params={params} settings={settings} />
+            <br />
+            <CowSwapWidget provider={provider} settings={settings} params={params} />
+          </>
+        )}
       </Box>
     </Box>
   )
