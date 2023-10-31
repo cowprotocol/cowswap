@@ -32,9 +32,9 @@ export enum TradeType {
 }
 
 export interface CowSwapWidgetUrlParams {
-  chainId: number
-  tradeType: TradeType
-  env: CowSwapWidgetEnv
+  chainId?: number
+  tradeType?: TradeType
+  env?: CowSwapWidgetEnv
   tradeAssets?: TradeAssets
   theme?: CowSwapTheme
 }

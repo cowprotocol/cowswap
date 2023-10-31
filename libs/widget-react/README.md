@@ -24,14 +24,17 @@ Prepare the config for the widget:
 
 ```ts
 const cowSwapWidgetParams: CowSwapWidgetParams = {
+  container: document.getElementById('cow-swap-widget'),
+  metaData: {
+    appKey: '<YOUR_APP_KEY>',
+    appUrl: '<YOUR_APP_URL>',
+  },
   width: 600,
   height: 700,
 }
 
 const cowSwapWidgetSettings: CowSwapWidgetSettings = {
-  chainId: 1,
   tradeType: 'swap',
-  env: 'local',
 }
 ```
 
