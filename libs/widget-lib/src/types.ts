@@ -55,10 +55,7 @@ export interface CowSwapWidgetAppParams {
   palette?: InjectedWidgetPalette
 }
 
-export interface CowSwapWidgetSettings {
-  urlParams: CowSwapWidgetUrlParams
-  appParams: CowSwapWidgetAppParams
-}
+export type CowSwapWidgetSettings = CowSwapWidgetUrlParams & CowSwapWidgetAppParams
 
 export interface CowSwapWidgetMetaData {
   appKey: string

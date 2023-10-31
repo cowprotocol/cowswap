@@ -2,8 +2,6 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { cowSwapWidget, EthereumProvider, TradeType, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
 
-import WalletIcon from '@mui/icons-material/Wallet'
-import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -19,10 +17,11 @@ import { TradeModesControl } from './controls/TradeModesControl'
 import { EmbedDialog } from './embedDialog'
 import { useProvider } from './hooks/useProvider'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import { DrawerStyled, WrapperStyled, ContentStyled } from './styled'
+import { DrawerStyled, WrapperStyled, ContentStyled, WalletConnectionWrapper } from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
+import { web3Modal } from '../../wagmiConfig'
 
 const DEFAULT_STATE = {
   sellToken: 'COW',
@@ -32,7 +31,7 @@ const DEFAULT_STATE = {
 }
 
 export function Configurator({ title }: { title: string }) {
-  const { mode, setMode } = useContext(ColorModeContext)
+  const { mode } = useContext(ColorModeContext)
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
@@ -47,13 +46,13 @@ export function Configurator({ title }: { title: string }) {
 
   const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
   const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
-  const [sellToken, setSellToken] = sellTokenState
-  const [sellTokenAmount, setSellTokenAmount] = sellTokenAmountState
+  const [sellToken] = sellTokenState
+  const [sellTokenAmount] = sellTokenAmountState
 
   const buyTokenState = useState<string>(DEFAULT_STATE.buyToken)
   const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
-  const [buyToken, setBuyToken] = buyTokenState
-  const [buyTokenAmount, setBuyTokenAmount] = buyTokenAmountState
+  const [buyToken] = buyTokenState
+  const [buyTokenAmount] = buyTokenAmountState
 
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
@@ -95,14 +94,9 @@ export function Configurator({ title }: { title: string }) {
     providerRef.current = provider
   }, [provider])
 
-  const handleWidgetRefreshClick = () => {
-    setMode('light')
-    setSellToken(DEFAULT_STATE.sellToken)
-    setSellTokenAmount(DEFAULT_STATE.sellAmount)
-
-    setBuyToken(DEFAULT_STATE.buyToken)
-    setBuyTokenAmount(DEFAULT_STATE.buyAmount)
-  }
+  useEffect(() => {
+    web3Modal.setThemeMode(mode)
+  }, [mode])
 
   return (
     <Box sx={WrapperStyled}>
@@ -113,15 +107,9 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">Wallet</Divider>
 
-        <LoadingButton
-          loading={false}
-          loadingPosition="start"
-          startIcon={<WalletIcon />}
-          variant="contained"
-          onClick={handleWidgetRefreshClick}
-        >
+        <div style={WalletConnectionWrapper}>
           <w3m-button />
-        </LoadingButton>
+        </div>
 
         <Divider variant="middle">General</Divider>
 
@@ -144,10 +132,6 @@ export function Configurator({ title }: { title: string }) {
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
         <Divider variant="middle" />
-
-        {/* <LoadingButton loading={false} loadingPosition="start" startIcon={<SaveIcon />} variant="contained" onClick={handleWidgetRefreshClick}>
-          Refresh Widget
-        </LoadingButton> */}
 
         <Link href="#hide" onClick={() => setIsDrawerOpen(false)}>
           Hide drawer
