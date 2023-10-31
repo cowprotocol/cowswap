@@ -1,18 +1,28 @@
 # CoW Swap Widget Library
 
-## Use it
+Integrate the power of `CowSwap` into your product!
+With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
+look and much more!
 
-Install dependency
+## Live example
 
-```bash
-# Install the dependency using NPM
+See the widget in action in the [widget configurator](../../apps/widget-configurator/src/main.tsx)
+
+## Docs
+
+You can find a detailed description of all widget parameters in the [documentation](../../libs/widget-lib/docs/README.md)
+
+## Quick start
+
+```
 npm install @cowprotocol/widget-lib --save
+```
 
-# ...or alternativelly use YARN
+```
 yarn add @cowprotocol/widget-lib
 ```
 
-Create an empty div somewhere in your website:
+Create a container somewhere in your website, the widget will be rendered inside it:
 
 ```html
 <div id="cowswap-widget"></div>
@@ -25,38 +35,36 @@ import { cowSwapWidget } from '@cowprotocol/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')
-cowSwapWidget({
-  container: widgetContainer
-})
 
-
-// Additionally, you can pass some additional params to customise your widget
-provider = /* instantiate your own web3 provider */
-cowSwapWidget({
+const updateWidget = cowSwapWidget({
   container: widgetContainer,
-  width: 600
-  height: 640
-  urlParams: {
-    sell: { asset: 'DAI' },
-    buy: { asset: 'USDC', amount: '0.1' }
+  width: 600,
+  height: 640,
+  metaData: {
+    appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app,
+    appUrl: '<YOUR_APP_URL>'
   },
-  provider
+// Optionally, you can provide some additional params to customise your widget
+}, {
+  sell: { asset: 'DAI' },
+  buy: { asset: 'USDC', amount: '0.1' },
+  // instantiate your own web3 provider
+  provider: window.ethereum
 })
+
+// You also can change widget configuration on the fly
+updateWidget({ tradeType: 'limit' })
 ```
 
 ## Developers
 
-```bash
-# Run demo project locally
-# Will open http://localhost:3012/src/demo/index.html
-nx serve widget-lib
-
-# Test
-nx test widget-lib
-
-# Build the library
-nx build widget-lib
-
-# Publish to NPM
-nx publish widget-lib --ver 0.0.7 --tag latest
+#### Test
 ```
+nx test widget-lib
+```
+
+#### Build the library
+```
+nx build widget-lib
+```
+
