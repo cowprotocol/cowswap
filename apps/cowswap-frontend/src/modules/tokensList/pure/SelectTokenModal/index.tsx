@@ -5,6 +5,8 @@ import { UnsupportedTokensState } from '@cowprotocol/tokens'
 
 import { Edit, X } from 'react-feather'
 
+import { PermitCompatibleTokens } from 'modules/permit'
+
 import * as styledEl from './styled'
 
 import { TokenAmounts } from '../../../tokens'
@@ -21,7 +23,7 @@ export interface SelectTokenModalProps {
   unsupportedTokens: UnsupportedTokensState
   balancesLoading: boolean
   selectedToken?: string
-  permitCompatibleTokens: { [tokenAddress: string]: boolean }
+  permitCompatibleTokens: PermitCompatibleTokens
   onSelectToken(token: TokenWithLogo): void
   onInputPressEnter?(): void
   defaultInputValue?: string

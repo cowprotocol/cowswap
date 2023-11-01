@@ -6,8 +6,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
 import { permittableTokensAtom } from '../state/permittableTokensAtom'
+import { PermitCompatibleTokens } from '../types'
 
-export function usePermitCompatibleTokens(): Record<string, boolean> {
+export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   const { chainId } = useWalletInfo()
   const localPermitInfo = useAtomValue(permittableTokensAtom)[chainId]
   const { allPermitInfo } = usePreGeneratedPermitInfo()
@@ -20,7 +21,7 @@ export function usePermitCompatibleTokens(): Record<string, boolean> {
   preGeneratedPermitInfoRef.current = allPermitInfo
 
   return useMemo(() => {
-    const permitCompatibleTokens: Record<string, boolean> = {}
+    const permitCompatibleTokens: PermitCompatibleTokens = {}
 
     for (const address of Object.keys(preGeneratedPermitInfoRef.current)) {
       permitCompatibleTokens[address.toLowerCase()] = !!preGeneratedPermitInfoRef.current[address]

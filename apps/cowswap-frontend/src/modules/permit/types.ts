@@ -48,3 +48,5 @@ export type GetPermitCacheParams = PermitCacheKeyParams
 export type CheckHasValidPendingPermit = (order: ParsedOrder) => Promise<boolean | undefined>
 
 export type OrdersPermitStatus = Record<string, boolean | undefined>
+
+export type PermitCompatibleTokens = Record<string, boolean>
