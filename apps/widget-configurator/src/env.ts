@@ -2,4 +2,4 @@ export const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.h
 
 export const isVercel = window.location.hostname.includes('vercel.app')
 
-export const isDev = window.location.hostname.includes('dev.swap.cow.fi')
+export const isDev = ['dev.widget.cow.fi', 'dev.swap.cow.fi'].includes(window.location.hostname)
