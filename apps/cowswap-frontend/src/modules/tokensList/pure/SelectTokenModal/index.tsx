@@ -21,14 +21,13 @@ export interface SelectTokenModalProps {
   unsupportedTokens: UnsupportedTokensState
   balancesLoading: boolean
   selectedToken?: string
+  permitCompatibleTokens: { [tokenAddress: string]: boolean }
   onSelectToken(token: TokenWithLogo): void
   onInputPressEnter?(): void
   defaultInputValue?: string
   onOpenManageWidget(): void
   onDismiss(): void
 }
-
-const permitCompatibleTokens: { [tokenAddress: string]: boolean } = {} // TODO: Make dynamic
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
   const {
@@ -39,6 +38,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     balances,
     balancesLoading,
     unsupportedTokens,
+    permitCompatibleTokens,
     onSelectToken,
     onDismiss,
     onOpenManageWidget,

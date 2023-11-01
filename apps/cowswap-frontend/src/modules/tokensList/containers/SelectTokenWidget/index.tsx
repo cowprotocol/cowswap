@@ -6,15 +6,17 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   ListState,
   useAddList,
+  useAddUserToken,
   useAllListsList,
   useAllTokens,
   useFavouriteTokens,
-  useAddUserToken,
-  useUserAddedTokens,
   useUnsupportedTokens,
+  useUserAddedTokens,
 } from '@cowprotocol/tokens'
 
 import styled from 'styled-components/macro'
+
+import { usePermitCompatibleTokens } from 'modules/permit'
 
 import { CowModal } from 'common/pure/Modal'
 
@@ -49,6 +51,7 @@ export function SelectTokenWidget() {
   const allTokenLists = useAllListsList()
   const [balances, balancesLoading] = useAllTokensBalances()
   const unsupportedTokens = useUnsupportedTokens()
+  const permitCompatibleTokens = usePermitCompatibleTokens()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -129,6 +132,7 @@ export function SelectTokenWidget() {
               allTokens={allTokens}
               favouriteTokens={favouriteTokens}
               balances={balances}
+              permitCompatibleTokens={permitCompatibleTokens}
               balancesLoading={balancesLoading}
               onSelectToken={onSelectToken}
               onInputPressEnter={onInputPressEnter}
