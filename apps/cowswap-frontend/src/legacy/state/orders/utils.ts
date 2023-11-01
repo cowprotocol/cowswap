@@ -251,14 +251,19 @@ export function getEstimatedExecutionPrice(
   const { sellAmount } = getRemainderAmountsWithoutSurplus(order)
   const remainingSellAmount = CurrencyAmount.fromRawAmount(order.inputToken, sellAmount)
 
+  // When fee > amount, return 0 price
   if (!remainingSellAmount.greaterThan(ZERO_FRACTION)) {
-    // When fee > amount, return 0 price
     return new Price(order.inputToken, order.outputToken, '0', '0')
   }
 
   const feeWithMargin = feeAmount.add(feeAmount.multiply(EXECUTION_PRICE_FEE_COEFFICIENT))
   const numerator = remainingSellAmount.multiply(limitPrice)
   const denominator = remainingSellAmount.subtract(feeWithMargin)
+
+  // Just in case when the denominator is <= 0 after subtraction the fee
+  if (!denominator.greaterThan(ZERO_FRACTION)) {
+    return new Price(order.inputToken, order.outputToken, '0', '0')
+  }
 
   /**
    * Example:
