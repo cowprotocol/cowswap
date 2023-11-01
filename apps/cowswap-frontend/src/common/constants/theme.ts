@@ -15,13 +15,13 @@ export enum UI {
   COLOR_BORDER = '--cow-color-border',
   COLOR_CONTAINER_BG_01 = '--cow-container-bg-01',
   COLOR_CONTAINER_BG_02 = '--cow-container-bg-02',
-  
+
   // Misc
   MODAL_BACKDROP = '--cow-modal-backdrop',
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
   PADDING_NORMAL = '--cow-padding-normal',
   BOX_SHADOW_NORMAL = '--cow-box-shadow-normal',
-  
+
   // Icons
   ICON_SIZE_NORMAL = '--cow-icon-size-normal',
   ICON_SIZE_SMALL = '--cow-icon-size-small',
