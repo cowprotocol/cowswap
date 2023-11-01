@@ -19,9 +19,8 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
     const { chainId, hash } = action.payload
     const transaction = store.getState().transactions[chainId][hash]
 
-    // const { userDarkMode, matchesDarkMode } = store.getState().user
-    // const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
-    const isDarkMode = true // TODO: revert after halloween
+    const { userDarkMode, matchesDarkMode } = store.getState().user
+    const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
 
     if (transaction.swapVCow || transaction.swapLockedGNOvCow) {
       const status = transaction.receipt?.status

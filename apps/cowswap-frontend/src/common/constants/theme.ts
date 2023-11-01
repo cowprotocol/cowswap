@@ -2,7 +2,7 @@ import fortuneCookieRegular from 'assets/images/fortune-cookie.png'
 import fortuneCookieHalloween from 'assets/images/fortuneCookieHalloween.svg'
 
 // Enable to activate halloween theme elements for dark mode
-export const HALLOWEEN_MODE = true
+export const HALLOWEEN_MODE = false
 
 export enum UI {
   // Colors

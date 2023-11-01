@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+import { shallowEqual } from 'react-redux'
 
 import {
   addSerializedToken,
@@ -37,16 +38,15 @@ export function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export function useIsDarkMode(): boolean {
-  return true
-  // const { userDarkMode, matchesDarkMode } = useAppSelector(
-  //   ({ user: { matchesDarkMode, userDarkMode } }) => ({
-  //     userDarkMode,
-  //     matchesDarkMode,
-  //   }),
-  //   shallowEqual
-  // )
+  const { userDarkMode, matchesDarkMode } = useAppSelector(
+    ({ user: { matchesDarkMode, userDarkMode } }) => ({
+      userDarkMode,
+      matchesDarkMode,
+    }),
+    shallowEqual
+  )
 
-  // return userDarkMode === null ? matchesDarkMode : userDarkMode
+  return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
 
 export function useDarkModeManager(): [boolean, () => void] {
