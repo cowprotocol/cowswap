@@ -4,9 +4,9 @@ Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
 look and much more!
 
-[![Demo](./demo-preview.png)](https://www.youtube.com/watch?v=gxRRH9Rumx4&ab_channel=CoWSwap)
+Create your own widget using the configurator https://swap.cow.fi/widget-configurator/
 
-> [Watch the demo](https://www.youtube.com/watch?v=gxRRH9Rumx4&ab_channel=CoWSwap)
+![Demo](./demo-preview.png)
 
 ## Install
 
@@ -21,27 +21,30 @@ npm install @cowprotocol/widget-lib
 ## Quick start
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+import {cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings} from '@cowprotocol/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
   container: widgetContainer,
-  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
+  metaData: {appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL'},
   width: 600,
   height: 640,
 }
 
 const settings: CowSwapWidgetSettings = {
-  urlParams: {
-    sell: { asset: 'DAI' },
-    buy: { asset: 'USDC', amount: '0.1' }
-  }
+  sell: {asset: 'DAI'},
+  buy: {asset: 'USDC', amount: '0.1'}
 }
 
 cowSwapWidget(params, settings)
 ```
+
+## App key
+You must specify the `appKey` parameter when initializing the widget. This parameter is used to identify the source of orders.  
+The key must be a UTF8 string of up to 50 chars.  
+It will be a part of orders meta-data, see more in the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
 
 ## Wallet provider
 
@@ -70,11 +73,11 @@ interface JsonRpcRequest {
 An example of connecting a widget to Metamask:
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
 
 const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),
-  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
+  metaData: {appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL'},
   width: 600,
   height: 640,
   provider: window.ethereum // <-------
@@ -97,22 +100,26 @@ cowSwapWidget(params, {})
 
 ### `CowSwapWidgetSettings`
 
-| Parameter   | Type                     | Description                                                                                                                     |
-|-------------|--------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| `urlParams` | `CowSwapWidgetUrlParams` | The URL parameters of the widget, including chain information, trade type, environment, assets, and theme.                      |
-| `appParams` | `CowSwapWidgetAppParams` | (Optional) The application parameters of the widget, including the logo URL and flags for hiding the logo and network selector. |
-
-### `CowSwapWidgetUrlParams`
-
-| Parameter     | Type               | Description                                                                                |
-|---------------|--------------------|--------------------------------------------------------------------------------------------|
-| `chainId`     | `number`           | The blockchain ID on which the trade will take place.                                      |
-| `tradeType`   | `string`           | The type of trade. Can be `swap` or `limit-orders`.                                        |
-| `env`         | `CowSwapWidgetEnv` | The environment of the widget (`'local'` or `'prod'`).                                     |
-| `theme`       | `CowSwapTheme`     | (Optional) The theme of the widget (`'dark'` for dark theme or `'light'` for light theme). |
-| `tradeAssets` | `TradeAssets`      | (Optional) An object containing information about the selling and buying assets.           |
+| Parameter              | Type                   | Description                                                                                                                                                  |
+|------------------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `chainId`              | `number`               | The blockchain ID on which the trade will take place.                                                                                                        |
+| `tradeType`            | `string`               | The type of trade. Can be `swap` or `limit-orders`.                                                                                                          |
+| `env`                  | `CowSwapWidgetEnv`     | The environment of the widget (`'local'` or `'prod'`).                                                                                                       |
+| `tradeAssets`          | `TradeAssets`          | (Optional) An object containing information about the selling and buying assets.                                                                             |
+| `theme`                | `CowSwapTheme`         | (Optional) The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                   |
+| `logoUrl`              | `boolean`              | (Optional) The width of the widget in pixels.                                                                                                                |
+| `hideLogo`             | `boolean`              | (Optional) The height of the widget in pixels.                                                                                                               |
+| `hideNetworkSelector`  | `boolean`              | (Optional) Disables an opportunity to change the network from the widget UI.                                                                                 |
+| `dynamicHeightEnabled` | `boolean`              | (Optional) Dynamically changes the height of the iframe depending on the content.                                                                            |
+| `enabledTradeTypes`    | `Array<TradeType>`     | (Optional) CowSwap provides three trading widgets: swap, limit and twap orders. Using this option you can narrow down the list of available trading widgets. |
+| `palette`              | `CowSwapWidgetPalette` | (Optional) Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.          |
 
 ```typescript
+export interface CowSwapWidgetMetaData {
+  appKey: string
+  url: string
+}
+
 interface TradeAsset {
   asset: string
   amount?: string
@@ -122,15 +129,20 @@ export interface TradeAssets {
   sell: TradeAsset
   buy: TradeAsset
 }
+
+export enum TradeType {
+  SWAP = 'swap',
+  LIMIT = 'limit',
+  ADVANCED = 'advanced',
+}
+
+export interface CowSwapWidgetPalette {
+  primaryColor: string
+  screenBackground: string
+  widgetBackground: string
+  textColor: string
+}
 ```
-
-### `CowSwapWidgetAppParams`
-
-| Parameter             | Type      | Description                                          |
-|-----------------------|-----------|------------------------------------------------------|
-| `logoUrl`             | `boolean` | The width of the widget in pixels.                   |
-| `hideLogo`            | `boolean` | The height of the widget in pixels.                  |
-| `hideNetworkSelector` | `boolean` | The container in which the widget will be displayed. |
 
 ## Widget updating
 
@@ -148,22 +160,16 @@ const params: CowSwapWidgetParams = {
 
 
 const settings: CowSwapWidgetSettings = {
-  appParams: {
-    logoUrl: 'YOUR_LOGO_URL'
-  }
+  logoUrl: 'YOUR_LOGO_URL'
 }
 
 const updateWidget = cowSwapWidget(params, settings)
 
 // Update the widget
 updateWidget({
-  urlParams: {
-    theme: 'dark', // <- Change theme to dark
-  },
-  appParams: {
-    ...settings.appParams,
-    hideNetworkSelector: true // <- Hide the network selector
-  },
+  ...settings,
+  theme: 'dark', // <- Change theme to dark
+  hideNetworkSelector: true // <- Hide the network selector
 })
 ```
 
@@ -176,9 +182,3 @@ An example of URL:
 ```
 https://swap.cow.fi/#/100/swap/WXDAI/GNO?sellAmount=200&theme=dark
 ```
-
-## Backlog
-
-1. [ ] Customizing the theme palette
-2. [ ] Set custom tokens list from URL or JSON
-3. [ ] Forward integrator meta-data to Appzi

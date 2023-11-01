@@ -9,7 +9,7 @@ yarn install
 ## Generate locale files
 
 ```
-yarn i18n:extract
+yarn i18n
 ```
 
 ## Run the interface

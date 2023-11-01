@@ -32,14 +32,14 @@ export enum TradeType {
 }
 
 export interface CowSwapWidgetUrlParams {
-  chainId: number
-  tradeType: TradeType
-  env: CowSwapWidgetEnv
+  chainId?: number
+  tradeType?: TradeType
+  env?: CowSwapWidgetEnv
   tradeAssets?: TradeAssets
   theme?: CowSwapTheme
 }
 
-export interface InjectedWidgetPalette {
+export interface CowSwapWidgetPalette {
   primaryColor: string
   screenBackground: string
   widgetBackground: string
@@ -52,13 +52,10 @@ export interface CowSwapWidgetAppParams {
   hideNetworkSelector?: boolean
   dynamicHeightEnabled?: boolean
   enabledTradeTypes?: TradeType[]
-  palette?: InjectedWidgetPalette
+  palette?: CowSwapWidgetPalette
 }
 
-export interface CowSwapWidgetSettings {
-  urlParams: CowSwapWidgetUrlParams
-  appParams: CowSwapWidgetAppParams
-}
+export type CowSwapWidgetSettings = CowSwapWidgetUrlParams & CowSwapWidgetAppParams
 
 export interface CowSwapWidgetMetaData {
   appKey: string

@@ -39,7 +39,7 @@ function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettin
 
   const iframe = document.createElement('iframe')
 
-  iframe.src = buildWidgetUrl(settings.urlParams)
+  iframe.src = buildWidgetUrl(settings)
   iframe.width = `${width}px`
   iframe.height = `${height}px`
   iframe.style.border = '0'
@@ -48,11 +48,11 @@ function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettin
 }
 
 function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, iframe: HTMLIFrameElement) {
-  const pathname = buildWidgetPath(settings.urlParams)
-  const search = buildTradeAmountsQuery(settings.urlParams).toString()
+  const pathname = buildWidgetPath(settings)
+  const search = buildTradeAmountsQuery(settings).toString()
 
   // Reset iframe height to default
-  if (!settings.appParams.dynamicHeightEnabled) {
+  if (!settings.dynamicHeightEnabled) {
     iframe.style.height = ''
   }
 
@@ -64,7 +64,7 @@ function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, if
         pathname,
         search,
       },
-      appParams: settings.appParams,
+      appParams: settings,
     },
     '*'
   )

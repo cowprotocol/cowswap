@@ -34,3 +34,8 @@ export const ContentStyled = {
     overflow: 'auto',
   },
 }
+
+export const WalletConnectionWrapper = {
+  display: 'flex',
+  justifyContent: 'center',
+}

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetEnv, CowSwapWidgetParams, CowSwapWidgetSettings, EthereumProvider } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetEnv, EthereumProvider } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -15,12 +16,9 @@ const getEnv = (): CowSwapWidgetEnv => {
 
 export function useWidgetParamsAndSettings(
   provider: EthereumProvider | undefined,
-  widgetContainer: HTMLDivElement | null,
   configuratorState: ConfiguratorState
 ) {
   return useMemo(() => {
-    if (!widgetContainer) return null
-
     const {
       chainId,
       theme,
@@ -33,37 +31,32 @@ export function useWidgetParamsAndSettings(
       dynamicHeightEnabled,
     } = configuratorState
 
-    const params: CowSwapWidgetParams = {
-      container: widgetContainer,
+    const params: CowSwapWidgetProps['params'] = {
       metaData: { appKey: '<YOUR_APP_ID>', url: '<https://YOUR_APP_URL>' },
       width: 400,
       height: 640,
       provider,
     }
 
-    const settings: CowSwapWidgetSettings = {
-      urlParams: {
-        theme,
-        chainId,
-        env: getEnv(),
-        tradeType: currentTradeType,
-        tradeAssets: {
-          sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-          buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-        },
+    const settings: CowSwapWidgetProps['settings'] = {
+      theme,
+      chainId,
+      env: getEnv(),
+      tradeType: currentTradeType,
+      tradeAssets: {
+        sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
+        buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       },
-      appParams: {
-        dynamicHeightEnabled,
-        enabledTradeTypes,
-        // palette: {
-        //   primaryColor: '#d9258e',
-        //   screenBackground: '#c7860f',
-        //   widgetBackground: '#eed4a7',
-        //   textColor: '#413931',
-        // },
-      },
+      dynamicHeightEnabled,
+      enabledTradeTypes,
+      // palette: {
+      //   primaryColor: '#d9258e',
+      //   screenBackground: '#c7860f',
+      //   widgetBackground: '#eed4a7',
+      //   textColor: '#413931',
+      // },
     }
 
     return { params, settings }
-  }, [provider, widgetContainer, configuratorState])
+  }, [provider, configuratorState])
 }
