@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { useAccount, useNetwork } from 'wagmi'
 
 import { TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -17,6 +18,7 @@ import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
 import { EmbedDialog } from './embedDialog'
 import { useProvider } from './hooks/useProvider'
+import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState } from './types'
@@ -37,7 +39,7 @@ export function Configurator({ title }: { title: string }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
-  const [{ chainId }] = networkControlState
+  const [{ chainId }, setNetworkControlState] = networkControlState
 
   const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
   const [currentTradeType] = tradeTypeState
@@ -55,10 +57,19 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  const { isDisconnected } = useAccount()
+  const network = useNetwork()
+
+  const walletChainId = network.chain?.id
+
+  useSyncWidgetNetwork(chainId, setNetworkControlState)
+
   const provider = useProvider()
 
   const state: ConfiguratorState = {
-    chainId,
+    // Don't change chainId in the widget URL if the user is connected to a wallet
+    // Because useSyncWidgetNetwork() will send a request to change the network
+    chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
