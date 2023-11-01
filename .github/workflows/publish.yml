@@ -10,6 +10,7 @@ on:
         options:
           - permit-utils
           - widget-lib
+          - widget-react
           # Add more publishable libs here
       tag:
         description: NPM package tag
