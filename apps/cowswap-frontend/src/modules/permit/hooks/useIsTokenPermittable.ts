@@ -98,7 +98,7 @@ export function useIsTokenPermittable(
   if (isNative) {
     return false
   }
-  // TODO: add an updater for this
+
   return preGeneratedInfo ?? permitInfo
 }
 
