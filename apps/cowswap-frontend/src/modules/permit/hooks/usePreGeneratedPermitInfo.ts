@@ -1,3 +1,4 @@
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,17 +21,8 @@ export function usePreGeneratedPermitInfo(): {
 
   const { data, isLoading } = useSWR(
     url,
-    (url: string): Promise<Record<string, PermitInfo>> =>
-      fetch(url).then((r) => {
-        return r.json()
-      }),
-    {
-      // Cache indefinitely
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      fallbackData: {},
-    }
+    (url: string): Promise<Record<string, PermitInfo>> => fetch(url).then((r) => r.json()),
+    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} }
   )
 
   return { allPermitInfo: data, isLoading }
