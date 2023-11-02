@@ -99,7 +99,7 @@ function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, if
  * @param contentWindow - Window object of the widget's iframe.
  * @param metaData - Metadata for the widget.
  */
-function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData) {
+function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData | undefined) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
       return

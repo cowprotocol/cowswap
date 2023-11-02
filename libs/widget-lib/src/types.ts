@@ -112,18 +112,19 @@ export type CowSwapWidgetSettings = CowSwapWidgetUrlParams & CowSwapWidgetAppPar
 export interface CowSwapWidgetMetaData {
   /**
    * The unique identifier of the widget consumer.
+   * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
    */
   appKey: string
   /**
-   * The URL of the website that embeds the widget.
+   * (Optional )An email address to contact the widget consumer.
    */
-  url: string
+  email?: string
 }
 
 export interface CowSwapWidgetParams {
   width: number
   height: number
   container: HTMLElement
-  metaData: CowSwapWidgetMetaData
+  metaData?: CowSwapWidgetMetaData
   provider?: EthereumProvider
 }

@@ -22,7 +22,7 @@ export function useAppCode(): string | null {
 
   return useMemo(() => {
     if (isInjectedWidget()) {
-      return injectedWidgetMetaData?.appKey || null
+      return injectedWidgetMetaData.appKey
     }
 
     if (APP_CODE) {

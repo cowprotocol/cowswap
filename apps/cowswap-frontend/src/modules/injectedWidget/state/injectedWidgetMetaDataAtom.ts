@@ -1,8 +1,9 @@
 import { atom } from 'jotai'
 
-export interface InjectedWidgetMetaData {
-  appKey: string
-  url: string
+import type { CowSwapWidgetMetaData } from '@cowprotocol/widget-lib'
+
+const DEFAULT_INJECTED_WIDGET_META_DATA: CowSwapWidgeMetaData = {
+  appKey: 'DEFAULT_INJECTED_WIDGET',
 }
 
-export const injectedWidgetMetaDataAtom = atom<InjectedWidgetMetaData | null>(null)
+export const injectedWidgetMetaDataAtom = atom<CowSwapWidgetMetaData>(DEFAULT_INJECTED_WIDGET_META_DATA)

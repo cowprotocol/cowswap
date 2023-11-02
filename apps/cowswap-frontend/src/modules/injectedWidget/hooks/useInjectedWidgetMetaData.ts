@@ -1,7 +1,9 @@
 import { useAtomValue } from 'jotai'
 
-import { InjectedWidgetMetaData, injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
+import type { CowSwapWidgetMetaData } from '@cowprotocol/widget-lib'
 
-export function useInjectedWidgetMetaData(): InjectedWidgetMetaData | null {
+import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
+
+export function useInjectedWidgetMetaData(): CowSwapWidgetMetaData {
   return useAtomValue(injectedWidgetMetaDataAtom)
 }
