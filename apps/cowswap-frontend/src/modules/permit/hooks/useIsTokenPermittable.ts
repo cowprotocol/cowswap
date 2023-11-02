@@ -43,7 +43,7 @@ export function useIsTokenPermittable(
   // Avoid building permit info in the first place if order type is not supported
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
 
-  const isPermitEnabled = useIsPermitEnabled(chainId) && isPermitSupported
+  const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
