@@ -2,7 +2,7 @@
 
 exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddress" field in the quote request should be 0x000...0000 1`] = `
 {
-  "appData": "0xbace6e636671f2df6e59ef1eb4e63dce6b646a70c51b004ae5a07a9fbe4356fc",
+  "appData": "0x67e14fb94bf7d70b1d7822a861a33c0ca9d7d2db930869f1c65bf32176d95dad",
   "appDataHash": undefined,
   "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
   "from": "0x0000000000000000000000000000000000000000",
@@ -18,7 +18,7 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddres
 
 exports[`useTradeQuotePolling() When wallet is connected Then should put account address into "useAddress" field in the quote request 1`] = `
 {
-  "appData": "0xbace6e636671f2df6e59ef1eb4e63dce6b646a70c51b004ae5a07a9fbe4356fc",
+  "appData": "0x67e14fb94bf7d70b1d7822a861a33c0ca9d7d2db930869f1c65bf32176d95dad",
   "appDataHash": undefined,
   "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
   "from": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
