@@ -88,23 +88,23 @@ cowSwapWidget(
 
 > All params are optional
 
-| Parameter              | Type                   | Description                                                                                                                                       |
-|------------------------|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `width`                | `number`               | The width of the widget in pixels. Default: 400px                                                                                                 |
-| `height`               | `number`               | The height of the widget in pixels. Default: 600px                                                                                                |
-| `appKey`               | `string`               | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: <TODO-TYPEFORM>                              |
-| `provider`             | `EthereumProvider`     | The Ethereum provider to be used for interacting with a wallet.                                                                                   |
-| `chainId`              | `number`               | The blockchain ID on which the trade will take place.                                                                                             |
-| `tradeType`            | `string`               | The type of trade. Can be `swap` or `limit-orders`.                                                                                               |
-| `env`                  | `CowSwapWidgetEnv`     | The environment of the widget (`'local'` or `'prod'`).                                                                                            |
-| `tradeAssets`          | `TradeAssets`          | An object containing information about the selling and buying assets.                                                                             |
-| `theme`                | `CowSwapTheme`         | The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                   |
-| `logoUrl`              | `boolean`              | The width of the widget in pixels.                                                                                                                |
-| `hideLogo`             | `boolean`              | The height of the widget in pixels.                                                                                                               |
-| `hideNetworkSelector`  | `boolean`              | Disables an opportunity to change the network from the widget UI.                                                                                 |
-| `dynamicHeightEnabled` | `boolean`              | Dynamically changes the height of the iframe depending on the content.                                                                            |
-| `enabledTradeTypes`    | `Array<TradeType>`     | CowSwap provides three trading widgets: swap, limit and twap orders. Using this option you can narrow down the list of available trading widgets. |
-| `palette`              | `CowSwapWidgetPalette` | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.          |
+| Parameter              | Type                   | Default                   | Description                                                                                                                                       |
+|------------------------|------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `width`                | `number`               | 400                       | The width of the widget in pixels.                                                                                                                |
+| `height`               | `number`               | 600                       | The height of the widget in pixels.                                                                                                               |
+| `appKey`               | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: <TODO-TYPEFORM>                              |
+| `provider`             | `EthereumProvider`     | ---                       | The Ethereum provider to be used for interacting with a wallet.                                                                                   |
+| `chainId`              | `number`               | 1                         | The blockchain ID on which the trade will take place.                                                                                             |
+| `tradeType`            | `string`               | 'swap'                    | The type of trade. Can be `swap` or `limit-orders`.                                                                                               |
+| `env`                  | `CowSwapWidgetEnv`     | 'prod'                    | The environment of the widget (`'local'` or `'prod'`).                                                                                            |
+| `tradeAssets`          | `TradeAssets`          | Same as in swap.cow.fi    | An object containing information about the selling and buying assets.                                                                             |
+| `theme`                | `CowSwapTheme`         | 'light'                   | The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                   |
+| `logoUrl`              | `string`               | ---                       | The width of the widget in pixels.                                                                                                                |
+| `hideLogo`             | `boolean`              | false                     | The height of the widget in pixels.                                                                                                               |
+| `hideNetworkSelector`  | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                 |
+| `dynamicHeightEnabled` | `boolean`              | false                     | Dynamically changes the height of the iframe depending on the content.                                                                            |
+| `enabledTradeTypes`    | `Array<TradeType>`     | All are enabled           | CowSwap provides three trading widgets: swap, limit and twap orders. Using this option you can narrow down the list of available trading widgets. |
+| `palette`              | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.          |
 
 ## Widget updating
 
