@@ -7,8 +7,8 @@ import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUt
  */
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
-const DEFAULT_HEIGHT = 600
-const DEFAULT_WIDTH = 400
+const DEFAULT_HEIGHT = '600px'
+const DEFAULT_WIDTH = '400px'
 
 /**
  * Callback function signature for updating the CoW Swap Widget.
@@ -60,8 +60,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
   iframe.src = buildWidgetUrl(params)
-  iframe.width = `${width}px`
-  iframe.height = `${height}px`
+  iframe.width = width
+  iframe.height = height
   iframe.style.border = '0'
 
   return iframe
@@ -132,8 +132,6 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
       return
     }
 
-    const height = event.data.height || defaultHeight
-
-    iframe.style.height = `${height}px`
+    iframe.style.height = event.data.height ? `${event.data.height}px` : defaultHeight
   })
 }

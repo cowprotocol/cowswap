@@ -78,11 +78,11 @@ interface CowSwapWidgetConfig {
   /**
    * The width of the widget in pixels. Default: 400px
    */
-  width: number
+  width: string
   /**
    * The height of the widget in pixels. Default: 600px
    */
-  height: number
+  height: string
   /**
    * The unique identifier of the widget consumer.
    * Please fill the for to let us know a little about you: <TODO-TYPEFORM>

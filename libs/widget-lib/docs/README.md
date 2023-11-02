@@ -90,8 +90,8 @@ cowSwapWidget(
 
 | Parameter              | Type                   | Default                   | Description                                                                                                                                       |
 |------------------------|------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `width`                | `number`               | 400                       | The width of the widget in pixels.                                                                                                                |
-| `height`               | `number`               | 600                       | The height of the widget in pixels.                                                                                                               |
+| `width`                | `string`               | 400px                     | The width of the widget in css values (px, vh, etc.).                                                                                             |
+| `height`               | `string`               | 600px                     | The height of the widget in css values (px, vh, etc.).                                                                                            |
 | `appKey`               | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: <TODO-TYPEFORM>                              |
 | `provider`             | `EthereumProvider`     | ---                       | The Ethereum provider to be used for interacting with a wallet.                                                                                   |
 | `chainId`              | `number`               | 1                         | The blockchain ID on which the trade will take place.                                                                                             |
