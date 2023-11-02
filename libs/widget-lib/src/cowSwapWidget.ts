@@ -1,5 +1,5 @@
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetMetaData, CowSwapWidgetParams } from './types'
+import { CowSwapWidgetParams } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
 /**
@@ -32,7 +32,7 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
 
   if (!contentWindow) throw new Error('Iframe does not contain a window!')
 
-  sendMetaData(contentWindow, params.metaData)
+  sendAppKey(contentWindow, params.appKey)
 
   applyDynamicHeight(iframe, params.height)
 
@@ -100,11 +100,11 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window, iframe
 }
 
 /**
- * Sends metadata to the contentWindow of the widget.
+ * Sends appKey to the contentWindow of the widget.
  * @param contentWindow - Window object of the widget's iframe.
- * @param metaData - Metadata for the widget.
+ * @param appKey - A unique identifier for the app.
  */
-function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData | undefined) {
+function sendAppKey(contentWindow: Window, appKey: string | undefined) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
       return
@@ -114,7 +114,7 @@ function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData | u
       {
         key: COW_SWAP_WIDGET_EVENT_KEY,
         method: 'metaData',
-        metaData,
+        metaData: appKey ? { appKey } : undefined,
       },
       '*'
     )

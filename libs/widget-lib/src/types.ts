@@ -74,18 +74,6 @@ export interface CowSwapWidgetPalette {
   textColor: string
 }
 
-export interface CowSwapWidgetMetaData {
-  /**
-   * The unique identifier of the widget consumer.
-   * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
-   */
-  appKey: string
-  /**
-   * (Optional )An email address to contact the widget consumer.
-   */
-  email?: string
-}
-
 interface CowSwapWidgetConfig {
   /**
    * The width of the widget in pixels. Default: 400px
@@ -96,10 +84,10 @@ interface CowSwapWidgetConfig {
    */
   height: number
   /**
-   * Metadata about the widget consumer. It is used for analytics purposes.
-   * Despite the fact that this field is optional we strongly recommend to fill it.
+   * The unique identifier of the widget consumer.
+   * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
    */
-  metaData: CowSwapWidgetMetaData
+  appKey: string
   /**
    * The widget might be connected to a custom Ethereum provider.
    */
