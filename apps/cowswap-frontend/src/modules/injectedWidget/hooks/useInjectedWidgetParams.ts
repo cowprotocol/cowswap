@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai'
 
-import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 
-export function useInjectedWidgetParams(): CowSwapWidgetAppParams {
+export function useInjectedWidgetParams(): CowSwapWidgetParams {
   return useAtomValue(injectedWidgetParamsAtom)
 }

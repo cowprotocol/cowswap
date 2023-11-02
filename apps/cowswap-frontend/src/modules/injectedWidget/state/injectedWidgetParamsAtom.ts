@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-export const injectedWidgetParamsAtom = atom<CowSwapWidgetAppParams>({})
+export const injectedWidgetParamsAtom = atom<CowSwapWidgetParams>({})
