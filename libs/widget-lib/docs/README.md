@@ -102,7 +102,6 @@ cowSwapWidget(
 | `logoUrl`              | `string`               | ---                       | Allows to set a custom logo for the widget.                                                                                                                                      |
 | `hideLogo`             | `boolean`              | false                     | Option to hide the logo in the widget.                                                                                                                                     |
 | `hideNetworkSelector`  | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                       |
-| `dynamicHeightEnabled` | `boolean`              | false                     | Dynamically changes the height of the iframe depending on the content.                                                                                                  |
 | `enabledTradeTypes`    | `Array<TradeType>`     | All are enabled           | CowSwap provides three trading widgets: swap, limit and twap orders. Using this option you can narrow down the list of available trading widgets.                       |
 | `palette`              | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.                                |
 

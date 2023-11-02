@@ -66,7 +66,6 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    dynamicHeightEnabled: true,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)

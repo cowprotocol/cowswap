@@ -127,11 +127,6 @@ interface CowSwapWidgetConfig {
    */
   hideNetworkSelector: boolean
   /**
-   * Enables dynamic height for the widget.
-   * The widget will resize itself to fit the content.
-   */
-  dynamicHeightEnabled: boolean
-  /**
    * Enables the ability to switch between trade types in the widget.
    */
   enabledTradeTypes: TradeType[]

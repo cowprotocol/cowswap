@@ -43,10 +43,10 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
   }
 
   iframe.addEventListener('load', () => {
-    updateWidget(params, contentWindow, iframe)
+    updateWidget(params, contentWindow)
   })
 
-  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow, iframe)
+  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
 }
 
 /**
@@ -71,16 +71,10 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * Updates the CoW Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
- * @param iframe - The HTMLIFrameElement of the widget.
  */
-function updateWidget(params: CowSwapWidgetParams, contentWindow: Window, iframe: HTMLIFrameElement) {
+function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
-
-  // Reset iframe height to default
-  if (!params.dynamicHeightEnabled) {
-    iframe.style.height = ''
-  }
 
   contentWindow.postMessage(
     {
