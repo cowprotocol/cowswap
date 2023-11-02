@@ -1,7 +1,7 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderClass, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
@@ -188,10 +188,10 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
   return new Price(order.inputToken, order.outputToken, quotedAmount, remainingAmount)
 }
 
-// This is how much the price denominator will be multiplied by
-// Anything < 1 means the denominator will decrease, thus the resulting price will increase
-// The difference between it an 1 is the % by which the price will increase
-const ESTIMATED_PRICE_SLIPPAGE = { numerator: 995, denominator: 1000 } // 995/1000 => 0.995 => 99.5%
+/**
+ * 5% to level out the fee amount changes
+ */
+const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
 
 /**
  * Get estimated execution price
@@ -251,18 +251,29 @@ export function getEstimatedExecutionPrice(
   const { sellAmount } = getRemainderAmountsWithoutSurplus(order)
   const remainingSellAmount = CurrencyAmount.fromRawAmount(order.inputToken, sellAmount)
 
-  // Use the remaining sell amount for the calculations, as the fee will be based on that
-  const amountMinusFees = remainingSellAmount.subtract(feeAmount)
-
-  if (!amountMinusFees.greaterThan(ZERO_FRACTION)) {
-    // When fee > amount, return 0 price
+  // When fee > amount, return 0 price
+  if (!remainingSellAmount.greaterThan(ZERO_FRACTION)) {
     return new Price(order.inputToken, order.outputToken, '0', '0')
   }
 
+  const feeWithMargin = feeAmount.add(feeAmount.multiply(EXECUTION_PRICE_FEE_COEFFICIENT))
   const numerator = remainingSellAmount.multiply(limitPrice)
-  // The divider in the formula is used as denominator, and the division is done inside the Price instance
-  const denominator = amountMinusFees
+  const denominator = remainingSellAmount.subtract(feeWithMargin)
 
+  // Just in case when the denominator is <= 0 after subtraction the fee
+  if (!denominator.greaterThan(ZERO_FRACTION)) {
+    return new Price(order.inputToken, order.outputToken, '0', '0')
+  }
+
+  /**
+   * Example:
+   * Order: 100 WETH -> 182000 USDC
+   * Fee: 0.002 WETH
+   * Limit price: 182000 / 100 = 1820 USDC per 1 WETH
+   *
+   * Fee with margin: 0.002 + 5% = 0.0021 WETH
+   * Executes at: 182000 / (100 - 0.0021) = 1820.038 USDC per 1 WETH
+   */
   const feasibleExecutionPrice = new Price(
     order.inputToken,
     order.outputToken,
@@ -273,18 +284,6 @@ export function getEstimatedExecutionPrice(
   // Pick the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 
-  // Apply slippage to the estimated price to give us an extra wiggle room
-  const slippageAppliedDenominator = JSBI.divide(
-    JSBI.multiply(estimatedExecutionPrice.denominator, JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.numerator)),
-    JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.denominator)
-  )
-  const priceWithSlippage = new Price(
-    order.inputToken,
-    order.outputToken,
-    // Here we reduced a % of the denominator to increase the price a little bit
-    slippageAppliedDenominator,
-    estimatedExecutionPrice.numerator
-  )
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
     'Amount (A)':
@@ -302,14 +301,11 @@ export function getEstimatedExecutionPrice(
     'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
       estimatedExecutionPrice.quoteCurrency.symbol
     } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
-    'EEP with slippage': `${priceWithSlippage.toFixed(8)} ${priceWithSlippage.quoteCurrency.symbol} per ${
-      priceWithSlippage.baseCurrency.symbol
-    } (${priceWithSlippage.numerator.toString()}/${priceWithSlippage.denominator.toString()})`,
     id: order.id.slice(0, 8),
     class: order.class,
   })
 
-  return priceWithSlippage
+  return estimatedExecutionPrice
 }
 
 /**
