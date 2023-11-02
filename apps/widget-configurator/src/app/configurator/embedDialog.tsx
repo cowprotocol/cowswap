@@ -13,10 +13,9 @@ import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
-  settings: CowSwapWidgetProps['settings']
 }
 
-export function EmbedDialog({ params, settings }: EmbedDialogProps) {
+export function EmbedDialog({ params }: EmbedDialogProps) {
   const [open, setOpen] = useState(false)
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
 
@@ -42,18 +41,17 @@ export function EmbedDialog({ params, settings }: EmbedDialogProps) {
 
   const paramsSanitized = {
     ...params,
-    container: `<YOUR_CONTAINER>`,
     provider: `<eip-1193 provider>`,
   }
 
   const code = `
-import { CowSwapWidgetParams, CowSwapWidgetSettings, cowSwapWidget } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, cowSwapWidget } from '@cowprotocol/widget-lib'
+
+const container = document.getElementById('<YOUR_CONTAINER>')
 
 const params: CowSwapWidgetParams = ${JSON.stringify(paramsSanitized, null, 4)}
 
-const settings: CowSwapWidgetSettings = ${JSON.stringify(settings, null, 4)}
-
-const updateWidget = cowSwapWidget(params, settings)
+const updateWidget = cowSwapWidget(container, params)
   `
 
   const handleCopy = () => {

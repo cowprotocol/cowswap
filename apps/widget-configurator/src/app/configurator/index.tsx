@@ -69,8 +69,7 @@ export function Configurator({ title }: { title: string }) {
     dynamicHeightEnabled: true,
   }
 
-  const paramsAndSettings = useWidgetParamsAndSettings(provider, state)
-  const { params, settings } = paramsAndSettings || {}
+  const params = useWidgetParamsAndSettings(provider, state)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -117,11 +116,11 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        {params && settings && (
+        {params && (
           <>
-            <EmbedDialog params={params} settings={settings} />
+            <EmbedDialog params={params} />
             <br />
-            <CowSwapWidget provider={provider} settings={settings} params={params} />
+            <CowSwapWidget provider={provider} params={params} />
           </>
         )}
       </Box>

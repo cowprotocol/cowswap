@@ -1,20 +1,13 @@
 import { useEffect, useRef } from 'react'
 
-import {
-  cowSwapWidget,
-  CowSwapWidgetParams,
-  CowSwapWidgetSettings,
-  EthereumProvider,
-  UpdateWidgetCallback,
-} from '@cowprotocol/widget-lib'
+import { cowSwapWidget, CowSwapWidgetParams, EthereumProvider, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
 
 export interface CowSwapWidgetProps {
-  params: Omit<CowSwapWidgetParams, 'container'>
-  settings: CowSwapWidgetSettings
+  params: CowSwapWidgetParams
   provider?: EthereumProvider
 }
 
-export function CowSwapWidget({ params, settings, provider }: CowSwapWidgetProps) {
+export function CowSwapWidget({ params, provider }: CowSwapWidgetProps) {
   const providerRef = useRef<EthereumProvider | null>()
   const iframeContainerRef = useRef<HTMLDivElement>(null)
   const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
@@ -28,11 +21,11 @@ export function CowSwapWidget({ params, settings, provider }: CowSwapWidgetProps
     }
 
     if (updateWidgetRef.current) {
-      updateWidgetRef.current(settings)
+      updateWidgetRef.current(params)
     } else {
-      updateWidgetRef.current = cowSwapWidget({ ...params, container: iframeContainerRef.current }, settings)
+      updateWidgetRef.current = cowSwapWidget(iframeContainerRef.current, params)
     }
-  }, [provider, params, settings])
+  }, [provider, params])
 
   useEffect(() => {
     providerRef.current = provider

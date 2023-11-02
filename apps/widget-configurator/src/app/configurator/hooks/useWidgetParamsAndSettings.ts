@@ -32,13 +32,10 @@ export function useWidgetParamsAndSettings(
     } = configuratorState
 
     const params: CowSwapWidgetProps['params'] = {
-      metaData: { appKey: '<YOUR_APP_ID>', url: '<https://YOUR_APP_URL>' },
+      metaData: { appKey: '<YOUR_APP_ID>' },
       width: 400,
       height: 640,
       provider,
-    }
-
-    const settings: CowSwapWidgetProps['settings'] = {
       theme,
       chainId,
       env: getEnv(),
@@ -51,12 +48,12 @@ export function useWidgetParamsAndSettings(
       enabledTradeTypes,
       // palette: {
       //   primaryColor: '#d9258e',
-      //   screenBackground: '#c7860f',
-      //   widgetBackground: '#eed4a7',
-      //   textColor: '#413931',
+      //   screenBackground: '#ee00cd',
+      //   widgetBackground: '#b900ff',
+      //   textColor: '#b348cc',
       // },
     }
 
-    return { params, settings }
+    return params
   }, [provider, configuratorState])
 }

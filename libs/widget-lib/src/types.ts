@@ -49,6 +49,9 @@ interface TradeAsset {
   amount?: string
 }
 
+/**
+ * A pair of assets to trade.
+ */
 export interface TradeAssets {
   sell: TradeAsset
   buy: TradeAsset
@@ -64,50 +67,12 @@ export enum TradeType {
   ADVANCED = 'advanced',
 }
 
-export interface CowSwapWidgetUrlParams {
-  chainId?: SupportedChainId
-  tradeType?: TradeType
-  env?: CowSwapWidgetEnv
-  tradeAssets?: TradeAssets
-  theme?: CowSwapTheme
-}
-
 export interface CowSwapWidgetPalette {
   primaryColor: string
   screenBackground: string
   widgetBackground: string
   textColor: string
 }
-
-export interface CowSwapWidgetAppParams {
-  /**
-   * Allows to set a custom logo for the widget.
-   */
-  logoUrl?: string
-  /**
-   * Option to hide the logo in the widget.
-   */
-  hideLogo?: boolean
-  /**
-   * Option to hide the network selector in the widget.
-   */
-  hideNetworkSelector?: boolean
-  /**
-   * Enables dynamic height for the widget.
-   * The widget will resize itself to fit the content.
-   */
-  dynamicHeightEnabled?: boolean
-  /**
-   * Enables the ability to switch between trade types in the widget.
-   */
-  enabledTradeTypes?: TradeType[]
-  /**
-   * Colors palette to customize the widget UI.
-   */
-  palette?: CowSwapWidgetPalette
-}
-
-export type CowSwapWidgetSettings = CowSwapWidgetUrlParams & CowSwapWidgetAppParams
 
 export interface CowSwapWidgetMetaData {
   /**
@@ -121,10 +86,71 @@ export interface CowSwapWidgetMetaData {
   email?: string
 }
 
-export interface CowSwapWidgetParams {
+interface CowSwapWidgetConfig {
+  /**
+   * The width of the widget in pixels. Default: 400px
+   */
   width: number
+  /**
+   * The height of the widget in pixels. Default: 600px
+   */
   height: number
-  container: HTMLElement
-  metaData?: CowSwapWidgetMetaData
-  provider?: EthereumProvider
+  /**
+   * Metadata about the widget consumer. It is used for analytics purposes.
+   * Despite the fact that this field is optional we strongly recommend to fill it.
+   */
+  metaData: CowSwapWidgetMetaData
+  /**
+   * The widget might be connected to a custom Ethereum provider.
+   */
+  provider: EthereumProvider
+
+  /**
+   * Network ID.
+   */
+  chainId: SupportedChainId
+  /**
+   * Swap, Limit or Advanced (Twap).
+   */
+  tradeType: TradeType
+  /**
+   * The environment of the widget. Default: prod
+   */
+  env: CowSwapWidgetEnv
+  /**
+   * The assets to trade.
+   */
+  tradeAssets: TradeAssets
+  /**
+   * The theme of the widget UI.
+   */
+  theme: CowSwapTheme
+
+  /**
+   * Allows to set a custom logo for the widget.
+   */
+  logoUrl: string
+  /**
+   * Option to hide the logo in the widget.
+   */
+  hideLogo: boolean
+  /**
+   * Option to hide the network selector in the widget.
+   */
+  hideNetworkSelector: boolean
+  /**
+   * Enables dynamic height for the widget.
+   * The widget will resize itself to fit the content.
+   */
+  dynamicHeightEnabled: boolean
+  /**
+   * Enables the ability to switch between trade types in the widget.
+   */
+  enabledTradeTypes: TradeType[]
+  /**
+   * Colors palette to customize the widget UI.
+   */
+  palette: CowSwapWidgetPalette
 }
+
+export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
