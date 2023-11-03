@@ -1,21 +1,19 @@
 import { registerOnWindow } from './misc'
 
-const DEFAULT_ENVIRONMENTS_REGEX: Record<Envs, string> = {
-  LOCAL: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  PR: '^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap\\.vercel\\.app',
-  DEV: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
-  STAGING: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
-  PROD: '^(swap.cow.fi|swap-prod.vercel.app)$',
-  BARN: '^(barn.cow.fi|swap-barn.vercel.app)$',
-  ENS: '(:?^cowswap.eth|ipfs)',
+const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
+  local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
+  pr: '^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap\\.vercel\\.app',
+  development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
+  staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
+  production: '^(swap.cow.fi|swap-prod.vercel.app)$',
+  barn: '^(barn.cow.fi|swap-barn.vercel.app)$',
+  ens: '(:?^cowswap.eth|ipfs)',
 }
 
-function getRegex(env: Envs) {
-  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
+function getRegex(env: EnvironmentName) {
+  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
   return new RegExp(regex, 'i')
 }
-
-type Envs = 'LOCAL' | 'PR' | 'DEV' | 'STAGING' | 'PROD' | 'BARN' | 'ENS'
 export interface EnvironmentChecks {
   isProd: boolean
   isEns: boolean
@@ -27,20 +25,20 @@ export interface EnvironmentChecks {
 }
 
 export function checkEnvironment(host: string, path: string): EnvironmentChecks {
-  const ensRegex = getRegex('ENS')
+  const ensRegex = getRegex('ens')
 
   return {
     // Project environments
-    isLocal: getRegex('LOCAL').test(host),
-    isDev: getRegex('DEV').test(host),
-    isPr: getRegex('PR').test(host),
-    isStaging: getRegex('STAGING').test(host),
-    isProd: getRegex('PROD').test(host),
+    isLocal: getRegex('local').test(host),
+    isDev: getRegex('development').test(host),
+    isPr: getRegex('pr').test(host),
+    isStaging: getRegex('staging').test(host),
+    isProd: getRegex('production').test(host),
     isEns: ensRegex.test(host) || ensRegex.test(path),
 
     // Environment used for Backend workflow
     // The latest stable version pointing to the DEV api
-    isBarn: getRegex('BARN').test(host),
+    isBarn: getRegex('barn').test(host),
   }
 }
 
