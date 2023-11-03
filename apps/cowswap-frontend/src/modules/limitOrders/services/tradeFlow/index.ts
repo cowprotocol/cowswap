@@ -57,7 +57,7 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (permitInfo) beforePermit()
+    if (permitInfo && permitInfo.type !== 'unsupported') beforePermit()
 
     postOrderParams.appData = await handlePermit({
       permitInfo,

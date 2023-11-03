@@ -70,16 +70,14 @@ export function useIsTokenPermittable(
     }
 
     getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
-      if (!result) {
-        // When falsy, we know it doesn't support permit. Cache it.
-        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })
-      } else if ('error' in result) {
+
+      if ('error' in result) {
         // When error, we don't know. Log and don't cache.
         console.debug(
           `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`
         )
       } else {
-        // Otherwise, we know it is permittable. Cache it.
+        // Otherwise, we know it is permittable or not. Cache it.
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
     })
@@ -98,7 +96,7 @@ export function useIsTokenPermittable(
   ])
 
   if (isNative) {
-    return false
+    return { type: 'unsupported' }
   }
 
   return preGeneratedInfo ?? permitInfo

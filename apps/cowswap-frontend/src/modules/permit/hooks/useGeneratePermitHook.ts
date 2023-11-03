@@ -38,7 +38,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
       const { inputToken, account, permitInfo } = params
 
-      if (!provider) {
+      if (!provider || permitInfo.type === 'unsupported') {
         return
       }
 

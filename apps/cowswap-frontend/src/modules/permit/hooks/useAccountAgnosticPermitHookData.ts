@@ -44,7 +44,8 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
   const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
-    if (!inputCurrency || !('address' in inputCurrency) || !permitInfo) return undefined
+    if (!inputCurrency || !('address' in inputCurrency) || !permitInfo || permitInfo.type === 'unsupported')
+      return undefined
 
     return {
       inputToken: { address: inputCurrency.address, name: inputCurrency.name },

@@ -26,7 +26,7 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (input.permitInfo) input.swapConfirmManager.requestPermitSignature()
+    if (input.permitInfo && input.permitInfo.type !== 'unsupported') input.swapConfirmManager.requestPermitSignature()
 
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
