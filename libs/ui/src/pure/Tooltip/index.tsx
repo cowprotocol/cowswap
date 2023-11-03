@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Popover, { PopoverProps } from '../Popover'
 
 export const TooltipContainer = styled.div`
-  max-width: 300px;
+  max-width: 320px;
   padding: 4px 6px;
   font-weight: 400;
   word-break: break-word;
