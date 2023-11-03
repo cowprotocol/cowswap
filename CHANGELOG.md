@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.14](https://github.com/cowprotocol/cowswap/compare/v1.48.13...v1.48.14) (2023-11-03)
+
+
+### Bug Fixes
+
+* add verification for WC v2 project id ([#3323](https://github.com/cowprotocol/cowswap/issues/3323)) ([995e45e](https://github.com/cowprotocol/cowswap/commit/995e45e5d1069fa05c6afe0d936bdce0a29dc3a1))
+
 ## [1.48.13](https://github.com/cowprotocol/cowswap/compare/v1.48.12...v1.48.13) (2023-11-01)
 
 
