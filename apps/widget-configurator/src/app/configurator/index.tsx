@@ -16,7 +16,6 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
-import { EmbedDialog } from './embedDialog'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
@@ -25,6 +24,7 @@ import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
+import { EmbedDialog } from '../embedDialog'
 
 const DEFAULT_STATE = {
   sellToken: 'COW',
