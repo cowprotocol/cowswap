@@ -21,30 +21,29 @@ npm install @cowprotocol/widget-lib
 ## Quick start
 
 ```typescript
-import {cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings} from '@cowprotocol/widget-lib'
+import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
 
-// Initialise the widget
+// HTML element where the widget will be rendered
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  container: widgetContainer,
-  metaData: {appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL'},
+  appKey: 'YOUR_APP_ID',
   width: 600,
   height: 640,
-}
-
-const settings: CowSwapWidgetSettings = {
   sell: {asset: 'DAI'},
   buy: {asset: 'USDC', amount: '0.1'}
 }
 
-cowSwapWidget(params, settings)
+cowSwapWidget(widgetContainer, params)
 ```
 
 ## App key
-You must specify the `appKey` parameter when initializing the widget. This parameter is used to identify the source of orders.  
+
+You must specify the `appKey` parameter when initializing the widget. This parameter is used to identify the source of
+orders.  
 The key must be a UTF8 string of up to 50 chars.  
-It will be a part of orders meta-data, see more in the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
+It will be a part of orders meta-data, see more in
+the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
 
 ## Wallet provider
 
@@ -70,104 +69,61 @@ interface JsonRpcRequest {
 }
 ```
 
-An example of connecting a widget to Metamask:
+An example of connecting a widget to Rabby Wallet or Metamask:
 
 ```typescript
 import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
 
-const params: CowSwapWidgetParams = {
-  container: document.getElementById('cowswap-widget'),
-  metaData: {appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL'},
-  width: 600,
-  height: 640,
-  provider: window.ethereum // <-------
-}
-
-cowSwapWidget(params, {})
+cowSwapWidget(
+  document.getElementById('cowswap-widget'),
+  {
+    provider: window.ethereum // <-------
+  }
+)
 ```
 
 ## Configuration
 
 ### `CowSwapWidgetParams`
 
-| Parameter   | Type                    | Description                                                                                                                                          |
-|-------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `width`     | `number`                | The width of the widget in pixels.                                                                                                                   |
-| `height`    | `number`                | The height of the widget in pixels.                                                                                                                  |
-| `container` | `HTMLElement`           | The container in which the widget will be displayed.                                                                                                 |
-| `metaData`  | `CowSwapWidgetMetaData` | Information about the application in which the widget is embedded. This information will help identify the source of orders and requests from users. |
-| `provider`  | `EthereumProvider`      | (Optional) The Ethereum provider to be used for interacting with a wallet.                                                                           |
+> All params are optional
 
-### `CowSwapWidgetSettings`
-
-| Parameter              | Type                   | Description                                                                                                                                                  |
-|------------------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `chainId`              | `number`               | The blockchain ID on which the trade will take place.                                                                                                        |
-| `tradeType`            | `string`               | The type of trade. Can be `swap` or `limit-orders`.                                                                                                          |
-| `env`                  | `CowSwapWidgetEnv`     | The environment of the widget (`'local'` or `'prod'`).                                                                                                       |
-| `tradeAssets`          | `TradeAssets`          | (Optional) An object containing information about the selling and buying assets.                                                                             |
-| `theme`                | `CowSwapTheme`         | (Optional) The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                   |
-| `logoUrl`              | `boolean`              | (Optional) The width of the widget in pixels.                                                                                                                |
-| `hideLogo`             | `boolean`              | (Optional) The height of the widget in pixels.                                                                                                               |
-| `hideNetworkSelector`  | `boolean`              | (Optional) Disables an opportunity to change the network from the widget UI.                                                                                 |
-| `dynamicHeightEnabled` | `boolean`              | (Optional) Dynamically changes the height of the iframe depending on the content.                                                                            |
-| `enabledTradeTypes`    | `Array<TradeType>`     | (Optional) CowSwap provides three trading widgets: swap, limit and twap orders. Using this option you can narrow down the list of available trading widgets. |
-| `palette`              | `CowSwapWidgetPalette` | (Optional) Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.          |
-
-```typescript
-export interface CowSwapWidgetMetaData {
-  appKey: string
-  url: string
-}
-
-interface TradeAsset {
-  asset: string
-  amount?: string
-}
-
-export interface TradeAssets {
-  sell: TradeAsset
-  buy: TradeAsset
-}
-
-export enum TradeType {
-  SWAP = 'swap',
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
-}
-
-export interface CowSwapWidgetPalette {
-  primaryColor: string
-  screenBackground: string
-  widgetBackground: string
-  textColor: string
-}
-```
+| Parameter             | Type                   | Default                   | Description                                                                                                                                                                                        |
+|-----------------------|------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `width`               | `string`               | 400px                     | The width of the widget in css values (px, vh, etc.).                                                                                                                                              |
+| `height`              | `string`               | 600px                     | The height of the widget in css values (px, vh, etc.).                                                                                                                                             |
+| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: <TODO-TYPEFORM>                                                                               |
+| `provider`            | `EthereumProvider`     | ---                       | The Ethereum provider to be used for interacting with a wallet. To connect, for example, to Rabby Wallet or Metamask, just set `window.ethereum`. You also might like to use https://web3modal.com |
+| `chainId`             | `number`               | 1                         | The blockchain ID on which the trade will take place.  Currently supported: 1 (Mainnet), 5 (Goerli), 100 (Gnosis chain)                                                                            |
+| `tradeType`           | `TradeType`            | 'swap'                    | The type of trade. Can be `swap` or `limit` or `advanced`.                                                                                                                                         |
+| `env`                 | `CowSwapWidgetEnv`     | 'prod'                    | The environment of the widget (`local` , `prod` , `dev` , `pr`). See [`COWSWAP_URLS`](../src/consts.ts) const value for urls.                                                                      |
+| `tradeAssets`         | `TradeAssets`          | Same as in swap.cow.fi    | An object containing information about the selling and buying assets. Example: `{ asset: 'WBTC', amount: 12 }` or `{ asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }`                        |
+| `theme`               | `CowSwapTheme`         | 'light'                   | The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                                                                    |
+| `logoUrl`             | `string`               | ---                       | Allows to set a custom logo for the widget.                                                                                                                                                        |
+| `hideLogo`            | `boolean`              | false                     | Option to hide the logo in the widget.                                                                                                                                                             |
+| `hideNetworkSelector` | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                                                  |
+| `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CowSwap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                        |
+| `palette`             | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.                                                           |
 
 ## Widget updating
 
 You can change all possible widget options on the fly:
 
 ```typescript
-import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
+
+const container = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  container: document.getElementById('cowswap-widget'),
-  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
-  width: 600,
-  height: 640,
-}
-
-
-const settings: CowSwapWidgetSettings = {
+  appKey: 'YOUR_APP_ID',
   logoUrl: 'YOUR_LOGO_URL'
 }
 
-const updateWidget = cowSwapWidget(params, settings)
+const updateWidget = cowSwapWidget(container, params)
 
 // Update the widget
 updateWidget({
-  ...settings,
+  ...params,
   theme: 'dark', // <- Change theme to dark
   hideNetworkSelector: true // <- Hide the network selector
 })

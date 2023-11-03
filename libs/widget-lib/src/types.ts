@@ -1,3 +1,5 @@
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export interface JsonRpcRequest {
   id: number
   method: string
@@ -6,8 +8,24 @@ export interface JsonRpcRequest {
 
 // https://eips.ethereum.org/EIPS/eip-1193
 export interface EthereumProvider {
+  /**
+   * Subscribes to Ethereum-related events.
+   * @param event - The event to subscribe to.
+   * @param args - Arguments for the event.
+   */
   on(event: string, args: unknown): void
+
+  /**
+   * Sends a JSON-RPC request to the Ethereum provider and returns the response.
+   * @param params - JSON-RPC request parameters.
+   * @returns A promise that resolves with the response.
+   */
   request<T>(params: JsonRpcRequest): Promise<T>
+
+  /**
+   * Requests permission to connect to the Ethereum provider.
+   * @returns A promise that resolves once permission is granted.
+   */
   enable(): Promise<void>
 }
 
@@ -15,11 +33,25 @@ export type CowSwapWidgetEnv = 'local' | 'prod' | 'dev' | 'pr'
 
 export type CowSwapTheme = 'dark' | 'light'
 
+/**
+ *Trade asset parameters, for example:
+ * { asset: 'WBTC', amount: 12 }
+ * or
+ * { asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' } // USDC
+ */
 interface TradeAsset {
+  /** The asset symbol or identifier. */
   asset: string
+  /**
+   * The amount of the asset (optional).
+   * If specified, represents the quantity or value of the asset.
+   */
   amount?: string
 }
 
+/**
+ * A pair of assets to trade.
+ */
 export interface TradeAssets {
   sell: TradeAsset
   buy: TradeAsset
@@ -28,15 +60,11 @@ export interface TradeAssets {
 export enum TradeType {
   SWAP = 'swap',
   LIMIT = 'limit',
+  /**
+   * Currently it means only TWAP orders.
+   * But in the future it can be extended to support other order types.
+   */
   ADVANCED = 'advanced',
-}
-
-export interface CowSwapWidgetUrlParams {
-  chainId?: number
-  tradeType?: TradeType
-  env?: CowSwapWidgetEnv
-  tradeAssets?: TradeAssets
-  theme?: CowSwapTheme
 }
 
 export interface CowSwapWidgetPalette {
@@ -46,26 +74,66 @@ export interface CowSwapWidgetPalette {
   textColor: string
 }
 
-export interface CowSwapWidgetAppParams {
-  logoUrl?: string
-  hideLogo?: boolean
-  hideNetworkSelector?: boolean
-  dynamicHeightEnabled?: boolean
-  enabledTradeTypes?: TradeType[]
-  palette?: CowSwapWidgetPalette
-}
-
-export type CowSwapWidgetSettings = CowSwapWidgetUrlParams & CowSwapWidgetAppParams
-
-export interface CowSwapWidgetMetaData {
+interface CowSwapWidgetConfig {
+  /**
+   * The width of the widget in pixels. Default: 400px
+   */
+  width: string
+  /**
+   * The height of the widget in pixels. Default: 600px
+   */
+  height: string
+  /**
+   * The unique identifier of the widget consumer.
+   * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
+   */
   appKey: string
-  url: string
+  /**
+   * The widget might be connected to a custom Ethereum provider.
+   */
+  provider: EthereumProvider
+
+  /**
+   * Network ID.
+   */
+  chainId: SupportedChainId
+  /**
+   * Swap, Limit or Advanced (Twap).
+   */
+  tradeType: TradeType
+  /**
+   * The environment of the widget. Default: prod
+   */
+  env: CowSwapWidgetEnv
+  /**
+   * The assets to trade.
+   */
+  tradeAssets: TradeAssets
+  /**
+   * The theme of the widget UI.
+   */
+  theme: CowSwapTheme
+
+  /**
+   * Allows to set a custom logo for the widget.
+   */
+  logoUrl: string
+  /**
+   * Option to hide the logo in the widget.
+   */
+  hideLogo: boolean
+  /**
+   * Option to hide the network selector in the widget.
+   */
+  hideNetworkSelector: boolean
+  /**
+   * Enables the ability to switch between trade types in the widget.
+   */
+  enabledTradeTypes: TradeType[]
+  /**
+   * Colors palette to customize the widget UI.
+   */
+  palette: CowSwapWidgetPalette
 }
 
-export interface CowSwapWidgetParams {
-  width: number
-  height: number
-  container: HTMLElement
-  metaData: CowSwapWidgetMetaData
-  provider?: EthereumProvider
-}
+export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>

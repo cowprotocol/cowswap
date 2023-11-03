@@ -59,7 +59,7 @@ export function InjectedWidgetUpdater() {
         navigate(data.urlParams)
       }
 
-      if (method === 'metaData') {
+      if (method === 'metaData' && data.metaData) {
         updateMetaData(data.metaData)
       }
     },

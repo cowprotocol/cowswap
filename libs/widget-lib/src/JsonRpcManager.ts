@@ -4,20 +4,36 @@ const JSON_PRC_V = '2.0'
 const TARGET_ORIGIN = '*'
 const EVENTS = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 
+/**
+ * Manages JSON-RPC requests and interactions with an Ethereum provider.
+ */
 export class JsonRpcManager {
-  ethereumProvider: EthereumProvider | null = null
+  /** The Ethereum provider instance. */
+  private ethereumProvider: EthereumProvider | null = null
 
-  requests: { [key: string]: JsonRpcRequest } = {}
+  /** Stored JSON-RPC requests. */
+  private requests: { [key: string]: JsonRpcRequest } = {}
 
+  /**
+   * Creates an instance of JsonRpcManager.
+   * @param contentWindow - The window for handling events.
+   */
   constructor(private contentWindow: Window) {
     window.addEventListener('message', this.processEvent)
   }
 
+  /**
+   * Disconnects the JSON-RPC manager from the Ethereum provider.
+   */
   disconnect() {
     this.ethereumProvider = null
     window.removeEventListener('message', this.processEvent)
   }
 
+  /**
+   * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
+   * @param ethereumProvider - The Ethereum provider to connect.
+   */
   onConnect(ethereumProvider: EthereumProvider) {
     this.ethereumProvider = ethereumProvider
 
@@ -34,6 +50,10 @@ export class JsonRpcManager {
     })
   }
 
+  /**
+   * Processes a JSON-RPC request and sends appropriate response or error via the content window.
+   * @param request - The JSON-RPC request to be processed.
+   */
   processRequest(request: JsonRpcRequest) {
     if (!this.ethereumProvider) return
 

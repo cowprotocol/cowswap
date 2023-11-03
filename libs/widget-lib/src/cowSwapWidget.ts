@@ -1,14 +1,29 @@
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetMetaData, CowSwapWidgetParams, CowSwapWidgetSettings } from './types'
+import { CowSwapWidgetParams } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
+/**
+ * Key for identifying the event associated with the CoW Swap Widget.
+ */
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
-export type UpdateWidgetCallback = (params: CowSwapWidgetSettings) => void
+const DEFAULT_HEIGHT = '600px'
+const DEFAULT_WIDTH = '400px'
 
-export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): UpdateWidgetCallback {
-  const { container, provider } = params
-  const iframe = createIframe(params, settings)
+/**
+ * Callback function signature for updating the CoW Swap Widget.
+ */
+export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
+
+/**
+ * Generates and injects a CoW Swap Widget into the provided container.
+ * @param container - The HTML element to inject the widget into.
+ * @param params - Parameters for configuring the widget.
+ * @returns A callback function to update the widget with new settings.
+ */
+export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParams = {}): UpdateWidgetCallback {
+  const { provider } = params
+  const iframe = createIframe(params)
 
   container.innerHTML = ''
   container.appendChild(iframe)
@@ -17,7 +32,7 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
 
   if (!contentWindow) throw new Error('Iframe does not contain a window!')
 
-  sendMetaData(contentWindow, params.metaData)
+  sendAppKey(contentWindow, params.appKey)
 
   applyDynamicHeight(iframe, params.height)
 
@@ -28,33 +43,38 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
   }
 
   iframe.addEventListener('load', () => {
-    updateWidget(settings, contentWindow, iframe)
+    updateWidget(params, contentWindow)
   })
 
-  return (newSettings: CowSwapWidgetSettings) => updateWidget(newSettings, contentWindow, iframe)
+  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
 }
 
-function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): HTMLIFrameElement {
-  const { width, height } = params
+/**
+ * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
+ * @param params - Parameters for the widget.
+ * @returns The generated HTMLIFrameElement.
+ */
+function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
+  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
 
   const iframe = document.createElement('iframe')
 
-  iframe.src = buildWidgetUrl(settings)
-  iframe.width = `${width}px`
-  iframe.height = `${height}px`
+  iframe.src = buildWidgetUrl(params)
+  iframe.width = width
+  iframe.height = height
   iframe.style.border = '0'
 
   return iframe
 }
 
-function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, iframe: HTMLIFrameElement) {
-  const pathname = buildWidgetPath(settings)
-  const search = buildTradeAmountsQuery(settings).toString()
-
-  // Reset iframe height to default
-  if (!settings.dynamicHeightEnabled) {
-    iframe.style.height = ''
-  }
+/**
+ * Updates the CoW Swap Widget based on the new settings provided.
+ * @param params - New params for the widget.
+ * @param contentWindow - Window object of the widget's iframe.
+ */
+function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
+  const pathname = buildWidgetPath(params)
+  const search = buildTradeAmountsQuery(params).toString()
 
   contentWindow.postMessage(
     {
@@ -64,13 +84,21 @@ function updateWidget(settings: CowSwapWidgetSettings, contentWindow: Window, if
         pathname,
         search,
       },
-      appParams: settings,
+      appParams: {
+        ...params,
+        provider: undefined,
+      },
     },
     '*'
   )
 }
 
-function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData) {
+/**
+ * Sends appKey to the contentWindow of the widget.
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param appKey - A unique identifier for the app.
+ */
+function sendAppKey(contentWindow: Window, appKey: string | undefined) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
       return
@@ -80,21 +108,24 @@ function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData) {
       {
         key: COW_SWAP_WIDGET_EVENT_KEY,
         method: 'metaData',
-        metaData,
+        metaData: appKey ? { appKey } : undefined,
       },
       '*'
     )
   })
 }
 
-function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight: number) {
+/**
+ * Applies dynamic height adjustments to the widget's iframe.
+ * @param iframe - The HTMLIFrameElement of the widget.
+ * @param defaultHeight - Default height for the widget.
+ */
+function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'iframeHeight') {
       return
     }
 
-    const height = event.data.height || defaultHeight
-
-    iframe.style.height = `${height}px`
+    iframe.style.height = event.data.height ? `${event.data.height}px` : defaultHeight
   })
 }

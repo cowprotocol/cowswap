@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { InjectedWidgetMetaData, injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
+import { CowSwapWidgetMetaData, injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 
-export function useInjectedWidgetMetaData(): InjectedWidgetMetaData | null {
+export function useInjectedWidgetMetaData(): CowSwapWidgetMetaData {
   return useAtomValue(injectedWidgetMetaDataAtom)
 }
