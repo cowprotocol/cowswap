@@ -4,7 +4,7 @@ Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
 look and much more!
 
-Create your own widget using the configurator https://swap.cow.fi/widget-configurator/
+Create your own widget using the configurator https://widget.cow.fi
 
 ![Demo](./demo-preview.png)
 
