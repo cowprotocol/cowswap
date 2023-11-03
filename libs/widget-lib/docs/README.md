@@ -1,6 +1,6 @@
-# CowSwap Widget
+# CoW Swap Widget
 
-Integrate the power of `CowSwap` into your product!
+Integrate the power of `CoW Swap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
 look and much more!
 
@@ -61,13 +61,13 @@ const params: CowSwapWidgetParams = {
 cowSwapWidget(widgetContainer, params)
 ```
 
-> **Coming soon, please get in touch to sign up to the beta program: <TODO-TYPEFORM>**
+> **Coming soon, please get in touch to sign up to the beta program: TODO-TYPEFORM**
 
 ## Wallet provider
 
 You can pass the wallet provider from your application to seamlessly use the widget as part of your application.
 Also, you can not specify the provider, in this case the widget will work in standalone mode with the ability to connect
-any wallet supported in CowSwap.
+any wallet supported in CoW Swap.
 
 A provider must comply with [EIP-1193](https://eips.ethereum.org/EIPS/eip-11930) and implement the interface:
 
@@ -110,19 +110,19 @@ cowSwapWidget(
 |-----------------------|------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `width`               | `string`               | 400px                     | The width of the widget in css values (px, vh, etc.).                                                                                                                                              |
 | `height`              | `string`               | 600px                     | The height of the widget in css values (px, vh, etc.).                                                                                                                                             |
-| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: <TODO-TYPEFORM>                                                                               |
+| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: TODO-TYPEFORM                                                                                 |
 | `provider`            | `EthereumProvider`     | ---                       | The Ethereum provider to be used for interacting with a wallet. To connect, for example, to Rabby Wallet or Metamask, just set `window.ethereum`. You also might like to use https://web3modal.com |
 | `chainId`             | `number`               | 1                         | The blockchain ID on which the trade will take place.  Currently supported: 1 (Mainnet), 5 (Goerli), 100 (Gnosis chain)                                                                            |
 | `tradeType`           | `TradeType`            | 'swap'                    | The type of trade. Can be `swap` or `limit` or `advanced`.                                                                                                                                         |
-| `env`                 | `CowSwapWidgetEnv`     | 'prod'                    | The environment of the widget (`local` , `prod` , `dev` , `pr`). See [`COWSWAP_URLS`](../src/consts.ts) const value for urls.                                                                      |
+| `env`                 | `CowSwapWidgetEnv`     | 'prod'                    | The environment of the widget (`local` , `prod` , `dev` , `pr`). See [`COWSWAP_URLS`](https://github.com/cowprotocol/cowswap/blob/develop/libs/widget-lib/src/consts.ts) const value for urls.     |
 | `tradeAssets`         | `TradeAssets`          | Same as in swap.cow.fi    | An object containing information about the selling and buying assets. Example: `{ asset: 'WBTC', amount: 12 }` or `{ asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }`                        |
 | `theme`               | `CowSwapTheme`         | 'light'                   | The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                                                                    |
 | `logoUrl`             | `string`               | ---                       | Allows to set a custom logo for the widget.                                                                                                                                                        |
 | `hideLogo`            | `boolean`              | false                     | Option to hide the logo in the widget.                                                                                                                                                             |
 | `hideNetworkSelector` | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                                                  |
-| `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CowSwap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                        |
+| `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CoW Swap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                       |
 | `palette`             | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.                                                           |
-| `partnerFeeBips`      | `string`               | ---                       | Coming soon! You can enable a fee for all trades in the widget. Please contact <TODO-TYPEFORM> to enable your partner fee.                                                                         |
+| `partnerFeeBips`      | `string`               | ---                       | Coming soon! You can enable a fee for all trades in the widget. Please contact TODO-TYPEFORM to enable your partner fee.                                                                           |
 
 ## Widget updating
 
