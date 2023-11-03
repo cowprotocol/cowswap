@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.15](https://github.com/cowprotocol/cowswap/compare/v1.48.14...v1.48.15) (2023-11-03)
+
+
+### Bug Fixes
+
+* pass env to vercel ([#3326](https://github.com/cowprotocol/cowswap/issues/3326)) ([3845e54](https://github.com/cowprotocol/cowswap/commit/3845e542c27ea2e2dc1000508444068a187285e6))
+
 ## [1.48.14](https://github.com/cowprotocol/cowswap/compare/v1.48.13...v1.48.14) (2023-11-03)
 
 
