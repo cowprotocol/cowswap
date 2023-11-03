@@ -32,7 +32,7 @@ export function useWidgetParamsAndSettings(
 
     const params: CowSwapWidgetProps['params'] = {
       appKey: '<YOUR_APP_ID>',
-      width: '400px',
+      width: '450px',
       height: '640px',
       provider,
       theme,

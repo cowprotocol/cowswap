@@ -7,8 +7,8 @@ import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUt
  */
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
-const DEFAULT_HEIGHT = '600px'
-const DEFAULT_WIDTH = '400px'
+const DEFAULT_HEIGHT = '640px'
+const DEFAULT_WIDTH = '450px'
 
 /**
  * Callback function signature for updating the CoW Swap Widget.
