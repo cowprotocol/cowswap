@@ -74,32 +74,20 @@ export interface CowSwapWidgetPalette {
   textColor: string
 }
 
-export interface CowSwapWidgetMetaData {
+interface CowSwapWidgetConfig {
+  /**
+   * The width of the widget in pixels. Default: 400px
+   */
+  width: string
+  /**
+   * The height of the widget in pixels. Default: 600px
+   */
+  height: string
   /**
    * The unique identifier of the widget consumer.
    * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
    */
   appKey: string
-  /**
-   * (Optional )An email address to contact the widget consumer.
-   */
-  email?: string
-}
-
-interface CowSwapWidgetConfig {
-  /**
-   * The width of the widget in pixels. Default: 400px
-   */
-  width: number
-  /**
-   * The height of the widget in pixels. Default: 600px
-   */
-  height: number
-  /**
-   * Metadata about the widget consumer. It is used for analytics purposes.
-   * Despite the fact that this field is optional we strongly recommend to fill it.
-   */
-  metaData: CowSwapWidgetMetaData
   /**
    * The widget might be connected to a custom Ethereum provider.
    */
@@ -139,11 +127,6 @@ interface CowSwapWidgetConfig {
    */
   hideNetworkSelector: boolean
   /**
-   * Enables dynamic height for the widget.
-   * The widget will resize itself to fit the content.
-   */
-  dynamicHeightEnabled: boolean
-  /**
    * Enables the ability to switch between trade types in the widget.
    */
   enabledTradeTypes: TradeType[]
@@ -151,13 +134,6 @@ interface CowSwapWidgetConfig {
    * Colors palette to customize the widget UI.
    */
   palette: CowSwapWidgetPalette
-
-  /**
-   * The partner fee in basis points.
-   * For example: 1.5% = 150 bips
-   * Please contact <TODO-TYPEFORM> to enable your partner fee.
-   */
-  partnerFeeBips: string
 }
 
 export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>

@@ -24,12 +24,9 @@ Prepare the config for the widget:
 
 ```ts
 const cowSwapWidgetParams: CowSwapWidgetParams = {
-  metaData: {
-    appKey: '<YOUR_APP_KEY>',
-    appUrl: '<YOUR_APP_URL>',
-  },
-  width: 600,
-  height: 700,
+  appKey: '<YOUR_APP_KEY>',
+  width: '600px',
+  height: '700px',
   tradeType: 'swap',
 }
 ```

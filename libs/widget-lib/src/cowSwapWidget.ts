@@ -1,5 +1,5 @@
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetMetaData, CowSwapWidgetParams } from './types'
+import { CowSwapWidgetParams } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
 /**
@@ -7,8 +7,8 @@ import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUt
  */
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
-const DEFAULT_HEIGHT = 600
-const DEFAULT_WIDTH = 400
+const DEFAULT_HEIGHT = '600px'
+const DEFAULT_WIDTH = '400px'
 
 /**
  * Callback function signature for updating the CoW Swap Widget.
@@ -32,7 +32,7 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
 
   if (!contentWindow) throw new Error('Iframe does not contain a window!')
 
-  sendMetaData(contentWindow, params.metaData)
+  sendAppKey(contentWindow, params.appKey)
 
   applyDynamicHeight(iframe, params.height)
 
@@ -43,10 +43,10 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
   }
 
   iframe.addEventListener('load', () => {
-    updateWidget(params, contentWindow, iframe)
+    updateWidget(params, contentWindow)
   })
 
-  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow, iframe)
+  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
 }
 
 /**
@@ -60,8 +60,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
   iframe.src = buildWidgetUrl(params)
-  iframe.width = `${width}px`
-  iframe.height = `${height}px`
+  iframe.width = width
+  iframe.height = height
   iframe.style.border = '0'
 
   return iframe
@@ -71,16 +71,10 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * Updates the CoW Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
- * @param iframe - The HTMLIFrameElement of the widget.
  */
-function updateWidget(params: CowSwapWidgetParams, contentWindow: Window, iframe: HTMLIFrameElement) {
+function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
-
-  // Reset iframe height to default
-  if (!params.dynamicHeightEnabled) {
-    iframe.style.height = ''
-  }
 
   contentWindow.postMessage(
     {
@@ -100,11 +94,11 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window, iframe
 }
 
 /**
- * Sends metadata to the contentWindow of the widget.
+ * Sends appKey to the contentWindow of the widget.
  * @param contentWindow - Window object of the widget's iframe.
- * @param metaData - Metadata for the widget.
+ * @param appKey - A unique identifier for the app.
  */
-function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData | undefined) {
+function sendAppKey(contentWindow: Window, appKey: string | undefined) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
       return
@@ -114,7 +108,7 @@ function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData | u
       {
         key: COW_SWAP_WIDGET_EVENT_KEY,
         method: 'metaData',
-        metaData,
+        metaData: appKey ? { appKey } : undefined,
       },
       '*'
     )
@@ -132,8 +126,6 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
       return
     }
 
-    const height = event.data.height || defaultHeight
-
-    iframe.style.height = `${height}px`
+    iframe.style.height = event.data.height ? `${event.data.height}px` : defaultHeight
   })
 }

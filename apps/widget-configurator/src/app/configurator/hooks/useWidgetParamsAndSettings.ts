@@ -28,13 +28,12 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      dynamicHeightEnabled,
     } = configuratorState
 
     const params: CowSwapWidgetProps['params'] = {
-      metaData: { appKey: '<YOUR_APP_ID>' },
-      width: 400,
-      height: 640,
+      appKey: '<YOUR_APP_ID>',
+      width: '400px',
+      height: '640px',
       provider,
       theme,
       chainId,
@@ -44,7 +43,6 @@ export function useWidgetParamsAndSettings(
         sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
         buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       },
-      dynamicHeightEnabled,
       enabledTradeTypes,
       // palette: {
       //   primaryColor: '#d9258e',

@@ -37,10 +37,7 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  metaData: {
-    appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app,
-    appUrl: '<YOUR_APP_URL>'
-  },
+  appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app
   sell: { asset: 'DAI' },
   buy: { asset: 'USDC', amount: '0.1' },
   // instantiate your own web3 provider
