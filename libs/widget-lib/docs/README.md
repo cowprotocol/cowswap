@@ -45,6 +45,24 @@ The key must be a UTF8 string of up to 50 chars.
 It will be a part of orders meta-data, see more in
 the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
 
+## Partner fee
+
+If your business model involves charging a fee for trading, you can easily do this by adding just one parameter:
+
+```typescript
+import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
+
+const widgetContainer = document.getElementById('cowswap-widget')
+
+const params: CowSwapWidgetParams = {
+  partnerFeeBips: '50' // 0.5%
+}
+
+cowSwapWidget(widgetContainer, params)
+```
+
+> **Coming soon, please get in touch to sign up to the beta program: <TODO-TYPEFORM>**
+
 ## Wallet provider
 
 You can pass the wallet provider from your application to seamlessly use the widget as part of your application.
@@ -104,6 +122,7 @@ cowSwapWidget(
 | `hideNetworkSelector` | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                                                  |
 | `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CowSwap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                        |
 | `palette`             | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.                                                           |
+| `partnerFeeBips`      | `string`               | ---                       | Coming soon! You can enable a fee for all trades in the widget. Please contact <TODO-TYPEFORM> to enable your partner fee.                                                                         |
 
 ## Widget updating
 

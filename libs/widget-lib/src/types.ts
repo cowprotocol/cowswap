@@ -134,6 +134,12 @@ interface CowSwapWidgetConfig {
    * Colors palette to customize the widget UI.
    */
   palette: CowSwapWidgetPalette
+  /**
+   * The partner fee in basis points.
+   * For example: 1.5% = 150 bips
+   * Please contact <TODO-TYPEFORM> to enable your partner fee.
+   */
+  partnerFeeBips: string
 }
 
 export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
