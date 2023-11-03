@@ -19,7 +19,7 @@ import { TradeModesControl } from './controls/TradeModesControl'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
+import { ContentStyled, DrawerStyled, ShowDrawerButton, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -87,6 +87,11 @@ export function Configurator({ title }: { title: string }) {
 
   return (
     <Box sx={WrapperStyled}>
+      {!isDrawerOpen && (
+        <button onClick={() => setIsDrawerOpen(true)} style={ShowDrawerButton(mode)}>
+          ✏️
+        </button>
+      )}
       <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
         <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
           {title}
