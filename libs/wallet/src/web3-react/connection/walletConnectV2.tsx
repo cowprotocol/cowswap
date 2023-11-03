@@ -33,8 +33,7 @@ export const walletConnectV2Option = {
   id: 'wallet-connect-v2',
 }
 
-const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
-const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
+const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID || 'a6cc11517a10f6f12953fd67b1eb67e7'
 
 function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnector, Web3ReactHooks, Web3ReactStore] {
   return initializeConnector<AsyncConnector>(
@@ -49,7 +48,7 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
                   console.error('WalletConnect2 ERROR:', error)
                 },
                 options: {
-                  projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
+                  projectId: WC_PROJECT_ID,
                   chains: [chainId],
                   optionalChains: ALL_SUPPORTED_CHAIN_IDS,
                   showQrModal: true,
