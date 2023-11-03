@@ -28,7 +28,7 @@ const TOKEN_TAGS: Record<Tags, TagInfo> = {
   [Tags.GAS_FREE]: {
     name: 'Gas-free approval',
     icon: ICON_GAS_FREE,
-    description: 'This token can be approved without spending gas, using the token Permit.',
+    description: 'This token supports gas-free approvals. Enjoy! 🐮',
     id: '1',
   },
 }
