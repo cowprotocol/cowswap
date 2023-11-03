@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.16](https://github.com/cowprotocol/cowswap/compare/v1.48.15...v1.48.16) (2023-11-03)
+
+
+### Bug Fixes
+
+* add env as secret ([#3328](https://github.com/cowprotocol/cowswap/issues/3328)) ([88a19aa](https://github.com/cowprotocol/cowswap/commit/88a19aa49cb22bc0cfda56800843a6025c081f9c))
+
 ## [1.48.15](https://github.com/cowprotocol/cowswap/compare/v1.48.14...v1.48.15) (2023-11-03)
 
 
