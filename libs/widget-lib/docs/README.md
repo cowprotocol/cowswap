@@ -55,7 +55,7 @@ import {cowSwapWidget, CowSwapWidgetParams} from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  partnerFeeBips: '150' // 1.5%
+  partnerFeeBips: '50' // 0.5%
 }
 
 cowSwapWidget(widgetContainer, params)
