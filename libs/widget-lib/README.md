@@ -31,29 +31,27 @@ Create a container somewhere in your website, the widget will be rendered inside
 Import the widget and initialise it:
 
 ```js
-import { cowSwapWidget } from '@cowprotocol/widget-lib'
+import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')
 
-const updateWidget = cowSwapWidget({
-  container: widgetContainer,
-  width: 600,
-  height: 640,
-  metaData: {
-    appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app,
-    appUrl: '<YOUR_APP_URL>'
-  },
-// Optionally, you can provide some additional params to customise your widget
-}, {
+const params: CowSwapWidgetParams = {
+  appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app
   sell: { asset: 'DAI' },
   buy: { asset: 'USDC', amount: '0.1' },
   // instantiate your own web3 provider
   provider: window.ethereum
-})
+}
+
+const updateWidget = cowSwapWidget(
+  widgetContainer,
+  // Optionally, you can provide some additional params to customise your widget
+  params
+)
 
 // You also can change widget configuration on the fly
-updateWidget({ tradeType: 'limit' })
+updateWidget({ ...params, tradeType: 'limit' })
 ```
 
 ## Developers

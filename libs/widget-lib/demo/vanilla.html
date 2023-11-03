@@ -3,22 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>CoWSwap Widget demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/@cowprotocol/widget-lib@0.1.2/index.iife.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@cowprotocol/widget-lib@0.1.3/index.iife.js"></script>
 </head>
 <body>
   <div id="app"></div>
   <script>
-    cowSwapWidget.cowSwapWidget({
-      container: document.getElementById("app"),
-      width: 400,
-      height: 600,
-      metaData: {
-        appKey: 'test',
-        appUrl: 'test',
-      }
-    }, {
-      env: 'dev'
-    })
+    cowSwapWidget.cowSwapWidget(document.getElementById("app"))
   </script>
 </body>
 </html>

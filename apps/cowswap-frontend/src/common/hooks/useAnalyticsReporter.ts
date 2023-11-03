@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import {
   Dimensions,
@@ -76,10 +76,7 @@ export function useAnalyticsReporter() {
 
   const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
 
-  const injectedWidgetAppId = useMemo(
-    () => (injectedWidgetMetaData ? `${injectedWidgetMetaData.appKey}:${injectedWidgetMetaData.url}` : ''),
-    [injectedWidgetMetaData]
-  )
+  const injectedWidgetAppId = injectedWidgetMetaData.appKey
 
   useEffect(() => {
     // Custom dimension 2 - walletname

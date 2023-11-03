@@ -8,10 +8,7 @@ const EVENTS = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChang
  * Manages JSON-RPC requests and interactions with an Ethereum provider.
  */
 export class JsonRpcManager {
-  /**
-   * The Ethereum provider instance.
-   * When is null the JSON-RPC manager is disconnected from the Ethereum provider.
-   * */
+  /** The Ethereum provider instance. */
   private ethereumProvider: EthereumProvider | null = null
 
   /** Stored JSON-RPC requests. */

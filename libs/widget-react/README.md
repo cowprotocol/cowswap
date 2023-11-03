@@ -17,23 +17,16 @@ yarn add @cowprotocol/widget-react
 Import component and some convenient types
 
 ```ts
-import { CowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-react'
+import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 ```
 
 Prepare the config for the widget:
 
 ```ts
 const cowSwapWidgetParams: CowSwapWidgetParams = {
-  container: document.getElementById('cow-swap-widget'),
-  metaData: {
-    appKey: '<YOUR_APP_KEY>',
-    appUrl: '<YOUR_APP_URL>',
-  },
-  width: 600,
-  height: 700,
-}
-
-const cowSwapWidgetSettings: CowSwapWidgetSettings = {
+  appKey: '<YOUR_APP_KEY>',
+  width: '600px',
+  height: '700px',
   tradeType: 'swap',
 }
 ```
@@ -41,7 +34,7 @@ const cowSwapWidgetSettings: CowSwapWidgetSettings = {
 Render the component:
 
 ```jsx
-<CowSwapWidget params={cowSwapWidgetParams} settings={cowSwapWidgetSettings} />
+<CowSwapWidget params={cowSwapWidgetParams} />
 ```
 
 ## Developers

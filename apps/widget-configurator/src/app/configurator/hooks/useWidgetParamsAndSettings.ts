@@ -28,17 +28,13 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      dynamicHeightEnabled,
     } = configuratorState
 
     const params: CowSwapWidgetProps['params'] = {
-      metaData: { appKey: '<YOUR_APP_ID>', url: '<https://YOUR_APP_URL>' },
-      width: 400,
-      height: 640,
+      appKey: '<YOUR_APP_ID>',
+      width: '400px',
+      height: '640px',
       provider,
-    }
-
-    const settings: CowSwapWidgetProps['settings'] = {
       theme,
       chainId,
       env: getEnv(),
@@ -47,16 +43,15 @@ export function useWidgetParamsAndSettings(
         sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
         buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       },
-      dynamicHeightEnabled,
       enabledTradeTypes,
       // palette: {
       //   primaryColor: '#d9258e',
-      //   screenBackground: '#c7860f',
-      //   widgetBackground: '#eed4a7',
-      //   textColor: '#413931',
+      //   screenBackground: '#ee00cd',
+      //   widgetBackground: '#b900ff',
+      //   textColor: '#b348cc',
       // },
     }
 
-    return { params, settings }
+    return params
   }, [provider, configuratorState])
 }
