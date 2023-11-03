@@ -33,6 +33,7 @@ const balances = allTokensMock.reduce<TokenAmounts>((acc, token) => {
 }, {})
 
 const defaultProps: SelectTokenModalProps = {
+  permitCompatibleTokens: {},
   unsupportedTokens,
   allTokens: allTokensMock,
   favouriteTokens: favouriteTokensMock,

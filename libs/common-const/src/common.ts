@@ -166,6 +166,13 @@ export const SWR_OPTIONS = {
   revalidateOnFocus: false,
 }
 
+export const SWR_NO_REFRESH_OPTIONS = {
+  // Cache indefinitely
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  refreshInterval: 0,
+}
+
 // TODO: show banner warning when PINATA env vars are missing
 export const COW_IPFS_OPTIONS: IpfsConfig = {
   pinataApiKey: PINATA_API_KEY,

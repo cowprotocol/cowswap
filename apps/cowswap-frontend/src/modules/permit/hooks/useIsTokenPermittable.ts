@@ -15,6 +15,8 @@ import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
+import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
+
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
@@ -45,11 +47,23 @@ export function useIsTokenPermittable(
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
+  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(token)
 
   const spender = GP_VAULT_RELAYER[chainId]
 
   useEffect(() => {
-    if (!chainId || !isPermitEnabled || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
+    if (
+      !chainId ||
+      !isPermitEnabled ||
+      !lowerCaseAddress ||
+      !provider ||
+      permitInfo !== undefined ||
+      isNative ||
+      // Do not try to load when pre-generated info is loading
+      preGeneratedIsLoading ||
+      // Do not try to load when pre-generated exists
+      preGeneratedInfo !== undefined
+    ) {
       return
     }
 
@@ -67,13 +81,25 @@ export function useIsTokenPermittable(
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
     })
-  }, [addPermitInfo, chainId, isNative, isPermitEnabled, lowerCaseAddress, permitInfo, provider, spender, tokenName])
+  }, [
+    addPermitInfo,
+    chainId,
+    isNative,
+    isPermitEnabled,
+    lowerCaseAddress,
+    permitInfo,
+    preGeneratedInfo,
+    preGeneratedIsLoading,
+    provider,
+    spender,
+    tokenName,
+  ])
 
   if (isNative) {
     return false
   }
-  // TODO: add an updater for this
-  return permitInfo
+
+  return preGeneratedInfo ?? permitInfo
 }
 
 /**

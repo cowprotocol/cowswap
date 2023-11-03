@@ -9,3 +9,6 @@ export const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
 }
 
 export const PENDING_ORDER_PERMIT_CHECK_INTERVAL = ms`1min`
+
+export const PRE_GENERATED_PERMIT_URL =
+  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/PermitInfo'
