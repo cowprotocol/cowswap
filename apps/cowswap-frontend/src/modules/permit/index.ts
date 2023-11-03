@@ -1,6 +1,6 @@
 export * from './hooks/useAccountAgnosticPermitHookData'
 export * from './hooks/useGeneratePermitHook'
-export * from './hooks/useIsTokenPermittable'
+export * from './hooks/usePermitInfo'
 export * from './hooks/useOrdersPermitStatus'
 export * from './hooks/usePermitCompatibleTokens'
 export * from './hooks/useTokenSupportsPermit'

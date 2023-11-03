@@ -4,10 +4,16 @@ import { Nullish } from 'types'
 
 import { TradeType } from 'modules/trade'
 
-import { useIsTokenPermittable } from './useIsTokenPermittable'
+import { usePermitInfo } from './usePermitInfo'
 
+/**
+ * Whether the token supports permit for given trade type
+ *
+ * @param token
+ * @param tradeType
+ */
 export function useTokenSupportsPermit(token: Nullish<Currency>, tradeType: Nullish<TradeType>): boolean {
-  const permitInfo = useIsTokenPermittable(token, tradeType)
+  const permitInfo = usePermitInfo(token, tradeType)
 
   return !!permitInfo && permitInfo.type !== 'unsupported'
 }

@@ -7,7 +7,7 @@ import { useDerivedTradeState } from 'modules/trade'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useGeneratePermitHook } from './useGeneratePermitHook'
-import { useIsTokenPermittable } from './useIsTokenPermittable'
+import { usePermitInfo } from './usePermitInfo'
 
 import { GeneratePermitHookParams } from '../types'
 
@@ -41,7 +41,7 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
   const { state } = useDerivedTradeState()
   const { inputCurrency, tradeType } = state || {}
 
-  const permitInfo = useIsTokenPermittable(inputCurrency, tradeType)
+  const permitInfo = usePermitInfo(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
     if (!inputCurrency || !('address' in inputCurrency) || !permitInfo || permitInfo.type === 'unsupported')
