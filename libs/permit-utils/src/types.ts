@@ -2,14 +2,12 @@ import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import { latest } from '@cowprotocol/app-data'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-export type PermitType = 'dai-like' | 'eip-2612'
+export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 
-export type SupportedPermitInfo = {
+export type PermitInfo = {
   type: PermitType
-  version: string | undefined // Some tokens have it different than `1`, and won't work without it
+  version?: string | undefined // Some tokens have it different than `1`, and won't work without it
 }
-type UnsupportedPermitInfo = false
-export type PermitInfo = SupportedPermitInfo | UnsupportedPermitInfo
 
 // Local TokenInfo definition to not depend on external libs just for this
 type TokenInfo = {
@@ -21,7 +19,7 @@ export type PermitHookParams = {
   inputToken: TokenInfo
   spender: string
   chainId: number
-  permitInfo: SupportedPermitInfo
+  permitInfo: PermitInfo
   provider: JsonRpcProvider
   eip2162Utils: Eip2612PermitUtils
   account?: string | undefined
@@ -34,11 +32,9 @@ type FailedToIdentify = { error: string }
 
 export type GetTokenPermitIntoResult =
   // When it's a permittable token:
-  | SupportedPermitInfo
+  | PermitInfo
   // When something failed:
   | FailedToIdentify
-  // When it's not permittable:
-  | UnsupportedPermitInfo
 
 type BasePermitCallDataParams = {
   eip2162Utils: Eip2612PermitUtils

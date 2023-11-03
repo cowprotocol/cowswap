@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
-import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitType } from '../types'
+import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 
@@ -23,6 +23,8 @@ const DAI_LIKE_PERMIT_PARAMS = {
 }
 
 const REQUESTS_CACHE: Record<string, Promise<GetTokenPermitIntoResult>> = {}
+
+const UNSUPPORTED: PermitInfo = { type: 'unsupported' }
 
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { tokenAddress, chainId } = params
@@ -59,7 +61,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
       // Here we know it's not supported, return false
       // See https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L309
       // and https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L325
-      return false
+      return UNSUPPORTED
     }
     console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
 
@@ -134,7 +136,7 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
   const data = await getCallDataFn(params)
 
   if (!data) {
-    return false
+    return UNSUPPORTED
   }
 
   const estimatedGas = await provider.estimateGas({
@@ -150,7 +152,7 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
         type,
         version,
       }
-    : false
+    : UNSUPPORTED
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<string> {
