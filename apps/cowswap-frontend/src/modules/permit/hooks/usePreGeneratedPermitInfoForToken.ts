@@ -15,8 +15,9 @@ export function usePreGeneratedPermitInfoForToken(token: Nullish<Currency>): {
 } {
   const { allPermitInfo, isLoading } = usePreGeneratedPermitInfo()
 
-  const permitInfo =
-    allPermitInfo && token && 'address' in token ? allPermitInfo[token.address.toLowerCase()] : undefined
+  const address = token && 'address' in token && token.address.toLowerCase()
+
+  const permitInfo = address ? allPermitInfo[address] : undefined
 
   return {
     permitInfo,
