@@ -18,11 +18,7 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
   <script>
     const params = ${JSON.stringify(paramsSanitized, null, 4)}
 
-    cowSwapWidget.cowSwapWidget({
-      container: document.getElementById("app"),
-      width: '450px',
-      height: '640px',
-    }, params)
+    cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
   </script>
 </body>
 </html>
