@@ -7,11 +7,12 @@ React component that creates a CoW Swap widget. It is based on [https://npmjs.co
 Install dependency
 
 ```bash
-# Install the dependency using NPM
-npm install @cowprotocol/widget-react --save
-
-# ...or alternativelly use YARN
 yarn add @cowprotocol/widget-react
+```
+
+
+```bash
+npm install @cowprotocol/widget-react
 ```
 
 Import component and some convenient types
