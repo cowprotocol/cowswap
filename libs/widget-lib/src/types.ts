@@ -85,7 +85,7 @@ interface CowSwapWidgetConfig {
   height: string
   /**
    * The unique identifier of the widget consumer.
-   * Please fill the for to let us know a little about you: <TODO-TYPEFORM>
+   * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
   appKey: string
   /**
@@ -137,7 +137,7 @@ interface CowSwapWidgetConfig {
   /**
    * The partner fee in basis points.
    * For example: 1.5% = 150 bips
-   * Please contact <TODO-TYPEFORM> to enable your partner fee.
+   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV to enable your partner fee.
    */
   partnerFeeBips: string
 }
