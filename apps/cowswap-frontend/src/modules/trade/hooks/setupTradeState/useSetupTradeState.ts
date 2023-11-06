@@ -105,6 +105,8 @@ export function useSetupTradeState(): void {
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
+        // In this case we should update only chainId in the trade state
+        updateState?.({ ...state, chainId: currentChainId })
         console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
 
