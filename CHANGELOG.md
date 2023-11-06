@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.48.17](https://github.com/cowprotocol/cowswap/compare/v1.48.16...v1.48.17) (2023-11-03)
+
+
+### Bug Fixes
+
+* reset og image cache ([#3330](https://github.com/cowprotocol/cowswap/issues/3330)) ([b336fac](https://github.com/cowprotocol/cowswap/commit/b336fac4ed6484babcb2a0515d570a105b0ee48e))
+
+## [1.48.16](https://github.com/cowprotocol/cowswap/compare/v1.48.15...v1.48.16) (2023-11-03)
+
+
+### Bug Fixes
+
+* add env as secret ([#3328](https://github.com/cowprotocol/cowswap/issues/3328)) ([88a19aa](https://github.com/cowprotocol/cowswap/commit/88a19aa49cb22bc0cfda56800843a6025c081f9c))
+
+## [1.48.15](https://github.com/cowprotocol/cowswap/compare/v1.48.14...v1.48.15) (2023-11-03)
+
+
+### Bug Fixes
+
+* pass env to vercel ([#3326](https://github.com/cowprotocol/cowswap/issues/3326)) ([3845e54](https://github.com/cowprotocol/cowswap/commit/3845e542c27ea2e2dc1000508444068a187285e6))
+
 ## [1.48.14](https://github.com/cowprotocol/cowswap/compare/v1.48.13...v1.48.14) (2023-11-03)
 
 
