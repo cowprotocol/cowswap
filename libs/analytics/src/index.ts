@@ -20,6 +20,7 @@ export function outboundLink(
   return googleAnalytics.outboundLink({ label }, hitCallback)
 }
 
+console.log('BBBBBB', GOOGLE_ANALYTICS_ID)
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   googleAnalytics.initialize(GOOGLE_ANALYTICS_ID, {
     gaOptions: {
