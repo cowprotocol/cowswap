@@ -27,7 +27,6 @@ import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfigurator } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
-console.log('SSSSS', process.env)
 const DEFAULT_STATE = {
   sellToken: 'COW',
   buyToken: 'USDC',
