@@ -18,6 +18,8 @@ import { reactExample } from './utils/reactExample'
 import { vanilaNpmExample } from './utils/vanilaNpmExample'
 import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 
+import { copyEmbedCode, viewEmbedCode } from '../analytics'
+
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
@@ -38,6 +40,7 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
   const handleClickOpen = (scrollType: DialogProps['scroll']) => () => {
     setOpen(true)
     setScroll(scrollType)
+    viewEmbedCode()
   }
 
   const handleClose = () => {
@@ -65,6 +68,7 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code)
+    copyEmbedCode()
   }
 
   return (
