@@ -19,31 +19,31 @@ interface ColorEnums {
 const colorEnumsMap: Record<BannerType, ColorEnums> = {
   alert: {
     icon: IconType.ALERT,
-    color: UI.COLOR_ALERT,
+    color: UI.COLOR_ALERT_TEXT,
     bg: UI.COLOR_ALERT_BG,
     text: UI.COLOR_ALERT_TEXT,
   },
   information: {
     icon: IconType.INFORMATION,
-    color: UI.COLOR_INFORMATION,
+    color: UI.COLOR_INFORMATION_TEXT,
     bg: UI.COLOR_INFORMATION_BG,
     text: UI.COLOR_INFORMATION_TEXT,
   },
   success: {
     icon: IconType.SUCCESS,
-    color: UI.COLOR_SUCCESS,
+    color: UI.COLOR_SUCCESS_TEXT,
     bg: UI.COLOR_SUCCESS_BG,
     text: UI.COLOR_SUCCESS_TEXT,
   },
   danger: {
     icon: IconType.DANGER,
-    color: UI.COLOR_DANGER,
+    color: UI.COLOR_DANGER_TEXT,
     bg: UI.COLOR_DANGER_BG,
     text: UI.COLOR_DANGER_TEXT,
   },
   savings: {
     iconText: '💸',
-    color: UI.COLOR_SUCCESS,
+    color: UI.COLOR_SUCCESS_TEXT,
     bg: UI.COLOR_SUCCESS_BG,
     text: UI.COLOR_SUCCESS_TEXT,
   },
@@ -128,14 +128,15 @@ export function InlineBanner({
   children,
   className,
   hideIcon,
-  bannerType = 'alert',
+  bannerType,
   borderRadius,
   orientation,
   iconSize,
   iconPadding,
   padding,
 }: InlineBannerProps) {
-  const colorEnums = getColorEnums(bannerType)
+  const effectiveBannerType = bannerType || 'alert'
+  const colorEnums = getColorEnums(effectiveBannerType)
 
   return (
     <Wrapper
@@ -148,7 +149,7 @@ export function InlineBanner({
       <span>
         {!hideIcon && colorEnums.icon && (
           <Icon
-            image={IconType.ALERT}
+            image={colorEnums.icon}
             size={iconSize}
             color={colorEnums.color}
             description={bannerType}

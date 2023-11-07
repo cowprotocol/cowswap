@@ -34,7 +34,7 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   letter-spacing: 0.2px;
   font-weight: 600;
   transition: color 0.15s ease-in-out;
-  margin: -8px 0 0 0;
+  margin: 0;
 
   a & {
     color: ${({ type }) => badgeColors[type || 'default']};

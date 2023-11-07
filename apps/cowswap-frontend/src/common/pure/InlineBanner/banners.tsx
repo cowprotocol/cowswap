@@ -15,7 +15,7 @@ export enum BannerOrientation {
 
 export function BundleTxApprovalBanner() {
   return (
-    <InlineBanner bannerType="information">
+    <InlineBanner bannerType="information" iconSize={32}>
       <strong>Token approval bundling</strong>
       <p>
         For your convenience, token approval and order placement will be bundled into a single transaction, streamlining
@@ -32,7 +32,7 @@ export type BundleTxWrapBannerProps = {
 
 export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
   return (
-    <InlineBanner bannerType="information">
+    <InlineBanner bannerType="information" iconSize={32}>
       <strong>Token wrapping bundling</strong>
       <p>
         For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
@@ -54,7 +54,7 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
   const supportsWrappingText = supportsWrapping ? `${nativeCurrencySymbol} wrapping, ` : ''
 
   return (
-    <InlineBanner bannerType="information">
+    <InlineBanner bannerType="information" iconSize={32}>
       <strong>Use Safe web app</strong>
       <p>
         Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
@@ -71,7 +71,7 @@ export type SmallVolumeWarningBannerProps = {
 
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
-    <InlineBanner>
+    <InlineBanner iconSize={32}>
       <strong>Small orders are unlikely to be executed</strong>
       <p>
         For this order, network fees would be{' '}
