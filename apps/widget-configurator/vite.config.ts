@@ -1,8 +1,11 @@
 /// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+
+import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 const plugins = [
   nodePolyfills({
@@ -14,24 +17,31 @@ const plugins = [
     },
     protocolImports: true,
   }),
+  macrosPlugin(),
   react(),
   viteTsConfigPaths({
     root: '../../',
   }),
 ]
 
-export default defineConfig({
-  cacheDir: '../../node_modules/.vite/widget-configurator',
+export default defineConfig(({ mode }) => {
+  return {
+    define: {
+      ...getReactProcessEnv(mode),
+    },
 
-  server: {
-    port: 4200,
-    host: 'localhost',
-  },
+    cacheDir: '../../node_modules/.vite/widget-configurator',
 
-  preview: {
-    port: 4300,
-    host: 'localhost',
-  },
+    server: {
+      port: 4200,
+      host: 'localhost',
+    },
 
-  plugins,
+    preview: {
+      port: 4300,
+      host: 'localhost',
+    },
+
+    plugins,
+  }
 })
