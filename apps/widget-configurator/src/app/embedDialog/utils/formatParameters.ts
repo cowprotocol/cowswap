@@ -11,8 +11,6 @@ export function formatParameters(params: CowSwapWidgetParams, padLeft = 0): stri
   })
   const formattedParams = JSON.stringify(paramsSanitized, null, 4)
 
-  // const formattedParams = JSON.stringify(sanitizeParameters(params), null, 4)
-
   // Add comments
   const resultWithComments = Object.keys(COMMENTS_BY_PARAM_NAME).reduce((acc, propName) => {
     return acc.replace(new RegExp(`"${propName}".*$`, 'gm'), `$& // ${COMMENTS_BY_PARAM_NAME[propName]}`)
