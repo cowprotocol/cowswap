@@ -1,10 +1,9 @@
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
+import { sanitizeParameters } from './sanitizeParameters'
+
 export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
-  const paramsSanitized = {
-    ...params,
-    provider: `<eip-1193 provider>`,
-  }
+  const paramsSanitized = sanitizeParameters(params)
 
   return `
 <html lang="en">
@@ -16,7 +15,7 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
 <body style="display: flex; align-items: center; justify-content: center; background-color: #06172e; padding: 10px;">
   <div id="app"></div>
   <script>
-    const params = ${JSON.stringify(paramsSanitized, null, 4)}
+    const params = ${paramsSanitized}
 
     cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
   </script>

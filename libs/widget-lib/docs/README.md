@@ -61,7 +61,7 @@ const params: CowSwapWidgetParams = {
 cowSwapWidget(widgetContainer, params)
 ```
 
-> **Coming soon, please get in touch to sign up to the beta program: TODO-TYPEFORM**
+> **Coming soon, please get in touch to sign up to the beta program: https://cowprotocol.typeform.com/to/rONXaxHV**
 
 ## Wallet provider
 
@@ -107,7 +107,7 @@ cowSwapWidget(document.getElementById('cowswap-widget'), {
 | --------------------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `width`               | `string`               | 450px                     | The width of the widget in css values (px, vh, etc.).                                                                                                                                              |
 | `height`              | `string`               | 640px                     | The height of the widget in css values (px, vh, etc.).                                                                                                                                             |
-| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: TODO-TYPEFORM                                                                                 |
+| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | The unique identifier of the widget consumer. Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV                                                                               |
 | `provider`            | `EthereumProvider`     | ---                       | The Ethereum provider to be used for interacting with a wallet. To connect, for example, to Rabby Wallet or Metamask, just set `window.ethereum`. You also might like to use https://web3modal.com |
 | `chainId`             | `number`               | 1                         | The blockchain ID on which the trade will take place. Currently supported: 1 (Mainnet), 5 (Goerli), 100 (Gnosis chain)                                                                             |
 | `tradeType`           | `TradeType`            | 'swap'                    | The type of trade. Can be `swap` or `limit` or `advanced`.                                                                                                                                         |
@@ -119,7 +119,7 @@ cowSwapWidget(document.getElementById('cowswap-widget'), {
 | `hideNetworkSelector` | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                                                  |
 | `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CoW Swap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                       |
 | `palette`             | `CowSwapWidgetPalette` | ---                       | Using the palette you can customize the appearance of the widget. For example, you can change the main color of the background and text.                                                           |
-| `partnerFeeBips`      | `string`               | ---                       | Coming soon! You can enable a fee for all trades in the widget. Please contact TODO-TYPEFORM to enable your partner fee.                                                                           |
+| `partnerFeeBips`      | `string`               | ---                       | Coming soon! You can enable a fee for all trades in the widget. Please contact https://cowprotocol.typeform.com/to/rONXaxHV to enable your partner fee.                                                                           |
 
 ## Widget updating
 
