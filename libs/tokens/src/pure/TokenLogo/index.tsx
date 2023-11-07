@@ -22,8 +22,8 @@ const TokenLogoWrapper = styled.div<{ size?: number }>`
   overflow: hidden;
 
   img {
-    width: ${({ size }) => size}px;
-    height: ${({ size }) => size}px;
+    width: 100%;
+    height: 100%;
     border-radius: ${({ size }) => size}px;
     object-fit: contain;
   }
@@ -62,7 +62,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
 
   return (
     <TokenLogoWrapper className={className} size={size}>
-      {!currentUrl ? <Slash size={size} /> : <img alt="" src={currentUrl} onError={onError} />}
+      {!currentUrl ? <Slash size={size} /> : <img alt="token logo" src={currentUrl} onError={onError} />}
     </TokenLogoWrapper>
   )
 }
