@@ -21,11 +21,9 @@ on:
           - next
         default: latest
 
-
 env:
-  NODE_VERSION: lts/gallium
+  NODE_VERSION: lts/hydrogen
   DESTINATION_PATH: dist/libs/${{ inputs.lib }}
-
 
 jobs:
   publish-npm:

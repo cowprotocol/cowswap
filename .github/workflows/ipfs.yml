@@ -13,7 +13,7 @@ env:
   # Duplicated keys as these are required by `ipfs-deploy`
   IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  NODE_VERSION: lts/gallium
+  NODE_VERSION: lts/hydrogen
 
 jobs:
   ipfs:
