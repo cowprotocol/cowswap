@@ -35,7 +35,15 @@ function migrateLegacyTokensInUserState() {
   const userState = JSON.parse(userStateRaw)
 
   if (userState?.tokens && Object.keys(userState.tokens).length > 0) {
-    localStorage.setItem('userAddedTokensAtom:v1', JSON.stringify(userState.tokens))
+    localStorage.setItem(
+      'userAddedTokensAtom:v1',
+      JSON.stringify({
+        [SupportedChainId.MAINNET]: {},
+        [SupportedChainId.GNOSIS_CHAIN]: {},
+        [SupportedChainId.GOERLI]: {},
+        ...userState.tokens,
+      })
+    )
   }
 
   // Cleanup legacy redux store (UserState)
