@@ -1,16 +1,10 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-const PARTNER_FEE_COMMENT = 'Please contact https://cowprotocol.typeform.com/to/rONXaxHV to enable your partner fee.'
+import { SANITIZE_PARAMS } from '../const'
 
-export function sanitizeParameters(params: CowSwapWidgetParams): string {
-  const sanitizedParams = {
+export function sanitizeParameters(params: CowSwapWidgetParams) {
+  return {
     ...params,
-    provider: `<eip-1193 provider>`,
-    partnerFeeBips: '50',
+    ...SANITIZE_PARAMS,
   }
-
-  return JSON.stringify(sanitizedParams, null, 4).replace(
-    '"partnerFeeBips',
-    `// ${PARTNER_FEE_COMMENT}\n    "partnerFeeBips`
-  )
 }
