@@ -1,7 +1,9 @@
 import { CowSwapWidgetEnv } from './types'
 
 function getPrHostName(): string {
-  const prKey = location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
+  if (typeof window === 'undefined' || !window) return ''
+
+  const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
 
   return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
 }
