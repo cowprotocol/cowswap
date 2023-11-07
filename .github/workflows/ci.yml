@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize]
 
 env:
-  NODE_VERSION: lts/gallium
+  NODE_VERSION: lts/hydrogen
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
