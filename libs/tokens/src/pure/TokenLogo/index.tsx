@@ -13,15 +13,19 @@ import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
-const TokenLogoWrapper = styled.div`
+const TokenLogoWrapper = styled.div<{ size?: number }>`
   display: inline-block;
   background: var(--cow-container-bg-01);
-  border-radius: 50%;
+  border-radius: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   overflow: hidden;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: ${({ size }) => size}px;
+    height: ${({ size }) => size}px;
+    border-radius: ${({ size }) => size}px;
+    object-fit: contain;
   }
 `
 
@@ -57,7 +61,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
   }
 
   return (
-    <TokenLogoWrapper className={className} style={{ width: size, height: size }}>
+    <TokenLogoWrapper className={className} size={size}>
       {!currentUrl ? <Slash size={size} /> : <img alt="" src={currentUrl} onError={onError} />}
     </TokenLogoWrapper>
   )
