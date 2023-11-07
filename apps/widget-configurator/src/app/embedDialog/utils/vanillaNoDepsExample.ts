@@ -1,10 +1,9 @@
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
+import { sanitizeParameters } from './sanitizeParameters'
+
 export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
-  const paramsSanitized = {
-    ...params,
-    provider: `<eip-1193 provider>`,
-  }
+  const paramsSanitized = sanitizeParameters(params)
 
   return `
 <html lang="en">
