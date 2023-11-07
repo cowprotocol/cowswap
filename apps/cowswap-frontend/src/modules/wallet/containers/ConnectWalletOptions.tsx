@@ -22,8 +22,6 @@ import { Connector } from '@web3-react/types'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
-
 export type TryActivation = (connector: Connector) => void
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
@@ -82,7 +80,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {walletConnectionV2Option}
       {coinbaseWalletOption}
       {ledgerOption}
-      <FeatureGuard featureFlag="trezorEnabled">{trezorOption}</FeatureGuard>
+      {trezorOption}
       {/*{zengoOption}*/}
       {ambireOption}
       {alphaOption}
