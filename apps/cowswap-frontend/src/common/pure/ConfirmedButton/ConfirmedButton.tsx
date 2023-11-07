@@ -73,8 +73,14 @@ export function ConfirmedButton({
       ) : (
         <Instruction>Please click confirm to {action}.</Instruction>
       )}
-      {shouldShowInput && <Input onChange={onInputChange} />}
-      <ButtonError error padding={'12px'} disabled={shouldButtonBeDisabled} onClick={onConfirm}>
+      {shouldShowInput && <Input id="confirm-modal-input" onChange={onInputChange} />}
+      <ButtonError
+        id="confirm-modal-button"
+        error
+        padding={'12px'}
+        disabled={shouldButtonBeDisabled}
+        onClick={onConfirm}
+      >
         {children}
       </ButtonError>
     </Container>
