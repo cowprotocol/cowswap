@@ -39,8 +39,8 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
     z-index: 1;
   }
 
-  > img,
-  > svg,
+  img,
+  svg,
   > span {
     object-fit: contain;
     z-index: 2;
