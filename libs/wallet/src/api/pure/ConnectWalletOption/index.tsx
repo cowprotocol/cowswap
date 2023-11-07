@@ -93,10 +93,11 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+
   & > img,
   span {
-    height: ${({ size }) => (size ? size + 'px' : '24px')};
-    width: ${({ size }) => (size ? size + 'px' : '24px')};
+    height: ${({ size }) => (size ? size + 'px' : '32px')};
+    width: ${({ size }) => (size ? size + 'px' : '32px')};
   }
 `
 

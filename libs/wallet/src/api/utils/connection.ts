@@ -11,7 +11,7 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.INJECTED]: 'injected',
   [ConnectionType.INJECTED_WIDGET]: 'CowSwap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
-  [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect v2',
+  [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
   [ConnectionType.NETWORK]: 'Network',
   [ConnectionType.GNOSIS_SAFE]: 'Safe',
   [ConnectionType.ZENGO]: 'Zengo',
