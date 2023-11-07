@@ -24,6 +24,7 @@ import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
+import { connectWalletToConfigurator } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
 const DEFAULT_STATE = {
@@ -57,7 +58,7 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const { isDisconnected } = useAccount()
+  const { isDisconnected, isConnected } = useAccount()
   const network = useNetwork()
 
   const walletChainId = network.chain?.id
@@ -84,6 +85,13 @@ export function Configurator({ title }: { title: string }) {
   useEffect(() => {
     web3Modal.setThemeMode(mode)
   }, [mode])
+
+  // Fire an event to GA when user connect a wallet
+  useEffect(() => {
+    if (isConnected) {
+      connectWalletToConfigurator()
+    }
+  }, [isConnected])
 
   return (
     <Box sx={WrapperStyled}>
