@@ -1,10 +1,10 @@
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { sanitizeParameters } from './sanitizeParameters'
+import { formatParameters } from './formatParameters'
+
+import { COMMENTS_BEFORE_PARAMS } from '../const'
 
 export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
-  const paramsSanitized = sanitizeParameters(params)
-
   return `
 <html lang="en">
 <head>
@@ -15,7 +15,8 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
 <body style="display: flex; align-items: center; justify-content: center; background-color: #06172e; padding: 10px;">
   <div id="app"></div>
   <script>
-    const params = ${paramsSanitized}
+    // ${COMMENTS_BEFORE_PARAMS}
+    const params = ${formatParameters(params, 4)}
 
     cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
   </script>
