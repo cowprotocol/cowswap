@@ -146,7 +146,7 @@ const MenuItem = ({
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {badgeText && (
+      {!isActive && badgeText && (
         <styledEl.Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
         </styledEl.Badge>
