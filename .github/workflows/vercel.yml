@@ -56,4 +56,3 @@ jobs:
           -t ${{ secrets.VERCEL_TOKEN }}
           -m VERSION=${{ steps.get_version.outputs.VERSION }}
           -m COMMIT=${{ github.sha }}
-          https://github.com/cowprotocol/cowswap/actions/runs/6783985092/job/18439356002
