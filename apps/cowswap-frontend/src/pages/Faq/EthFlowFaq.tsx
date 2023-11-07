@@ -49,7 +49,7 @@ export default function EthFlowFAQ() {
               order on CoW Protocol for the user.
             </p>
             <p>
-              Selling ETH different from selling other tokens on CoW Protocol:{' '}
+              Selling ETH is different from selling other tokens on CoW Protocol:{' '}
               <ul>
                 <li>ETH is not an ERC20 token</li>
                 <li>CoW Protocol can only handle ERC20 tokens, so you need to wrap ETH to trade it</li>
@@ -57,8 +57,8 @@ export default function EthFlowFAQ() {
                   We created a contract that wraps ETH for you, called the CoW ETH Flow Contract
                   <p>
                     <strong>
-                      Note that this contract works differently than how you are used to interacting with CoW Protocol
-                      as it adds an intermediary step where you send your eth.
+                      Note that this contract works differently than how you may be used to interacting with CoW
+                      Protocol as it adds an intermediary step where you send your ETH.
                     </strong>
                   </p>
                 </li>
@@ -106,8 +106,8 @@ export default function EthFlowFAQ() {
             </p>
             <p>
               The implementation of ERC1271 into the CoW Protocol Settlement Contract gave it the power to allow smart
-              contracts to implement their own signature validation scheme for signing messages. This is what makes
-              native native ETH sell flow possible.
+              contracts to implement their own signature validation scheme for signing messages. This is what makes the
+              native ETH sell flow possible.
             </p>
             <h3 id="why-does-ETH-leave-wallet-before-trade-is-settled">
               Why does my ETH leave my wallet before the trade has settled?
@@ -115,8 +115,8 @@ export default function EthFlowFAQ() {
             <p>
               {' '}
               ETH is not an ERC20 token. It is the native token of the Ethereum blockchain. Because ETH is not
-              controlled by another smart contract like ERC20 tokens are, the token cannot interact with smart contracts
-              directly itself.
+              controlled by another smart contract the way ERC20 tokens are, the token cannot interact with smart
+              contracts directly itself.
             </p>
             <p>
               In order to allow a user to sell ETH without any additional steps, we needed to create a new contract that
@@ -129,8 +129,9 @@ export default function EthFlowFAQ() {
                 <li>
                   When submitting your transaction through your wallet, it was sent with a low gas price. The order in
                   which transactions are validated on the blockchain depends on the gas price you set: high gas fee
-                  transactions can get validated faster, and low gas fee ones have to wait longer to get validated. You
-                  can check Etherscan for the time they estimate your transaction will take to get validated
+                  transactions can get validated faster, and low gas fee transactions have to wait longer to get
+                  validated. You can check Etherscan for a time estimate on how long your transaction will take to get
+                  validated
                 </li>
                 <li>
                   You have sent multiple transactions at once with your wallet and the first transaction with a low gas
@@ -149,8 +150,9 @@ export default function EthFlowFAQ() {
             </p>
             <p>
               Therefore, your CoW ETH sell order is more likely to execute successfully if you pay more gas. That is
-              because the faster the order gets settled, the more likely your order will stay within the current market
-              prices, and the less likely your order will fail because the market price moved against it.
+              because the faster the order gets settled, the more likely it is that your order will stay within the
+              current market prices, and the less likely it is that your order will fail because the market price moved
+              against it.
             </p>
             <h3 id="is-it-cheaper-to-wrap-or-directly-trad-eth">
               Is it cheaper overall to wrap first and then trade, or to trade directly with ETH?
@@ -172,10 +174,10 @@ export default function EthFlowFAQ() {
               </ul>
             </p>
             <p>
-              The reason we developed the native ETH sell flow is because of the demand from the CoWmunity for this
-              feature, and to allow users to trade more quickly while avoiding extra token approvals. However, if you
-              are going to stick around for a while, and if you care about costs, we recommend wrapping your ETH instead
-              of trading it directly.
+              The reason native ETH sell flow was developed is because of the demand from the CoWmunity for this
+              feature, and in order to allow users to trade more quickly while avoiding extra token approvals. However,
+              if you are going to stick around for a while, and if you care about costs, we recommend wrapping your ETH
+              instead of trading it directly.
             </p>
             <h3 id="has-contract-been-audited">Has the contract been audited?</h3>
             <p>
@@ -202,7 +204,7 @@ export default function EthFlowFAQ() {
               the ETH transfer into the CoW ETH Flow Contract validated, place the order, and have it executed.
             </p>
             <p>
-              If there is not enough slippage to cover for market shifts within this timeframe, the sell order is most
+              If there is not enough slippage to account for market shifts within this timeframe, the sell order is most
               likely to fail.
             </p>
             <p>
@@ -216,7 +218,8 @@ export default function EthFlowFAQ() {
             <p> Yes you will ALWAYS get your ETH back if the order is not executed successfully.</p>
             <p>
               If because the order expired or you canceled the transaction, the protocol was not able to execute the ETH
-              sell order, the ETH held by the contract on your behalf is returned to your wallet so that is yours again.
+              sell order, the ETH held by the contract on your behalf is returned to your wallet so that it is yours
+              again.
             </p>
             <h3 id="do-i-pay-any-sort-of-fee-for-cancelation">
               Do I pay any sort of fee for the cancellation and/or expiration of my order?
@@ -241,7 +244,7 @@ export default function EthFlowFAQ() {
             <h3 id="what-does-order-crating-mean">
               Once the tx is sent, what does order creating mean (the 2nd step)?
             </h3>
-            <p> The 2st step that you see in the UI is represented by the second circle of the process.</p>
+            <p> The 2nd step that you see in the UI is represented by the second circle of the process.</p>
             <p>
               This circle informs you that the transaction with the ETH transfer from the 1st step has been mined, and
               that your order has been placed with the CoW ETH Flow Contract, and a ERC1271 smart order will be created
@@ -266,20 +269,19 @@ export default function EthFlowFAQ() {
             <h3 id="what-does-order-expired-mean">What does “order expired” mean? </h3>
             <p>
               It means that your order has not been filled within the 10 minute window enforced. The main reason for
-              your order to expire is the market&apos;s volatility, the price of ETH shifted and the original order
+              your order to expire is market volatility, a shift in the price of ETH shifted or that original order
               placed is out of price for a long period of time.
             </p>
 
             <h3 id="why-is-my-order-being-refunded">Why is my order being refunded after the order expired? </h3>
             <p>
-              The order expired and since the protocol was not able to execute the ETH sell order within the average
-              time window set, the ETH held by the contract on your behalf is returned to your wallet so that is yours
-              again.
+              Since the protocol was not able to execute the ETH sell order within the average time window set, the ETH
+              held by the contract on your behalf is returned to your wallet so that it is yours again.
             </p>
             <p>
               This is because on the 1st step of the sell process, your ETH was transferred to the CoW ETH Flow Contract
               and since CoW Protocol is all about self-custody, it is right to return the transferred ETH immediately if
-              the order expired.
+              the order expires.
             </p>
 
             <h3 id="how-can-i-check-i-received-the-refund-when-expired">
@@ -317,18 +319,18 @@ export default function EthFlowFAQ() {
               to place a viable order in CoW Protocol.
             </p>
             <p>
-              That said, don’t worry, you do get your ETH back when the order does not execute successfully, you are
-              only charged a gas fee for executing the transaction that is paid to the validators of Ethereum and not
-              CoW Protocol. You can check the status of your refund by clicking on the “Initiating refund” hyperlink
-              under the round flag icon.
+              Not to worry, though, you do get your ETH back when the order does not execute successfully. You are only
+              charged a gas fee for executing the transaction that is paid to the validators of Ethereum and not CoW
+              Protocol. You can check the status of your refund by clicking on the “Initiating refund” hyperlink under
+              the round flag icon.
             </p>
 
             <h3 id="why-is-my-rder-refunded-after-creation-failed">
               Why is my order being refunded after “order creation failed - expired before creation”?
             </h3>
             <p>
-              Since the ETH held by the contract on your behalf is no longer needed there because the order creation
-              failed, it is returned to your wallet so that is yours again.
+              Because the ETH held by the contract on your behalf is no longer needed since the order creation failed,
+              it is returned to your wallet.
             </p>
             <p>
               This is because on the 1st step of the sell process, your ETH was transferred to the CoW ETH Flow Contract
