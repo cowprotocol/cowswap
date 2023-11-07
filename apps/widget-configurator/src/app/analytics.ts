@@ -10,13 +10,13 @@ export function connectWalletToConfigurator() {
 export function viewEmbedCode() {
   sendEvent({
     category: Category.WIDGET_CONFIGURATOR,
-    action: 'View embed code',
+    action: 'View code',
   })
 }
 
 export function copyEmbedCode() {
   sendEvent({
     category: Category.WIDGET_CONFIGURATOR,
-    action: 'Copy embed code',
+    action: 'Copy code',
   })
 }
