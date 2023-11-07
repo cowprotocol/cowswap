@@ -138,8 +138,6 @@ export function InlineBanner({
   const effectiveBannerType = bannerType || 'alert'
   const colorEnums = getColorEnums(effectiveBannerType)
 
-  console.log('bannerType:', bannerType) // Add this line to log the bannerType
-
   return (
     <Wrapper
       className={className}
