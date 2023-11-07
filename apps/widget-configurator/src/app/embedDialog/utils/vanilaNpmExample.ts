@@ -10,7 +10,7 @@ import { CowSwapWidgetParams, cowSwapWidget } from '@cowprotocol/widget-lib'
 
 const container = document.getElementById('<YOUR_CONTAINER>')
 
-const params: CowSwapWidgetParams = ${JSON.stringify(paramsSanitized, null, 4)}
+const params: CowSwapWidgetParams = ${paramsSanitized}
 
 const updateWidget = cowSwapWidget(container, params)
   `

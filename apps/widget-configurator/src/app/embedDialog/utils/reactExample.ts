@@ -8,7 +8,7 @@ export function reactExample(params: CowSwapWidgetParams): string {
   return `
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
-const params: CowSwapWidgetParams = ${JSON.stringify(paramsSanitized, null, 4)}
+const params: CowSwapWidgetParams = ${paramsSanitized}
 
 function App() {
   return (
