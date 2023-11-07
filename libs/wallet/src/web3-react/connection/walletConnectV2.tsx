@@ -7,7 +7,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { Web3ReactStore } from '@web3-react/types'
 
-import { default as WalletConnectV2Image } from '../../api/assets/wallet-connect-v2.png'
+import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
 
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
 
