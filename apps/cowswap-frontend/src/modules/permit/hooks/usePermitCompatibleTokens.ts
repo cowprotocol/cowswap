@@ -3,6 +3,8 @@ import { useMemo, useRef } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
 import { permittableTokensAtom } from '../state/permittableTokensAtom'
@@ -13,6 +15,8 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   const localPermitInfo = useAtomValue(permittableTokensAtom)[chainId]
   const { allPermitInfo } = usePreGeneratedPermitInfo()
 
+  const isPermitEnabled = useIsPermitEnabled()
+
   const stableRef = JSON.stringify(Object.keys(localPermitInfo).concat(Object.keys(allPermitInfo)))
 
   const localPermitInfoRef = useRef(localPermitInfo)
@@ -21,6 +25,11 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   preGeneratedPermitInfoRef.current = allPermitInfo
 
   return useMemo(() => {
+    // Don't deal with permit when it's not enabled
+    if (!isPermitEnabled) {
+      return {}
+    }
+
     const permitCompatibleTokens: PermitCompatibleTokens = {}
 
     for (const address of Object.keys(preGeneratedPermitInfoRef.current)) {
@@ -34,5 +43,5 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
     return permitCompatibleTokens
     // Reducing unnecessary re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stableRef])
+  }, [stableRef, isPermitEnabled])
 }

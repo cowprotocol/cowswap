@@ -1,15 +1,15 @@
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-export function reactExample(params: CowSwapWidgetParams): string {
-  const paramsSanitized = {
-    ...params,
-    provider: `<eip-1193 provider>`,
-  }
+import { formatParameters } from './formatParameters'
 
+import { COMMENTS_BEFORE_PARAMS } from '../const'
+
+export function reactExample(params: CowSwapWidgetParams): string {
   return `
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
-const params: CowSwapWidgetParams = ${JSON.stringify(paramsSanitized, null, 4)}
+// ${COMMENTS_BEFORE_PARAMS}
+const params: CowSwapWidgetParams = ${formatParameters(params)}
 
 function App() {
   return (

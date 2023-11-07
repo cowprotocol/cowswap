@@ -1,4 +1,5 @@
 const GNO = '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532'
+const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 describe('Swap (mod)', () => {
   beforeEach(() => {
@@ -60,11 +61,10 @@ describe('Swap (mod)', () => {
   })
 
   it('can find GNO and swap Native for GNO', () => {
-    cy.get('#output-currency-input .open-currency-select-button').click()
-    cy.get('#token-search-input').type('GNO')
-    enterInputAmount(GNO, '0.5')
+    cy.swapEnterInputAmount(ETH, '0.5', true)
+    cy.swapSelectOutput(GNO)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button').should('contain.text', 'Swap').click()
+    cy.get('#swap-button > button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 
@@ -74,12 +74,10 @@ describe('Swap (mod)', () => {
 
   describe('expert mode', () => {
     beforeEach(() => {
-      cy.window().then((win) => {
-        cy.stub(win, 'prompt').returns('confirm')
-      })
       cy.get('#open-settings-dialog-button').click()
       cy.get('#toggle-expert-mode-button').click()
-      cy.get('#confirm-expert-mode').click()
+      cy.get('#confirm-modal-input').type('confirm')
+      cy.get('#confirm-modal-button').click()
     })
 
     it('Expert mode is ON', () => {
