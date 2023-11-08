@@ -10,9 +10,10 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   chainId: '1 (Mainnet), 5 (Goerli), 100 (Gnosis)',
   theme: 'light or dark',
   tradeType: 'swap, limit or advanced',
-  tradeAssets: 'Selected assets and amounts (e.g. COW-USDC)',
+  sell: 'Sell token. Optionally add amount for sell orders',
+  buy: 'Buy token. Optionally add amount for buy orders',
   enabledTradeTypes: 'swap, limit and/or advanced',
-  partnerFeeBips: 'Fill the form above if you are interested',
+  interfaceFeeBips: 'Fill the form above if you are interested',
 }
 
 export const VALUES_BY_PARAM_NAME: Record<string, string> = {
@@ -21,7 +22,7 @@ export const VALUES_BY_PARAM_NAME: Record<string, string> = {
 
 export const SANITIZE_PARAMS = {
   provider: 'EIP-1271 Provider',
-  partnerFeeBips: '50',
+  interfaceFeeBips: '50',
 }
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['env']

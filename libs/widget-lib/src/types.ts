@@ -49,14 +49,6 @@ interface TradeAsset {
   amount?: string
 }
 
-/**
- * A pair of assets to trade.
- */
-export interface TradeAssets {
-  sell: TradeAsset
-  buy: TradeAsset
-}
-
 export enum TradeType {
   SWAP = 'swap',
   LIMIT = 'limit',
@@ -105,10 +97,17 @@ interface CowSwapWidgetConfig {
    * The environment of the widget. Default: prod
    */
   env: CowSwapWidgetEnv
+
   /**
-   * The assets to trade.
+   * Sell token, and optionally the amount.
    */
-  tradeAssets: TradeAssets
+  sell: TradeAsset
+
+  /**
+   * Buy token, and optionally the amount.
+   */
+  buy: TradeAsset
+
   /**
    * The theme of the widget UI.
    */
@@ -118,28 +117,34 @@ interface CowSwapWidgetConfig {
    * Allows to set a custom logo for the widget.
    */
   logoUrl: string
+
   /**
    * Option to hide the logo in the widget.
    */
   hideLogo: boolean
+
   /**
    * Option to hide the network selector in the widget.
    */
   hideNetworkSelector: boolean
+
   /**
    * Enables the ability to switch between trade types in the widget.
    */
   enabledTradeTypes: TradeType[]
+
   /**
    * Colors palette to customize the widget UI.
    */
   palette: CowSwapWidgetPalette
+
   /**
-   * The partner fee in basis points.
+   * The interface fee in basis points.
    * For example: 1.5% = 150 bips
-   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV to enable your partner fee.
+   *
+   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
-  partnerFeeBips: string
+  interfaceFeeBips: string
 }
 
 export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>

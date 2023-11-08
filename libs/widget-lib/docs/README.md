@@ -27,27 +27,31 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  appCode: 'YOUR_APP_ID',
-  width: 600,
+  appCode: 'YOUR_APP_ID', // Name of your app (max 50 characters, e.g. "Pig Swap")
+  width: 600, // Width in pixels (or 100% to use all available space)
   height: 640,
-  sell: { asset: 'DAI' },
-  buy: { asset: 'USDC', amount: '0.1' },
+  sell: { asset: 'DAI' }, // Sell token. Optionally add amount for sell orders
+  buy: { asset: 'USDC', amount: '0.1' }, // Buy token. Optionally add amount for buy orders
 }
 
 cowSwapWidget(widgetContainer, params)
 ```
 
-## App key
+## App Code
 
 You must specify the `appCode` parameter when initializing the widget. This parameter is used to identify the source of
-orders.  
-The key must be a UTF8 string of up to 50 chars.  
+orders.
+
+The key must be a UTF8 string of up to `50 chars`.
+
 It will be a part of orders meta-data, see more in
 the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
 
-## Partner fee
+## Interface fee
 
-If your business model involves charging a fee for trading, you can easily do this by adding just one parameter:
+> **Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested**
+
+You can add a additional trading fee that will be displayed and applied to the quoted amounts:
 
 ```typescript
 import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
@@ -55,13 +59,11 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  partnerFeeBips: '50', // 0.5%
+  interfaceFeeBips: '50', // 0.5%
 }
 
 cowSwapWidget(widgetContainer, params)
 ```
-
-> **Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested**
 
 ## Wallet provider
 
@@ -112,14 +114,15 @@ cowSwapWidget(document.getElementById('cowswap-widget'), {
 | `chainId`             | `number`               | 1                         | The blockchain ID on which the trade will take place. Currently supported: 1 (Mainnet), 5 (Goerli), 100 (Gnosis chain)                                                                         |
 | `tradeType`           | `TradeType`            | 'swap'                    | The type of trade. Can be `swap` or `limit` or `advanced`.                                                                                                                                     |
 | `env`                 | `CowSwapWidgetEnv`     | 'prod'                    | The environment of the widget (`local` , `prod` , `dev` , `pr`). See [`COWSWAP_URLS`](https://github.com/cowprotocol/cowswap/blob/develop/libs/widget-lib/src/consts.ts) const value for urls. |
-| `tradeAssets`         | `TradeAssets`          | Same as in swap.cow.fi    | An object containing information about the selling and buying assets. Example: `{ asset: 'WBTC', amount: 12 }` or `{ asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }`                    |
+| `sell`                | `TradeAsset`           | undefined                 | Sell token and optionally the sell order amount. Example: `{ asset: 'WBTC', amount: 12 }` or `{ asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }`                                         |
+| `buy`                 | `TradeAsset`           | undefined                 | Buy token and optionally the buy order amount. Example: `{ asset: 'WBTC', amount: 12 }` or `{ asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }`                                           |
 | `theme`               | `CowSwapTheme`         | 'light'                   | Theme of the widget (`'dark'` for dark theme or `'light'` for light theme).                                                                                                                    |
 | `logoUrl`             | `string`               | ---                       | Sets a custom logo for the widget.                                                                                                                                                             |
 | `hideLogo`            | `boolean`              | false                     | Hides the logo in the widget.                                                                                                                                                                  |
 | `hideNetworkSelector` | `boolean`              | false                     | Disables an opportunity to change the network from the widget UI.                                                                                                                              |
 | `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled           | CoW Swap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                   |
 | `palette`             | `CowSwapWidgetPalette` | ---                       | Customizes the appearance of the widget. For example, you can change the main color of the background and text.                                                                                |
-| `partnerFeeBips`      | `string`               | ---                       | Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested                                                                                              |
+| `interfaceFeeBips`    | `string`               | ---                       | Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested                                                                                              |
 
 ## Widget updating
 
