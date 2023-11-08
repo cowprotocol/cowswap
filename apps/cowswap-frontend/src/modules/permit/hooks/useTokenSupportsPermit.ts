@@ -1,3 +1,4 @@
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -15,5 +16,5 @@ import { usePermitInfo } from './usePermitInfo'
 export function useTokenSupportsPermit(token: Nullish<Currency>, tradeType: Nullish<TradeType>): boolean {
   const permitInfo = usePermitInfo(token, tradeType)
 
-  return !!permitInfo && permitInfo.type !== 'unsupported'
+  return isSupportedPermitInfo(permitInfo)
 }
