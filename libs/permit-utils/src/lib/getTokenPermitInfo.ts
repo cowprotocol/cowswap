@@ -9,6 +9,7 @@ import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SK
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
+import { getTokenName } from '../utils/getTokenName'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -45,11 +46,24 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 }
 
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { spender, tokenAddress, tokenName, chainId, provider } = params
+  const { spender, tokenAddress, tokenName: _tokenName, chainId, provider } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
   const owner = PERMIT_SIGNER.address
+
+  // TODO: potentially remove the need for the name input
+  let tokenName = _tokenName
+
+  try {
+    tokenName = await getTokenName(tokenAddress, chainId, provider)
+  } catch (e) {
+    console.debug(`[checkTokenIsPermittable] Couldn't fetch token name from the contract for token ${tokenAddress}`, e)
+  }
+
+  if (!tokenName) {
+    throw new Error(`[checkTokenIsPermittable] token name could not be determined for ${tokenAddress}`)
+  }
 
   let nonce: number
 
@@ -58,10 +72,10 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   } catch (e) {
     if (e === 'nonce not supported' || e.message === 'nonce is NaN') {
       console.debug(`[checkTokenIsPermittable] Not a permittable token ${tokenAddress}`, e?.message || e)
-      // Here we know it's not supported, return false
+      // Here we know it's not supported, return unsupported
       // See https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L309
       // and https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L325
-      return UNSUPPORTED
+      return { ...UNSUPPORTED, name: tokenName }
     }
     console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
 
@@ -129,14 +143,14 @@ type EstimateParams = BaseParams & {
 }
 
 async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
-  const { provider, chainId, walletAddress, tokenAddress, type, version } = params
+  const { provider, chainId, walletAddress, tokenAddress, tokenName, type, version } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
 
   const data = await getCallDataFn(params)
 
   if (!data) {
-    return UNSUPPORTED
+    return { ...UNSUPPORTED, name: tokenName }
   }
 
   const estimatedGas = await provider.estimateGas({
@@ -151,8 +165,9 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
     ? {
         type,
         version,
+        name: tokenName,
       }
-    : UNSUPPORTED
+    : { ...UNSUPPORTED, name: tokenName }
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<string> {

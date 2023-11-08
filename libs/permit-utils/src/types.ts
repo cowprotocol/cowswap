@@ -6,6 +6,7 @@ export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 
 export type PermitInfo = {
   type: PermitType
+  name?: string
   version?: string | undefined // Some tokens have it different than `1`, and won't work without it
 }
 
