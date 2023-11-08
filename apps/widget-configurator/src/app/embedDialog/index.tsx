@@ -2,12 +2,14 @@ import { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
+import CodeIcon from '@mui/icons-material/Code'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import Fab from '@mui/material/Fab'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -73,7 +75,17 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
+      <Fab
+        color="secondary"
+        size="small"
+        variant="extended"
+        sx={{ position: 'fixed', bottom: '2rem', right: '1.6rem' }}
+        onClick={handleClickOpen('paper')}
+      >
+        <CodeIcon sx={{ mr: 1 }} />
+        View Embed Code
+      </Fab>
+
       <Dialog
         fullWidth
         maxWidth="lg"
