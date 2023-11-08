@@ -37,7 +37,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
-  const tokenName = token?.name || lowerCaseAddress || ''
+  const tokenName = token?.name
 
   // Avoid building permit info in the first place if order type is not supported
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
