@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
+import { Loader } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -29,8 +30,9 @@ export function TokenSearchResults({
   unsupportedTokens,
   permitCompatibleTokens,
 }: TokenSearchResultsProps) {
-  const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } =
-    useSearchToken(searchInput)
+  const searchResults = useSearchToken(searchInput)
+
+  const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
   const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
 
@@ -68,78 +70,91 @@ export function TokenSearchResults({
     })
   }, [onInputPressEnter, updateSelectTokenWidget])
 
-  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found in {networkName}</styledEl.TokenNotFound>
-
   return (
     <CommonListContainer id="currency-list">
-      {/*Tokens from active lists*/}
-      {activeListsResult &&
-        activeListsResult.slice(0, searchResultsLimit).map((token) => {
-          const addressLowerCase = token.address.toLowerCase()
-
+      {(() => {
+        if (isLoading)
           return (
-            <TokenListItem
-              key={token.address}
-              isUnsupported={!!unsupportedTokens[addressLowerCase]}
-              isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
-              selectedToken={selectedToken}
-              token={token}
-              balance={balances ? balances[token.address]?.value : undefined}
-              onSelectToken={onSelectToken}
-            />
+            <styledEl.LoaderWrapper>
+              <Loader />
+            </styledEl.LoaderWrapper>
           )
-        })}
 
-      {/*Tokens from blockchain*/}
-      {blockchainResult?.length ? (
-        <styledEl.ImportTokenWrapper id="currency-import">
-          {blockchainResult.slice(0, searchResultsLimit).map((token) => {
-            return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
-          })}
-        </styledEl.ImportTokenWrapper>
-      ) : null}
+        if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found in {networkName}</styledEl.TokenNotFound>
 
-      {/*Tokens from inactive lists*/}
-      {inactiveListsResult?.length ? (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
-            Expanded results from inactive Token Lists
-          </TokenSourceTitle>
-          <div>
-            {inactiveListsResult.slice(0, searchResultsLimit).map((token) => {
-              return (
-                <ImportTokenItem
-                  key={token.address}
-                  token={token}
-                  importToken={addTokenImportCallback}
-                  shadowed={true}
-                />
-              )
-            })}
-          </div>
-        </div>
-      ) : null}
+        return (
+          <>
+            {/*Tokens from active lists*/}
+            {activeListsResult &&
+              activeListsResult.slice(0, searchResultsLimit).map((token) => {
+                const addressLowerCase = token.address.toLowerCase()
 
-      {/*Tokens from external sources*/}
-      {externalApiResult?.length ? (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from external sources.">
-            Additional Results from External Sources
-          </TokenSourceTitle>
-          <div>
-            {externalApiResult.map((token) => {
-              return (
-                <ImportTokenItem
-                  key={token.address}
-                  token={token}
-                  importToken={addTokenImportCallback}
-                  shadowed={true}
-                />
-              )
-            })}
-          </div>
-        </div>
-      ) : null}
+                return (
+                  <TokenListItem
+                    key={token.address}
+                    isUnsupported={!!unsupportedTokens[addressLowerCase]}
+                    isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
+                    selectedToken={selectedToken}
+                    token={token}
+                    balance={balances ? balances[token.address]?.value : undefined}
+                    onSelectToken={onSelectToken}
+                  />
+                )
+              })}
+
+            {/*Tokens from blockchain*/}
+            {blockchainResult?.length ? (
+              <styledEl.ImportTokenWrapper id="currency-import">
+                {blockchainResult.slice(0, searchResultsLimit).map((token) => {
+                  return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
+                })}
+              </styledEl.ImportTokenWrapper>
+            ) : null}
+
+            {/*Tokens from inactive lists*/}
+            {inactiveListsResult?.length ? (
+              <div>
+                <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
+                  Expanded results from inactive Token Lists
+                </TokenSourceTitle>
+                <div>
+                  {inactiveListsResult.slice(0, searchResultsLimit).map((token) => {
+                    return (
+                      <ImportTokenItem
+                        key={token.address}
+                        token={token}
+                        importToken={addTokenImportCallback}
+                        shadowed={true}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {/*Tokens from external sources*/}
+            {externalApiResult?.length ? (
+              <div>
+                <TokenSourceTitle tooltip="Tokens from external sources.">
+                  Additional Results from External Sources
+                </TokenSourceTitle>
+                <div>
+                  {externalApiResult.map((token) => {
+                    return (
+                      <ImportTokenItem
+                        key={token.address}
+                        token={token}
+                        importToken={addTokenImportCallback}
+                        shadowed={true}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </>
+        )
+      })()}
     </CommonListContainer>
   )
 }

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { useDebounce } from '@cowprotocol/common-hooks'
@@ -45,6 +45,7 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  */
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
+  const [isLoading, setIsLoading] = useState(false)
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
 
@@ -67,6 +68,16 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     isTokenAlreadyFoundByAddress
   )
 
+  useEffect(() => {
+    setIsLoading(true)
+  }, [input])
+
+  useEffect(() => {
+    if ((!apiIsLoading && !blockchainIsLoading) || tokensFromActiveLists.length || tokensFromInactiveLists.length) {
+      setIsLoading(false)
+    }
+  }, [apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
+
   return useMemo(() => {
     if (!debouncedInputInList) {
       return emptyResponse
@@ -75,7 +86,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (isTokenAlreadyFoundByAddress) {
       return {
         ...emptyResponse,
-        isLoading: apiIsLoading || blockchainIsLoading,
+        isLoading,
         activeListsResult: tokensFromActiveLists,
       }
     }
@@ -92,21 +103,20 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     const externalApiResult = apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : []
 
     return {
-      isLoading: apiIsLoading || blockchainIsLoading,
+      isLoading,
       activeListsResult: tokensFromActiveLists,
       inactiveListsResult,
       blockchainResult,
       externalApiResult,
     }
   }, [
+    isLoading,
     debouncedInputInList,
     isTokenAlreadyFoundByAddress,
     tokensFromActiveLists,
     tokensFromInactiveLists,
     apiResultTokens,
     tokenFromBlockChain,
-    apiIsLoading,
-    blockchainIsLoading,
   ])
 }
 
