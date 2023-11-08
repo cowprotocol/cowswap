@@ -19,7 +19,14 @@ import { TradeModesControl } from './controls/TradeModesControl'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import { ContentStyled, DrawerStyled, ShowDrawerButton, WalletConnectionWrapper, WrapperStyled } from './styled'
+import {
+  ContentStyled,
+  DrawerStyled,
+  LinksWrapper,
+  ShowDrawerButton,
+  WalletConnectionWrapper,
+  WrapperStyled,
+} from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -33,6 +40,8 @@ const DEFAULT_STATE = {
   sellAmount: 100000,
   buyAmount: 0,
 }
+
+const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -104,6 +113,16 @@ export function Configurator({ title }: { title: string }) {
         <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
+
+        <div style={LinksWrapper}>
+          <Link variant="body2" href={`https://cow.fi/widget/?${UTM_PARAMS}`}>
+            Website
+          </Link>
+          {/*TODO: add link to the widget page docs*/}
+          <Link variant="body2" href={`https://docs.cow.fi/?${UTM_PARAMS}`}>
+            Docs
+          </Link>
+        </div>
 
         <Divider variant="middle">Wallet</Divider>
 

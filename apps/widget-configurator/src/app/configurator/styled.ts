@@ -56,3 +56,9 @@ export const ShowDrawerButton: (mode: PaletteMode) => CSSProperties = (mode: Pal
   fontSize: '24px',
   cursor: 'pointer',
 })
+
+export const LinksWrapper = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: '15px',
+}
