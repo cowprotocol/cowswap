@@ -3,10 +3,19 @@ import { useContext, useEffect, useState } from 'react'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
+import { ClickAwayListener } from '@mui/base/ClickAwayListener'
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import EditIcon from '@mui/icons-material/Edit'
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import LanguageIcon from '@mui/icons-material/Language'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
-import Link from '@mui/material/Link'
+import Fab from '@mui/material/Fab'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
@@ -19,14 +28,7 @@ import { TradeModesControl } from './controls/TradeModesControl'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import {
-  ContentStyled,
-  DrawerStyled,
-  LinksWrapper,
-  ShowDrawerButton,
-  WalletConnectionWrapper,
-  WrapperStyled,
-} from './styled'
+import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -42,6 +44,11 @@ const DEFAULT_STATE = {
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
+
+const LINKS = [
+  { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
+  { icon: <ChromeReaderModeIcon />, label: 'Developer docs', url: `https://docs.cow.fi/?${UTM_PARAMS}` },
+]
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -105,57 +112,77 @@ export function Configurator({ title }: { title: string }) {
   return (
     <Box sx={WrapperStyled}>
       {!isDrawerOpen && (
-        <button onClick={() => setIsDrawerOpen(true)} style={ShowDrawerButton(mode)}>
-          ✏️
-        </button>
+        <Fab
+          size="medium"
+          color="secondary"
+          aria-label="edit"
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsDrawerOpen(true)
+          }}
+          style={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
+        >
+          <EditIcon />
+        </Fab>
       )}
-      <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
-          {title}
-        </Typography>
 
-        <div style={LinksWrapper}>
-          <Link variant="body2" href={`https://cow.fi/widget/?${UTM_PARAMS}`}>
-            Website
-          </Link>
-          {/*TODO: add link to the widget page docs*/}
-          <Link variant="body2" href={`https://docs.cow.fi/?${UTM_PARAMS}`}>
-            Docs
-          </Link>
-        </div>
+      <ClickAwayListener onClickAway={() => setIsDrawerOpen(false)}>
+        <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
+          <Typography
+            variant="h6"
+            sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}
+          >
+            {title}
+          </Typography>
 
-        <Divider variant="middle">Wallet</Divider>
+          <div style={WalletConnectionWrapper}>
+            <w3m-button />
+          </div>
 
-        <div style={WalletConnectionWrapper}>
-          <w3m-button />
-        </div>
+          <ThemeControl />
 
-        <Divider variant="middle">General</Divider>
+          <TradeModesControl state={tradeModesState} />
 
-        <ThemeControl />
+          <CurrentTradeTypeControl state={tradeTypeState} />
 
-        <TradeModesControl state={tradeModesState} />
+          <NetworkControl state={networkControlState} />
 
-        <CurrentTradeTypeControl state={tradeTypeState} />
+          <Divider variant="middle">Token selection</Divider>
 
-        <NetworkControl state={networkControlState} />
+          <CurrencyInputControl
+            label="Sell token"
+            tokenIdState={sellTokenState}
+            tokenAmountState={sellTokenAmountState}
+          />
 
-        <Divider variant="middle">Token selection</Divider>
+          <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
-        <CurrencyInputControl
-          label="Sell token"
-          tokenIdState={sellTokenState}
-          tokenAmountState={sellTokenAmountState}
-        />
+          {isDrawerOpen && (
+            <Fab
+              size="small"
+              color="primary"
+              aria-label="hide drawer"
+              onClick={() => setIsDrawerOpen(false)}
+              style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
+            >
+              <KeyboardDoubleArrowLeftIcon />
+            </Fab>
+          )}
 
-        <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
-
-        <Divider variant="middle" />
-
-        <Link href="#hide" onClick={() => setIsDrawerOpen(false)}>
-          Hide drawer
-        </Link>
-      </Drawer>
+          <List
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+            component="nav"
+            aria-labelledby="nested-list-subheader"
+          >
+            {LINKS.map(({ label, icon, url }) => (
+              <ListItemButton key={label} component="a" href={url}>
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={label} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Drawer>
+      </ClickAwayListener>
 
       <Box sx={ContentStyled}>
         {params && (

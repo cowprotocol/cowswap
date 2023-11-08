@@ -74,7 +74,6 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
-      {/* <Button onClick={handleClickOpen('body')}>scroll=body</Button> */}
       <Dialog
         fullWidth
         maxWidth="lg"
