@@ -142,7 +142,7 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
       </Dialog>
 
       {/* Snackbar for success message */}
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
           Successfully copied to clipboard!
         </Alert>
