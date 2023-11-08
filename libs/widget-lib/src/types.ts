@@ -60,6 +60,7 @@ export enum TradeType {
 }
 
 export interface CowSwapWidgetPalette {
+  baseTheme: CowSwapTheme
   primaryColor: string
   screenBackground: string
   widgetBackground: string
@@ -111,7 +112,7 @@ interface CowSwapWidgetConfig {
   /**
    * The theme of the widget UI.
    */
-  theme: CowSwapTheme
+  theme: CowSwapTheme | CowSwapWidgetPalette
 
   /**
    * Allows to set a custom logo for the widget.
@@ -132,11 +133,6 @@ interface CowSwapWidgetConfig {
    * Enables the ability to switch between trade types in the widget.
    */
   enabledTradeTypes: TradeType[]
-
-  /**
-   * Colors palette to customize the widget UI.
-   */
-  palette: CowSwapWidgetPalette
 
   /**
    * The interface fee in basis points.

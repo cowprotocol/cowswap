@@ -39,7 +39,7 @@ export function buildTradeAmountsQuery(params: CowSwapWidgetParams): URLSearchPa
   }
 
   if (theme) {
-    query.append('theme', theme)
+    query.append('theme', typeof theme === 'string' ? theme : theme.baseTheme)
   }
 
   return query
