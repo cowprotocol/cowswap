@@ -27,7 +27,7 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  appKey: 'YOUR_APP_ID',
+  appCode: 'YOUR_APP_ID',
   width: 600,
   height: 640,
   sell: { asset: 'DAI' },
@@ -39,7 +39,7 @@ cowSwapWidget(widgetContainer, params)
 
 ## App key
 
-You must specify the `appKey` parameter when initializing the widget. This parameter is used to identify the source of
+You must specify the `appCode` parameter when initializing the widget. This parameter is used to identify the source of
 orders.  
 The key must be a UTF8 string of up to 50 chars.  
 It will be a part of orders meta-data, see more in
@@ -107,7 +107,7 @@ cowSwapWidget(document.getElementById('cowswap-widget'), {
 | --------------------- | ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `width`               | `string`               | 450px                     | Width in pixels (or 100% to use all available space).                                                                                                                                          |
 | `height`              | `string`               | 640px                     | Height of the widget in css values (px, vh, etc.).                                                                                                                                             |
-| `appKey`              | `string`               | 'DEFAULT_INJECTED_WIDGET' | Name of your app (max 50 characters, e.g. "Pig Swap"). Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) after you pick yours                                                     |
+| `appCode`             | `string`               | 'DEFAULT_INJECTED_WIDGET' | Name of your app (max 50 characters, e.g. "Pig Swap"). Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) after you pick yours                                                     |
 | `provider`            | `EthereumProvider`     | ---                       | Ethereum EIP-1193 provider to connect to the wallet. For a quick test, you can pass `window.ethereum`. You also might like to use https://web3modal.com                                        |
 | `chainId`             | `number`               | 1                         | The blockchain ID on which the trade will take place. Currently supported: 1 (Mainnet), 5 (Goerli), 100 (Gnosis chain)                                                                         |
 | `tradeType`           | `TradeType`            | 'swap'                    | The type of trade. Can be `swap` or `limit` or `advanced`.                                                                                                                                     |
@@ -131,7 +131,7 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const container = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  appKey: 'YOUR_APP_ID',
+  appCode: 'YOUR_APP_ID',
   logoUrl: 'YOUR_LOGO_URL',
 }
 

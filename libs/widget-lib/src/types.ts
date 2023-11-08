@@ -87,7 +87,7 @@ interface CowSwapWidgetConfig {
    * The unique identifier of the widget consumer.
    * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
-  appKey: string
+  appCode: string
   /**
    * The widget might be connected to a custom Ethereum provider.
    */
