@@ -4,6 +4,7 @@ import { UI } from 'common/constants/theme'
 
 export const TokenNotFound = styled.div`
   color: var(${UI.COLOR_LINK});
+  height: 100vh;
   font-weight: 500;
   padding: 10px 0;
   text-align: center;

@@ -45,13 +45,15 @@ export function ManageTokens(props: ManageTokensProps) {
 
   return (
     <styledEl.Wrapper>
-      {activeListsResult?.map((token) => {
-        return <ImportTokenItem key={token.address} token={token} existing={true} />
-      })}
-      {!activeListsResult?.length &&
-        tokensToImport?.map((token) => {
-          return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
+      <styledEl.SearchResults>
+        {activeListsResult?.map((token) => {
+          return <ImportTokenItem key={token.address} token={token} existing={true} />
         })}
+        {!activeListsResult?.length &&
+          tokensToImport?.map((token) => {
+            return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
+          })}
+      </styledEl.SearchResults>
       <styledEl.Header>
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
         {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}

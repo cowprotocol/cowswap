@@ -15,6 +15,10 @@ export const Wrapper = styled.div`
   overflow: auto;
 `
 
+export const SearchResults = styled.div`
+  margin-top: 15px;
+`
+
 export const Header = styled(RowBox)`
   padding: 20px;
 `
@@ -25,7 +29,7 @@ export const Title = styled.div`
 `
 
 export const TokensWrapper = styled.div`
-  height: calc(100vh - 450px);
+  height: calc(100vh - 490px);
   overflow: auto;
 
   ${({ theme }) => theme.colorScrollbar};
