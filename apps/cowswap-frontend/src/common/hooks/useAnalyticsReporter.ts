@@ -76,7 +76,7 @@ export function useAnalyticsReporter() {
 
   const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
 
-  const injectedWidgetAppId = injectedWidgetMetaData.appKey
+  const injectedWidgetAppId = injectedWidgetMetaData.appCode
 
   useEffect(() => {
     // Custom dimension 2 - walletname
