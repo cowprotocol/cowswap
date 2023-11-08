@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -30,6 +30,8 @@ export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hoo
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
 
+  const updateAppDataPromiseRef = useRef(Promise.resolve())
+
   useEffect(() => {
     if (!appCode) {
       // reset values when there is no price estimation or network changes
@@ -51,7 +53,8 @@ export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hoo
       }
     }
 
-    updateAppData()
+    // Chain the next update to avoid race conditions
+    updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
   }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks])
 }
 function getEnvByClass(orderClass: string): CowEnv | undefined {
