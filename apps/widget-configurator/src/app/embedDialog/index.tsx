@@ -1,8 +1,9 @@
-import { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import CodeIcon from '@mui/icons-material/Code'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
@@ -10,6 +11,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Fab from '@mui/material/Fab'
+import Snackbar from '@mui/material/Snackbar'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -21,6 +23,10 @@ import { vanilaNpmExample } from './utils/vanilaNpmExample'
 import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 
 import { copyEmbedCode, viewEmbedCode } from '../analytics'
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
 function a11yProps(index: number) {
   return {
@@ -51,6 +57,20 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
 
   const descriptionElementRef = useRef<HTMLElement>(null)
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code)
+    copyEmbedCode()
+    setSnackbarOpen(true) // Open the Snackbar after copying
+  }
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
   useEffect(() => {
     if (open) {
       const { current: descriptionElement } = descriptionElementRef
@@ -67,11 +87,6 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
 
     return ''
   }, [currentTab, params])
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code)
-    copyEmbedCode()
-  }
 
   return (
     <div>
@@ -125,6 +140,13 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
           <Button onClick={handleCopy}>Copy</Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar for success message */}
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Successfully copied to clipboard!
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
