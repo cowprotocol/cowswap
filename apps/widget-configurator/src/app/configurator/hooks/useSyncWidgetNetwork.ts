@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -14,6 +14,8 @@ export function useSyncWidgetNetwork(
   const network = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
   const walletChainId = network.chain?.id
+  const walletChainIdRef = useRef(walletChainId)
+  walletChainIdRef.current = walletChainId
 
   // Bind network control to wallet network
   useEffect(() => {
@@ -26,10 +28,10 @@ export function useSyncWidgetNetwork(
     }
   }, [isDisconnected, walletChainId, setNetworkControlState])
 
-  // Send a request to switch network if wallet network is different from widget network
+  // Send a request to switch network when user changes network in the configurator
   useEffect(() => {
-    if (!switchNetwork || isDisconnected || walletChainId === chainId) return
+    if (!switchNetwork || isDisconnected || walletChainIdRef.current === chainId) return
 
     switchNetwork(chainId)
-  }, [chainId, isDisconnected, switchNetwork, walletChainId, setNetworkControlState])
+  }, [chainId, isDisconnected, switchNetwork, setNetworkControlState])
 }
