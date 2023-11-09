@@ -38,3 +38,5 @@ export type PreHooks = latest.PreHooks
 export type PostHooks = latest.PostHooks
 
 export type AppDataRootSchema = latest.AppDataRootSchema
+
+export type AppDataWidget = latest.Widget

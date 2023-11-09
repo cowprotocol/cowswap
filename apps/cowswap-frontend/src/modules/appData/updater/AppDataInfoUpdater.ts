@@ -7,7 +7,7 @@ import { UtmParams } from 'modules/utm'
 
 import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataHooks, AppDataOrderClass } from '../types'
+import { AppDataHooks, AppDataOrderClass, AppDataWidget } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -17,13 +17,14 @@ export type UseAppDataParams = {
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   hooks?: AppDataHooks
+  widget?: AppDataWidget
 }
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hooks }: UseAppDataParams): void {
+export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hooks, widget }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
@@ -39,7 +40,7 @@ export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hoo
       return
     }
 
-    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm, hooks }
+    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm, hooks, widget }
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -55,8 +56,9 @@ export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hoo
 
     // Chain the next update to avoid race conditions
     updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
-  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks])
+  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks, widget])
 }
+
 function getEnvByClass(orderClass: string): CowEnv | undefined {
   if (orderClass === 'twap') {
     return 'prod' // Upload the appData to production always, since WatchTower will create the orders there

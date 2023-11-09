@@ -1444,10 +1444,10 @@
   dependencies:
     chalk "^4.1.0"
 
-"@cowprotocol/app-data@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-1.1.0.tgz#38d91a79388220bc1ff99d2b6d0d3e3cce38e8f9"
-  integrity sha512-r55wyVrVnyq32KcswGN+1q5jTIfkLq4NlhibLWpe8px05lqvHA/RXRLO8lTkK7WFtlbO4iSnQqkIs4wqLc80kg==
+"@cowprotocol/app-data@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-1.2.0.tgz#ca181a8aaa336eb5411aa0e40720f1b4c42955f1"
+  integrity sha512-gXuKoB5o00SLF6CEfERnspusKJWx7wKKMQtYbZB9r61n/I8o+bEIuYgKO+oXLqBQwheOjZzPW/oAjuVrDpBkkg==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
