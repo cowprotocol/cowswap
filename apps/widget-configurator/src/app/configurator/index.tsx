@@ -75,7 +75,11 @@ export function Configurator({ title }: { title: string }) {
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
-    { icon: <ChromeReaderModeIcon />, label: 'Developer docs', url: `https://docs.cow.fi/?${UTM_PARAMS}` },
+    {
+      icon: <ChromeReaderModeIcon />,
+      label: 'Developer docs',
+      url: `https://docs.cow.fi/widget/get-started?${UTM_PARAMS}`,
+    },
   ]
 
   const { isDisconnected, isConnected } = useAccount()
