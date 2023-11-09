@@ -42,7 +42,8 @@ describe('buildWidgetUrl', () => {
   describe('trade assets', () => {
     it('without amounts', () => {
       const url = buildWidgetUrl({
-        tradeAssets: { sell: { asset: 'WETH' }, buy: { asset: 'COW' } },
+        sell: { asset: 'WETH' },
+        buy: { asset: 'COW' },
         chainId,
         tradeType,
         env: defaultEnv,
@@ -52,7 +53,8 @@ describe('buildWidgetUrl', () => {
 
     it('with sell amount', () => {
       const url = buildWidgetUrl({
-        tradeAssets: { sell: { asset: 'DAI', amount: '0.1' }, buy: { asset: 'USDC' } },
+        sell: { asset: 'DAI', amount: '0.1' },
+        buy: { asset: 'USDC' },
         chainId,
         tradeType,
         env: defaultEnv,
@@ -62,7 +64,8 @@ describe('buildWidgetUrl', () => {
 
     it('with buy amount', () => {
       const url = buildWidgetUrl({
-        tradeAssets: { sell: { asset: 'DAI' }, buy: { asset: 'USDC', amount: '0.1' } },
+        sell: { asset: 'DAI' },
+        buy: { asset: 'USDC', amount: '0.1' },
         chainId,
         tradeType,
         env: defaultEnv,
@@ -78,7 +81,8 @@ describe('buildWidgetUrl', () => {
         chainId: 100,
         tradeType,
         theme: 'light',
-        tradeAssets: { sell: { asset: 'DAI', amount: '0.1' }, buy: { asset: 'USDC', amount: '0.1' } },
+        sell: { asset: 'DAI', amount: '0.1' },
+        buy: { asset: 'USDC', amount: '0.1' },
       })
       expect(url).toEqual('https://swap.cow.fi/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light')
     })

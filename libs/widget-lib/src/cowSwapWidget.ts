@@ -32,7 +32,7 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
 
   if (!contentWindow) throw new Error('Iframe does not contain a window!')
 
-  sendAppKey(contentWindow, params.appKey)
+  sendAppCode(contentWindow, params.appCode)
 
   applyDynamicHeight(iframe, params.height)
 
@@ -94,11 +94,11 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
 }
 
 /**
- * Sends appKey to the contentWindow of the widget.
+ * Sends appCode to the contentWindow of the widget.
  * @param contentWindow - Window object of the widget's iframe.
- * @param appKey - A unique identifier for the app.
+ * @param appCode - A unique identifier for the app.
  */
-function sendAppKey(contentWindow: Window, appKey: string | undefined) {
+function sendAppCode(contentWindow: Window, appCode: string | undefined) {
   window.addEventListener('message', (event) => {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
       return
@@ -108,7 +108,7 @@ function sendAppKey(contentWindow: Window, appKey: string | undefined) {
       {
         key: COW_SWAP_WIDGET_EVENT_KEY,
         method: 'metaData',
-        metaData: appKey ? { appKey } : undefined,
+        metaData: appCode ? { appCode } : undefined,
       },
       '*'
     )

@@ -31,20 +31,19 @@ export function useWidgetParamsAndSettings(
     } = configuratorState
 
     const params: CowSwapWidgetProps['params'] = {
-      appKey: '<YOUR_APP_ID>',
+      appCode: 'CoW Widget: Configurator',
       width: '450px',
       height: '640px',
       provider,
-      theme,
       chainId,
       env: getEnv(),
       tradeType: currentTradeType,
-      tradeAssets: {
-        sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-        buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-      },
+      sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
+      buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      // palette: {
+      theme,
+      // theme: {
+      //   baseTheme: theme,
       //   primaryColor: '#d9258e',
       //   screenBackground: '#ee00cd',
       //   widgetBackground: '#b900ff',

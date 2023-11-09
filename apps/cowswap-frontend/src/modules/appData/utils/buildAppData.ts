@@ -1,5 +1,4 @@
 import { stringifyDeterministic } from '@cowprotocol/app-data'
-import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -7,16 +6,18 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 import { UtmParams } from 'modules/utm'
 
-import { AppDataHooks, AppDataInfo, AppDataOrderClass, AppDataRootSchema } from '../types'
+import { AppDataHooks, AppDataInfo, AppDataOrderClass, AppDataRootSchema, AppDataWidget } from '../types'
 
 export type BuildAppDataParams = {
   appCode: string
+  environment?: string
   chainId: SupportedChainId
   slippageBips: string
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
   hooks?: AppDataHooks
+  widget?: AppDataWidget
 }
 
 async function generateAppDataFromDoc(
@@ -32,9 +33,11 @@ export async function buildAppData({
   slippageBips,
   referrerAccount,
   appCode,
+  environment,
   orderClass: orderClassName,
   utm,
   hooks,
+  widget,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
@@ -44,8 +47,8 @@ export async function buildAppData({
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
-    environment: environmentName,
-    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks },
+    environment,
+    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks, widget },
   })
 
   const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)
@@ -57,7 +60,10 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export async function updateHooksOnAppData(appData: AppDataInfo, hooks: AppDataHooks | undefined): Promise<AppDataInfo> {
+export async function updateHooksOnAppData(
+  appData: AppDataInfo,
+  hooks: AppDataHooks | undefined
+): Promise<AppDataInfo> {
   const { doc } = appData
 
   const newDoc = {

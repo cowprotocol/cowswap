@@ -3,10 +3,19 @@ import { useContext, useEffect, useState } from 'react'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import CodeIcon from '@mui/icons-material/Code'
+import EditIcon from '@mui/icons-material/Edit'
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import LanguageIcon from '@mui/icons-material/Language'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
-import Link from '@mui/material/Link'
+import Fab from '@mui/material/Fab'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
@@ -16,15 +25,16 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
-import { ContentStyled, DrawerStyled, ShowDrawerButton, WalletConnectionWrapper, WrapperStyled } from './styled'
+import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
-import { connectWalletToConfigurator } from '../analytics'
+import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
 const DEFAULT_STATE = {
@@ -33,6 +43,8 @@ const DEFAULT_STATE = {
   sellAmount: 100000,
   buyAmount: 0,
 }
+
+const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -57,6 +69,14 @@ export function Configurator({ title }: { title: string }) {
   const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
+
+  const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
+
+  const LINKS = [
+    { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
+    { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
+    { icon: <ChromeReaderModeIcon />, label: 'Developer docs', url: `https://docs.cow.fi/?${UTM_PARAMS}` },
+  ]
 
   const { isDisconnected, isConnected } = useAccount()
   const network = useNetwork()
@@ -89,29 +109,35 @@ export function Configurator({ title }: { title: string }) {
   // Fire an event to GA when user connect a wallet
   useEffect(() => {
     if (isConnected) {
-      connectWalletToConfigurator()
+      connectWalletToConfiguratorGA()
     }
   }, [isConnected])
 
   return (
     <Box sx={WrapperStyled}>
       {!isDrawerOpen && (
-        <button onClick={() => setIsDrawerOpen(true)} style={ShowDrawerButton(mode)}>
-          ✏️
-        </button>
+        <Fab
+          size="medium"
+          color="secondary"
+          aria-label="edit"
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsDrawerOpen(true)
+          }}
+          style={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
+        >
+          <EditIcon />
+        </Fab>
       )}
+
       <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 0 1.6rem', fontWeight: 'bold' }}>
+        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
-
-        <Divider variant="middle">Wallet</Divider>
 
         <div style={WalletConnectionWrapper}>
           <w3m-button />
         </div>
-
-        <Divider variant="middle">General</Divider>
 
         <ThemeControl />
 
@@ -131,22 +157,59 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
-        <Divider variant="middle" />
+        {isDrawerOpen && (
+          <Fab
+            size="small"
+            color="primary"
+            aria-label="hide drawer"
+            onClick={() => setIsDrawerOpen(false)}
+            style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
+          >
+            <KeyboardDoubleArrowLeftIcon />
+          </Fab>
+        )}
 
-        <Link href="#hide" onClick={() => setIsDrawerOpen(false)}>
-          Hide drawer
-        </Link>
+        <List
+          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          {LINKS.map(({ label, icon, url, onClick }) => (
+            <ListItemButton
+              key={label}
+              component={onClick ? 'button' : 'a'}
+              href={onClick ? undefined : url}
+              target={onClick ? undefined : '_blank'}
+              rel={onClick ? undefined : 'noopener noreferrer'}
+              onClick={onClick}
+            >
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          ))}
+        </List>
       </Drawer>
 
       <Box sx={ContentStyled}>
         {params && (
           <>
-            <EmbedDialog params={params} />
+            <EmbedDialog params={params} open={dialogOpen} handleClose={handleDialogClose} />
             <br />
             <CowSwapWidget provider={provider} params={params} />
           </>
         )}
       </Box>
+
+      <Fab
+        color="primary"
+        size="large"
+        variant="extended"
+        sx={{ position: 'fixed', bottom: '2rem', right: '1.6rem' }}
+        onClick={() => handleDialogOpen()}
+      >
+        <CodeIcon sx={{ mr: 1 }} />
+        View Embed Code
+      </Fab>
     </Box>
   )
 }

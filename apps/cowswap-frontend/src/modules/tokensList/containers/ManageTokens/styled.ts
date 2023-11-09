@@ -11,8 +11,10 @@ const RowBox = styled.div`
   align-items: center;
 `
 
-export const Wrapper = styled.div`
-  overflow: auto;
+export const SearchResults = styled.div`
+  margin-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(${UI.COLOR_GREY});
 `
 
 export const Header = styled(RowBox)`
@@ -22,17 +24,6 @@ export const Header = styled(RowBox)`
 export const Title = styled.div`
   font-weight: 600;
   opacity: 0.65;
-`
-
-export const TokensWrapper = styled.div`
-  height: calc(100vh - 450px);
-  overflow: auto;
-
-  ${({ theme }) => theme.colorScrollbar};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: calc(100vh - 350px);
-  `}
 `
 
 export const LinkButton = styled.button`
@@ -65,5 +56,4 @@ export const TipText = styled.div`
   text-align: center;
   padding: 20px 0;
   border-top: 1px solid var(${UI.COLOR_GREY});
-  margin-top: 20px;
 `

@@ -1,14 +1,11 @@
-import { CSSProperties } from 'react'
-
 import { Theme } from '@mui/material/styles'
-
-import type { PaletteMode } from '@mui/material'
 
 export const WrapperStyled = { display: 'flex', flexFlow: 'column wrap', width: '100%' }
 
 export const DrawerStyled = (theme: Theme) => ({
   width: '29rem',
   flexShrink: 0,
+
   '& .MuiDrawer-paper': {
     width: '29rem',
     boxSizing: 'border-box',
@@ -42,17 +39,5 @@ export const ContentStyled = {
 export const WalletConnectionWrapper = {
   display: 'flex',
   justifyContent: 'center',
+  margin: '0 auto 1rem',
 }
-
-export const ShowDrawerButton: (mode: PaletteMode) => CSSProperties = (mode: PaletteMode) => ({
-  borderRadius: '50%',
-  width: '60px',
-  height: '60px',
-  position: 'fixed',
-  left: '20px',
-  bottom: '20px',
-  background: mode === 'dark' ? 'rgb(63 162 255 / 71%)' : '#fff',
-  border: 0,
-  fontSize: '24px',
-  cursor: 'pointer',
-})

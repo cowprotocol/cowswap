@@ -41,5 +41,3 @@ function getRpcUrl(chainId: SupportedChainId): string {
 
   return defaultRpc.url
 }
-
-console.log('RPC_URLS', RPC_URLS)

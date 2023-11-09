@@ -6,5 +6,9 @@ import { useInjectedWidgetParams } from './useInjectedWidgetParams'
 export function useInjectedWidgetPalette(): CowSwapWidgetPalette | undefined {
   const state = useInjectedWidgetParams()
 
-  return state.palette
+  return isCowSwapWidgetPallet(state.theme) ? state.theme : undefined
+}
+
+function isCowSwapWidgetPallet(palette: any): palette is CowSwapWidgetPalette {
+  return palette && typeof palette === 'object'
 }

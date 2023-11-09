@@ -12,3 +12,8 @@ export const TokenNotFound = styled.div`
 export const ImportTokenWrapper = styled.div`
   margin: 20px 0;
 `
+
+export const LoaderWrapper = styled.div`
+  text-align: center;
+  margin: 20px 0 10px 0;
+`

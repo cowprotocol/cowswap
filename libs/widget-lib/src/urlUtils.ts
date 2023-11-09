@@ -10,33 +10,36 @@ export function buildWidgetUrl(params: CowSwapWidgetParams): string {
 }
 
 export function buildWidgetPath(params: CowSwapWidgetParams): string {
-  const { chainId = 1, tradeAssets, tradeType = TradeType.SWAP } = params
+  const { chainId = 1, sell, buy, tradeType = TradeType.SWAP } = params
 
-  const assetsPath = tradeAssets
-    ? [tradeAssets.sell.asset, tradeAssets.buy.asset].map(encodeURIComponent).join('/')
-    : ''
+  const assets = []
+  if (sell?.asset) {
+    assets.push(sell.asset)
+  }
+
+  if (buy?.asset) {
+    assets.push(buy.asset)
+  }
+
+  const assetsPath = assets.map(encodeURIComponent).join('/')
 
   return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
 
 export function buildTradeAmountsQuery(params: CowSwapWidgetParams): URLSearchParams {
-  const { tradeAssets, theme } = params
+  const { sell, buy, theme } = params
   const query = new URLSearchParams()
 
-  if (tradeAssets) {
-    const { sell, buy } = tradeAssets
+  if (sell?.amount) {
+    query.append('sellAmount', sell.amount)
+  }
 
-    if (sell.amount) {
-      query.append('sellAmount', sell.amount)
-    }
-
-    if (buy.amount) {
-      query.append('buyAmount', buy.amount)
-    }
+  if (buy?.amount) {
+    query.append('buyAmount', buy.amount)
   }
 
   if (theme) {
-    query.append('theme', theme)
+    query.append('theme', typeof theme === 'string' ? theme : theme.baseTheme)
   }
 
   return query

@@ -37,11 +37,11 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
-  appKey: '<YOUR_APP_KEY>', // Just an unique identifier for your app
+  appCode: '<YOUR_APP_KEY>', // Just an unique identifier for your app
   sell: { asset: 'DAI' },
   buy: { asset: 'USDC', amount: '0.1' },
   // instantiate your own web3 provider
-  provider: window.ethereum
+  provider: window.ethereum,
 }
 
 const updateWidget = cowSwapWidget(
@@ -57,12 +57,13 @@ updateWidget({ ...params, tradeType: 'limit' })
 ## Developers
 
 #### Test
+
 ```
 nx test widget-lib
 ```
 
 #### Build the library
+
 ```
 nx build widget-lib
 ```
-
