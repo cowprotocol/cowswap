@@ -94,6 +94,8 @@ export const CowModal = styled(Modal)<{
   border?: string
   padding?: string
 }>`
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+
   > [data-reach-dialog-content] {
     color: var(${UI.COLOR_TEXT1});
     width: 100%;
