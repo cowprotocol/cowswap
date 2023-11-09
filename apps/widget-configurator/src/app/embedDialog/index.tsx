@@ -1,13 +1,15 @@
-import { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import Snackbar from '@mui/material/Snackbar'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -18,7 +20,11 @@ import { reactExample } from './utils/reactExample'
 import { vanilaNpmExample } from './utils/vanilaNpmExample'
 import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 
-import { copyEmbedCode, viewEmbedCode } from '../analytics'
+import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
 function a11yProps(index: number) {
   return {
@@ -29,28 +35,33 @@ function a11yProps(index: number) {
 
 export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
+  open: boolean
+  handleClose: () => void
 }
 
-export function EmbedDialog({ params }: EmbedDialogProps) {
-  const [open, setOpen] = useState(false)
+export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
-
   const [currentTab, setCurrentTab] = useState(0)
-
-  const handleClickOpen = (scrollType: DialogProps['scroll']) => () => {
-    setOpen(true)
-    setScroll(scrollType)
-    viewEmbedCode()
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   const descriptionElementRef = useRef<HTMLElement>(null)
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code)
+    copyEmbedCodeGA()
+    setSnackbarOpen(true)
+  }
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
 
   useEffect(() => {
     if (open) {
+      setScroll('paper')
+      viewEmbedCodeGA()
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
         descriptionElement.focus()
@@ -66,23 +77,16 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
     return ''
   }, [currentTab, params])
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code)
-    copyEmbedCode()
-  }
-
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen('paper')}>{`View Embed Code </>`}</Button>
-      {/* <Button onClick={handleClickOpen('body')}>scroll=body</Button> */}
       <Dialog
         fullWidth
         maxWidth="lg"
-        open={open}
-        onClose={handleClose}
         scroll={scroll}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
+        open={open}
+        onClose={handleClose}
       >
         <DialogTitle id="scroll-dialog-title">Snippet for CoW Widget</DialogTitle>
 
@@ -114,6 +118,12 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
           <Button onClick={handleCopy}>Copy</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Successfully copied to clipboard!
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

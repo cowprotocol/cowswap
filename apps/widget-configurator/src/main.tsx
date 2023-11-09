@@ -1,6 +1,7 @@
 import { StrictMode, useMemo } from 'react'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
+import 'inter-ui'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
 import { createRoot } from 'react-dom/client'
@@ -30,6 +31,28 @@ function Root() {
     return createTheme({
       palette,
       typography: commonTypography,
+      components: {
+        MuiCssBaseline: {
+          styleOverrides: {
+            '@global': {
+              html: {
+                fontFamily: '"Inter var", "Inter", sans-serif',
+              },
+              body: {
+                fontFamily: '"Inter var", "Inter", sans-serif',
+              },
+              '@supports (font-variation-settings: normal)': {
+                html: {
+                  fontFamily: '"Inter var", "Inter", sans-serif',
+                },
+                body: {
+                  fontFamily: '"Inter var", "Inter", sans-serif',
+                },
+              },
+            },
+          },
+        },
+      },
     })
   }, [mode])
 
