@@ -49,6 +49,8 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
 
+  const isInputStale = debouncedInputInExternals !== inputLowerCase
+
   // Search in active and inactive lists
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
 
@@ -73,10 +75,20 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   }, [input])
 
   useEffect(() => {
-    if ((!apiIsLoading && !blockchainIsLoading) || tokensFromActiveLists.length || tokensFromInactiveLists.length) {
+    // When there are results from toke lists, then we don't need to wait for the rest
+    if (tokensFromActiveLists.length || tokensFromInactiveLists.length) {
+      setIsLoading(false)
+      return
+    }
+
+    // Change loading state only when input is not stale
+    if (isInputStale) return
+
+    // Loading is finished when all sources are loaded
+    if (!apiIsLoading && !blockchainIsLoading) {
       setIsLoading(false)
     }
-  }, [apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
+  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
 
   return useMemo(() => {
     if (!debouncedInputInList) {
@@ -90,8 +102,6 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
         activeListsResult: tokensFromActiveLists,
       }
     }
-
-    const isInputStale = debouncedInputInExternals !== inputLowerCase
 
     const foundTokens = tokensFromActiveLists.reduce<{ [address: string]: true }>((acc, val) => {
       acc[val.address.toLowerCase()] = true
@@ -112,8 +122,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
       externalApiResult,
     }
   }, [
-    inputLowerCase,
-    debouncedInputInExternals,
+    isInputStale,
     isLoading,
     debouncedInputInList,
     isTokenAlreadyFoundByAddress,
