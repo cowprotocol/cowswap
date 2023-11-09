@@ -4,7 +4,7 @@ import { percentToBips } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useAppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
+import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useUtm } from 'modules/utm'
 
 import { AppDataHooksUpdater } from './AppDataHooksUpdater'
@@ -25,7 +25,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
   const slippageBips = percentToBips(slippage)
   const utm = useUtm()
   const hooks = useAppDataHooks()
-  const appCodeWithWidgetMetadata = useAppCodeWithWidgetMetadata(appCode)
+  const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
 
   if (!chainId) return null
 
