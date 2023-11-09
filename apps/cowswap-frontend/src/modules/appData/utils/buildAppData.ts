@@ -1,5 +1,4 @@
 import { stringifyDeterministic } from '@cowprotocol/app-data'
-import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -11,6 +10,7 @@ import { AppDataHooks, AppDataInfo, AppDataOrderClass, AppDataRootSchema, AppDat
 
 export type BuildAppDataParams = {
   appCode: string
+  environment?: string
   chainId: SupportedChainId
   slippageBips: string
   orderClass: AppDataOrderClass
@@ -33,6 +33,7 @@ export async function buildAppData({
   slippageBips,
   referrerAccount,
   appCode,
+  environment,
   orderClass: orderClassName,
   utm,
   hooks,
@@ -46,7 +47,7 @@ export async function buildAppData({
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
-    environment: environmentName,
+    environment,
     metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks, widget },
   })
 

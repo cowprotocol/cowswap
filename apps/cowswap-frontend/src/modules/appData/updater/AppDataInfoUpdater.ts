@@ -44,8 +44,8 @@ export function AppDataInfoUpdater({
       return
     }
 
-    const { appCode, widget } = appCodeWithWidgetMetadata
-    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm, hooks, widget }
+    const { appCode, environment, widget } = appCodeWithWidgetMetadata
+    const params: BuildAppDataParams = { chainId, slippageBips, appCode, environment, orderClass, utm, hooks, widget }
 
     const updateAppData = async (): Promise<void> => {
       try {
