@@ -4,6 +4,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
@@ -24,6 +25,7 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
@@ -32,7 +34,7 @@ import { ConfiguratorState } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
-import { connectWalletToConfigurator } from '../analytics'
+import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
 const DEFAULT_STATE = {
@@ -43,11 +45,6 @@ const DEFAULT_STATE = {
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
-
-const LINKS = [
-  { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
-  { icon: <ChromeReaderModeIcon />, label: 'Developer docs', url: `https://docs.cow.fi/?${UTM_PARAMS}` },
-]
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -72,6 +69,14 @@ export function Configurator({ title }: { title: string }) {
   const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
+
+  const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
+
+  const LINKS = [
+    { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
+    { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
+    { icon: <ChromeReaderModeIcon />, label: 'Developer docs', url: `https://docs.cow.fi/?${UTM_PARAMS}` },
+  ]
 
   const { isDisconnected, isConnected } = useAccount()
   const network = useNetwork()
@@ -104,7 +109,7 @@ export function Configurator({ title }: { title: string }) {
   // Fire an event to GA when user connect a wallet
   useEffect(() => {
     if (isConnected) {
-      connectWalletToConfigurator()
+      connectWalletToConfiguratorGA()
     }
   }, [isConnected])
 
@@ -169,8 +174,15 @@ export function Configurator({ title }: { title: string }) {
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
-          {LINKS.map(({ label, icon, url }) => (
-            <ListItemButton key={label} component="a" href={url}>
+          {LINKS.map(({ label, icon, url, onClick }) => (
+            <ListItemButton
+              key={label}
+              component={onClick ? 'button' : 'a'}
+              href={onClick ? undefined : url}
+              target={onClick ? undefined : '_blank'}
+              rel={onClick ? undefined : 'noopener noreferrer'}
+              onClick={onClick}
+            >
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={label} />
             </ListItemButton>
@@ -181,12 +193,23 @@ export function Configurator({ title }: { title: string }) {
       <Box sx={ContentStyled}>
         {params && (
           <>
-            <EmbedDialog params={params} />
+            <EmbedDialog params={params} open={dialogOpen} handleClose={handleDialogClose} />
             <br />
             <CowSwapWidget provider={provider} params={params} />
           </>
         )}
       </Box>
+
+      <Fab
+        color="primary"
+        size="large"
+        variant="extended"
+        sx={{ position: 'fixed', bottom: '2rem', right: '1.6rem' }}
+        onClick={() => handleDialogOpen()}
+      >
+        <CodeIcon sx={{ mr: 1 }} />
+        View Embed Code
+      </Fab>
     </Box>
   )
 }
