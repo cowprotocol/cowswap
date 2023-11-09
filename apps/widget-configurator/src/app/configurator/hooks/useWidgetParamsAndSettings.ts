@@ -35,14 +35,15 @@ export function useWidgetParamsAndSettings(
       width: '450px',
       height: '640px',
       provider,
-      theme,
       chainId,
       env: getEnv(),
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      // palette: {
+      theme,
+      // theme: {
+      //   baseTheme: theme,
       //   primaryColor: '#d9258e',
       //   screenBackground: '#ee00cd',
       //   widgetBackground: '#b900ff',
