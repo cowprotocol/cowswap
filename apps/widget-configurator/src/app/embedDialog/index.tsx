@@ -35,8 +35,8 @@ function a11yProps(index: number) {
 
 export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
-  open: boolean // Add this to receive the open state
-  handleClose: () => void // Add this to receive the handleClose function
+  open: boolean
+  handleClose: () => void
 }
 
 export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
@@ -48,7 +48,7 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   const handleCopy = () => {
     navigator.clipboard.writeText(code)
     copyEmbedCodeGA()
-    setSnackbarOpen(true) // Open the Snackbar after copying
+    setSnackbarOpen(true)
   }
 
   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -119,7 +119,6 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for success message */}
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
           Successfully copied to clipboard!
