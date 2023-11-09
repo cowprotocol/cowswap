@@ -21,30 +21,37 @@ export interface AppCodeWithWidgetMetadata {
  *   - environment: the environment of the app when not used in the widget mode, or not specified in widget mode
  *   - widget: The widget metadata if in widget mode
  *
+ * @param appCodeOfficial the official `appCode` of the app
+ *
  */
-export function useAppCodeWidgetAware(appCode: string | null): AppCodeWithWidgetMetadata | null {
+export function useAppCodeWidgetAware(appCodeOfficial: string | null): AppCodeWithWidgetMetadata | null {
   const injectedWidgetMetadata = useInjectedWidgetMetaData()
 
-  const appCodeWidget = injectedWidgetMetadata?.appCode
+  const appCodeInjectedHostApp = injectedWidgetMetadata?.appCode
 
   return useMemo(() => {
-    if (!appCode) {
+    // appCodeOfficial is required for generating the appData, if not provided, return null
+    if (!appCodeOfficial) {
       return null
     }
 
-    if (appCodeWidget) {
+    // If running in widget mode, and the host app injects us an appCode
+    if (appCodeInjectedHostApp) {
       return {
-        appCode: appCodeWidget,
+        // The main appCode will be the one of the host app that uses the widget
+        appCode: appCodeInjectedHostApp,
         widget: {
-          appCode,
+          // In the widget appCode we include the official appCode and environment (this way we report which app is backing the widget iframe)
+          appCode: appCodeOfficial,
           environment: environmentName,
         },
       }
     }
 
+    // Return the official appCode and environment as the main appCode/environment in the appData
     return {
-      appCode,
+      appCode: appCodeOfficial,
       environment: environmentName,
     }
-  }, [appCode, appCodeWidget])
+  }, [appCodeOfficial, appCodeInjectedHostApp])
 }
