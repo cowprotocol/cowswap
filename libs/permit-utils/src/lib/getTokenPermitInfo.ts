@@ -62,7 +62,8 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   }
 
   if (!tokenName) {
-    throw new Error(`[checkTokenIsPermittable] token name could not be determined for ${tokenAddress}`)
+    const error = `Token name could not be determined for ${tokenAddress}`
+    return { error }
   }
 
   let nonce: number
