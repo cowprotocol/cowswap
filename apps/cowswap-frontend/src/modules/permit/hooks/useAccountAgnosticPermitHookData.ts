@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { PermitHookData } from '@cowprotocol/permit-utils'
+import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
 import { useDerivedTradeState } from 'modules/trade'
 
@@ -44,7 +44,7 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
   const permitInfo = usePermitInfo(inputCurrency, tradeType)
 
   return useSafeMemo(() => {
-    if (!inputCurrency || !('address' in inputCurrency) || !permitInfo || permitInfo.type === 'unsupported')
+    if (!inputCurrency || !('address' in inputCurrency) || !permitInfo || !isSupportedPermitInfo(permitInfo))
       return undefined
 
     return {

@@ -4,6 +4,7 @@ import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '.
 import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
+import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
 
@@ -40,7 +41,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   // TODO: remove the need for `name` from input token. Should come from permitInfo instead
   const tokenName = permitInfo.name || inputToken.name
 
-  if (permitInfo.type === 'unsupported') {
+  if (!isSupportedPermitInfo(permitInfo)) {
     throw new Error(`Trying to generate permit hook for unsupported token: ${tokenAddress}`)
   }
 
