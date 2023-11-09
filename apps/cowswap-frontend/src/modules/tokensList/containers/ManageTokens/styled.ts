@@ -11,6 +11,12 @@ const RowBox = styled.div`
   align-items: center;
 `
 
+export const SearchResults = styled.div`
+  margin-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(${UI.COLOR_GREY});
+`
+
 export const Header = styled(RowBox)`
   padding: 20px;
 `
@@ -50,5 +56,4 @@ export const TipText = styled.div`
   text-align: center;
   padding: 20px 0;
   border-top: 1px solid var(${UI.COLOR_GREY});
-  margin-top: 20px;
 `

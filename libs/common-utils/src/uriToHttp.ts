@@ -3,6 +3,11 @@
  * @param uri to convert to fetch-able http url
  */
 export function uriToHttp(uri: string): string[] {
+  // For local development
+  if (uri.startsWith('/@fs/')) {
+    return [uri]
+  }
+
   const protocol = uri.split(':')[0].toLowerCase()
   switch (protocol) {
     case 'data':

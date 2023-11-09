@@ -2,8 +2,9 @@ import React, { ReactNode, useMemo } from 'react'
 
 import alertImage from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import checkImage from '@cowprotocol/assets/cow-swap/check.svg'
-import { getChainCurrencySymbols } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_BUY_TOKEN, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   getWeb3ReactConnection,
@@ -47,7 +48,11 @@ enum WalletType {
 }
 
 export function getOperationMessage(operationType: ConfirmOperationType, chainId: number): string {
-  const { native, wrapped } = getChainCurrencySymbols(chainId)
+  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId as SupportedChainId]
+  const wrappedToken = WRAPPED_NATIVE_CURRENCY[chainId as SupportedChainId]
+
+  const native = nativeToken.symbol
+  const wrapped = wrappedToken.symbol
 
   switch (operationType) {
     case ConfirmOperationType.WRAP_ETHER:

@@ -12,6 +12,8 @@ import { getOrders } from 'api/gnosisProtocol'
 import { useApiOrders } from './useApiOrders'
 import { useSWROrdersRequest } from './useSWROrdersRequest'
 
+const EMPTY_ORDERS: EnrichedOrder[] = []
+
 // Fetch PROD orders only when current env is not prod
 // We need them for TWAP, because WatchTower creates orders only on Prod
 export function useSWRProdOrders(): EnrichedOrder[] {
@@ -19,11 +21,10 @@ export function useSWRProdOrders(): EnrichedOrder[] {
   const requestParams = useSWROrdersRequest()
   const apiOrders = useApiOrders()
 
-  const { data: loadedProdOrders = [] } = useSWR<EnrichedOrder[]>(
+  const { data: loadedProdOrders = EMPTY_ORDERS } = useSWR<EnrichedOrder[]>(
     ['prod-orders', requestParams, chainId],
     () => {
-      if (!chainId || !requestParams) return []
-      if (!isBarnBackendEnv) return []
+      if (!chainId || !requestParams || !isBarnBackendEnv) return EMPTY_ORDERS
 
       return getOrders(requestParams, { chainId, env: 'prod' })
     },

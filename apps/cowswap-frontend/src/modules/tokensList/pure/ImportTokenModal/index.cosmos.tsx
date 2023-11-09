@@ -12,9 +12,10 @@ const Fixtures = {
   default: (
     <Wrapper>
       <ImportTokenModal
-        token={customTokensMock[0]}
+        tokens={customTokensMock}
         onBack={() => console.log('onBack')}
-        onClose={() => console.log('onClose')}
+        onDismiss={() => console.log('onClose')}
+        onImport={() => console.log('onImport')}
       />
     </Wrapper>
   ),

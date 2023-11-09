@@ -2,6 +2,7 @@ import { transparentize, darken } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import Column from 'legacy/components/Column'
 import { ThemedText } from 'legacy/theme'
 
 import { UI } from 'common/constants/theme'
@@ -160,6 +161,76 @@ export const Overview = styled.div`
       bottom: 0;
       margin: auto;
       z-index: 1;
+    }
+  `};
+`
+
+export const SearchInputFormatter = styled(Column)`
+  width: 100%;
+  flex: 1 1 fit-content;
+  position: relative;
+
+  > input {
+    border: none;
+    transition: background 0.3s ease-in-out;
+    background: var(${UI.COLOR_CONTAINER_BG_01});
+    color: var(${UI.COLOR_TEXT1});
+  }
+
+  > input::placeholder {
+    font-size: 16px;
+    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+  }
+
+  > input:focus::placeholder {
+    color: ${({ theme }) => transparentize(0.9, theme.text1)};
+  }
+`
+
+export const TokenSearchInput = styled.input`
+  margin: 0;
+  font-size: 14px;
+  max-width: 280px;
+  width: 100%;
+  align-self: flex-end;
+  box-shadow: none;
+  background: var(${UI.COLOR_GREY});
+  border: 1px solid ${({ theme }) => theme.bg1};
+  border-radius: 21px;
+  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
+  appearance: none;
+  height: 44px;
+  padding: 0 16px;
+  outline: 0;
+
+  &:focus {
+    max-width: 500px;
+    background: var(${UI.COLOR_CONTAINER_BG_01});
+    outline: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      width: 100%;
+    `};
+  }
+
+  &::placeholder {
+    font-size: 14px !important;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
+  }
+
+  &:focus::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)};
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-width: 100%;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 12px !important;
+
+    &::placeholder {
+      font-size: 12px !important;
     }
   `};
 `

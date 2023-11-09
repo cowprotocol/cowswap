@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
-
 import { isAddress } from '@cowprotocol/common-utils'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
-export function useFilterTokens(tokens: Token[], query: string): Token[] {
+export function useFilterTokens(tokens: TokenWithLogo[], query: string): TokenWithLogo[] {
   return useMemo(() => {
     // only calc anything if we actually have more than 1 token in list
     // and the user is actively searching tokens
@@ -19,7 +18,7 @@ export function useFilterTokens(tokens: Token[], query: string): Token[] {
       .split(/\+s/)
       .filter((s) => s.length)
 
-    return tokens.filter((token: Token) => {
+    return tokens.filter((token: TokenWithLogo) => {
       if (searchAddress) {
         // first search by address if its address
         return 'address' in token && searchAddress.toLowerCase() === token.address.toLowerCase()

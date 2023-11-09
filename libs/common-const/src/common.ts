@@ -1,7 +1,7 @@
 import networksJson from '@cowprotocol/contracts/networks.json'
 import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
-import { Fraction, Percent, Token } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
@@ -86,16 +86,6 @@ export const COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.GOERLI]: '0x91056D4A53E1faa1A84306D4deAEc71085394bC8',
 }
 
-// See https://github.com/cowprotocol/contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
-export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  // [ChainId.ROPSTEN]: new Token(ChainId.ROPSTEN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GOERLI]: new Token(ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  // [ChainId.KOVAN]: new Token(ChainId.KOVAN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.GNOSIS_CHAIN]: new Token(ChainId.GNOSIS_CHAIN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'xDAI', 'xDAI'),
-}
-
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
@@ -117,6 +107,7 @@ const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
+export const COW_PROTOCOL_LINK = 'https://cow.fi/'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
@@ -154,10 +145,6 @@ export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
-// last wallet provider key used in local storage
-export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
-export const WAITING_TIME_RECONNECT_LAST_PROVIDER = 15000 // 15s
-
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
 // LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
@@ -177,6 +164,13 @@ export const SWR_OPTIONS = {
   // don't revalidate data on focus, can cause too many re-renders
   // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
   revalidateOnFocus: false,
+}
+
+export const SWR_NO_REFRESH_OPTIONS = {
+  // Cache indefinitely
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  refreshInterval: 0,
 }
 
 // TODO: show banner warning when PINATA env vars are missing

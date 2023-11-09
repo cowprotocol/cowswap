@@ -1,25 +1,13 @@
-import { Token } from '@uniswap/sdk-core'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 
-export class TokenWithLogo extends Token {
-  constructor(
-    public logoURI: string | undefined,
-    chainId: number,
-    address: string,
-    decimals: number,
-    symbol?: string,
-    name?: string,
-    bypassChecksum?: boolean
-  ) {
-    super(chainId, address, decimals, symbol, name, bypassChecksum)
-  }
-}
+import { PermitCompatibleTokens } from 'modules/permit'
+import { TokenAmounts } from 'modules/tokens'
 
-export interface TokenList {
-  id: string
-  name: string
-  logoUrl: string
-  url: string
-  enabled: boolean
-  tokensCount: number
-  version: string
+export interface SelectTokenContext {
+  balances: TokenAmounts | null
+  balancesLoading: boolean
+  selectedToken?: string
+  onSelectToken(token: TokenWithLogo): void
+  unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
+  permitCompatibleTokens: PermitCompatibleTokens
 }

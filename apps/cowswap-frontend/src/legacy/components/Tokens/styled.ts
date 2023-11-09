@@ -1,3 +1,4 @@
+import { TokenLogo } from '@cowprotocol/tokens'
 import { BaseButton } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
@@ -6,55 +7,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-
-export const TokenSearchInput = styled.input`
-  margin: 0;
-  font-size: 14px;
-  max-width: 280px;
-  width: 100%;
-  align-self: flex-end;
-  box-shadow: none;
-  background: var(${UI.COLOR_GREY});
-  border: 1px solid ${({ theme }) => theme.bg1};
-  border-radius: 21px;
-  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
-  appearance: none;
-  height: 44px;
-  padding: 0 16px;
-  outline: 0;
-
-  &:focus {
-    max-width: 500px;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
-    outline: 0;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      width: 100%;
-    `};
-  }
-
-  &::placeholder {
-    font-size: 14px !important;
-    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
-  }
-
-  &:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)};
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: 100%;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 12px !important;
-
-    &::placeholder {
-      font-size: 12px !important;
-    }
-  `};
-`
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -77,10 +29,7 @@ export const LinkWrapper = styled(Link)`
   }
 `
 
-export const ResponsiveLogo = styled(CurrencyLogo)`
-  width: 28px;
-  height: 28px;
-  border-radius: 28px;
+export const ResponsiveLogo = styled(TokenLogo)`
   background: var(${UI.COLOR_CONTAINER_BG_01});
   color: var(${UI.COLOR_TEXT1}) !important; // TODO: prevent styles override
 
@@ -88,7 +37,7 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `};
+  `}
 `
 
 export const Label = styled.div<{ end?: number }>`

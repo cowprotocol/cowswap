@@ -18,6 +18,7 @@ export enum Category {
   SERVICE_WORKER = 'Service worker',
   TWAP = 'TWAP',
   COW_FORTUNE = 'CoWFortune',
+  WIDGET_CONFIGURATOR = 'Widget configurator',
 }
 
 export interface EventParams {
@@ -33,6 +34,7 @@ export enum Dimensions {
   customBrowserType = 'customBrowserType',
   userAddress = 'userAddress',
   market = 'market',
+  injectedWidgetAppId = 'injectedWidgetAppId',
 }
 
 export type AnalyticsOrderType = OrderClass | 'TWAP'

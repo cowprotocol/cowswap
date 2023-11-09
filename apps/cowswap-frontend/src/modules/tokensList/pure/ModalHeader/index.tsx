@@ -17,25 +17,29 @@ const Header = styled.div`
 
 export interface ModalHeaderProps {
   children: string
-  onBack(): void
-  onClose(): void
+  onBack?(): void
+  onClose?(): void
   className?: string
 }
 
 export function ModalHeader({ children, className, onBack, onClose }: ModalHeaderProps) {
   return (
     <Header className={className}>
-      <div>
-        <IconButton onClick={onBack}>
-          <ArrowLeft />
-        </IconButton>
-      </div>
+      {onBack && (
+        <div>
+          <IconButton onClick={onBack}>
+            <ArrowLeft />
+          </IconButton>
+        </div>
+      )}
       <div>{children}</div>
-      <div>
-        <IconButton onClick={onClose}>
-          <X />
-        </IconButton>
-      </div>
+      {onClose && (
+        <div>
+          <IconButton onClick={onClose}>
+            <X />
+          </IconButton>
+        </div>
+      )}
     </Header>
   )
 }

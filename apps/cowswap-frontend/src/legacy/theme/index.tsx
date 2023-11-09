@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   css,
@@ -15,7 +17,11 @@ import {
   themeVariables as baseThemeVariables,
 } from 'legacy/theme/baseTheme'
 
+import { useInjectedWidgetPalette } from 'modules/injectedWidget'
+
+import { mapWidgetTheme } from './mapWidgetTheme'
 import { Colors } from './styled'
+
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
 export const MEDIA_WIDTHS = {
@@ -155,13 +161,14 @@ export const ThemedText = {
   },
 }
 
-export function theme(darkmode: boolean): DefaultTheme {
+export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
     ...getTheme(darkmode),
     ...colorsTheme,
+    isInjectedWidgetMode,
 
-    // Overide Theme
+    // Override Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
   }
@@ -169,9 +176,18 @@ export function theme(darkmode: boolean): DefaultTheme {
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const darkMode = useIsDarkMode()
+  const injectedWidgetTheme = useInjectedWidgetPalette()
+
   const themeObject = useMemo(() => {
-    return theme(darkMode)
-  }, [darkMode])
+    const widgetMode = isInjectedWidget()
+    const defaultTheme = theme(darkMode, widgetMode)
+
+    if (widgetMode) {
+      return mapWidgetTheme(injectedWidgetTheme, defaultTheme)
+    }
+
+    return defaultTheme
+  }, [darkMode, injectedWidgetTheme])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

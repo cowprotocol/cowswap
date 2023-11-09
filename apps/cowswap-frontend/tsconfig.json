@@ -15,6 +15,7 @@
       "@cowprotocol/widget-lib": ["../../../libs/widget-lib/src/index.ts"],
       "@cowprotocol/widget-react": ["../../../libs/widget-react/src/index.ts"],
       "@cowprotocol/snackbars": ["../../../libs/snackbars/src/index.ts"],
+      "@cowprotocol/tokens": ["../../../libs/tokens/src/index.ts"],
       "@cowprotocol/wallet": ["../../../libs/wallet/src/index.ts"],
       "@cowprotocol/assets/*": ["../../../libs/assets/src/*"],
       "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
@@ -22,7 +23,8 @@
       "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
       "@cowprotocol/ens": ["../../../libs/ens/src/index.ts"],
       "@cowprotocol/core": ["../../../libs/core/src/index.ts"],
-      "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"]
+      "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"],
+      "@cowprotocol/permit-utils": ["../../../libs/permit-utils/src/index.ts"]
     }
   },
   "files": [],

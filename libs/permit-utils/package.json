@@ -1,0 +1,19 @@
+{
+  "name": "@cowprotocol/permit-utils",
+  "version": "0.0.1-RC.1",
+  "type": "module",
+  "dependencies": {
+    "ethers": "^5.7.2",
+    "@1inch/permit-signed-approvals-utils": "^1.4.10",
+    "@cowprotocol/app-data": "^1.1.0",
+    "tslib": "^2.6.1"
+  },
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  }
+}

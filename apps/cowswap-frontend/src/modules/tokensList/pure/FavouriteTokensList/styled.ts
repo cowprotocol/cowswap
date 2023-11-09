@@ -15,8 +15,14 @@ export const Header = styled.div`
   }
 `
 
-export const TokensList = styled.div`
-  margin: 10px 0;
+export const List = styled.div`
+  display: block;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    white-space: nowrap;
+    overflow-x: scroll;
+    ${theme.colorScrollbar};
+  `}
 `
 
 export const TokensItem = styled.button`
@@ -25,11 +31,10 @@ export const TokensItem = styled.button`
   align-items: center;
   gap: 6px;
   justify-content: center;
-  min-width: 140px;
-  margin: 5px 5px 5px 0;
+  margin: 5px 10px 5px 0;
   background: none;
   outline: none;
-  padding: 6px 0;
+  padding: 6px 10px;
   border-radius: 10px;
   color: var(${UI.COLOR_TEXT1});
   border: 1px solid var(${UI.COLOR_GREY});
@@ -41,13 +46,5 @@ export const TokensItem = styled.button`
 
   :hover {
     background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
-  }
-
-  > img {
-    --size: 24px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-    background: var(${UI.COLOR_LIGHT_BLUE});
   }
 `

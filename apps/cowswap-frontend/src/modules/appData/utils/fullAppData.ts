@@ -1,12 +1,12 @@
-import { environmentName } from '@cowprotocol/common-utils'
+import { EnvironmentName, environmentName } from '@cowprotocol/common-utils'
 
 import { AppDataInfo } from '../types'
 import { toKeccak256 } from '../utils/buildAppData'
 
-const DEFAULT_FULL_APP_DATA = '{"version":"0.7.0","appCode":"CoW Swap","metadata":{}}'
+const DEFAULT_FULL_APP_DATA = '{"version":"0.11.0","appCode":"CoW Swap","metadata":{}}'
 
 let appData: AppDataInfo = (() => {
-  const fullAppData = _getFullAppData()
+  const fullAppData = getFullAppDataByEnv(environmentName)
   return _fromFullAppData(fullAppData)
 })()
 
@@ -20,7 +20,7 @@ export function updateFullAppData(fullAppData: string | undefined) {
   }
 }
 
-function _getFullAppData(): string {
+export function getFullAppDataByEnv(environmentName: EnvironmentName | undefined): string {
   switch (environmentName) {
     case 'production':
       return process.env.REACT_APP_FULL_APP_DATA_PRODUCTION || DEFAULT_FULL_APP_DATA

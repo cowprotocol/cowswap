@@ -1,7 +1,19 @@
 import { registerOnWindow } from './misc'
 
-const getRegex = (regex: string | undefined) => (regex ? new RegExp(regex, 'i') : undefined)
+const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
+  local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
+  pr: '^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap\\.vercel\\.app',
+  development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
+  staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
+  production: '^(swap.cow.fi|swap-prod.vercel.app)$',
+  barn: '^(barn.cow.fi|swap-barn.vercel.app)$',
+  ens: '(:?^cowswap.eth|ipfs)',
+}
 
+function getRegex(env: EnvironmentName) {
+  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
+  return new RegExp(regex, 'i')
+}
 export interface EnvironmentChecks {
   isProd: boolean
   isEns: boolean
@@ -13,30 +25,20 @@ export interface EnvironmentChecks {
 }
 
 export function checkEnvironment(host: string, path: string): EnvironmentChecks {
-  // Domain regex
-  const domainLocalRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_LOCAL)
-  const domainPrRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_PR)
-  const domainDevRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_DEV)
-  const domainStagingRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_STAGING)
-  const domainProdRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_PROD)
-  const domainEnsRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_ENS)
-  const domainBarnRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_BARN)
-
-  // Path regex
-  const pathEnsRegex = getRegex(process.env.REACT_APP_PATH_REGEX_ENS)
+  const ensRegex = getRegex('ens')
 
   return {
     // Project environments
-    isLocal: domainLocalRegex?.test(host) || false,
-    isDev: domainDevRegex?.test(host) || false,
-    isPr: domainPrRegex?.test(host) || false,
-    isStaging: domainStagingRegex?.test(host) || false,
-    isProd: domainProdRegex?.test(host) || false,
-    isEns: domainEnsRegex?.test(host) || pathEnsRegex?.test(path) || false,
+    isLocal: getRegex('local').test(host),
+    isDev: getRegex('development').test(host),
+    isPr: getRegex('pr').test(host),
+    isStaging: getRegex('staging').test(host),
+    isProd: getRegex('production').test(host),
+    isEns: ensRegex.test(host) || ensRegex.test(path),
 
     // Environment used for Backend workflow
     // The latest stable version pointing to the DEV api
-    isBarn: domainBarnRegex?.test(host) || false,
+    isBarn: getRegex('barn').test(host),
   }
 }
 
@@ -45,7 +47,18 @@ const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironm
   window.location.pathname
 )
 
-export const environmentName = (function () {
+export const ALL_ENVIRONMENTS: EnvironmentName[] = [
+  'local',
+  'development',
+  'pr',
+  'staging',
+  'production',
+  'barn',
+  'ens',
+]
+export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'barn' | 'ens'
+
+export const environmentName: EnvironmentName | undefined = (function () {
   if (isProd) {
     return 'production'
   } else if (isBarn) {

@@ -1,7 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getTokenPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -12,10 +15,11 @@ import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
+import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
+
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
-import { checkIsTokenPermittable } from '../utils/checkIsTokenPermittable'
 
 /**
  * Checks whether the token is permittable, and caches the result on localStorage
@@ -32,24 +36,38 @@ export function useIsTokenPermittable(
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
 
-  const lowerCaseAddress = token?.wrapped?.address?.toLowerCase()
-  const isNative = token?.isNative
+  const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
+  const isNative = !!token && getIsNativeToken(token)
   const tokenName = token?.name || lowerCaseAddress || ''
 
   // Avoid building permit info in the first place if order type is not supported
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
 
-  const isPermitEnabled = useIsPermitEnabled(chainId) && isPermitSupported
+  const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
+  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(token)
+
+  const spender = GP_VAULT_RELAYER[chainId]
 
   useEffect(() => {
-    if (!chainId || !isPermitEnabled || !lowerCaseAddress || !provider || permitInfo !== undefined || isNative) {
+    if (
+      !chainId ||
+      !isPermitEnabled ||
+      !lowerCaseAddress ||
+      !provider ||
+      permitInfo !== undefined ||
+      isNative ||
+      // Do not try to load when pre-generated info is loading
+      preGeneratedIsLoading ||
+      // Do not try to load when pre-generated exists
+      preGeneratedInfo !== undefined
+    ) {
       return
     }
 
-    checkIsTokenPermittable({ tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
+    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
       if (!result) {
         // When falsy, we know it doesn't support permit. Cache it.
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: false })
@@ -63,13 +81,25 @@ export function useIsTokenPermittable(
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
     })
-  }, [addPermitInfo, chainId, isNative, isPermitEnabled, lowerCaseAddress, permitInfo, provider, tokenName])
+  }, [
+    addPermitInfo,
+    chainId,
+    isNative,
+    isPermitEnabled,
+    lowerCaseAddress,
+    permitInfo,
+    preGeneratedInfo,
+    preGeneratedIsLoading,
+    provider,
+    spender,
+    tokenName,
+  ])
 
   if (isNative) {
     return false
   }
-  // TODO: add an updater for this
-  return permitInfo
+
+  return preGeneratedInfo ?? permitInfo
 }
 
 /**

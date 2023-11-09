@@ -1,24 +1,29 @@
 import { ReactNode, useEffect } from 'react'
 
 import { maxAmountSpend } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 
+import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
+import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
@@ -38,7 +43,6 @@ export interface TradeWidgetActions {
 
 interface TradeWidgetParams {
   recipient: string | null
-  disableNonToken?: boolean
   isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
@@ -80,7 +84,6 @@ export function TradeWidget(props: TradeWidgetProps) {
     showRecipient,
     isTradePriceUpdating,
     isEoaEthFlow = false,
-    disableNonToken = false,
     priceImpact,
     recipient,
     disableQuotePolling = false,
@@ -94,6 +97,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
+  const openTokenSelectWidget = useOpenTokenSelectWidget()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
@@ -106,12 +110,12 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
-    disableNonToken,
     chainId,
     areCurrenciesLoading: currenciesLoadingInProgress,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
+    openTokenSelectWidget,
   }
 
   /**
@@ -121,6 +125,10 @@ export function TradeWidget(props: TradeWidgetProps) {
     onChangeRecipient(null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const isInjectedWidgetMode = isInjectedWidget()
+
+  const { pendingActivity } = useCategorizeRecentActivity()
 
   return (
     <styledEl.Container id={id}>
@@ -138,7 +146,10 @@ export function TradeWidget(props: TradeWidgetProps) {
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <TradeWidgetLinks />
+            <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
+            {isInjectedWidgetMode && (
+              <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
+            )}
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 
@@ -191,6 +202,8 @@ export function TradeWidget(props: TradeWidgetProps) {
               {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
             </>
           )}
+
+          {isInjectedWidgetMode && <PoweredFooter />}
         </styledEl.ContainerBox>
       </styledEl.Container>
     </styledEl.Container>

@@ -63,7 +63,7 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
 
 export function Icon({
   image,
-  size = 16,
+  size = 24,
   bgColor,
   color,
   description,

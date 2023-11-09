@@ -1,4 +1,5 @@
-import { TokenList, TokenWithLogo } from './types'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ListState } from '@cowprotocol/tokens'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
@@ -96,35 +97,38 @@ export const customTokensMock: TokenWithLogo[] = [
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
 
-export const listsMock: TokenList[] = [
+export const listsMock: ListState[] = [
   {
-    id: '1',
-    name: 'CowSwap Goerli',
-    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/cowswap/develop/apps/cowswap-frontend/src/tokens/goerli-token-list.json',
-    logoUrl: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
-    tokensCount: 7,
-    enabled: true,
-    version: 'v0.0.0',
+    source:
+      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
+    list: {
+      name: 'CowSwap Goerli',
+      logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
+      tokens: [1, 2, 3, 4, 5, 6, 7] as any[],
+      version: { major: 0, minor: 0, patch: 1 },
+      timestamp: '',
+    },
   },
   {
-    id: '2',
-    name: 'Compound',
-    url: 'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
-    logoUrl: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
-    tokensCount: 16,
-    enabled: false,
-    version: 'v0.2.1',
+    source:
+      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
+    list: {
+      name: 'Compound',
+      logoURI: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
+      tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as any[],
+      version: { major: 0, minor: 2, patch: 1 },
+      timestamp: '',
+    },
   },
 ]
 
-export const importListsMock: TokenList[] = [
-  {
-    id: '4',
+export const importListsMock: ListState = {
+  source: 'https://files.cow.fi/tokens/CowSwap.json',
+  list: {
     name: 'CoW Swap',
-    url: 'https://files.cow.fi/tokens/CowSwap.json',
-    logoUrl: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
-    tokensCount: 113,
-    enabled: true,
-    version: 'v0.0.0',
+    logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],
+    version: { major: 1, minor: 0, patch: 5 },
+    timestamp: '',
   },
-]
+}

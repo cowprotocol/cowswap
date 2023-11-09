@@ -47,7 +47,7 @@ export default function LimitOrderFAQ() {
               What types of limit orders does CoW Protocol support?
             </h3>
             <p>CoW Protocol supports Fill or kill as well as Partially fillable limit orders.</p>
-            <p>With Fill or kill, the limit order is executed in its entirety, or not at all.</p>
+            <p>With Fill or kill, the limit order is either executed in its entirety, or not at all.</p>
             <p>
               With Partially fillable limit orders, meanwhile, the order can be filled gradually as liquidity becomes
               available. Partially fillable orders usually complete faster than Fill or kill orders and also provide
@@ -71,9 +71,8 @@ export default function LimitOrderFAQ() {
             </h3>
             <p>
               Partially fillable limit orders usually provide faster order execution and better prices over Fill or kill
-              orders. This is why they’re the default mechanism for executing limit orders on CoW Swap. If you’d like to
-              turn off Partially fillable orders and go back to Fill or kill, you can use the toggle in your swap panel
-              settings.
+              orders, so they’re the default mechanism for executing limit orders on CoW Swap. If you’d like to turn off
+              Partially fillable orders and go back to Fill or kill, you can use the toggle in your swap panel settings.
             </p>
             <h3 id="how-do-fees-work">How do fees work?</h3>
             <p>
@@ -122,6 +121,7 @@ export default function LimitOrderFAQ() {
               until my orders go through?
             </h3>
             <p>Yes. Exactly.</p>
+            <p>Thanks to multiple cancellations, you can even cancel several orders with a single click. </p>
 
             <h3 id="do-my-funds-get-locked">Do my funds get locked when I place a limit order?</h3>
             <p>No. You can place many orders at once, no matter what balance you hold in your wallet.</p>
@@ -165,8 +165,8 @@ export default function LimitOrderFAQ() {
 
             <h3 id="how-will-i-know-when-my-order-is-filled">How will I know when my order is filled?</h3>
             <p>
-              If you trade through CoW Swap, and your limit order fills while you have the dApp open, a nice MOOOO sound
-              will play to let you know when your order is filled.
+              If you trade through CoW Swap, and your limit order fills while you have the dApp open, a cheerful MOOOO
+              sound will play to let you know when your order is filled.
             </p>
             <p>
               If you miss the MOOOO sound, you can always check your order history in{' '}
@@ -182,14 +182,14 @@ export default function LimitOrderFAQ() {
               <ul>
                 <li>
                   Though the market price reached your limit price, there wasn't enough liquidity to fill your order.
-                  For Fill or kill orders, if there isn't enough liquidity to fill an order completely, the order
-                  doesn't get filled at all. Limit orders do now support also Partially fillable orders, which mitigates
-                  this risk substantially.
+                  For Fill or kill orders, if there isn't enough liquidity to fill an order completely, the order won't
+                  get filled at all. Limit orders now also support Partially fillable orders, which mitigates this risk
+                  substantially.
                 </li>
                 <li>
                   CoW Swap covers fees on limit orders by executing the order at a slightly better price than the limit
-                  price. If the market price exactly hit your limit price but did not exceed it, then CoW Swap would not
-                  be able to cover your fee and your order would not execute.
+                  price. If the market price hit your limit price exactly but did not exceed it, CoW Swap would not be
+                  able to cover your fee and your order would not execute.
                 </li>
               </ul>
             </p>

@@ -11,7 +11,9 @@ export default function Web3Provider({ children }: { children: ReactNode }) {
   useEagerlyConnect()
 
   const connections = useOrderedConnections()
-  const connectors: [Connector, Web3ReactHooks][] = connections.map(({ hooks, connector }) => [connector, hooks])
+  const connectors: [Connector, Web3ReactHooks][] = connections
+    .filter(Boolean)
+    .map(({ hooks, connector }) => [connector, hooks])
 
   const key = useMemo(
     () => connections.map(({ type }: Web3ReactConnection) => getConnectionName(type)).join('-'),

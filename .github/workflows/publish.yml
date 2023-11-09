@@ -1,0 +1,60 @@
+name: Publish
+
+on:
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
+    inputs:
+      lib:
+        description: Lib to publish
+        required: true
+        type: choice
+        options:
+          - permit-utils
+          - widget-lib
+          - widget-react
+          # Add more publishable libs here
+      tag:
+        description: NPM package tag
+        required: false
+        type: choice
+        options:
+          - latest
+          - next
+        default: latest
+
+env:
+  NODE_VERSION: lts/hydrogen
+  DESTINATION_PATH: dist/libs/${{ inputs.lib }}
+
+jobs:
+  publish-npm:
+    name: Publish NPM package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: yarn
+
+      - name: Install Nx
+        run: yarn add nx
+
+      - name: Build
+        run: yarn nx build ${{ inputs.lib }}
+
+      - name: Copy .npmrc to destination
+        run: cp ${{ env.NPM_CONFIG_USERCONFIG }} ${{ env.DESTINATION_PATH }}/
+
+      - name: Copy README
+        run: cp libs/${{ inputs.lib }}/README.md ${{ env.DESTINATION_PATH }}/
+
+      - name: Publish
+        working-directory: ${{ env.DESTINATION_PATH }}
+        run: npm publish --tag ${{ inputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

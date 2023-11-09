@@ -13,6 +13,8 @@ import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/Accoun
 import { UI } from 'common/constants/theme'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
+import { useAccountModalState } from '../../hooks/useAccountModalState'
+import { useToggleAccountModal } from '../../hooks/useToggleAccountModal'
 import { AccountDetails } from '../AccountDetails'
 
 const SideBar = styled.div`
@@ -30,7 +32,7 @@ const SideBar = styled.div`
   margin: auto;
   bottom: 0;
   left: 0;
-  z-index: 102;
+  z-index: 5;
   padding: 0;
   cursor: default;
   overflow-y: hidden;
@@ -49,7 +51,7 @@ const SidebarBackground = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 4;
   width: 100%;
   height: 100%;
   background: ${({ theme }) => transparentize(0.1, theme.black)};
@@ -123,21 +125,18 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-export interface OrdersPanelProps {
-  handleCloseOrdersPanel: () => void
-}
-
-export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
+// TODO: rename the component into AccountModal
+export function OrdersPanel() {
   const { active } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
-
+  const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
-  const ENSName = ensName
+  const handleCloseOrdersPanel = useToggleAccountModal()
 
-  if (!active) {
+  if (!active || !isOpen) {
     return null
   }
 
@@ -152,7 +151,7 @@ export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
           </Header>
 
           <AccountDetails
-            ENSName={ENSName}
+            ENSName={ensName}
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
             toggleWalletModal={toggleWalletModal}

@@ -1,58 +1,77 @@
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
-[![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
 CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-- 🐮**Official Website**🐮: <https://swap.cow.fi/>
+| **Platform**          | **Link**                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
+| CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
+| CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
+| Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
+| Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Twitter               | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
+| Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
+| Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
-  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
+# 🐮 Run CoW Swap
 
-- Protocol: <https://cow.fi>
-- Docs: <https://docs.cow.fi>
-- Stats: <https://dune.com/cowprotocol/cowswap>
-- Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
-- Discord: <https://discord.com/invite/cowprotocol>
-
-Please see the:
-
-- [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
-- [CoW Protocol: Services](https://github.com/cowprotocol/services)
-
-You can block an entire list of tokens by passing in a tokenlist like [here](apps/cowswap-frontend/src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](apps/cowswap-frontend/src/constants/tokenLists/unsupported.tokenlist.json).
-
-### Install Dependencies
+First install Dependencies:
 
 ```bash
 yarn
 ```
 
-### Run
+## Run
+
+Start CoW Swap on `http://localhost:3000`
 
 ```bash
 yarn start
 ```
 
-### build
+## Build
+
+Build the project. The static files will be generated in the `build` folder.
 
 ```bash
 yarn build
-
-# Analyze CoW Swap bundle
-#   Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
-ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
 ```
 
-### Unit testing
+## Unit testing
 
 ```bash
 yarn test
 ```
 
-### Integration test
+# 🖼️ Widget Configurator
 
-> Make sure you add the required environment varianbles to your `.env.local` file with:
+Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
+
+```bash
+# Start
+yarn start:widget
+
+# Build
+yarn build:widget
+```
+
+# 🌌 Cosmos UI Library
+
+Start the Cosmos UI Library on http://localhost:5000
+
+```bash
+yarn run cosmos
+```
+
+# 🤓 Development
+
+## Integration test
+
+> ⚠️ To run the tests. Make sure you add the required environment varianbles to your `.env.local` file with:
 >
 > - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
 > - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
@@ -64,7 +83,7 @@ yarn start
 yarn cypress
 ```
 
-Alternativelly, you can build the project and launch the integration test.
+Alternatively, you can build the project and launch the integration test.
 
 ```bash
 yarn build
@@ -79,14 +98,6 @@ yarn serve
 yarn cypress
 ```
 
-### Run cosmos
-
-This will start a server on the `http://localhost:5000/`
-
-```bash
-yarn run cosmos
-```
-
 ## Build/test UI Library
 
 CoW Swap has a library of reusable components.
@@ -96,86 +107,77 @@ yarn ui:build
 yarn ui:test
 ```
 
-## Configuring the environment
+## Build
 
-The app has some default configuration, but it's highly encouraged to define your own.
+```bash
+yarn build
+```
 
-### Local configuration
+Analyze CoW Swap bundle:
 
-Make a copy of `.env` named `.env.local`, this will allow you to set your own configuration only in your local environment.
+```bash
+# Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
+ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
+```
 
-#### What is the mandatory minimum to be able to run the application?
+# ⚙️ Configuration
 
-Your environment MUST have the following variables defined:
-`REACT_APP_INFURA_KEY`=YOUR_INFURA_KEY
-`REACT_APP_NETWORK_URL_1`=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-`REACT_APP_NETWORK_URL_5`=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
+## RPC Endpoints
 
-Additionally, to successfully run E2E / Integration tests locally you must have;
-`INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
-`INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
+You should set your own RPC endpoints.
 
-### Production configuration
+One simple way to do this, is by defining your own `REACT_APP_INFURA_KEY` environment var.
 
-Modify the environment variables in `.env.production`, or override them in build time.
+Alternatively you can define the RPC URLs directly with the following environment variables:
 
-### Price feeds
+```ini
+REACT_APP_NETWORK_URL_1: https://...
+REACT_APP_NETWORK_URL_5: https://...
+REACT_APP_NETWORK_URL_100: https://...
+```
+
+Additionally, if you plan to run the integration tests locally you must define:
+
+```ini
+INTEGRATION_TESTS_INFURA_KEY: YOUR_INFURA_KEY
+INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
+```
+
+## Orderbook API Endpoints
+
+Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
+handing them to the solvers.
+
+The reference implementation of the API is [CoW Protocol Services](https://github.com/cowprotocol/services).
+
+The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`:
+
+```ini
+REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
+```
+
+## Price feeds
 
 CoW Swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
-| Name             | Environment variable                    | Type                         | Description                                                                           |
-| ---------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`       | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation. |
-| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.    |
-| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`    | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.  |
-| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`       | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                |
+| Name      | Environment variable                 | Type                         | Description                                                                          |
+| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+| **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
+| **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
-### Metadata attached to orders (AppData)
+## Metadata attached to orders (AppData)
 
 The app will attach some metadata to all orders.
 
 This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
 
-The format of the JSON follows this typescript format: <src/utils/metadata.ts>
+The format of the JSON follows the format defined in [@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
 
 To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
 
-### Supported networks
-
-You should set your own RPC endpoints by defining the following environment variables:
-
-```ini
-# Define your own RPC endpoints
-REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
-```
-
-If you plan to use Infura, you can omit defining the RPC endpoints, and just define the `REACT_APP_INFURA_KEY` environment variable.
-
-```ini
-# Alternatively you can just define your Infura key (instead of defining the RPC endpoints)
-REACT_APP_INFURA_KEY={YOUR_INFURA_KEY}
-```
-
-````
-
-### API endpoints
-
-Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
-handing them to the solvers.
-
-The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
-
-The API endpoint is configured using the environment variable ` {XDAI|GOERLI|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
-
-### Wallet Connect bridge
-
-Wallet Connect allows to connect the app to any [Wallet Connect supported wallet](https://walletconnect.org/wallets).
-
-In order to do so, it uses a Websocket, that can be configured using: the env var `WALLET_CONNECT_BRIDGE`.
+# 🔎 SEO
 
 ## Sitemap
 
@@ -187,6 +189,8 @@ To update its content:
 2. Run `yarn sitemap`
 3. Commit the changes to git
 
+# 🔫 Troubleshooting
+
 ## Service worker
 
 In case of problems with the service worker cache you force a reset using [emergency.js](apps/cowswap-frontend/public/emergency.js)
@@ -197,19 +201,8 @@ The plan:
 
 `emergency.js` is not cached by browser and loaded before all.
 
-## Wallet Connect
-
-The app uses a Wallet Connect v1 bridge.
-
-You can define your own bridge by setting the following environment variable:
-
-```ini
-REACT_APP_WALLET_CONNECT_V1_BRIDGE='https://bridge.walletconnect.org'
-```
-
-## Documentation
+# 📚 Technical Documentation
 
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
-````

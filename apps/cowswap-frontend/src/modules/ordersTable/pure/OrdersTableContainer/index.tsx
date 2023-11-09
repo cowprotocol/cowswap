@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -11,15 +12,20 @@ import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
+import { UI } from 'common/constants/theme'
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 const OrdersBox = styled.div`
-  background: transparent;
-  border-radius: 16px;
-  padding: 0;
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+  border: none;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: none;
+  position: relative;
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
 `
@@ -169,6 +175,7 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
+
   const content = () => {
     if (!isWalletConnected) {
       return (
@@ -179,14 +186,18 @@ export function OrdersTableContainer({
           <h3>
             <Trans>Connect a wallet</Trans>
           </h3>
-          <p>
-            <Trans>
-              To use {orderType} orders, please connect your wallet <br />
-              to one of our supported networks.
-            </Trans>
-          </p>
+          {!isInjectedWidget && (
+            <>
+              <p>
+                <Trans>
+                  To use {orderType} orders, please connect your wallet <br />
+                  to one of our supported networks.
+                </Trans>
+              </p>
 
-          <Web3Status pendingActivities={pendingActivities} />
+              <Web3Status pendingActivities={pendingActivities} />
+            </>
+          )}
         </Content>
       )
     }

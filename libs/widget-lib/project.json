@@ -3,7 +3,6 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/widget-lib/src",
   "projectType": "library",
-
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
@@ -22,7 +21,7 @@
       "configurations": {}
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs widget-lib {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs widget-lib {args.tag} {args.otp}",
       "dependsOn": ["build"]
     },
     "lint": {

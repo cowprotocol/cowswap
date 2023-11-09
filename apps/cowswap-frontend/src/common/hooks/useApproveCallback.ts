@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { Erc20 } from '@cowprotocol/abis'
 import { useTokenContract } from '@cowprotocol/common-hooks'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -54,7 +54,8 @@ export function useApproveCallback(
   spender?: string
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
   const { chainId } = useWalletInfo()
-  const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
+  const currency = amountToApprove?.currency
+  const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 

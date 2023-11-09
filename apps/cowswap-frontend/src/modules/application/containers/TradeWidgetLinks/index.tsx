@@ -1,8 +1,14 @@
-import { useCallback } from 'react'
+import { useState } from 'react'
+
+import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
+import IMAGE_CARRET from 'assets/icon/carret.svg'
+import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -33,44 +39,91 @@ const MENU_ITEMS: MenuItemConfig[] = [
   },
 ]
 
+const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
+  swap: Routes.SWAP,
+  limit: Routes.LIMIT_ORDER,
+  advanced: Routes.ADVANCED_ORDERS,
+}
+
 interface TradeWidgetLinksProps {
   highlightedBadgeText?: string
   highlightedBadgeType?: BadgeType
+  isDropdown?: boolean
 }
 
-export function TradeWidgetLinks({ highlightedBadgeText, highlightedBadgeType }: TradeWidgetLinksProps) {
+export function TradeWidgetLinks({
+  highlightedBadgeText,
+  highlightedBadgeType,
+  isDropdown = false,
+}: TradeWidgetLinksProps) {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
+  const [isDropdownVisible, setDropdownVisible] = useState(false)
+  const { enabledTradeTypes } = useInjectedWidgetParams()
 
-  const buildMenuItem = useCallback(
-    (item: MenuItemConfig) => {
-      const routePath = parameterizeTradeRoute(tradeContext, item.route)
+  const handleMenuItemClick = (_item?: MenuItemConfig) => {
+    if (menuItems.length === 1) return
+    setDropdownVisible(false)
+  }
 
-      const isActive = !!matchPath(location.pathname, routePath)
+  const enabledItems = MENU_ITEMS.filter((item) => {
+    if (!enabledTradeTypes?.length) return true
 
-      const menuItem = (
-        <MenuItem
-          key={item.label}
-          routePath={routePath}
-          item={item}
-          isActive={isActive}
-          badgeText={item.badgeText || highlightedBadgeText}
-          badgeType={item.badgeType || highlightedBadgeType}
-        />
-      )
+    return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
+  })
 
-      return item.featureGuard ? (
-        <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
-          {menuItem}
-        </FeatureGuard>
-      ) : (
-        menuItem
-      )
-    },
-    [location.pathname, tradeContext, highlightedBadgeText, highlightedBadgeType]
+  const menuItems = enabledItems.map((item) => {
+    const routePath = parameterizeTradeRoute(tradeContext, item.route)
+    const isActive = !!matchPath(location.pathname, routePath)
+
+    const menuItem = (
+      <MenuItem
+        key={item.label}
+        routePath={routePath}
+        item={item}
+        isActive={isActive}
+        badgeText={item.badgeText || highlightedBadgeText}
+        badgeType={item.badgeType || highlightedBadgeType}
+        onClick={() => handleMenuItemClick(item)}
+        isDropdownVisible={isDropdownVisible}
+      />
+    )
+
+    return item.featureGuard ? (
+      <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
+        {menuItem}
+      </FeatureGuard>
+    ) : (
+      menuItem
+    )
+  })
+
+  const singleMenuItem = menuItems.length === 1
+
+  return isDropdown ? (
+    <>
+      <styledEl.MenuItem
+        onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
+        isDropdownVisible={isDropdownVisible}
+      >
+        <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
+          <Trans>
+            {menuItems.find((item) => item.props.isActive)?.props.item.label}
+            {!singleMenuItem ? <SVG src={IMAGE_CARRET} title="select" /> : null}
+          </Trans>
+        </styledEl.Link>
+      </styledEl.MenuItem>
+
+      {isDropdownVisible && (
+        <styledEl.SelectMenu>
+          <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
+          {menuItems}
+        </styledEl.SelectMenu>
+      )}
+    </>
+  ) : (
+    <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
   )
-
-  return <styledEl.Wrapper>{MENU_ITEMS.map(buildMenuItem)}</styledEl.Wrapper>
 }
 
 const MenuItem = ({
@@ -79,17 +132,21 @@ const MenuItem = ({
   isActive,
   badgeText,
   badgeType,
+  onClick,
+  isDropdownVisible,
 }: {
   routePath: string
   item: MenuItemConfig
   isActive: boolean
   badgeText?: string
   badgeType?: BadgeType
+  onClick: () => void
+  isDropdownVisible: boolean
 }) => (
-  <styledEl.MenuItem isActive={isActive}>
+  <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {badgeText && (
+      {!isActive && badgeText && (
         <styledEl.Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
         </styledEl.Badge>
