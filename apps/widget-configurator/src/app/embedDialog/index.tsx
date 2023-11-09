@@ -91,8 +91,8 @@ export function EmbedDialog({ params }: EmbedDialogProps) {
   return (
     <div>
       <Fab
-        color="secondary"
-        size="small"
+        color="primary"
+        size="large"
         variant="extended"
         sx={{ position: 'fixed', bottom: '2rem', right: '1.6rem' }}
         onClick={handleClickOpen('paper')}
