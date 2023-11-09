@@ -3,43 +3,48 @@ import { useEffect, useRef } from 'react'
 
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWithWidgetMetadata'
 import { UtmParams } from 'modules/utm'
 
-import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataHooks, AppDataOrderClass, AppDataWidget } from '../types'
+import { AppDataHooks, AppDataOrderClass } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
 export type UseAppDataParams = {
+  appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
   chainId: SupportedChainId
   slippageBips: string
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   hooks?: AppDataHooks
-  widget?: AppDataWidget
 }
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hooks, widget }: UseAppDataParams): void {
+export function AppDataInfoUpdater({
+  appCodeWithWidgetMetadata,
+  chainId,
+  slippageBips,
+  orderClass,
+  utm,
+  hooks,
+}: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
-
-  // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
-  const appCode = useAppCode()
 
   const updateAppDataPromiseRef = useRef(Promise.resolve())
 
   useEffect(() => {
-    if (!appCode) {
+    if (!appCodeWithWidgetMetadata) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
       return
     }
 
+    const { appCode, widget } = appCodeWithWidgetMetadata
     const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm, hooks, widget }
 
     const updateAppData = async (): Promise<void> => {
@@ -56,7 +61,7 @@ export function AppDataInfoUpdater({ chainId, slippageBips, orderClass, utm, hoo
 
     // Chain the next update to avoid race conditions
     updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
-  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks, widget])
+  }, [appCodeWithWidgetMetadata, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks])
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {
