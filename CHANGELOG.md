@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.49.0](https://github.com/cowprotocol/cowswap/compare/v1.48.17...v1.49.0) (2023-11-09)
+
+
+### Features
+
+* add comment to config ([#3345](https://github.com/cowprotocol/cowswap/issues/3345)) ([1534611](https://github.com/cowprotocol/cowswap/commit/153461103342fbbaa84d340b4eb48ae94cc5b2d3))
+* change appKey into appCode ([#3361](https://github.com/cowprotocol/cowswap/issues/3361)) ([b9127d9](https://github.com/cowprotocol/cowswap/commit/b9127d93c05eaf942913065c008d839f694b2ae1))
+* change from node v16 to v18 ([#3350](https://github.com/cowprotocol/cowswap/issues/3350)) ([edc7de3](https://github.com/cowprotocol/cowswap/commit/edc7de3d5bb0e17088a58c266641022e79f0e346))
+* hide nose picker loader ([#3338](https://github.com/cowprotocol/cowswap/issues/3338)) ([4cc2f1a](https://github.com/cowprotocol/cowswap/commit/4cc2f1abdc8a2429f2772c2992d76036c8d9ac9e))
+* improve appCode, config and readme ([#3362](https://github.com/cowprotocol/cowswap/issues/3362)) ([c18bb2e](https://github.com/cowprotocol/cowswap/commit/c18bb2edc8f4f433a4ca0ef1be78e4222747fe8a))
+* iterate on configurator ([#3364](https://github.com/cowprotocol/cowswap/issues/3364)) ([c4ba4bb](https://github.com/cowprotocol/cowswap/commit/c4ba4bb2014291454bcae7d0f2a3f4d99b74a3a5))
+* **permit:** don't show gas-free flags when permit is not supported ([#3346](https://github.com/cowprotocol/cowswap/issues/3346)) ([1a56029](https://github.com/cowprotocol/cowswap/commit/1a560290b9fc82f3ba17ac1fd9ca9950da796661))
+* **permit:** load pre generated permit info ([#3316](https://github.com/cowprotocol/cowswap/issues/3316)) ([46943ad](https://github.com/cowprotocol/cowswap/commit/46943ad45eb58ec5819dc0d8932017144928c144))
+* **permit:** remove permit related feature flags ([#3320](https://github.com/cowprotocol/cowswap/issues/3320)) ([372b1a6](https://github.com/cowprotocol/cowswap/commit/372b1a67de71941f1deca46c0459cef2a32c536b))
+* **permit:** update gas-free flag tooltip ([#3332](https://github.com/cowprotocol/cowswap/issues/3332)) ([4caf929](https://github.com/cowprotocol/cowswap/commit/4caf9299c697ab838970cd23e4445397b091cf21))
+* simplify theme config ([#3363](https://github.com/cowprotocol/cowswap/issues/3363)) ([6b262ab](https://github.com/cowprotocol/cowswap/commit/6b262ab129cbfa62342b0a17ee2e67f26149f045))
+* **wallets:** connect wallet rounded modal ([#3368](https://github.com/cowprotocol/cowswap/issues/3368)) ([d5ef0a8](https://github.com/cowprotocol/cowswap/commit/d5ef0a8898e58f8f85d2f0709a24eae513fe00b7))
+* **widget-configurator:** button to show drawer ([#3324](https://github.com/cowprotocol/cowswap/issues/3324)) ([cbc1521](https://github.com/cowprotocol/cowswap/commit/cbc152108910f3d954aca10b5815dcf519aa78fd))
+* **widget-configurator:** google analytics events ([#3335](https://github.com/cowprotocol/cowswap/issues/3335)) ([9b1074e](https://github.com/cowprotocol/cowswap/commit/9b1074e021399d25e7f105c3228a26113dc2edf1))
+* **widget:** links to landing and docs ([#3359](https://github.com/cowprotocol/cowswap/issues/3359)) ([aeb4e11](https://github.com/cowprotocol/cowswap/commit/aeb4e111c7d047bd9607f1c5af3c4c21305f5096))
+
+
+### Bug Fixes
+
+* fix issue with RPC env ([#3353](https://github.com/cowprotocol/cowswap/issues/3353)) ([ede338d](https://github.com/cowprotocol/cowswap/commit/ede338d29279654873f0f8677d6e09ca2e41686f))
+* fix race condition with widget ([#3367](https://github.com/cowprotocol/cowswap/issues/3367)) ([43e2204](https://github.com/cowprotocol/cowswap/commit/43e22046de4ace3c85b9bb7d1a7409c2851fb395))
+* **tokens:** fix token lists styles ([#3360](https://github.com/cowprotocol/cowswap/issues/3360)) ([f9a4d0b](https://github.com/cowprotocol/cowswap/commit/f9a4d0b667c621f6f6692db926a727636b774511))
+* **tokens:** use default value for user-added tokens migration ([#3347](https://github.com/cowprotocol/cowswap/issues/3347)) ([c9e235c](https://github.com/cowprotocol/cowswap/commit/c9e235cdf466b80d9241099fcfd4cb7c6230ee89))
+* **twap:** fix infinite loop in orders hook ([#3348](https://github.com/cowprotocol/cowswap/issues/3348)) ([097728c](https://github.com/cowprotocol/cowswap/commit/097728c92b25f71c2a0ee0de4b56953c888afc0e))
+* update chainId in trade state ([#3340](https://github.com/cowprotocol/cowswap/issues/3340)) ([60a16ec](https://github.com/cowprotocol/cowswap/commit/60a16ec96987ed3e9c6115664dbe0eb164c4ddb7))
+* update connect wallet modal styles ([#3341](https://github.com/cowprotocol/cowswap/issues/3341)) ([e577b76](https://github.com/cowprotocol/cowswap/commit/e577b766a3e876e8caf167f3a19206a034b7be06))
+* **widget-configurator:** switch network only when user changed in the configurator ([#3369](https://github.com/cowprotocol/cowswap/issues/3369)) ([51eb483](https://github.com/cowprotocol/cowswap/commit/51eb483643d80b1b0a39775b68b055a3ff8a8b92))
+* **widget-lib:** adjust code for server-side rendering ([#3339](https://github.com/cowprotocol/cowswap/issues/3339)) ([db8743d](https://github.com/cowprotocol/cowswap/commit/db8743d586a58dc8f38ea7b0167e1369c5bb8f06))
+
 ## [1.48.17](https://github.com/cowprotocol/cowswap/compare/v1.48.16...v1.48.17) (2023-11-03)
 
 
