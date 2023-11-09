@@ -13,12 +13,16 @@ export interface AppCodeWithWidgetMetadata {
 }
 
 /**
+ * The final "appCode" used in the appData is different depending on whether the app is being used in the widget mode or not.
  *
- * @param appCode of the app
+ * In order to make the official `appCode` of the app not widget aware (to depend only on the appCode of the app), we use this
+ * widget that will use the official `appCode` and the injected metadata from the widget to derive the 3 depending filds:
+ *   - appCode: the official `appCode` of the app when not used in the widget mode, or the `appCode` of the host app using the widget
+ *   - environment: the environment of the app when not used in the widget mode, or not specified in widget mode
+ *   - widget: The widget metadata if in widget mode
  *
- * @returns the appCode that should be used in the metadata, and the widget metadata if it exists
  */
-export function useAppCodeWithWidgetMetadata(appCode: string | null): AppCodeWithWidgetMetadata | null {
+export function useAppCodeWidgetAware(appCode: string | null): AppCodeWithWidgetMetadata | null {
   const injectedWidgetMetadata = useInjectedWidgetMetaData()
 
   const appCodeWidget = injectedWidgetMetadata?.appCode

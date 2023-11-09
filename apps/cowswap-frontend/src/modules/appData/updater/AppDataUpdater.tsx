@@ -4,7 +4,7 @@ import { percentToBips } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useAppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWithWidgetMetadata'
+import { useAppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useUtm } from 'modules/utm'
 
 import { AppDataHooksUpdater } from './AppDataHooksUpdater'

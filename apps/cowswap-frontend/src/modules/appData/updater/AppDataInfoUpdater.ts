@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWithWidgetMetadata'
+import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { UtmParams } from 'modules/utm'
 
 import { appDataInfoAtom } from '../state/atoms'
