@@ -10,7 +10,6 @@ Install dependency
 yarn add @cowprotocol/widget-react
 ```
 
-
 ```bash
 npm install @cowprotocol/widget-react
 ```
@@ -25,7 +24,7 @@ Prepare the config for the widget:
 
 ```ts
 const cowSwapWidgetParams: CowSwapWidgetParams = {
-  appKey: '<YOUR_APP_KEY>',
+  appCode: '<YOUR_APP_KEY>',
   width: '600px',
   height: '700px',
   tradeType: 'swap',
