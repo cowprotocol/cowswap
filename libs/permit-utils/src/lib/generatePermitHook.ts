@@ -37,6 +37,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
 
   const tokenAddress = inputToken.address
+  // TODO: remove the need for `name` from input token. Should come from permitInfo instead
   const tokenName = permitInfo.name || inputToken.name
 
   if (permitInfo.type === 'unsupported') {

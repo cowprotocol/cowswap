@@ -6,6 +6,7 @@ export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 
 export type PermitInfo = {
   type: PermitType
+  // TODO: make it not optional once token-lists is migrated
   name?: string
   version?: string | undefined // Some tokens have it different than `1`, and won't work without it
 }
@@ -13,6 +14,7 @@ export type PermitInfo = {
 // Local TokenInfo definition to not depend on external libs just for this
 type TokenInfo = {
   address: string
+  // TODO: remove from token info
   name: string | undefined
 }
 
