@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
-import { ClickAwayListener } from '@mui/base/ClickAwayListener'
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
@@ -126,63 +125,58 @@ export function Configurator({ title }: { title: string }) {
         </Fab>
       )}
 
-      <ClickAwayListener onClickAway={() => setIsDrawerOpen(false)}>
-        <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-          <Typography
-            variant="h6"
-            sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}
+      <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
+        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
+          {title}
+        </Typography>
+
+        <div style={WalletConnectionWrapper}>
+          <w3m-button />
+        </div>
+
+        <ThemeControl />
+
+        <TradeModesControl state={tradeModesState} />
+
+        <CurrentTradeTypeControl state={tradeTypeState} />
+
+        <NetworkControl state={networkControlState} />
+
+        <Divider variant="middle">Token selection</Divider>
+
+        <CurrencyInputControl
+          label="Sell token"
+          tokenIdState={sellTokenState}
+          tokenAmountState={sellTokenAmountState}
+        />
+
+        <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
+
+        {isDrawerOpen && (
+          <Fab
+            size="small"
+            color="primary"
+            aria-label="hide drawer"
+            onClick={() => setIsDrawerOpen(false)}
+            style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
           >
-            {title}
-          </Typography>
+            <KeyboardDoubleArrowLeftIcon />
+          </Fab>
+        )}
 
-          <div style={WalletConnectionWrapper}>
-            <w3m-button />
-          </div>
-
-          <ThemeControl />
-
-          <TradeModesControl state={tradeModesState} />
-
-          <CurrentTradeTypeControl state={tradeTypeState} />
-
-          <NetworkControl state={networkControlState} />
-
-          <Divider variant="middle">Token selection</Divider>
-
-          <CurrencyInputControl
-            label="Sell token"
-            tokenIdState={sellTokenState}
-            tokenAmountState={sellTokenAmountState}
-          />
-
-          <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
-
-          {isDrawerOpen && (
-            <Fab
-              size="small"
-              color="primary"
-              aria-label="hide drawer"
-              onClick={() => setIsDrawerOpen(false)}
-              style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
-            >
-              <KeyboardDoubleArrowLeftIcon />
-            </Fab>
-          )}
-
-          <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-          >
-            {LINKS.map(({ label, icon, url }) => (
-              <ListItemButton key={label} component="a" href={url}>
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText primary={label} />
-              </ListItemButton>
-            ))}
-          </List>
-        </Drawer>
-      </ClickAwayListener>
+        <List
+          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          {LINKS.map(({ label, icon, url }) => (
+            <ListItemButton key={label} component="a" href={url}>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
 
       <Box sx={ContentStyled}>
         {params && (
