@@ -60,7 +60,7 @@ describe('useTradeQuotePolling()', () => {
     jest.clearAllMocks()
 
     getQuoteMock.mockImplementation(() => new Promise(() => void 0))
-    useEnoughBalanceAndAllowanceMock.mockReturnValue(true)
+    useEnoughBalanceAndAllowanceMock.mockReturnValue({ enoughBalance: true, enoughAllowance: true })
   })
 
   describe('When wallet is connected', () => {
