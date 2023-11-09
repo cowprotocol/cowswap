@@ -37,10 +37,14 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
 
   const tokenAddress = inputToken.address
-  const tokenName = inputToken.name || tokenAddress
+  const tokenName = permitInfo.name || inputToken.name
 
   if (permitInfo.type === 'unsupported') {
     throw new Error(`Trying to generate permit hook for unsupported token: ${tokenAddress}`)
+  }
+
+  if (!tokenName) {
+    throw new Error(`No token name for token: ${tokenAddress}`)
   }
 
   const owner = account || PERMIT_SIGNER.address

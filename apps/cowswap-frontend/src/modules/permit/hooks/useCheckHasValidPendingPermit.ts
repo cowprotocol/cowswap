@@ -64,7 +64,7 @@ async function checkHasValidPendingPermit(
   const eip2162Utils = getPermitUtilsInstance(chainId, provider, order.owner)
 
   const tokenAddress = order.inputToken.address
-  const tokenName = order.inputToken.name || tokenAddress
+  const tokenName = order.inputToken.name
 
   const checkedHooks = await Promise.all(
     preHooks.map(({ callData }) =>

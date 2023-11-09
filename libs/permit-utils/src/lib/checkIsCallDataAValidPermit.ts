@@ -8,12 +8,19 @@ export async function checkIsCallDataAValidPermit(
   chainId: number,
   eip2162Utils: Eip2612PermitUtils,
   tokenAddress: string,
-  tokenName: string,
+  _tokenName: string | undefined,
   callData: string,
-  { version, type }: PermitInfo
+  { version, type, name }: PermitInfo
 ): Promise<boolean | undefined> {
+  // TODO: take name only from PermitInfo
+  const tokenName = name || _tokenName
+
   if (type === 'unsupported') {
     return false
+  }
+
+  if (!tokenName) {
+    throw new Error(`No token name for ${tokenAddress}`)
   }
 
   const params = { chainId, tokenName: fixTokenName(tokenName), tokenAddress, callData, version }
