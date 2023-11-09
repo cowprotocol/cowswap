@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { useDebounce } from '@cowprotocol/common-hooks'
@@ -45,8 +45,11 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  */
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
+  const [isLoading, setIsLoading] = useState(false)
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
+
+  const isInputStale = debouncedInputInExternals !== inputLowerCase
 
   // Search in active and inactive lists
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
@@ -67,6 +70,26 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     isTokenAlreadyFoundByAddress
   )
 
+  useEffect(() => {
+    setIsLoading(true)
+  }, [input])
+
+  useEffect(() => {
+    // When there are results from toke lists, then we don't need to wait for the rest
+    if (tokensFromActiveLists.length || tokensFromInactiveLists.length) {
+      setIsLoading(false)
+      return
+    }
+
+    // Change loading state only when input is not stale
+    if (isInputStale) return
+
+    // Loading is finished when all sources are loaded
+    if (!apiIsLoading && !blockchainIsLoading) {
+      setIsLoading(false)
+    }
+  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
+
   return useMemo(() => {
     if (!debouncedInputInList) {
       return emptyResponse
@@ -75,7 +98,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (isTokenAlreadyFoundByAddress) {
       return {
         ...emptyResponse,
-        isLoading: apiIsLoading || blockchainIsLoading,
+        isLoading,
         activeListsResult: tokensFromActiveLists,
       }
     }
@@ -88,25 +111,25 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     const filterFoundTokens = (token: TokenWithLogo) => !foundTokens[token.address.toLowerCase()]
 
     const inactiveListsResult = tokensFromInactiveLists.filter(filterFoundTokens)
-    const blockchainResult = tokenFromBlockChain ? [tokenFromBlockChain] : []
-    const externalApiResult = apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : []
+    const blockchainResult = !isInputStale && tokenFromBlockChain ? [tokenFromBlockChain] : []
+    const externalApiResult = !isInputStale && apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : []
 
     return {
-      isLoading: apiIsLoading || blockchainIsLoading,
+      isLoading,
       activeListsResult: tokensFromActiveLists,
       inactiveListsResult,
       blockchainResult,
       externalApiResult,
     }
   }, [
+    isInputStale,
+    isLoading,
     debouncedInputInList,
     isTokenAlreadyFoundByAddress,
     tokensFromActiveLists,
     tokensFromInactiveLists,
     apiResultTokens,
     tokenFromBlockChain,
-    apiIsLoading,
-    blockchainIsLoading,
   ])
 }
 

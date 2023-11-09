@@ -44,6 +44,11 @@ export const SettingsAction = styled.div`
   padding: 5px;
   box-sizing: content-box;
 
+  > a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   &:hover {
     text-decoration: underline;
   }

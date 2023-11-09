@@ -10,6 +10,7 @@ import { ExternalLink, Trash } from 'react-feather'
 import * as styledEl from './styled'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
+import { CommonListContainer } from '../../pure/commonElements'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 
 const tokensListToMap = (tokens: TokenWithLogo[]) => {
@@ -44,19 +45,23 @@ export function ManageTokens(props: ManageTokensProps) {
   }, [blockchainResult, externalApiResult, inactiveListsResult])
 
   return (
-    <styledEl.Wrapper>
-      {activeListsResult?.map((token) => {
-        return <ImportTokenItem key={token.address} token={token} existing={true} />
-      })}
-      {!activeListsResult?.length &&
-        tokensToImport?.map((token) => {
-          return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
-        })}
+    <>
+      {(!!activeListsResult?.length || !!tokensToImport?.length) && (
+        <styledEl.SearchResults>
+          {activeListsResult?.map((token) => {
+            return <ImportTokenItem key={token.address} token={token} existing={true} />
+          })}
+          {!activeListsResult?.length &&
+            tokensToImport?.map((token) => {
+              return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
+            })}
+        </styledEl.SearchResults>
+      )}
       <styledEl.Header>
         <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
         {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}
       </styledEl.Header>
-      <styledEl.TokensWrapper>
+      <CommonListContainer>
         {tokens.map((token) => {
           return (
             <styledEl.TokenItem key={token.address}>
@@ -81,8 +86,8 @@ export function ManageTokens(props: ManageTokensProps) {
             </styledEl.TokenItem>
           )
         })}
-      </styledEl.TokensWrapper>
+      </CommonListContainer>
       <styledEl.TipText>Tip: Custom tokens are stored locally in your browser</styledEl.TipText>
-    </styledEl.Wrapper>
+    </>
   )
 }
