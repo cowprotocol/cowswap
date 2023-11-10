@@ -41,8 +41,17 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
-      - name: Install Nx
-        run: yarn add nx
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn nx build ${{ inputs.lib }}
