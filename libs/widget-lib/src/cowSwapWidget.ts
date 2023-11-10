@@ -11,6 +11,14 @@ const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
 
 /**
+ * Reference: IframeResizer (apps/cowswap-frontend/src/modules/injectedWidget/updaters/IframeResizer.ts)
+ * Sometimes MutationObserver doesn't trigger when the height of the widget changes and the widget displays with a scrollbar.
+ * To avoid this we add a threshold to the height.
+ * 20px
+ */
+const HEIGHT_THRESHOLD = 20
+
+/**
  * Callback function signature for updating the CoW Swap Widget.
  */
 export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
@@ -126,6 +134,6 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
       return
     }
 
-    iframe.style.height = event.data.height ? `${event.data.height}px` : defaultHeight
+    iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
 }
