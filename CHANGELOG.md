@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.1](https://github.com/cowprotocol/cowswap/compare/v1.49.0...v1.49.1) (2023-11-10)
+
+
+### Bug Fixes
+
+* **widget:** add a threshold for the widget height ([#3376](https://github.com/cowprotocol/cowswap/issues/3376)) ([654161f](https://github.com/cowprotocol/cowswap/commit/654161f994066a3f6580a72747cc3b5e61520941))
+
 ## [1.49.0](https://github.com/cowprotocol/cowswap/compare/v1.48.17...v1.49.0) (2023-11-09)
 
 
