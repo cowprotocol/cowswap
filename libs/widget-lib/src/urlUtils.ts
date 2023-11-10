@@ -1,6 +1,8 @@
 import { COWSWAP_URLS } from './consts'
 import { CowSwapWidgetParams, TradeType } from './types'
 
+const EMPTY_TOKEN = '_'
+
 export function buildWidgetUrl(params: CowSwapWidgetParams): string {
   const host = COWSWAP_URLS[params.env || 'prod']
   const path = buildWidgetPath(params)
@@ -12,16 +14,7 @@ export function buildWidgetUrl(params: CowSwapWidgetParams): string {
 export function buildWidgetPath(params: CowSwapWidgetParams): string {
   const { chainId = 1, sell, buy, tradeType = TradeType.SWAP } = params
 
-  const assets = []
-  if (sell?.asset) {
-    assets.push(sell.asset)
-  }
-
-  if (buy?.asset) {
-    assets.push(buy.asset)
-  }
-
-  const assetsPath = assets.map(encodeURIComponent).join('/')
+  const assetsPath = [sell?.asset || EMPTY_TOKEN, buy?.asset || EMPTY_TOKEN].map(encodeURIComponent).join('/')
 
   return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
