@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.2](https://github.com/cowprotocol/cowswap/compare/v1.49.1...v1.49.2) (2023-11-10)
+
+
+### Bug Fixes
+
+* use cache when building library ([#3383](https://github.com/cowprotocol/cowswap/issues/3383)) ([9b9b598](https://github.com/cowprotocol/cowswap/commit/9b9b598ef042f6737382d5a5b83af8b6244b8627))
+
 ## [1.49.1](https://github.com/cowprotocol/cowswap/compare/v1.49.0...v1.49.1) (2023-11-10)
 
 
