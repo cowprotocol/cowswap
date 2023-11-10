@@ -23,6 +23,8 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { RoutesValues } from 'common/constants/routes'
 
+import { MenuBadge } from './styled'
+
 import { MAIN_MENU } from '../../constants/mainMenu'
 
 // Assets
@@ -58,7 +60,7 @@ function Link({ link, context }: InternalExternalLinkProps) {
     return <>{LinkComponent()}</>
   }
 
-  const { kind, title, url, iconSVG, icon } = link
+  const { kind, title, url, iconSVG, icon, badge } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
   const isDynamic = kind === MenuItemKind.PARAMETRIZED_LINK
@@ -70,6 +72,7 @@ function Link({ link, context }: InternalExternalLinkProps) {
       <ExternalLinkComponent href={url} onClickOptional={handleMobileMenuOnClick}>
         {menuImage}
         {title}
+        {badge && <MenuBadge>{badge}</MenuBadge>}
       </ExternalLinkComponent>
     )
   }
@@ -78,6 +81,7 @@ function Link({ link, context }: InternalExternalLinkProps) {
     <StyledNavLink to={internalUrl} end onClick={handleMobileMenuOnClick}>
       {menuImage}
       {title}
+      {badge && <MenuBadge>{badge}</MenuBadge>}
     </StyledNavLink>
   )
 }
