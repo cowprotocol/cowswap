@@ -35,6 +35,7 @@ export enum MainMenuItemId {
   OTHER_TERMS_AND_CONDITIONS = 'OTHER_TERMS_AND_CONDITIONS',
   OTHER_COOKIE_POLICY = 'OTHER_COOKIE_POLICY',
   OTHER_PRIVACY_POLICY = 'OTHER_PRIVACY_POLICY',
+  WIDGET = 'WIDGET',
 }
 
 export interface BasicMenuLink {
@@ -43,6 +44,7 @@ export interface BasicMenuLink {
   url: string
   icon?: string // If icon uses a regular <img /> tag
   iconSVG?: string
+  badge?: string
 }
 
 export interface InternalLink extends BasicMenuLink {

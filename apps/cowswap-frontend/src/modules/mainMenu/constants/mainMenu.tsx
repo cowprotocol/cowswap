@@ -9,12 +9,14 @@ import IMAGE_PIE from '@cowprotocol/assets/cow-swap/pie.svg'
 import IMAGE_PRIVACY_POLICY from '@cowprotocol/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from '@cowprotocol/assets/cow-swap/terms-and-conditions.svg'
 import IMAGE_TWITTER from '@cowprotocol/assets/cow-swap/twitter.svg'
+import IMAGE_WIDGET_ICON from '@cowprotocol/assets/cow-swap/widget-icon.svg'
 import {
   CONTRACTS_CODE_LINK,
   DISCORD_LINK,
   DOCS_LINK,
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
+  WIDGET_LANDING_LINK,
 } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -125,6 +127,15 @@ export const MAIN_MENU: MenuTreeItem[] = [
             url: CONTRACTS_CODE_LINK,
             iconSVG: IMAGE_CODE,
             kind: MenuItemKind.EXTERNAL_LINK,
+          },
+
+          {
+            id: MainMenuItemId.WIDGET,
+            title: 'Widget',
+            url: WIDGET_LANDING_LINK,
+            iconSVG: IMAGE_WIDGET_ICON,
+            kind: MenuItemKind.EXTERNAL_LINK,
+            badge: 'New!',
           },
         ],
       },
