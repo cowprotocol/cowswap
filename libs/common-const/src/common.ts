@@ -116,6 +116,7 @@ export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
 export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
 export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
+export const WIDGET_LANDING_LINK = 'https://cow.fi/widget'
 export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
 
 // MEV Metrics from https://explore.flashbots.net/

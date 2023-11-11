@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-const LABEL = 'Trade Modes'
+const LABEL = 'Trade types'
 export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] }) {
   const [tradeModes, setTradeModes] = state
   const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>) => {
