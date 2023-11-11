@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.49.3](https://github.com/cowprotocol/cowswap/compare/v1.49.1...v1.49.3) (2023-11-11)
+
+
+### Features
+
+* **widget:** add widget link to main menu ([#3381](https://github.com/cowprotocol/cowswap/issues/3381)) ([aba73fe](https://github.com/cowprotocol/cowswap/commit/aba73fecb7a0c6992d7df29d9987e2b2590bbdf0))
+
+
+### Bug Fixes
+
+* **balances:** always use network provider for multicalls ([#3387](https://github.com/cowprotocol/cowswap/issues/3387)) ([94728d4](https://github.com/cowprotocol/cowswap/commit/94728d4f31163fd93adef775c61fd4de7e78d96d))
+* use cache when building library ([#3383](https://github.com/cowprotocol/cowswap/issues/3383)) ([9b9b598](https://github.com/cowprotocol/cowswap/commit/9b9b598ef042f6737382d5a5b83af8b6244b8627))
+* **widget:** polish configurator ([#3380](https://github.com/cowprotocol/cowswap/issues/3380)) ([d76bcdb](https://github.com/cowprotocol/cowswap/commit/d76bcdb9724d06d01ed55acd64c37c9c50d55071))
+
 ## [1.49.1](https://github.com/cowprotocol/cowswap/compare/v1.49.0...v1.49.1) (2023-11-10)
 
 
