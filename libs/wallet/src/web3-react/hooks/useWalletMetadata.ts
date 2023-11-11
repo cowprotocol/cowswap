@@ -116,5 +116,6 @@ export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
   const isSafeWallet = useIsSafeWallet()
 
+  console.log(`fuuuuuck`, { isSafeWallet, isSafeApp })
   return isSafeWallet && !isSafeApp
 }
