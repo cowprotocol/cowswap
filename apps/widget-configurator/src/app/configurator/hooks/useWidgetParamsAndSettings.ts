@@ -28,6 +28,7 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
+      selectedTokenLists,
     } = configuratorState
 
     const params: CowSwapWidgetProps['params'] = {
@@ -36,6 +37,7 @@ export function useWidgetParamsAndSettings(
       height: '640px',
       provider,
       chainId,
+      tokenLists: selectedTokenLists,
       env: getEnv(),
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },

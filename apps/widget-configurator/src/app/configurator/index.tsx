@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { TradeType } from '@cowprotocol/widget-lib'
+import { TradeType, TokenList } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -19,11 +19,13 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
+import { TOKEN_LISTS } from './consts'
 import { TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { ThemeControl } from './controls/ThemeControl'
+import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
 import { TradeModesControl } from './controls/TradeModesControl'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
@@ -70,6 +72,19 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  // State for tracking selected token lists
+  const [selectedTokenLists, setSelectedTokenLists] = useState<TokenList[]>([])
+
+  // Function to handle token list selection
+  const handleTokenListSelect = (selectedUrls: string[]) => {
+    const selectedLists = selectedUrls.map((url) => {
+      // Find the token list by URL from the combined list (predefined + custom)
+      const foundList = TOKEN_LISTS.find((list) => list.url === url)
+      return foundList || { name: 'Custom List', url: url } // Handle custom lists
+    })
+    setSelectedTokenLists(selectedLists)
+  }
+
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
   const LINKS = [
@@ -92,8 +107,6 @@ export function Configurator({ title }: { title: string }) {
   const provider = useProvider()
 
   const state: ConfiguratorState = {
-    // Don't change chainId in the widget URL if the user is connected to a wallet
-    // Because useSyncWidgetNetwork() will send a request to change the network
     chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
@@ -102,6 +115,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
+    selectedTokenLists,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)
@@ -128,7 +142,7 @@ export function Configurator({ title }: { title: string }) {
             e.stopPropagation()
             setIsDrawerOpen(true)
           }}
-          style={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
+          sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
         >
           <EditIcon />
         </Fab>
@@ -151,6 +165,8 @@ export function Configurator({ title }: { title: string }) {
 
         <NetworkControl state={networkControlState} />
 
+        <TokenListControl onTokenListSelect={handleTokenListSelect} />
+
         <Divider variant="middle">Token selection</Divider>
 
         <CurrencyInputControl
@@ -167,7 +183,7 @@ export function Configurator({ title }: { title: string }) {
             color="primary"
             aria-label="hide drawer"
             onClick={() => setIsDrawerOpen(false)}
-            style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
+            sx={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
           >
             <KeyboardDoubleArrowLeftIcon />
           </Fab>
@@ -186,6 +202,7 @@ export function Configurator({ title }: { title: string }) {
               target={onClick ? undefined : '_blank'}
               rel={onClick ? undefined : 'noopener noreferrer'}
               onClick={onClick}
+              sx={{ width: '100%' }}
             >
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={label} />

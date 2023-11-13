@@ -8,6 +8,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   provider:
     'Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com',
   chainId: '1 (Mainnet), 5 (Goerli), 100 (Gnosis)',
+  tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
   theme: 'light/dark or provide your own color palette',
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',

@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TradeType } from '@cowprotocol/widget-lib'
+import type { TradeType, TokenList } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -12,4 +12,5 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
+  selectedTokenLists: TokenList[]
 }
