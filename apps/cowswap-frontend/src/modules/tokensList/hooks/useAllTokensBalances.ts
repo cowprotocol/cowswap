@@ -1,44 +1,33 @@
 import { useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useAllTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OnchainState, TokenAmounts, useOnchainBalances } from 'modules/tokens'
-
-import { useNativeBalance } from 'common/hooks/useNativeBalance'
-
-const defaultBalancesState: [TokenAmounts, boolean] = [{}, false]
+import { TokenAmounts } from 'modules/tokens'
 
 /**
  * Returns balances for all tokens + native token
  */
 export function useAllTokensBalances(): [TokenAmounts, boolean] {
-  const { account } = useWalletInfo()
-  const allTokens = useAllTokens()
-  const nativeBalance = useNativeBalance()
-  const { amounts: onChainBalances, isLoading } = useOnchainBalances({ account, tokens: allTokens })
+  const allTokensMap = useTokensByAddressMap()
+  const { isLoading: balancesLoading, values: balancesRaw } = useTokensBalances()
 
   const balances = useMemo(() => {
-    if (!account || !onChainBalances) return null
+    return Object.keys(balancesRaw).reduce<TokenAmounts>((acc, key) => {
+      const token = allTokensMap[key]
 
-    if (!nativeBalance.data) return onChainBalances
+      acc[token.address] = {
+        value: CurrencyAmount.fromRawAmount(token, '0x' + balancesRaw[key].toString(16)),
+        valid: true,
+        loading: false,
+        syncing: false,
+        error: false,
+      }
 
-    const { data, error } = nativeBalance
+      return acc
+    }, {})
+  }, [allTokensMap, balancesRaw])
 
-    const nativeOnChainState: OnchainState<CurrencyAmount<TokenWithLogo>> = {
-      value: data,
-      loading: isLoading,
-      error,
-      syncing: false,
-      valid: true,
-    }
-
-    return { ...onChainBalances, [data.currency.address]: nativeOnChainState }
-  }, [account, onChainBalances, nativeBalance, isLoading])
-
-  if (!balances) return defaultBalancesState
-
-  return [balances, isLoading]
+  return [balances, balancesLoading]
 }

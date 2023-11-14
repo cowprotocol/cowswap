@@ -1,3 +1,4 @@
+import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -61,6 +62,7 @@ export function Updaters() {
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
       <UnsupportedTokensUpdater />
+      <BalancesAndAllowancesUpdater />
     </>
   )
 }
