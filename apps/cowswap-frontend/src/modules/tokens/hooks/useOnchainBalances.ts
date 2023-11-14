@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Erc20Interface, Erc20Abi } from '@cowprotocol/abis'
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { isAddress } from '@cowprotocol/common-utils'
 import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
@@ -89,8 +89,20 @@ function useOnchainErc20Amounts(
     blocksPerFetch ? { ...DEFAULT_LISTENER_OPTIONS, blocksPerFetch } : DEFAULT_LISTENER_OPTIONS
   )
 
-  const isLoading: boolean = useMemo(
-    () => balancesCallState.some((callState) => callState.loading),
+  const [isLoading, isSyncing] = useMemo(
+    () => {
+      let isLoading = false
+      let isSyncing = false
+
+      for (const callState of balancesCallState) {
+        if (!isLoading && callState.loading) isLoading = true
+        if (!isSyncing && callState.syncing) isSyncing = true
+      }
+      // console.log(`fuck--useOnchainErc20Amounts`, isLoading, isSyncing)
+
+      return [isLoading, isSyncing]
+    },
+    // () => balancesCallState.some((callState) => callState.loading),
     [balancesCallState]
   )
 
@@ -99,6 +111,7 @@ function useOnchainErc20Amounts(
     if (!account || validatedTokens.length === 0 || balancesCallState.length === 0) {
       return { isLoading, amounts: {} }
     }
+    console.log(`fuck--bla`, account, validatedTokens.length, balancesCallState.length)
 
     const tokenBalances = validatedTokens.reduce<TokenAmounts>((acc, token, i) => {
       const { error, loading, result, syncing, valid } = balancesCallState[i]
@@ -115,6 +128,6 @@ function useOnchainErc20Amounts(
       return acc
     }, {})
 
-    return { amounts: tokenBalances, isLoading }
-  }, [account, validatedTokens, balancesCallState, isLoading])
+    return { amounts: tokenBalances, isLoading: isLoading || isSyncing }
+  }, [account, validatedTokens, balancesCallState, isLoading, isSyncing])
 }
