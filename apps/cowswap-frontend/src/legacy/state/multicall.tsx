@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 
-import { useInterfaceMulticall, useBlockNumber } from '@cowprotocol/common-hooks'
+import { useBlockNumber, useInterfaceMulticall } from '@cowprotocol/common-hooks'
 import { networkConnection } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { createMulticall } from '@uniswap/redux-multicall'
 import { useWeb3React } from '@web3-react/core'
 
 // TODO: enable only for MevBlocker
-const shouldUseNetworkProvider = true
+const shouldUseNetworkProvider = false
 
 export const multicall = createMulticall()
 
