@@ -1,12 +1,26 @@
 {
   "name": "@cowprotocol/widget-react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
-    }
+    "import": "./index.mjs",
+    "require": "./index.js"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap"
+  },
+  "keywords": [
+    "cowprotocol",
+    "widget",
+    "cowswap",
+    "dex",
+    "widget-lib",
+    "react"
+  ],
+  "dependencies": {
+    "@cowprotocol/widget-lib": "^0.2.1"
   }
 }
