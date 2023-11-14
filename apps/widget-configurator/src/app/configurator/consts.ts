@@ -2,6 +2,7 @@ import { TradeType, TokenList } from '@cowprotocol/widget-lib'
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
+// Sourced from https://tokenlists.org/
 export const TOKEN_LISTS: TokenList[] = [
   { name: 'CoW Protocol', url: 'https://files.cow.fi/tokens/CowSwap.json' },
   { name: '1inch', url: 'https://tokens.1inch.eth.link' },
