@@ -58,7 +58,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   try {
     tokenName = await getTokenName(tokenAddress, chainId, provider)
   } catch (e) {
-    if (e?.error?.serverError?.code === 'ETIMEDOUT' && !tokenName) {
+    if (/ETIMEDOUT/.test(e) && !tokenName) {
       // Network issue or another temporary failure, return error
       return { error: `Failed to fetch token name from contract. RPC connection error` }
     }
