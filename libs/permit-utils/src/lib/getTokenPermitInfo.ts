@@ -62,7 +62,10 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
       // Network issue or another temporary failure, return error
       return { error: `Failed to fetch token name from contract. RPC connection error` }
     }
-    console.debug(`[checkTokenIsPermittable] Couldn't fetch token name from the contract for token ${tokenAddress}`, e)
+    console.debug(
+      `[checkTokenIsPermittable] Couldn't fetch token name from the contract for token ${tokenAddress}, using provided '${tokenName}'`,
+      e
+    )
   }
 
   if (!tokenName) {
@@ -76,13 +79,13 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
   } catch (e) {
     if (e === 'nonce not supported' || e.message === 'nonce is NaN') {
-      console.debug(`[checkTokenIsPermittable] Not a permittable token ${tokenAddress}`, e?.message || e)
+      console.debug(`[checkTokenIsPermittable] Not a permittable token ${tokenAddress} - ${tokenName}`, e?.message || e)
       // Here we know it's not supported, return unsupported
       // See https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L309
       // and https://github.com/1inch/permit-signed-approvals-utils/blob/b190197a45c3289867ee4e6da93f10dea51ef276/src/eip-2612-permit.utils.ts#L325
       return { ...UNSUPPORTED, name: tokenName }
     }
-    console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress}`, e)
+    console.debug(`[checkTokenIsPermittable] Failed to get nonce for ${tokenAddress} - ${tokenName}`, e)
 
     // Otherwise, it might have been a network issue or another temporary failure, return error
     return { error: e.message || e.toString() }
@@ -100,7 +103,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
       version = await eip2612PermitUtils.getTokenVersion(tokenAddress)
     } catch (e) {
       // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
-      console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress}`, e)
+      console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress} - ${tokenName}`, e)
     }
   }
 
@@ -124,23 +127,32 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
       const isDaiLike = await isDaiLikeTypeHash(tokenAddress, eip2612PermitUtils)
 
       if (!isDaiLike) {
-        console.debug(`[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress}`, e)
-
         // These might be supported, as they have nonces, but we don't know why the permit call fails
         // TODO: further investigate this kind of token
         // For now mark them as unsupported and don't check it again
         if (/invalid signature/.test(e) || e?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+          console.debug(
+            `[checkTokenIsPermittable] Token ${tokenAddress} - ${tokenName} might be permittable, but it's not supported for now. Reason:`,
+            e?.reason
+          )
           return { ...UNSUPPORTED, name: tokenName }
         }
 
         // Maybe a temporary failure
+        console.debug(
+          `[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress} - ${tokenName}`,
+          e
+        )
         return { error: e.message || e.toString() }
       }
 
       return await estimateTokenPermit({ ...baseParams, type: 'dai-like', provider })
     } catch (e) {
       // Not dai-like either, return error
-      console.debug(`[checkTokenIsPermittable] Failed to estimate dai-like permit for ${tokenAddress}`, e)
+      console.debug(
+        `[checkTokenIsPermittable] Failed to estimate dai-like permit for ${tokenAddress} - ${tokenName}`,
+        e
+      )
       return { error: e.message || e.toString() }
     }
   }
