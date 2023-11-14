@@ -125,6 +125,15 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
 
       if (!isDaiLike) {
         console.debug(`[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress}`, e)
+
+        // These might be supported, as they have nonces, but we don't know why the permit call fails
+        // TODO: further investigate this kind of token
+        // For now mark them as unsupported and don't check it again
+        if (/invalid signature/.test(e) || e?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+          return { ...UNSUPPORTED, name: tokenName }
+        }
+
+        // Maybe a temporary failure
         return { error: e.message || e.toString() }
       }
 
