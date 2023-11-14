@@ -17,7 +17,8 @@
     "widget",
     "cowswap",
     "dex",
-    "widget-lib"
+    "widget-lib",
+    "react"
   ],
   "dependencies": {
     "@cowprotocol/widget-lib": "^0.2.0"
