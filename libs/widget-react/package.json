@@ -4,11 +4,21 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
-    }
+    "import": "./index.mjs",
+    "require": "./index.js"
   },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap"
+  },
+  "keywords": [
+    "cowprotocol",
+    "widget",
+    "cowswap",
+    "dex",
+    "widget-lib"
+  ],
   "dependencies": {
     "@cowprotocol/widget-lib": "^0.2.0"
   }
