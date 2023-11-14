@@ -113,6 +113,7 @@ const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps)
           onChange={handleInputChange}
           helperText={errors.name && 'Name cannot be empty'}
           required
+          autoComplete="off"
         />
         <TextField
           error={errors.url}
@@ -126,6 +127,7 @@ const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps)
           onChange={handleInputChange}
           helperText={errors.url && 'Enter a valid URL'}
           required
+          autoComplete="off"
         />
       </DialogContent>
       <DialogActions>
