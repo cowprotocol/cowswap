@@ -44,6 +44,7 @@ const DEFAULT_STATE = {
   buyToken: 'USDC',
   sellAmount: 100000,
   buyAmount: 0,
+  activeTokenLists: ['CoW Protocol', 'CoinGecko'],
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
@@ -72,13 +73,11 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  // State for tracking selected token lists
-  const [selectedTokenLists, setSelectedTokenLists] = useState<TokenList[]>([])
+  const defaultTokenLists = TOKEN_LISTS.filter((list) => DEFAULT_STATE.activeTokenLists.includes(list.name))
+  const [selectedTokenLists, setSelectedTokenLists] = useState<TokenList[]>(defaultTokenLists)
 
-  // Function to handle token list selection
   const handleTokenListSelect = (selectedUrls: string[]) => {
     const selectedLists = selectedUrls.map((url) => {
-      // Find the token list by URL from the combined list (predefined + custom)
       const foundList = TOKEN_LISTS.find((list) => list.url === url)
       return foundList || { name: 'Custom List', url: url } // Handle custom lists
     })
@@ -165,7 +164,10 @@ export function Configurator({ title }: { title: string }) {
 
         <NetworkControl state={networkControlState} />
 
-        <TokenListControl onTokenListSelect={handleTokenListSelect} />
+        <TokenListControl
+          onTokenListSelect={handleTokenListSelect}
+          initialSelectedTokenLists={selectedTokenLists.map((list) => list.url)}
+        />
 
         <Divider variant="middle">Token selection</Divider>
 
