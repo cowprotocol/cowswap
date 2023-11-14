@@ -5,8 +5,7 @@ import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -258,12 +257,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     token: currenciesIds.INPUT,
     chainId,
   })
-
-  // purely for debugging
-  useEffect(() => {
-    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price?.amount)
-    console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
-  }, [quote])
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 

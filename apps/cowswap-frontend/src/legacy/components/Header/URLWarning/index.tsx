@@ -1,6 +1,5 @@
 import { useFetchFile } from '@cowprotocol/common-hooks'
-import { hashCode } from '@cowprotocol/common-utils'
-import { environmentName } from '@cowprotocol/common-utils'
+import { environmentName, hashCode } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -68,19 +67,7 @@ function useGetAnnouncement(chainId: number): string | undefined {
 
   const announcementText = error ? undefined : file?.trim()
 
-  if (error) {
-    console.error('[URLWarning] Error getting the announcement text: ', error)
-  } else {
-    console.debug('[URLWarning] Announcement text', announcementText)
-  }
-
   const envAnnouncementText = envError ? undefined : envFile?.trim()
-
-  if (envError) {
-    console.error(`[URLWarning] Error getting the env ${env} announcement text: `, envError)
-  } else {
-    console.debug(`[URLWarning] Env ${env} announcement text`, envAnnouncementText)
-  }
 
   return announcementText || envAnnouncementText
 }

@@ -72,8 +72,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     tradeUrlParams,
   } = props
 
-  console.debug('SWAP WARNING RENDER TOP: ', props)
-
   return (
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
@@ -109,8 +107,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
 
 export const SwapWarningsBottom = React.memo(function (props: SwapWarningsBottomProps) {
   const { isSupportedWallet, swapIsUnsupported, currencyIn, currencyOut } = props
-
-  console.debug('SWAP WARNING RENDER BOTTOM: ', props)
 
   return (
     <>
