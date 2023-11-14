@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
@@ -21,6 +21,6 @@
     "react"
   ],
   "dependencies": {
-    "@cowprotocol/widget-lib": "^0.2.0"
+    "@cowprotocol/widget-lib": "^0.2.1"
   }
 }
