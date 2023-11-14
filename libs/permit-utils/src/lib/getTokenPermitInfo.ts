@@ -122,6 +122,12 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     // Not eip-2612, try dai-like
     console.debug(`[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress}`, e)
     try {
+      const isDaiLike = await isDaiLikeTypeHash(tokenAddress, eip2612PermitUtils)
+
+      if (!isDaiLike) {
+        return { error: e.message || e.toString() }
+      }
+
       return await estimateTokenPermit({ ...baseParams, type: 'dai-like', provider })
     } catch (e) {
       // Not dai-like either, return error
@@ -192,6 +198,12 @@ async function getEip2612CallData(params: BaseParams): Promise<string> {
       version,
     ],
   })
+}
+
+async function isDaiLikeTypeHash(tokenAddress: string, eip2612PermitUtils: Eip2612PermitUtils): Promise<boolean> {
+  const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
+
+  return permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH
 }
 
 async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
