@@ -35,14 +35,13 @@
     <meta name="twitter:site" content="@CoWSwap" />
     <meta name="twitter:title" content="CoW Swap | The smartest way to trade cryptocurrencies" />
     <meta name="twitter:image" content="https://swap.cow.fi/images/og-meta-cowswap.png?v=3" />
-
   </head>
 
   <body>
     <noscript>
       <style>
         main {
-          max-width: 35em;
+          max-width: 350px;
           margin: 0 auto;
         }
 
@@ -51,9 +50,9 @@
         }
 
         .banner {
-          padding: 1em;
+          padding: 10px;
           background-color: #fdfda8;
-          border-radius: 0.5em;
+          border-radius: 16px;
         }
       </style>
       <main>
@@ -75,6 +74,133 @@
         </ul>
       </main>
     </noscript>
+
+    <style>
+      #skeleton {
+        --borderRadius: 24px;
+        --containerBG: #fff;
+        --colorGrey: #ecf1f8;
+        --colorBorder: rgb(236 241 248);
+        --colorBlue: #052b65;
+        --colorShimmerColor1: rgba(236, 241, 248, 0) 0;
+        --colorShimmerColor2: rgba(236, 241, 248, 0.2) 20%;
+        --colorShimmerColor3: rgba(255, 255, 255, 0.5) 50%;
+        --colorShimmerColor4: rgba(236, 241, 248, 0.2) 80%;
+        --colorShimmerColor5: rgba(236, 241, 248, 0) 100%;
+        --colorShimmer: linear-gradient(
+          90deg,
+          var(--colorShimmerColor1),
+          var(--colorShimmerColor2),
+          var(--colorShimmerColor3),
+          var(--colorShimmerColor4),
+          var(--colorShimmerColor5)
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 16px auto 0;
+        flex-flow: column wrap;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #skeleton {
+          --colorBorder: rgb(236 241 248 / 15%);
+          --colorShimmerColor1: rgba(236, 241, 248, 0) 0;
+          --colorShimmerColor2: rgba(236, 241, 248, 0.1) 20%;
+          --colorShimmerColor3: rgba(255, 255, 255, 0.2) 50%;
+          --colorShimmerColor4: rgba(236, 241, 248, 0.1) 80%;
+          --colorShimmerColor5: rgba(236, 241, 248, 0) 100%;
+        }
+      }
+
+      #swap-skeleton {
+        display: flex;
+        width: 100%;
+        max-width: 470px;
+        border-radius: var(--borderRadius);
+        height: 400px;
+      }
+
+      .cowprotocol-logo {
+        display: block;
+        height: 80px;
+        width: 80px;
+        object-fit: contain;
+        margin: auto;
+        animation: pulse 1s infinite ease-in-out;
+        transform-style: preserve-3d;
+        backface-visibility: visible;
+        opacity: 0.5;
+        z-index: 5;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .cowprotocol-logo {
+          background: url('/images/cowprotocol-dark.svg') no-repeat 100% / contain;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .cowprotocol-logo {
+          background: url('/images/cowprotocol-light.svg') no-repeat 100% / contain;
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        20% {
+          transform: scale(1.05);
+        }
+        30% {
+          transform: scale(1);
+        }
+        40% {
+          transform: scale(1.05);
+        }
+        50% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .skeleton-box {
+        display: inline-block;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--colorBorder);
+      }
+
+      .skeleton-box::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: var(--colorShimmer);
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    </style>
+
+    <div id="skeleton">
+      <div id="swap-skeleton" class="skeleton-box">
+        <span class="cowprotocol-logo"></span>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
