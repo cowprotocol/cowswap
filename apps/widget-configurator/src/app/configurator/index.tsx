@@ -105,6 +105,8 @@ export function Configurator({ title }: { title: string }) {
 
   const provider = useProvider()
 
+  // Don't change chainId in the widget URL if the user is connected to a wallet
+  // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
     chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
