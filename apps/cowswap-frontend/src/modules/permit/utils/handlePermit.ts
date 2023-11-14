@@ -1,4 +1,4 @@
-import { isSupportedPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 
 import { AppDataInfo, buildAppDataHooks, updateHooksOnAppData } from 'modules/appData'
 
@@ -23,7 +23,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
     const permitData = await generatePermitHook({
       inputToken: { address: inputToken.address, name: inputToken.name },
       account,
-      permitInfo: permitInfo as PermitInfo,
+      permitInfo,
     })
 
     if (!permitData) {
