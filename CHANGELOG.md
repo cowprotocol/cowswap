@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.4](https://github.com/cowprotocol/cowswap/compare/v1.49.3...v1.49.4) (2023-11-14)
+
+
+### Bug Fixes
+
+* fix issue with ts usage ([8101d29](https://github.com/cowprotocol/cowswap/commit/8101d296099a3eb43efdff3dc53c02af8a6c8fc8))
+
 ## [1.49.3](https://github.com/cowprotocol/cowswap/compare/v1.49.1...v1.49.3) (2023-11-11)
 
 
