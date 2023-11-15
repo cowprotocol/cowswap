@@ -49,9 +49,9 @@ export function PaletteControl() {
     () => ({
       primary: '#3f51b5',
       secondary: '#f50057',
-      background: '#303030', // Adjusted for dark mode
-      paper: '#424242', // Adjusted for dark mode
-      text: '#ffffff', // Adjusted for dark mode
+      background: '#303030',
+      paper: '#424242',
+      text: '#ffffff',
       error: '#f44336',
       warning: '#ff9800',
       info: '#2196f3',
@@ -111,12 +111,12 @@ export function PaletteControl() {
 
   const renderColorInput = (color: ColorKeys) => (
     <MuiColorInput
-      value={colors[color]}
+      value={colors[color] || defaultLightPalette[color]}
       onChange={handleColorChange(color)}
       size="small"
       variant="outlined"
       label={`${color.charAt(0).toUpperCase() + color.slice(1)}`}
-      fallbackValue="#ffffff"
+      fallbackValue={defaultLightPalette[color]}
       format="hex"
       isAlphaHidden
     />
