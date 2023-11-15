@@ -111,7 +111,7 @@ export function TokenSearchResults({
             )}
             {/*Tokens from active lists*/}
             {activeList &&
-              activeList.slice(0, searchResultsLimit).map((token) => {
+              activeList.map((token) => {
                 const addressLowerCase = token.address.toLowerCase()
 
                 return (
