@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
@@ -53,16 +54,29 @@ export function TokenSearchResults({
     return searchCount === 0
   }, [isLoading, searchCount])
 
+  const [matchedToken, activeList] = useMemo(() => {
+    let matched: TokenWithLogo | undefined = undefined
+    const remaining: TokenWithLogo[] = []
+
+    for (const t of activeListsResult) {
+      if (doesTokenMatchSymbolOrAddress(t, searchInput)) {
+        matched = t
+      } else {
+        remaining.push(t)
+      }
+    }
+
+    return [matched, remaining]
+  }, [activeListsResult, searchInput])
+
   // On press Enter, select first token if only one token is found or it's fully matches to the search input
   const onInputPressEnter = useCallback(() => {
     if (!searchInput || !activeListsResult) return
 
-    const matchedToken = activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, searchInput))
-
     if (activeListsResult.length === 1 || matchedToken) {
       onSelectToken(matchedToken || activeListsResult[0])
     }
-  }, [searchInput, activeListsResult, onSelectToken])
+  }, [searchInput, activeListsResult, matchedToken, onSelectToken])
 
   useEffect(() => {
     updateSelectTokenWidget({
@@ -84,9 +98,20 @@ export function TokenSearchResults({
 
         return (
           <>
+            {/*Exact match*/}
+            {matchedToken && (
+              <TokenListItem
+                token={matchedToken}
+                balance={balances ? balances[matchedToken.address]?.value : undefined}
+                onSelectToken={onSelectToken}
+                selectedToken={selectedToken}
+                isUnsupported={!!unsupportedTokens[matchedToken.address.toLowerCase()]}
+                isPermitCompatible={permitCompatibleTokens[matchedToken.address.toLowerCase()]}
+              />
+            )}
             {/*Tokens from active lists*/}
-            {activeListsResult &&
-              activeListsResult.slice(0, searchResultsLimit).map((token) => {
+            {activeList &&
+              activeList.slice(0, searchResultsLimit).map((token) => {
                 const addressLowerCase = token.address.toLowerCase()
 
                 return (
