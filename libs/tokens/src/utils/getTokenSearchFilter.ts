@@ -31,5 +31,10 @@ export function getTokenSearchFilter<T extends Token | TokenInfo>(
     return queryParts.every((p) => p.length === 0 || parts.some((sp) => sp.startsWith(p) || sp.endsWith(p)))
   }
 
-  return ({ name, symbol }: T | NativeCurrency): boolean => Boolean((symbol && match(symbol)) || (name && match(name)))
+  return ({ name, symbol }: T | NativeCurrency): boolean => {
+    // Filter out from token names the bridge info to not pollute the results with garbage entries
+    const filteredName = name?.replace(/\s*(on\s(gnosis|xdai)|from\s(mainnet|ethereum)).*$/i, '')
+
+    return Boolean((symbol && match(symbol)) || (filteredName && match(filteredName)))
+  }
 }
