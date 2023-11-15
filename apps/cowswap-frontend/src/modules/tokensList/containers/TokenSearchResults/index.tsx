@@ -17,7 +17,7 @@ import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { SelectTokenContext } from '../../types'
 
-const searchResultsLimit = 10
+const SEARCH_RESULTS_LIMIT = 10
 
 export interface TokenSearchResultsProps extends SelectTokenContext {
   searchInput: string
@@ -130,7 +130,7 @@ export function TokenSearchResults({
             {/*Tokens from blockchain*/}
             {blockchainResult?.length ? (
               <styledEl.ImportTokenWrapper id="currency-import">
-                {blockchainResult.slice(0, searchResultsLimit).map((token) => {
+                {blockchainResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
                   return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
                 })}
               </styledEl.ImportTokenWrapper>
@@ -143,7 +143,7 @@ export function TokenSearchResults({
                   Expanded results from inactive Token Lists
                 </TokenSourceTitle>
                 <div>
-                  {inactiveListsResult.slice(0, searchResultsLimit).map((token) => {
+                  {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
                     return (
                       <ImportTokenItem
                         key={token.address}
