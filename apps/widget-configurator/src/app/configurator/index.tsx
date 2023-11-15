@@ -23,6 +23,7 @@ import { TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
+import { PaletteControl } from './controls/PaletteControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
@@ -144,6 +145,8 @@ export function Configurator({ title }: { title: string }) {
         </div>
 
         <ThemeControl />
+
+        <PaletteControl />
 
         <TradeModesControl state={tradeModesState} />
 

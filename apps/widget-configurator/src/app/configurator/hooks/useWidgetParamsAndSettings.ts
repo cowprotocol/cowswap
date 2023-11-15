@@ -41,14 +41,14 @@ export function useWidgetParamsAndSettings(
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      theme,
-      // theme: {
-      //   baseTheme: theme,
-      //   primaryColor: '#d9258e',
-      //   screenBackground: '#ee00cd',
-      //   widgetBackground: '#b900ff',
-      //   textColor: '#b348cc',
-      // },
+      // theme,
+      theme: {
+        baseTheme: theme,
+        primaryColor: '#d9258e',
+        screenBackground: '#ee00cd',
+        widgetBackground: '#b900ff',
+        textColor: '#b348cc',
+      },
     }
 
     return params
