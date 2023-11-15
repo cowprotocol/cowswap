@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.5](https://github.com/cowprotocol/cowswap/compare/v1.49.4...v1.49.5) (2023-11-15)
+
+
+### Bug Fixes
+
+* **token-selector:** show direct match on top ([#3395](https://github.com/cowprotocol/cowswap/issues/3395)) ([e4c24b0](https://github.com/cowprotocol/cowswap/commit/e4c24b0fb2dc530dda1ba82c67adf6d1aa830fa6))
+
 ## [1.49.4](https://github.com/cowprotocol/cowswap/compare/v1.49.3...v1.49.4) (2023-11-14)
 
 
