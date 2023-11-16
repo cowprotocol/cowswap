@@ -23,7 +23,7 @@ export default function useGasPrice(): JSBI | undefined {
   const { address } = useENSAddress('fast-gas-gwei.data.eth')
   const contract = useContract(address ?? undefined, CHAIN_DATA_ABI, false)
 
-  const { data: result } = useSWR(['useGasPrice', address], async () => {
+  const { data: result } = useSWR(['useGasPrice', contract], async () => {
     return contract?.callStatic.latestAnswer()
   })
   const resultStr = result?.toString()
