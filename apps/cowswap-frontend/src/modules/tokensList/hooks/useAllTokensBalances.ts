@@ -17,12 +17,14 @@ export function useAllTokensBalances(): [TokenAmounts, boolean] {
     return Object.keys(balancesRaw).reduce<TokenAmounts>((acc, key) => {
       const token = allTokensMap[key]
 
-      acc[token.address] = {
-        value: CurrencyAmount.fromRawAmount(token, '0x' + balancesRaw[key].toString(16)),
-        valid: true,
-        loading: false,
-        syncing: false,
-        error: false,
+      if (token) {
+        acc[token.address] = {
+          value: CurrencyAmount.fromRawAmount(token, '0x' + balancesRaw[key].toString(16)),
+          valid: true,
+          loading: false,
+          syncing: false,
+          error: false,
+        }
       }
 
       return acc
