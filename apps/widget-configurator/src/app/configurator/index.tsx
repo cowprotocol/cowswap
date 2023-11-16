@@ -26,6 +26,7 @@ import { NetworkControl, NetworkOption, NetworkOptions } from './controls/Networ
 import { PaletteControl } from './controls/PaletteControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { useColorPalette } from './hooks/useColorPalette'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
@@ -92,6 +93,8 @@ export function Configurator({ title }: { title: string }) {
 
   const provider = useProvider()
 
+  const [customColors] = useColorPalette(mode)
+
   const state: ConfiguratorState = {
     // Don't change chainId in the widget URL if the user is connected to a wallet
     // Because useSyncWidgetNetwork() will send a request to change the network
@@ -103,6 +106,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
+    customColors,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)

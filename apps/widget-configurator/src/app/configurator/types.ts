@@ -3,6 +3,8 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
+import type { ColorPalette } from './hooks/useColorPalette'
+
 export interface ConfiguratorState {
   chainId: SupportedChainId
   theme: PaletteMode
@@ -12,4 +14,5 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
+  customColors: ColorPalette
 }

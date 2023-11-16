@@ -11,19 +11,19 @@ export function mapWidgetTheme(
 
   return {
     ...defaultTheme,
-    bg3: widgetTheme.widgetBackground,
-    bg4: widgetTheme.widgetBackground,
-    cardBackground: widgetTheme.widgetBackground,
-    text1: widgetTheme.textColor,
-    primary1: widgetTheme.primaryColor,
-    primary2: widgetTheme.primaryColor,
-    primary3: widgetTheme.primaryColor,
-    primary4: widgetTheme.primaryColor,
-    bg2: widgetTheme.primaryColor,
+    bg3: widgetTheme.paper,
+    bg4: widgetTheme.paper,
+    cardBackground: widgetTheme.paper,
+    text1: widgetTheme.text,
+    primary1: widgetTheme.primary,
+    primary2: widgetTheme.primary,
+    primary3: widgetTheme.primary,
+    primary4: widgetTheme.primary,
+    bg2: widgetTheme.primary,
     body: {
       ...defaultTheme.body,
       background: css`
-        background-color: ${widgetTheme.screenBackground};
+        background-color: ${widgetTheme.paper};
         background-image: none;
       `,
     },
