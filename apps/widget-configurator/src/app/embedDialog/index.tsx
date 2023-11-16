@@ -1,5 +1,8 @@
 import React, { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
 
+import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
+import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
+import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
@@ -12,6 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
+import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line no-restricted-imports
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
@@ -96,10 +100,16 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
               value={currentTab}
               onChange={(event: SyntheticEvent, newValue: number) => setCurrentTab(newValue)}
               aria-label="basic tabs example"
+              sx={{
+                '& .MuiTab-iconWrapper': {
+                  height: '16px',
+                  width: '16px',
+                },
+              }}
             >
-              <Tab label="Vanilla (NPM)" {...a11yProps(0)} />
-              <Tab label="React" {...a11yProps(1)} />
-              <Tab label="Pure HTML" {...a11yProps(2)} />
+              <Tab label="Vanilla (NPM)" icon={<SVG src={JSIcon} />} iconPosition="start" {...a11yProps(0)} />
+              <Tab label="React" icon={<SVG src={ReactIcon} />} iconPosition="start" {...a11yProps(1)} />
+              <Tab label="Pure HTML" icon={<SVG src={HTMLIcon} />} iconPosition="start" {...a11yProps(2)} />
             </Tabs>
           </Box>
 
