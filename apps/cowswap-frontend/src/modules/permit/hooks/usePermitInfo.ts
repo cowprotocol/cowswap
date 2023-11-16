@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getTokenPermitInfo } from '@cowprotocol/permit-utils'
+import { getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -20,6 +20,8 @@ import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoFo
 import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
+
+const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
 /**
  * Check whether the token is permittable, and returns the permit info for it
@@ -94,7 +96,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
   ])
 
   if (isNative) {
-    return { type: 'unsupported' }
+    return UNSUPPORTED
   }
 
   return preGeneratedInfo ?? permitInfo
