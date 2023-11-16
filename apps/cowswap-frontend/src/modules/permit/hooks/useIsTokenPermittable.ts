@@ -47,7 +47,9 @@ export function useIsTokenPermittable(
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
-  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(token)
+  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
+    isPermitEnabled ? token : undefined
+  )
 
   const spender = GP_VAULT_RELAYER[chainId]
 
