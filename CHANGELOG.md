@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.49.6](https://github.com/cowprotocol/cowswap/compare/v1.49.5...v1.49.6) (2023-11-16)
+
+
+### Bug Fixes
+
+* **permit:** disable permit for sc wallets ([#3404](https://github.com/cowprotocol/cowswap/issues/3404)) ([db40626](https://github.com/cowprotocol/cowswap/commit/db406264549efa37b988971b66e02f3d4cf02f3b))
+* **widget-react:** export all not just types ([#3402](https://github.com/cowprotocol/cowswap/issues/3402)) ([f7c4b40](https://github.com/cowprotocol/cowswap/commit/f7c4b4070748e3b7733f1835e3542296fbb149fe))
+
 ## [1.49.5](https://github.com/cowprotocol/cowswap/compare/v1.49.4...v1.49.5) (2023-11-15)
 
 
