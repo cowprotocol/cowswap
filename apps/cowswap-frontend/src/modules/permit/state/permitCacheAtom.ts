@@ -14,7 +14,7 @@ import {
  * Should never change once it has been created.
  * Used exclusively for quote requests
  */
-export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v0', {})
+export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v1', {})
 
 /**
  * Atom that stores permit data for user permit requests.
