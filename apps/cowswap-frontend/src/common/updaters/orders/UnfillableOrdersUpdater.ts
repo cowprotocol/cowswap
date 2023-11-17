@@ -1,8 +1,9 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
-import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
@@ -26,7 +27,7 @@ import {
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { hasEnoughBalanceAndAllowance, useBalancesAndAllowances } from 'modules/tokens'
+import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 
@@ -46,15 +47,7 @@ export function UnfillableOrdersUpdater(): null {
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 
-  const tokens = useMemo(() => {
-    return pending.map((order) => order.inputToken)
-  }, [pending])
-
-  const { balances } = useBalancesAndAllowances({
-    account,
-    spender: chainId ? GP_VAULT_RELAYER[chainId] : undefined,
-    tokens: tokens,
-  })
+  const { values: balances } = useTokensBalances()
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)

@@ -97,7 +97,6 @@
     "@trezor/connect-plugin-ethereum": "^9.0.1",
     "@trezor/connect-web": "^9.0.11",
     "@types/hdkey": "^2.0.1",
-    "@uniswap/redux-multicall": "^1.1.5",
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "@use-gesture/react": "^10.2.23",

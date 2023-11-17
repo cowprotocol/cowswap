@@ -1,68 +1,91 @@
-import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
-import { useAllTokens } from '@cowprotocol/tokens'
-import { useEffect } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import { Interface } from '@ethersproject/abi'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { multicallTokens } from '../utils/multicallTokens'
-import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { useSetAtom } from 'jotai'
-import { balancesAtom } from '../state/balancesAtom'
-import { allowancesState } from '../state/allowancesAtom'
+import { useEffect, useMemo } from 'react'
 
-const erc20Interface = new Interface(Erc20Abi) as Erc20Interface
+import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { useMultipleContractSingleData } from '@cowprotocol/multicall'
+import { useAllTokens } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import type { BigNumber } from '@ethersproject/bignumber'
 
-const zeroBn = BigInt(0)
-// Some contracts return enormous values, so we need to limit the length of the returned string
-const MAX_BALANCES_LENGTH = 128
+import ms from 'ms.macro'
 
-const mapper = (value: string, token: TokenWithLogo) => {
-  if (value.length > MAX_BALANCES_LENGTH) return zeroBn
+import { erc20Interface } from '../const'
+import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
+import { AllowancesState, allowancesState } from '../state/allowancesAtom'
+import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
-  try {
-    return BigInt(value)
-  } catch (err) {
-    return zeroBn
-  }
-}
+const MULTICALL_OPTIONS = {}
+const SWR_CONFIG = { refreshInterval: ms`30s` }
 
 export function BalancesAndAllowancesUpdater() {
   const { account, chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
   const allTokens = useAllTokens()
 
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesState)
+  const { data: nativeTokenBalance } = useNativeTokenBalance()
 
   const spender = GP_VAULT_RELAYER[chainId]
 
+  const tokenAddresses = useMemo(() => allTokens.map((token) => token.address), [allTokens])
+  const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
+  const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
+
+  const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
+    tokenAddresses,
+    erc20Interface,
+    'balanceOf',
+    balanceOfParams,
+    MULTICALL_OPTIONS,
+    SWR_CONFIG
+  )
+
+  const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
+    tokenAddresses,
+    erc20Interface,
+    'allowance',
+    allowanceParams,
+    MULTICALL_OPTIONS,
+    SWR_CONFIG
+  )
+
+  // Set balances loading state
   useEffect(() => {
-    if (!account || !provider) return
+    setBalances((state) => ({ ...state, isLoading: isBalancesLoading }))
+  }, [setBalances, isBalancesLoading])
 
-    const balanceCallData = erc20Interface.encodeFunctionData('balanceOf', [account])
-    const allowanceCallData = erc20Interface.encodeFunctionData('allowance', [account, spender])
+  // Set allwoances loading state
+  useEffect(() => {
+    setAllowances((state) => ({ ...state, isLoading: isAllowancesLoading }))
+  }, [setAllowances, isAllowancesLoading])
 
-    setBalances((state) => ({ ...state, isLoading: true }))
-    setAllowances((state) => ({ ...state, isLoading: true }))
+  // Set balances to the store
+  useEffect(() => {
+    if (!balances || !balances.length) return
 
-    multicallTokens<bigint>({
-      tokens: allTokens,
-      callData: balanceCallData,
-      provider,
-      mapper,
-    }).then((values) => {
-      setBalances({ isLoading: false, values })
-    })
+    const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
+      acc[address.toLowerCase()] = balances[index]?.balance
+      return acc
+    }, {})
 
-    multicallTokens<bigint>({
-      tokens: allTokens,
-      callData: allowanceCallData,
-      provider,
-      mapper,
-    }).then((values) => {
-      setAllowances({ isLoading: false, values })
-    })
-  }, [provider, account, allTokens, spender, setBalances, setAllowances])
+    const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
+
+    const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
+
+    setBalances({ isLoading: false, values: { ...balancesState, ...nativeBalanceState } })
+  }, [balances, tokenAddresses, setBalances, nativeTokenBalance, chainId])
+
+  // Set allowances to the store
+  useEffect(() => {
+    if (!allowances || !allowances.length) return
+
+    const allowancesState = tokenAddresses.reduce<AllowancesState['values']>((acc, address, index) => {
+      acc[address.toLowerCase()] = allowances[index]?.[0]
+      return acc
+    }, {})
+
+    setAllowances({ isLoading: false, values: allowancesState })
+  }, [allowances, tokenAddresses, setAllowances])
 
   return null
 }

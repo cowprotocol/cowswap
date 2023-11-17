@@ -16,10 +16,11 @@ export function useAllTokensBalances(): [TokenAmounts, boolean] {
   const balances = useMemo(() => {
     return Object.keys(balancesRaw).reduce<TokenAmounts>((acc, key) => {
       const token = allTokensMap[key]
+      const balance = balancesRaw[key]
 
-      if (token) {
+      if (token && balance) {
         acc[token.address] = {
-          value: CurrencyAmount.fromRawAmount(token, '0x' + balancesRaw[key].toString(16)),
+          value: CurrencyAmount.fromRawAmount(token, balance.toString()),
           valid: true,
           loading: false,
           syncing: false,

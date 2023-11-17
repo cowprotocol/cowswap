@@ -3,7 +3,6 @@ import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/token
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-import { MulticallUpdater } from 'legacy/state/multicall'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
@@ -41,7 +40,6 @@ export function Updaters() {
       <ApplicationUpdater />
       <FinalizeTxUpdater />
       <CancelReplaceTxUpdater />
-      <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />

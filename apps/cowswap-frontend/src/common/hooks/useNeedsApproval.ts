@@ -1,10 +1,10 @@
+import { useMemo } from 'react'
+
+import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
@@ -22,19 +22,22 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
  * @returns {boolean}
  */
 export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boolean {
-  const { account } = useWalletInfo()
   const spender = useTradeSpenderAddress()
   const token = amount ? getWrappedToken(amount.currency) : undefined
-  const tokens = token ? [token] : []
-  const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
+  const { values: allowances } = useTokensAllowances()
 
-  const { allowances } = balancesAndAllowances
+  const allowance = useMemo(() => {
+    const allowanceValue = token && allowances[token.address.toLowerCase()]
 
-  const allowance = token && allowances[token.address]?.value
+    if (!allowanceValue) return undefined
+
+    return CurrencyAmount.fromRawAmount(token, allowanceValue.toString())
+  }, [token, allowances])
 
   if (!allowance) {
     return true
   }
+
   if (!token || !amount || !spender) {
     return false
   }
