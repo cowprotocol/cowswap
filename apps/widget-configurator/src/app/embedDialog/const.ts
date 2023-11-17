@@ -18,6 +18,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
   tradeType: 'TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED',
+  enabledTradeTypes: 'TradeType.SWAP, TradeType.LIMIT and/or TradeType.ADVANCED',
 }
 
 export const VALUES_BY_PARAM_NAME: Record<string, string> = {

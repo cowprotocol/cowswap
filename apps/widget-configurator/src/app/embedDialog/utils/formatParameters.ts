@@ -14,6 +14,8 @@ export function formatParameters(params: CowSwapWidgetParams, padLeft = 0, isTyp
   REMOVE_PARAMS.forEach((propName) => {
     delete paramsSanitized[propName]
   })
+
+  // Stringify params
   const formattedParams = JSON.stringify(paramsSanitized, null, 4)
 
   // Add comments
@@ -31,9 +33,17 @@ export function formatParameters(params: CowSwapWidgetParams, padLeft = 0, isTyp
     ? { ...VALUES_BY_PARAM_NAME, tradeType: tradeTypeValue }
     : VALUES_BY_PARAM_NAME
 
-  const resultWithValues = Object.keys(valuesByParamName).reduce((acc, propName) => {
+  let resultWithValues = Object.keys(valuesByParamName).reduce((acc, propName) => {
     return acc.replace(new RegExp(`("${propName}".* )(".*")(.*)$`, 'gm'), `$1${valuesByParamName[propName]}$3`)
   }, resultWithComments)
+
+  // Fix the enabledTradeTypes
+  if (isTypescript) {
+    resultWithValues = resultWithValues.replace(
+      new RegExp(/^(\s*)"(\w*)"(,?)$/gm),
+      (_match, space, tradeType, comma) => space + 'TradeType.' + tradeType.toUpperCase() + comma
+    )
+  }
 
   if (padLeft === 0) {
     return resultWithValues
