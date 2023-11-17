@@ -150,14 +150,9 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
         <Trans>
-          Approve&nbsp;
-          {
-            <TokenSymbol
-              token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)}
-              length={6}
-            />
-          }
-          &nbsp;and Swap
+          Approve{' '}
+          <TokenSymbol token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)} length={6} />{' '}
+          and Swap
         </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
@@ -166,14 +161,9 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
       <styledEl.SwapButtonBox>
         <Trans>
-          Confirm (Approve&nbsp;
-          {
-            <TokenSymbol
-              token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)}
-              length={6}
-            />
-          }
-          &nbsp;and Swap)
+          Confirm (Approve{' '}
+          <TokenSymbol token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)} length={6} />{' '}
+          and Swap)
         </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
