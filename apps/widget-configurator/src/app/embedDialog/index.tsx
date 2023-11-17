@@ -3,8 +3,10 @@ import React, { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'rea
 import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
 import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
 import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
+import TSIcon from '@cowprotocol/assets/cow-swap/ts.svg'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
+import { Tab } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -13,18 +15,52 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Snackbar from '@mui/material/Snackbar'
-import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line no-restricted-imports
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { reactExample } from './utils/reactExample'
-import { vanilaNpmExample } from './utils/vanilaNpmExample'
+import { jsExample } from './utils/jsExample'
+import { reactTsExample } from './utils/reactTsExample'
+import { tsExample } from './utils/tsExample'
 import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 
 import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
+
+interface TabInfo {
+  label: string
+  language: string
+  snippetFromParams(params: CowSwapWidgetProps['params']): string
+  icon: string
+}
+
+const TABS: TabInfo[] = [
+  {
+    label: 'React Typescript',
+    language: 'typescript',
+    snippetFromParams: reactTsExample,
+    icon: ReactIcon,
+  },
+  {
+    label: 'Typescript',
+    language: 'typescript',
+    snippetFromParams: tsExample,
+    icon: TSIcon,
+  },
+  {
+    label: 'Javascript',
+    language: 'javascript',
+    snippetFromParams: jsExample,
+    icon: JSIcon,
+  },
+  {
+    label: 'Pure HTML',
+    language: 'html',
+    snippetFromParams: vanillaNoDepsExample,
+    icon: HTMLIcon,
+  },
+]
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -45,7 +81,7 @@ export interface EmbedDialogProps {
 
 export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
-  const [currentTab, setCurrentTab] = useState(0)
+  const [{ label, language, snippetFromParams }, setCurrentTab] = useState<TabInfo>(TABS[1])
   const descriptionElementRef = useRef<HTMLElement>(null)
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -74,12 +110,8 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   }, [open])
 
   const code = useMemo(() => {
-    if (currentTab === 0) return vanilaNpmExample(params)
-    if (currentTab === 1) return reactExample(params)
-    if (currentTab === 2) return vanillaNoDepsExample(params)
-
-    return ''
-  }, [currentTab, params])
+    return snippetFromParams(params)
+  }, [snippetFromParams, params])
 
   return (
     <div>
@@ -97,9 +129,9 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
         <DialogContent dividers={scroll === 'paper'}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
-              value={currentTab}
-              onChange={(event: SyntheticEvent, newValue: number) => setCurrentTab(newValue)}
-              aria-label="configuration tabs"
+              value={label}
+              onChange={(event: SyntheticEvent, newValue: TabInfo) => setCurrentTab(newValue)}
+              aria-label="languages"
               sx={{
                 '& .MuiTab-iconWrapper': {
                   height: '16px',
@@ -111,17 +143,19 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
                 },
               }}
             >
-              <Tab label="Vanilla (NPM)" icon={<SVG src={JSIcon} />} iconPosition="start" {...a11yProps(0)} />
-              <Tab label="React" icon={<SVG src={ReactIcon} />} iconPosition="start" {...a11yProps(1)} />
-              <Tab label="Pure HTML" icon={<SVG src={HTMLIcon} />} iconPosition="start" {...a11yProps(2)} />
+              {TABS.map((tabInfo, index) => {
+                return (
+                  <Tab label={tabInfo.label} icon={<SVG src={tabInfo.icon} />} value={tabInfo} {...a11yProps(index)} />
+                )
+              })}
             </Tabs>
           </Box>
 
-          <div role="tabpanel" id={`simple-tabpanel-${currentTab}`} aria-labelledby={`simple-tab-${currentTab}`}>
+          <div role="tabpanel" id={`simple-tabpanel-${label}`} aria-labelledby={`simple-tab-${label}`}>
             <SyntaxHighlighter
               showLineNumbers={true}
               children={code}
-              language={currentTab === 2 ? 'html' : 'typescript'}
+              language={language}
               style={nightOwl}
               customStyle={{ fontSize: '0.8em' }}
             />
