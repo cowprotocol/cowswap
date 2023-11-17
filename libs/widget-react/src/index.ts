@@ -1,2 +1,2 @@
 export * from './lib/CowSwapWidget'
-export type * from '@cowprotocol/widget-lib'
+export * from '@cowprotocol/widget-lib'
