@@ -99,11 +99,15 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
             <Tabs
               value={currentTab}
               onChange={(event: SyntheticEvent, newValue: number) => setCurrentTab(newValue)}
-              aria-label="basic tabs example"
+              aria-label="configuration tabs"
               sx={{
                 '& .MuiTab-iconWrapper': {
                   height: '16px',
                   width: '16px',
+                  opacity: 0.75,
+                },
+                '& .Mui-selected .MuiTab-iconWrapper': {
+                  opacity: 1,
                 },
               }}
             >
