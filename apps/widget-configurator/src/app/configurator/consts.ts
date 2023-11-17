@@ -2,6 +2,8 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
+// TODO: Move default palette to a new lib that only exposes the palette colors.
+// This wayit can be consumed by both the configurator and the widget.
 export const DEFAULT_LIGHT_PALETTE = {
   primary: '#3f51b5',
   secondary: '#f50057',

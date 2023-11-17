@@ -19,6 +19,8 @@ export function useWidgetParamsAndSettings(
   provider: EthereumProvider | undefined,
   configuratorState: ConfiguratorState
 ) {
+  console.log('useWidgetParamsAndSettings', configuratorState)
+
   return useMemo(() => {
     const {
       chainId,
@@ -48,7 +50,6 @@ export function useWidgetParamsAndSettings(
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      // theme,
       theme: {
         baseTheme: theme,
         primary: themeColors.primary,

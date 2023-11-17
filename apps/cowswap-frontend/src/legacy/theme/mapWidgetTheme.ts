@@ -9,6 +9,8 @@ export function mapWidgetTheme(
 ): DefaultTheme {
   if (!widgetTheme) return defaultTheme
 
+  console.log('widgetTheme', widgetTheme)
+
   return {
     ...defaultTheme,
     bg3: widgetTheme.paper,

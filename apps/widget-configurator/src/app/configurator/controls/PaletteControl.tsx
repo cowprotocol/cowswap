@@ -6,13 +6,25 @@ import { MuiColorInput } from 'mui-color-input'
 
 import { ColorModeContext } from '../../../theme/ColorModeContext'
 import { DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from '../consts'
-import { useColorPalette, ColorPalette } from '../hooks/useColorPalette'
+import {
+  // useColorPalette,
+  ColorPalette,
+} from '../hooks/useColorPalette'
 
-export function PaletteControl() {
+export function PaletteControl({
+  colorPalette,
+  setColorPalette,
+  resetColorPalette,
+}: {
+  colorPalette: ColorPalette
+  setColorPalette: (newPalette: ColorPalette) => void
+  resetColorPalette: () => void
+}) {
   const { mode } = useContext(ColorModeContext)
-  const [colorPalette, setColorPalette, resetColorPalette] = useColorPalette(mode)
+  // const [colorPalette, setColorPalette, resetColorPalette] = useColorPalette(mode)
 
   const handleColorChange = (colorKey: keyof ColorPalette) => (newValue: string) => {
+    console.log('handleColorChange', colorKey, newValue)
     setColorPalette({ ...colorPalette, [colorKey]: newValue })
   }
 
@@ -40,6 +52,8 @@ export function PaletteControl() {
   }
 
   const [expanded, setExpanded] = React.useState(false)
+
+  console.log('PaletteControl', { colorPalette, defaultPalette })
 
   return (
     <FormControl sx={{ width: '100%', gap: '1.6rem' }}>

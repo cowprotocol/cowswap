@@ -66,6 +66,10 @@ export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: 
       setLightColors(newPalette)
     }
     setShouldUpdateLocalStorage(true) // Enable localStorage update
+
+    console.log('handleColorPaletteChange: newPalette => ', newPalette)
+    console.log('handleColorPaletteChange: mode => ', mode)
+    console.log('handleColorPaletteChange shouldUpdateLocalStorage => ', shouldUpdateLocalStorage)
   }
 
   const isColorKey = (key: string): key is ColorKeys => {
@@ -85,6 +89,12 @@ export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: 
       } else {
         localStorage.removeItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
       }
+
+      console.log('updateLocalStorage: newColors => ', newColors)
+      console.log('updateLocalStorage: mode => ', mode)
+      console.log('updateLocalStorage: customValues => ', customValues)
+      console.log('updateLocalStorage: defaultPalette => ', defaultPalette)
+      console.log('updateLocalStorage: Object.keys(customValues).length => ', Object.keys(customValues).length)
     },
     [mode]
   )

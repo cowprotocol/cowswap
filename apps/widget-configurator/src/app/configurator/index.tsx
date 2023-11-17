@@ -72,6 +72,9 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  // const [colorPalette] = useColorPalette(mode)
+  const [colorPalette, setColorPalette, resetColorPalette] = useColorPalette(mode)
+
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
   const LINKS = [
@@ -93,7 +96,7 @@ export function Configurator({ title }: { title: string }) {
 
   const provider = useProvider()
 
-  const [customColors] = useColorPalette(mode)
+  console.log('customColors before being passed to ConfiguratorState => ', colorPalette)
 
   const state: ConfiguratorState = {
     // Don't change chainId in the widget URL if the user is connected to a wallet
@@ -106,10 +109,15 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    customColors,
+    customColors: colorPalette,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)
+
+  // log any changes to params to console for debugging purposes
+  useEffect(() => {
+    console.log('params changed', params)
+  }, [params])
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -150,7 +158,12 @@ export function Configurator({ title }: { title: string }) {
 
         <ThemeControl />
 
-        <PaletteControl />
+        {/* <PaletteControl /> */}
+        <PaletteControl
+          colorPalette={colorPalette}
+          setColorPalette={setColorPalette}
+          resetColorPalette={resetColorPalette}
+        />
 
         <TradeModesControl state={tradeModesState} />
 
