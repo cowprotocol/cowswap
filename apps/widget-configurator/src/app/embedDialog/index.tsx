@@ -21,10 +21,10 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line no-restricted-imports
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
+import { vanillaNoDepsExample } from './utils/htmlExample'
 import { jsExample } from './utils/jsExample'
 import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
-import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 
 import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
 
