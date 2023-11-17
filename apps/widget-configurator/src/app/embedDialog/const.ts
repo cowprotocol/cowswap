@@ -16,6 +16,10 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   interfaceFeeBips: 'Fill the form above if you are interested',
 }
 
+export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
+  tradeType: 'TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED',
+}
+
 export const VALUES_BY_PARAM_NAME: Record<string, string> = {
   provider: 'window.ethereum',
 }

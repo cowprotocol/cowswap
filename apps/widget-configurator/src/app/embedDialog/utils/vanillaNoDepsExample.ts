@@ -16,7 +16,7 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
   <div id="app"></div>
   <script>
     // ${COMMENTS_BEFORE_PARAMS}
-    const params = ${formatParameters(params, 4)}
+    const params = ${formatParameters(params, 4, false)}
 
     cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
   </script>

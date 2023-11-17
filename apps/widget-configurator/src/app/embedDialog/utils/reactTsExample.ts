@@ -9,7 +9,7 @@ export function reactTsExample(params: CowSwapWidgetParams): string {
 ${IMPORT_STATEMENT} from '@cowprotocol/widget-react'
 
 // ${COMMENTS_BEFORE_PARAMS}
-const params: CowSwapWidgetParams = ${formatParameters(params)}
+const params: CowSwapWidgetParams = ${formatParameters(params, 0, true)}
 
 function App() {
   return (

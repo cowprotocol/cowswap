@@ -11,7 +11,7 @@ import { cowSwapWidget } from '@cowprotocol/widget-lib'
 const container = document.getElementById('<YOUR_CONTAINER>')
 
 // ${COMMENTS_BEFORE_PARAMS}
-const params: CowSwapWidgetParams = ${formatParameters(params)}
+const params: CowSwapWidgetParams = ${formatParameters(params, 0, false)}
 
 const updateWidget = cowSwapWidget(container, params)
   `
