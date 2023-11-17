@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
+import React, { SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
 import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
@@ -119,9 +119,7 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
     return snippetFromParams(params)
   }, [snippetFromParams, params])
 
-  const onChangeTab = (_event: SyntheticEvent, newValue: TabInfo) => {
-    setCurrentTabInfo(newValue)
-  }
+  const onChangeTab = useCallback((_event: SyntheticEvent, newValue: TabInfo) => setCurrentTabInfo(newValue), [])
 
   return (
     <div>
@@ -153,14 +151,14 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
                 },
               }}
             >
-              {TABS.map((tabInfoAux) => {
+              {TABS.map((info) => {
                 return (
                   <Tab
-                    key={tabInfoAux.id}
-                    label={tabInfo.label}
-                    icon={<SVG src={tabInfoAux.icon} />}
-                    value={tabInfo}
-                    {...a11yProps(tabInfoAux.id)}
+                    key={info.id}
+                    label={info.label}
+                    icon={<SVG src={info.icon} />}
+                    value={info}
+                    {...a11yProps(info.id)}
                   />
                 )
               })}
