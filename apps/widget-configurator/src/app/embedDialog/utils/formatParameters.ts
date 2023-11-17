@@ -28,7 +28,7 @@ export function formatParameters(params: CowSwapWidgetParams, padLeft = 0, isTyp
   }, formattedParams)
 
   // Add values
-  const tradeTypeValue = isTypescript ? 'TradeType.' + params.tradeType?.toUpperCase() : params.tradeType
+  const tradeTypeValue = isTypescript ? 'TradeType.' + params.tradeType?.toUpperCase() : `"${params.tradeType}"`
   const valuesByParamName: Record<string, string> = tradeTypeValue
     ? { ...VALUES_BY_PARAM_NAME, tradeType: tradeTypeValue }
     : VALUES_BY_PARAM_NAME
