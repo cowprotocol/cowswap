@@ -29,6 +29,7 @@ import { vanillaNoDepsExample } from './utils/vanillaNoDepsExample'
 import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
 
 interface TabInfo {
+  id: number
   label: string
   language: string
   snippetFromParams(params: CowSwapWidgetProps['params']): string
@@ -37,24 +38,28 @@ interface TabInfo {
 
 const TABS: TabInfo[] = [
   {
+    id: 0,
     label: 'React Typescript',
     language: 'typescript',
     snippetFromParams: reactTsExample,
     icon: ReactIcon,
   },
   {
+    id: 1,
     label: 'Typescript',
     language: 'typescript',
     snippetFromParams: tsExample,
     icon: TSIcon,
   },
   {
+    id: 2,
     label: 'Javascript',
     language: 'javascript',
     snippetFromParams: jsExample,
     icon: JSIcon,
   },
   {
+    id: 3,
     label: 'Pure HTML',
     language: 'html',
     snippetFromParams: vanillaNoDepsExample,
@@ -66,10 +71,10 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-function a11yProps(index: number) {
+function a11yProps(id: number) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `simple-tab-${id}`,
+    'aria-controls': `simple-tabpanel-${id}`,
   }
 }
 
@@ -81,7 +86,8 @@ export interface EmbedDialogProps {
 
 export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
-  const [{ label, language, snippetFromParams }, setCurrentTab] = useState<TabInfo>(TABS[1])
+  const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
+  const { id, language, snippetFromParams } = tabInfo
   const descriptionElementRef = useRef<HTMLElement>(null)
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -113,6 +119,10 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
     return snippetFromParams(params)
   }, [snippetFromParams, params])
 
+  const onChangeTab = (_event: SyntheticEvent, newValue: TabInfo) => {
+    setCurrentTabInfo(newValue)
+  }
+
   return (
     <div>
       <Dialog
@@ -129,8 +139,8 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
         <DialogContent dividers={scroll === 'paper'}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
-              value={label}
-              onChange={(event: SyntheticEvent, newValue: TabInfo) => setCurrentTab(newValue)}
+              value={tabInfo}
+              onChange={onChangeTab}
               aria-label="languages"
               sx={{
                 '& .MuiTab-iconWrapper': {
@@ -143,15 +153,21 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
                 },
               }}
             >
-              {TABS.map((tabInfo, index) => {
+              {TABS.map((tabInfoAux) => {
                 return (
-                  <Tab label={tabInfo.label} icon={<SVG src={tabInfo.icon} />} value={tabInfo} {...a11yProps(index)} />
+                  <Tab
+                    key={tabInfoAux.id}
+                    label={tabInfo.label}
+                    icon={<SVG src={tabInfoAux.icon} />}
+                    value={tabInfo}
+                    {...a11yProps(tabInfoAux.id)}
+                  />
                 )
               })}
             </Tabs>
           </Box>
 
-          <div role="tabpanel" id={`simple-tabpanel-${label}`} aria-labelledby={`simple-tab-${label}`}>
+          <div role="tabpanel" id={`simple-tabpanel-${id}`} aria-labelledby={`simple-tab-${id}`}>
             <SyntaxHighlighter
               showLineNumbers={true}
               children={code}
