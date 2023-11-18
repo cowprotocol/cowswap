@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -26,13 +24,7 @@ export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boo
   const token = amount ? getWrappedToken(amount.currency) : undefined
   const { values: allowances } = useTokensAllowances()
 
-  const allowance = useMemo(() => {
-    const allowanceValue = token && allowances[token.address.toLowerCase()]
-
-    if (!allowanceValue) return undefined
-
-    return CurrencyAmount.fromRawAmount(token, allowanceValue.toString())
-  }, [token, allowances])
+  const allowance = token && allowances[token.address.toLowerCase()]
 
   if (!allowance) {
     return true
