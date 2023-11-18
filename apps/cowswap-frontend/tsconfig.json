@@ -24,7 +24,8 @@
       "@cowprotocol/ens": ["../../../libs/ens/src/index.ts"],
       "@cowprotocol/core": ["../../../libs/core/src/index.ts"],
       "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"],
-      "@cowprotocol/permit-utils": ["../../../libs/permit-utils/src/index.ts"]
+      "@cowprotocol/permit-utils": ["../../../libs/permit-utils/src/index.ts"],
+      "@cowprotocol/multicall": ["../../../libs/multicall/src/index.ts"]
     }
   },
   "files": [],
