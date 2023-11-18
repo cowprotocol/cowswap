@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -18,7 +18,6 @@ import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersRece
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
-import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -31,8 +30,9 @@ import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
+import { BalancesAndAllowances } from '../../../tokens'
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
-import { getParsedOrderFromTableItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
+import { OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -77,8 +77,6 @@ export function OrdersTableWidget({
   const isSafeViaWc = useIsSafeViaWc()
   const ordersPermitStatus = useGetOrdersPermitStatus()
 
-  const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
-
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
 
@@ -100,15 +98,19 @@ export function OrdersTableWidget({
 
   const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
 
-  // Get tokens from pending orders (only if the OPEN orders tab is opened)
-  const tokens = useMemo(() => {
-    const pendingOrders = isOpenOrdersTab ? ordersList.pending : []
+  const balancesState = useTokensBalances()
+  const allowancesState = useTokensAllowances()
 
-    return pendingOrders.map((item) => getParsedOrderFromTableItem(item).inputToken)
-  }, [isOpenOrdersTab, ordersList.pending])
+  const balancesAndAllowances: BalancesAndAllowances = useMemo(() => {
+    const { isLoading: balancesLoading, values: balances } = balancesState
+    const { isLoading: allowancesLoading, values: allowances } = allowancesState
+    return {
+      isLoading: balancesLoading || allowancesLoading,
+      balances,
+      allowances,
+    }
+  }, [balancesState, allowancesState])
 
-  // Get effective balance
-  const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const toggleOrdersForCancellation = useCallback(

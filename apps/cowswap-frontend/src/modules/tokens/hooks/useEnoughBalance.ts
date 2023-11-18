@@ -1,12 +1,11 @@
+import {
+  AllowancesState,
+  BalancesState,
+  useTokensAllowances,
+  useTokensBalances,
+} from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount, getAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
-import { useBalancesAndAllowances } from './useBalancesAndAllowances'
-import { useCurrencyBalances } from './useCurrencyBalance'
-
-import { TokenAmounts } from '../types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface UseEnoughBalanceParams {
   /**
@@ -38,24 +37,15 @@ const DEFAULT_BALANCE_AND_ALLOWANCE = { enoughBalance: undefined, enoughAllowanc
  * @returns UseEnoughBalanceAndAllowanceResult
  */
 export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
-  const { account, amount, checkAllowanceAddress } = params
-  const isNativeCurrency = !!amount?.currency && getIsNativeToken(amount?.currency)
-  const token = amount?.currency && getWrappedToken(amount.currency)
+  const { checkAllowanceAddress } = params
 
-  const { balances, allowances } = useBalancesAndAllowances({
-    account,
-    spender: checkAllowanceAddress,
-    tokens: !isNativeCurrency && account && token ? [token as Token] : [],
-  })
-
-  const native = useNativeCurrency()
-  const [nativeBalance] = useCurrencyBalances(isNativeCurrency ? account : undefined, [native])
+  const { values: balances } = useTokensBalances()
+  const { values: allowances } = useTokensAllowances()
 
   return hasEnoughBalanceAndAllowance({
     ...params,
     balances,
     allowances: checkAllowanceAddress ? allowances : undefined,
-    nativeBalance,
   })
 }
 
@@ -63,17 +53,12 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
   /**
    * Balances per token for the account
    */
-  balances: TokenAmounts
+  balances: BalancesState['values']
 
   /**
    * Allowances per token for the account
    */
-  allowances?: TokenAmounts
-
-  /**
-   * Native balance for the account
-   */
-  nativeBalance?: CurrencyAmount<Currency>
+  allowances?: AllowancesState['values']
 }
 
 /**
@@ -82,7 +67,7 @@ export interface EnoughBalanceParams extends Omit<UseEnoughBalanceParams, 'check
  * @returns true if the account has enough balance (and allowance if it applies)
  */
 export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
-  const { account, amount, balances, nativeBalance, allowances } = params
+  const { account, amount, balances, allowances } = params
 
   if (!account || !amount) {
     return DEFAULT_BALANCE_AND_ALLOWANCE
@@ -92,7 +77,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
   const token = amount?.currency && getWrappedToken(amount.currency)
   const tokenAddress = getAddress(token)
 
-  const enoughBalance = _enoughBalance(tokenAddress, amount, balances, isNativeCurrency, nativeBalance)
+  const enoughBalance = _enoughBalance(tokenAddress, amount, balances)
   const enoughAllowance = _enoughAllowance(tokenAddress, amount, allowances, isNativeCurrency)
 
   return { enoughBalance, enoughAllowance }
@@ -101,19 +86,17 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
 function _enoughBalance(
   tokenAddress: string | null,
   amount: CurrencyAmount<Currency>,
-  balances: TokenAmounts,
-  isNativeCurrency: boolean,
-  nativeBalance: CurrencyAmount<Currency> | undefined
+  balances: BalancesState['values']
 ): boolean | undefined {
-  const balance = tokenAddress ? balances[tokenAddress]?.value : undefined
-  const balanceAmount = isNativeCurrency ? nativeBalance : balance || undefined
-  return isEnoughAmount(amount, balanceAmount)
+  const balance = tokenAddress ? balances[tokenAddress] : undefined
+
+  return isEnoughAmount(amount, balance)
 }
 
 function _enoughAllowance(
   tokenAddress: string | null,
   amount: CurrencyAmount<Currency>,
-  allowances: TokenAmounts | undefined,
+  allowances: AllowancesState['values'] | undefined,
   isNativeCurrency: boolean
 ): boolean | undefined {
   if (!tokenAddress || !allowances) {
@@ -122,6 +105,7 @@ function _enoughAllowance(
   if (isNativeCurrency) {
     return true
   }
-  const allowance = allowances[tokenAddress]?.value
+  const allowance = allowances[tokenAddress]
+
   return allowance && isEnoughAmount(amount, allowance)
 }

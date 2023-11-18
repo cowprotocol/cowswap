@@ -1,3 +1,4 @@
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
@@ -23,7 +24,6 @@ import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBund
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeType, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
@@ -139,8 +139,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
 function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
   const { currencies } = useDerivedSwapInfo()
-  const { account } = useWalletInfo()
-  const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT && getWrappedToken(currencies.INPUT))
+  const wrappedBalance = useCurrencyAmountBalance(currencies.INPUT ? getWrappedToken(currencies.INPUT) : undefined)
 
   // is an native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))

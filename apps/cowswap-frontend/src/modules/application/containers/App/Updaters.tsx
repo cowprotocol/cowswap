@@ -1,8 +1,8 @@
+import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-import { MulticallUpdater } from 'legacy/state/multicall'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { InjectedWidgetUpdater } from 'modules/injectedWidget'
@@ -30,7 +30,7 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
 
   return (
     <>
@@ -40,7 +40,6 @@ export function Updaters() {
       <ApplicationUpdater />
       <FinalizeTxUpdater />
       <CancelReplaceTxUpdater />
-      <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
@@ -61,6 +60,7 @@ export function Updaters() {
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
       <UnsupportedTokensUpdater />
+      <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
     </>
   )
 }

@@ -1,11 +1,10 @@
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { PermitCompatibleTokens } from 'modules/permit'
-import { TokenAmounts } from 'modules/tokens'
 
 export interface SelectTokenContext {
-  balances: TokenAmounts | null
-  balancesLoading: boolean
+  balancesState: BalancesState
   selectedToken?: string
   onSelectToken(token: TokenWithLogo): void
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
