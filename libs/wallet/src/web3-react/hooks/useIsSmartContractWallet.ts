@@ -45,11 +45,8 @@ export function useIsSmartContractWallet(): boolean {
   useEffect(() => {
     if (!account) {
       setIsSmartContractWallet(false)
-      return
-    }
-
-    if (isAmbireWallet || isArgentWallet || isSmartContract) {
-      setIsSmartContractWallet(true)
+    } else {
+      setIsSmartContractWallet(Boolean(isAmbireWallet || isArgentWallet || isSmartContract))
     }
   }, [account, isAmbireWallet, isArgentWallet, isSmartContract])
 

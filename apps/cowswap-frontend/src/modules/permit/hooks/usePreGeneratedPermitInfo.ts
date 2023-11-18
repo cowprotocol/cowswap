@@ -21,9 +21,33 @@ export function usePreGeneratedPermitInfo(): {
 
   const { data, isLoading } = useSWR(
     url,
-    (url: string): Promise<Record<string, PermitInfo>> => fetch(url).then((r) => r.json()),
+    (url: string): Promise<Record<string, PermitInfo>> =>
+      fetch(url)
+        .then((r) => r.json())
+        .then(migrateData),
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} }
   )
 
   return { allPermitInfo: data, isLoading }
+}
+
+type OldPermitInfo = PermitInfo | false
+
+const UNSUPPORTED: PermitInfo = { type: 'unsupported' }
+
+/**
+ * Handles data migration from former way of storing unsupported tokens to the new one
+ */
+function migrateData(data: Record<string, OldPermitInfo>): Record<string, PermitInfo> {
+  const migrated: Record<string, PermitInfo> = {}
+
+  for (const [k, v] of Object.entries(data)) {
+    if (v === false) {
+      migrated[k] = UNSUPPORTED
+    } else {
+      migrated[k] = v
+    }
+  }
+
+  return migrated
 }

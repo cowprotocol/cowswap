@@ -1,4 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -57,7 +58,7 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (permitInfo) beforePermit()
+    if (isSupportedPermitInfo(permitInfo)) beforePermit()
 
     postOrderParams.appData = await handlePermit({
       permitInfo,

@@ -2,7 +2,12 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { generatePermitHook, getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
+import {
+  generatePermitHook,
+  getPermitUtilsInstance,
+  isSupportedPermitInfo,
+  PermitHookData,
+} from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -38,7 +43,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
       const { inputToken, account, permitInfo } = params
 
-      if (!provider) {
+      if (!provider || !isSupportedPermitInfo(permitInfo)) {
         return
       }
 
