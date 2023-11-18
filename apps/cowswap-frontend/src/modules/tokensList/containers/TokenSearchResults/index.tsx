@@ -25,13 +25,14 @@ export interface TokenSearchResultsProps extends SelectTokenContext {
 
 export function TokenSearchResults({
   searchInput,
-  balances,
+  balancesState,
   selectedToken,
   onSelectToken,
   unsupportedTokens,
   permitCompatibleTokens,
 }: TokenSearchResultsProps) {
   const searchResults = useSearchToken(searchInput)
+  const { values: balances } = balancesState
 
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
@@ -69,6 +70,8 @@ export function TokenSearchResults({
     return [matched, remaining]
   }, [activeListsResult, searchInput])
 
+  const matchedTokenAddress = matchedToken?.address.toLowerCase()
+
   // On press Enter, select first token if only one token is found or it's fully matches to the search input
   const onInputPressEnter = useCallback(() => {
     if (!searchInput || !activeListsResult) return
@@ -99,14 +102,14 @@ export function TokenSearchResults({
         return (
           <>
             {/*Exact match*/}
-            {matchedToken && (
+            {matchedToken && matchedTokenAddress && (
               <TokenListItem
                 token={matchedToken}
-                balance={balances ? balances[matchedToken.address]?.value : undefined}
+                balance={balances ? balances[matchedTokenAddress] : undefined}
                 onSelectToken={onSelectToken}
                 selectedToken={selectedToken}
-                isUnsupported={!!unsupportedTokens[matchedToken.address.toLowerCase()]}
-                isPermitCompatible={permitCompatibleTokens[matchedToken.address.toLowerCase()]}
+                isUnsupported={!!unsupportedTokens[matchedTokenAddress]}
+                isPermitCompatible={permitCompatibleTokens[matchedTokenAddress]}
               />
             )}
             {/*Tokens from active lists*/}
@@ -121,7 +124,7 @@ export function TokenSearchResults({
                     isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
                     selectedToken={selectedToken}
                     token={token}
-                    balance={balances ? balances[token.address]?.value : undefined}
+                    balance={balances ? balances[token.address.toLowerCase()] : undefined}
                     onSelectToken={onSelectToken}
                   />
                 )
