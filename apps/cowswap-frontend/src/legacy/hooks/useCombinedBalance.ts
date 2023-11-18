@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -8,15 +9,14 @@ import JSBI from 'jsbi'
 
 import { useVCowData } from 'legacy/state/cowToken/hooks'
 
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-
 /**
  * Hook that returns COW balance
  */
 function useCowBalance() {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const cowToken = chainId ? COW[chainId] : undefined
-  return useTokenBalance(account || undefined, cowToken)
+
+  return useCurrencyAmountBalance(cowToken)
 }
 
 /**

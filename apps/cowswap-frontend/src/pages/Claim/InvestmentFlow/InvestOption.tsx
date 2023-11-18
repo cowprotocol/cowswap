@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
 import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
-import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import { AVG_APPROVE_COST_GWEI, ONE_HUNDRED_PERCENT, TokenWithLogo } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   getProviderErrorMessage,
@@ -14,7 +15,7 @@ import {
 import { Loader, loadingOpacityMixin, ButtonSize, TokenAmount, ButtonConfirmed, Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -29,8 +30,6 @@ import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/cl
 import { EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'
-
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { IS_TESTING_ENV } from '../const'
 import {
@@ -124,7 +123,9 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
 
   const token = currencyAmount?.currency
   const isNative = !!token && getIsNativeToken(token)
-  const balance = useCurrencyBalance(account || undefined, token)
+  const balanceToken = useMemo(() => (token ? TokenWithLogo.fromToken(token as Token) : undefined), [token])
+
+  const balance = useCurrencyAmountBalance(balanceToken)
 
   const gasPrice = useGasPrices(isNative ? chainId : undefined)
 

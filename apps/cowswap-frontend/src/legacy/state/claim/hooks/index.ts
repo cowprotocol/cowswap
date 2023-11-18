@@ -9,14 +9,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { CallState } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 import { PAID_CLAIM_TYPES } from './const'
 import { ClaimInput, ClaimType, RepoClaims, UserClaims, VCowPrices } from './types'
@@ -88,6 +85,7 @@ export type ClassifiedUserClaims = {
   isLoading: boolean
 }
 
+const EMPTY_ARRAY: unknown[] = []
 /**
  * Gets all user claims, classified
  */
@@ -109,7 +107,12 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
   // we check for all claims because expired now might have been claimed before
   const claimIndexes = useMemo(() => userClaims?.map(({ index }) => [index]) || [], [userClaims])
 
-  const results = useSingleContractMultipleData(contract, 'isClaimed', claimIndexes)
+  const results = EMPTY_ARRAY
+
+  if (results === EMPTY_ARRAY) {
+    console.log(contract, claimIndexes)
+    throw new Error('TODO: this hook was unused and needs to be updated')
+  }
 
   useEffect(() => {
     const available: UserClaims = []
@@ -125,7 +128,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     let isContractCallLoading = false
 
-    results.forEach((result: CallState, index: number) => {
+    results.forEach((result: any, index: number) => {
       const claim = userClaims[index]
 
       // Use the loading state from the multicall results
