@@ -46,7 +46,7 @@ export function AccountSelectorModal() {
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 
-  const { data: nativeTokensBalances } = useNativeTokensBalances(accountsList || undefined)
+  const nativeTokensBalances = useNativeTokensBalances(accountsList || undefined)
 
   const balances = useMemo(() => {
     if (!nativeTokensBalances) return EMPTY_BALANCES

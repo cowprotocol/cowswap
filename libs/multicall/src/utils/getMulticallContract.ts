@@ -1,6 +1,6 @@
 import { Multicall3, Multicall3Abi } from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
+import type { Web3Provider } from '@ethersproject/providers'
 
 import { MULTICALL_ADDRESS } from '../const'
 

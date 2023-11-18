@@ -1,4 +1,4 @@
-import { Multicall3 } from '@cowprotocol/abis'
+import type { Multicall3 } from '@cowprotocol/abis'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { DEFAULT_BATCH_SIZE } from './const'
@@ -6,9 +6,13 @@ import { getMulticallContract } from './utils/getMulticallContract'
 
 export interface MulticallOptions {
   batchSize?: number
-  refreshInterval?: number
 }
 
+/**
+ * TODO: return results just after batch execution
+ * TODO: add fallback for failed calls
+ * TODO: add providers fallback
+ */
 export async function multicall(
   provider: Web3Provider,
   calls: Multicall3.CallStruct[],

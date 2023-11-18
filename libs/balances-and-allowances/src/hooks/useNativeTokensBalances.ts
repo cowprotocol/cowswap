@@ -1,35 +1,25 @@
-import { Multicall3 } from '@cowprotocol/abis'
-import { getMulticallContract, multicall } from '@cowprotocol/multicall'
+import { useMemo } from 'react'
+
+import { getMulticallContract, useSingleContractMultipleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 
-import useSWR, { SWRResponse } from 'swr'
-
 type NativeBalances = { [account: string]: BigNumber | undefined }
 
-export function useNativeTokensBalances(accounts: string[] | undefined): SWRResponse<NativeBalances | undefined> {
+export function useNativeTokensBalances(accounts: string[] | undefined): NativeBalances | undefined {
   const { provider } = useWeb3React()
+  const contract = provider ? getMulticallContract(provider) : undefined
+  const params = useMemo(() => accounts?.map((account) => [account]), [accounts])
 
-  return useSWR<NativeBalances | undefined>(['useNativeTokensBalances', accounts], async () => {
-    if (!provider || !accounts) return undefined
+  const { data: results } = useSingleContractMultipleData<[BigNumber]>(contract, 'getEthBalance', params)
 
-    const contract = getMulticallContract(provider)
+  return useMemo(() => {
+    if (!results || !accounts) return undefined
 
-    const calls: Multicall3.CallStruct[] = accounts.map((account) => {
-      return {
-        target: contract.address,
-        callData: contract.interface.encodeFunctionData('getEthBalance', [account]),
-      }
-    })
+    return results.reduce<NativeBalances>((acc, result, index) => {
+      acc[accounts[index]] = result?.[0]
 
-    return multicall(provider, calls).then((results) => {
-      return results.reduce<NativeBalances>((acc, result, index) => {
-        const account = accounts[index]
-
-        acc[account] = contract.interface.decodeFunctionResult('getEthBalance', result.returnData)[0] as BigNumber
-
-        return acc
-      }, {})
-    })
-  })
+      return acc
+    }, {})
+  }, [results, accounts])
 }

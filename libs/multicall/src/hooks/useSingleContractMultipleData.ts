@@ -9,7 +9,7 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 import { multicall, MulticallOptions } from '../multicall'
 
 export function useSingleContractMultipleData<T = Result>(
-  contract: BaseContract,
+  contract: BaseContract | undefined,
   methodName: string,
   params: unknown[][] | undefined,
   options: MulticallOptions = {},
@@ -31,7 +31,7 @@ export function useSingleContractMultipleData<T = Result>(
   return useSWR<(T | undefined)[] | null>(
     ['useSingleContractMultipleData', provider, calls, options],
     async () => {
-      if (!calls || calls.length === 0 || !provider) return null
+      if (!contract || !calls || calls.length === 0 || !provider) return null
 
       return multicall(provider, calls, options).then((results) => {
         return results.map((result) => {
