@@ -1,7 +1,7 @@
 import { Multicall3, Multicall3Abi } from '@cowprotocol/abis'
-import type { Web3Provider } from '@ethersproject/providers'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Contract } from '@ethersproject/contracts'
+import type { Web3Provider } from '@ethersproject/providers'
 
 const multicallAddress = '0xcA11bde05977b3631167028862bE2a173976CA11'
 

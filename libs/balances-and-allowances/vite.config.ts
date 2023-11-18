@@ -1,12 +1,13 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
+
 import * as path from 'path'
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/balancesAndAllowances',
+  cacheDir: '../../node_modules/.vite/balances-and-allowances',
 
   plugins: [
     dts({
@@ -35,7 +36,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
-      name: 'balancesAndAllowances',
+      name: 'balances-and-allowances',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.

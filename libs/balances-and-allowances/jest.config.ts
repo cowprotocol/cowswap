@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'balancesAndAllowances',
+  displayName: 'balances-and-allowances',
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
@@ -8,5 +8,5 @@ export default {
   },
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/balancesAndAllowances',
+  coverageDirectory: '../../coverage/libs/balances-and-allowances',
 }

@@ -1,5 +1,6 @@
-import type { Web3Provider } from '@ethersproject/providers'
 import { Multicall3 } from '@cowprotocol/abis'
+import type { Web3Provider } from '@ethersproject/providers'
+
 import { DEFAULT_BATCH_SIZE } from './const'
 import { getMulticallContract } from './utils/getMulticallContract'
 

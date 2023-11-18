@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+
 import type { BigNumber } from '@ethersproject/bignumber'
 
 export interface AllowancesState {

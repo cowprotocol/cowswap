@@ -1,9 +1,9 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { useWeb3React } from '@web3-react/core'
 
-import { BigNumber } from 'ethers'
 import useSWR, { SWRResponse } from 'swr'
 
 import { erc20Interface } from '../const'
