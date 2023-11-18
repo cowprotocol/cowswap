@@ -2,9 +2,9 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useAllTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import type { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
@@ -15,10 +15,15 @@ import { AllowancesState, allowancesState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
-const SWR_CONFIG = { refreshInterval: ms`30s` }
+// A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
+const BALANCES_SWR_CONFIG = { refreshInterval: ms`28s` }
+const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`30s` }
 
-export function BalancesAndAllowancesUpdater() {
-  const { account, chainId } = useWalletInfo()
+export interface BalancesAndAllowancesUpdaterProps {
+  account: string | undefined
+  chainId: SupportedChainId
+}
+export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
   const allTokens = useAllTokens()
 
   const setBalances = useSetAtom(balancesAtom)
@@ -37,7 +42,7 @@ export function BalancesAndAllowancesUpdater() {
     'balanceOf',
     balanceOfParams,
     MULTICALL_OPTIONS,
-    SWR_CONFIG
+    BALANCES_SWR_CONFIG
   )
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
@@ -46,7 +51,7 @@ export function BalancesAndAllowancesUpdater() {
     'allowance',
     allowanceParams,
     MULTICALL_OPTIONS,
-    SWR_CONFIG
+    ALLOWANCES_SWR_CONFIG
   )
 
   // Set balances loading state
@@ -68,8 +73,8 @@ export function BalancesAndAllowancesUpdater() {
       return acc
     }, {})
 
+    // Add native token balance to the store as well
     const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
-
     const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
 
     setBalances({ isLoading: false, values: { ...balancesState, ...nativeBalanceState } })

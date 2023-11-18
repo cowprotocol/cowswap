@@ -30,7 +30,7 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
 
   return (
     <>
@@ -60,7 +60,7 @@ export function Updaters() {
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater />
+      <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
     </>
   )
 }
