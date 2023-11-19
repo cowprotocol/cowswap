@@ -1,5 +1,6 @@
 // Updater
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
+export { PriorityTokensUpdater } from './updaters/PriorityTokensUpdater'
 
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'
