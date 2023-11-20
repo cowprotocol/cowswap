@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
+
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
-import { useDebounce } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -10,22 +11,37 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-const FIAT_VALUE_LOADING_THRESHOLD = ms`0.1s`
+const TRADE_SETUP_DEBOUNCE = ms`3s`
 
 export function useFiatValuePriceImpact() {
   const { state } = useDerivedTradeState()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
   const isTradeSetUp = !!inputCurrency && !!outputCurrency
+  const tradeKey = (inputCurrency?.symbol || '') + (outputCurrency?.symbol || '')
 
   const {
-    inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
-    outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
+    inputAmount: { value: fiatValueInput },
+    outputAmount: { value: fiatValueOutput },
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
-  // Consider the price impact loading if either the input or output amount is falsy
-  // Debounce the loading state to prevent the price impact from flashing
-  const isLoading = useDebounce(isTradeSetUp ? inputIsLoading || outputIsLoading : false, FIAT_VALUE_LOADING_THRESHOLD)
+  const [isPriceImpactLoading, setIsPriceImpactLoading] = useState(false)
+
+  // To avoid warning flickering, we wait 3 seconds since the trade is set up to show the loading state
+  // `isPriceImpactLoading` value recalculates every time the trade assets change
+  useEffect(() => {
+    if (tradeKey) {
+      setIsPriceImpactLoading(true)
+    }
+
+    const timeout = setTimeout(() => {
+      setIsPriceImpactLoading(false)
+    }, TRADE_SETUP_DEBOUNCE)
+
+    return () => clearTimeout(timeout)
+  }, [tradeKey])
+
+  const isLoading = isTradeSetUp ? isPriceImpactLoading : false
 
   return useSafeMemo(() => {
     const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
