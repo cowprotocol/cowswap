@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   display: block;
   width: 100%;
   overflow: auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
 `
 

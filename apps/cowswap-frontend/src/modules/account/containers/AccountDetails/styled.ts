@@ -285,7 +285,7 @@ export const InfoCard = styled.div`
 `
 
 export const AccountSection = styled.div`
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   padding: 0;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
 `
@@ -451,7 +451,7 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT1});
   padding: 6px 8px;
   font-size: 13px;

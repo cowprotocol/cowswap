@@ -77,7 +77,7 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
 
 export const ListWrapper = styled(MenuList)`
   display: block;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
   padding: 10px 15px;
@@ -116,7 +116,7 @@ export const CustomInput = styled.input`
   color: var(${UI.COLOR_TEXT1});
   padding: 4px 8px;
   outline: 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 
   &::-webkit-calendar-picker-indicator {
     filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};

@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce'
 
 import { DEFAULT_LIGHT_PALETTE, DEFAULT_DARK_PALETTE } from '../consts'
 
-type ColorKeys = 'primary' | 'secondary' | 'background' | 'paper' | 'text' | 'error' | 'warning' | 'info' | 'success'
+type ColorKeys = 'primary' | 'secondary' | 'background' | 'paper' | 'text' | 'danger' | 'warning' | 'info' | 'success'
 
 export type ColorPalette = {
   [key in ColorKeys]: string

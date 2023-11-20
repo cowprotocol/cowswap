@@ -183,6 +183,7 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
     const defaultTheme = theme(darkMode, widgetMode)
 
     if (widgetMode) {
+      console.log('ThemeProvider widgetMode', mapWidgetTheme(injectedWidgetTheme, defaultTheme))
       return mapWidgetTheme(injectedWidgetTheme, defaultTheme)
     }
 

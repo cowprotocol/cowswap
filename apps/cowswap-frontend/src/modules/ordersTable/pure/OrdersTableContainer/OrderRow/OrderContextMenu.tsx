@@ -28,7 +28,7 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 `
 export const ContextMenuList = styled(MenuList)`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 12px;
   overflow: hidden;
   position: relative;

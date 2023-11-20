@@ -18,7 +18,7 @@ export const SettingsContainer = styled.div`
   border-radius: 12px;
   box-shadow: ${({ theme }) => theme.boxShadow2};
   border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT1});
 `
 

@@ -36,7 +36,7 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
   left: 0;
@@ -109,7 +109,7 @@ export const GPModalHeader = styled(RowBetween)`
   left: 0;
   width: 100%;
   padding: 16px 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   z-index: 20;
 `
 

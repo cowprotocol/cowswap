@@ -188,7 +188,7 @@ export const HeaderElement = styled(HeaderElementUni)`
     width: 100%;
     border-radius: 0;
     height: 64px;
-    background-color: var(${UI.COLOR_CONTAINER_BG_01});
+    background-color: var(${UI.COLOR_PAPER});
     border-top: 1px solid ${({ theme }) => theme.grey1};
     backdrop-filter: blur(21px);
     padding: 10px 16px;
@@ -218,7 +218,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             width: 100%;
             display: flex;
             height: 60px;
-            background: var(${UI.COLOR_CONTAINER_BG_01});
+            background: var(${UI.COLOR_PAPER});
             position: fixed;
             top: 0;
             left: 0;
@@ -368,7 +368,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     left: 0;
     bottom: 0;
     z-index: 3;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     outline: 0;
     padding: 60px 8px;
     overflow-y: scroll;

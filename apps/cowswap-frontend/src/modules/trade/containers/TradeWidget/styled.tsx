@@ -14,7 +14,7 @@ export const ContainerBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 10px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};

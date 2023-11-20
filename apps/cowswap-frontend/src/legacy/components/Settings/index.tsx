@@ -13,7 +13,7 @@ const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
     border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
-    background-color: var(${UI.COLOR_CONTAINER_BG_01});
+    background-color: var(${UI.COLOR_PAPER});
     color: var(${UI.COLOR_TEXT1});
     padding: 0;
     margin: 0;

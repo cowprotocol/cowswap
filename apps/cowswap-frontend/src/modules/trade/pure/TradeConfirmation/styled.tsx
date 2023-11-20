@@ -34,7 +34,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   top: 0;
   left: 0;
   width: 100%;

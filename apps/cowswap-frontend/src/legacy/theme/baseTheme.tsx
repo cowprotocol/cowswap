@@ -20,6 +20,17 @@ export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
 
+    // V3 colors ======================
+    primary: darkMode ? '#0d5ed9' : '#052B65',
+    secondary: darkMode ? '#0d5ed9' : '#052B65',
+    background: darkMode ? '#07162D' : '#ECF1F8',
+    paper: darkMode ? '#07162D' : '#ECF1F8',
+    text: darkMode ? '#CAE9FF' : '#052B65',
+    error: darkMode ? '#EB3030' : '#D41300',
+    warning: darkMode ? '#ED6237' : '#D94719',
+    info: darkMode ? '#428dff' : '#0d5ed9',
+    success: darkMode ? '#00D897' : '#007B28',
+
     // CoW Swap V2 colors ======================
     white: darkMode ? '#CAE9FF' : '#ffffff',
     black: '#07162D',
@@ -37,11 +48,11 @@ export function colors(darkMode: boolean): Colors {
 
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
-    warning: darkMode ? '#ED6237' : '#D94719',
+
     alert: '#DB971E',
     alert2: '#F8D06B',
     information: darkMode ? '#428dff' : '#0d5ed9',
-    success: darkMode ? '#00D897' : '#007B28',
+
     pending: '#43758C', // deprecate
     attention: '#ff5722', // deprecate
 
@@ -52,7 +63,7 @@ export function colors(darkMode: boolean): Colors {
     primary4: darkMode ? '#0d5ed9' : '#052B65',
     primary5: darkMode ? '#0d5ed9' : '#052B65',
     red1: darkMode ? '#EB3030' : '#D41300',
-    error: darkMode ? '#EB3030' : '#D41300',
+
     // ==========================================
 
     // ****** text ******
@@ -106,7 +117,7 @@ export function colors(darkMode: boolean): Colors {
     tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
 
     // banner styles
-    info: darkMode ? '#615845' : '#FFEDAF',
+    // info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
     errorText: '#b91515',
@@ -390,6 +401,28 @@ export const UniFixedGlobalStyle = css`
 
 export const UniThemedGlobalStyle = css`
   :root {
+    // V3
+    ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
+    ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.secondary};
+    ${UI.COLOR_BACKGROUND}: ${({ theme }) => theme.background};
+    ${UI.COLOR_PAPER}: ${({ theme }) => theme.paper};
+    ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
+    ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
+    ${UI.COLOR_WARNING_BG}: ${({ theme }) => theme.warning};
+    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) => theme.warningText};
+    ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => theme.success};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => theme.success};
+    ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
+    ${UI.COLOR_INFO_BG}: ${({ theme }) => theme.info};
+    ${UI.COLOR_INFO_TEXT}: ${({ theme }) => theme.info};
+    ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_DANGER}: ${({ theme }) => theme.error};
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) => theme.error};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => theme.errorText};
+
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
@@ -403,9 +436,9 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
 
     // Base
+
     ${UI.COLOR_BORDER}: var(${UI.COLOR_GREY});
-    ${UI.COLOR_CONTAINER_BG_01}: ${({ theme }) => theme.bg1};
-    ${UI.COLOR_CONTAINER_BG_02}: ${({ theme }) => theme.bg2};
+    ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT1});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
@@ -419,10 +452,10 @@ export const UniThemedGlobalStyle = css`
     ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
 
     // [STATE] Information (light blue)
-    ${UI.COLOR_INFORMATION}: var(${UI.COLOR_LIGHT_BLUE});
-    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) =>
+    ${UI.COLOR_INFO}: var(${UI.COLOR_LIGHT_BLUE});
+    ${UI.COLOR_INFO_BG}: ${({ theme }) =>
       theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
-    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) =>
+    ${UI.COLOR_INFO_TEXT}: ${({ theme }) =>
       theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
 
     // [STATE] Alert (yellow)
@@ -430,11 +463,6 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_ALERT_BG}: ${({ theme }) =>
       theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
-
-    // [STATE] Alert2 (yellow lighter)
-    ${UI.COLOR_ALERT2}: var(${UI.COLOR_YELLOW_LIGHT});
-    ${UI.COLOR_ALERT2_BG}: var(${UI.COLOR_YELLOW_LIGHT});
-    ${UI.COLOR_ALERT2_TEXT}: var(${UI.COLOR_BLUE});
 
     // [STATE] Success (green)
     ${UI.COLOR_SUCCESS}: var(${UI.COLOR_GREEN});

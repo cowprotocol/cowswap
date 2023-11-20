@@ -137,6 +137,6 @@ export const SelectMenu = styled.div`
   top: 0;
   padding: 16px;
   gap: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 `

@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   flex: 1;
   width: 100%;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
 `
 

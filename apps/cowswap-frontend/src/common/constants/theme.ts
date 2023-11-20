@@ -1,4 +1,33 @@
 export enum UI {
+  // V3
+  COLOR_PRIMARY = '--cow-color-primary',
+  COLOR_SECONDARY = '--cow-color-secondary',
+  COLOR_BACKGROUND = '--cow-color-background',
+  COLOR_PAPER = '--cow-color-paper',
+  COLOR_TEXT = '--cow-color-text',
+
+  COLOR_WARNING = '--cow-color-warning',
+  COLOR_WARNING_BG = '--cow-color-warning-bg',
+  COLOR_WARNING_TEXT = '--cow-color-warning-text',
+
+  COLOR_SUCCESS = '--cow-color-success',
+  COLOR_SUCCESS_BG = '--cow-color-success-bg',
+  COLOR_SUCCESS_TEXT = '--cow-color-success-text',
+
+  COLOR_INFO = '--cow-color-info',
+  COLOR_INFO_BG = '--cow-color-info-bg',
+  COLOR_INFO_TEXT = '--cow-color-info-text',
+
+  COLOR_ALERT = '--cow-color-alert',
+  COLOR_ALERT_BG = '--cow-color-alert-bg',
+  COLOR_ALERT_TEXT = '--cow-color-alert-text',
+
+  COLOR_DANGER = '--cow-color-danger',
+  COLOR_DANGER_BG = '--cow-color-danger-bg',
+  COLOR_DANGER_TEXT = '--cow-color-danger-text',
+
+  // ================================================================================
+
   // Colors
   COLOR_WHITE = '--cow-color-white',
   COLOR_BLUE = '--cow-color-blue',
@@ -30,21 +59,6 @@ export enum UI {
   ICON_COLOR_NORMAL = '--cow-icon-color-normal',
 
   // States
-  COLOR_INFORMATION = '--cow-color-information',
-  COLOR_INFORMATION_BG = '--cow-color-information-bg',
-  COLOR_INFORMATION_TEXT = '--cow-color-information-text',
-  COLOR_ALERT = '--cow-color-alert',
-  COLOR_ALERT_BG = '--cow-color-alert-bg',
-  COLOR_ALERT_TEXT = '--cow-color-alert-text',
-  COLOR_ALERT2 = '--cow-color-alert2',
-  COLOR_ALERT2_BG = '--cow-color-alert2-bg',
-  COLOR_ALERT2_TEXT = '--cow-color-alert2-text',
-  COLOR_SUCCESS = '--cow-color-success',
-  COLOR_SUCCESS_BG = '--cow-color-success-bg',
-  COLOR_SUCCESS_TEXT = '--cow-color-success-text',
-  COLOR_DANGER = '--cow-color-danger',
-  COLOR_DANGER_BG = '--cow-color-danger-bg',
-  COLOR_DANGER_TEXT = '--cow-color-danger-text',
 
   // Text
   COLOR_TEXT1 = '--cow-color-text1',

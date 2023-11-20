@@ -59,7 +59,7 @@ export const FancyButton = styled.button`
   /* border: 1px solid ${({ theme }) => theme.bg3}; */
   border: 0; // mod
   outline: none;
-  /* background: var(${UI.COLOR_CONTAINER_BG_01}); */
+  /* background: var(${UI.COLOR_PAPER}); */
   background: ${({ theme }) => theme.bg2}; // mod
   :hover {
     /* border: 1px solid ${({ theme }) => theme.bg4}; */
@@ -86,7 +86,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
 `
 
 export const Input = styled.input`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   font-size: 16px;
   width: auto;
   outline: none;

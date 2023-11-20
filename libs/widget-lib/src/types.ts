@@ -66,7 +66,7 @@ export interface CowSwapWidgetPalette {
   background: string
   paper: string
   text: string
-  error: string
+  danger: string
   warning: string
   info: string
   success: string

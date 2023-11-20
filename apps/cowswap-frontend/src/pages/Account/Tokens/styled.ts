@@ -18,7 +18,7 @@ export const MenuButton = styled.button`
   border: none;
   cursor: pointer;
   color: var(${UI.COLOR_TEXT1});
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   height: 44px;
   border-radius: 21px;
   padding: 0 16px;
@@ -132,7 +132,7 @@ export const ClearSearchInput = styled.div`
 `
 
 export const Overview = styled.div`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 16px;
   gap: 16px;
   margin: 0;
@@ -173,7 +173,7 @@ export const SearchInputFormatter = styled(Column)`
   > input {
     border: none;
     transition: background 0.3s ease-in-out;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     color: var(${UI.COLOR_TEXT1});
   }
 
@@ -205,7 +205,7 @@ export const TokenSearchInput = styled.input`
 
   &:focus {
     max-width: 500px;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     outline: 0;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`

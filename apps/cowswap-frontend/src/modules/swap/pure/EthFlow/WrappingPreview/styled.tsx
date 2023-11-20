@@ -38,7 +38,7 @@ export const WrappingPreviewContainer = styled.div`
     border: 1px solid ${({ theme }) => theme.bg3};
 
     &:nth-of-type(1) {
-      background-color: var(${UI.COLOR_CONTAINER_BG_01});
+      background-color: var(${UI.COLOR_PAPER});
       border-radius: 16px 0 0 16px;
       border-right: 0;
     }

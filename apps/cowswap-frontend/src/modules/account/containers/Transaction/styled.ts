@@ -397,7 +397,7 @@ export const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 `
 
 export const TransactionInnerDetail = styled.div`

@@ -57,7 +57,7 @@ export function useWidgetParamsAndSettings(
         background: themeColors.background,
         paper: themeColors.paper,
         text: themeColors.text,
-        error: themeColors.error,
+        danger: themeColors.danger,
         warning: themeColors.warning,
         info: themeColors.info,
         success: themeColors.success,

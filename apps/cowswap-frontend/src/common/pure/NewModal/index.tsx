@@ -23,7 +23,7 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
   height: 100%;
   margin: auto;
   overflow-y: auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW_NORMAL});
 

@@ -7,7 +7,7 @@ import { TransactionErrorContent } from './index'
 const Wrapper = styled.div`
   width: 560px;
   margin: 0 auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 `
 
 const fixtures = {

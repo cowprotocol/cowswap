@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
   width: 100%;
   border: none;
   padding: 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 16px;
   display: grid;
 `
@@ -30,7 +30,7 @@ export const LinkWrapper = styled(Link)`
 `
 
 export const ResponsiveLogo = styled(TokenLogo)`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT1}) !important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

@@ -14,7 +14,7 @@ const ModalContentWrapper = styled.div`
   justify-content: center;
   padding: 24px;
   color: var(${UI.COLOR_TEXT2});
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
   > p {

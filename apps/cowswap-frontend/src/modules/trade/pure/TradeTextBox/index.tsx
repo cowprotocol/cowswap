@@ -5,7 +5,7 @@ import { UI } from 'common/constants/theme'
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
 const StyledTradeWidgetField = styled(TradeWidgetField)`
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   border: 1px solid ${({ theme }) => theme.grey1};
   display: flex;
   flex-flow: column wrap;

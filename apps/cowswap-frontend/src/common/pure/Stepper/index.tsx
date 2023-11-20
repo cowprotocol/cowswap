@@ -22,7 +22,7 @@ interface StepStyles {
 }
 
 const stateStyles: Record<StepState, StepStyles> = {
-  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_TEXT1 },
+  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_TEXT1 },
   finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
   disabled: {
     dotBackground: UI.COLOR_TEXT1_OPACITY_25,
@@ -30,7 +30,7 @@ const stateStyles: Record<StepState, StepStyles> = {
     labelColor: UI.COLOR_TEXT1_OPACITY_25,
   },
   error: { dotBackground: UI.COLOR_DANGER_BG, dotColor: UI.COLOR_DANGER, labelColor: UI.COLOR_DANGER },
-  loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_LINK },
+  loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_LINK },
   open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
 }
 
@@ -55,7 +55,7 @@ const Step = styled.div<StepProps>`
     max-width: var(--dotSize);
     max-height: var(--dotSize);
     border-radius: var(--dotSize);
-    border: 1px solid ${({ dotBorderColor = UI.COLOR_CONTAINER_BG_01 }) => `var(${dotBorderColor})`};
+    border: 1px solid ${({ dotBorderColor = UI.COLOR_PAPER }) => `var(${dotBorderColor})`};
     background: ${({ stepState }) => `var(${stateStyles[stepState].dotBackground})`};
     color: ${({ stepState }) => `var(${stateStyles[stepState].dotColor})`};
     flex: 0 0 auto;

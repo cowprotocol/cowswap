@@ -11,7 +11,7 @@ export const ReceiveAmountBox = styled.div`
   border-radius: 0 0 16px 16px;
   font-size: 14px;
   font-weight: 600;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border: 2px solid ${({ theme }) => theme.grey1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

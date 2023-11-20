@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   width: 100%;
   margin: 0 0 14px;
   overflow-y: auto;
@@ -26,7 +26,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 16px 16px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
   left: 0;

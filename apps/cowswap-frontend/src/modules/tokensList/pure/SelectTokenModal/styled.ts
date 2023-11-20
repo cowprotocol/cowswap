@@ -7,7 +7,7 @@ import { blankButtonMixin } from '../commonElements'
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
   width: 100%;
 `

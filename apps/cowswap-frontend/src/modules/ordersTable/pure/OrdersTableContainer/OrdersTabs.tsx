@@ -41,7 +41,7 @@ const TabButton = styled(Link)<{ active: string }>`
   `};
 
   &:hover {
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     color: var(${UI.COLOR_TEXT1});
   }
 `

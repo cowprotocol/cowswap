@@ -19,7 +19,7 @@ import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 const OrdersBox = styled.div`
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: none;
@@ -175,7 +175,6 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
-
   const content = () => {
     if (!isWalletConnected) {
       return (
