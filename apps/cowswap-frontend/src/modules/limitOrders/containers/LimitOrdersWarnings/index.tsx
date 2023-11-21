@@ -75,19 +75,10 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
   const showPriceImpactWarning =
-    canTrade &&
-    !tradeQuote.isLoading &&
-    !expertMode &&
-    !!account &&
-    !priceImpactParams.loading &&
-    !priceImpactParams.priceImpact
+    canTrade && !expertMode && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
   const showRateImpactWarning =
-    canTrade &&
-    !tradeQuote.isLoading &&
-    inputCurrency &&
-    !isFractionFalsy(inputCurrencyAmount) &&
-    !isFractionFalsy(outputCurrencyAmount)
+    canTrade && inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount)
 
   const feePercentage = calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount })
 
