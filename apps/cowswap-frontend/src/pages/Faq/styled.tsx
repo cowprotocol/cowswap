@@ -38,7 +38,7 @@ export const Wrapper = styled.div`
     > table {
       width: 100%;
       border-spacing: 1px;
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
 
       > thead {
         background: ${({ theme }) => theme.bg3};
@@ -123,7 +123,7 @@ export const Menu = styled.div`
   font-weight: bold;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   height: max-content;
   position: sticky;
   top: 0;
@@ -145,7 +145,7 @@ export const Menu = styled.div`
     font-size: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      background: ${({ theme }) => transparentize(0.9, theme.text1)};
+      background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
       border-radius: 16px;
       padding: 12px;
     `}
@@ -177,7 +177,7 @@ export const Menu = styled.div`
 
     &.active {
       ${({ theme }) => theme.mediaWidth.upToSmall`
-        background: ${({ theme }) => transparentize(0.9, theme.text1)};
+        background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
         border-radius: 16px;
       `}
     }

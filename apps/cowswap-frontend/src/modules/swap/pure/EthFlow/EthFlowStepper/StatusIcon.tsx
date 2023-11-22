@@ -32,7 +32,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
       ? 'none'
       : status === 'success'
       ? 'none'
-      : `2px solid ${transparentize(0.9, theme.text1)}`};
+      : `2px solid ${transparentize(0.9, `var(${UI.COLOR_PRIMARY_TEXT})`)}`};
   box-shadow: ${({ status, theme }) => (status === 'pending' ? theme.boxShadow3 : 'none')};
   background: ${({ status, theme }) =>
     status === 'pending'
@@ -87,7 +87,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
         ? theme.danger
         : status === 'pending'
         ? theme.text3
-        : transparentize(0.4, theme.text1)};
+        : transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
     object-fit: contain;
     width: 24px;
     height: 19px;
@@ -118,12 +118,12 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
     status === 'pending'
       ? theme.text1
       : crossOut
-      ? transparentize(0.8, theme.text1)
+      ? transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`)
       : status === 'error'
       ? theme.danger
       : status === 'success'
       ? theme.success
-      : transparentize(0.4, theme.text1)};
+      : transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
   color: var(--color);
   font-weight: ${({ status }) => (status === 'pending' ? '600' : '500')};
   font-size: 14px;

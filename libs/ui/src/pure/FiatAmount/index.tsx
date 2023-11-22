@@ -13,6 +13,7 @@ export interface FiatAmountProps {
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
 
 const Wrapper = styled.span<{ highlight: boolean }>`
+  // TODO: don't use hardcoded colors
   background: ${({ highlight }) => (highlight ? 'rgba(113,255,18,0.4)' : '')};
 `
 

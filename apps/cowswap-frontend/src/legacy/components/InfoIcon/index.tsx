@@ -12,7 +12,7 @@ const StyledIcon = styled.div`
 
   > svg {
     opacity: 0.5;
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
     line-height: 0;
     vertical-align: middle;
     transition: opacity 0.2s ease-in-out;

@@ -21,7 +21,7 @@ export function mapWidgetTheme(
     secondary: widgetTheme.secondary,
     background: widgetTheme.background,
     paper: widgetTheme.paper,
-    text: widgetTheme.text,
+    primaryText: widgetTheme.primaryText,
     warning: widgetTheme.warning,
     success: widgetTheme.success,
     info: widgetTheme.info,

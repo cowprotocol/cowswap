@@ -45,7 +45,7 @@ export const Label = styled.div<{ end?: number }>`
   font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  color: ${({ theme }) => transparentize(0.1, theme.text1)};
+  color: ${({ theme }) => transparentize(0.1, `var(${UI.COLOR_PRIMARY_TEXT})`)};
   align-items: center;
   font-variant-numeric: tabular-nums;
   word-break: break-all;
@@ -116,7 +116,7 @@ export const ArrowButton = styled.button`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
@@ -198,11 +198,11 @@ export const Cell = styled.div`
     transition: text-decoration-color 0.2s ease-in-out;
     overflow: hidden;
     display: flex;
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
 
     &:hover {
-      color: var(${UI.COLOR_TEXT1});
-      text-decoration-color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
+      text-decoration-color: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 `
@@ -213,7 +213,7 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => (hasBalance ? `var(${UI.COLOR_TEXT1})` : transparentize(0.3, theme.text1))};
+  color: ${({ hasBalance, theme }) => (hasBalance ? `var(${UI.COLOR_TEXT1})` : transparentize(0.3, `var(${UI.COLOR_PRIMARY_TEXT})`)
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
@@ -247,7 +247,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     max-height: 100%;
 
     > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 
@@ -366,7 +366,7 @@ export const FiatValue = styled.div`
 `
 
 export const InfoCircle = styled(HelpCircle)`
-  stroke: var(${UI.COLOR_TEXT1});
+  stroke: var(${UI.COLOR_PRIMARY_TEXT});
   width: 15px;
   height: 15px;
   margin-left: 5px;

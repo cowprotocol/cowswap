@@ -22,7 +22,7 @@ const StyledExternalLink = styled(ExternalLink)`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: var(${UI.COLOR_TEXT2});
+  color: var(${UI.COLOR_SECONDARY_TEXT});
 
   > svg {
     --size: 14px;
@@ -31,7 +31,7 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 
   > svg > g > path {
-    fill: var(${UI.COLOR_TEXT2});
+    fill: var(${UI.COLOR_SECONDARY_TEXT});
   }
 `
 

@@ -6,7 +6,6 @@ import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -56,18 +55,18 @@ const RateLabel = styled.div`
   gap: 5px;
   text-align: left;
   transition: color 0.15s ease-in-out;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 
 const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
-  background: ${({ theme }) => transparentize(0.9, theme.text1)};
-  color: var(${UI.COLOR_TEXT1});
+  background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   width: var(--size);
   height: var(--size);
   min-width: var(--size);
@@ -83,7 +82,7 @@ const InvertIcon = styled.div`
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
 
     > svg {
       stroke: ${({ theme }) => theme.white};
@@ -108,7 +107,7 @@ export const RateWrapper = styled.button`
 `
 
 export const FiatRate = styled.span`
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
   font-weight: 400;
   text-align: right;
 `

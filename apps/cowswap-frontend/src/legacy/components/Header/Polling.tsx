@@ -101,7 +101,7 @@ export const Spinner = styled.div<{ warning: boolean }>`
 
 const Wrapper = styled.div`
   ${StyledPolling} {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     position: relative;
     margin: 0;
     padding: 0;
@@ -111,7 +111,7 @@ const Wrapper = styled.div`
     opacity: 1;
 
     a {
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
       opacity: 0.5;
       transition: opacity 0.3s ease-in-out;
       text-decoration: none;
@@ -128,7 +128,7 @@ const Wrapper = styled.div`
 
     ${StyledPollingNumber} > a {
       opacity: 1;
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
 
       &:hover {
         opacity: 1;
@@ -139,7 +139,7 @@ const Wrapper = styled.div`
 
   ${StyledGasDot},
   ${StyledPollingDot} {
-    background: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_PRIMARY_TEXT});
   }
 
   ${StyledPollingDot} {

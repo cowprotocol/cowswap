@@ -42,7 +42,7 @@ const ReadMoreLink = styled.a`
   text-decoration: underline;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 

@@ -27,7 +27,7 @@ export const LoadingWrapper = styled.div`
   }
 
   > svg > g {
-    fill: var(${UI.COLOR_TEXT2});
+    fill: var(${UI.COLOR_SECONDARY_TEXT});
   }
 
   > span {
@@ -37,7 +37,7 @@ export const LoadingWrapper = styled.div`
     font-weight: 500;
     letter-spacing: 2px;
     margin: 5px auto 0;
-    color: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
   }
 
   @keyframes pulse {

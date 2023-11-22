@@ -10,6 +10,8 @@ import styled from 'styled-components/macro'
 import { Markdown } from 'legacy/components/Markdown'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
 
+import { UI } from 'common/constants/theme'
+
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 
 export * from './URLWarningMod'
@@ -21,7 +23,7 @@ const Wrapper = styled.div`
     justify-content: center;
     font-size: 12px;
     padding: 8px;
-    background-color: ${({ theme }) => theme.bg2};
+    background-color: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
 
     > div {

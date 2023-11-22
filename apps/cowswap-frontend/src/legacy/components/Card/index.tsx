@@ -12,12 +12,12 @@ const Card = styled(Box)<{ width?: string; padding?: string; border?: string; $b
 export default Card
 
 export const LightCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.bg2};
+  border: 1px solid var(${UI.COLOR_PRIMARY});
   background-color: var(${UI.COLOR_PAPER});
 `
 
 export const LightGreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `
 
 export const GreyCard = styled(Card)`
@@ -25,7 +25,7 @@ export const GreyCard = styled(Card)`
 `
 
 export const DarkGreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `
 
 export const DarkCard = styled(Card)`

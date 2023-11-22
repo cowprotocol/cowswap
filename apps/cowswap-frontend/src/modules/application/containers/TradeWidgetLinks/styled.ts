@@ -6,17 +6,17 @@ import { UI } from 'common/constants/theme'
 import { BadgeType } from '.'
 
 const badgeBackgrounds: Record<BadgeType, string> = {
-  information: `var(${UI.COLOR_INFORMATION_BG})`,
+  information: `var(${UI.COLOR_INFO_BG})`,
   alert: `var(${UI.COLOR_ALERT_BG})`,
-  alert2: `var(${UI.COLOR_ALERT2_BG})`,
+  alert2: `var(${UI.COLOR_ALERT_BG})`,
   success: `var(${UI.COLOR_SUCCESS_BG})`,
   default: 'transparent', // text only
 }
 
 const badgeColors: Record<BadgeType, string> = {
-  information: `var(${UI.COLOR_INFORMATION_TEXT})`,
+  information: `var(${UI.COLOR_INFO_TEXT})`,
   alert: `var(${UI.COLOR_ALERT_TEXT})`,
-  alert2: `var(${UI.COLOR_ALERT2_TEXT})`,
+  alert2: `var(${UI.COLOR_ALERT_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
   default: `var(${UI.COLOR_TEXT1_INACTIVE})`, // text only
 }
@@ -50,7 +50,7 @@ export const Link = styled(NavLink)`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   gap: 4px;
   font-weight: inherit;
   line-height: 1;
@@ -61,12 +61,12 @@ export const Link = styled(NavLink)`
     text-decoration: none;
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 
   > svg > path {
-    fill: var(${UI.COLOR_TEXT1});
+    fill: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 
@@ -100,16 +100,16 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     transition: background 0.2s ease-in-out;
 
     &:hover {
-      background: var(${UI.COLOR_GREY});
+      background: var(${UI.COLOR_PAPER_DARKER});
     }
 
     ${({ isActive }) =>
       isActive &&
       css`
-        background: var(${UI.COLOR_GREY});
+        background: var(${UI.COLOR_PAPER_DARKER});
 
         ${Link} {
-          color: var(${UI.COLOR_TEXT1});
+          color: var(${UI.COLOR_PRIMARY_TEXT});
         }
 
         ${Link} > ${Badge} {

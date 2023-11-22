@@ -30,7 +30,7 @@ import * as styledEl from './styled'
 const Wrapper = styled.div`
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   padding: 8px;
 `
 
@@ -38,7 +38,7 @@ const ArrowDownRight = styled.div`
   display: flex;
   opacity: 0.3;
   margin: 0 3px 0 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams

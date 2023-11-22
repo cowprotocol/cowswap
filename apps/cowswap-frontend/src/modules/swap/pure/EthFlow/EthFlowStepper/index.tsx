@@ -96,7 +96,7 @@ export const Progress = styled.div<ProgressProps>`
   height: var(--height);
   position: relative;
   display: flex;
-  background: ${({ theme }) => transparentize(0.9, theme.text1)};
+  background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
   margin: 28px 0 0;
   border-radius: var(--height);
 

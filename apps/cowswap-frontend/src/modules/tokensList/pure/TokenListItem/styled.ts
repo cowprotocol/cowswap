@@ -16,7 +16,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   background: none;
   border: 0;
   outline: none;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   cursor: pointer;
   font-size: 16px;
   padding: 10px 20px;

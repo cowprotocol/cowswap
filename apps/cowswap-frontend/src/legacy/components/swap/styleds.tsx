@@ -102,7 +102,7 @@ const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
   width: 100%;
   padding: 3rem 1.25rem 1rem 1rem;
   margin-top: -2rem;
-  color: ${({ theme }) => theme.red1};
+  color: ${`var(${UI.COLOR_DANGER})`};
   z-index: -1;
   p {
     padding: 0;
@@ -161,13 +161,13 @@ export const SwapShowAcceptChanges = styled(AutoColumn)`
 `
 
 export const TransactionDetailsLabel = styled(ThemedText.Black)`
-  border-bottom: 1px solid ${({ theme }) => theme.bg2};
+  border-bottom: 1px solid var(${UI.COLOR_PRIMARY});
   padding-bottom: 0.5rem;
 `
 
 export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: string; width?: string }>`
   background-color: ${({ theme }) => theme.bg0};
-  border: 1px solid ${({ theme }) => theme.bg2};
+  border: 1px solid var(${UI.COLOR_PRIMARY});
   padding: 1rem;
   width: ${({ width }) => width ?? 'auto'};
 

@@ -19,7 +19,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   align-content: space-between;
   gap: 10px;
   padding: 16px;
-  background: ${({ theme, readOnly }) => (readOnly ? 'transparent' : theme.input.bg1)};
+  background: ${({ readOnly }) => (readOnly ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
   border: ${({ theme, readOnly }) => (readOnly ? `1px solid ${theme.grey1}` : 'none')};
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
   min-height: 106px;
@@ -40,7 +40,7 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 8px;
@@ -62,7 +62,7 @@ export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;
   margin: auto 0;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -73,10 +73,10 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: ${({ theme }) => transparentize(0.3, theme.primaryText)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -89,7 +89,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;

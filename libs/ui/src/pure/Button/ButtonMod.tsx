@@ -148,7 +148,7 @@ export const ButtonSecondary = styled(BaseButton)`
 `
 
 export const ButtonOutlined = styled(BaseButton)`
-  border: 1px solid ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.primary};
   background-color: transparent;
   color: var(--cow-color-text1);
   &:focus {
@@ -238,15 +238,15 @@ export const ButtonConfirmedStyle = styled(BaseButton)`
 
   &:disabled {
     /* opacity: 50%; */
-    background-color: ${({ theme }) => theme.bg2};
+    background-color: ${({ theme }) => theme.primary};
     color: var(--cow-color-text2);
     cursor: auto;
   }
 `
 
 export const ButtonErrorStyle = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.red1};
-  border: 1px solid ${({ theme }) => theme.red1};
+  background-color: ${({ theme }) => theme.danger};
+  border: 1px solid ${({ theme }) => theme.danger};
 
   &:focus {
     box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.red1)};
@@ -263,8 +263,8 @@ export const ButtonErrorStyle = styled(BaseButton)`
     opacity: 50%;
     cursor: auto;
     box-shadow: none;
-    background-color: ${({ theme }) => theme.red1};
-    border: 1px solid ${({ theme }) => theme.red1};
+    background-color: ${({ theme }) => theme.danger};
+    border: 1px solid ${({ theme }) => theme.danger};
   }
 `
 

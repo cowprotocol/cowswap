@@ -26,7 +26,7 @@ export const QuestionWrapper = styled.div`
   background-color: transparent;
 
   > svg > path {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 

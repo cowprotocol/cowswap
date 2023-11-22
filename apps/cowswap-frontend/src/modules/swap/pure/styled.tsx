@@ -28,17 +28,17 @@ export const BottomGrouping = styled.div`
 
   div > svg,
   div > svg > path {
-    stroke: var(${UI.COLOR_TEXT2});
+    stroke: var(${UI.COLOR_SECONDARY_TEXT});
   }
 `
 export const LightGreyText = styled.span`
   font-weight: 400;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
 `
 
 export const StyledInfoIcon = styled(Info)`
   opacity: 0.5;
-  stroke: var(${UI.COLOR_TEXT1});
+  stroke: var(${UI.COLOR_PRIMARY_TEXT});
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;

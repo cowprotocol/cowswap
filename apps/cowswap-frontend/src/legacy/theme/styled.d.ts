@@ -5,15 +5,21 @@ export type Color = string
 interface ColorsUniswap {
   darkMode: boolean
 
+  // V3 =======================
   primary: Color
   secondary: Color
   background: Color
   paper: Color
-  text: Color
+
+  primaryText: Color
+  secondaryText: Color
+  disabledText: Color
+
   error: Color
   warning: Color
   info: Color
   success: Color
+  // ===========================
 
   // base
   white: Color

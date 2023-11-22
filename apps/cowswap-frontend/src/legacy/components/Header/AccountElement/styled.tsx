@@ -1,6 +1,7 @@
-import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
+
+import { UI } from 'common/constants/theme'
 
 export const BalanceText = styled(Text)`
   font-weight: 500;
@@ -42,7 +43,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

@@ -33,7 +33,7 @@ export const StyledMenuIcon = styled(Settings)`
   width: var(--size);
 
   > * {
-    stroke: var(${UI.COLOR_TEXT2});
+    stroke: var(${UI.COLOR_SECONDARY_TEXT});
   }
 
   :hover {
@@ -76,7 +76,7 @@ const StyledMenu = styled.div`
 
 export const MenuFlyout = styled.span`
   min-width: 20.125rem;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 12px;

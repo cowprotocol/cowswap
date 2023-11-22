@@ -6,7 +6,7 @@ import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import { NumericalInput } from '../TradeNumberInput/styled'
 
 export const TradeWidgetFieldLabel = styled.span`
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
   display: flex;
   align-items: center;
   font-size: 13px;

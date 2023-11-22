@@ -13,12 +13,13 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   gap: 6px;
   border: ${({ theme }) => (theme.darkMode ? `1px solid ${transparentize(0.5, theme.grey1)}` : 0)};
   outline: none;
-  background-color: ${({ theme, $stubbed }) => ($stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
-  color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
+  background-color: ${({ theme, $stubbed }) =>
+    $stubbed ? lighten(0.1, `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER})`};
+  color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_PRIMARY_TEXT})` : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   box-shadow: ${({ theme }) =>
     theme.darkMode
       ? `0px 4px 8px ${transparentize(0.32, theme.black)}`
-      : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
+      : `0px 4px 8px ${`var(${UI.COLOR_PRIMARY_TEXT})`}`};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
@@ -41,7 +42,7 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   min-height: 7px;
 
   > path {
-    stroke: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
+    stroke: ${({ $stubbed, theme }) => ($stubbed ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
     stroke-width: 2px;
   }
 
@@ -54,7 +55,7 @@ export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   font-size: 19px;
   font-weight: 500;
   text-align: left;
-  color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
+  color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 16px;

@@ -4,6 +4,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
 import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`
@@ -22,7 +23,7 @@ const StyledBanner = styled(InlineBanner)`
 `
 
 const AcceptButton = styled.button`
-  background: ${({ theme }) => theme.bg2};
+  background: var(${UI.COLOR_PRIMARY});
   color: ${({ theme }) => theme.white};
   cursor: pointer;
   font-size: 16px;

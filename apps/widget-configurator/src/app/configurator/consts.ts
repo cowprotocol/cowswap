@@ -5,23 +5,23 @@ export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This wayit can be consumed by both the configurator and the widget.
 export const DEFAULT_LIGHT_PALETTE = {
-  primary: '#3f51b5',
+  primary: '#052b65',
   secondary: '#f50057',
   background: '#ffffff',
-  paper: '#f5f5f5',
-  text: '#000000',
-  danger: '#f44336',
-  warning: '#ff9800',
-  info: '#2196f3',
-  success: '#4caf50',
+  paper: '#ffffff',
+  primaryText: '#052B65',
+  danger: '#D41300',
+  warning: '#DB971E',
+  info: '#CAE9FF',
+  success: '#007B28',
 }
 
 export const DEFAULT_DARK_PALETTE = {
-  primary: '#3f51b5',
+  primary: '#0d5ed9',
   secondary: '#f50057',
   background: '#303030',
-  paper: '#424242',
-  text: '#ffffff',
+  paper: '#0c264b',
+  primaryText: '#CAE9FF',
   danger: '#f44336',
   warning: '#ff9800',
   info: '#2196f3',

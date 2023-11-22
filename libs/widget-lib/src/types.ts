@@ -65,7 +65,7 @@ export interface CowSwapWidgetPalette {
   secondary: string
   background: string
   paper: string
-  text: string
+  primaryText: string
   danger: string
   warning: string
   info: string

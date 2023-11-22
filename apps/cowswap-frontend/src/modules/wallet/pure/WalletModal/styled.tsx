@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { UI } from 'common/constants/theme'
 
 export const TermsWrapper = styled.div`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 
 export const Blurb = styled.div`
@@ -88,7 +88,7 @@ export const IconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(${UI.COLOR_TEXT1});
+    --color: var(${UI.COLOR_PRIMARY_TEXT});
     fill: var(--color);
     stroke: var(--color);
   }

@@ -44,14 +44,14 @@ export const SearchInput = styled.input`
   white-space: nowrap;
   outline: none;
   background: var(${UI.COLOR_GREY});
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   border: 1px solid var(${UI.COLOR_BORDER});
   appearance: none;
   font-size: 16px;
   border-radius: 12px;
 
   ::placeholder {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     opacity: 0.7;
   }
 
@@ -77,7 +77,7 @@ export const ActionButton = styled.button`
   margin: 0;
   font-size: 16px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 
   &:hover {
     opacity: 0.7;

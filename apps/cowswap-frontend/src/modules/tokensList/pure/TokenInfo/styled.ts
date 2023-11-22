@@ -13,5 +13,5 @@ export const Wrapper = styled.div`
 export const TokenName = styled.div`
   font-size: 12px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT2});
+  color: var(${UI.COLOR_SECONDARY_TEXT});
 `

@@ -24,7 +24,7 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 
   &:hover {
-    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+    outline: 1px solid ${({ theme }) => transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`)};
   }
 `
 export const ContextMenuList = styled(MenuList)`
@@ -49,7 +49,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   align-items: center;
   font-size: 15px;
   font-weight: 500;
-  color: ${({ theme, $red }) => ($red ? `var(${UI.COLOR_DANGER})` : theme.text1)};
+  color: ${({ theme, $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_PRIMARY_TEXT})`)};
 
   &:hover {
     background: ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -70,7 +70,7 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
   return (
     <Menu>
       <ContextMenuButton>
-        <MoreVertical color={transparentize(0.5, theme.text1)} />
+        <MoreVertical color={transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)} />
       </ContextMenuButton>
       <ContextMenuList>
         <ContextMenuItem onSelect={openReceipt}>

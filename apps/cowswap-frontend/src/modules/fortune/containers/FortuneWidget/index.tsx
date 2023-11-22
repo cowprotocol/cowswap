@@ -184,7 +184,7 @@ const FortuneTitle = styled.h2`
   font-size: 21px;
   text-align: center;
   font-weight: 700;
-  color: var(${UI.COLOR_TEXT2});
+  color: var(${UI.COLOR_SECONDARY_TEXT});
 
   > i {
     font-size: 16px;
@@ -206,7 +206,7 @@ const FortuneText = styled.h3`
   font-weight: 700;
   text-align: center;
   position: relative;
-  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : theme.text1)};
+  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   background: ${({ theme }) => theme.white};
 
   // small device
@@ -228,7 +228,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     font-size: 100px;
     position: absolute;
     z-index: 1;
@@ -244,7 +244,7 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 
 const StyledExternalLink = styled(ExternalLink)`
@@ -284,7 +284,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 

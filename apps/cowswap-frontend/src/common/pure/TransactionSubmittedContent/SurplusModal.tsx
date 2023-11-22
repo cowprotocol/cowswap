@@ -120,13 +120,13 @@ export const Wrapper = styled.div`
     width: 70%;
     margin: 34px auto;
     padding: 0;
-    color: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
   }
 `
 
 const StyledExternalLink = styled(ExternalLink)`
   border-radius: 24px;
-  background: ${({ theme }) => theme.bg2};
+  background: var(${UI.COLOR_PRIMARY});
   color: ${({ theme }) => theme.white};
   display: flex;
   padding: 1rem 2rem;

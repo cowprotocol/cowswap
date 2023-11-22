@@ -18,7 +18,7 @@ export const PageWrapper = styled(Widget)`
 export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
 
@@ -137,7 +137,7 @@ export const Content = styled.div`
 export const BackToTopStyle = css`
   #back-to-top {
     border: 1px solid transparent;
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
     font-size: 18px;
     font-weight: 600;

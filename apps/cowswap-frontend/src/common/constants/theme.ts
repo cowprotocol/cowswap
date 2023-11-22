@@ -2,9 +2,19 @@ export enum UI {
   // V3
   COLOR_PRIMARY = '--cow-color-primary',
   COLOR_SECONDARY = '--cow-color-secondary',
+
   COLOR_BACKGROUND = '--cow-color-background',
   COLOR_PAPER = '--cow-color-paper',
-  COLOR_TEXT = '--cow-color-text',
+  COLOR_PAPER_DARKER = '--cow-color-paper-darker',
+  COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
+
+  COLOR_PRIMARY_TEXT = '--cow-color-primary-text',
+  COLOR_PRIMARY_TEXT_OPACITY_70 = '--cow-color-primary-text-opacity-70',
+  COLOR_PRIMARY_TEXT_OPACITY_25 = '--cow-color-primary-text-opacity-25',
+  COLOR_PRIMARY_TEXT_OPACITY_10 = '--cow-color-primary-text-opacity-10',
+
+  COLOR_SECONDARY_TEXT = '--cow-color-secondary-text',
+  COLOR_DISABLED_TEXT = '--cow-color-disabled-text',
 
   COLOR_WARNING = '--cow-color-warning',
   COLOR_WARNING_BG = '--cow-color-warning-bg',

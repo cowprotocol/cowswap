@@ -12,7 +12,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.bg2};
+  background: var(${UI.COLOR_PRIMARY});
   color: ${({ theme }) => theme.white};
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
@@ -30,7 +30,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 
   &:disabled {
     background-color: var(${UI.COLOR_GREY});
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+    color: ${({ theme }) => transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
     background-image: none;
     border: 0;
     cursor: auto;

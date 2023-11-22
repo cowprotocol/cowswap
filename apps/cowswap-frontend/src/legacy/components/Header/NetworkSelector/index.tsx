@@ -20,7 +20,7 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   font-weight: 400;
 `
 
@@ -80,7 +80,7 @@ const SelectorLabel = styled.div`
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   display: flex;
   font-weight: 500;
   justify-content: space-between;
@@ -103,7 +103,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
   }
 
   ${({ isChainIdUnsupported, theme }) =>

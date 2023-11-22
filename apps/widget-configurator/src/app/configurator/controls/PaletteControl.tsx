@@ -66,7 +66,9 @@ export function PaletteControl({
 
       <Collapse in={expanded}>
         <FormControl sx={{ width: '100%', gap: '1.6rem' }}>
-          {otherColorKeys.map((colorKey) => renderColorInput(colorKey))}
+          {otherColorKeys.map((colorKey) => (
+            <React.Fragment key={colorKey}>{renderColorInput(colorKey)}</React.Fragment>
+          ))}
         </FormControl>
       </Collapse>
 

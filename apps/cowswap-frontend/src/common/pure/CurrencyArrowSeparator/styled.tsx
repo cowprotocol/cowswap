@@ -59,7 +59,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
 export const ArrowDownIcon = styled(ArrowDown)`
   display: block;
   margin: auto;
-  stroke: var(${UI.COLOR_TEXT1});
+  stroke: var(${UI.COLOR_PRIMARY_TEXT});
   stroke-width: 3px;
   padding: 0;
   height: 100%;

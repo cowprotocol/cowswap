@@ -148,7 +148,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -240,7 +240,7 @@ export const StepsIconWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 18px;
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 
   @keyframes spin {
@@ -298,7 +298,7 @@ export const StepsWrapper = styled.div`
     flex: 1 1 auto;
     height: 2px;
     border: 0;
-    background: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_PRIMARY_TEXT});
     margin: auto;
     position: absolute;
     width: 100%;
@@ -403,7 +403,7 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   font-size: 13px;
   background: ${({ theme, highlight }) =>
     highlight ? (theme.darkMode ? transparentize(0.8, theme.text3) : transparentize(0.9, theme.text3)) : theme.bg1};
-  border: 1px solid ${({ theme, highlight }) => (highlight ? 'none' : transparentize(0.8, theme.text1))};
+  border: 1px solid ${({ highlight }) => (highlight ? 'none' : transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`))};
   position: relative;
 
   &::before {
@@ -439,7 +439,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
   padding: 0;
   list-style: none;
   font-size: inherit;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
   gap: 6px;
   display: flex;
   flex-flow: column wrap;
@@ -477,7 +477,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       listIconAlert &&
       css`
         > path {
-          fill: ${({ theme }) => transparentize(0.6, theme.text1)};
+          fill: ${transparentize(0.6, `var(${UI.COLOR_PRIMARY_TEXT})`)};
         }
       `}
   }
@@ -502,7 +502,7 @@ export const ApproveFooter = styled.div`
     padding: 0;
     list-style: none;
     font-size: inherit;
-    color: ${({ theme }) => transparentize(0.2, theme.text1)};
+    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
     gap: 6px;
     display: flex;
     flex-flow: column wrap;

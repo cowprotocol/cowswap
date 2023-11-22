@@ -46,7 +46,7 @@ const SuccessIcon = styled(CheckCircle)`
 `
 
 const AlertIcon = styled(AlertCircle)`
-  color: ${({ theme }) => theme.red1};
+  color: ${({ theme }) => theme.danger};
 `
 
 const DEFAULT_DURATION = ms`6s`

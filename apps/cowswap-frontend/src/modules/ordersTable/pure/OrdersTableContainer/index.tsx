@@ -70,7 +70,7 @@ const Content = styled.div`
 
     > svg {
       padding: 28px;
-      fill: ${({ theme }) => transparentize(0.3, theme.text1)};
+      fill: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
     }
   }
 
@@ -88,7 +88,7 @@ const Content = styled.div`
     margin: 0 auto 21px;
     font-weight: 400;
     text-align: center;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
   }
 `
 

@@ -87,11 +87,11 @@ export function SurplusCard() {
       text-align: center;
       justify-content: center;
       align-items: center;
-      color: ${({ theme }) => transparentize(0.3, theme.text1)};
+      color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
     }
 
     ${InfoCard} > div > span > p {
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
     }
 
     ${InfoCard} > div > span > b {
@@ -112,7 +112,7 @@ export function SurplusCard() {
       font-size: 15px;
       font-weight: 500;
       line-height: 1.1;
-      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      color: ${({ theme }) => transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)};
       margin: 3px auto 0;
     }
 

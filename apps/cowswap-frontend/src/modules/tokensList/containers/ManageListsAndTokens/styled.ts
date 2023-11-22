@@ -34,14 +34,14 @@ export const InputError = styled.div`
 export const Tab = styled.button<{ active$: boolean }>`
   ${blankButtonMixin};
 
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
   padding: 10px;
   font-size: 16px;
   font-weight: 600;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
   }
 `
 
@@ -58,16 +58,16 @@ export const PrimaryInput = styled.input`
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   outline: none;
 
   ::placeholder {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
 
   &:focus {
     ::placeholder {
-      color: ${({ theme }) => transparentize(0.7, theme.text1)};
+      color: ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
     }
   }
 `

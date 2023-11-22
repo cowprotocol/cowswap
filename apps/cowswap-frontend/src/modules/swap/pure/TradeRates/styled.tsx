@@ -16,7 +16,7 @@ export const Row = styled.div`
   justify-content: space-between;
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   min-height: 24px;
   gap: 3px;
 
@@ -30,11 +30,11 @@ export const Row = styled.div`
     }
 
     &:first-child > span {
-      color: ${({ theme }) => transparentize(0.2, theme.text1)};
+      color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
       transition: color 0.15s ease-in-out;
 
       &:hover {
-        color: var(${UI.COLOR_TEXT1});
+        color: var(${UI.COLOR_PRIMARY_TEXT});
       }
     }
 
@@ -65,13 +65,13 @@ export const Discount = styled.span`
   cursor: pointer;
   padding: 2px 8px;
   background: var(${UI.COLOR_GREY});
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   border-radius: 5px;
   font-weight: 400;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
   }
 `

@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 `
 
 export const LabelText = styled.span`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   transition: color 0.15s ease-in-out;
 `
 
@@ -21,7 +21,7 @@ export const StyledSVG = styled(SVG)`
   height: var(--size);
 
   > path {
-    fill: var(${UI.COLOR_TEXT1});
+    fill: var(${UI.COLOR_PRIMARY_TEXT});
     transition: fill 0.15s ease-in-out;
   }
 
@@ -45,7 +45,7 @@ export const StyledMenuButton = styled(MenuButton)`
   border-radius: 8px;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
 
     > ${LabelText}, > ${StyledSVG} > path {
       fill: ${({ theme }) => theme.white};
@@ -69,7 +69,7 @@ export const StyledMenuList = styled(MenuList)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 6px 12px;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   font-size: 13px;
   cursor: pointer;
   border-radius: 8px;
@@ -77,7 +77,7 @@ export const StyledMenuItem = styled(MenuItem)`
   transition: background 0.1s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
   }
 `

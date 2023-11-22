@@ -72,18 +72,18 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 
 export const CancelButton = styled(ButtonSecondary)`
   background: transparent;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   border: 1px solid ${({ theme }) => theme.text1};
 
   :hover {
     background: transparent;
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     border: 1px solid ${({ theme }) => theme.text1};
   }
 `

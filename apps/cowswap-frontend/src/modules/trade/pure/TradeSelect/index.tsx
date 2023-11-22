@@ -46,16 +46,16 @@ const StyledMenuButton = styled(MenuButton)`
   cursor: pointer;
   width: 100%;
   justify-content: space-between;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 
 const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
   font-size: 14px;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
 
   &:not(:last-child) {

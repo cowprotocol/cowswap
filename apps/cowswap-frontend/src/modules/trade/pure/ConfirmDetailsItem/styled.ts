@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
 
   > svg:first-child {
     margin: 0 4px 0 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     opacity: 0.5;
   }
 

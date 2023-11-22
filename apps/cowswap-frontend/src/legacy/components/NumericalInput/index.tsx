@@ -8,7 +8,7 @@ import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
-  color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
+  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   width: 0;
   position: relative;
   font-weight: 500;

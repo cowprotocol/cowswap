@@ -12,7 +12,7 @@ const Container = styled.header`
   padding: 0 0 16px;
   margin: 0 0 24px;
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 
 const Title = styled.b`
@@ -32,7 +32,7 @@ const Close = styled(CloseIcon)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 

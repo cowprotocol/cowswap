@@ -140,7 +140,7 @@ export const Spinner = styled.img`
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
 `
 export function BackArrow({ to }: { to: string }) {
   return (
@@ -177,5 +177,5 @@ export const SmallOnly = styled.span`
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `

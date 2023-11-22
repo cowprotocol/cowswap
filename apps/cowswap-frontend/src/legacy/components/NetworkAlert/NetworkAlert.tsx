@@ -76,8 +76,8 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
   ${BodyText},
   ${StyledArrowUpRight} {
-    color: var(${UI.COLOR_TEXT2});
-    stroke: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
+    stroke: var(${UI.COLOR_SECONDARY_TEXT});
     text-decoration: none;
     transition: transform 0.2s ease-in-out, stroke 0.2s ease-in-out, color 0.2s ease-in-out;
   }
@@ -87,8 +87,8 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
     ${BodyText},
     ${StyledArrowUpRight} {
-      color: var(${UI.COLOR_TEXT1});
-      stroke: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
+      stroke: var(${UI.COLOR_PRIMARY_TEXT});
       transform: rotate(0);
     }
 

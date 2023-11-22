@@ -1,7 +1,6 @@
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
@@ -23,16 +22,16 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   }
 
   ${TextWrapper} {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
 
     &:first-child {
-      color: ${({ theme }) => transparentize(0.2, theme.text1)};
+      color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
       font-weight: 400;
 
       &:hover {
-        color: var(${UI.COLOR_TEXT1});
+        color: var(${UI.COLOR_PRIMARY_TEXT});
       }
     }
 
@@ -47,6 +46,6 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
 
   ${StyledMouseoverTooltipContent} {
     background-color: ${({ theme }) => theme.bg3};
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `

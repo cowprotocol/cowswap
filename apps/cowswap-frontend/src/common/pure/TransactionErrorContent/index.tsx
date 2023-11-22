@@ -6,6 +6,8 @@ import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
 
+import { UI } from 'common/constants/theme'
+
 const Wrapper = styled.div`
   width: 100%;
   padding: 15px;
@@ -26,14 +28,14 @@ const Body = styled.div`
 `
 
 const Text = styled.div`
-  color: ${({ theme }) => theme.red1};
+  color: ${`var(${UI.COLOR_DANGER})`};
   font-weight: 500;
   font-size: 16px;
 `
 
 const AlertIcon = styled(AlertTriangle)`
-  color: ${({ theme }) => theme.red1};
-  strokewidth: 1.5;
+  color: ${`var(${UI.COLOR_DANGER})`};
+  stroke-width: 1.5;
   margin-bottom: 15px;
 `
 

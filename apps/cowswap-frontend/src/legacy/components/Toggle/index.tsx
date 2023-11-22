@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { darken, transparentize } from 'polished'
+import { darken } from 'polished'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
 
@@ -67,14 +67,14 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 
   ${ToggleElement} {
-    color: ${({ theme, isActive }) => (isActive ? theme.white : transparentize(0.4, theme.text1))};
+    color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`)};
     border: none;
     transition: background 0.2s ease-in-out;
-    background: ${({ theme, isActive }) => (isActive ? theme.white : transparentize(0.4, theme.text1))};
+    background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`)};
 
     &:hover {
-      color: ${({ theme, isActive }) => (isActive ? theme.white : theme.text1)};
-      background: ${({ theme, isActive }) => (isActive ? theme.white : theme.text1)};
+      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
     }
   }
 

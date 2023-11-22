@@ -49,7 +49,7 @@ enum DeadlineError {
 }
 
 export const FancyButton = styled.button`
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   align-items: center;
   height: 2rem;
   border-radius: 36px;
@@ -60,7 +60,7 @@ export const FancyButton = styled.button`
   border: 0; // mod
   outline: none;
   /* background: var(${UI.COLOR_PAPER}); */
-  background: ${({ theme }) => theme.bg2}; // mod
+  background: var(${UI.COLOR_PRIMARY}); // mod
   :hover {
     /* border: 1px solid ${({ theme }) => theme.bg4}; */
   }
@@ -79,10 +79,8 @@ const Option = styled(FancyButton)<{ active: boolean }>`
     border: none;
     pointer-events: none;
   }
-  /* background-color: ${({ active, theme }) => active && theme.primary1}; */
-  background-color: ${({ active, theme }) => (active ? theme.bg2 : theme.grey1)}; // MOD
-  /* color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; */
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; // MOD
+  background-color: ${({ active, theme }) => (active ? `var(${UI.COLOR_PRIMARY})` : theme.grey1)}; // MOD
+  color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY_TEXT})` : `var(${UI.COLOR_PRIMARY_TEXT})`)}; // MOD
 `
 
 export const Input = styled.input`
@@ -94,7 +92,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : theme.text1)};
+  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   text-align: right;
 `
 

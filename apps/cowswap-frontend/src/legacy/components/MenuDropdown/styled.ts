@@ -109,7 +109,7 @@ export const MenuSection = styled.div`
     font-weight: 500;
     margin: 0;
     padding: 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
     opacity: 0.8;
     transition: opacity 0.15s ease-in-out;
 
@@ -120,11 +120,11 @@ export const MenuSection = styled.div`
       max-height: 21px;
       margin: 0 7px 0 0;
       object-fit: contain;
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
     }
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_PRIMARY_TEXT});
     }
 
     &:hover {

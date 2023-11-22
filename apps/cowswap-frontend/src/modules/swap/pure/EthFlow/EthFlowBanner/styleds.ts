@@ -38,16 +38,16 @@ export const ClosedBannerWrapper = styled.div`
     cursor: pointer;
 
     > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 
   > svg:last-child {
-    stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+    stroke: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
   }
 
   &:hover > svg:last-child {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_PRIMARY_TEXT});
   }
 `
 
@@ -66,7 +66,7 @@ export const BannerInnerWrapper = styled.div`
 
   > p,
   ul {
-    color: ${({ theme }) => transparentize(0.15, theme.text1)};
+    color: ${({ theme }) => transparentize(0.15, `var(${UI.COLOR_PRIMARY_TEXT})`)};
     line-height: 1.5;
   }
 

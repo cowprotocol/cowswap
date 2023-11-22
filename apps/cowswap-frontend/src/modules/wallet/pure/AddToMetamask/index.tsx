@@ -7,6 +7,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
+import { UI } from 'common/constants/theme'
+
 export const ButtonCustom = styled.button`
   display: flex;
   flex: 1 1 auto;
@@ -16,7 +18,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: var(--cow-color-text1);
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
   background: transparent;
   outline: 0;
   padding: 8px 16px;

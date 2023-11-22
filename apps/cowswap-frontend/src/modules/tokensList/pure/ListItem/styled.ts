@@ -21,10 +21,10 @@ export const SettingsButton = styled(MenuButton)`
   ${blankButtonMixin}
 
   > svg {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
 
     &:hover {
-      color: var(${UI.COLOR_TEXT2});
+      color: var(${UI.COLOR_SECONDARY_TEXT});
     }
   }
 `

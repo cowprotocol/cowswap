@@ -22,13 +22,18 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  background: ${({ theme }) => theme.bg2};
+  background: ${({ theme }) => theme.primary};
   font-size: 18px;
   font-weight: 600;
   border: none;
   box-shadow: none;
   border-radius: 16px;
-  color: ${({ theme }) => theme.white};
+  /* color: ${({ theme }) => theme.primaryText}; */
+  color: ${({ theme }) =>
+    theme.darkMode
+      ? `color-mix(in srgb, ${theme.primaryText}, #fff 40%)`
+      : `color-mix(in srgb, ${theme.primaryText}, #fff 5%)`};
+
   position: relative;
   min-height: 58px;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -176,14 +181,14 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
-  background: ${({ theme }) => theme.red1};
+  background: ${({ theme }) => theme.danger};
   color: var(--cow-container-bg-01);
   transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
-    background: ${({ theme }) => theme.red1};
+    background: ${({ theme }) => theme.danger};
     color: var(--cow-container-bg-01);
   }
 

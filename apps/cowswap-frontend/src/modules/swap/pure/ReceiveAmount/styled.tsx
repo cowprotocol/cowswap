@@ -12,7 +12,7 @@ export const ReceiveAmountBox = styled.div`
   font-size: 14px;
   font-weight: 600;
   background: var(${UI.COLOR_PAPER});
-  border: 2px solid ${({ theme }) => theme.grey1};
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;

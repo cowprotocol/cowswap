@@ -50,8 +50,8 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   }
 
   &:hover > td {
-    color: var(${UI.COLOR_TEXT1});
-    background: ${({ theme }) => transparentize(0.9, theme.text1)};
+    color: var(${UI.COLOR_PRIMARY_TEXT});
+    background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
   }
 
   > th {
@@ -61,7 +61,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
-    color: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
     transition: background 0.3s ease-in-out;
   }
 

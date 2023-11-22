@@ -12,7 +12,7 @@ import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   padding: 6px 12px;
   border: 2px solid transparent;
   font-weight: 500;
@@ -36,7 +36,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   `};
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
   }
 
   ${({ theme, isLoading }) =>

@@ -21,7 +21,7 @@ const ArrowRight = styled(SVG)`
   margin: auto;
 
   > path {
-    fill: var(${UI.COLOR_TEXT2});
+    fill: var(${UI.COLOR_SECONDARY_TEXT});
   }
 `
 

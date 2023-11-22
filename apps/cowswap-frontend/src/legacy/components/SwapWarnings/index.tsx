@@ -54,7 +54,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
       : LOW_TIER_FEE
       ? theme.alert
       : theme.info};
-  color: var(${UI.COLOR_TEXT1});
+  color: var(${UI.COLOR_PRIMARY_TEXT});
   padding: ${({ padding = '16px' }) => padding};
   width: ${({ width = '100%' }) => width};
   border-radius: 16px;

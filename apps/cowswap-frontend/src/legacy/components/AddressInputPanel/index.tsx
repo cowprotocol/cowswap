@@ -45,14 +45,14 @@ const Input = styled.input<{ error?: boolean }>`
   flex: 1 1 auto;
   background: none;
   transition: color 300ms ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
+  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
 
   &&::placeholder {
-    color: var(${UI.COLOR_TEXT2});
+    color: var(${UI.COLOR_SECONDARY_TEXT});
   }
 
   &:focus::placeholder {

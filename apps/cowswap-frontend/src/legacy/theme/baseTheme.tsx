@@ -25,7 +25,11 @@ export function colors(darkMode: boolean): Colors {
     secondary: darkMode ? '#0d5ed9' : '#052B65',
     background: darkMode ? '#07162D' : '#ECF1F8',
     paper: darkMode ? '#07162D' : '#ECF1F8',
-    text: darkMode ? '#CAE9FF' : '#052B65',
+
+    primaryText: darkMode ? '#CAE9FF' : '#052B65',
+    secondaryText: darkMode ? '#86B2DC' : '#506B93',
+    disabledText: darkMode ? '#86B2DC' : '#506B93',
+
     error: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#ED6237' : '#D94719',
     info: darkMode ? '#428dff' : '#0d5ed9',
@@ -173,10 +177,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     textShadow1: `
       ${
         darkMode
-          ? `0px 0px 26px ${transparentize(0.9, colorsTheme.text1)}, 0px 0px 28px ${transparentize(
-              0.8,
-              colorsTheme.text1
-            )}`
+          ? `0px 0px 26px ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`}`
           : 'none'
       }
     `,
@@ -195,7 +196,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       bg1: darkMode
         ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
         : '#052B65',
-      text1: darkMode ? colorsTheme.text1 : '#FFFFFF',
+      text1: darkMode ? `var(${UI.COLOR_PRIMARY_TEXT})` : '#FFFFFF',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
@@ -283,8 +284,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       border: 'none',
       menuFlyout: {
         background: 'transparent',
-        color: darkMode ? colorsTheme.text1 : colorsTheme.text2,
-        colorHover: darkMode ? colorsTheme.text1 : colorsTheme.text2,
+        color: darkMode ? `var(${UI.COLOR_PRIMARY_TEXT})` : colorsTheme.text2,
+        colorHover: darkMode ? `var(${UI.COLOR_PRIMARY_TEXT})` : colorsTheme.text2,
         colorHoverBg: darkMode ? colorsTheme.black : colorsTheme.disabled,
         closeButtonBg: darkMode ? colorsTheme.white : colorsTheme.disabled,
         closeButtonColor: colorsTheme.black,
@@ -319,7 +320,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     buttonOutlined: {
       background: css`
         background: ${colorsTheme.bg1};
-        color: ${colorsTheme.text1};
+        color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
@@ -334,26 +335,26 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     currencyInput: {
       background: `${darkMode ? colorsTheme.blueShade : colorsTheme.white}`,
-      color: colorsTheme.text1,
+      color: `var(${UI.COLOR_PRIMARY_TEXT})`,
       border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`,
     },
     buttonCurrencySelect: {
       background: colorsTheme.bg1,
       border: `0`,
       boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.06);`,
-      color: colorsTheme.text1,
-      colorSelected: colorsTheme.text1,
+      color: `var(${UI.COLOR_PRIMARY_TEXT})`,
+      colorSelected: `var(${UI.COLOR_PRIMARY_TEXT})`,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    footerColor: darkMode ? colorsTheme.text1 : colorsTheme.greenShade,
+    footerColor: darkMode ? `var(${UI.COLOR_PRIMARY_TEXT})` : colorsTheme.greenShade,
     networkCard: {
       background: 'rgb(255 120 74 / 60%)',
       text: colorsTheme.black,
     },
     wallet: {
-      color: colorsTheme.text1,
+      color: `var(${UI.COLOR_PRIMARY_TEXT})`,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
@@ -404,9 +405,21 @@ export const UniThemedGlobalStyle = css`
     // V3
     ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
     ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.secondary};
+
     ${UI.COLOR_BACKGROUND}: ${({ theme }) => theme.background};
     ${UI.COLOR_PAPER}: ${({ theme }) => theme.paper};
-    ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) =>
+      theme.darkMode ? `color-mix(in srgb, ${theme.paper}, #000 40%)` : `color-mix(in srgb, ${theme.paper}, #000 5%)`};
+    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => `color-mix(in srgb, ${theme.paper}, #000000 15%)`};
+
+    ${UI.COLOR_PRIMARY_TEXT}: ${({ theme }) => theme.primaryText};
+    ${UI.COLOR_PRIMARY_TEXT_OPACITY_70}: ${({ theme }) => transparentize(0.3, theme.primaryText)};
+    ${UI.COLOR_PRIMARY_TEXT_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.primaryText)};
+    ${UI.COLOR_PRIMARY_TEXT_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.primaryText)};
+
+    ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) => theme.secondaryText};
+    ${UI.COLOR_DISABLED_TEXT}: ${({ theme }) => theme.disabledText};
+
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_TEXT}: ${({ theme }) => theme.warningText};
@@ -436,10 +449,9 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
 
     // Base
-
     ${UI.COLOR_BORDER}: var(${UI.COLOR_GREY});
     ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
-    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT1});
+    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_PRIMARY_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
     ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
@@ -449,7 +461,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.ICON_SIZE_NORMAL}: 20px;
     ${UI.ICON_SIZE_SMALL}: 16px;
     ${UI.ICON_SIZE_XSMALL}: 14px;
-    ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
+    ${UI.ICON_COLOR_NORMAL}: ${({ theme }) => theme.primaryText};
 
     // [STATE] Information (light blue)
     ${UI.COLOR_INFO}: var(${UI.COLOR_LIGHT_BLUE});
@@ -479,11 +491,11 @@ export const UniThemedGlobalStyle = css`
       theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger)};
 
     // Text
-    ${UI.COLOR_TEXT1}: ${({ theme }) => theme.text1};
-    ${UI.COLOR_TEXT1_INACTIVE}: ${({ theme }) => transparentize(0.4, theme.text1)};
-    ${UI.COLOR_TEXT1_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.text1)};
-    ${UI.COLOR_TEXT1_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text1)};
-    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(0.3, theme.text1)};
+    ${UI.COLOR_TEXT1}: ${UI.COLOR_PRIMARY_TEXT};
+    ${UI.COLOR_TEXT1_INACTIVE}: ${({ theme }) => transparentize(0.4, theme.primaryText)};
+    ${UI.COLOR_TEXT1_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.primaryText)};
+    ${UI.COLOR_TEXT1_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.primaryText)};
+    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(0.3, theme.primaryText)};
     ${UI.COLOR_LINK}: ${({ theme }) => theme.text3};
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text3)};
 
@@ -501,7 +513,7 @@ export const UniThemedGlobalStyle = css`
   }
 
   html {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_PRIMARY_TEXT});
   }
   body {
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};

@@ -29,13 +29,13 @@ const Wrapper = styled.div`
 
     > div > input::placeholder {
       opacity: 0.5;
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 
   ${RowFixed} {
     > div {
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
       opacity: 0.85;
     }
 
@@ -51,7 +51,7 @@ const Wrapper = styled.div`
     > button > input::placeholder {
       background: transparent;
       opacity: 0.5;
-      color: var(${UI.COLOR_TEXT1});
+      color: var(${UI.COLOR_PRIMARY_TEXT});
     }
   }
 `
