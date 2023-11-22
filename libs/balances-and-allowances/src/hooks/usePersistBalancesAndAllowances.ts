@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect, useMemo } from 'react'
 
+import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -9,7 +10,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
-import { erc20Interface } from '../const'
 import { AllowancesState, allowancesState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
@@ -37,7 +37,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
     tokenAddresses,
-    erc20Interface,
+    ERC_20_INTERFACE,
     'balanceOf',
     balanceOfParams,
     MULTICALL_OPTIONS,
@@ -46,7 +46,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
     tokenAddresses,
-    erc20Interface,
+    ERC_20_INTERFACE,
     'allowance',
     allowanceParams,
     MULTICALL_OPTIONS,
