@@ -16,6 +16,11 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   interfaceFeeBips: 'Fill the form above if you are interested',
 }
 
+export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
+  tradeType: 'TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED',
+  enabledTradeTypes: 'TradeType.SWAP, TradeType.LIMIT and/or TradeType.ADVANCED',
+}
+
 export const VALUES_BY_PARAM_NAME: Record<string, string> = {
   provider: 'window.ethereum',
 }
@@ -27,3 +32,5 @@ export const SANITIZE_PARAMS = {
 }
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['env']
+
+export const IMPORT_STATEMENT = `import { CowSwapWidget, CowSwapWidgetParams, TradeType }`
