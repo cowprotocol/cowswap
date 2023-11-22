@@ -1,12 +1,10 @@
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20, ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { useWeb3React } from '@web3-react/core'
 
 import useSWR, { SWRResponse } from 'swr'
-
-import { erc20Interface } from '../const'
 
 export function useTokenBalanceForAccount(
   token: TokenWithLogo | undefined,
@@ -17,7 +15,7 @@ export function useTokenBalanceForAccount(
   return useSWR<BigNumber | undefined>(['useTokenBalanceForAccount', token, account], async () => {
     if (!provider || !account || !token) return undefined
 
-    const tokenContract = new Contract(token.address, erc20Interface, provider) as Erc20
+    const tokenContract = new Contract(token.address, ERC_20_INTERFACE, provider) as Erc20
 
     return tokenContract.balanceOf(account)
   })

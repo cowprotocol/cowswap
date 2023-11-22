@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { GP_VAULT_RELAYER, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
@@ -9,7 +10,6 @@ import type { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
 
-import { erc20Interface } from '../const'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { AllowancesState, allowancesState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
@@ -38,7 +38,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
   const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
     tokenAddresses,
-    erc20Interface,
+    ERC_20_INTERFACE,
     'balanceOf',
     balanceOfParams,
     MULTICALL_OPTIONS,
@@ -47,7 +47,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
     tokenAddresses,
-    erc20Interface,
+    ERC_20_INTERFACE,
     'allowance',
     allowanceParams,
     MULTICALL_OPTIONS,
