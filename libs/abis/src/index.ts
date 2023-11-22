@@ -42,6 +42,9 @@ import _UniswapInterfaceMulticallAbi from './abis-legacy/UniswapInterfaceMultica
 
 import _Multicall3Abi from './abis/Multicall3.json'
 
+import { Interface } from '@ethersproject/abi'
+import type { Erc20Interface } from './generated/legacy/Erc20'
+
 export const GPv2SettlementAbi = _GPv2SettlementAbi
 export const ComposableCoWAbi = _ComposableCoWAbi
 export const vCowAbi = _vCowAbi
@@ -79,6 +82,7 @@ export const EnsPublicResolverAbi = _EnsPublicResolverAbi
 export const EnsAbi = _EnsAbi
 export const Erc1155Abi = _Erc1155Abi
 export const Erc20Abi = _Erc20Abi
+export const ERC_20_INTERFACE = new Interface(Erc20Abi) as Erc20Interface
 export const Erc20Bytes32Abi = _Erc20Bytes32Abi
 export const Erc721Abi = _Erc721Abi
 export const WethAbi = _WethAbi
