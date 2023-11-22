@@ -1,10 +1,7 @@
 import { atom } from 'jotai'
 
-import type { BigNumber } from '@ethersproject/bignumber'
+import { Erc20MulticallState } from '../types'
 
-export interface BalancesState {
-  isLoading: boolean
-  values: { [address: string]: BigNumber | undefined }
-}
+export interface BalancesState extends Erc20MulticallState {}
 
 export const balancesAtom = atom<BalancesState>({ isLoading: false, values: {} })

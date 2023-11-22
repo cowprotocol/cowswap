@@ -59,7 +59,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading }))
   }, [setBalances, isBalancesLoading])
 
-  // Set allwoances loading state
+  // Set allowances loading state
   useEffect(() => {
     setAllowances((state) => ({ ...state, isLoading: isAllowancesLoading }))
   }, [setAllowances, isAllowancesLoading])
