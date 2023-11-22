@@ -38,8 +38,8 @@ import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
 const DEFAULT_STATE = {
-  sellToken: 'COW',
-  buyToken: 'USDC',
+  sellToken: 'USDC',
+  buyToken: 'COW',
   sellAmount: 100000,
   buyAmount: 0,
 }
