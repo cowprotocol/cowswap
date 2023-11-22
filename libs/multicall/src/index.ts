@@ -1,4 +1,5 @@
 export { useSingleContractMultipleData } from './hooks/useSingleContractMultipleData'
 export { useMultipleContractSingleData } from './hooks/useMultipleContractSingleData'
 export { getMulticallContract } from './utils/getMulticallContract'
-export { multicall } from './multicall'
+export { multiCall } from './multiCall'
+export type { MultiCallOptions } from './multiCall'

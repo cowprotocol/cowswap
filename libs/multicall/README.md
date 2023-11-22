@@ -75,10 +75,10 @@ const results = useSingleContractMultipleData<[BigNumber]>(
   ACCOUNTS
 )
 
-const balancesPerAddess = results.reduce((acc, balance, i) => {
+const balancesPerAddress = results.reduce((acc, balance, i) => {
   acc[ACCOUNTS[i]] = balance
   return acc
 }, {})
 
-console.log(balancesPerAddess)
+console.log(balancesPerAddress)
 ```

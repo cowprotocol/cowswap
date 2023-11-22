@@ -6,13 +6,13 @@ import { useWeb3React } from '@web3-react/core'
 
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
-import { multicall, MulticallOptions } from '../multicall'
+import { multiCall, MultiCallOptions } from '../multiCall'
 
-export function useSingleContractMultipleData<T = Result>(
+export function useSingleContractMultipleData<T = Result, P = unknown>(
   contract: BaseContract | undefined,
   methodName: string,
-  params: unknown[][] | undefined,
-  options: MulticallOptions = {},
+  params: P[] | undefined,
+  options: MultiCallOptions = {},
   swrConfig?: SWRConfiguration
 ): SWRResponse<(T | undefined)[] | null> {
   const { provider } = useWeb3React()
@@ -23,7 +23,7 @@ export function useSingleContractMultipleData<T = Result>(
     return params.map((param) => {
       return {
         target: contract.address,
-        callData: contract.interface.encodeFunctionData(methodName, param),
+        callData: contract.interface.encodeFunctionData(methodName, param as unknown[]),
       }
     })
   }, [contract, methodName, params])
@@ -33,7 +33,7 @@ export function useSingleContractMultipleData<T = Result>(
     async () => {
       if (!contract || !calls || calls.length === 0 || !provider) return null
 
-      return multicall(provider, calls, options).then((results) => {
+      return multiCall(provider, calls, options).then((results) => {
         return results.map((result) => {
           try {
             return contract.interface.decodeFunctionResult(methodName, result.returnData) as T
