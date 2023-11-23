@@ -477,7 +477,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       listIconAlert &&
       css`
         > path {
-          fill: ${transparentize(0.6, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+          fill: ${transparentize(0.6, theme.primaryText)};
         }
       `}
   }

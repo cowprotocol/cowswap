@@ -31,7 +31,7 @@ export const InfoPopup = styled.div`
     height: 100%;
 
     > path {
-      fill: ${({ theme }) => transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      fill: ${({ theme }) => transparentize(0.5, theme.primaryText)};
     }
   }
 

@@ -502,7 +502,7 @@ export const ClaimTable = styled.div`
     `};
 
     > span {
-      color: ${({ theme }) => transparentize(0.1, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      color: ${({ theme }) => transparentize(0.1, theme.primaryText)};
       font-weight: 300;
     }
 
@@ -1410,7 +1410,7 @@ export const InvestSummary = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 18px;
-    color: ${({ theme }) => transparentize(0.1, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.1, theme.primaryText)};
     gap: 4px;
   }
 

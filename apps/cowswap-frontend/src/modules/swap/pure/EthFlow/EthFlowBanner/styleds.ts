@@ -66,7 +66,7 @@ export const BannerInnerWrapper = styled.div`
 
   > p,
   ul {
-    color: ${({ theme }) => transparentize(0.15, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.15, theme.primaryText)};
     line-height: 1.5;
   }
 

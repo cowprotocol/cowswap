@@ -13,8 +13,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   gap: 6px;
   border: ${({ theme }) => (theme.darkMode ? `1px solid ${transparentize(0.5, theme.grey1)}` : 0)};
   outline: none;
-  background-color: ${({ theme, $stubbed }) =>
-    $stubbed ? lighten(0.1, `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER})`};
+  background-color: ${({ $stubbed, theme }) => ($stubbed ? lighten(0.1, theme.primary) : `var(${UI.COLOR_PAPER})`)};
   color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_PRIMARY_TEXT})` : `var(${UI.COLOR_PRIMARY_TEXT})`)};
   box-shadow: ${({ theme }) =>
     theme.darkMode
@@ -30,7 +29,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   &:hover {
     // TODO: Check what 'readonlyMode' does and proper style it.
     background-color: ${({ readonlyMode, $stubbed, theme }) =>
-      readonlyMode ? 'red' : $stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1)};
+      readonlyMode ? theme.danger : $stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.paper)};
   }
 `
 

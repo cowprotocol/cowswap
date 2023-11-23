@@ -65,7 +65,7 @@ export const ArrowsWrapper = styled.div`
   }
 
   > span > span > svg > path {
-    fill: ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    fill: ${({ theme }) => transparentize(0.7, theme.primaryText)};
     transition: fill 0.2s linear;
   }
 

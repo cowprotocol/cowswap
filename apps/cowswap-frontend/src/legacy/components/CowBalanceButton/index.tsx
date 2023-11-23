@@ -36,7 +36,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   `};
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.primaryText)};
   }
 
   ${({ theme, isLoading }) =>

@@ -23,7 +23,7 @@ import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 const GroupBox = styled.div``
 
 const Pagination = styled(OrdersTablePagination)`
-  background: ${({ theme }) => transparentize(0.91, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  background: ${({ theme }) => transparentize(0.91, theme.primaryText)};
   margin: 0;
   padding: 10px 0;
 `

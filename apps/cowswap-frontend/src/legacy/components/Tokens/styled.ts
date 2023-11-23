@@ -45,7 +45,7 @@ export const Label = styled.div<{ end?: number }>`
   font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  color: ${({ theme }) => transparentize(0.1, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${({ theme }) => transparentize(0.1, theme.primaryText)};
   align-items: center;
   font-variant-numeric: tabular-nums;
   word-break: break-all;

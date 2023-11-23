@@ -26,7 +26,8 @@ const Tabs = styled.div`
 const TabButton = styled(Link)<{ active: string }>`
   display: inline-block;
   background: ${({ theme, active }) => (active === 'true' ? transparentize(0.88, theme.text3) : 'transparent')};
-  color: ${({ theme, active }) => (active === 'true' ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, `var(${UI.COLOR_PRIMARY_TEXT})`)
+  color: ${({ theme, active }) =>
+    active === 'true' ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.primaryText)};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
   font-size: 13px;

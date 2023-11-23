@@ -1,7 +1,8 @@
-import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+
+import { UI } from 'common/constants/theme'
 
 import { NumericalInput } from '../TradeNumberInput/styled'
 
@@ -63,17 +64,17 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     gap: 0;
   `};
 
-${({ hasPrefix }) =>
-  hasPrefix &&
-  css`
-    display: grid;
-    grid-template-columns: max-content auto;
+  ${({ hasPrefix }) =>
+    hasPrefix &&
+    css`
+      display: grid;
+      grid-template-columns: max-content auto;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       display: flex;
       flex-flow: column wrap;
     `};
-  `}
+    `}
 
   ${TradeWidgetFieldLabel} {
     padding: ${({ hasPrefix }) => (hasPrefix ? '10px 16px' : 'initial')};
@@ -86,8 +87,8 @@ ${({ hasPrefix }) =>
     ${NumericalInput} {
       max-width: 200px;
       appearance: textfield;
-    };
-    
+    }
+
     ${({ hasPrefix }) =>
       hasPrefix &&
       css`
@@ -137,5 +138,6 @@ ${({ hasPrefix }) =>
             width: 56px;
           }
         `}
+    }
   }
 `

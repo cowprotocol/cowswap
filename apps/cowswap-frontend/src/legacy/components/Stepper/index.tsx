@@ -69,7 +69,7 @@ export const Step = styled.div<{
     font-size: 100%;
     position: relative;
     color: ${({ isActiveStep, completedStep, theme }) =>
-      completedStep ? theme.black : isActiveStep ? theme.black : transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      completedStep ? theme.black : isActiveStep ? theme.black : transparentize(0.4, theme.primaryText)};
     background: ${({ isActiveStep, completedStep, theme, circleSize }) =>
       completedStep
         ? `url(${CheckCircle}) no-repeat center/${circleSize ? `${circleSize}px` : 'var(--circleSize)'}`
@@ -90,7 +90,7 @@ export const Step = styled.div<{
         ? `var(${UI.COLOR_TEXT1})`
         : isActiveStep
         ? `var(${UI.COLOR_TEXT1})`
-        : transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+        : transparentize(0.4, theme.primaryText)};
     font-weight: ${({ isActiveStep, completedStep }) => (completedStep ? '300' : isActiveStep ? 'bold' : '300')};
     text-align: center;
 
@@ -106,7 +106,7 @@ export const Step = styled.div<{
         ? transparentize(0.2, `var(${UI.COLOR_PRIMARY_TEXT})`)
         : isActiveStep
         ? transparentize(0.2, `var(${UI.COLOR_PRIMARY_TEXT})`)
-        : transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+        : transparentize(0.4, theme.primaryText)};
     font-size: 12px;
     margin: 6px 0 0;
     padding: 0 24px;

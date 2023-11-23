@@ -112,7 +112,7 @@ export const CustomInput = styled.input`
   font-size: 21px;
   border-radius: 8px;
   width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  border: 1px solid ${({ theme }) => transparentize(0.7, theme.primaryText)};
   color: var(${UI.COLOR_PRIMARY_TEXT});
   padding: 4px 8px;
   outline: 0;
@@ -127,7 +127,7 @@ export const CustomInput = styled.input`
   }
 
   &::-webkit-datetime-edit[disabled] {
-    color: ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.7, theme.primaryText)};
   }
 `
 

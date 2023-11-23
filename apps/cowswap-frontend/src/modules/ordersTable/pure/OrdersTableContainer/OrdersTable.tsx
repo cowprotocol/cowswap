@@ -179,7 +179,7 @@ const OrdersExplainerBanner = styled.div`
     gap: 12px;
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      fill: ${({ theme }) => transparentize(0.5, theme.primaryText)};
     }
 
     > b {

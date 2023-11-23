@@ -179,7 +179,7 @@ export const SearchInputFormatter = styled(Column)`
 
   > input::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.4, theme.primaryText)};
   }
 
   > input:focus::placeholder {

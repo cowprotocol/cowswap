@@ -103,7 +103,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.primaryText)};
   }
 
   ${({ isChainIdUnsupported, theme }) =>

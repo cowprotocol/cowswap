@@ -30,7 +30,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 
   &:disabled {
     background-color: var(${UI.COLOR_GREY});
-    color: ${({ theme }) => transparentize(0.4, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.4, theme.primaryText)};
     background-image: none;
     border: 0;
     cursor: auto;

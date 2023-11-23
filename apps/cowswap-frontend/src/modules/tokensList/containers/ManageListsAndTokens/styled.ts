@@ -67,7 +67,7 @@ export const PrimaryInput = styled.input`
 
   &:focus {
     ::placeholder {
-      color: ${({ theme }) => transparentize(0.7, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      color: ${({ theme }) => transparentize(0.7, theme.primaryText)};
     }
   }
 `

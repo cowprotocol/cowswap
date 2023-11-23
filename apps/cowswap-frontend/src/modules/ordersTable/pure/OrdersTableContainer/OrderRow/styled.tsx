@@ -206,7 +206,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   margin: 0;
   height: 5px;
   width: 100%;
-  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, `var(${UI.COLOR_PRIMARY_TEXT})`)
+  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.primaryText))};
   border-radius: 6px;
 
   &::before {
@@ -245,7 +245,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   background-size: 200% 100%;
   background-position: 100% 0;
 
-  border: 1px solid ${({ theme }) => transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.primaryText)};
   padding: 0 6px 0 10px;
   cursor: pointer;
   transition: background 0.5s ease-in-out;
@@ -309,7 +309,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     min-height: var(--size);
     line-height: 1;
     background: transparent;
-    border: 1px solid ${({ theme }) => transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    border: 1px solid ${({ theme }) => transparentize(0.8, theme.primaryText)};
     border-radius: 6px;
     user-select: none;
   }

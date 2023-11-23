@@ -24,7 +24,7 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 
   &:hover {
-    outline: 1px solid ${({ theme }) => transparentize(0.8, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.primaryText)};
   }
 `
 export const ContextMenuList = styled(MenuList)`

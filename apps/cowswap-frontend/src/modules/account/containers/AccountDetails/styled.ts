@@ -556,7 +556,7 @@ export const SurplusCardWrapper = styled.div`
     font-size: 15px;
     font-weight: 500;
     line-height: 1.1;
-    color: ${({ theme }) => transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme }) => transparentize(0.5, theme.primaryText)};
     margin: 3px auto 0;
   }
 

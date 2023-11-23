@@ -3,7 +3,6 @@ import { PropsWithChildren } from 'react'
 import { Row, RowFixed } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
-import { transparentize, darken } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
@@ -63,15 +62,16 @@ export const StyledNavLinkUni = styled(NavLink)`
   width: fit-content;
   margin: 0 12px;
   font-weight: 500;
+
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
   }
 
   :hover,
   :focus {
-    color: ${darken(0.1, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
   }
 `
 
@@ -150,7 +150,7 @@ export const HeaderElementUni = styled.div`
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
-  color: ${darken(0.3, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
 
   &:first-of-type {
     margin: 0 12px 0 0;
@@ -158,7 +158,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
   &:hover,
   &:focus {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
   }
 `
 
@@ -299,7 +299,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     &:hover {
       color: var(${UI.COLOR_PRIMARY_TEXT});
-      background: ${transparentize(0.95, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      background: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
         background: transparent;

@@ -55,7 +55,7 @@ export const FlyoutRow = styled.div<{ active: boolean }>`
 
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && transparentize(0.9, `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    background: ${({ theme, active }) => !active && transparentize(0.9, theme.primaryText)};
   }
 
   transition: background 0.13s ease-in-out;
