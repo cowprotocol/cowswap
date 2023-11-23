@@ -66,12 +66,12 @@ export const StyledNavLinkUni = styled(NavLink)`
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   :hover,
   :focus {
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 
@@ -100,7 +100,7 @@ export const StyledMenuButton = styled.button`
     margin-top: 2px;
   }
   > * {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -150,7 +150,7 @@ export const HeaderElementUni = styled.div`
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   &:first-of-type {
     margin: 0 12px 0 0;
@@ -158,7 +158,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
   &:hover,
   &:focus {
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 
@@ -248,7 +248,7 @@ export const HeaderModWrapper = styled(HeaderMod)``
 export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   margin: 0;
   text-decoration: none;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
@@ -288,8 +288,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       font-weight: 600;
       font-size: 17px;
       padding: 28px 10px;
-      color: var(${UI.COLOR_PRIMARY_TEXT});
-      border-bottom: 1px solid ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
+      color: ${`var(${UI.COLOR_TEXT})`};
+      border-bottom: 1px solid ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
     `}
 
     > svg > path {
@@ -298,15 +298,15 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &:hover {
-      color: var(${UI.COLOR_PRIMARY_TEXT});
-      background: ${`var(${UI.COLOR_PRIMARY_TEXT})`};
+      color: ${`var(${UI.COLOR_TEXT})`};
+      background: ${`var(${UI.COLOR_TEXT})`};
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
         background: transparent;
       `};
 
       > svg > path {
-        fill: var(${UI.COLOR_PRIMARY_TEXT});
+        fill: var(${UI.COLOR_TEXT});
       }
     }
 
@@ -321,7 +321,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.ACTIVE {
-      color: var(${UI.COLOR_PRIMARY_TEXT});
+      color: ${`var(${UI.COLOR_TEXT})`};
       font-weight: 600;
     }
   }
@@ -403,11 +403,11 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a > svg > path {
-    fill: var(${UI.COLOR_PRIMARY_TEXT});
+    fill: var(${UI.COLOR_TEXT});
   }
 
   > a:hover > svg > path {
-    fill: var(${UI.COLOR_PRIMARY_TEXT});
+    fill: var(${UI.COLOR_TEXT});
   }
 `
 

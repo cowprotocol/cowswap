@@ -40,7 +40,7 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
   return (
     <StyledButtonStar
       stroke={theme.text1}
-      fill={isFavouriteToken ? `var(${UI.COLOR_TEXT1})` : undefined}
+      fill={isFavouriteToken ? `var(${UI.COLOR_TEXT})` : undefined}
       onClick={handleFavouriteToken}
     />
   )

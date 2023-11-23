@@ -14,7 +14,7 @@ const IconImage = styled.div`
 
   > svg {
     opacity: 0.5;
-    fill: var(${UI.COLOR_PRIMARY_TEXT});
+    fill: var(${UI.COLOR_TEXT});
     margin: 0 3px 0 0;
   }
 `

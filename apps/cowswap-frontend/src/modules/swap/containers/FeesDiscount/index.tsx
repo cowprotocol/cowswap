@@ -21,7 +21,7 @@ const DarkSpan = styled.span`
   padding: 2px 8px;
   background: var(${UI.COLOR_GREY});
   border-radius: 5px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {

@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { UI } from 'common/constants/theme'
 
 export const TermsWrapper = styled.div`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 `
 
 export const Blurb = styled.div`
@@ -42,15 +42,18 @@ export const Wrapper = styled.div`
 
 export const UpperSection = styled.div`
   position: relative;
+
   h5 {
     margin: 0;
     margin-bottom: 0.5rem;
     font-size: 1rem;
     font-weight: 400;
   }
+
   h5:last-child {
     margin-bottom: 0px;
   }
+
   h4 {
     margin-top: 0;
     font-weight: 500;
@@ -61,6 +64,7 @@ export const OptionGrid = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(4, 1fr);
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(3, 1fr);
   `};
@@ -88,7 +92,7 @@ export const IconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     fill: var(--color);
     stroke: var(--color);
   }

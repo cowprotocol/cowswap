@@ -36,11 +36,11 @@ export const Label = styled.span`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
   font-weight: 500;
@@ -90,7 +90,7 @@ export const ListWrapper = styled(MenuList)`
 `
 
 export const ListItem = styled(MenuItem)`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   background: none;
   border: 0;
   outline: none;
@@ -112,8 +112,8 @@ export const CustomInput = styled.input`
   font-size: 21px;
   border-radius: 8px;
   width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(0.7, theme.primaryText)};
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  border: 1px solid ${({ theme }) => transparentize(0.7, theme.text)};
+  color: ${`var(${UI.COLOR_TEXT})`};
   padding: 4px 8px;
   outline: 0;
   background: var(${UI.COLOR_PAPER});
@@ -123,11 +123,11 @@ export const CustomInput = styled.input`
   }
 
   &::-webkit-datetime-edit {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   &::-webkit-datetime-edit[disabled] {
-    color: ${({ theme }) => transparentize(0.7, theme.primaryText)};
+    color: ${({ theme }) => transparentize(0.7, theme.text)};
   }
 `
 
@@ -195,6 +195,6 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `

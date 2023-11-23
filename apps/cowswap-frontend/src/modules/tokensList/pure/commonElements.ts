@@ -19,7 +19,7 @@ export const IconButton = styled.button`
   ${blankButtonMixin}
 
   > svg {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
 
     &:hover {
       color: var(${UI.COLOR_SECONDARY_TEXT});

@@ -33,12 +33,12 @@ export const BottomGrouping = styled.div`
 `
 export const LightGreyText = styled.span`
   font-weight: 400;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
 `
 
 export const StyledInfoIcon = styled(Info)`
   opacity: 0.5;
-  stroke: var(${UI.COLOR_PRIMARY_TEXT});
+  stroke: var(${UI.COLOR_TEXT});
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;

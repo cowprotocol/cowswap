@@ -35,8 +35,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
 `
 
 export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
-  background: ${({ isChildOrder }) =>
-    isChildOrder ? transparentize(0.91, `var(${UI.COLOR_PRIMARY_TEXT})`) : 'transparent'};
+  background: ${({ isChildOrder }) => (isChildOrder ? transparentize(0.91, `var(${UI.COLOR_TEXT})`) : 'transparent')};
   transition: background 0.15s ease-in-out;
   display: grid;
 
@@ -49,7 +48,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(0.5, theme.primaryText)};
+      color: ${({ theme }) => transparentize(0.5, theme.text)};
       content: '↳';
       text-decoration: none !important;
     }
@@ -113,14 +112,14 @@ export const TableRowCheckbox = styled.input`
   width: var(--checkboxSize);
   height: var(--checkboxSize);
   background: transparent;
-  border: 2px solid ${({ theme }) => transparentize(0.5, theme.primaryText)};
+  border: 2px solid ${({ theme }) => transparentize(0.5, theme.text)};
   border-radius: var(--checkBoxBorderRadius);
   appearance: none;
   margin: 0;
   outline: 0;
 
   &:checked {
-    background-color: var(${UI.COLOR_PRIMARY_TEXT});
+    background-color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   &:checked + ${CheckboxCheckmark}::after {
@@ -128,7 +127,7 @@ export const TableRowCheckbox = styled.input`
   }
 
   &:indeterminate {
-    border-color: var(${UI.COLOR_PRIMARY_TEXT});
+    border-color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   &:indeterminate + ${CheckboxCheckmark}::after {
@@ -159,6 +158,6 @@ export const TableRowCheckboxWrapper = styled.label`
   cursor: pointer;
 
   &:hover > ${TableRowCheckbox}:not(:checked):not([disabled]) {
-    background: ${({ theme }) => transparentize(0.85, theme.primaryText)};
+    background: ${({ theme }) => transparentize(0.85, theme.text)};
   }
 `

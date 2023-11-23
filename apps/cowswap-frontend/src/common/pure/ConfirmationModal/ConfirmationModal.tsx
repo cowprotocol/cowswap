@@ -21,7 +21,7 @@ const Description = styled.p`
 `
 
 const Warning = styled.strong`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 `
 
 export interface ConfirmationModalProps {

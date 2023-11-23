@@ -22,16 +22,16 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   }
 
   ${TextWrapper} {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
 
     &:first-child {
-      color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+      color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
       font-weight: 400;
 
       &:hover {
-        color: var(${UI.COLOR_PRIMARY_TEXT});
+        color: ${`var(${UI.COLOR_TEXT})`};
       }
     }
 
@@ -46,6 +46,6 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
 
   ${StyledMouseoverTooltipContent} {
     background-color: ${({ theme }) => theme.bg3};
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `

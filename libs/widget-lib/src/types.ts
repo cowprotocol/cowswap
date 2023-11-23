@@ -62,10 +62,9 @@ export enum TradeType {
 export interface CowSwapWidgetPalette {
   baseTheme: CowSwapTheme
   primary: string
-  secondary: string
   background: string
   paper: string
-  primaryText: string
+  text: string
   danger: string
   warning: string
   info: string

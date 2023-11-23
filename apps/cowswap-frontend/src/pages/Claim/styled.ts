@@ -22,7 +22,7 @@ export const InnerPageWrapper = styled.div`
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   padding: 30px;
   border: none;
   box-shadow: ${({ theme }) => theme.boxShadow1};
@@ -204,7 +204,7 @@ export const IntroDescription = styled.div<{ center?: boolean }>`
   }
 
   > p > i {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     font-weight: 600;
     font-style: normal;
   }
@@ -434,7 +434,7 @@ export const ClaimTable = styled.div`
     text-align: left;
     font-weight: normal;
     font-size: 15px;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     position: relative;
   }
 
@@ -445,7 +445,7 @@ export const ClaimTable = styled.div`
   td {
     display: flex;
     align-items: center;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     word-break: break-word;
     background: ${({ theme }) => theme.blueShade3};
   }
@@ -502,13 +502,13 @@ export const ClaimTable = styled.div`
     `};
 
     > span {
-      color: ${({ theme }) => transparentize(0.1, theme.primaryText)};
+      color: ${({ theme }) => transparentize(0.1, theme.text)};
       font-weight: 300;
     }
 
     > span > b {
       font-weight: 500;
-      color: var(${UI.COLOR_PRIMARY_TEXT});
+      color: ${`var(${UI.COLOR_TEXT})`};
     }
   }
 
@@ -659,7 +659,7 @@ export const ClaimTotal = styled.div`
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
   padding: 24px 24px 0;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -677,7 +677,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 26px;
@@ -787,7 +787,7 @@ export const InputField = styled.div`
   padding: 18px 18px 18px 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   display: flex;
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
@@ -799,7 +799,7 @@ export const InputField = styled.div`
     border: 0;
     font-size: 24px;
     outline: 0;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     width: 100%;
   }
 
@@ -846,7 +846,7 @@ export const InputField = styled.div`
     padding: 0;
     font-size: 22px;
     font-weight: 600;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   > span {
@@ -968,7 +968,7 @@ export const TopNav = styled.div`
 
   ${ButtonSecondary} {
     margin: 0;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     font-size: 15px;
     width: auto;
   }
@@ -1205,7 +1205,7 @@ export const UnderlineButton = styled.button`
   }
 
   &:hover {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   &:disabled {
@@ -1265,7 +1265,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     background: ${({ theme }) => theme.bg5};
     border-radius: 12px;
     padding: 0 12px;
@@ -1278,7 +1278,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
   }
 
   > div > label > input {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     border: none;
     padding: 12px 70px 0 0;
     font-size: 26px;
@@ -1383,7 +1383,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: block;
     font-size: 12px;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     z-index: 1;
     height: 100%;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
@@ -1410,7 +1410,7 @@ export const InvestSummary = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 18px;
-    color: ${({ theme }) => transparentize(0.1, theme.primaryText)};
+    color: ${({ theme }) => transparentize(0.1, theme.text)};
     gap: 4px;
   }
 
@@ -1432,7 +1432,7 @@ export const InvestSummary = styled.div`
 
   > span > b {
     font-weight: 600;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 
@@ -1539,7 +1539,7 @@ export const AccountClaimSummary = styled.div`
     }
 
     > svg > path {
-      fill: var(${UI.COLOR_PRIMARY_TEXT});
+      fill: var(${UI.COLOR_TEXT});
     }
   }
 `
@@ -1596,7 +1596,7 @@ export const CowSpinner = styled.div`
     height: 94%;
     width: 94%;
     padding: 0;
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
     border-radius: var(--circle-size);
     z-index: 1;
   }

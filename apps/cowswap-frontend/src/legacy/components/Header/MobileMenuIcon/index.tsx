@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   height: ${({ height = 18 }) => `${height}px`};
 
   span {
-    background-color: var(${UI.COLOR_PRIMARY_TEXT});
+    background-color: ${`var(${UI.COLOR_TEXT})`};
     border-radius: 3px;
     height: ${({ lineSize = 2 }) => `${lineSize}px`};
     position: absolute;

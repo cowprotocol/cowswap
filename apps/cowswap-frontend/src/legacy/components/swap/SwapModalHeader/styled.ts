@@ -36,7 +36,7 @@ export const Wrapper = styled.div`
   }
 
   svg {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 

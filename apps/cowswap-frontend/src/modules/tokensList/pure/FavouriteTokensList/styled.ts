@@ -36,7 +36,7 @@ export const TokensItem = styled.button`
   outline: none;
   padding: 6px 10px;
   border-radius: 10px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   border: 1px solid var(${UI.COLOR_GREY});
   font-weight: 500;
   font-size: 16px;

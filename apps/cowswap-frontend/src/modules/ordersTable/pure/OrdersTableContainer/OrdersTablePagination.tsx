@@ -30,7 +30,7 @@ const PaginationBox = styled.div`
 
 const pageButtonStyles = css<{ $active?: boolean }>`
   background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
-  color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT1})` : `var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`)};
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;
   padding: 5px 10px;
@@ -42,7 +42,7 @@ const pageButtonStyles = css<{ $active?: boolean }>`
 
   &:hover {
     background: var(${UI.COLOR_PAPER});
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 

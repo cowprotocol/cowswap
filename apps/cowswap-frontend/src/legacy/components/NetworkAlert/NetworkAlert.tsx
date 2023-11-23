@@ -87,8 +87,8 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
     ${BodyText},
     ${StyledArrowUpRight} {
-      color: var(${UI.COLOR_PRIMARY_TEXT});
-      stroke: var(${UI.COLOR_PRIMARY_TEXT});
+      color: ${`var(${UI.COLOR_TEXT})`};
+      stroke: var(${UI.COLOR_TEXT});
       transform: rotate(0);
     }
 

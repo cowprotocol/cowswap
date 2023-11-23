@@ -8,7 +8,7 @@ export const FeeTooltipWrapper = styled.div`
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 `
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`
@@ -21,13 +21,13 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   border-radius: ${({ highlighted }) => (highlighted ? '10px' : '0')};
   background: ${({ theme, highlighted }) => (highlighted ? theme.bg1 : 'transparent')};
   border-top: ${({ theme, borderTop }) =>
-    borderTop ? `1px solid ${transparentize(0.9, `var(${UI.COLOR_PRIMARY_TEXT})`)}` : 'none'};
+    borderTop ? `1px solid ${transparentize(0.9, `var(${UI.COLOR_TEXT})`)}` : 'none'};
   gap: 4px;
 
   > i {
     font-size: 12px;
     font-style: normal;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
     max-width: 60%;
     min-width: 50%;
     font-weight: 300;

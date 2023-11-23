@@ -97,7 +97,7 @@ export const CowModal = styled(Modal)<{
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
   > [data-reach-dialog-content] {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     width: 100%;
     max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};

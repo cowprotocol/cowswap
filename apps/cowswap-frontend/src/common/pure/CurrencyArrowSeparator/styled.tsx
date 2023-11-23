@@ -43,8 +43,8 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
   transform-origin: center right;
   transition: transform 0.25s;
   border: ${({ border, theme }) => (border ? `1px solid ${theme.grey1}` : '0')};
-  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: var(${UI.COLOR_GREY});
+  box-shadow: 0 0 0 3px ${({ theme }) => theme.paper};
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 8px;
   width: var(--size);
   margin: auto;
@@ -59,7 +59,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
 export const ArrowDownIcon = styled(ArrowDown)`
   display: block;
   margin: auto;
-  stroke: var(${UI.COLOR_PRIMARY_TEXT});
+  stroke: var(${UI.COLOR_TEXT});
   stroke-width: 3px;
   padding: 0;
   height: 100%;

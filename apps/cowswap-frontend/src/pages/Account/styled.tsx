@@ -63,7 +63,7 @@ const linkMixin = css`
   margin: 0;
   padding: 0;
   line-height: 1;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   display: flex;
   align-items: center;
   text-decoration: underline;
@@ -372,7 +372,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
   gap: 3px 12px;
   width: 100%;
   font-size: 14px;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     gap: 12px;
@@ -414,7 +414,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
     display: flex;
     align-items: center;
     gap: 0 6px;
-    color: ${({ theme, altColor }) => (altColor ? theme.text3 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+    color: ${({ theme, altColor }) => (altColor ? theme.text3 : `var(${UI.COLOR_TEXT})`)};
     font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
 
     ${({ theme }) => theme.mediaWidth.upToMedium`

@@ -20,7 +20,7 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   font-weight: 400;
 `
 
@@ -80,7 +80,7 @@ const SelectorLabel = styled.div`
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   display: flex;
   font-weight: 500;
   justify-content: space-between;
@@ -103,7 +103,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.primaryText)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text)};
   }
 
   ${({ isChainIdUnsupported, theme }) =>
@@ -118,6 +118,7 @@ const SelectorLogo = styled.img<{ interactive?: boolean }>`
   width: 24px;
   height: 24px;
   margin-right: ${({ interactive }) => (interactive ? 8 : 0)}px;
+
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     margin-right: 8px;
   }

@@ -17,7 +17,7 @@ function getPriceImpactColor(theme: DefaultTheme, priceImpact: Percent): string 
   const severity = warningSeverity(priceImpact)
 
   if (severity === -1) return theme.success
-  if (severity < 1) return theme.primaryText
+  if (severity < 1) return theme.text
   if (severity < 3) return theme.danger
 
   return theme.danger

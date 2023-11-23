@@ -11,7 +11,7 @@ const ModalMessage = styled.div`
   flex-flow: row wrap;
   padding: 16px 0 0;
   width: 100%;
-  color: ${({ theme }) => transparentize(0.15, theme.primaryText)};
+  color: ${({ theme }) => transparentize(0.15, theme.text)};
   font-size: 14px;
   line-height: 1.3;
 

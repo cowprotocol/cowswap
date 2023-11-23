@@ -13,7 +13,7 @@ import { PriceImpactIndicator } from '../PriceImpactIndicator'
 const FiatValueWrapper = styled.div<{ hasValue$: boolean }>`
   display: inline-block;
   font-size: 14px;
-  color: ${({ theme, hasValue$ }) => (hasValue$ ? `var(${UI.COLOR_PRIMARY_TEXT})` : theme.text4)};
+  color: ${({ theme, hasValue$ }) => (hasValue$ ? `var(${UI.COLOR_TEXT})` : theme.text4)};
 `
 
 export function FiatValue({

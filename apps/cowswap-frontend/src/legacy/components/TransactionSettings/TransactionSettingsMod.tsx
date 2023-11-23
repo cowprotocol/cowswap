@@ -16,6 +16,7 @@ import {
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { FancyButton } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -48,29 +49,9 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-export const FancyButton = styled.button`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
-  align-items: center;
-  height: 2rem;
-  border-radius: 36px;
-  font-size: 1rem;
-  width: auto;
-  min-width: 3.5rem;
-  /* border: 1px solid ${({ theme }) => theme.bg3}; */
-  border: 0; // mod
-  outline: none;
-  /* background: var(${UI.COLOR_PAPER}); */
-  background: var(${UI.COLOR_PRIMARY}); // mod
-  :hover {
-    /* border: 1px solid ${({ theme }) => theme.bg4}; */
-  }
-  :focus {
-    /* border: 1px solid ${({ theme }) => theme.primary1}; */
-  }
-`
-
 const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
+
   :hover {
     cursor: pointer;
   }
@@ -79,8 +60,6 @@ const Option = styled(FancyButton)<{ active: boolean }>`
     border: none;
     pointer-events: none;
   }
-  background-color: ${({ active, theme }) => (active ? `var(${UI.COLOR_PRIMARY})` : theme.grey1)}; // MOD
-  color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY_TEXT})` : `var(${UI.COLOR_PRIMARY_TEXT})`)}; // MOD
 `
 
 export const Input = styled.input`
@@ -92,7 +71,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
   text-align: right;
 `
 

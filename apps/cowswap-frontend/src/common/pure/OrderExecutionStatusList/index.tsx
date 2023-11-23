@@ -55,7 +55,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
         return theme.text3
       case 'notClose':
       default:
-        return transparentize(0.5, `var(${UI.COLOR_PRIMARY_TEXT})`)
+        return transparentize(0.5, `var(${UI.COLOR_TEXT})`)
     }
   }};
 `

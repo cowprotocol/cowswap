@@ -12,14 +12,14 @@ export const Container = styled.div`
 export const TitleSection = styled.div`
   text-align: center;
   font-size: 20px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   margin: 24px auto 42px;
 
   > h3 {
     font-weight: 400;
     font-size: inherit;
     margin: 0 0 4px;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 
   > strong {

@@ -69,7 +69,7 @@ const Header = styled.div`
   padding: 20px 30px;
   align-items: center;
   transition: opacity 0.2s ease-in-out;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
@@ -105,7 +105,7 @@ const Header = styled.div`
 const CloseIcon = styled(Close)`
   opacity: 0.6;
   transition: opacity 0.3s ease-in-out;
-  stroke: var(${UI.COLOR_PRIMARY_TEXT});
+  stroke: var(${UI.COLOR_TEXT});
   width: 24px;
   height: 24px;
 

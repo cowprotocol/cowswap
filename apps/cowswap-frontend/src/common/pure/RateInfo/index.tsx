@@ -55,18 +55,18 @@ const RateLabel = styled.div`
   gap: 5px;
   text-align: left;
   transition: color 0.15s ease-in-out;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
 
   &:hover {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 
 const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
-  background: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_10})`};
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+  color: ${`var(${UI.COLOR_TEXT})`};
   width: var(--size);
   height: var(--size);
   min-width: var(--size);
@@ -107,7 +107,7 @@ export const RateWrapper = styled.button`
 `
 
 export const FiatRate = styled.span`
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
   font-weight: 400;
   text-align: right;
 `

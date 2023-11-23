@@ -151,7 +151,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -179,7 +179,7 @@ const OrdersExplainerBanner = styled.div`
     gap: 12px;
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(0.5, theme.primaryText)};
+      fill: ${({ theme }) => transparentize(0.5, theme.text)};
     }
 
     > b {

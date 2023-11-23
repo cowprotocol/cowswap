@@ -51,9 +51,10 @@ export function PaletteControl({
     )
   }
 
-  const otherColorKeys = Object.keys(colorPalette).filter((key) => key !== 'primary' && key !== 'secondary') as Array<
-    keyof ColorPalette
-  >
+  const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
+  const otherColorKeys = Object.keys(colorPalette).filter(
+    (key): key is keyof ColorPalette => !visibleColorKeys.includes(key as keyof ColorPalette)
+  )
 
   const [expanded, setExpanded] = React.useState(false)
 
@@ -61,8 +62,7 @@ export function PaletteControl({
 
   return (
     <FormControl sx={{ width: '100%', gap: '1.6rem' }}>
-      {renderColorInput('primary')}
-      {renderColorInput('secondary')}
+      {visibleColorKeys.map((key) => renderColorInput(key))}
 
       <Collapse in={expanded}>
         <FormControl sx={{ width: '100%', gap: '1.6rem' }}>

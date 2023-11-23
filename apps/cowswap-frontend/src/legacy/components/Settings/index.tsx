@@ -14,7 +14,7 @@ const Settings = styled(SettingsMod)`
     box-shadow: ${({ theme }) => theme.boxShadow2};
     border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
     background-color: var(${UI.COLOR_PAPER});
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     padding: 0;
     margin: 0;
     top: 36px;
@@ -24,7 +24,7 @@ const Settings = styled(SettingsMod)`
 
   ${RowFixed} {
     > div {
-      color: var(${UI.COLOR_PRIMARY_TEXT});
+      color: ${`var(${UI.COLOR_TEXT})`};
       opacity: 0.85;
     }
   }
@@ -43,7 +43,7 @@ const Settings = styled(SettingsMod)`
     &:focus {
       cursor: pointer;
       outline: none;
-      color: var(${UI.COLOR_PRIMARY_TEXT});
+      color: ${`var(${UI.COLOR_TEXT})`};
     }
 
     svg {
@@ -58,7 +58,7 @@ const Settings = styled(SettingsMod)`
 
     &:hover svg > path,
     &:hover svg > circle {
-      stroke: var(${UI.COLOR_PRIMARY_TEXT});
+      stroke: var(${UI.COLOR_TEXT});
     }
   }
 
@@ -69,7 +69,7 @@ const Settings = styled(SettingsMod)`
 
     > path,
     > circle {
-      stroke: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+      stroke: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
       transition: stroke 0.3s ease-in-out;
     }
   }

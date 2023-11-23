@@ -18,7 +18,7 @@ const badgeColors: Record<BadgeType, string> = {
   alert: `var(${UI.COLOR_ALERT_TEXT})`,
   alert2: `var(${UI.COLOR_ALERT_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
-  default: `var(${UI.COLOR_TEXT1_INACTIVE})`, // text only
+  default: `var(${UI.COLOR_TEXT_INACTIVE})`, // text only
 }
 
 export const Badge = styled.div<{ type?: BadgeType }>`
@@ -50,7 +50,7 @@ export const Link = styled(NavLink)`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   gap: 4px;
   font-weight: inherit;
   line-height: 1;
@@ -61,12 +61,12 @@ export const Link = styled(NavLink)`
     text-decoration: none;
 
     > svg > path {
-      fill: var(${UI.COLOR_PRIMARY_TEXT});
+      fill: var(${UI.COLOR_TEXT});
     }
   }
 
   > svg > path {
-    fill: var(${UI.COLOR_PRIMARY_TEXT});
+    fill: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -109,7 +109,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         background: var(${UI.COLOR_PAPER_DARKER});
 
         ${Link} {
-          color: var(${UI.COLOR_PRIMARY_TEXT});
+          color: ${`var(${UI.COLOR_TEXT})`};
         }
 
         ${Link} > ${Badge} {

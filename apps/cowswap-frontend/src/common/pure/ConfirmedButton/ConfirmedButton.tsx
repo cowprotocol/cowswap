@@ -19,7 +19,7 @@ const Input = styled.input`
   padding: 10px;
   border-radius: 4px;
   background: ${({ theme }) => theme.bg3};
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   outline: none;
   font-size: 15px;
 

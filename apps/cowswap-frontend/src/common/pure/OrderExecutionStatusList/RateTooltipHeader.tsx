@@ -18,7 +18,7 @@ const Content = styled.div`
     line-height: 1.5;
     padding: 0;
     margin: 0;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   > h3 {

@@ -53,10 +53,9 @@ export function useWidgetParamsAndSettings(
       theme: {
         baseTheme: theme,
         primary: themeColors.primary,
-        secondary: themeColors.secondary,
         background: themeColors.background,
         paper: themeColors.paper,
-        primaryText: themeColors.primaryText,
+        text: themeColors.text,
         danger: themeColors.danger,
         warning: themeColors.warning,
         info: themeColors.info,

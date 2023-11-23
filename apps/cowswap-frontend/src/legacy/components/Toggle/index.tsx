@@ -67,14 +67,14 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 
   ${ToggleElement} {
-    color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`)};
+    color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
     border: none;
     transition: background 0.2s ease-in-out;
-    background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`)};
+    background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
 
     &:hover {
-      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
-      background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
     }
   }
 

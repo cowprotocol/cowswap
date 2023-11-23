@@ -23,7 +23,7 @@ const ModalContentWrapper = styled.div`
   }
 
   > p > strong {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 
@@ -34,7 +34,7 @@ const Header = styled.div`
   padding: 0 0 16px;
   margin: 0 0 24px;
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   > b {
     font-size: 21px;
@@ -54,7 +54,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 

@@ -31,12 +31,12 @@ export const InfoPopup = styled.div`
     height: 100%;
 
     > path {
-      fill: ${({ theme }) => transparentize(0.5, theme.primaryText)};
+      fill: ${({ theme }) => transparentize(0.5, theme.text)};
     }
   }
 
   .content > a {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     text-decoration: underline;
 
     &::after {

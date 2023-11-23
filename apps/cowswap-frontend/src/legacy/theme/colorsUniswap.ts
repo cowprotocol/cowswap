@@ -39,7 +39,7 @@ export function colorsUniswap(darkMode: boolean): Colors {
     primary5: darkMode ? '#153d6f70' : '#FDEAF1',
 
     // color text
-    primaryText1: darkMode ? '#5090ea' : '#D50066',
+    text1: darkMode ? '#5090ea' : '#D50066',
 
     // secondary colors
     secondary1: darkMode ? '#2172E5' : '#E8006F',

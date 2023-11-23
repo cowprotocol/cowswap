@@ -45,7 +45,7 @@ const Input = styled.input<{ error?: boolean }>`
   flex: 1 1 auto;
   background: none;
   transition: color 300ms ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;

@@ -13,7 +13,7 @@ import { UI } from 'common/constants/theme'
 const Wrapper = styled.div`
   ${RowBetween} > div,
   ${RowFixed} > div {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 `
 

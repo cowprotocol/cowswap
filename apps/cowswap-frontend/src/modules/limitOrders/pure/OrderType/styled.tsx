@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 `
 
 export const LabelText = styled.span`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   transition: color 0.15s ease-in-out;
 `
 
@@ -21,7 +21,7 @@ export const StyledSVG = styled(SVG)`
   height: var(--size);
 
   > path {
-    fill: var(${UI.COLOR_PRIMARY_TEXT});
+    fill: var(${UI.COLOR_TEXT});
     transition: fill 0.15s ease-in-out;
   }
 
@@ -69,7 +69,7 @@ export const StyledMenuList = styled(MenuList)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 6px 12px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   font-size: 13px;
   cursor: pointer;
   border-radius: 8px;

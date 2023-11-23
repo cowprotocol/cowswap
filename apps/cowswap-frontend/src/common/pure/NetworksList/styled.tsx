@@ -19,7 +19,7 @@ export const ActiveRowLinkList = styled.div`
 
   & > a {
     align-items: center;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     display: flex;
     flex-direction: row;
     font-size: 14px;
@@ -51,11 +51,11 @@ export const FlyoutRow = styled.div<{ active: boolean }>`
   padding: 6px 8px;
   text-align: left;
   width: 100%;
-  color: ${({ active, theme }) => (active ? theme.white : `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${({ active, theme }) => (active ? theme.white : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && transparentize(0.9, theme.primaryText)};
+    background: ${({ theme, active }) => !active && transparentize(0.9, theme.text)};
   }
 
   transition: background 0.13s ease-in-out;

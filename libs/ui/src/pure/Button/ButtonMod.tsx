@@ -58,7 +58,7 @@ export const ButtonPrimary = styled(BaseButton)`
   &:focus,
   &:hover,
   &:active {
-    color: ${({ theme }) => theme.primaryText1};
+    color: ${({ theme }) => theme.text1};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle, disabled }) =>
@@ -74,7 +74,7 @@ export const ButtonPrimary = styled(BaseButton)`
 
 export const ButtonLight = styled(BaseButton)`
   background-color: ${({ theme }) => theme.primary5};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   font-size: 16px;
   // font-weight: 500;
   &:focus {

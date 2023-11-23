@@ -154,7 +154,7 @@ export function SwapCallbackError({ error, handleClose, showClose, ...styleProps
 
 export const SwapShowAcceptChanges = styled(AutoColumn)`
   background-color: ${({ theme }) => transparentize(0.95, theme.primary3)};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   padding: 0.5rem;
   border-radius: 12px;
   margin-top: 8px;

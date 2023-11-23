@@ -5,6 +5,8 @@ import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
+import { UI } from '@cowprotocol/ui'
+
 import { RowBetween } from '../Row'
 import { ButtonSize } from '../../enum'
 
@@ -22,18 +24,13 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  background: ${({ theme }) => theme.primary};
+  background: ${`var(${UI.COLOR_PRIMARY})`};
+  color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
   font-size: 18px;
   font-weight: 600;
   border: none;
   box-shadow: none;
   border-radius: 16px;
-  /* color: ${({ theme }) => theme.primaryText}; */
-  color: ${({ theme }) =>
-    theme.darkMode
-      ? `color-mix(in srgb, ${theme.primaryText}, #fff 40%)`
-      : `color-mix(in srgb, ${theme.primaryText}, #fff 5%)`};
-
   position: relative;
   min-height: 58px;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -45,16 +42,16 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:active {
     box-shadow: none;
     transform: none;
-    color: ${({ theme }) => theme.white};
+    color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
   }
 
   &:hover {
-    background: ${({ theme }) => lighten(0.08, theme.bg2)};
+    background: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
   }
 
   &:disabled {
-    background-color: var(--cow-color-grey);
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+    background-color: ${`var(${UI.COLOR_PAPER})`};
+    color: ${`var(${UI.COLOR_BUTTON_TEXT_DISABLED})`};
     background-image: none;
     border: 0;
     cursor: auto;
@@ -66,7 +63,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
 export const ButtonLight = styled(ButtonPrimary)`
   // CSS override
   ${({ theme }) => theme.buttonLight.background}
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   font-size: ${({ theme }) => theme.buttonLight.fontSize};
   font-weight: ${({ theme }) => theme.buttonLight.fontWeight};
   border: ${({ theme }) => theme.buttonLight.border};
@@ -99,7 +96,7 @@ export const ButtonLight = styled(ButtonPrimary)`
     opacity: 0.4;
     cursor: auto;
     animation: none;
-    color: ${({ theme }) => theme.primaryText1};
+    color: ${({ theme }) => theme.text1};
 
     &:hover {
       cursor: auto;
@@ -199,6 +196,25 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
 
 export const ButtonEmpty = styled(ButtonEmptyMod)`
   // CSS overrides
+`
+
+export const FancyButton = styled.button`
+  background: ${`var(${UI.COLOR_PRIMARY})`};
+  color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+  align-items: center;
+  height: 2rem;
+  border-radius: 36px;
+  font-size: 1rem;
+  width: auto;
+  min-width: 3.5rem;
+  border: 0;
+  outline: none;
+
+  :hover {
+  }
+  :focus {
+    /* border: 1px solid ${({ theme }) => theme.primary1}; */
+  }
 `
 
 const HoverIcon = styled.div`

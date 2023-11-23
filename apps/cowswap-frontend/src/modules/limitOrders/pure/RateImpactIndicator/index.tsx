@@ -22,7 +22,7 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   align-items: center;
   gap: 2px;
   color: ${({ isPositive, isTooLowRate }) =>
-    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT1})`};
+    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`};
 `
 const ImpactTooltip = styled.span`
   display: block;

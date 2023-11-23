@@ -8,7 +8,7 @@ import { UI } from 'common/constants/theme'
 export const SettingsTitle = styled.h3`
   font-weight: 600;
   font-size: 14px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   margin: 0 0 12px 0;
 `
 
@@ -19,7 +19,7 @@ export const SettingsContainer = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow2};
   border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
   background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 `
 
 export const SettingsBoxWrapper = styled.div<{ disabled: boolean }>`
@@ -39,7 +39,7 @@ export const SettingsBoxTitle = styled.div`
   display: flex;
   align-items: center;
   font-weight: 400;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   font-size: 14px;
   opacity: 0.85;
   margin-right: 2rem;
@@ -113,11 +113,11 @@ export const SettingsIcon = styled(SettingsIconRaw)`
   > path,
   > circle {
     transition: stroke 0.3s ease-in-out;
-    stroke: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    stroke: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 
   &:hover > path,
   &:hover > circle {
-    stroke: var(${UI.COLOR_PRIMARY_TEXT});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `

@@ -49,7 +49,7 @@ export const ArrowsWrapper = styled.div`
 
     &:hover {
       > span > svg > path {
-        fill: var(${UI.COLOR_PRIMARY_TEXT});
+        fill: var(${UI.COLOR_TEXT});
       }
     }
   }
@@ -65,7 +65,7 @@ export const ArrowsWrapper = styled.div`
   }
 
   > span > span > svg > path {
-    fill: ${({ theme }) => transparentize(0.7, theme.primaryText)};
+    fill: ${({ theme }) => transparentize(0.7, theme.text)};
     transition: fill 0.2s linear;
   }
 

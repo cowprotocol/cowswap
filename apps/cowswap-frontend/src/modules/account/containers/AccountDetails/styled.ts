@@ -130,7 +130,7 @@ export const WalletNameAddress = styled.div`
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   padding: 0;
   height: 100%;
   margin: 0 24px;
@@ -144,7 +144,7 @@ export const Wrapper = styled.div`
   ${AddressLink},
   ${CopyIcon},
   ${WalletAction} {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     opacity: 0.85;
     transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
     margin: auto;
@@ -171,7 +171,7 @@ export const Wrapper = styled.div`
     margin: 0 0 0 8px;
     align-self: center;
     font-size: 21px;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   ${WalletName} {
@@ -293,7 +293,7 @@ export const AccountSection = styled.div`
 export const AccountGroupingRow = styled.div`
   justify-content: space-between;
   align-items: center;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   div {
     ${({ theme }) => theme.flexRowNoWrap}
@@ -315,7 +315,7 @@ export const AccountGroupingRow = styled.div`
 
 export const NoActivityMessage = styled.p`
   font-size: 14px;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   width: 100%;
   padding: 24px 0 0;
   text-align: center;
@@ -332,7 +332,7 @@ export const LowerSection = styled.div`
 
   > span {
     display: flex;
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     justify-content: space-between;
     padding: 0 0 12px;
 
@@ -370,7 +370,7 @@ export const LowerSection = styled.div`
   }
 
   > span > ${StyledLink} {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     text-decoration: underline;
     font-size: 14px;
 
@@ -452,7 +452,7 @@ const NetworkCardUni = styled(YellowCard)`
 
 export const NetworkCard = styled(NetworkCardUni)`
   background-color: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   padding: 6px 8px;
   font-size: 13px;
   margin: 0;
@@ -531,11 +531,11 @@ export const SurplusCardWrapper = styled.div`
     text-align: center;
     justify-content: center;
     align-items: center;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 
   ${InfoCard} > div > span > p {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
   }
 
   ${InfoCard} > div > span > b {
@@ -556,7 +556,7 @@ export const SurplusCardWrapper = styled.div`
     font-size: 15px;
     font-weight: 500;
     line-height: 1.1;
-    color: ${({ theme }) => transparentize(0.5, theme.primaryText)};
+    color: ${({ theme }) => transparentize(0.5, theme.text)};
     margin: 3px auto 0;
   }
 
@@ -587,7 +587,7 @@ export const WalletIconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
     fill: var(--color);
     stroke: var(--color);
     stroke-width: 0.5px;
@@ -610,7 +610,7 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
     isHardWareWallet &&
     `
     cursor: pointer;
-    border: 1px solid var(${UI.COLOR_TEXT1_OPACITY_25});
+    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
     background: transparent;
     padding: 6px 10px;
 
@@ -621,14 +621,14 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
       height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-top: 4px solid var(${UI.COLOR_PRIMARY_TEXT});
+      border-top: 4px solid var(${UI.COLOR_TEXT});
       margin-left: 8px;
       opacity: 0.5;
       transition: opacity 0.2s ease-in-out;
     }
 
     &:hover {
-      background: var(${UI.COLOR_TEXT1_OPACITY_25});
+      background: var(${UI.COLOR_TEXT_OPACITY_25});
     }
 
     &:hover::after {

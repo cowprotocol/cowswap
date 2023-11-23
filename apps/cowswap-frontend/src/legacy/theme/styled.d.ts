@@ -11,7 +11,7 @@ interface ColorsUniswap {
   background: Color
   paper: Color
 
-  primaryText: Color
+  text: Color
   secondaryText: Color
   disabledText: Color
 
@@ -52,7 +52,7 @@ interface ColorsUniswap {
   primary4: Color
   primary5: Color
 
-  primaryText1: Color
+  text1: Color
 
   // pinks
   secondary1: Color

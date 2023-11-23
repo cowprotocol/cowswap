@@ -7,7 +7,7 @@ import { UI } from 'common/constants/theme'
 import { NumericalInput } from '../TradeNumberInput/styled'
 
 export const TradeWidgetFieldLabel = styled.span`
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   display: flex;
   align-items: center;
   font-size: 13px;

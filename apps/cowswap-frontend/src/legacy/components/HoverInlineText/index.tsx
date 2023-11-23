@@ -12,7 +12,7 @@ export const TextWrapper = styled.span<{
   textColor?: string
 }>`
   margin-left: ${({ margin }) => margin && '4px'};
-  color: ${({ theme, link, textColor }) => (link ? theme.blue1 : textColor ?? `var(${UI.COLOR_PRIMARY_TEXT})`)};
+  color: ${({ theme, link, textColor }) => (link ? theme.blue1 : textColor ?? `var(${UI.COLOR_TEXT})`)};
   font-size: ${({ fontSize }) => fontSize ?? 'inherit'};
 
   @media screen and (max-width: 600px) {

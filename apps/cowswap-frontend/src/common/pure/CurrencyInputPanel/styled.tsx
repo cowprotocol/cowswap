@@ -40,7 +40,7 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 8px;
@@ -62,7 +62,7 @@ export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;
   margin: auto 0;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_70})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -73,10 +73,10 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.primaryText)};
+    color: ${({ theme }) => transparentize(0.3, theme.text)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -89,7 +89,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;

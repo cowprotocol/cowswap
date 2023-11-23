@@ -57,6 +57,6 @@ export const Amount = styled(TokenAmount)`
 `
 
 export const Fiat = styled(FiatAmount)`
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   font-size: 13px;
 `

@@ -22,16 +22,16 @@ interface StepStyles {
 }
 
 const stateStyles: Record<StepState, StepStyles> = {
-  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_TEXT1 },
-  finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
+  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_TEXT },
+  finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT },
   disabled: {
-    dotBackground: UI.COLOR_TEXT1_OPACITY_25,
-    dotColor: UI.COLOR_TEXT1_OPACITY_25,
-    labelColor: UI.COLOR_TEXT1_OPACITY_25,
+    dotBackground: UI.COLOR_TEXT_OPACITY_25,
+    dotColor: UI.COLOR_TEXT_OPACITY_25,
+    labelColor: UI.COLOR_TEXT_OPACITY_25,
   },
   error: { dotBackground: UI.COLOR_DANGER_BG, dotColor: UI.COLOR_DANGER, labelColor: UI.COLOR_DANGER },
   loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_LINK },
-  open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
+  open: { dotBackground: UI.COLOR_TEXT_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
 }
 
 const Step = styled.div<StepProps>`
@@ -90,7 +90,7 @@ const Step = styled.div<StepProps>`
         ? `var(${stateStyles['error'].dotBackground})`
         : stepState === 'finished'
         ? `var(${stateStyles['finished'].dotBackground})`
-        : `var(${UI.COLOR_TEXT1_OPACITY_25})`};
+        : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   }
 

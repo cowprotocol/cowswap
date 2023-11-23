@@ -21,7 +21,7 @@ export const SettingsButton = styled(MenuButton)`
   ${blankButtonMixin}
 
   > svg {
-    color: var(${UI.COLOR_PRIMARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT})`};
 
     &:hover {
       color: var(${UI.COLOR_SECONDARY_TEXT});
@@ -55,7 +55,7 @@ export const SettingsAction = styled.div`
 `
 
 export const ListVersion = styled.div`
-  color: var(${UI.COLOR_TEXT1_INACTIVE});
+  color: var(${UI.COLOR_TEXT_INACTIVE});
   border-bottom: 1px solid var(${UI.COLOR_GREY});
   padding: 0 5px 10px 5px;
 `

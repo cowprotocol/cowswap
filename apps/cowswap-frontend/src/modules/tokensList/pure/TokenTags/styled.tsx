@@ -22,7 +22,7 @@ export const Tag = styled.div<{ tag?: { id: string } }>`
       ? `var(${UI.COLOR_DANGER_TEXT})`
       : tag?.id === '1'
       ? `var(${UI.COLOR_SUCCESS_TEXT})`
-      : `var(${UI.COLOR_TEXT1})`};
+      : `var(${UI.COLOR_TEXT})`};
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border-radius: 4px;

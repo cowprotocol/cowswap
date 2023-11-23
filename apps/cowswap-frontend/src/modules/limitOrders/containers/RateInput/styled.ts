@@ -28,12 +28,12 @@ export const Header = styled.div`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
 `
 
 export const MarketPriceButton = styled.button`
   background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   white-space: nowrap;
   border: none;
   font-weight: 500;
@@ -65,7 +65,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   text-align: left;
 
   &::placeholder {
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 `
 
@@ -84,7 +84,7 @@ export const ActiveCurrency = styled.button`
 `
 
 export const ActiveSymbol = styled.span`
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   font-size: 13px;
   font-weight: 500;
   text-align: right;
@@ -94,7 +94,7 @@ export const ActiveSymbol = styled.span`
 export const ActiveIcon = styled.div`
   --size: 20px;
   background-color: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_PRIMARY_TEXT});
+  color: ${`var(${UI.COLOR_TEXT})`};
   width: var(--size);
   min-width: var(--size);
   height: var(--size);
@@ -127,7 +127,7 @@ export const EstimatedRate = styled.div`
     flex-flow: row nowrap;
     font-weight: normal;
     text-align: left;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 
   // TODO: Make the question helper icon transparent through a prop instead
@@ -142,6 +142,6 @@ export const EstimatedRate = styled.div`
 
   > span > i {
     font-style: normal;
-    color: ${`var(${UI.COLOR_PRIMARY_TEXT_OPACITY_25})`};
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
   }
 `

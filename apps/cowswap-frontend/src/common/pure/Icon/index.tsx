@@ -57,7 +57,7 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
   }
 
   > svg > path {
-    fill: ${({ color = UI.COLOR_TEXT1 }) => `var(${color})`};
+    fill: ${({ color = UI.COLOR_TEXT }) => `var(${color})`};
   }
 `
 
