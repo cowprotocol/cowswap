@@ -28,7 +28,9 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
       throw new Error(`Unable to generate permit data`)
     }
 
-    const hooks = buildAppDataHooks([permitData])
+    const hooks = buildAppDataHooks({
+      preInteractionHooks: [permitData],
+    })
 
     return updateHooksOnAppData(appData, hooks)
   } else {
