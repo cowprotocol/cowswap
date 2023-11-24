@@ -1,3 +1,5 @@
+export { PERMIT_SIGNER } from './const'
+
 export { checkIsCallDataAValidPermit } from './lib/checkIsCallDataAValidPermit'
 export { generatePermitHook } from './lib/generatePermitHook'
 export { getPermitUtilsInstance } from './lib/getPermitUtilsInstance'

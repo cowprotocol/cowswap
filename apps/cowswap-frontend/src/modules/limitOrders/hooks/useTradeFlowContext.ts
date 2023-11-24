@@ -22,6 +22,19 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
+export function useLimitHasEnoughAllowance(): boolean | undefined {
+  const state = useLimitOrdersDerivedState()
+  const { chainId, account } = useWalletInfo()
+
+  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const { enoughAllowance } = useEnoughBalanceAndAllowance({
+    account,
+    amount: state.slippageAdjustedSellAmount || undefined,
+    checkAllowanceAddress,
+  })
+  return enoughAllowance
+}
+
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
