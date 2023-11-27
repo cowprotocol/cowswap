@@ -6,7 +6,7 @@ import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   width: 100%;

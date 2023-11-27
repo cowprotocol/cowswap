@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 

@@ -8,7 +8,7 @@ import styled, { css } from 'styled-components/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import { CloseIcon } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   width: 100%;

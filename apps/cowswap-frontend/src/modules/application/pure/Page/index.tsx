@@ -7,7 +7,7 @@ import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;

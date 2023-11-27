@@ -22,7 +22,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { SettingsTabProp } from './index'

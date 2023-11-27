@@ -3,7 +3,7 @@ import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { darken } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
 
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   }
 
   ${OptionCustom} {
-    background-color: var(${UI.COLOR_GREY});
+    background-color: var(${UI.COLOR_PAPER_DARKER});
     border: 0;
 
     > div > input {
@@ -40,7 +40,7 @@ const Wrapper = styled.div`
     }
 
     > button {
-      background-color: var(${UI.COLOR_GREY});
+      background-color: var(${UI.COLOR_PAPER_DARKER});
       border: 0;
     }
 

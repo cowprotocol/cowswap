@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
 import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ModalWrapper = styled.div`
   display: flex;

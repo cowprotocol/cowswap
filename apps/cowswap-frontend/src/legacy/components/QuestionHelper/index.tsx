@@ -6,7 +6,7 @@ import { renderTooltip } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 

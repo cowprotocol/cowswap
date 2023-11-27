@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { IMAGE_ACCOUNT, MOCK_TOKEN } from 'common/constants/cosmos'
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { IconSpinner } from 'common/pure/IconSpinner'
 import { Stepper } from 'common/pure/Stepper'
 

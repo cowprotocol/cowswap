@@ -61,19 +61,23 @@ export function PaletteControl({
   console.log('PaletteControl', { colorPalette, defaultPalette })
 
   return (
-    <FormControl sx={{ width: '100%', gap: '1.6rem' }}>
-      {visibleColorKeys.map((key) => renderColorInput(key))}
+    <>
+      {visibleColorKeys.map((key) => (
+        <FormControl sx={{ width: '100%', gap: '1.6rem' }} key={key}>
+          {renderColorInput(key)}
+        </FormControl>
+      ))}
 
       <Collapse in={expanded}>
-        <FormControl sx={{ width: '100%', gap: '1.6rem' }}>
-          {otherColorKeys.map((colorKey) => (
-            <React.Fragment key={colorKey}>{renderColorInput(colorKey)}</React.Fragment>
-          ))}
-        </FormControl>
+        {otherColorKeys.map((colorKey) => (
+          <FormControl sx={{ width: '100%', margin: '0 0 1.6rem' }} key={colorKey}>
+            {renderColorInput(colorKey)}
+          </FormControl>
+        ))}
       </Collapse>
 
       <Button onClick={() => setExpanded(!expanded)}>{expanded ? 'Less' : 'More'} Options</Button>
       <Button onClick={handleReset}>Reset to Default</Button>
-    </FormControl>
+    </>
   )
 }

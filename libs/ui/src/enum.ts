@@ -9,16 +9,22 @@ export enum UI {
   COLOR_PRIMARY = '--cow-color-primary',
   COLOR_PRIMARY_LIGHTER = '--cow-color-primary-lighter',
   COLOR_PRIMARY_DARKER = '--cow-color-primary-darker',
+  COLOR_PRIMARY_DARKEST = '--cow-color-primary-darkest',
+  COLOR_PRIMARY_OPACITY_50 = '--cow-color-primary-opacity-50',
 
   COLOR_SECONDARY = '--cow-color-secondary',
 
   COLOR_BACKGROUND = '--cow-color-background',
+
   COLOR_PAPER = '--cow-color-paper',
   COLOR_PAPER_DARKER = '--cow-color-paper-darker',
   COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
 
+  BOX_SHADOW = '--cow-box-shadow',
+
   COLOR_TEXT = '--cow-color-text',
   COLOR_TEXT_OPACITY_70 = '--cow-color-text-opacity-70',
+  COLOR_TEXT_OPACITY_50 = '--cow-color-text-opacity-50',
   COLOR_TEXT_OPACITY_25 = '--cow-color-text-opacity-25',
   COLOR_TEXT_OPACITY_10 = '--cow-color-text-opacity-10',
 
@@ -70,7 +76,6 @@ export enum UI {
   MODAL_BACKDROP = '--cow-modal-backdrop',
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
   PADDING_NORMAL = '--cow-padding-normal',
-  BOX_SHADOW_NORMAL = '--cow-box-shadow-normal',
 
   // Icons
   ICON_SIZE_NORMAL = '--cow-icon-size-normal',

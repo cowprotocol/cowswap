@@ -6,7 +6,7 @@ import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export enum IconType {
   ALERT = 'ALERT',

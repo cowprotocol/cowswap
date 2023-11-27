@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 import { Markdown } from 'legacy/components/Markdown'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 

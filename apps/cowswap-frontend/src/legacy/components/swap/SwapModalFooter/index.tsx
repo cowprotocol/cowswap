@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { SwapCallbackError } from 'legacy/components/swap/styleds'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   ${RowBetween} > div,

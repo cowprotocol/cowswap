@@ -3,7 +3,7 @@ import React from 'react'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'

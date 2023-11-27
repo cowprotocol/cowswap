@@ -4,7 +4,7 @@ import { escapeRegExp } from '@cowprotocol/common-utils'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`

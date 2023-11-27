@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'

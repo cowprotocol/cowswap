@@ -7,7 +7,7 @@ import SettingsTab from 'legacy/components/Settings'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const StyledSwapHeader = styled.div`
   width: 100%;

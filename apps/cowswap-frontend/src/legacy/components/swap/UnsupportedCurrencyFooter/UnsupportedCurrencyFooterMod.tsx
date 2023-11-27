@@ -16,7 +16,7 @@ import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { Modal } from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`

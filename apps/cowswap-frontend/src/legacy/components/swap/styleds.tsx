@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
 

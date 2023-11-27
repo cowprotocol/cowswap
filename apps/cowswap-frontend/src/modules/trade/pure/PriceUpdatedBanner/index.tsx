@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`

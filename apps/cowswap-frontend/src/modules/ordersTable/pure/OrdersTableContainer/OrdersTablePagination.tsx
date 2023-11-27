@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export interface OrdersTablePaginationProps {
   getPageUrl?(index: number): Partial<{ pathname: string; search: string }>

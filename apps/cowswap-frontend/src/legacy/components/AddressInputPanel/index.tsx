@@ -1,4 +1,10 @@
-import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
+import {
+  ChangeEvent,
+  // Context,
+  ReactNode,
+  useCallback,
+  // useContext
+} from 'react'
 
 import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
@@ -7,19 +13,19 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro' // { DefaultTheme, ThemeContext }
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
+// import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: 16px;
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   z-index: 1;
   width: 100%;
 `
@@ -30,7 +36,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   align-items: center;
   border-radius: 16px;
   border: 0;
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const InputContainer = styled.div`
@@ -52,7 +58,7 @@ const Input = styled.input<{ error?: boolean }>`
   width: 100%;
 
   &&::placeholder {
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: ${`var(${UI.COLOR_TEXT_OPACITY_50})`};
   }
 
   &:focus::placeholder {
@@ -60,6 +66,7 @@ const Input = styled.input<{ error?: boolean }>`
   }
 
   padding: 0px;
+  appearance: textfield;
   -webkit-appearance: textfield;
 
   ::-webkit-search-decoration {
@@ -94,7 +101,7 @@ export function AddressInputPanel({
   onChange: (value: string) => void
 }) {
   const { chainId } = useWalletInfo()
-  const theme = useContext(ThemeContext as Context<DefaultTheme>)
+  // const theme = useContext(ThemeContext as Context<DefaultTheme>)
 
   const { address, loading, name } = useENS(value)
 
@@ -115,9 +122,7 @@ export function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <ThemedText.Black color={theme.text1} fontWeight={500} fontSize={14}>
-                {label ?? <Trans>Recipient</Trans>}
-              </ThemedText.Black>
+              <span>{label ?? <Trans>Recipient</Trans>}</span>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>

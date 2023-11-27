@@ -12,7 +12,7 @@ import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'

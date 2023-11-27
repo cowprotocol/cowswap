@@ -6,7 +6,7 @@ import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: flex;

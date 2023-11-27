@@ -8,7 +8,7 @@ import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelpe
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

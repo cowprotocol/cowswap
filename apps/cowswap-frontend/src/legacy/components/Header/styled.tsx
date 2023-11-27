@@ -8,7 +8,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const activeClassName = 'active'
 

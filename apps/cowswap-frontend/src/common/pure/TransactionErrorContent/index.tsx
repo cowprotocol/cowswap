@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   width: 100%;

@@ -15,7 +15,7 @@ import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const FlexContainer = styled.div`
   display: flex;

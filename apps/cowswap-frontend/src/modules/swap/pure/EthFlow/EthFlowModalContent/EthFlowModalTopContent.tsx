@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const ModalMessage = styled.div`
   display: flex;

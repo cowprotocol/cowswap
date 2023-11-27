@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { darken, lighten } from 'polished'
 import styled from 'styled-components/macro'
+
+import { UI } from '@cowprotocol/ui'
 
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
 
@@ -33,9 +34,8 @@ const OptionCardLeft = styled.div`
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
   margin-top: 0;
   opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
-  background-color: ${({ theme, active }) => (active ? theme.bg2 : theme.grey1)};
-  color: ${({ theme, active }) => (active ? theme.white : theme.text1)};
-
+  background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
+  color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,11 +46,7 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
 
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    background-color: ${({ theme, clickable }) => {
-      if (!clickable) return
-      else if (!theme.darkMode) return darken(0.05, theme.bg3)
-      else return lighten(0.2, theme.bg3)
-    }};
+    background-color: ${({ clickable }) => clickable && `var(${UI.COLOR_PAPER_DARKER})`};
   }
 `
 

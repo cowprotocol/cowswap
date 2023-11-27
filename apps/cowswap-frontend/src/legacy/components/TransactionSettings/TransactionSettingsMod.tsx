@@ -32,7 +32,7 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'

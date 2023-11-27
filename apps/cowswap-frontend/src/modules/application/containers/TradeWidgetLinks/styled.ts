@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { BadgeType } from '.'
 

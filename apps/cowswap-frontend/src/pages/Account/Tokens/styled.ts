@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 import Column from 'legacy/components/Column'
 import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`

@@ -14,7 +14,7 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 
 export type RequestCancellationModalProps = {

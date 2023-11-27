@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ReceiveAmountBox = styled.div`
   display: flex;

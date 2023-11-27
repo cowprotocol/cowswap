@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const LONG_TEXT_LENGTH = 20
 

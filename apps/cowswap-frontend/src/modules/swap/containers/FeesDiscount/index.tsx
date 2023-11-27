@@ -11,7 +11,7 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme

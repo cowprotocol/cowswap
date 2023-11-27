@@ -3,7 +3,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 interface IconSpinnerProps {
   currency?: Currency | null

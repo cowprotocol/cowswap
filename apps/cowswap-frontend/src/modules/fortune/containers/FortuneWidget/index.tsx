@@ -24,7 +24,7 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`

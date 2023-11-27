@@ -10,7 +10,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { useAccountModalState } from '../../hooks/useAccountModalState'

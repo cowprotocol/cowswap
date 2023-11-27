@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos'
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { IconSpinner } from './index'
 

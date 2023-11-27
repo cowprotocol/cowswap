@@ -3,7 +3,7 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const BannerWrapper = styled.div`
   display: flex;

@@ -5,7 +5,7 @@ import { transparentize } from 'polished'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;

@@ -12,7 +12,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { useHighFeeWarning } from 'modules/swap/hooks/useSwapState'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { AuxInformationContainer } from '../swap/styleds'
 

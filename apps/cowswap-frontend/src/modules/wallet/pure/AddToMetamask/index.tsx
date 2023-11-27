@@ -7,7 +7,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ButtonCustom = styled.button`
   display: flex;

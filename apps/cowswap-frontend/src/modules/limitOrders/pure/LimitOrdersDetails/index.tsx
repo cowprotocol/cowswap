@@ -21,7 +21,7 @@ import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/sta
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
 

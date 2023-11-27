@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { CommonListContainer } from '../../pure/commonElements'
 

@@ -9,7 +9,7 @@ import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
 import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`

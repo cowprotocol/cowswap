@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ButtonCustom = styled.button`
   display: flex;

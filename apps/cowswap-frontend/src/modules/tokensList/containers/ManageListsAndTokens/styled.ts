@@ -1,7 +1,6 @@
-import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { blankButtonMixin } from '../../pure/commonElements'
 
@@ -27,7 +26,7 @@ export const TabsContainer = styled.div`
 
 export const InputError = styled.div`
   margin-top: 20px;
-  color: var(${UI.COLOR_RED});
+  color: ${`var(${UI.COLOR_DANGER})`};
   font-weight: 500;
 `
 
@@ -41,20 +40,20 @@ export const Tab = styled.button<{ active$: boolean }>`
   font-weight: 600;
 
   &:hover {
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: ${`var(${UI.COLOR_SECONDARY_TEXT})`};
   }
 `
 
 export const PrimaryInputBox = styled.div`
   margin: 10px 0 0 0;
   padding: 0 20px 20px 20px;
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
+  border-bottom: 1px solid ${`var(${UI.COLOR_PAPER_DARKEST})`};
 `
 
 export const PrimaryInput = styled.input`
   width: 100%;
   border: none;
-  background: var(${UI.COLOR_GREY});
+  background: ${`var(${UI.COLOR_PAPER_DARKER})`};
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;
@@ -67,7 +66,7 @@ export const PrimaryInput = styled.input`
 
   &:focus {
     ::placeholder {
-      color: ${({ theme }) => transparentize(0.7, theme.text)};
+      color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
     }
   }
 `

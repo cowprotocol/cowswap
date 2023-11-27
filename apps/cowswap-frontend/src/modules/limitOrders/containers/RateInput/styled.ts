@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   background: var(${UI.COLOR_GREY});

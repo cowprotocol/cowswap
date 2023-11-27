@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { COW_SUBSIDY_DATA } from './constants'
 

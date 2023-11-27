@@ -5,7 +5,7 @@ import { LightCard as LightCardUni } from 'legacy/components/Card'
 import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`

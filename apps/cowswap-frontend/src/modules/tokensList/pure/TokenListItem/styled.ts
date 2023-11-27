@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled, { css } from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   border-top: 1px solid var(${UI.COLOR_BORDER});
@@ -28,7 +28,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   }
 
   &:hover {
-    background-color: ${({ disabled }) => !disabled && `var(${UI.COLOR_GREY})`};
+    background-color: ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY_OPACITY_50})`};
   }
 
   ${({ $isVirtual }) =>

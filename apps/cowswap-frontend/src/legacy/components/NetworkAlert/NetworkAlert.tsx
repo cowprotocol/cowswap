@@ -13,7 +13,7 @@ import styled from 'styled-components/macro'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { HideSmall } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const L2Icon = styled.img`
   width: 24px;

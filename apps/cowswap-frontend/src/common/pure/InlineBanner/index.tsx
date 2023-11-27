@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 

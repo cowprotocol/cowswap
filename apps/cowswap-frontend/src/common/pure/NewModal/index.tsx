@@ -4,7 +4,7 @@ import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const ModalInner = styled.div`
   display: flex;

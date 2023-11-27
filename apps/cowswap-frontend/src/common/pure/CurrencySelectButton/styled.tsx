@@ -3,7 +3,7 @@ import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.
 import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
   display: flex;

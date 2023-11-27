@@ -14,7 +14,7 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'

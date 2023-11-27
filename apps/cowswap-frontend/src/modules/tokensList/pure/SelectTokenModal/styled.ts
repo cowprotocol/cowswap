@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
 
@@ -43,22 +43,22 @@ export const SearchInput = styled.input`
   width: 100%;
   white-space: nowrap;
   outline: none;
-  background: var(${UI.COLOR_GREY});
-  color: ${`var(${UI.COLOR_TEXT})`};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: var(${UI.COLOR_TEXT});
   border: 1px solid var(${UI.COLOR_BORDER});
   appearance: none;
   font-size: 16px;
   border-radius: 12px;
 
   ::placeholder {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: var(${UI.COLOR_TEXT});
     opacity: 0.7;
   }
 
   transition: border 100ms;
 
   :focus {
-    border: 1px solid var(${UI.COLOR_LINK});
+    border: 1px solid var(${UI.COLOR_PRIMARY});
     outline: none;
   }
 `

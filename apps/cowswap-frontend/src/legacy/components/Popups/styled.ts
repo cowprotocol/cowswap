@@ -2,7 +2,7 @@ import { animated } from '@react-spring/web'
 import { X } from 'react-feather'
 import styled, { DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const Fader = styled.div`
   position: absolute;

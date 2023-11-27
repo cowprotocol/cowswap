@@ -6,7 +6,7 @@ import cowIcon from 'assets/logo/cow-icon.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,6 +23,7 @@ const StyledExternalLink = styled(ExternalLink)`
   justify-content: center;
   gap: 4px;
   color: var(${UI.COLOR_SECONDARY_TEXT});
+  transition: color 0.2s ease-in-out;
 
   > svg {
     --size: 14px;
@@ -32,6 +33,15 @@ const StyledExternalLink = styled(ExternalLink)`
 
   > svg > g > path {
     fill: var(${UI.COLOR_SECONDARY_TEXT});
+    transition: fill 0.2s ease-in-out;
+  }
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+
+    > svg > g > path {
+      fill: var(${UI.COLOR_TEXT});
+    }
   }
 `
 

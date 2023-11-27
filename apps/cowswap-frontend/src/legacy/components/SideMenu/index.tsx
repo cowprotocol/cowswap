@@ -1,7 +1,7 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   display: flex;

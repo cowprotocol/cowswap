@@ -7,7 +7,7 @@ import { transparentize } from 'polished'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'

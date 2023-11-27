@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { OrderTab } from '../../const/tabs'
 

@@ -4,7 +4,7 @@ import { ArrowLeft, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ButtonText = styled.button`
   outline: none;

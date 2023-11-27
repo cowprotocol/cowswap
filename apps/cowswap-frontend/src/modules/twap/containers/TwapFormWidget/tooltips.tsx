@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const IconImage = styled.div`
   display: flex;

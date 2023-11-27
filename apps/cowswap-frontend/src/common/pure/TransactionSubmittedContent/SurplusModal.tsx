@@ -14,7 +14,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const SELL_SURPLUS_WORD = 'got'

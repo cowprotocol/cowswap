@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { X as CloseIcon } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 const Container = styled.header`
   display: flex;

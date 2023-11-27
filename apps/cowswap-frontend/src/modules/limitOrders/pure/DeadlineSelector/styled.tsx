@@ -3,7 +3,7 @@ import { transparentize } from 'polished'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
   background: var(${UI.COLOR_GREY});

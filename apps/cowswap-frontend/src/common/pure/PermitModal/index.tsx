@@ -8,7 +8,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { UI } from '../../constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { IconSpinner } from '../IconSpinner'
 import { NewModal, NewModalContentBottom, NewModalContentTop, NewModalProps } from '../NewModal'
 import { Stepper, StepProps } from '../Stepper'

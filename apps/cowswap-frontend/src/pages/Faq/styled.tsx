@@ -8,7 +8,7 @@ import { StyledInternalLink } from 'legacy/theme'
 
 import { Content } from 'modules/application/pure/Page'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;

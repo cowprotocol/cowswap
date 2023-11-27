@@ -5,7 +5,7 @@ import { animated } from '@react-spring/web'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -75,16 +75,14 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
 
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    background-color: ${({ theme }) => theme.bg0};
-    border: 1px solid ${({ theme }) => theme.bg1};
+    background: var(${UI.COLOR_PAPER});
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
     padding: 0px;
     width: 50vw;
     overflow-y: auto;
     overflow-x: hidden;
-
     align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
-
     max-width: 420px;
     ${({ $maxHeight }) =>
       $maxHeight &&

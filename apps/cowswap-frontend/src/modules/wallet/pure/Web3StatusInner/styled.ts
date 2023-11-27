@@ -4,7 +4,7 @@ import { darken } from 'polished'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
@@ -58,13 +58,13 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid transparent;
   color: ${`var(${UI.COLOR_TEXT})`};
   font-weight: 500;
 
   &:hover {
-    background-color: var(${UI.COLOR_GREY});
+    background-color: var(${UI.COLOR_PAPER_DARKEST});
     color: ${`var(${UI.COLOR_TEXT})`};
   }
 

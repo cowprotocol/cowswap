@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { ArrowDownCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};

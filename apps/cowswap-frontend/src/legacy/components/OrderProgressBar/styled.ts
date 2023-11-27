@@ -5,7 +5,7 @@ import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;

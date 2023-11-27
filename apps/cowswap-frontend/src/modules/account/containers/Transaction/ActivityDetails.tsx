@@ -16,7 +16,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'

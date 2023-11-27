@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import { Z_INDEX } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   position: relative;

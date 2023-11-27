@@ -8,7 +8,7 @@ import { CloseIcon } from 'legacy/theme'
 
 import { TwapOrderItem } from 'modules/twap/types'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'

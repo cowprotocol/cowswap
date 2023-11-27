@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 import { TransactionStatusText } from 'legacy/components/Copy/index'
 import { LinkStyledButton } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 // MOD imports
 export const CopyIcon = styled(LinkStyledButton)`

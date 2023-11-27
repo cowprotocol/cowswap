@@ -50,9 +50,9 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:disabled {
-    background-color: ${`var(${UI.COLOR_PAPER})`};
-    color: ${`var(${UI.COLOR_BUTTON_TEXT_DISABLED})`};
     background-image: none;
+    background-color: ${`var(${UI.COLOR_PAPER_DARKER})`};
+    color: ${`var(${UI.COLOR_BUTTON_TEXT_DISABLED})`};
     border: 0;
     cursor: auto;
     animation: none;
@@ -178,15 +178,15 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
-  background: ${({ theme }) => theme.danger};
-  color: var(--cow-container-bg-01);
+  background: ${`var(${UI.COLOR_DANGER})`};
+  color: ${`var(${UI.COLOR_DANGER_TEXT})`};
   transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
-    background: ${({ theme }) => theme.danger};
-    color: var(--cow-container-bg-01);
+    background: ${`var(${UI.COLOR_DANGER})`};
+    color: ${`var(${UI.COLOR_DANGER_TEXT})`};
   }
 
   &:hover {

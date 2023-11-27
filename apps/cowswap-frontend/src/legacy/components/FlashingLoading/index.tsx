@@ -4,7 +4,7 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const LoadingWrapper = styled.div`
   display: flex;

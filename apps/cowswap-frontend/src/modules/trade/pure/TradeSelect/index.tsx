@@ -3,7 +3,7 @@ import { transparentize } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 

@@ -13,7 +13,7 @@ import { CopyIcon } from 'legacy/components/Copy'
 import { Icon } from 'legacy/components/CowProtocolLogo'
 import { Step } from 'legacy/components/Stepper'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 

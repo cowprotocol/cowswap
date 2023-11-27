@@ -6,7 +6,7 @@ import { Nullish } from 'types'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { PriceImpactIndicator } from '../PriceImpactIndicator'
 

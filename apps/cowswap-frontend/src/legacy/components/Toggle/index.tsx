@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { darken } from 'polished'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
-
-import { UI } from 'common/constants/theme'
 
 const turnOnToggle = keyframes`
   from {
@@ -43,7 +43,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
   background: ${({ theme, bgColor, isActive }) =>
-    isActive ? bgColor ?? theme.primary1 : bgColor ? theme.bg4 : theme.text3};
+    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : bgColor ? theme.bg4 : theme.text3};
   border-radius: 50%;
   height: 24px;
   :hover {
@@ -56,8 +56,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: var(${UI.COLOR_PAPER});
-  background: ${({ theme, isActive }) => (isActive ? theme.bg2 : theme.grey1)};
+  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -67,14 +66,15 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 
   ${ToggleElement} {
-    color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
+    color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
     transition: background 0.2s ease-in-out;
-    background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
+    background: ${({ isActive }) =>
+      isActive ? `var(${UI.COLOR_PRIMARY_DARKER})` : `var(${UI.COLOR_TEXT_OPACITY_25})`};
 
     &:hover {
       color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
-      background: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_DARKEST})` : `var(${UI.COLOR_TEXT})`)};
     }
   }
 

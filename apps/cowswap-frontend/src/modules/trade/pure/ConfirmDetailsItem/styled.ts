@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: flex;

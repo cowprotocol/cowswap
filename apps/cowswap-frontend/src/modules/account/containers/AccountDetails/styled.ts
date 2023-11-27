@@ -8,7 +8,7 @@ import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import {
   StatusLabelWrapper,
@@ -269,7 +269,7 @@ export const InfoCard = styled.div`
   justify-content: space-between;
   border-radius: 16px;
   padding: 24px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
 
   &:not(:first-child) {
     margin: 24px 0;

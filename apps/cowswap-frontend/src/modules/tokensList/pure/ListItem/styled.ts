@@ -2,7 +2,7 @@ import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 import { blankButtonMixin } from '../commonElements'
 

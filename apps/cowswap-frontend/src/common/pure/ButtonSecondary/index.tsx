@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: string }>`
   background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});

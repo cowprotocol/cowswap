@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 interface RateImpactProps {
   rateImpact: number

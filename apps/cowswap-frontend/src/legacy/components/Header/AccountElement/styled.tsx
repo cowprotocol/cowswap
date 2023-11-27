@@ -1,7 +1,7 @@
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 
 export const BalanceText = styled(Text)`
   font-weight: 500;
@@ -28,7 +28,6 @@ export const Wrapper = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
   white-space: nowrap;
   cursor: pointer;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
@@ -53,6 +52,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&
     `
+    background-color: transparent;
     margin: 0 20px 0 auto!important;
     border: 0!important;
   `}

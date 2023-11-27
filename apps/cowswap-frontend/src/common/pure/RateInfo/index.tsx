@@ -10,7 +10,7 @@ import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { UI } from 'common/constants/theme'
+import { UI } from '@cowprotocol/ui'
 import { usePrice } from 'common/hooks/usePrice'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 
