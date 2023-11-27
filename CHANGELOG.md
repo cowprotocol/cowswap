@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.50.1](https://github.com/cowprotocol/cowswap/compare/v1.50.0...v1.50.1) (2023-11-27)
+
+
+### Bug Fixes
+
+* adds NEW! tag to MORE menu item ([#3448](https://github.com/cowprotocol/cowswap/issues/3448)) ([f6a4358](https://github.com/cowprotocol/cowswap/commit/f6a435847bd872f4e9464ee2eaffced8ea17b755))
+
 ## [1.50.0](https://github.com/cowprotocol/cowswap/compare/v1.49.6...v1.50.0) (2023-11-24)
 
 
