@@ -65,9 +65,11 @@ export function CreatedInOrderBookOrdersUpdater() {
 
       const allTokens = await getTokensForOrdersList(getTokensListFromOrders(ordersInfo))
 
-      return ordersInfo.map(({ item, parent, order }) => {
-        return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
-      })
+      return ordersInfo
+        .map(({ item, parent, order }) => {
+          return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
+        })
+        .filter((order) => !!order)
     },
     [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
     []
