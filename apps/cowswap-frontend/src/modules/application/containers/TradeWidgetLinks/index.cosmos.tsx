@@ -1,10 +1,12 @@
+import { BadgeType } from '@cowprotocol/ui'
+
 import { Widget } from 'modules/application/pure/Widget'
 
-import { TradeWidgetLinks, BadgeType } from '.';
+import { TradeWidgetLinks } from '.'
 
 type BadgeInfo = {
-  text: string;
-  type: BadgeType;
+  text: string
+  type: BadgeType
 }
 
 const BADGES: BadgeInfo[] = [
@@ -13,24 +15,21 @@ const BADGES: BadgeInfo[] = [
   { text: 'ALPHA', type: 'alert' },
   { text: 'NEW!', type: 'alert2' },
   { text: 'RELEASE', type: 'information' },
-];
+]
 
 type Fixtures = {
-  [key: string]: React.FunctionComponent;
-};
+  [key: string]: React.FunctionComponent
+}
 
 const BadgeFixtures = BADGES.reduce<Fixtures>((fixtures, badge) => {
   const Fixture = () => (
     <Widget>
-      <TradeWidgetLinks
-        highlightedBadgeText={badge.text}
-        highlightedBadgeType={badge.type}
-      />
+      <TradeWidgetLinks highlightedBadgeText={badge.text} highlightedBadgeType={badge.type} />
     </Widget>
-  );
+  )
 
-  fixtures[`Badge - ${badge.text} (${badge.type})`] = Fixture;
-  return fixtures;
-}, {});
+  fixtures[`Badge - ${badge.text} (${badge.type})`] = Fixture
+  return fixtures
+}, {})
 
-export default BadgeFixtures;
+export default BadgeFixtures
