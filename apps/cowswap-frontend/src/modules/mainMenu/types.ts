@@ -76,6 +76,7 @@ export interface DropDownItem {
   kind: MenuItemKind.DROP_DOWN
   title: string
   items: DropDownSubItem[]
+  badge?: string
 }
 
 export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem | ParametrizedLink | CustomItem

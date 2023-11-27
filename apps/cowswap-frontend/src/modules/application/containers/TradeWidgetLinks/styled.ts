@@ -1,9 +1,9 @@
+import { BadgeType } from '@cowprotocol/ui'
+
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from 'common/constants/theme'
-
-import { BadgeType } from '.'
 
 const badgeBackgrounds: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFORMATION_BG})`,
