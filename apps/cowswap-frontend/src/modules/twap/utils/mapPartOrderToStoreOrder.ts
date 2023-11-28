@@ -54,3 +54,7 @@ export function mapPartOrderToStoreOrder(
 
   return storeOrder
 }
+
+export function isOrder(order: Order | undefined): order is Order {
+  return !!order
+}
