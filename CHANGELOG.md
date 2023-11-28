@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.50.1](https://github.com/cowprotocol/cowswap/compare/v1.50.0...v1.50.1) (2023-11-27)
+
+
+### Bug Fixes
+
+* adds NEW! tag to MORE menu item ([#3448](https://github.com/cowprotocol/cowswap/issues/3448)) ([f6a4358](https://github.com/cowprotocol/cowswap/commit/f6a435847bd872f4e9464ee2eaffced8ea17b755))
+
+## [1.50.0](https://github.com/cowprotocol/cowswap/compare/v1.49.6...v1.50.0) (2023-11-24)
+
+
+### Features
+
+* refactor snippets ([#3409](https://github.com/cowprotocol/cowswap/issues/3409)) ([1b703ea](https://github.com/cowprotocol/cowswap/commit/1b703ea2aa1735a19be9b90d403b9e952e9a4310))
+* widget skeleton ([#3393](https://github.com/cowprotocol/cowswap/issues/3393)) ([af1add9](https://github.com/cowprotocol/cowswap/commit/af1add99627abf7787e6957724fdec67c4cebf9a))
+* **widget:** embed icons ([#3389](https://github.com/cowprotocol/cowswap/issues/3389)) ([c07a25f](https://github.com/cowprotocol/cowswap/commit/c07a25f5ba1b9bbbdf90ba5d0406d03d4dda9043))
+
+
+### Bug Fixes
+
+* do not send permit to quote when enough allowance ([#3433](https://github.com/cowprotocol/cowswap/issues/3433)) ([58b6ade](https://github.com/cowprotocol/cowswap/commit/58b6ade450537d7bb304947697e7b3e47b34408e))
+* **widget-configurator:** set default trade pair USDC/COW ([#3420](https://github.com/cowprotocol/cowswap/issues/3420)) ([86743fe](https://github.com/cowprotocol/cowswap/commit/86743fe2d51b851d1830fe9b14e7e4b640a36114))
+
 ## [1.49.6](https://github.com/cowprotocol/cowswap/compare/v1.49.5...v1.49.6) (2023-11-16)
 
 
