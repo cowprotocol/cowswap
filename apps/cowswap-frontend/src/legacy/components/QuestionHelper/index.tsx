@@ -23,9 +23,15 @@ export const QuestionWrapper = styled.div`
   cursor: default;
   border-radius: 16px;
   background-color: transparent;
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in-out;
 
   > svg > path {
     stroke: var(${UI.COLOR_TEXT});
+  }
+
+  :hover {
+    opacity: 1;
   }
 `
 

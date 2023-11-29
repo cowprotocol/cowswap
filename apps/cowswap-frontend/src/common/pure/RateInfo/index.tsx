@@ -75,17 +75,17 @@ const InvertIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out, stroke 0.15s ease-in-out;
 
   > svg {
     padding: 1px;
   }
 
   &:hover {
-    background: var(${UI.COLOR_PRIMARY});
+    background: ${`var(${UI.COLOR_TEXT})`};
 
     > svg {
-      stroke: ${({ theme }) => theme.white};
+      stroke: ${`var(${UI.COLOR_PAPER})`};
     }
   }
 `

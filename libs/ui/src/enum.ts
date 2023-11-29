@@ -10,6 +10,8 @@ export enum UI {
   COLOR_PRIMARY_LIGHTER = '--cow-color-primary-lighter',
   COLOR_PRIMARY_DARKER = '--cow-color-primary-darker',
   COLOR_PRIMARY_DARKEST = '--cow-color-primary-darkest',
+  COLOR_PRIMARY_OPACITY_80 = '--cow-color-primary-opacity-80',
+  COLOR_PRIMARY_OPACITY_70 = '--cow-color-primary-opacity-70',
   COLOR_PRIMARY_OPACITY_50 = '--cow-color-primary-opacity-50',
 
   COLOR_SECONDARY = '--cow-color-secondary',
@@ -21,6 +23,7 @@ export enum UI {
   COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
 
   BOX_SHADOW = '--cow-box-shadow',
+  BOX_SHADOW_2 = '--cow-box-shadow-2',
 
   COLOR_TEXT = '--cow-color-text',
   COLOR_TEXT_OPACITY_70 = '--cow-color-text-opacity-70',

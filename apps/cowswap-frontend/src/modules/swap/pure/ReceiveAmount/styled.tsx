@@ -42,10 +42,4 @@ export const QuestionHelperWrapped = styled(QuestionHelper)`
   display: inline-block;
   vertical-align: bottom;
   line-height: 0;
-  opacity: 0.5;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
 `

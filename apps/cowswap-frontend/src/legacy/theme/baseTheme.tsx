@@ -157,19 +157,19 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     colorScrollbar: css`
       // Firefox only
-      scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
+      scrollbar-color: ${`var(${UI.COLOR_PAPER_DARKEST})`} ${`var(${UI.COLOR_PAPER_DARKER})`};
       scroll-behavior: smooth;
 
       // Webkit browsers only
       &::-webkit-scrollbar {
-        background: ${transparentize(0.6, colorsTheme.grey1)};
+        background: ${`var(${UI.COLOR_PAPER_DARKER})`};
         width: 8px;
         height: 8px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: ${transparentize(0.7, colorsTheme.text2)};
-        border: 3px solid ${transparentize(0.7, colorsTheme.text2)};
+        background: ${`var(${UI.COLOR_PAPER_DARKER})`};
+        border: 3px solid ${`var(${UI.COLOR_PAPER_DARKEST})`};
         border-radius: 14px;
         background-clip: padding-box;
       }
@@ -410,6 +410,8 @@ export const UniThemedGlobalStyle = css`
       theme.darkMode ? darken(0.2, theme.primary) : darken(0.05, theme.primary)};
     ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(0.4, theme.primary) : darken(0.1, theme.primary)};
+    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(0.8, theme.primary)};
+    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(0.7, theme.primary)};
     ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(0.5, theme.primary)};
 
     ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary}; // for now we use the same color as primary
@@ -424,6 +426,7 @@ export const UniThemedGlobalStyle = css`
 
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKEST});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(0.94, theme.primary)};
+    ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(0.94, theme.primary)};
 
     ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
     ${UI.COLOR_TEXT_OPACITY_70}: ${({ theme }) => transparentize(0.3, theme.text)};
