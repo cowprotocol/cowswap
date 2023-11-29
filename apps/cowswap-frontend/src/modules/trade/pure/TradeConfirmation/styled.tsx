@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
-
 import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const WidgetWrapper = styled.div`
   width: 100%;

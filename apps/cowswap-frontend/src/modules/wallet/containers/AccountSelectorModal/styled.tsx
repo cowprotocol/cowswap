@@ -1,8 +1,7 @@
 import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const CloseIcon = styled(Close)`
   opacity: 0.6;

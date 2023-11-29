@@ -3,6 +3,7 @@ import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'r
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +11,6 @@ import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { UI } from '@cowprotocol/ui'
 import { usePrice } from 'common/hooks/usePrice'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 

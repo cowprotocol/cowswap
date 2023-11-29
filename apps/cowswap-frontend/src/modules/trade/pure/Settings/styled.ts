@@ -1,9 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'polished'
 import { Settings as SettingsIconRaw } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const SettingsTitle = styled.h3`
   font-weight: 600;

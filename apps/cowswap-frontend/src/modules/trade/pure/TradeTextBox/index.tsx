@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
-
 import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 

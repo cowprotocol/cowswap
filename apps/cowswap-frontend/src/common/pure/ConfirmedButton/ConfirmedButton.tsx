@@ -1,10 +1,9 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
 import { ButtonError } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 const Container = styled.div``
 const Instruction = styled.p`

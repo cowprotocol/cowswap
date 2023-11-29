@@ -1,14 +1,14 @@
-import styled from 'styled-components/macro'
-
 import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const MenuBadge = styled.div`
   display: flex;
   align-items: center;
   padding: 0 5px;
   margin-left: 5px;
-  background: var(${UI.COLOR_ALERT2_BG});
-  color: var(${UI.COLOR_ALERT2_TEXT});
+  background: var(${UI.COLOR_ALERT_BG});
+  color: var(${UI.COLOR_ALERT_TEXT});
   border: 0;
   cursor: pointer;
   border-radius: 16px;

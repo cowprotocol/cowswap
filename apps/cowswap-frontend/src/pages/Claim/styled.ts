@@ -3,6 +3,7 @@ import LogoETH from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import LogoUSDC from '@cowprotocol/assets/cow-swap/usdc.png'
 import LogoXDAI from '@cowprotocol/assets/cow-swap/xdai.png'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize, darken, lighten } from 'polished'
 import { CheckCircle, Frown } from 'react-feather'
@@ -12,8 +13,6 @@ import BadgeOriginal from 'legacy/components/Badge'
 import { CopyIcon } from 'legacy/components/Copy'
 import { Icon } from 'legacy/components/CowProtocolLogo'
 import { Step } from 'legacy/components/Stepper'
-
-import { UI } from '@cowprotocol/ui'
 
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
@@ -35,79 +34,77 @@ export const InnerPageWrapper = styled.div`
     padding: 16px;
     border-radius: var(--border-radius-small);
   `};
-}
 
-a {
-  color: ${({ theme }) => theme.primary4};
-}
+  a {
+    color: ${({ theme }) => theme.primary4};
+  }
 
-> a {
-  width: 100%;
-}
+  > a {
+    width: 100%;
+  }
 
-p {
-  font-size: 16px;
-  display: block;
-  line-height: 1.6;
-  font-weight: 300;
-  margin: 0 0 24px;
-  text-align: center;
-}
+  p {
+    font-size: 16px;
+    display: block;
+    line-height: 1.6;
+    font-weight: 300;
+    margin: 0 0 24px;
+    text-align: center;
+  }
 
-p > i {
-  color: ${({ theme }) => theme.primary1};
-}
+  p > i {
+    color: ${({ theme }) => theme.primary1};
+  }
 
-p > a {
-  display: inline;
-  color: ${({ theme }) => darken(0.1, theme.primary1)};
-}
+  p > a {
+    display: inline;
+    color: ${({ theme }) => darken(0.1, theme.primary1)};
+  }
 
-${ButtonPrimary} {
-  border-radius: var(--border-radius);
-  width: 100%;
-  font-size: 21px;
-  padding: 24px 16px;
+  ${ButtonPrimary} {
+    border-radius: var(--border-radius);
+    width: 100%;
+    font-size: 21px;
+    padding: 24px 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 auto 24px;
   `};
 
-  &[disabled] {
-    cursor: not-allowed;
-    pointer-events: all;
+    &[disabled] {
+      cursor: not-allowed;
+      pointer-events: all;
+    }
   }
-}
 
-${ButtonSecondary} {
-  background: 0;
-  color: ${({ theme }) => theme.primary4};
-  border: none;
-
-  &:hover {
-    border: 0;
-    box-shadow: none;
-    transform: none;
+  ${ButtonSecondary} {
     background: 0;
     color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
-  }
-}
+    border: none;
 
-${Step} {
-  > b {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    &:hover {
+      border: 0;
+      box-shadow: none;
+      transform: none;
+      background: 0;
+      color: ${({ theme }) => theme.primary4};
+      text-decoration: underline;
+    }
+  }
+
+  ${Step} {
+    > b {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 13px;
     `};
-  }
+    }
 
-  > i {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    > i {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       display: none;
     `};
+    }
   }
-
-}
 `
 
 export const PageWrapper = styled.div`
@@ -897,6 +894,7 @@ export const CheckAddress = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 0 0 6px;
    `}
+
     > h1 {
       font-size: 32px;
       font-weight: 300;
@@ -913,6 +911,7 @@ export const CheckAddress = styled.div`
       line-height: 1.2;
       margin: 0 0 24px;
     }
+  }
 `
 
 export const ClaimBreakdown = styled.div`
@@ -1349,6 +1348,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
       margin: 0;
       padding: 0;
     `};
+  }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1707,7 +1707,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
           ? SuccessBannerColors.discord
           : theme.text1};
     }
-
+  }
 `
 
 export const StepExplainer = styled.div`

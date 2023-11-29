@@ -1,13 +1,12 @@
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -477,7 +476,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       listIconAlert &&
       css`
         > path {
-          fill: ${transparentize(0.6, theme.text)};
+          fill: ${({ theme }) => transparentize(0.6, theme.text)};
         }
       `}
   }

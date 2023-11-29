@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 import { blankButtonMixin } from '../commonElements'
 
@@ -55,7 +55,7 @@ export const SettingsAction = styled.div`
 `
 
 export const ListVersion = styled.div`
-  color: var(${UI.COLOR_TEXT_INACTIVE});
+  color: var(${UI.COLOR_DISABLED_TEXT});
   border-bottom: 1px solid var(${UI.COLOR_GREY});
   padding: 0 5px 10px 5px;
 `

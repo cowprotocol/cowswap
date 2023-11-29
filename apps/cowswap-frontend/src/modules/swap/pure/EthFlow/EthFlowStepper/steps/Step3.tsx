@@ -4,10 +4,9 @@ import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
 import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'

@@ -1,12 +1,11 @@
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   width: 100%;

@@ -1,9 +1,8 @@
 import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const TermsWrapper = styled.div`
   color: ${`var(${UI.COLOR_TEXT})`};

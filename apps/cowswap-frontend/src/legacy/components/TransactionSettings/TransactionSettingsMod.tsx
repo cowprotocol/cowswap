@@ -17,6 +17,7 @@ import {
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { FancyButton } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -32,7 +33,6 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
-import { UI } from '@cowprotocol/ui'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'

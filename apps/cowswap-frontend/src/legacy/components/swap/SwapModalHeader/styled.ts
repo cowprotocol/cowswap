@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -5,7 +7,6 @@ import { LightCard as LightCardUni } from 'legacy/components/Card'
 import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 
-import { UI } from '@cowprotocol/ui'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`

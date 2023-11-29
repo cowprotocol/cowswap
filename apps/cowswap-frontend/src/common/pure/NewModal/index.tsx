@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 const ModalInner = styled.div`
   display: flex;
@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
   overflow-y: auto;
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: var(${UI.BOX_SHADOW_NORMAL});
+  box-shadow: var(${UI.BOX_SHADOW});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;

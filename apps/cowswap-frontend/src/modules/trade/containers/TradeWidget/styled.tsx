@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Container = styled.div`
   width: 100%;

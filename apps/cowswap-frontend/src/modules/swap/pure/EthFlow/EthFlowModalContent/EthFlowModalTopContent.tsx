@@ -1,10 +1,10 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { transparentize, darken } from 'polished'
 import styled from 'styled-components/macro'
 
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
-
-import { UI } from '@cowprotocol/ui'
 
 const ModalMessage = styled.div`
   display: flex;

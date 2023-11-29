@@ -1,5 +1,6 @@
 import { AutoRow } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'
@@ -10,8 +11,6 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
-
-import { UI } from '@cowprotocol/ui'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme

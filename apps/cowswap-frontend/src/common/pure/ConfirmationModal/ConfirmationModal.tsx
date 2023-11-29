@@ -1,7 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
 import { ContentWrapper, Modal } from 'common/pure/Modal'
 
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'

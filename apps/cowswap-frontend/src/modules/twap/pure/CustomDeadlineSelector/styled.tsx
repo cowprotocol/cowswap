@@ -1,12 +1,11 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
 import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'
-
-import { UI } from '@cowprotocol/ui'
 
 export const ModalWrapper = styled.div`
   display: flex;

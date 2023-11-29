@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize, darken } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -5,7 +7,6 @@ import styled from 'styled-components/macro'
 import Column from 'legacy/components/Column'
 import { ThemedText } from 'legacy/theme'
 
-import { UI } from '@cowprotocol/ui'
 import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`

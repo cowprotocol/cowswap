@@ -1,9 +1,8 @@
 import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div<{ totalSteps: number }>`
   width: 100%;

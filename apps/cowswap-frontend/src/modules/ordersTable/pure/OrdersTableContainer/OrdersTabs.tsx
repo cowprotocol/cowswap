@@ -1,11 +1,11 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
-
-import { UI } from '@cowprotocol/ui'
 
 import { OrderTab } from '../../const/tabs'
 

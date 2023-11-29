@@ -1,12 +1,11 @@
 import { FiatAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-
-import { UI } from '@cowprotocol/ui'
 
 import { PriceImpactIndicator } from '../PriceImpactIndicator'
 

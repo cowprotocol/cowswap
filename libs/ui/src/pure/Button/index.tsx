@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react'
 
-import { transparentize, darken, lighten } from 'polished'
+import { darken } from 'polished'
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'

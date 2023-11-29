@@ -2,11 +2,10 @@ import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
 import { renderTooltip } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 

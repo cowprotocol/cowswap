@@ -1,6 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TooltipContainer } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { AlertTriangle } from 'react-feather'
@@ -8,8 +9,6 @@ import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
 

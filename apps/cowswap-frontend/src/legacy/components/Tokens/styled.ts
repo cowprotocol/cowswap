@@ -1,12 +1,11 @@
 import { TokenLogo } from '@cowprotocol/tokens'
 import { BaseButton } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -213,7 +212,7 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => (hasBalance ? `var(${UI.COLOR_TEXT})` : transparentize(0.3, `var(${UI.COLOR_TEXT})`)
+  color: ${({ hasBalance }) => (hasBalance ? `var(${UI.COLOR_TEXT})` : transparentize(0.3, `var(${UI.COLOR_TEXT} )`))};
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;

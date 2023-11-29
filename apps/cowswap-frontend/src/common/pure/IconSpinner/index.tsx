@@ -1,9 +1,8 @@
 import { TokenLogo } from '@cowprotocol/tokens'
+import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 interface IconSpinnerProps {
   currency?: Currency | null

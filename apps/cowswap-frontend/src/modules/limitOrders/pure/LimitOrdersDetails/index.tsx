@@ -4,6 +4,7 @@ import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -21,7 +22,6 @@ import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/sta
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { UI } from '@cowprotocol/ui'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
 

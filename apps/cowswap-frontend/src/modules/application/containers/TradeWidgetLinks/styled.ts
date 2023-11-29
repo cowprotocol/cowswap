@@ -1,7 +1,7 @@
+import { UI } from '@cowprotocol/ui'
+
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 import { BadgeType } from '.'
 
@@ -18,7 +18,7 @@ const badgeColors: Record<BadgeType, string> = {
   alert: `var(${UI.COLOR_ALERT_TEXT})`,
   alert2: `var(${UI.COLOR_ALERT_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
-  default: `var(${UI.COLOR_TEXT_INACTIVE})`, // text only
+  default: `var(${UI.COLOR_DISABLED_TEXT})`, // text only
 }
 
 export const Badge = styled.div<{ type?: BadgeType }>`

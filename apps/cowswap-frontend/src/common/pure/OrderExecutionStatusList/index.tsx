@@ -1,3 +1,4 @@
+import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'

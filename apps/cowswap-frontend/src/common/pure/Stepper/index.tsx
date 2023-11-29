@@ -1,8 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import ICON_CHECK from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
 import { IconSpinner } from 'common/pure/IconSpinner'
 
 type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'

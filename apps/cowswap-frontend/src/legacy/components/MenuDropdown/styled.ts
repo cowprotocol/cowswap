@@ -1,7 +1,7 @@
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const MenuFlyout = styled.ol`
   display: flex;

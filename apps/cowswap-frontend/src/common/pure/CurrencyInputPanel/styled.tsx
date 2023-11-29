@@ -1,11 +1,10 @@
 import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
-
-import { UI } from '@cowprotocol/ui'
 
 export const OuterWrapper = styled.div`
   max-width: 100%;

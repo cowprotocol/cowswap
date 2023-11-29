@@ -1,12 +1,11 @@
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: flex;

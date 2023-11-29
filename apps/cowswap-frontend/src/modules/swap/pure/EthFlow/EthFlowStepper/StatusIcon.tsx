@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -25,7 +27,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   justify-content: center;
   align-items: center;
   margin: 0 0 6px;
-  border: ${({ status, theme }) =>
+  border: ${({ status }) =>
     status === 'pending'
       ? 'none'
       : status === 'error'

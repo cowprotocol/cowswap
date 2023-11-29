@@ -1,11 +1,11 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { MarkdownPage } from 'legacy/components/Markdown'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { GdocsListStyle } from 'modules/application/pure/Page'
-
-import { UI } from '@cowprotocol/ui'
 
 import contentFile from './CookiePolicy.md'
 

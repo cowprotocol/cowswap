@@ -7,6 +7,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
@@ -16,7 +17,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { UI } from '@cowprotocol/ui'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'

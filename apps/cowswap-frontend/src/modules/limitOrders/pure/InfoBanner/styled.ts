@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize, lighten } from 'polished'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const InfoPopup = styled.div`
   display: flex;

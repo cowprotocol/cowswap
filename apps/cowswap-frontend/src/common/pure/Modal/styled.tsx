@@ -1,11 +1,11 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

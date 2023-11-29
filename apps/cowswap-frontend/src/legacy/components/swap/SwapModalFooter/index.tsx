@@ -1,14 +1,13 @@
 import { ReactNode } from 'react'
 
 import { ButtonSize, ButtonError, AutoRow, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { SwapCallbackError } from 'legacy/components/swap/styleds'
-
-import { UI } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   ${RowBetween} > div,

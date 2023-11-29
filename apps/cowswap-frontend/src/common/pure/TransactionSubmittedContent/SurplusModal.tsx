@@ -7,6 +7,7 @@ import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
@@ -14,7 +15,6 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { UI } from '@cowprotocol/ui'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const SELL_SURPLUS_WORD = 'got'

@@ -1,11 +1,9 @@
-import { useContext } from 'react'
+import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'polished'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
@@ -49,7 +47,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   align-items: center;
   font-size: 15px;
   font-weight: 500;
-  color: ${({ theme, $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
     background: ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -65,8 +63,6 @@ export interface OrderContextMenuProps {
 }
 
 export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
-  const theme = useContext(ThemeContext)
-
   return (
     <Menu>
       <ContextMenuButton>

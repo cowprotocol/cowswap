@@ -10,6 +10,7 @@ import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-util
 import { useENS } from '@cowprotocol/ens'
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
@@ -18,7 +19,6 @@ import styled from 'styled-components/macro' // { DefaultTheme, ThemeContext }
 import { AutoColumn } from 'legacy/components/Column'
 // import { ThemedText } from 'legacy/theme'
 
-import { UI } from '@cowprotocol/ui'
 import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`

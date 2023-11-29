@@ -1,10 +1,9 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { darken } from 'polished'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 

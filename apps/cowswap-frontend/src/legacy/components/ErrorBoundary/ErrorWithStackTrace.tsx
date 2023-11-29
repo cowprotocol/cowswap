@@ -5,6 +5,7 @@ import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -14,8 +15,6 @@ import { cowSwapStore, AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
-
-import { UI } from '@cowprotocol/ui'
 
 const FlexContainer = styled.div`
   display: flex;

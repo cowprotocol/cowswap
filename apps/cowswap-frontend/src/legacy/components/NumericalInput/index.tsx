@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { escapeRegExp } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -22,7 +22,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px;
-  -webkit-appearance: textfield;
+  appearance: textfield;
   text-align: right;
 
   ::-webkit-search-decoration {

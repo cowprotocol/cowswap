@@ -1,14 +1,13 @@
 import { PropsWithChildren } from 'react'
 
 import { Row, RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
-
-import { UI } from '@cowprotocol/ui'
 
 const activeClassName = 'active'
 

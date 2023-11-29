@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { X as CloseIcon } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 const Container = styled.header`
   display: flex;

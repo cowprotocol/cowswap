@@ -1,5 +1,6 @@
 import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
@@ -9,7 +10,6 @@ import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
 import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
 
-import { UI } from '@cowprotocol/ui'
 import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`

@@ -1,8 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
-import { UI } from '@cowprotocol/ui'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const DetailsRow = styled.div`

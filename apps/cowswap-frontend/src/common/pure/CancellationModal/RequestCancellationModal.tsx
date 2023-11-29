@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
-import { UI } from '@cowprotocol/ui'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 
 export type RequestCancellationModalProps = {

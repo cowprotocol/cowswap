@@ -1,9 +1,8 @@
 import { TokenSymbol } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: block;

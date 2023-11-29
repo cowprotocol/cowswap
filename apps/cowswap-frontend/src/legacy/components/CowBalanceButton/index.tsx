@@ -1,12 +1,11 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-
-import { UI } from '@cowprotocol/ui'
 
 import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 

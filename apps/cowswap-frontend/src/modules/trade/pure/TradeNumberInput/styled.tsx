@@ -1,9 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
-
-import { UI } from '@cowprotocol/ui'
 
 export const Suffix = styled.span`
   margin: 0 0 0 3px;

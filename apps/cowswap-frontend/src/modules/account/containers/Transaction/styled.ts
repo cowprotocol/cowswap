@@ -1,12 +1,12 @@
 import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { LinkStyledButton } from 'legacy/theme'
 
-import { UI } from '@cowprotocol/ui'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`

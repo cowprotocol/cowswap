@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 export const ButtonCustom = styled.button`
   display: flex;

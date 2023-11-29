@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
-
 import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const TagContainer = styled.div`
   display: flex;

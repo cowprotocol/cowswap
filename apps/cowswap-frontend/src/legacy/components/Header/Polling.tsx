@@ -5,6 +5,7 @@ import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowprotocol/common-
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -15,8 +16,6 @@ import styled, { keyframes } from 'styled-components/macro'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import { ThemedText } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 

@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
 import { MouseoverTooltipContent, TooltipContainer } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Info, HelpCircle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 const StyledIcon = styled.div`
   display: inline-block;

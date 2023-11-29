@@ -1,8 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
 import { Modal } from 'common/pure/Modal'
 
 import { ConfirmedButton } from '../ConfirmedButton'

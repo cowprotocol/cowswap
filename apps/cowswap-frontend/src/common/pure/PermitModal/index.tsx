@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ICON_ARROW from 'assets/icon/arrow.svg'
@@ -8,7 +9,6 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { UI } from '@cowprotocol/ui'
 import { IconSpinner } from '../IconSpinner'
 import { NewModal, NewModalContentBottom, NewModalContentTop, NewModalProps } from '../NewModal'
 import { Stepper, StepProps } from '../Stepper'

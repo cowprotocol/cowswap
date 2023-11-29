@@ -1,11 +1,10 @@
 import { RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
-
-import { UI } from '@cowprotocol/ui'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 

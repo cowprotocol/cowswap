@@ -1,5 +1,6 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -7,8 +8,6 @@ import styled from 'styled-components/macro'
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-
-import { UI } from '@cowprotocol/ui'
 
 import {
   StatusLabelWrapper,

@@ -1,9 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
-import { transparentize } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '@cowprotocol/ui'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 

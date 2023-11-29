@@ -2,6 +2,7 @@ import { useFetchFile } from '@cowprotocol/common-hooks'
 import { hashCode } from '@cowprotocol/common-utils'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertTriangle } from 'react-feather'
@@ -9,8 +10,6 @@ import styled from 'styled-components/macro'
 
 import { Markdown } from 'legacy/components/Markdown'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
-
-import { UI } from '@cowprotocol/ui'
 
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 

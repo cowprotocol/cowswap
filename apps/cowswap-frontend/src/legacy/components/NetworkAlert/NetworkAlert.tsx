@@ -3,6 +3,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -12,8 +13,6 @@ import styled from 'styled-components/macro'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { HideSmall } from 'legacy/theme'
-
-import { UI } from '@cowprotocol/ui'
 
 const L2Icon = styled.img`
   width: 24px;

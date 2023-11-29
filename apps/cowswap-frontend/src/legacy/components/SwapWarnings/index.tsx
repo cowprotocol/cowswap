@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
@@ -11,8 +12,6 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useHighFeeWarning } from 'modules/swap/hooks/useSwapState'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
-
-import { UI } from '@cowprotocol/ui'
 
 import { AuxInformationContainer } from '../swap/styleds'
 
