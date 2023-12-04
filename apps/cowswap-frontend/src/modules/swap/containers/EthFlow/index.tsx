@@ -17,7 +17,8 @@ import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
-import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
+import { useTradeApproveCallback } from 'common/containers/TradeApprove'
+import { useApproveState } from 'common/hooks/useApproveState'
 import { CowModal } from 'common/pure/Modal'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -44,7 +45,7 @@ function EthFlow({
   const isExpertMode = useIsExpertMode()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const approvalState = useTradeApproveState(nativeInput || null)
+  const approvalState = useApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
