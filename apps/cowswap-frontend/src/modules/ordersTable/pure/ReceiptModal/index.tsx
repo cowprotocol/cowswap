@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
+
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -51,6 +53,7 @@ interface ReceiptProps {
 
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
+  EXECUTED_AMOUNT: 'What exact amount was the order executed for',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
   EXECUTES_AT:
     'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
@@ -104,14 +107,29 @@ export function ReceiptModal({
 
   const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
 
+  const isSellOrder = order?.kind === OrderKind.SELL
+
+  const { executedBuyAmount, executedSellAmount } = order?.executionData || {}
+
+  const executedAmount = useMemo(() => {
+    const amount = isSellOrder ? executedBuyAmount : executedSellAmount
+    const token = isSellOrder ? order.outputToken : order.inputToken
+
+    if (!amount || !token) return undefined
+
+    return executedBuyAmount ? CurrencyAmount.fromRawAmount(token, amount.toString()) : undefined
+  }, [isSellOrder, order, executedBuyAmount, executedSellAmount])
+
+  const isOrderPartiallyFilled = order.status === OrderStatus.FULFILLED || order.executionData.partiallyFilled
+
   if (!order || !chainId) {
     return null
   }
 
   const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
 
-  const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
-  const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
+  const inputLabel = isSellOrder ? 'You sell' : 'You sell at most'
+  const outputLabel = isSellOrder ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
   return (
@@ -171,6 +189,15 @@ export function ReceiptModal({
               <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
+
+            {isOrderPartiallyFilled && (
+              <styledEl.Field>
+                <FieldLabel label="Executed amount" tooltip={tooltips.EXECUTED_AMOUNT} />
+                <styledEl.Value>
+                  <TokenAmount amount={executedAmount} tokenSymbol={executedAmount?.currency} />
+                </styledEl.Value>
+              </styledEl.Field>
+            )}
 
             {(!twapOrder || isTwapPartOrder) && (
               <styledEl.Field>
