@@ -2,7 +2,7 @@ import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
@@ -411,8 +411,8 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   border-radius: 12px;
   font-size: 13px;
   background: ${({ theme, highlight }) =>
-    highlight ? (theme.darkMode ? transparentize(0.8, theme.text3) : transparentize(0.9, theme.text3)) : theme.bg1};
-  border: 1px solid ${({ highlight }) => (highlight ? 'none' : transparentize(0.8, `var(${UI.COLOR_TEXT})`))};
+    highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
+  border: 1px solid ${({ highlight }) => (highlight ? 'none' : transparentize(`var(${UI.COLOR_TEXT})`, 0.8))};
   position: relative;
 
   &::before {
@@ -486,7 +486,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       listIconAlert &&
       css`
         > path {
-          fill: ${({ theme }) => transparentize(0.6, theme.text)};
+          fill: ${({ theme }) => transparentize(theme.text, 0.6)};
         }
       `}
   }

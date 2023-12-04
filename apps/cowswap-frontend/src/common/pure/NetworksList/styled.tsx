@@ -1,11 +1,11 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { ArrowDownCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  background-color: ${({ theme }) => transparentize(theme.bg4, 0.4)};
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
@@ -55,7 +55,7 @@ export const FlyoutRow = styled.div<{ active: boolean }>`
 
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && transparentize(0.9, theme.text)};
+    background: ${({ theme, active }) => !active && transparentize(theme.text, 0.9)};
   }
 
   transition: background 0.13s ease-in-out;

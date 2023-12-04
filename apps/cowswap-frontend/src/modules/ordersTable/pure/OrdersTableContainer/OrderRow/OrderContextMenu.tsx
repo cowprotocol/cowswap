@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -22,7 +22,7 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 
   &:hover {
-    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.text)};
+    outline: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
   }
 `
 export const ContextMenuList = styled(MenuList)`
@@ -50,7 +50,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   color: ${({ $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    background: ${({ theme }) => transparentize(theme.text3, 0.8)};
   }
 `
 
@@ -66,7 +66,7 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
   return (
     <Menu>
       <ContextMenuButton>
-        <MoreVertical color={transparentize(0.5, `var(${UI.COLOR_TEXT})`)} />
+        <MoreVertical color={transparentize(`var(${UI.COLOR_TEXT})`, 0.5)} />
       </ContextMenuButton>
       <ContextMenuList>
         <ContextMenuItem onSelect={openReceipt}>

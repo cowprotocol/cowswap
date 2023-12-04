@@ -4,7 +4,7 @@ import { TokenAmount } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { transparentize, lighten } from 'polished'
+import { transparentize, lighten } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -42,7 +42,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
 
   &:last-child {
     border-bottom: 0;
@@ -65,7 +65,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   }
 
   > td:first-child {
-    border-right: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
+    border-right: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
   }
 
   > td,
@@ -134,7 +134,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     }
 
     &:hover {
-      background: ${lighten(0.05, theme.bg2)};
+      background: ${lighten(theme.bg2, 0.05)};
 
         > td {
           background: transparent;
@@ -147,11 +147,11 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     `
     @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.white)};
+        box-shadow: 0 0 0 0 ${transparentize(theme.white, 0.7)};
       }
 
       100% {
-        box-shadow: 0 0 0 8px ${transparentize(1, theme.white)};
+        box-shadow: 0 0 0 8px ${transparentize(theme.white, 1)};
       }
     }
   `}

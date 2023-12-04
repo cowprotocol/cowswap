@@ -6,7 +6,7 @@ import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
-import { darken, transparentize } from 'polished'
+import { darken, transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -53,8 +53,8 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
 const UnfillableLabel = styled.span`
   width: 100%;
   max-width: 90px;
-  background: ${({ theme }) => transparentize(0.86, theme.attention)};
-  color: ${({ theme }) => darken(0.15, theme.attention)};
+  background: ${({ theme }) => transparentize(theme.attention, 0.86)};
+  color: ${({ theme }) => darken(theme.attention, 0.15)};
   position: relative;
   border-radius: 9px;
   display: flex;

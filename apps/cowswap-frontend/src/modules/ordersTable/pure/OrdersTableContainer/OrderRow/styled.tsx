@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
@@ -13,8 +13,8 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   background: ${({ theme, hasBackground = true }) =>
     hasBackground
       ? theme.darkMode
-        ? transparentize(0.9, theme.alert)
-        : transparentize(0.85, theme.alert)
+        ? transparentize(theme.alert, 0.9)
+        : transparentize(theme.alert, 0.85)
       : 'transparent'};
   color: ${({ theme }) => theme.alert};
   line-height: 0;
@@ -112,7 +112,7 @@ export const CellElement = styled.div<{
   flex-direction: row;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(theme.text3, 0.92) : 'transparent')};
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
@@ -207,7 +207,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   margin: 0;
   height: 5px;
   width: 100%;
-  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text))};
+  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(theme.text, 0.92))};
   border-radius: 6px;
 
   &::before {
@@ -242,11 +242,11 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   width: 100%;
   height: 28px;
 
-  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.7, theme.bg1)} 100%);
+  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.7)} 100%);
   background-size: 200% 100%;
   background-position: 100% 0;
 
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text)};
+  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
   padding: 0 6px 0 10px;
   cursor: pointer;
   transition: background 0.5s ease-in-out;
@@ -272,10 +272,10 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
       background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%);
     }
     50% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.1, theme.bg1)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.1)} 100%);
     }
     100% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.5, theme.bg1)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.5)} 100%);
     }
   }
 
@@ -310,7 +310,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     min-height: var(--size);
     line-height: 1;
     background: transparent;
-    border: 1px solid ${({ theme }) => transparentize(0.8, theme.text)};
+    border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
     border-radius: 6px;
     user-select: none;
   }

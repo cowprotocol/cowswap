@@ -7,7 +7,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -36,7 +36,7 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
   min-height: 490px;
   padding: 0;
 
@@ -49,7 +49,7 @@ const Content = styled.div`
     align-items: center;
     justify-content: center;
     margin: 0 0 16px;
-    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    background: ${({ theme }) => transparentize(theme.text3, 0.8)};
     transform: rotate(0);
     transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 

@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const MenuFlyout = styled.ol`
@@ -51,7 +51,7 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.6)};
   background: var(${UI.COLOR_PAPER});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;

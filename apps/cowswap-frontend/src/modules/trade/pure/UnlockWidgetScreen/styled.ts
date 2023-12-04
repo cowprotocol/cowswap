@@ -1,12 +1,12 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(0.03, theme.bg1) : theme.grey1)};
+  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg1, 0.03) : theme.grey1)};
 `
 
 export const TitleSection = styled.div`
@@ -54,7 +54,7 @@ export const List = styled.ul`
     position: relative;
 
     &[data-is-new='true'] {
-      background: ${({ theme }) => transparentize(0.87, theme.success)};
+      background: ${({ theme }) => transparentize(theme.success, 0.87)};
 
       &::after {
         content: 'NEW!';
@@ -64,7 +64,7 @@ export const List = styled.ul`
         display: block;
         padding: 3px 5px;
         background: ${({ theme }) => theme.success};
-        color: ${({ theme }) => (theme.darkMode ? darken(0.5, theme.success) : theme.white)};
+        color: ${({ theme }) => (theme.darkMode ? darken(theme.success, 0.5) : theme.white)};
         border-radius: 10px;
         font-size: 9px;
         font-weight: bold;

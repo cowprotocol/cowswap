@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { lighten } from 'polished'
+import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
 import { WithClassName } from 'legacy/types'
@@ -159,7 +159,7 @@ export const BackToTopStyle = css`
     }
 
     &:hover {
-      background: ${({ theme }) => lighten(0.08, theme.bg2)};
+      background: ${({ theme }) => lighten(theme.bg2, 0.08)};
     }
   }
 `

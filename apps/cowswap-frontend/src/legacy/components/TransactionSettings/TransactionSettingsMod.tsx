@@ -22,7 +22,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -83,7 +83,7 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.red1 : theme.primary1}`};
   :hover {
     border: ${({ theme, active, warning }) =>
-      active && `1px solid ${warning ? darken(0.1, theme.red1) : darken(0.1, theme.primary1)}`};
+      active && `1px solid ${warning ? darken(theme.red1, 0.1) : darken(theme.primary1, 0.1)}`};
   }
 
   input {

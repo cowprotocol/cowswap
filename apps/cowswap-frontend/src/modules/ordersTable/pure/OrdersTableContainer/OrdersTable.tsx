@@ -6,7 +6,7 @@ import { UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
@@ -51,11 +51,11 @@ import {
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
   padding: 0;
   position: relative;
   overflow: hidden;
-  background: ${({ theme }) => transparentize(0.99, theme.bg1)};
+  background: ${({ theme }) => transparentize(theme.bg1, 0.99)};
   backdrop-filter: blur(20px);
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
@@ -83,7 +83,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(theme.text3, 0.92) : 'transparent')};
 
   > span {
     display: flex;
@@ -164,7 +164,7 @@ const OrdersExplainerBanner = styled.div`
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text3, 0.88)};
   padding: 0 16px;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
@@ -179,7 +179,7 @@ const OrdersExplainerBanner = styled.div`
     gap: 12px;
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(0.5, theme.text)};
+      fill: ${({ theme }) => transparentize(theme.text, 0.5)};
     }
 
     > b {

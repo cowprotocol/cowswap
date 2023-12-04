@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize, lighten } from 'polished'
+import { transparentize, lighten } from 'color2k'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -11,7 +11,7 @@ export const InfoPopup = styled.div`
   gap: 12px;
   font-size: 14px;
   line-height: 1.3;
-  background: ${({ theme }) => `linear-gradient(90deg, ${theme.bg1} 0%, ${lighten(0.03, theme.bg1)} 100%)`};
+  background: ${({ theme }) => `linear-gradient(90deg, ${theme.bg1} 0%, ${transparentize(theme.bg1, 0.03)} 100%)`};
   border-radius: 16px;
   padding: 15px 34px 15px 15px;
 
@@ -31,7 +31,7 @@ export const InfoPopup = styled.div`
     height: 100%;
 
     > path {
-      fill: ${({ theme }) => transparentize(0.5, theme.text)};
+      fill: ${({ theme }) => transparentize(theme.text, 0.5)};
     }
   }
 

@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -36,7 +36,7 @@ export const StyledChevronDown = styled(ChevronDown)`
 
 export const Menu = styled.div`
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(0.09, theme.bg5) : theme.bg4)};
+  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg5, 0.09) : theme.bg4)};
   box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   display: flex;
   flex-direction: column;
@@ -152,7 +152,7 @@ export const Overview = styled.div`
       content: "";
       display: block;
       background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
-    transparentize(1, theme.bg1)} 100%);
+    transparentize(theme.bg1, 1)} 100%);
       pointer-events: none;
       height: 100%;
       width: 80px;
@@ -180,7 +180,7 @@ export const SearchInputFormatter = styled(Column)`
 
   > input::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(0.4, theme.text)};
+    color: ${({ theme }) => transparentize(theme.text, 0.4)};
   }
 
   > input:focus::placeholder {

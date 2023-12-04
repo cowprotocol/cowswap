@@ -4,7 +4,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
 export const HeaderRow = styled.div`
@@ -19,11 +19,14 @@ export const HeaderRow = styled.div`
 
 export const CloseIcon = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 14px;
   top: 14px;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+
   &:hover {
-    cursor: pointer;
-    opacity: 0.6;
+    opacity: 1;
   }
 `
 
@@ -77,7 +80,7 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
     margin: 0 0 2rem 0;
     background: var(${UI.COLOR_PAPER});
     border: 1px solid var(${UI.COLOR_PAPER_DARKER});
-    box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
+    box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
     padding: 0px;
     width: 50vw;
     overflow-y: auto;

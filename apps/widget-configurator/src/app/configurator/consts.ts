@@ -11,6 +11,7 @@ export const DEFAULT_LIGHT_PALETTE = {
   text: '#052B65',
   danger: '#D41300',
   warning: '#F8D06B',
+  alert: '#DB971E',
   info: '#CAE9FF',
   success: '#007B28',
 }
@@ -22,6 +23,7 @@ export const DEFAULT_DARK_PALETTE = {
   text: '#CAE9FF',
   danger: '#f44336',
   warning: '#F8D06B',
+  alert: '#DB971E',
   info: '#2196f3',
   success: '#4caf50',
 }

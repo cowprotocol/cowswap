@@ -3,12 +3,9 @@ import Cursor2 from '@cowprotocol/assets/cow-swap/cursor2.gif'
 import Cursor3 from '@cowprotocol/assets/cow-swap/cursor3.gif'
 import Cursor4 from '@cowprotocol/assets/cow-swap/cursor4.gif'
 import { UI, ButtonSize } from '@cowprotocol/ui'
-import {
-  getContrastText,
-  // resolveCssVar
-} from '@cowprotocol/ui-utils'
+import { getContrastText } from '@cowprotocol/ui-utils'
 
-import { transparentize, lighten, darken } from 'polished'
+import { transparentize, lighten, darken } from 'color2k'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
@@ -144,8 +141,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       background-image: linear-gradient(
         90deg,
         transparent 0,
-        ${transparentize(0.7, colorsTheme.bg1)} 20%,
-        ${lighten(0.07, transparentize(0.6, colorsTheme.bg1))} 60%,
+        ${transparentize(colorsTheme.bg1, 0.7)} 20%,
+        ${lighten(transparentize(colorsTheme.bg1, 0.6), 0.07)} 60%,
         transparent
       );
       animation: shimmer 2s infinite;
@@ -183,12 +180,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    boxShadow3: `0 4px 12px 0 ${transparentize(0.9, colorsTheme.text3)}`,
+    boxShadow3: `0 4px 12px 0 ${transparentize(colorsTheme.text3, 0.9)}`,
     gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
-    gradient2: `linear-gradient(250deg, ${transparentize(0.92, colorsTheme.alert)} 10%, ${transparentize(
-      0.92,
-      colorsTheme.success
-    )} 50%, ${transparentize(0.92, colorsTheme.success)} 100%);`,
+    gradient2: `linear-gradient(250deg, ${transparentize(colorsTheme.alert, 0.92)} 10%, ${transparentize(
+      colorsTheme.success,
+      0.92
+    )} 50%, ${transparentize(colorsTheme.success, 0.92)} 100%);`,
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
@@ -405,14 +402,14 @@ export const UniThemedGlobalStyle = css`
     // V3
     ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
     ${UI.COLOR_PRIMARY_LIGHTER}: ${({ theme }) =>
-      theme.darkMode ? lighten(0.1, theme.primary) : lighten(0.2, theme.primary)};
+      theme.darkMode ? lighten(theme.primary, 0.1) : lighten(theme.primary, 0.2)};
     ${UI.COLOR_PRIMARY_DARKER}: ${({ theme }) =>
-      theme.darkMode ? darken(0.2, theme.primary) : darken(0.05, theme.primary)};
+      theme.darkMode ? darken(theme.primary, 0.2) : darken(theme.primary, 0.05)};
     ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
-      theme.darkMode ? darken(0.4, theme.primary) : darken(0.1, theme.primary)};
-    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(0.8, theme.primary)};
-    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(0.7, theme.primary)};
-    ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(0.5, theme.primary)};
+      theme.darkMode ? darken(theme.primary, 0.4) : darken(theme.primary, 0.1)};
+    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.8)};
+    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.7)};
+    ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
 
     ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary}; // for now we use the same color as primary
 
@@ -420,55 +417,56 @@ export const UniThemedGlobalStyle = css`
 
     ${UI.COLOR_PAPER}: ${({ theme }) => theme.paper};
     ${UI.COLOR_PAPER_DARKER}: ${({ theme }) =>
-      theme.darkMode ? darken(0.07, theme.paper) : darken(0.05, theme.paper)};
+      theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
-      theme.darkMode ? darken(0.3, theme.paper) : darken(0.15, theme.paper)};
+      theme.darkMode ? darken(theme.paper, 0.3) : darken(theme.paper, 0.15)};
 
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKEST});
-    ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(0.94, theme.primary)};
-    ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(0.94, theme.primary)};
+    ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
+    ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
 
     ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
-    ${UI.COLOR_TEXT_OPACITY_70}: ${({ theme }) => transparentize(0.3, theme.text)};
-    ${UI.COLOR_TEXT_OPACITY_50}: ${({ theme }) => transparentize(0.5, theme.text)};
-    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.text)};
-    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text)};
-    ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) =>
-      theme.darkMode ? transparentize(0.6, theme.text) : transparentize(0.5, theme.text)};
+    ${UI.COLOR_TEXT_OPACITY_70}: ${({ theme }) => transparentize(theme.text, 0.3)};
+    ${UI.COLOR_TEXT_OPACITY_50}: ${({ theme }) => transparentize(theme.text, 0.5)};
+    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
+    ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};
 
+    ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) =>
+      theme.darkMode ? transparentize(theme.text, 0.6) : transparentize(theme.text, 0.5)};
     ${UI.COLOR_DISABLED_TEXT}: ${({ theme }) => theme.disabledText};
 
     ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>
       getContrastText(
-        theme.darkMode ? darken(0.1, theme.paper) : darken(0.05, theme.paper),
-        transparentize(0.5, theme.text)
+        theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.05),
+        transparentize(theme.text, 0.5)
       )};
 
     ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
     ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => theme.success};
     ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
-      getContrastText(theme.success, theme.darkMode ? lighten(0.2, theme.success) : lighten(0.5, theme.success))};
+      getContrastText(theme.success, theme.darkMode ? lighten(theme.success, 0.2) : lighten(theme.success, 0.5))};
 
     ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
     ${UI.COLOR_INFO_BG}: ${({ theme }) => theme.info};
     ${UI.COLOR_INFO_TEXT}: ${({ theme }) =>
-      getContrastText(theme.info, theme.darkMode ? lighten(0.2, theme.info) : lighten(0.5, theme.info))};
+      getContrastText(theme.info, theme.darkMode ? lighten(theme.info, 0.2) : lighten(theme.info, 0.5))};
 
     ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
     ${UI.COLOR_ALERT_BG}: ${({ theme }) => theme.alert};
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) =>
-      getContrastText(theme.alert, theme.darkMode ? lighten(0.2, theme.alert) : lighten(0.5, theme.alert))};
+      getContrastText(theme.alert, theme.darkMode ? lighten(theme.alert, 0.2) : lighten(theme.alert, 0.5))};
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
-      getContrastText(theme.warning, theme.darkMode ? lighten(0.2, theme.warning) : lighten(0.5, theme.warning))};
+      getContrastText(theme.warning, theme.darkMode ? lighten(theme.warning, 0.2) : lighten(theme.warning, 0.5))};
 
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
-      getContrastText(theme.danger, theme.darkMode ? lighten(0.2, theme.danger) : lighten(0.5, theme.danger))};
+      getContrastText(theme.danger, theme.darkMode ? lighten(theme.danger, 0.2) : lighten(theme.danger, 0.5))};
 
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
@@ -476,7 +474,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_GREY}: ${({ theme }) => theme.grey1};
     ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
-    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW}: ${({ theme }) => theme.alert};
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
@@ -497,11 +495,11 @@ export const UniThemedGlobalStyle = css`
     ${UI.ICON_COLOR_NORMAL}: ${({ theme }) => theme.text};
 
     // Text
-    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.text)};
-    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text)};
-    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(0.3, theme.text)};
+    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
+    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
     ${UI.COLOR_LINK}: ${`var(${UI.COLOR_PRIMARY})`};
-    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text3)};
+    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.text3, 0.9)};
 
     // Font Weights & Sizes
     ${UI.FONT_WEIGHT_NORMAL}: 400;

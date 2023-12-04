@@ -3,7 +3,7 @@ import { MouseEventHandler, ReactNode } from 'react'
 import { TooltipContainer } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
@@ -92,7 +92,7 @@ export const Dots = styled.span`
 `
 
 const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
-  background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
+  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
   border-radius: 1rem;
   position: relative;
   display: flex;
@@ -113,7 +113,7 @@ const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
 `
 
 const SwapCallbackErrorInnerAlertTriangle = styled.div`
-  background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
+  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,7 +152,7 @@ export function SwapCallbackError({ error, handleClose, showClose, ...styleProps
 }
 
 export const SwapShowAcceptChanges = styled(AutoColumn)`
-  background-color: ${({ theme }) => transparentize(0.95, theme.primary3)};
+  background-color: ${({ theme }) => transparentize(theme.primary3, 0.95)};
   color: ${({ theme }) => theme.text1};
   padding: 0.5rem;
   border-radius: 12px;

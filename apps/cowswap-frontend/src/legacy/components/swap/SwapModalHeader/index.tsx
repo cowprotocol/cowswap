@@ -8,7 +8,7 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
@@ -182,7 +182,7 @@ function SwapModalHeaderComponent({
         </AutoColumn>
       </LightCard>
       {!!exactOutLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(theme.bg0, 0.5)}>
           <FeeInformationTooltip
             amountAfterFees={<TokenAmount amount={trade.outputAmount} />}
             amountBeforeFees={<TokenAmount amount={trade.outputAmountWithoutFee} />}

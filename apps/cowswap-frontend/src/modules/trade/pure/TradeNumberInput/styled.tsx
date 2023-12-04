@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
@@ -65,7 +65,7 @@ export const ArrowsWrapper = styled.div`
   }
 
   > span > span > svg > path {
-    fill: ${({ theme }) => transparentize(0.7, theme.text)};
+    fill: ${({ theme }) => transparentize(theme.text, 0.7)};
     transition: fill 0.2s linear;
   }
 

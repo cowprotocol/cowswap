@@ -3,7 +3,7 @@ import { MouseEvent, useCallback, useRef } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -29,7 +29,7 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
   width: 100%;
   height: 100%;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.05, theme.bg1)};
+  background: ${({ theme }) => transparentize(theme.bg1, 0.05)};
   display: none;
 
   ${({ theme, show }) => theme.mediaWidth.upToSmall`

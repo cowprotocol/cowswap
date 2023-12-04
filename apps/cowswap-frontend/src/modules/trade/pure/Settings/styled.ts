@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { Settings as SettingsIconRaw } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -17,7 +17,7 @@ export const SettingsContainer = styled.div`
   padding: 16px;
   border-radius: 12px;
   box-shadow: ${({ theme }) => theme.boxShadow2};
-  border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
   background: var(${UI.COLOR_PAPER});
   color: ${`var(${UI.COLOR_TEXT})`};
 `

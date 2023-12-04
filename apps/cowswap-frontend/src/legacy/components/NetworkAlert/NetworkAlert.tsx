@@ -7,7 +7,7 @@ import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -51,7 +51,7 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
 `
 
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
-  background: ${({ theme }) => transparentize(0.4, theme.bg1)}; // MOD
+  background: ${({ theme }) => transparentize(theme.bg1, 0.4)}; // MOD
   transition: color 0.2s ease-in-out, background 0.2s ease-in-out; // MOD
   border-radius: 20px;
   display: flex;

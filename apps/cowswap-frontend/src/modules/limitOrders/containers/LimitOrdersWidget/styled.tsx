@@ -1,4 +1,4 @@
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
@@ -52,7 +52,7 @@ export const StyledOrderType = styled(OrderType)`
 export const SmallVolumeWarningBanner = styled.div`
   display: flex;
   align-items: center;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(theme.alert, 0.9) : transparentize(theme.alert, 0.85))};
   color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.15, theme.alert)};
   gap: 10px;
   border-radius: 10px;

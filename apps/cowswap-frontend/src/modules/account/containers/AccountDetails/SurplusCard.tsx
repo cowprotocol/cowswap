@@ -2,7 +2,7 @@ import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
@@ -112,7 +112,7 @@ export function SurplusCard() {
       font-size: 15px;
       font-weight: 500;
       line-height: 1.1;
-      color: ${({ theme }) => transparentize(0.5, theme.text)};
+      color: ${({ theme }) => transparentize(theme.text, 0.5)};
       margin: 3px auto 0;
     }
 

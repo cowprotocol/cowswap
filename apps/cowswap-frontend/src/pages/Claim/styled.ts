@@ -5,7 +5,7 @@ import LogoXDAI from '@cowprotocol/assets/cow-swap/xdai.png'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize, darken, lighten } from 'polished'
+import { transparentize, darken, lighten } from 'color2k'
 import { CheckCircle, Frown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -58,7 +58,7 @@ export const InnerPageWrapper = styled.div`
 
   p > a {
     display: inline;
-    color: ${({ theme }) => darken(0.1, theme.primary1)};
+    color: ${({ theme }) => darken(theme.primary1, 0.1)};
   }
 
   ${ButtonPrimary} {
@@ -499,7 +499,7 @@ export const ClaimTable = styled.div`
     `};
 
     > span {
-      color: ${({ theme }) => transparentize(0.1, theme.text)};
+      color: ${({ theme }) => transparentize(theme.text, 0.1)};
       font-weight: 300;
     }
 
@@ -543,12 +543,12 @@ export const UserMessage = styled.div<{ variant?: string }>`
   display: flex;
   background: ${({ variant, theme }) =>
     variant === 'danger'
-      ? transparentize(0.9, theme.danger)
+      ? transparentize(theme.danger, 0.9)
       : variant === 'info'
-      ? transparentize(0.9, theme.blue2)
-      : transparentize(0.9, theme.attention)};
+      ? transparentize(theme.blue2, 0.9)
+      : transparentize(theme.attention, 0.9)};
   color: ${({ variant, theme }) =>
-    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(theme.attention, 0.1)};
   margin: 0 auto;
   align-items: center;
   font-size: 15px;
@@ -575,7 +575,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
         ? `var(${UI.COLOR_DANGER})`
         : variant === 'info'
         ? theme.blue2
-        : darken(0.1, theme.attention)};
+        : darken(theme.attention, 0.1)};
   }
 
   > span {
@@ -827,7 +827,7 @@ export const InputField = styled.div`
 
     &:focus,
     &:hover {
-      background-color: ${({ theme }) => darken(0.05, theme.bg5)};
+      background-color: ${({ theme }) => darken(theme.bg5, 0.05)};
     }
   }
 
@@ -1209,7 +1209,7 @@ export const UnderlineButton = styled.button`
 
   &:disabled {
     text-decoration: none;
-    color: ${({ theme }) => transparentize(0.35, theme.primary4)};
+    color: ${({ theme }) => transparentize(theme.primary4, 0.35)};
     cursor: auto;
     font-style: italic;
   }
@@ -1368,7 +1368,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: '';
     display: block;
     background: ${({ theme }) =>
-      `linear-gradient(to right, ${transparentize(0.2, theme.primary5)}, ${theme.primary4})`};
+      `linear-gradient(to right, ${transparentize(theme.primary5, 0.2)}, ${theme.primary4})`};
     height: 100%;
     border-radius: 24px 0 0 24px;
     position: absolute;
@@ -1410,7 +1410,7 @@ export const InvestSummary = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 18px;
-    color: ${({ theme }) => transparentize(0.1, theme.text)};
+    color: ${({ theme }) => transparentize(theme.text, 0.1)};
     gap: 4px;
   }
 
@@ -1779,7 +1779,7 @@ export const BannerExplainer = styled.div`
   > span > b {
     @supports (-webkit-background-clip: text) {
       background: ${({ theme }) =>
-        `linear-gradient(80deg, ${theme.primary1}, ${lighten(0.2, theme.primary1)}, ${theme.white}, #5ea2fb)`};
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(theme.primary1, 0.2)}, ${theme.white}, #5ea2fb)`};
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }

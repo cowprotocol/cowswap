@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
@@ -35,7 +35,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   `};
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text)};
+    border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
   ${({ theme, isLoading }) =>

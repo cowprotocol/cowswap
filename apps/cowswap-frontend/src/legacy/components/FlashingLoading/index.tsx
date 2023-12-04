@@ -1,7 +1,7 @@
 import CowIcon from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -11,7 +11,7 @@ export const LoadingWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: fixed;
-  background: ${({ theme }) => transparentize(0.8, theme.bg2)};
+  background: ${({ theme }) => transparentize(theme.bg2, 0.8)};
   z-index: 99;
   top: 0;
   left: 0;

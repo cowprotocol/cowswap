@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
@@ -14,7 +14,7 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
   padding: 20px;
   border-radius: 20px;
   border: 1px solid var(${UI.COLOR_GREY});
-  background-color: ${({ $enabled, theme }) => ($enabled ? transparentize(0.8, theme.bg2) : 'transparent')};
+  background-color: ${({ $enabled, theme }) => ($enabled ? transparentize(theme.bg2, 0.8) : 'transparent')};
 `
 
 export const SettingsButton = styled(MenuButton)`

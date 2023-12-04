@@ -86,6 +86,7 @@ export const Wrapper = styled.div`
 export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
   display: flex;
   align-items: center;
+  color: inherit;
 
   > a {
     display: flex;
@@ -98,6 +99,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '7px' : '5px 10px')};
     background: transparent;
     transition: background 0.2s ease-in-out;
+    color: inherit;
 
     &:hover {
       background: var(${UI.COLOR_PAPER_DARKER});
@@ -109,7 +111,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         background: var(${UI.COLOR_PAPER_DARKER});
 
         ${Link} {
-          color: ${`var(${UI.COLOR_TEXT})`};
+          color: inherit;
         }
 
         ${Link} > ${Badge} {

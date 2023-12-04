@@ -2,7 +2,7 @@ import { TokenSymbol } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { transparentize, lighten, darken } from 'polished'
+import { transparentize, lighten, darken } from 'color2k'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -26,9 +26,9 @@ const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean }>`
   border-radius: ${({ withAcknowledge }) => (withAcknowledge ? '18px 18px 0 0' : '18px')};
   padding: 16px;
   gap: 16px;
-  color: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.05, theme.danger))};
+  color: ${({ theme }) => (theme.darkMode ? lighten(theme.danger, 0.2) : darken(theme.danger, 0.05))};
   background: ${({ theme }) =>
-    theme.darkMode ? transparentize(0.8, theme.danger) : transparentize(0.85, theme.danger)};
+    theme.darkMode ? transparentize(theme.danger, 0.8) : transparentize(theme.danger, 0.85)};
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
@@ -46,9 +46,9 @@ const ReadMoreLink = styled.a`
 `
 
 const AcknowledgeBox = styled.div`
-  color: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.05, theme.danger))};
+  color: ${({ theme }) => (theme.darkMode ? lighten(theme.danger, 0.2) : darken(theme.danger, 0.05))};
   background: ${({ theme }) =>
-    theme.darkMode ? transparentize(0.8, theme.danger) : transparentize(0.85, theme.danger)};
+    theme.darkMode ? transparentize(theme.danger, 0.8) : transparentize(theme.danger, 0.85)};
   text-align: center;
   padding: 16px 0;
   border-radius: 0 0 16px 16px;

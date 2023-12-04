@@ -15,6 +15,7 @@ export const ContainerBox = styled.div`
   flex-flow: column wrap;
   gap: 10px;
   background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};
@@ -28,6 +29,7 @@ export const Header = styled.div`
   align-items: center;
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0')};
   margin: 0;
+  color: inherit;
 `
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`

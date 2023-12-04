@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const FeeTooltipWrapper = styled.div`
@@ -20,7 +20,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   padding: ${({ borderTop }) => (borderTop ? '16px 10px 10px' : '10px')};
   border-radius: ${({ highlighted }) => (highlighted ? '10px' : '0')};
   background: ${({ theme, highlighted }) => (highlighted ? theme.bg1 : 'transparent')};
-  border-top: ${({ borderTop }) => (borderTop ? `1px solid ${transparentize(0.9, `var(${UI.COLOR_TEXT})`)}` : 'none')};
+  border-top: ${({ borderTop }) => (borderTop ? `1px solid ${transparentize(`var(${UI.COLOR_TEXT})`, 0.9)}` : 'none')};
   gap: 4px;
 
   > i {

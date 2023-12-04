@@ -4,7 +4,7 @@ import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -54,7 +54,7 @@ const SidebarBackground = styled.div`
   z-index: 4;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(0.1, theme.black)};
+  background: ${({ theme }) => transparentize(theme.black, 0.1)};
   backdrop-filter: blur(3px);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

@@ -6,7 +6,7 @@ import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowp
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -53,11 +53,11 @@ const FlyoutMenuContents = styled.div`
   min-width: 175px;
   z-index: 99;
   padding: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.6)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
       top: 50px;
-      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(0.1, theme.black)}};
+      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
     `};
 
   & > *:not(:last-child) {
@@ -86,7 +86,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   justify-content: space-between;
 
   :focus {
-    background-color: ${({ theme }) => darken(0.1, theme.red1)};
+    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 
   border-radius: 21px;
@@ -103,15 +103,15 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text)};
+    border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
   ${({ isChainIdUnsupported, theme }) =>
     isChainIdUnsupported &&
     `
       color: ${theme.danger}!important;
-      background: ${transparentize(0.85, theme.danger)}!important;
-      border: 2px solid ${transparentize(0.5, theme.danger)}!important;
+      background: ${transparentize(theme.danger, 0.85)}!important;
+      border: 2px solid ${transparentize(theme.danger, 0.5)}!important;
     `}
 `
 const SelectorLogo = styled.img<{ interactive?: boolean }>`

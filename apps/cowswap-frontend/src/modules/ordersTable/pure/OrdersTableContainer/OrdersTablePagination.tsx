@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
@@ -29,7 +29,7 @@ const PaginationBox = styled.div`
 `
 
 const pageButtonStyles = css<{ $active?: boolean }>`
-  background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
+  background: ${({ theme, $active }) => ($active ? transparentize(theme.text3, 0.9) : 'transparent')};
   color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;

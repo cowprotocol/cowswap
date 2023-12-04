@@ -9,7 +9,7 @@ import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -37,7 +37,7 @@ export const Wrapper = styled.div`
     top: -60px;
     width: calc(100% + 32px);
     height: 170px;
-    background: ${({ theme }) => transparentize(0.9, theme.success)};
+    background: ${({ theme }) => transparentize(theme.success, 0.9)};
     z-index: -1;
   }
 

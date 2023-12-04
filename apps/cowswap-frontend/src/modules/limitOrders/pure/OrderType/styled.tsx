@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -55,7 +55,7 @@ export const StyledMenuButton = styled(MenuButton)`
 `
 
 export const StyledMenuList = styled(MenuList)`
-  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
+  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
   background: var(${UI.COLOR_PAPER});
   border-radius: 8px;
   z-index: 2;

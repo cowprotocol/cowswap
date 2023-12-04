@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { LightCard as LightCardUni } from 'legacy/components/Card'
@@ -26,8 +26,8 @@ export const Wrapper = styled.div`
   `};
 
   ${SwapShowAcceptChanges} {
-    background: ${({ theme }) => transparentize(0.85, theme.alert)};
-    border: 1px solid ${({ theme }) => transparentize(0.75, theme.alert)};
+    background: ${({ theme }) => transparentize(theme.alert, 0.85)};
+    border: 1px solid ${({ theme }) => transparentize(theme.alert, 0.75)};
     padding: 8px 8px 8px 16px;
     margin: 8px 0 0;
 

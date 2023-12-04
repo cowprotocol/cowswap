@@ -2,7 +2,7 @@ import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { LinkStyledButton } from 'legacy/theme'
@@ -440,7 +440,7 @@ export const TransactionInnerDetail = styled.div`
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
   background: ${({ theme, isPending }) =>
-    isPending ? transparentize(0.85, theme.attention) : transparentize(0.85, theme.success)};
+    isPending ? transparentize(theme.attention, 0.85) : transparentize(theme.success, 0.85)};
   margin: 6px 0 16px;
   padding: 8px 12px;
   color: ${({ theme, isPending }) => (isPending ? theme.attention : theme.success)};

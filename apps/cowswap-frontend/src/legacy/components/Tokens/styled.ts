@@ -2,7 +2,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { BaseButton } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
@@ -44,7 +44,7 @@ export const Label = styled.div<{ end?: number }>`
   font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  color: ${({ theme }) => transparentize(0.1, theme.text)};
+  color: ${({ theme }) => transparentize(theme.text, 0.1)};
   align-items: center;
   font-variant-numeric: tabular-nums;
   word-break: break-all;
@@ -212,7 +212,7 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance }) => (hasBalance ? `var(${UI.COLOR_TEXT})` : transparentize(0.3, `var(${UI.COLOR_TEXT} )`))};
+  color: ${({ hasBalance }) => (hasBalance ? `var(${UI.COLOR_TEXT})` : transparentize(`var(${UI.COLOR_TEXT} )`, 0.3))};
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;

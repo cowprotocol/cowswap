@@ -3,7 +3,7 @@ import React from 'react'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
@@ -37,7 +37,7 @@ const AcceptButton = styled.button`
   margin: 0 0 0 auto;
 
   &:hover {
-    background-color: ${({ theme }) => transparentize(0.2, theme.bg2)};
+    background-color: ${({ theme }) => transparentize(theme.bg2, 0.2)};
   }
 `
 

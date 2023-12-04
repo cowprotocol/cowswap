@@ -2,7 +2,7 @@ import { RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
@@ -11,7 +11,7 @@ import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
-    border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+    border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
     background-color: var(${UI.COLOR_PAPER});
     color: ${`var(${UI.COLOR_TEXT})`};
     padding: 0;

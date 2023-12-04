@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
@@ -18,7 +18,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
   padding: 0 12px;
 
   ${({ theme, isRowSelectable, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
@@ -41,7 +41,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
   display: grid;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.bg1)};
+    background: ${({ theme }) => transparentize(theme.bg1, 0.9)};
   }
 
   > div:first-child {
@@ -49,7 +49,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(0.5, theme.text)};
+      color: ${({ theme }) => transparentize(theme.text, 0.5)};
       content: '↳';
       text-decoration: none !important;
     }
@@ -60,7 +60,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(0.6, theme.text3)};
+      color: ${({ theme }) => transparentize(theme.text3, 0.6)};
       content: '↳';
       text-decoration: none !important;
     }
@@ -113,7 +113,7 @@ export const TableRowCheckbox = styled.input`
   width: var(--checkboxSize);
   height: var(--checkboxSize);
   background: transparent;
-  border: 2px solid ${({ theme }) => transparentize(0.5, theme.text)};
+  border: 2px solid ${({ theme }) => transparentize(theme.text, 0.5)};
   border-radius: var(--checkBoxBorderRadius);
   appearance: none;
   margin: 0;
@@ -159,6 +159,6 @@ export const TableRowCheckboxWrapper = styled.label`
   cursor: pointer;
 
   &:hover > ${TableRowCheckbox}:not(:checked):not([disabled]) {
-    background: ${({ theme }) => transparentize(0.85, theme.text)};
+    background: ${({ theme }) => transparentize(theme.text, 0.85)};
   }
 `

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { lighten, transparentize } from 'polished'
+import { lighten, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 const LONG_TEXT_LENGTH = 20
@@ -25,12 +25,12 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => lighten(0.08, theme.bg2)};
+    background: ${({ theme }) => transparentize(theme.bg2, 0.08)};
   }
 
   &:disabled {
     background-color: var(${UI.COLOR_GREY});
-    color: ${({ theme }) => transparentize(0.4, theme.text)};
+    color: ${({ theme }) => transparentize(theme.text, 0.4)};
     background-image: none;
     border: 0;
     cursor: auto;

@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
 
@@ -34,7 +34,7 @@ const ToggleElementHoverStyle = (hasBgColor: boolean, theme: any, isActive?: boo
         opacity: '0.8',
       }
     : {
-        background: isActive ? darken(0.05, theme.primary1) : darken(0.05, theme.bg4),
+        background: isActive ? darken(theme.primary1, 0.05) : darken(theme.bg4, 0.05),
         color: isActive ? theme.white : theme.text3,
       }
 

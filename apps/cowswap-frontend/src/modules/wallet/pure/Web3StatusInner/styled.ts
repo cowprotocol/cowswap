@@ -1,7 +1,7 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
@@ -14,7 +14,7 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
   font-weight: 500;
   :hover,
   :focus {
-    background-color: ${({ theme }) => darken(0.1, theme.red1)};
+    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 `
 

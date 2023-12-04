@@ -1,7 +1,7 @@
 import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
@@ -75,7 +75,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   color: ${`var(${UI.COLOR_TEXT})`};
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.text)};
+    color: ${({ theme }) => transparentize(theme.text, 0.3)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -121,13 +121,13 @@ export const SetMaxBtn = styled.button`
   color: ${({ theme }) => theme.text3};
   font-weight: 600;
   font-size: 11px;
-  background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  background: ${({ theme }) => transparentize(theme.text3, 0.9)};
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
   transition: background 0.15s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.7, theme.text3)};
+    background: ${({ theme }) => transparentize(theme.text3, 0.7)};
   }
 `
