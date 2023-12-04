@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai/index'
+import { useResetAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
@@ -29,6 +30,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesState)
+
+  const resetBalances = useResetAtom(balancesAtom)
+  const resetAllowances = useResetAtom(allowancesState)
 
   const spender = GP_VAULT_RELAYER[chainId]
 
@@ -104,4 +108,12 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       }
     })
   }, [allowances, tokenAddresses, setAllowances, setLoadingState])
+
+  // Reset states when wallet is not connected
+  useEffect(() => {
+    if (!account) {
+      resetBalances()
+      resetAllowances()
+    }
+  }, [account, resetAllowances, resetBalances])
 }
