@@ -1,9 +1,12 @@
 import { AppDataHooks, PostHooks, PreHooks } from '../types'
 
-export function buildAppDataHooks(
-  preInteractionHooks?: PreHooks,
+export function buildAppDataHooks({
+  preInteractionHooks,
+  postInteractionHooks,
+}: {
+  preInteractionHooks?: PreHooks
   postInteractionHooks?: PostHooks
-): AppDataHooks | undefined {
+}): AppDataHooks | undefined {
   if (!preInteractionHooks && !postInteractionHooks) {
     return undefined
   }

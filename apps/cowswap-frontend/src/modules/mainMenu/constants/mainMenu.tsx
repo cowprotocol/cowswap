@@ -98,6 +98,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'More',
+    badge: 'New!',
     items: [
       {
         sectionTitle: 'Overview',
