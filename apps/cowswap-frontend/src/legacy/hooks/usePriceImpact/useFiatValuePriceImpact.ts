@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -11,43 +13,32 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-const TRADE_SETUP_DEBOUNCE = ms`3s`
+const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
 
 export function useFiatValuePriceImpact() {
   const { state } = useDerivedTradeState()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
-  const isTradeSetUp = !!inputCurrency && !!outputCurrency
-  const tradeKey = (inputCurrency?.symbol || '') + (outputCurrency?.symbol || '')
+  const inputToken = useMemo(() => (inputCurrency ? getWrappedToken(inputCurrency) : undefined), [inputCurrency])
+  const outputToken = useMemo(() => (outputCurrency ? getWrappedToken(outputCurrency) : undefined), [outputCurrency])
+
+  const isTradeSetUp = useDebounce(!!inputToken && !!outputToken, TRADE_SET_UP_DEBOUNCE_TIME)
 
   const {
-    inputAmount: { value: fiatValueInput },
-    outputAmount: { value: fiatValueOutput },
-  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
+    inputAmount: { value: fiatValueInput, isLoading: inputIsLoading },
+    outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
-  const [isPriceImpactLoading, setIsPriceImpactLoading] = useState(false)
-
-  // To avoid warning flickering, we wait 3 seconds since the trade is set up to show the loading state
-  // `isPriceImpactLoading` value recalculates every time the trade assets change
-  useEffect(() => {
-    if (tradeKey) {
-      setIsPriceImpactLoading(true)
-    }
-
-    const timeout = setTimeout(() => {
-      setIsPriceImpactLoading(false)
-    }, TRADE_SETUP_DEBOUNCE)
-
-    return () => clearTimeout(timeout)
-  }, [tradeKey])
-
-  const isLoading = isTradeSetUp ? isPriceImpactLoading : false
+  const isLoading = inputIsLoading || outputIsLoading
 
   return useSafeMemo(() => {
+    // Don't calculate price impact if trade is not set up (both trade assets are not set)
+    if (!isTradeSetUp) return null
+
     const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
 
     return { priceImpact, isLoading }
-  }, [fiatValueInput, fiatValueOutput, isLoading])
+  }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading])
 }
 
 function computeFiatValuePriceImpact(
