@@ -18,23 +18,29 @@ const Wrapper = styled.div`
   ${OptionCustom} {
     background-color: var(${UI.COLOR_PAPER_DARKER});
     border: 0;
+    color: inherit;
 
     > div > input {
       background: transparent;
+      color: inherit;
+
       &:disabled {
+        color: inherit;
         background-color: inherit;
       }
     }
 
     > div > input::placeholder {
       opacity: 0.5;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
     }
   }
 
   ${RowFixed} {
+    color: inherit;
+
     > div {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       opacity: 0.85;
     }
 
@@ -45,12 +51,13 @@ const Wrapper = styled.div`
 
     > button > input {
       background: transparent;
+      color: inherit;
     }
 
     > button > input::placeholder {
       background: transparent;
       opacity: 0.5;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
     }
   }
 `

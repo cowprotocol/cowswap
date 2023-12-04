@@ -50,7 +50,7 @@ export const Link = styled(NavLink)`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   gap: 4px;
   font-weight: inherit;
   line-height: 1;
@@ -61,12 +61,12 @@ export const Link = styled(NavLink)`
     text-decoration: none;
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT});
+      fill: currentColor;
     }
   }
 
   > svg > path {
-    fill: var(${UI.COLOR_TEXT});
+    fill: currentColor;
   }
 `
 

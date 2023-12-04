@@ -19,6 +19,8 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
 `
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
+  color: inherit;
+
   > svg {
     display: ${({ theme }) => (theme.isInjectedWidgetMode ? '' : 'none')};
   }
@@ -32,7 +34,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       font-size: 14px;
       font-weight: ${`var(${UI.FONT_WEIGHT_MEDIUM})`};
       background: transparent;
-      color: ${`var(${UI.COLOR_TEXT}) !important`};
+      color: inherit !important;
       transition: all 0.2s ease-in-out;
       opacity: 0.7;
 
@@ -51,7 +53,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       }
 
       > svg > path {
-        fill: var(${UI.COLOR_TEXT});
+        fill: currentColor;
       }
     `}
 `
@@ -59,12 +61,12 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid transparent;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-weight: 500;
 
   &:hover {
     background-color: var(${UI.COLOR_PAPER_DARKEST});
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   ${({ clickDisabled }) =>
@@ -94,7 +96,7 @@ export const NetworkIcon = styled(Activity)`
 `
 
 export const Wrapper = styled.div`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '40px')};
   display: flex;
   padding: 0;

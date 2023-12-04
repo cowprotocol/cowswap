@@ -35,7 +35,7 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
   margin-top: 0;
   opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
   background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
-  color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : 'inherit')};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,13 +73,13 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  font-size: 0.7rem;
+  font-size: 13px;
   font-weight: 400;
   white-space: nowrap;
 `
 
 const SubHeader = styled.div`
-  color: var(--cow-color-text1);
+  color: inherit;
   margin-top: 10px;
   font-size: 12px;
 `

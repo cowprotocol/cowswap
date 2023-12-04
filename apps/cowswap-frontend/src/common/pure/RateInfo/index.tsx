@@ -54,19 +54,19 @@ const RateLabel = styled.div`
   font-weight: 400;
   gap: 5px;
   text-align: left;
-  transition: color 0.15s ease-in-out;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  color: inherit;
+  opacity: 0.7;
 
   &:hover {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    opacity: 1;
   }
 `
 
 const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
-  background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   width: var(--size);
   height: var(--size);
   min-width: var(--size);
@@ -75,17 +75,39 @@ const InvertIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out, stroke 0.15s ease-in-out;
+  position: relative;
+
+  &::before {
+    background: currentColor;
+    opacity: 0.1;
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
+    border-radius: var(--size);
+    transition: background 0.15s ease-in-out, 0.15s ease-in-out;
+  }
 
   > svg {
     padding: 1px;
+    stroke: currentColor;
+    z-index: 5;
+    transition: stroke 0.15s ease-in-out;
   }
 
   &:hover {
-    background: ${`var(${UI.COLOR_TEXT})`};
+    &::before {
+      opacity: 1;
+      background: ${`var(${UI.COLOR_PRIMARY})`};
+      color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+    }
 
     > svg {
-      stroke: ${`var(${UI.COLOR_PAPER})`};
+      stroke: ${`var(${UI.COLOR_BUTTON_TEXT})`};
     }
   }
 `
@@ -107,7 +129,8 @@ export const RateWrapper = styled.button`
 `
 
 export const FiatRate = styled.span`
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
+  color: inherit;
+  opacity: 0.7;
   font-weight: 400;
   text-align: right;
 `

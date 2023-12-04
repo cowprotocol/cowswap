@@ -39,7 +39,7 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 8px;
@@ -49,6 +49,7 @@ export const CurrencyInputBox = styled.div`
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+    color: inherit;
   }
 
   > div:last-child {
@@ -61,7 +62,13 @@ export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;
   margin: auto 0;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -72,10 +79,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
   font-size: 28px;
   font-weight: 500;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(theme.text, 0.3)};
+    opacity: 0.7;
+    color: inherit;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -88,7 +96,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;
@@ -105,9 +113,18 @@ export const BalanceText = styled.span`
 
 export const FiatAmountText = styled.span`
   // TODO: inherit font styles from 'CurrencyInputBox' instead
+  color: inherit;
+
   > div {
     font-weight: 400;
     font-size: 13px;
+    opacity: 0.7;
+    color: inherit;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 `
 

@@ -10,10 +10,9 @@ export const TextWrapper = styled.span<{
   link?: boolean
   fontSize?: string
   adjustSize?: boolean
-  textColor?: string
 }>`
   margin-left: ${({ margin }) => margin && '4px'};
-  color: ${({ theme, link, textColor }) => (link ? theme.blue1 : textColor ?? `var(${UI.COLOR_TEXT})`)};
+  color: ${({ link }) => (link ? `var(${UI.COLOR_PRIMARY_PAPER})` : 'inherit')};
   font-size: ${({ fontSize }) => fontSize ?? 'inherit'};
 
   @media screen and (max-width: 600px) {
@@ -27,7 +26,6 @@ const HoverInlineText = ({
   margin = false,
   adjustSize = false,
   fontSize,
-  textColor,
   link,
   ...rest
 }: {
@@ -36,7 +34,6 @@ const HoverInlineText = ({
   margin?: boolean
   adjustSize?: boolean
   fontSize?: string
-  textColor?: string
   link?: boolean
 }) => {
   const [showHover, setShowHover] = useState(false)
@@ -53,7 +50,6 @@ const HoverInlineText = ({
           onMouseLeave={() => setShowHover(false)}
           margin={margin}
           adjustSize={adjustSize}
-          textColor={textColor}
           link={link}
           fontSize={fontSize}
           {...rest}
@@ -65,14 +61,7 @@ const HoverInlineText = ({
   }
 
   return (
-    <TextWrapper
-      margin={margin}
-      adjustSize={adjustSize}
-      link={link}
-      fontSize={fontSize}
-      textColor={textColor}
-      {...rest}
-    >
+    <TextWrapper margin={margin} adjustSize={adjustSize} link={link} fontSize={fontSize} {...rest}>
       {text}
     </TextWrapper>
   )

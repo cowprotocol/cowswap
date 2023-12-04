@@ -6,7 +6,8 @@ import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   border-radius: 16px;
   padding: 10px 16px;
   min-height: ${({ minHeight }) => minHeight || '80px'};
@@ -36,11 +37,17 @@ export const Label = styled.span`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
   font-weight: 500;

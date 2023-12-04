@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import Input from 'legacy/components/NumericalInput'
 
 export const Wrapper = styled.div`
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 10px 16px;
   flex: 1 1 70%;
@@ -27,12 +27,12 @@ export const Header = styled.div`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: inherit;
 `
 
 export const MarketPriceButton = styled.button`
   background: var(${UI.COLOR_PAPER});
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   white-space: nowrap;
   border: none;
   font-weight: 500;
@@ -40,10 +40,16 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:disabled {
     cursor: default;
     opacity: 0.6;
+  }
+
+  &:not(:disabled):hover {
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
 
@@ -53,6 +59,7 @@ export const Body = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 8px;
+  color: inherit;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -62,9 +69,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   border: none;
   width: 100%;
   text-align: left;
+  color: inherit;
 
   &::placeholder {
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    opacity: 0.7;
+    color: inherit;
   }
 `
 
@@ -83,7 +92,7 @@ export const ActiveCurrency = styled.button`
 `
 
 export const ActiveSymbol = styled.span`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-size: 13px;
   font-weight: 500;
   text-align: right;
@@ -93,7 +102,7 @@ export const ActiveSymbol = styled.span`
 export const ActiveIcon = styled.div`
   --size: 20px;
   background-color: var(${UI.COLOR_PAPER});
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   width: var(--size);
   min-width: var(--size);
   height: var(--size);
@@ -120,13 +129,19 @@ export const EstimatedRate = styled.div`
   font-weight: 400;
   background: var(${UI.COLOR_PAPER});
   border: 2px solid ${({ theme }) => theme.grey1};
+  background: red;
 
   > b {
     display: flex;
     flex-flow: row nowrap;
     font-weight: normal;
     text-align: left;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   // TODO: Make the question helper icon transparent through a prop instead

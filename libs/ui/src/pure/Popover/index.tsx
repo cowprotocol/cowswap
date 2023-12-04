@@ -14,7 +14,7 @@ export interface PopoverContainerProps {
 
 const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  color: ${({ color }) => color || `var(${UI.COLOR_TEXT})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
   box-shadow: var(${UI.BOX_SHADOW});
   border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   border-radius: 12px;
@@ -24,6 +24,10 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
 
   > div div {
     font-size: inherit;
+  }
+
+  .arrow-bottom {
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 `
 

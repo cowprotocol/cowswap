@@ -13,7 +13,7 @@ const Settings = styled(SettingsMod)`
     box-shadow: ${({ theme }) => theme.boxShadow2};
     border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
     background-color: var(${UI.COLOR_PAPER});
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     padding: 0;
     margin: 0;
     top: 36px;
@@ -22,8 +22,10 @@ const Settings = styled(SettingsMod)`
   }
 
   ${RowFixed} {
+    color: inherit;
+
     > div {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       opacity: 0.85;
     }
   }
@@ -37,18 +39,20 @@ const Settings = styled(SettingsMod)`
     background-color: transparent;
     margin: 0;
     padding: 0;
+    color: inherit;
 
     &:hover,
     &:focus {
       cursor: pointer;
       outline: none;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: currentColor;
     }
 
     svg {
       opacity: 1;
       margin: 0;
       transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+      color: inherit;
     }
 
     &:hover > svg {
@@ -57,7 +61,7 @@ const Settings = styled(SettingsMod)`
 
     &:hover svg > path,
     &:hover svg > circle {
-      stroke: var(${UI.COLOR_TEXT});
+      stroke: currentColor;
     }
   }
 
@@ -65,11 +69,17 @@ const Settings = styled(SettingsMod)`
     --size: var(${UI.ICON_SIZE_NORMAL});
     height: var(--size);
     width: var(--size);
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
 
     > path,
     > circle {
-      stroke: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
-      transition: stroke 0.3s ease-in-out;
+      transition: stroke 0.2s ease-in-out;
     }
   }
 

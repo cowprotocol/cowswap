@@ -21,8 +21,14 @@ const StyledExternalLink = styled(ExternalLink)`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
-  transition: color 0.2s ease-in-out;
+  color: inherit;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0.5;
+
+  &:hover {
+    color: inherit;
+    opacity: 1;
+  }
 
   > svg {
     --size: 14px;
@@ -31,16 +37,7 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 
   > svg > g > path {
-    fill: var(${UI.COLOR_SECONDARY_TEXT});
-    transition: fill 0.2s ease-in-out;
-  }
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-
-    > svg > g > path {
-      fill: var(${UI.COLOR_TEXT});
-    }
+    fill: currentColor;
   }
 `
 

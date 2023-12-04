@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const TermsWrapper = styled.div`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 
 export const Blurb = styled.div`
@@ -24,8 +24,10 @@ export const NewToEthereum = () => (
 )
 
 export const CloseColor = styled(Close)`
+  color: inherit;
+
   path {
-    stroke: ${({ theme }) => theme.text4};
+    stroke: currentColor;
   }
 `
 
@@ -34,13 +36,14 @@ export const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
-  /* MOD */
+  color: inherit;
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
 `
 
 export const UpperSection = styled.div`
   position: relative;
+  color: inherit;
 
   h5 {
     margin: 0;
@@ -63,6 +66,7 @@ export const OptionGrid = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(4, 1fr);
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(3, 1fr);
@@ -82,16 +86,18 @@ export const IconWrapper = styled.div`
   justify-content: center;
   background: transparent;
   border: 1px solid var(${UI.COLOR_BORDER});
+  color: inherit;
   padding: 8px;
   margin: 0 12px 0 0;
 
   > svg {
     width: 100%;
     height: 100%;
+    color: inherit;
   }
 
   > svg > path {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: currentColor;
     fill: var(--color);
     stroke: var(--color);
   }

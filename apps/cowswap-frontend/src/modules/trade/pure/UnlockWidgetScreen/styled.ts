@@ -6,20 +6,21 @@ import styled from 'styled-components/macro'
 export const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg1, 0.03) : theme.grey1)};
+  background: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const TitleSection = styled.div`
   text-align: center;
   font-size: 20px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   margin: 24px auto 42px;
 
   > h3 {
     font-weight: 400;
     font-size: inherit;
     margin: 0 0 4px;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: inherit;
+    opacity: 0.7;
   }
 
   > strong {
@@ -87,7 +88,7 @@ export const List = styled.ul`
   }
 
   > li > span > svg > path {
-    fill: ${({ theme }) => theme.success};
+    fill: var(${UI.COLOR_SUCCESS});
   }
 `
 

@@ -17,6 +17,12 @@ const Wrapper = styled.span`
   justify-content: flex-start;
   text-align: left;
   gap: 0 3px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {

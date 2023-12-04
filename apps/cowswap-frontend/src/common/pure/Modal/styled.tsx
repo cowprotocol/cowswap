@@ -32,7 +32,7 @@ export const CloseIcon = styled.div`
 
 export const HoverText = styled.div`
   text-decoration: none;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   display: flex;
   align-items: center;
 

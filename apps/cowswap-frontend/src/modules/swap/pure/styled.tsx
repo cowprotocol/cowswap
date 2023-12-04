@@ -36,7 +36,7 @@ export const LightGreyText = styled.span`
 
 export const StyledInfoIcon = styled(Info)`
   opacity: 0.5;
-  stroke: var(${UI.COLOR_TEXT});
+  stroke: currentColor;
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;

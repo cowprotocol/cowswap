@@ -17,21 +17,24 @@ export const blankButtonMixin = css`
 
 export const IconButton = styled.button`
   ${blankButtonMixin}
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 
   > svg {
-    color: ${`var(${UI.COLOR_TEXT})`};
-
-    &:hover {
-      color: var(${UI.COLOR_SECONDARY_TEXT});
-    }
+    color: inherit;
   }
 `
 
 export const ImportButton = styled.button`
   ${blankButtonMixin};
 
-  background-color: var(${UI.COLOR_CONTAINER_BG_02});
-  color: var(${UI.COLOR_WHITE});
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 16px;
   font-weight: 600;
   padding: 6px 15px;
@@ -40,7 +43,7 @@ export const ImportButton = styled.button`
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: var(${UI.COLOR_LINK});
+    background-color: var(${UI.COLOR_PRIMARY_DARKER});
   }
 `
 

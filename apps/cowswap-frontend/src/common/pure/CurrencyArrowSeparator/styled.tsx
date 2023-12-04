@@ -16,7 +16,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
   justify-content: ${({ withRecipient }) => (withRecipient ? 'intial' : 'center')};
   transition: width 0.3s ease-in-out;
 
-  ${({ hasSeparatorLine, withRecipient, theme }) =>
+  ${({ hasSeparatorLine, withRecipient }) =>
     hasSeparatorLine &&
     css`
       &::before {
@@ -26,12 +26,12 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
         left: -8px;
         top: calc(50% - 1px);
         height: 1px;
-        background: ${theme.grey1};
+        background: var(${UI.COLOR_PAPER_DARKER});
       }
     `}
 `
 
-export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean }>`
+export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   --size: 26px;
   position: absolute;
   left: calc(50% - var(--size) / 2);
@@ -42,9 +42,10 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
-  border: ${({ border, theme }) => (border ? `1px solid ${theme.grey1}` : '0')};
-  box-shadow: 0 0 0 3px ${({ theme }) => theme.paper};
+  border: 0;
+  box-shadow: 0 0 0 3px var(${UI.COLOR_PAPER});
   background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   border-radius: 8px;
   width: var(--size);
   margin: auto;
@@ -59,7 +60,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
 export const ArrowDownIcon = styled(ArrowDown)`
   display: block;
   margin: auto;
-  stroke: var(${UI.COLOR_TEXT});
+  stroke: currentColor;
   stroke-width: 3px;
   padding: 0;
   height: 100%;

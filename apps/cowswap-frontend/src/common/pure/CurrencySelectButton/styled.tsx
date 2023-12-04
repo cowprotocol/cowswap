@@ -11,7 +11,7 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   min-height: 7px;
 
   > path {
-    stroke: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+    stroke: currentColor;
     stroke-width: 2px;
     transition: stroke 0.15s ease-in-out;
   }
@@ -29,20 +29,20 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   gap: 6px;
   border: 0;
   outline: none;
-  background-color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER})`)};
-  color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+  background: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER})`)};
+  color: inherit;
   box-shadow: var(${UI.BOX_SHADOW_2});
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 6px;
-  transition: background-color 0.15s ease-in-out;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
   max-width: 190px;
 
   &:hover {
     // TODO: Check what 'readonlyMode' does and proper style it.
-    color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
-    background-color: ${({ readonlyMode, $stubbed }) =>
+    color: ${({ $stubbed }) => ($stubbed ? 'currentColor' : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    background: ${({ readonlyMode, $stubbed }) =>
       readonlyMode
         ? `var(${UI.COLOR_DANGER});`
         : $stubbed
@@ -51,7 +51,8 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   }
 
   &:hover ${ArrowDown} > path {
-    stroke: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    transition: stroke 0.15s ease-in-out;
+    stroke: ${({ $stubbed }) => ($stubbed ? 'currentColor' : `var(${UI.COLOR_BUTTON_TEXT})`)};
   }
 `
 

@@ -407,6 +407,7 @@ export const UniThemedGlobalStyle = css`
       theme.darkMode ? darken(theme.primary, 0.2) : darken(theme.primary, 0.05)};
     ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.primary, 0.4) : darken(theme.primary, 0.1)};
+    ${UI.COLOR_PRIMARY_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.primary)};
     ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.8)};
     ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.7)};
     ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
@@ -426,11 +427,12 @@ export const UniThemedGlobalStyle = css`
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
 
     ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
+    ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};
+
     ${UI.COLOR_TEXT_OPACITY_70}: ${({ theme }) => transparentize(theme.text, 0.3)};
     ${UI.COLOR_TEXT_OPACITY_50}: ${({ theme }) => transparentize(theme.text, 0.5)};
     ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
-    ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};
 
     ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) =>
       theme.darkMode ? transparentize(theme.text, 0.6) : transparentize(theme.text, 0.5)};

@@ -87,9 +87,10 @@ export const StyledMenuButton = styled.button`
   margin-left: 8px;
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
+  color: inherit;
 
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     cursor: pointer;
     outline: none;
     background-color: ${({ theme }) => theme.bg4};
@@ -97,9 +98,6 @@ export const StyledMenuButton = styled.button`
 
   svg {
     margin-top: 2px;
-  }
-  > * {
-    stroke: var(${UI.COLOR_TEXT});
   }
 `
 
