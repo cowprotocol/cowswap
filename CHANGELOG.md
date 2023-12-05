@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.50.2](https://github.com/cowprotocol/cowswap/compare/v1.50.1...v1.50.2) (2023-11-29)
+
+
+### Bug Fixes
+
+* make typescript happy ([24d3924](https://github.com/cowprotocol/cowswap/commit/24d39246a5343656b402671a5bca8cbc94b79242))
+
 ## [1.50.1](https://github.com/cowprotocol/cowswap/compare/v1.50.0...v1.50.1) (2023-11-27)
 
 
