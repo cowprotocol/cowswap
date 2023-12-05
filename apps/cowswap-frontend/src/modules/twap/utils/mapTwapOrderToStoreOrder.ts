@@ -20,6 +20,10 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
 export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
+  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
+  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+
+  if (!inputToken || !outputToken) throw new Error('Token not found')
 
   const storeOrder: Order = {
     ...enrichedOrder,
@@ -28,8 +32,8 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
       id: order.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken,
+    outputToken,
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,
