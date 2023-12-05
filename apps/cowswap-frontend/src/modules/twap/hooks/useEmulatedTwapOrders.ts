@@ -32,10 +32,7 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      const orderDetails = mapTwapOrderToStoreOrder(order, tokensByAddress)
-      if (orderDetails) {
-        acc.push(orderDetails)
-      }
+      acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
       return acc
     }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])

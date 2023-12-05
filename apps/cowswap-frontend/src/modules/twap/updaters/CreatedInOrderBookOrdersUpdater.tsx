@@ -14,7 +14,7 @@ import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } fro
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
-import { isOrder, mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 interface TwapOrderInfo {
   item: TwapPartOrderItem
@@ -65,11 +65,9 @@ export function CreatedInOrderBookOrdersUpdater() {
 
       const allTokens = await getTokensForOrdersList(getTokensListFromOrders(ordersInfo))
 
-      return ordersInfo
-        .map(({ item, parent, order }) => {
-          return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
-        })
-        .filter(isOrder)
+      return ordersInfo.map(({ item, parent, order }) => {
+        return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
+      })
     },
     [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
     []
