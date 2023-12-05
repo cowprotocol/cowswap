@@ -126,8 +126,17 @@ export function SwapWidget() {
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
+  // Hide the price impact warning when there is priceImpact value or when it's loading
+  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
+  const hideUnknownImpactWarning =
+    isFractionFalsy(parsedAmounts.INPUT) ||
+    isFractionFalsy(parsedAmounts.OUTPUT) ||
+    !!priceImpactParams.priceImpact ||
+    priceImpactParams.loading
+
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
-  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
+  const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
+  const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 
   const openNativeWrapModal = () => setOpenNativeWrapModal(true)
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
@@ -185,14 +194,6 @@ export function SwapWidget() {
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
-
-  // Hide the price impact warning when there is priceImpact value or when it's loading
-  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
-  const hideUnknownImpactWarning =
-    isFractionFalsy(parsedAmounts.INPUT) ||
-    isFractionFalsy(parsedAmounts.OUTPUT) ||
-    !!priceImpactParams.priceImpact ||
-    priceImpactParams.loading
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
