@@ -88,6 +88,7 @@ export const ActiveCurrency = styled.button`
   gap: 8px;
   max-width: 130px;
   width: auto;
+  color: inherit;
   cursor: pointer;
 `
 
@@ -128,7 +129,7 @@ export const EstimatedRate = styled.div`
   border-radius: 0 0 16px 16px;
   font-weight: 400;
   background: var(${UI.COLOR_PAPER});
-  border: 2px solid ${({ theme }) => theme.grey1};
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
   background: red;
 
   > b {
@@ -156,6 +157,7 @@ export const EstimatedRate = styled.div`
 
   > span > i {
     font-style: normal;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: inherit;
+    opacity: 0.7;
   }
 `

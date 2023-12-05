@@ -62,7 +62,7 @@ const ActionButton = styled.button`
 
 const TextButton = styled.button`
   display: inline-block;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-size: 13px;
   padding: 5px 10px;
   cursor: pointer;

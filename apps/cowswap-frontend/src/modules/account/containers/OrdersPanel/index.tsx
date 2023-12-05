@@ -43,7 +43,7 @@ const SideBar = styled.div`
     width: 100%;
     height: 100%;
     max-width: 100%;
-    border-radius: 0;
+    border-radius: ${theme.isInjectedWidgetMode ? '24px' : '0'};
   `};
 `
 
@@ -69,7 +69,7 @@ const Header = styled.div`
   padding: 20px 30px;
   align-items: center;
   transition: opacity 0.2s ease-in-out;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;

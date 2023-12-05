@@ -97,7 +97,7 @@ export const ListWrapper = styled(MenuList)`
 `
 
 export const ListItem = styled(MenuItem)`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background: none;
   border: 0;
   outline: none;
@@ -120,7 +120,7 @@ export const CustomInput = styled.input`
   border-radius: 8px;
   width: 100%;
   border: 1px solid ${({ theme }) => transparentize(theme.text, 0.7)};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   padding: 4px 8px;
   outline: 0;
   background: var(${UI.COLOR_PAPER});
@@ -130,7 +130,7 @@ export const CustomInput = styled.input`
   }
 
   &::-webkit-datetime-edit {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   &::-webkit-datetime-edit[disabled] {

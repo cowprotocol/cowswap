@@ -46,7 +46,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
       readonlyMode
         ? `var(${UI.COLOR_DANGER});`
         : $stubbed
-        ? `var(${UI.COLOR_PAPER_DARKER});`
+        ? `var(${UI.COLOR_PRIMARY_LIGHTER});`
         : `var(${UI.COLOR_PRIMARY});`};
   }
 

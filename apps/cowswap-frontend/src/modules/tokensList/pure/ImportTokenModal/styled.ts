@@ -46,7 +46,13 @@ export const StyledTokenSymbol = styled(TokenSymbol)`
 `
 
 export const TokenName = styled.div`
-  color: var(${UI.COLOR_LINK});
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const UnknownSourceWarning = styled.div`

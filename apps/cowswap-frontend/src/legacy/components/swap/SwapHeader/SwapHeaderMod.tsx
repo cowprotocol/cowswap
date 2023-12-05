@@ -10,7 +10,7 @@ import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLink
 
 const StyledSwapHeader = styled.div`
   width: 100%;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
 `
 
 export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {

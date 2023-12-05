@@ -100,7 +100,7 @@ export const Spinner = styled.div<{ warning: boolean }>`
 
 const Wrapper = styled.div`
   ${StyledPolling} {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     position: relative;
     margin: 0;
     padding: 0;
@@ -110,7 +110,7 @@ const Wrapper = styled.div`
     opacity: 1;
 
     a {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       opacity: 0.5;
       transition: opacity 0.3s ease-in-out;
       text-decoration: none;
@@ -127,7 +127,7 @@ const Wrapper = styled.div`
 
     ${StyledPollingNumber} > a {
       opacity: 1;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
 
       &:hover {
         opacity: 1;

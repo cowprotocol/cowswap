@@ -29,7 +29,7 @@ export const CopyIcon = styled(LinkStyledButton)`
   :active,
   :focus {
     text-decoration: none;
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
   }
 `
 

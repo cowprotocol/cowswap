@@ -14,6 +14,7 @@ export enum UI {
   COLOR_PRIMARY_OPACITY_80 = '--cow-color-primary-opacity-80',
   COLOR_PRIMARY_OPACITY_70 = '--cow-color-primary-opacity-70',
   COLOR_PRIMARY_OPACITY_50 = '--cow-color-primary-opacity-50',
+  COLOR_PRIMARY_OPACITY_25 = '--cow-color-primary-opacity-50',
 
   COLOR_SECONDARY = '--cow-color-secondary',
 

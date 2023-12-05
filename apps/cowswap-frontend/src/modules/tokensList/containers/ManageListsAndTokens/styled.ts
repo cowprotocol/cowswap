@@ -33,15 +33,11 @@ export const InputError = styled.div`
 export const Tab = styled.button<{ active$: boolean }>`
   ${blankButtonMixin};
 
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
   padding: 10px;
   font-size: 16px;
   font-weight: 600;
-
-  &:hover {
-    color: ${`var(${UI.COLOR_SECONDARY_TEXT})`};
-  }
 `
 
 export const PrimaryInputBox = styled.div`
@@ -57,11 +53,11 @@ export const PrimaryInput = styled.input`
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   outline: none;
 
   ::placeholder {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   &:focus {

@@ -120,7 +120,7 @@ export const Wrapper = styled.div`
     width: 70%;
     margin: 34px auto;
     padding: 0;
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
   }
 `
 

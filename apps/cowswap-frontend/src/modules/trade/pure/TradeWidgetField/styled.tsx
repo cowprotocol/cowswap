@@ -2,12 +2,10 @@ import { UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-
 import { NumericalInput } from '../TradeNumberInput/styled'
 
 export const TradeWidgetFieldLabel = styled.span`
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: inherit;
   display: flex;
   align-items: center;
   font-size: 13px;
@@ -15,14 +13,11 @@ export const TradeWidgetFieldLabel = styled.span`
   padding: 0;
   flex: 0 1 auto;
   flex: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
 
-  ${QuestionWrapper} {
-    opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
+  &:hover {
+    opacity: 1;
   }
 `
 
@@ -45,8 +40,8 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
 
 export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   --minHeight: 45px;
-  background: ${({ theme, hasPrefix }) => (hasPrefix ? 'transparent' : theme.grey1)};
-  border: 1px solid ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 'transparent')};
+  background: ${({ hasPrefix }) => (hasPrefix ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border: 1px solid ${({ hasPrefix }) => (hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   border-radius: 16px;
   min-height: var(--minHeight);
   font-size: 18px;
@@ -83,6 +78,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   ${Content} {
     padding: 0;
     flex: 0 1 auto;
+    color: inherit;
 
     ${NumericalInput} {
       max-width: 200px;
@@ -99,7 +95,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
         height: var(--minHeight);
 
         ${({ theme }) => theme.mediaWidth.upToSmall`
-          border-top: 1px solid ${theme.grey1};
+          border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
           width: 100%;
         `};
       `}
@@ -115,7 +111,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     }
 
     > span {
-      background: ${({ theme, hasPrefix }) => (hasPrefix ? theme.grey1 : 'transparent')};
+      background: ${({ hasPrefix }) => (hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 
       ${({ hasPrefix }) =>
         hasPrefix &&

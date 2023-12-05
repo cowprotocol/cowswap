@@ -299,7 +299,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     margin: 0 0 0 6px;
     cursor: pointer;
     outline: none;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     transition: color 0.2s ease-out;
     position: relative;
     height: var(--height);

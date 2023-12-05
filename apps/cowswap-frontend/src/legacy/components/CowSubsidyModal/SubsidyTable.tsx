@@ -49,7 +49,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   }
 
   &:hover > td {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
   }
 
@@ -60,7 +60,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
     transition: background 0.3s ease-in-out;
   }
 

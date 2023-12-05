@@ -43,7 +43,7 @@ export const DetailsRow = styled.div`
 export const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 400;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   min-height: 24px;
   gap: 3px;
 `

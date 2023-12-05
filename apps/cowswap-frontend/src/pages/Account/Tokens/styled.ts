@@ -18,7 +18,7 @@ export const MenuButton = styled.button`
   outline: none;
   border: none;
   cursor: pointer;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background: var(${UI.COLOR_PAPER});
   height: 44px;
   border-radius: 21px;
@@ -89,7 +89,7 @@ export const AccountPageWrapper = styled.div`
 `
 
 export const MainText = styled(ThemedText.Main)`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-size: 14px;
 `
 
@@ -134,6 +134,7 @@ export const ClearSearchInput = styled.div`
 
 export const Overview = styled.div`
   background: var(${UI.COLOR_PAPER});
+  color: inherit;
   border-radius: 16px;
   gap: 16px;
   margin: 0;
@@ -170,21 +171,19 @@ export const SearchInputFormatter = styled(Column)`
   width: 100%;
   flex: 1 1 fit-content;
   position: relative;
+  color: inherit;
 
   > input {
     border: none;
     transition: background 0.3s ease-in-out;
     background: var(${UI.COLOR_PAPER});
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   > input::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(theme.text, 0.4)};
-  }
-
-  > input:focus::placeholder {
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+    color: inherit;
+    opacity: 0.5;
   }
 `
 
@@ -195,8 +194,8 @@ export const TokenSearchInput = styled.input`
   width: 100%;
   align-self: flex-end;
   box-shadow: none;
-  background: var(${UI.COLOR_GREY});
-  border: 1px solid ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
   transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
   appearance: none;
@@ -216,11 +215,14 @@ export const TokenSearchInput = styled.input`
 
   &::placeholder {
     font-size: 14px !important;
-    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : `var(${UI.COLOR_TEXT})`)};
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
   }
 
   &:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : `var(${UI.COLOR_TEXT})`)};
+    color: inherit;
+    opacity: 1;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

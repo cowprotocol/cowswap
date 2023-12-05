@@ -41,7 +41,7 @@ const ReadMoreLink = styled.a`
   text-decoration: underline;
 
   &:hover {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 

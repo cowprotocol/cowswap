@@ -26,7 +26,7 @@ export const BottomGrouping = styled.div`
 
   div > svg,
   div > svg > path {
-    stroke: var(${UI.COLOR_SECONDARY_TEXT});
+    stroke: currentColor;
   }
 `
 export const LightGreyText = styled.span`
@@ -35,13 +35,13 @@ export const LightGreyText = styled.span`
 `
 
 export const StyledInfoIcon = styled(Info)`
-  opacity: 0.5;
-  stroke: currentColor;
+  color: inherit;
+  opacity: 0.6;
   line-height: 0;
   vertical-align: middle;
   transition: opacity 0.2s ease-in-out;
 
-  :hover {
+  &:hover {
     opacity: 1;
   }
 `

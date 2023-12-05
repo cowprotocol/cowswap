@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 `
 
 export const LabelText = styled.span`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   transition: color 0.15s ease-in-out;
 `
 
@@ -69,7 +69,7 @@ export const StyledMenuList = styled(MenuList)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 6px 12px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-size: 13px;
   cursor: pointer;
   border-radius: 8px;

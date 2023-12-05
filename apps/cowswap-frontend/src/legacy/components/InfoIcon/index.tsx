@@ -8,10 +8,11 @@ import styled from 'styled-components/macro'
 
 const StyledIcon = styled.div`
   display: inline-block;
+  color: inherit;
 
   > svg {
-    opacity: 0.5;
-    stroke: var(${UI.COLOR_TEXT});
+    opacity: 0.6;
+    stroke: currentColor;
     line-height: 0;
     vertical-align: middle;
     transition: opacity 0.2s ease-in-out;

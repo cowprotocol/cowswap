@@ -84,7 +84,7 @@ export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolea
   font-size: 0.825rem;
   display: flex;
   :hover {
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
   }
 `
 
@@ -129,7 +129,7 @@ export const WalletNameAddress = styled.div`
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   padding: 0;
   height: 100%;
   margin: 0 24px;
@@ -143,7 +143,7 @@ export const Wrapper = styled.div`
   ${AddressLink},
   ${CopyIcon},
   ${WalletAction} {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     opacity: 0.85;
     transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
     margin: auto;
@@ -170,7 +170,7 @@ export const Wrapper = styled.div`
     margin: 0 0 0 8px;
     align-self: center;
     font-size: 21px;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   ${WalletName} {
@@ -269,6 +269,7 @@ export const InfoCard = styled.div`
   border-radius: 16px;
   padding: 24px;
   background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
 
   &:not(:first-child) {
     margin: 24px 0;
@@ -292,7 +293,7 @@ export const AccountSection = styled.div`
 export const AccountGroupingRow = styled.div`
   justify-content: space-between;
   align-items: center;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   div {
     ${({ theme }) => theme.flexRowNoWrap}
@@ -314,7 +315,7 @@ export const AccountGroupingRow = styled.div`
 
 export const NoActivityMessage = styled.p`
   font-size: 14px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   width: 100%;
   padding: 24px 0 0;
   text-align: center;
@@ -328,10 +329,11 @@ export const LowerSection = styled.div`
   width: 100%;
   align-items: flex-start;
   justify-content: flex-start;
+  color: inherit;
 
   > span {
     display: flex;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     justify-content: space-between;
     padding: 0 0 12px;
 
@@ -346,6 +348,7 @@ export const LowerSection = styled.div`
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
+    color: inherit;
 
     > ${StyledLink} {
       width: 100%;
@@ -365,11 +368,12 @@ export const LowerSection = styled.div`
     > span {
       opacity: 0.6;
       margin: 0 0 0 4px;
+      color: inherit;
     }
   }
 
   > span > ${StyledLink} {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     text-decoration: underline;
     font-size: 14px;
 
@@ -451,7 +455,7 @@ const NetworkCardUni = styled(YellowCard)`
 
 export const NetworkCard = styled(NetworkCardUni)`
   background-color: var(${UI.COLOR_PAPER});
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   padding: 6px 8px;
   font-size: 13px;
   margin: 0;
@@ -534,13 +538,13 @@ export const SurplusCardWrapper = styled.div`
   }
 
   ${InfoCard} > div > span > p {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: var(${UI.COLOR_TEXT});
   }
 
   ${InfoCard} > div > span > b {
     font-size: 28px;
     font-weight: bold;
-    color: ${({ theme }) => theme.success};
+    color: var(${UI.COLOR_SUCCESS});
     width: 100%;
     text-align: center;
     margin: 20px auto 0;
@@ -586,7 +590,7 @@ export const WalletIconWrapper = styled.div`
   }
 
   > svg > path {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     fill: var(--color);
     stroke: var(--color);
     stroke-width: 0.5px;

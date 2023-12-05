@@ -147,7 +147,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -176,6 +176,7 @@ export const UpperSection = styled.div`
   padding: 16px 16px 32px;
   background: var(${UI.COLOR_GREY});
   border-radius: 16px 16px 0 0;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     border-radius: 0;
@@ -187,6 +188,7 @@ export const UpperSection = styled.div`
     width: 100%;
     text-align: center;
     margin: 0;
+    color: inherit;
   }
 
   // Targets TokenSymbol
@@ -200,6 +202,7 @@ export const LowerSection = styled.div`
   flex-flow: column wrap;
   padding: 16px;
   margin: 16px auto;
+  color: inherit;
 
   > h3 {
     text-align: center;

@@ -77,13 +77,12 @@ export const CloseIcon = styled(X)`
 
 export const CancelButton = styled(ButtonSecondary)`
   background: transparent;
-  color: ${`var(${UI.COLOR_TEXT})`};
-  border: 1px solid ${({ theme }) => theme.text1};
+  color: inherit;
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
   :hover {
-    background: transparent;
-    color: ${`var(${UI.COLOR_TEXT})`};
-    border: 1px solid ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_PAPER_DARKER});
+    color: inherit;
   }
 `
 

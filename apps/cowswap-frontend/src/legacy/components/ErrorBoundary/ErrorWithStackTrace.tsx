@@ -46,7 +46,7 @@ const CodeBlockWrapper = styled.div`
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
 
   /* MOD */
   ${({ theme }) => theme.mediaWidth.upToSmall`

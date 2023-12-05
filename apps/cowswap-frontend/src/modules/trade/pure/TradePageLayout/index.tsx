@@ -24,6 +24,7 @@ export const PrimaryWrapper = styled.div`
   gap: 16px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
   margin: 0 auto;
+  color: inherit;
 `
 
 // Graph + orders table

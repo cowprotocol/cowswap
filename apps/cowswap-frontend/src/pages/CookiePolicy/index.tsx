@@ -22,7 +22,7 @@ const Wrapper = styled(MarkdownPage)`
       width: 100%;
       min-width: 800px;
       border-spacing: 1px;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
 
       > thead {
         background: ${({ theme }) => theme.bg3};

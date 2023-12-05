@@ -7,7 +7,6 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -20,6 +19,7 @@ import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 const OrdersBox = styled.div`
   background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
+  color: inherit;
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: none;
@@ -36,7 +36,8 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
+  border: 1px solid var(${UI.COLOR_BORDER});
+  color: inherit;
   min-height: 490px;
   padding: 0;
 
@@ -48,10 +49,23 @@ const Content = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     margin: 0 0 16px;
-    background: ${({ theme }) => transparentize(theme.text3, 0.8)};
+    color: inherit;
     transform: rotate(0);
     transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: var(${UI.COLOR_PRIMARY});
+      opacity: 0.08;
+      width: var(--size);
+      height: var(--size);
+      border-radius: var(--size);
+    }
 
     &:hover {
       transform: rotate(360deg);
@@ -70,7 +84,8 @@ const Content = styled.div`
 
     > svg {
       padding: 28px;
-      fill: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+      fill: currentColor;
+      opacity: 0.5;
     }
   }
 
@@ -88,7 +103,7 @@ const Content = styled.div`
     margin: 0 auto 21px;
     font-weight: 400;
     text-align: center;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: inherit;
   }
 `
 

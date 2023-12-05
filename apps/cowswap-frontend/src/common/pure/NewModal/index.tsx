@@ -105,7 +105,7 @@ const NewModalContent = styled.div<{ paddingTop?: number }>`
   p {
     font-size: var(${UI.FONT_SIZE_NORMAL});
     font-weight: var(${UI.FONT_WEIGHT_NORMAL});
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
     margin: 0 auto;
     padding: 0;
   }

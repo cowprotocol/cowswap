@@ -17,7 +17,7 @@ export const ProgressBarWrapper = animated(styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px 20px 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background-color: var(${UI.COLOR_GREY});
   transition: height 0.2s ease;
 
@@ -206,7 +206,7 @@ export const StatusWrapper = styled.div`
 
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   margin: 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 0.835rem;
@@ -218,7 +218,7 @@ export const StatusMsg = styled.p`
 `
 
 export const StyledCoWLink = styled(ExternalLink)`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   text-decoration: underline;
   opacity: 1 !important;
 

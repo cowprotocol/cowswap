@@ -36,7 +36,7 @@ export const Wrapper = styled.div`
     > table {
       width: 100%;
       border-spacing: 1px;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
 
       > thead {
         background: ${({ theme }) => theme.bg3};
@@ -121,7 +121,7 @@ export const Menu = styled.div`
   font-weight: bold;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   height: max-content;
   position: sticky;
   top: 0;

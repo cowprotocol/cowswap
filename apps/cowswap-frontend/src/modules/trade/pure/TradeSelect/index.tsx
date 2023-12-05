@@ -16,8 +16,9 @@ export interface TradeSelectProps extends TradeWidgetFieldProps {
 }
 
 const StyledMenuList = styled(MenuList)`
-  background: var(${UI.COLOR_PAPER});
-  box-shadow: ${({ theme }) => theme.boxShadow2};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  box-shadow: var(${UI.BOX_SHADOW});
+  color: inherit;
   margin: 15px 0 0 0;
   padding: 16px;
   border-radius: 20px;
@@ -29,10 +30,11 @@ const StyledMenuList = styled(MenuList)`
   display: flex;
   flex-flow: column wrap;
   gap: 10px;
-  transition: background 0.1s ease-in-out;
+  transition: background 0.2s ease-in-out;
 `
 
 const StyledMenuButton = styled(MenuButton)`
+  color: inherit;
   background: none;
   border: 0;
   outline: none;
@@ -45,16 +47,18 @@ const StyledMenuButton = styled(MenuButton)`
   cursor: pointer;
   width: 100%;
   justify-content: space-between;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 
 const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
-  font-size: 14px;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  font-size: 16px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
 
   &:hover {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    opacity: 1;
   }
 
   &:not(:last-child) {

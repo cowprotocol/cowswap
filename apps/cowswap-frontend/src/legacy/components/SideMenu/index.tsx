@@ -9,7 +9,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   font-weight: 500;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   height: max-content;
   position: sticky;
   top: 0;

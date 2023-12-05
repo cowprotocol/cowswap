@@ -14,17 +14,17 @@ const ModalContentWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 24px;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
-  background-color: var(${UI.COLOR_PAPER});
+  color: inherit;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
   > p {
     line-height: 1.4;
     margin: 0 0 24px;
+    color: inherit;
   }
 
   > p > strong {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 
@@ -34,8 +34,8 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 0 0 16px;
   margin: 0 0 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.grey1};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  color: inherit;
 
   > b {
     font-size: 21px;
@@ -46,6 +46,7 @@ const Header = styled.div`
 const StyledCloseIcon = styled(X)`
   height: 28px;
   width: 28px;
+  color: inherit;
   opacity: 0.6;
   transition: opacity 0.3s ease-in-out;
 
@@ -55,12 +56,12 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT});
+    stroke: currentColor;
   }
 `
 
 const ConfirmExpertMode = styled(ConfirmedButton)`
-  margin-bottom: 15px;
+  margin: 0 0 15px;
 `
 
 export interface ExpertModeModalProps {

@@ -6,7 +6,6 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
 
-
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import Footer from 'legacy/components/Footer'
@@ -27,6 +26,8 @@ const AppWrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+  color: inherit;
+
   &:after {
     content: '';
     position: fixed;
@@ -130,18 +131,17 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
 
           return (
             <AppWrapper>
-
-            {!isInjectedWidget() &&
-              <HeaderWrapper>
-                <HeaderRow marginRight="0">
-                  <a href={Routes.HOME}>
-                    <UniIcon>
-                      <LogoImage />
-                    </UniIcon>
-                  </a>
-                </HeaderRow>
-              </HeaderWrapper>
-            }
+              {!isInjectedWidget() && (
+                <HeaderWrapper>
+                  <HeaderRow marginRight="0">
+                    <a href={Routes.HOME}>
+                      <UniIcon>
+                        <LogoImage />
+                      </UniIcon>
+                    </a>
+                  </HeaderRow>
+                </HeaderWrapper>
+              )}
 
               <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
               <FooterWrapper>

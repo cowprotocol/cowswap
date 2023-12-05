@@ -34,7 +34,7 @@ const OptionCardLeft = styled.div`
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
   margin-top: 0;
   opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
-  background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
+  background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : 'inherit')};
   display: flex;
   flex-direction: column;
@@ -42,11 +42,11 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
   justify-content: center;
   transition: background-color 0.2s ease-in;
   height: 120px;
-  border: 1px solid transparent;
+  border: 0;
 
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    background-color: ${({ clickable }) => clickable && `var(${UI.COLOR_PAPER_DARKER})`};
+    background-color: ${({ clickable }) => clickable && `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
 

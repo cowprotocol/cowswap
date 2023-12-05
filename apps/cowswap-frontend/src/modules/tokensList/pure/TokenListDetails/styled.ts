@@ -7,15 +7,24 @@ export const ListInfo = styled.div`
   align-items: center;
   gap: 10px;
   font-size: 12px;
+  color: inherit;
 `
 
 export const ListName = styled.div`
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 5px;
+  color: inherit;
 `
 
 export const TokensInfo = styled.div`
   display: flex;
   gap: 5px;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `

@@ -1,9 +1,6 @@
-import React from 'react'
-
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
@@ -25,7 +22,7 @@ const StyledBanner = styled(InlineBanner)`
 
 const AcceptButton = styled.button`
   background: var(${UI.COLOR_PRIMARY});
-  color: ${({ theme }) => theme.white};
+  color: var(${UI.COLOR_BUTTON_TEXT});
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
@@ -37,7 +34,7 @@ const AcceptButton = styled.button`
   margin: 0 0 0 auto;
 
   &:hover {
-    background-color: ${({ theme }) => transparentize(theme.bg2, 0.2)};
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 `
 

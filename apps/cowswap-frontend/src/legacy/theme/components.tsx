@@ -75,11 +75,12 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
 export const StyledInternalLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.text3};
+  color: var(${UI.COLOR_PRIMARY_PAPER});
   font-weight: 500;
 
   :hover {
     text-decoration: underline;
+    color: var(${UI.COLOR_PRIMARY_DARKER});
   }
 
   :focus {
@@ -140,7 +141,7 @@ export const Spinner = styled.img`
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 export function BackArrow({ to }: { to: string }) {
   return (

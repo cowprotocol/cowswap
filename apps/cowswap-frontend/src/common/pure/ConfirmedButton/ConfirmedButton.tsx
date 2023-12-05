@@ -13,7 +13,7 @@ const Instruction = styled.p`
 const Input = styled.input`
   border: 1px solid ${`var(${UI.COLOR_BORDER})`};
   background: ${`var(${UI.COLOR_PAPER_DARKER})`};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   width: 100%;
   margin: 10px 0;
   margin-top: 0;

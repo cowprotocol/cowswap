@@ -157,7 +157,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -184,7 +184,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 16px 16px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

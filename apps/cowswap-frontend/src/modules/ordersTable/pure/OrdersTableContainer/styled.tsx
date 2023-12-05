@@ -120,7 +120,7 @@ export const TableRowCheckbox = styled.input`
   outline: 0;
 
   &:checked {
-    background-color: ${`var(${UI.COLOR_TEXT})`};
+    background-color: inherit;
   }
 
   &:checked + ${CheckboxCheckmark}::after {
@@ -128,7 +128,7 @@ export const TableRowCheckbox = styled.input`
   }
 
   &:indeterminate {
-    border-color: ${`var(${UI.COLOR_TEXT})`};
+    border-color: inherit;
   }
 
   &:indeterminate + ${CheckboxCheckmark}::after {

@@ -11,7 +11,7 @@ import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   padding: 6px 12px;
   border: 2px solid transparent;
   font-weight: 500;

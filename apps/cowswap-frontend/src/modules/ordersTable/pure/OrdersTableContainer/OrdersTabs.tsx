@@ -1,7 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -14,7 +13,7 @@ const Tabs = styled.div`
   border-radius: 9px;
   overflow: hidden;
   margin: 0;
-  border: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -25,8 +24,8 @@ const Tabs = styled.div`
 
 const TabButton = styled(Link)<{ active: string }>`
   display: inline-block;
-  background: ${({ theme, active }) => (active === 'true' ? transparentize(theme.text3, 0.88) : 'transparent')};
-  color: ${({ theme, active }) => (active === 'true' ? `var(${UI.COLOR_TEXT})` : transparentize(theme.text, 0.2))};
+  background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
   font-size: 13px;
@@ -41,8 +40,9 @@ const TabButton = styled(Link)<{ active: string }>`
   `};
 
   &:hover {
-    background: var(${UI.COLOR_PAPER});
-    color: ${`var(${UI.COLOR_TEXT})`};
+    background: ${({ active }) =>
+      active === 'true' ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
+    color: inherit;
   }
 `
 

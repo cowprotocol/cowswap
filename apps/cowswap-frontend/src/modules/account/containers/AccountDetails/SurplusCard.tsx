@@ -31,6 +31,7 @@ export function SurplusCard() {
     gap: 24px;
     box-sizing: border-box;
     padding: 0;
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       display: flex;
@@ -51,6 +52,7 @@ export function SurplusCard() {
       width: 100%;
       max-width: 100%;
       margin: 0;
+      color: inherit;
     }
 
     ${InfoCard} > div {
@@ -58,6 +60,7 @@ export function SurplusCard() {
       flex-flow: column wrap;
       align-items: center;
       justify-content: center;
+      color: inherit;
 
       &:first-child {
         margin: 20px auto 0;
@@ -73,6 +76,7 @@ export function SurplusCard() {
       flex-flow: column wrap;
       align-items: center;
       justify-content: center;
+      color: inherit;
     }
 
     ${InfoCard} > div > span > i,
@@ -87,17 +91,26 @@ export function SurplusCard() {
       text-align: center;
       justify-content: center;
       align-items: center;
-      color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+      color: inherit;
+    }
+
+    ${InfoCard} > div > span > i {
+      opacity: 0.6;
+      transition: opacity 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     ${InfoCard} > div > span > p {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
     }
 
     ${InfoCard} > div > span > b {
       font-size: 28px;
       font-weight: bold;
-      color: ${({ theme }) => theme.success};
+      color: var(${UI.COLOR_SUCCESS});
       width: 100%;
       text-align: center;
       margin: 12px auto 0;

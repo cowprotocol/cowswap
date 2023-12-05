@@ -42,7 +42,7 @@ const pageButtonStyles = css<{ $active?: boolean }>`
 
   &:hover {
     background: var(${UI.COLOR_PAPER});
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 

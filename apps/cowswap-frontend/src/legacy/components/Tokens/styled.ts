@@ -115,7 +115,7 @@ export const ArrowButton = styled.button`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: var(${UI.COLOR_TEXT});
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
@@ -197,11 +197,11 @@ export const Cell = styled.div`
     transition: text-decoration-color 0.2s ease-in-out;
     overflow: hidden;
     display: flex;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: var(${UI.COLOR_TEXT});
 
     &:hover {
-      color: ${`var(${UI.COLOR_TEXT})`};
-      text-decoration-color: ${`var(${UI.COLOR_TEXT})`};
+      color: var(${UI.COLOR_TEXT});
+      text-decoration-color: var(${UI.COLOR_TEXT});
     }
   }
 `
@@ -212,13 +212,14 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance }) => (hasBalance ? `var(${UI.COLOR_TEXT})` : transparentize(`var(${UI.COLOR_TEXT} )`, 0.3))};
+  color: inherit;
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: ${({ hasBalance }) => (hasBalance ? 1 : 0.5)};
 `
 
 export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
@@ -228,7 +229,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   font-weight: 400;
   transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
   background: transparent;
-  color: ${({ theme, color }) => color || theme.text1};
+  color: ${({ color }) => color || 'inherit'};
   white-space: nowrap;
   position: relative;
   opacity: 0.7;
@@ -244,29 +245,30 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     height: 16px;
     max-width: 100%;
     max-height: 100%;
+    color: inherit;
 
     > path {
-      fill: var(${UI.COLOR_TEXT});
+      fill: currentColor;
     }
   }
 
-  ${({ theme, outlined, color }) =>
+  ${({ outlined, color }) =>
     outlined &&
     `
       background: transparent;
-      color: ${color || theme.text1};
-      border: 1px solid ${color || theme.text1};
+      color: ${color || 'inherit'};
+      border: 1px solid ${color || 'inherit'};
       :hover {
         color: white;
       }
   `};
 
-  ${({ theme, text, color }) =>
+  ${({ text, color }) =>
     text &&
     `
       background: none;
       border: none;
-      color: ${color || theme.text1};
+      color: ${color || 'inherit'};
       padding: 0;
 
       :hover {
@@ -342,7 +344,7 @@ export const TokenText = styled.div`
 `
 
 export const ApproveLabel = styled.span<{ color?: string }>`
-  color: ${({ theme, color }) => color || theme.text1};
+  color: ${({ color }) => color || 'inherit'};
   font-weight: 500;
 `
 
@@ -365,7 +367,7 @@ export const FiatValue = styled.div`
 `
 
 export const InfoCircle = styled(HelpCircle)`
-  stroke: var(${UI.COLOR_TEXT});
+  stroke: currentColor;
   width: 15px;
   height: 15px;
   margin-left: 5px;

@@ -12,7 +12,7 @@ import { SwapCallbackError } from 'legacy/components/swap/styleds'
 const Wrapper = styled.div`
   ${RowBetween} > div,
   ${RowFixed} > div {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 

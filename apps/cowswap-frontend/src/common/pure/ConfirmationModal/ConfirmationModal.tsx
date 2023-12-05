@@ -12,7 +12,7 @@ import { ConfirmedButton } from '../ConfirmedButton'
 const ModalContentWrapper = styled(ContentWrapper)`
   flex: 1;
   padding: 1.5rem;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
   border-radius: 1.5rem;
 `
 
@@ -22,7 +22,7 @@ const Description = styled.p`
 `
 
 const Warning = styled.strong`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 
 export interface ConfirmationModalProps {

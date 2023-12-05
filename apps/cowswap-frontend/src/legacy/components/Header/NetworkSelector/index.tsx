@@ -20,7 +20,7 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-weight: 400;
 `
 
@@ -80,7 +80,7 @@ const SelectorLabel = styled.div`
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   display: flex;
   font-weight: 500;
   justify-content: space-between;

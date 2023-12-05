@@ -25,6 +25,7 @@ export const RateWrapper = styled.div`
   grid-template-columns: auto 150px;
   gap: 6px;
   text-align: right;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;

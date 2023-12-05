@@ -34,6 +34,7 @@ const StyledExternalLink = styled(ExternalLink)`
     --size: 14px;
     width: var(--size);
     height: var(--size);
+    color: inherit;
   }
 
   > svg > g > path {

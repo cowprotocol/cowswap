@@ -19,8 +19,9 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   gap: 10px;
   padding: 16px;
   background: ${({ readOnly }) => (readOnly ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  border: ${({ theme, readOnly }) => (readOnly ? `1px solid ${theme.grey1}` : 'none')};
+  border: ${({ readOnly }) => (readOnly ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
+  color: inherit;
   min-height: 106px;
   pointer-events: ${({ pointerDisabled }) => (pointerDisabled ? 'none' : '')};
   max-width: 100%;
@@ -109,6 +110,12 @@ export const BalanceText = styled.span`
   gap: 5px;
   display: flex;
   align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const FiatAmountText = styled.span`
@@ -116,11 +123,11 @@ export const FiatAmountText = styled.span`
   color: inherit;
 
   > div {
-    font-weight: 400;
+    font-weight: 500;
     font-size: 13px;
     opacity: 0.7;
     color: inherit;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.2s ease-in-out;
 
     &:hover {
       opacity: 1;

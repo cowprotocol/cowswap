@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize, lighten } from 'color2k'
+import { transparentize } from 'color2k'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -11,8 +11,9 @@ export const InfoPopup = styled.div`
   gap: 12px;
   font-size: 14px;
   line-height: 1.3;
-  background: ${({ theme }) => `linear-gradient(90deg, ${theme.bg1} 0%, ${transparentize(theme.bg1, 0.03)} 100%)`};
+  background: ${`linear-gradient(90deg, var(${UI.COLOR_PAPER}) 0%, var(${UI.COLOR_PAPER_DARKER}) 100%)`};
   border-radius: 16px;
+  color: inherit;
   padding: 15px 34px 15px 15px;
 
   .icon {
@@ -23,20 +24,23 @@ export const InfoPopup = styled.div`
     height: var(--size);
     min-width: var(--size);
     min-height: var(--size);
+    color: inherit;
   }
 
   .icon > svg {
     --size: 32px;
     width: 100%;
     height: 100%;
+    color: inherit;
+    opacity: 0.6;
 
     > path {
-      fill: ${({ theme }) => transparentize(theme.text, 0.5)};
+      fill: currentColor;
     }
   }
 
   .content > a {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     text-decoration: underline;
 
     &::after {

@@ -94,9 +94,11 @@ export const List = styled.ul`
 
 export const ControlSection = styled.div`
   text-align: center;
+  color: inherit;
 
   & span {
-    margin-bottom: 1.2rem;
+    margin: 0 0 1.2rem;
     display: block;
+    color: inherit;
   }
 `

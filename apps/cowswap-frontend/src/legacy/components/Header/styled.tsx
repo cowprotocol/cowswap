@@ -56,7 +56,7 @@ export const StyledNavLinkUni = styled(NavLink)`
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
   font-size: 1rem;
   width: fit-content;
   margin: 0 12px;
@@ -65,12 +65,12 @@ export const StyledNavLinkUni = styled(NavLink)`
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   :hover,
   :focus {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 
@@ -147,7 +147,7 @@ export const HeaderElementUni = styled.div`
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   &:first-of-type {
     margin: 0 12px 0 0;
@@ -155,7 +155,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
   &:hover,
   &:focus {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 
@@ -245,7 +245,7 @@ export const HeaderModWrapper = styled(HeaderMod)``
 export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   margin: 0;
   text-decoration: none;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
@@ -276,7 +276,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-    color: var(${UI.COLOR_SECONDARY_TEXT});
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 100%;
@@ -285,17 +285,17 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       font-weight: 600;
       font-size: 17px;
       padding: 28px 10px;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       border-bottom: 1px solid ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
     `}
 
     > svg > path {
-      fill: var(${UI.COLOR_SECONDARY_TEXT});
+      fill: currentColor;
       transition: fill 0.15s ease-in-out;
     }
 
     &:hover {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       background: ${`var(${UI.COLOR_TEXT})`};
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -318,7 +318,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.ACTIVE {
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
       font-weight: 600;
     }
   }

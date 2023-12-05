@@ -12,8 +12,7 @@ const IconImage = styled.div`
   justify-content: center;
 
   > svg {
-    opacity: 0.5;
-    fill: var(${UI.COLOR_TEXT});
+    fill: currentColor;
     margin: 0 3px 0 0;
   }
 `

@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
-  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   width: 0;
   position: relative;
   font-weight: 500;
@@ -39,7 +39,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   }
 
   ::placeholder {
-    color: ${({ theme }) => theme.text4};
+    color: inherit;
   }
 `
 

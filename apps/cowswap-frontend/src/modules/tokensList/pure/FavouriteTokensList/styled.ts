@@ -36,7 +36,7 @@ export const TokensItem = styled.button`
   outline: none;
   padding: 6px 10px;
   border-radius: 10px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   font-weight: 500;
   font-size: 16px;
@@ -46,6 +46,6 @@ export const TokensItem = styled.button`
   transition: border 0.2s ease-in-out;
 
   :hover {
-    border: 1px solid ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY})`};
+    border: 1px solid ${({ disabled }) => (disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PRIMARY})`)};
   }
 `

@@ -19,7 +19,7 @@ export const ActiveRowLinkList = styled.div`
 
   & > a {
     align-items: center;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     display: flex;
     flex-direction: row;
     font-size: 14px;

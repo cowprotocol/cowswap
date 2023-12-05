@@ -18,7 +18,7 @@ export const PageWrapper = styled(Widget)`
 export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
 

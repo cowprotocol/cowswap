@@ -43,7 +43,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
   background: ${({ theme, bgColor, isActive }) =>
-    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : bgColor ? theme.bg4 : theme.text3};
+    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
   :hover {
@@ -69,11 +69,11 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
     color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
     transition: background 0.2s ease-in-out;
-    background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
+    background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
 
     &:hover {
       color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
-      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`)};
     }
   }
 

@@ -8,7 +8,7 @@ export const FeeTooltipWrapper = styled.div`
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`

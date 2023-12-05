@@ -184,7 +184,7 @@ const FortuneTitle = styled.h2`
   font-size: 21px;
   text-align: center;
   font-weight: 700;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
 
   > i {
     font-size: 16px;
@@ -228,7 +228,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     font-size: 100px;
     position: absolute;
     z-index: 1;
@@ -244,7 +244,7 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 `
 
 const StyledExternalLink = styled(ExternalLink)`

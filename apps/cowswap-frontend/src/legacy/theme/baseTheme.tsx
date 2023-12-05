@@ -165,7 +165,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
 
       &::-webkit-scrollbar-thumb {
-        background: ${`var(${UI.COLOR_PAPER_DARKER})`};
+        background: ${`var(${UI.COLOR_PAPER_DARKEST})`};
         border: 3px solid ${`var(${UI.COLOR_PAPER_DARKEST})`};
         border-radius: 14px;
         background-clip: padding-box;
@@ -317,7 +317,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     buttonOutlined: {
       background: css`
         background: ${colorsTheme.bg1};
-        color: ${`var(${UI.COLOR_TEXT})`};
+        color: inherit;
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
@@ -411,6 +411,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.8)};
     ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.7)};
     ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
+    ${UI.COLOR_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.primary, 0.25)};
 
     ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary}; // for now we use the same color as primary
 
@@ -422,7 +423,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.3) : darken(theme.paper, 0.15)};
 
-    ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKEST});
+    ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
 
@@ -446,29 +447,24 @@ export const UniThemedGlobalStyle = css`
       )};
 
     ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
-    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => theme.success};
-    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
-      getContrastText(theme.success, theme.darkMode ? lighten(theme.success, 0.2) : lighten(theme.success, 0.5))};
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => transparentize(theme.success, 0.85)};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.success)};
 
     ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
-    ${UI.COLOR_INFO_BG}: ${({ theme }) => theme.info};
-    ${UI.COLOR_INFO_TEXT}: ${({ theme }) =>
-      getContrastText(theme.info, theme.darkMode ? lighten(theme.info, 0.2) : lighten(theme.info, 0.5))};
+    ${UI.COLOR_INFO_BG}: ${({ theme }) => transparentize(theme.info, 0.85)};
+    ${UI.COLOR_INFO_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.info)};
 
     ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
-    ${UI.COLOR_ALERT_BG}: ${({ theme }) => theme.alert};
-    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) =>
-      getContrastText(theme.alert, theme.darkMode ? lighten(theme.alert, 0.2) : lighten(theme.alert, 0.5))};
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) => transparentize(theme.alert, 0.85)};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.alert)};
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
-    ${UI.COLOR_WARNING_BG}: ${({ theme }) => theme.warning};
-    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
-      getContrastText(theme.warning, theme.darkMode ? lighten(theme.warning, 0.2) : lighten(theme.warning, 0.5))};
+    ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
+    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.warning)};
 
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
-    ${UI.COLOR_DANGER_BG}: ${({ theme }) => theme.danger};
-    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
-      getContrastText(theme.danger, theme.darkMode ? lighten(theme.danger, 0.2) : lighten(theme.danger, 0.5))};
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.danger)};
 
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
@@ -516,13 +512,10 @@ export const UniThemedGlobalStyle = css`
     ${UI.FONT_SIZE_LARGEST}: 24px;
   }
 
-  html {
-    color: ${`var(${UI.COLOR_TEXT})`};
-  }
-
   body {
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
     scrollbar-color: ${({ theme }) => theme.colorScrollbar};
+    color: ${`var(${UI.COLOR_TEXT_PAPER})`};
   }
 `
 

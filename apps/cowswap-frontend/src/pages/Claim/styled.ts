@@ -21,7 +21,7 @@ export const InnerPageWrapper = styled.div`
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   padding: 30px;
   border: none;
   box-shadow: ${({ theme }) => theme.boxShadow1};
@@ -201,7 +201,7 @@ export const IntroDescription = styled.div<{ center?: boolean }>`
   }
 
   > p > i {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     font-weight: 600;
     font-style: normal;
   }
@@ -431,7 +431,7 @@ export const ClaimTable = styled.div`
     text-align: left;
     font-weight: normal;
     font-size: 15px;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     position: relative;
   }
 
@@ -442,7 +442,7 @@ export const ClaimTable = styled.div`
   td {
     display: flex;
     align-items: center;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     word-break: break-word;
     background: ${({ theme }) => theme.blueShade3};
   }
@@ -505,7 +505,7 @@ export const ClaimTable = styled.div`
 
     > span > b {
       font-weight: 500;
-      color: ${`var(${UI.COLOR_TEXT})`};
+      color: inherit;
     }
   }
 
@@ -656,7 +656,7 @@ export const ClaimTotal = styled.div`
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
   padding: 24px 24px 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -674,7 +674,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 26px;
@@ -784,7 +784,7 @@ export const InputField = styled.div`
   padding: 18px 18px 18px 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   display: flex;
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
@@ -796,7 +796,7 @@ export const InputField = styled.div`
     border: 0;
     font-size: 24px;
     outline: 0;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     width: 100%;
   }
 
@@ -843,7 +843,7 @@ export const InputField = styled.div`
     padding: 0;
     font-size: 22px;
     font-weight: 600;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   > span {
@@ -967,7 +967,7 @@ export const TopNav = styled.div`
 
   ${ButtonSecondary} {
     margin: 0;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     font-size: 15px;
     width: auto;
   }
@@ -1204,7 +1204,7 @@ export const UnderlineButton = styled.button`
   }
 
   &:hover {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 
   &:disabled {
@@ -1264,7 +1264,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     background: ${({ theme }) => theme.bg5};
     border-radius: 12px;
     padding: 0 12px;
@@ -1277,7 +1277,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
   }
 
   > div > label > input {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     border: none;
     padding: 12px 70px 0 0;
     font-size: 26px;
@@ -1383,7 +1383,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: block;
     font-size: 12px;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     z-index: 1;
     height: 100%;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
@@ -1432,7 +1432,7 @@ export const InvestSummary = styled.div`
 
   > span > b {
     font-weight: 600;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 

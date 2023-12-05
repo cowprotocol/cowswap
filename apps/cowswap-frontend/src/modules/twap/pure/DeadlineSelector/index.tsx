@@ -24,9 +24,22 @@ const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VA
 
 const StyledTradeSelect = styled(TradeSelect)`
   font-weight: 500;
+  color: inherit;
+
+  > svg {
+    color: inherit;
+    stroke: currentColor;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  &:hover > svg {
+    opacity: 1;
+  }
 
   ${Content} {
     width: 100%;
+    color: inherit;
   }
 
   ${Content} > div {

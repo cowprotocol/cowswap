@@ -19,7 +19,7 @@ export const Contents = styled.div`
   padding: 20px;
   margin: 20px;
   border-radius: 20px;
-  color: var(${UI.COLOR_RED});
+  color: var(${UI.COLOR_DANGER_TEXT});
   background: var(${UI.COLOR_DANGER_BG});
 `
 

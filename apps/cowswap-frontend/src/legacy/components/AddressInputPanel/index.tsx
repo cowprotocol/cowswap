@@ -26,6 +26,7 @@ const InputPanel = styled.div`
   position: relative;
   border-radius: 16px;
   background-color: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   z-index: 1;
   width: 100%;
 `
@@ -36,6 +37,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   align-items: center;
   border-radius: 16px;
   border: 0;
+  color: inherit;
   background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
@@ -50,15 +52,16 @@ const Input = styled.input<{ error?: boolean }>`
   border: none;
   flex: 1 1 auto;
   background: none;
-  transition: color 300ms ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error, theme }) => (error ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
+  transition: color 0.2s ${({ error }) => (error ? 'step-end' : 'step-start')};
+  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER}` : 'inherit')};
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
 
   &&::placeholder {
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_50})`};
+    color: inherit;
+    opacity: 0.5;
   }
 
   &:focus::placeholder {

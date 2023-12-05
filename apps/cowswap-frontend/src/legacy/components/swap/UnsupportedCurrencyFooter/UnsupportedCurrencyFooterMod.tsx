@@ -29,7 +29,7 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
   max-width: 400px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  color: var(${UI.COLOR_SECONDARY_TEXT});
+  color: inherit;
   background-color: ${({ theme }) => theme.advancedBG};
   z-index: ${Z_INDEX.deprecated_zero};
 

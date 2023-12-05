@@ -12,7 +12,7 @@ import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   font-weight: 500;
 `
 

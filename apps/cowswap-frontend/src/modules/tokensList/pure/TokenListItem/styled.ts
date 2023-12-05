@@ -16,19 +16,21 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   background: none;
   border: 0;
   outline: none;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   cursor: pointer;
   font-size: 16px;
   padding: 10px 20px;
   margin-bottom: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:last-child {
     margin-bottom: 0;
   }
 
   &:hover {
-    background-color: ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY_OPACITY_50})`};
+    background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY_OPACITY_25})`};
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
   ${({ $isVirtual }) =>

@@ -89,7 +89,7 @@ export const Summary = styled.div`
   padding: 22px;
   grid-template-rows: 1fr;
   grid-template-columns: 80px auto min-content;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
@@ -153,7 +153,7 @@ export const SummaryInner = styled.div`
   }
 
   > a {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
     text-decoration: underline;
     font-size: 14px;
 
@@ -170,6 +170,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   grid-template-columns: 100px 1fr;
   width: 100%;
   margin: 0 0 4px;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr;
@@ -191,7 +192,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
 
   > b {
     padding: 0;
-    opacity: 0.85;
+    opacity: 0.7;
   }
 
   > i {
@@ -351,7 +352,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
   }
 `
 
@@ -405,7 +406,7 @@ export const TransactionInnerDetail = styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => theme.card.border};
 

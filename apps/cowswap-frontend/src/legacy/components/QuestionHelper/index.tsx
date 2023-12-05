@@ -25,9 +25,14 @@ export const QuestionWrapper = styled.div`
   background-color: transparent;
   opacity: 0.5;
   transition: opacity 0.2s ease-in-out;
+  color: inherit;
+
+  > svg {
+    color: inherit;
+  }
 
   > svg > path {
-    stroke: var(${UI.COLOR_TEXT});
+    stroke: currentColor;
   }
 
   :hover {

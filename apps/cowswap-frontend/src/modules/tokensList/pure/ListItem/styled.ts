@@ -13,19 +13,21 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
   margin: 20px;
   padding: 20px;
   border-radius: 20px;
-  border: 1px solid var(${UI.COLOR_GREY});
-  background-color: ${({ $enabled, theme }) => ($enabled ? transparentize(theme.bg2, 0.8) : 'transparent')};
+  border: 1px solid ${({ $enabled }) => ($enabled ? `transparent` : `var(${UI.COLOR_BORDER})`)};
+  background-color: ${({ $enabled }) => ($enabled ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 `
 
 export const SettingsButton = styled(MenuButton)`
   ${blankButtonMixin}
+  color: inherit;
 
   > svg {
-    color: ${`var(${UI.COLOR_TEXT})`};
+    color: inherit;
+    stroke: currentColor;
+  }
 
-    &:hover {
-      color: var(${UI.COLOR_SECONDARY_TEXT});
-    }
+  > svg > path {
+    stroke: currentColor;
   }
 `
 

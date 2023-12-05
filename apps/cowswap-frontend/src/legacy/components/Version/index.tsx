@@ -65,7 +65,7 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  color: ${`var(${UI.COLOR_TEXT})`};
+  color: inherit;
   gap: 10px;
 `
 
