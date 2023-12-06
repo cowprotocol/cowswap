@@ -2,7 +2,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { USDC } from '@cowprotocol/common-const'
-import { useDebounce } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -28,8 +27,6 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
-const USD_PRICES_QUEUE_DEBOUNCE_TIME = ms`0.5s`
-
 export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
@@ -38,16 +35,14 @@ export function UsdPricesUpdater() {
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
-  const debouncedQueue = useDebounce(queue, USD_PRICES_QUEUE_DEBOUNCE_TIME)
-
   const swrResponse = useSWR<UsdRawPrices | null>(
-    ['UsdPricesUpdater', debouncedQueue, chainId],
+    ['UsdPricesUpdater', queue, chainId],
     () => {
       const getUsdcPrice = usdcPriceLoader(chainId)
 
-      setUsdPricesLoading(debouncedQueue)
+      setUsdPricesLoading(queue)
 
-      return processQueue(debouncedQueue, getUsdcPrice)
+      return processQueue(queue, getUsdcPrice)
     },
     swrOptions
   )
