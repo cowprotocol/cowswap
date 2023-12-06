@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
 import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'color2k'

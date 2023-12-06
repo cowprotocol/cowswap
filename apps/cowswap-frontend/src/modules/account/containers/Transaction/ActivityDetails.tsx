@@ -7,7 +7,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'

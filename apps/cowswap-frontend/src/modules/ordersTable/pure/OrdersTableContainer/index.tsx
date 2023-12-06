@@ -4,7 +4,7 @@ import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'

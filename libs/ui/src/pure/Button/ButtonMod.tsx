@@ -4,7 +4,7 @@ import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'reba
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize } from '../../enum'
+import { ButtonSize } from '../../../../common-const/src/colors'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 

@@ -1,5 +1,5 @@
 import { TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'

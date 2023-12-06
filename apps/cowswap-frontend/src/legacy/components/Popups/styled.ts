@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { animated } from '@react-spring/web'
 import { X } from 'react-feather'

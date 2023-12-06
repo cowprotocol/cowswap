@@ -1,6 +1,6 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'

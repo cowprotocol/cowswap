@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { ArrowLeft, X } from 'react-feather'
 import styled from 'styled-components/macro'

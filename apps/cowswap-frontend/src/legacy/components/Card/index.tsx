@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components/macro'

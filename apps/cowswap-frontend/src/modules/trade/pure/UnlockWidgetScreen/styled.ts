@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'

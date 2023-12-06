@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'

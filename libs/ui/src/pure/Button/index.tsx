@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { HTMLAttributes } from 'react'
 
@@ -7,7 +7,7 @@ import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize } from '../../enum'
+import { ButtonSize } from '../../../../common-const/src/colors'
 
 import {
   // Import only the basic buttons

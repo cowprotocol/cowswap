@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { Trash2 } from 'react-feather'

@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TooltipContainer } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import { AlertTriangle } from 'react-feather'

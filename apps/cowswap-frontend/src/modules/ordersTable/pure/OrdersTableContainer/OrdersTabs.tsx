@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import { Link, useLocation } from 'react-router-dom'

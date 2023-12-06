@@ -1,6 +1,6 @@
 import { TokenSymbol } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { Currency } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'

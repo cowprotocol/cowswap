@@ -8,7 +8,7 @@ import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { useInterval } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'

@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import React, { HTMLProps } from 'react'
 import { anonymizeLink } from '@cowprotocol/common-utils'

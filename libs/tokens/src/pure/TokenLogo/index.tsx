@@ -9,7 +9,7 @@ import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 import { Slash } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 

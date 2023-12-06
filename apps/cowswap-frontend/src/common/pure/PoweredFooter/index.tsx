@@ -1,6 +1,6 @@
 import { COW_PROTOCOL_LINK } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import cowIcon from 'assets/logo/cow-icon.svg'

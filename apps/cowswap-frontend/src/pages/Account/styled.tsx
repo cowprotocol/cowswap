@@ -1,6 +1,6 @@
 import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'

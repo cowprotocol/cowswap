@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'

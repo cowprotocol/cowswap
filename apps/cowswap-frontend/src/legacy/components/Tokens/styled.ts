@@ -1,6 +1,6 @@
 import { TokenLogo } from '@cowprotocol/tokens'
 import { BaseButton } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import { HelpCircle } from 'react-feather'

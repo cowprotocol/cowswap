@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { darken } from 'color2k'
 import styled, { keyframes } from 'styled-components/macro'

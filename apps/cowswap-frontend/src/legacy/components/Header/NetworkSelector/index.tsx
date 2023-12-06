@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 

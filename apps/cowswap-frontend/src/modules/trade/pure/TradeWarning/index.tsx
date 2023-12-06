@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'

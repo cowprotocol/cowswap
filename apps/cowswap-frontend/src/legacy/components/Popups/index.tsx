@@ -1,7 +1,7 @@
 import { MouseEvent, useCallback, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'

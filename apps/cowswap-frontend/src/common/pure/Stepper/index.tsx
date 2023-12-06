@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import ICON_CHECK from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'

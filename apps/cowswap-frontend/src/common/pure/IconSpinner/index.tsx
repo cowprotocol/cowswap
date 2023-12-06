@@ -1,5 +1,5 @@
 import { TokenLogo } from '@cowprotocol/tokens'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

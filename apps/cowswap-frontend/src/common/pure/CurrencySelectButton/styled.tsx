@@ -1,5 +1,5 @@
 import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import styled from 'styled-components/macro'
 

@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/common-const'
 import { useFetchFile } from '@cowprotocol/common-hooks'
 import { hashCode } from '@cowprotocol/common-utils'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertTriangle } from 'react-feather'

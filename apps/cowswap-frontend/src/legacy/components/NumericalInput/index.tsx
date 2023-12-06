@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { escapeRegExp } from '@cowprotocol/common-utils'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import styled from 'styled-components/macro'
 

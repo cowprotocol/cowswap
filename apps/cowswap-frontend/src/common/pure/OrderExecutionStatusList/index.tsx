@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

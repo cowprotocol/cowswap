@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
+import { UI } from '@cowprotocol/common-const'
 import { Row, RowFixed } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
 import { NavLink } from 'react-router-dom'

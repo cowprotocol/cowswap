@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'

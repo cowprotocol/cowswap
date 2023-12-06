@@ -3,7 +3,7 @@ import LogoETH from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import LogoUSDC from '@cowprotocol/assets/cow-swap/usdc.png'
 import LogoXDAI from '@cowprotocol/assets/cow-swap/xdai.png'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/common-const'
 
 import { transparentize, darken, lighten } from 'color2k'
 import { CheckCircle, Frown } from 'react-feather'
