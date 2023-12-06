@@ -2,3 +2,4 @@ export { useSingleContractMultipleData } from './hooks/useSingleContractMultiple
 export { useMultipleContractSingleData } from './hooks/useMultipleContractSingleData'
 export { getMulticallContract } from './utils/getMulticallContract'
 export { multiCall } from './multiCall'
+export type { MultiCallOptions } from './multiCall'
