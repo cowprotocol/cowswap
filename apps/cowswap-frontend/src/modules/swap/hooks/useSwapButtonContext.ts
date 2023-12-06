@@ -29,7 +29,7 @@ import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
-import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
+import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
@@ -81,7 +81,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapUnwrapAmount = isNativeInSwap ? currencyAmountToTokenAmount(inputAmount) || undefined : inputAmount
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapNativeFlow()
-  const approvalState = useTradeApproveState(slippageAdjustedSellAmount || null)
+  const approvalState = useApproveState(slippageAdjustedSellAmount || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 

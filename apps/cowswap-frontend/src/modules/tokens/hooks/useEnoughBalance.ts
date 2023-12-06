@@ -75,7 +75,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
 
   const isNativeCurrency = !!amount?.currency && getIsNativeToken(amount?.currency)
   const token = amount?.currency && getWrappedToken(amount.currency)
-  const tokenAddress = getAddress(token)
+  const tokenAddress = getAddress(token)?.toLowerCase()
 
   const enoughBalance = _enoughBalance(tokenAddress, amount, balances)
   const enoughAllowance = _enoughAllowance(tokenAddress, amount, allowances, isNativeCurrency)
@@ -84,7 +84,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
 }
 
 function _enoughBalance(
-  tokenAddress: string | null,
+  tokenAddress: string | undefined,
   amount: CurrencyAmount<Currency>,
   balances: BalancesState['values']
 ): boolean | undefined {
@@ -94,7 +94,7 @@ function _enoughBalance(
 }
 
 function _enoughAllowance(
-  tokenAddress: string | null,
+  tokenAddress: string | undefined,
   amount: CurrencyAmount<Currency>,
   allowances: AllowancesState['values'] | undefined,
   isNativeCurrency: boolean

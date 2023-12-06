@@ -1,7 +1,7 @@
-import { atom } from 'jotai'
+import { atomWithReset } from 'jotai/utils'
 
 import { Erc20MulticallState } from '../types'
 
 export interface BalancesState extends Erc20MulticallState {}
 
-export const balancesAtom = atom<BalancesState>({ isLoading: false, values: {} })
+export const balancesAtom = atomWithReset<BalancesState>({ isLoading: false, values: {} })

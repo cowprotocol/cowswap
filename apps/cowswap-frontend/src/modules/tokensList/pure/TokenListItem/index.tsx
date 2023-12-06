@@ -25,7 +25,7 @@ export function TokenListItem(props: TokenListItemProps) {
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
-  const balanceAmount = CurrencyAmount.fromRawAmount(token, balance?.toHexString() ?? 0)
+  const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
   return (
     <styledEl.TokenItem
@@ -41,9 +41,7 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo token={token} />
       <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-      <span>
-        <TokenAmount amount={balanceAmount} />
-      </span>
+      <span>{balanceAmount && <TokenAmount amount={balanceAmount} />}</span>
     </styledEl.TokenItem>
   )
 }

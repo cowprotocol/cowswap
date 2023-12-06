@@ -10,7 +10,7 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useTradeApproveState } from 'common/containers/TradeApprove'
+import { useApproveState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -20,7 +20,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
-  const approvalState = useTradeApproveState(slippageAdjustedSellAmount)
+  const approvalState = useApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
