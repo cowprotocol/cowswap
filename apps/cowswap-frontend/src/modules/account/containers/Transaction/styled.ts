@@ -482,8 +482,7 @@ export const ActivityVisual = styled.div`
     box-sizing: content-box;
     box-shadow: none;
     background: var(${UI.COLOR_PAPER});
-    color: ${({ theme }) =>
-      theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
+    color: var(${UI.COLOR_PAPER_DARKER});
     border: 2px solid var(${UI.COLOR_PAPER});
   }
 

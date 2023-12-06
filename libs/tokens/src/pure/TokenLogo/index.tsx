@@ -17,7 +17,7 @@ const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
 const TokenLogoWrapper = styled.div<{ size?: number }>`
   display: inline-block;
-  background: var(${UI.COLOR_PAPER_DARKEST});
+  background: var(${UI.COLOR_PAPER});
   border-radius: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;

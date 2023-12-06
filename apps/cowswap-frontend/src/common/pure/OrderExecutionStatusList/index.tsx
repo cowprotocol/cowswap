@@ -1,7 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 const StatusList = styled.ol`
@@ -56,7 +55,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
         return theme.text3
       case 'notClose':
       default:
-        return transparentize(`var(${UI.COLOR_TEXT})`, 0.5)
+        return `var(${UI.COLOR_TEXT})`
     }
   }};
 `

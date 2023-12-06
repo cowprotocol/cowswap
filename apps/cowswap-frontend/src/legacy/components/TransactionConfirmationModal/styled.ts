@@ -184,7 +184,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: var(${UI.COLOR_PAPER});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px 16px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

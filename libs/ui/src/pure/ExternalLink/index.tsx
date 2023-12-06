@@ -9,7 +9,7 @@ import { ExternalLink as LinkIconFeather } from 'react-feather'
 export const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
-  color: var(${UI.COLOR_PRIMARY_PAPER});
+  color: var(${UI.COLOR_TEXT});
   font-weight: 500;
 
   :hover {

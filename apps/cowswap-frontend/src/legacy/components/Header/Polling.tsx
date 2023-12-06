@@ -203,7 +203,7 @@ export function Polling() {
           <ExternalLink href={'https://etherscan.io/gastracker'}>
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
-                <ThemedText.Main fontSize="11px" mr="8px" color={theme.text3}>
+                <ThemedText.Main fontSize="11px" mr="8px">
                   <MouseoverTooltip
                     text={
                       <Trans>

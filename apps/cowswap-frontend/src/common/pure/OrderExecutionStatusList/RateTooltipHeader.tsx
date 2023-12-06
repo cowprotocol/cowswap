@@ -1,5 +1,3 @@
-import { UI } from '@cowprotocol/ui'
-
 import styled from 'styled-components/macro'
 
 import { OrderExecutionStatusList } from './index'

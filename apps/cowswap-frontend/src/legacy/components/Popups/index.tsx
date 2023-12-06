@@ -1,9 +1,9 @@
 import { MouseEvent, useCallback, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -19,7 +19,8 @@ export const MobilePopupInner = styled.div`
   display: flex;
   flex-direction: row;
   -webkit-overflow-scrolling: touch;
-  ::-webkit-scrollbar {
+
+  &::-webkit-scrollbar {
     display: none;
   }
 `
@@ -29,7 +30,7 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
   width: 100%;
   height: 100%;
   margin: 0;
-  background: ${({ theme }) => transparentize(theme.bg1, 0.05)};
+  background: var(${UI.COLOR_PAPER_DARKER});
   display: none;
 
   ${({ theme, show }) => theme.mediaWidth.upToSmall`

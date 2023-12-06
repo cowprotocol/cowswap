@@ -210,7 +210,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
         <RowFixed>
-          <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
+          <ThemedText.Black fontWeight={400} fontSize={14}>
             <Trans>MEV protected slippage</Trans>
           </ThemedText.Black>
           <QuestionHelper
@@ -296,7 +296,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       {showCustomDeadlineRow && (
         <AutoColumn gap="sm">
           <RowFixed>
-            <ThemedText.Black fontSize={14} fontWeight={400} color={theme.text2}>
+            <ThemedText.Black fontSize={14} fontWeight={400}>
               <Trans>Swap deadline</Trans>
             </ThemedText.Black>
             <QuestionHelper

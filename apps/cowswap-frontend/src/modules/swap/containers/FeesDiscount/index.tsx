@@ -34,7 +34,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      <Text fontWeight={500} fontSize={14} color={theme.text2} alignItems={'center'}>
+      <Text fontWeight={500} fontSize={14} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent

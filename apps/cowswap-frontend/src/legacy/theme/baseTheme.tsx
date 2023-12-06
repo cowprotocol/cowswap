@@ -270,7 +270,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1});
+        background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
@@ -404,7 +404,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PRIMARY_LIGHTER}: ${({ theme }) =>
       theme.darkMode ? lighten(theme.primary, 0.1) : lighten(theme.primary, 0.2)};
     ${UI.COLOR_PRIMARY_DARKER}: ${({ theme }) =>
-      theme.darkMode ? darken(theme.primary, 0.2) : darken(theme.primary, 0.05)};
+      theme.darkMode ? darken(theme.primary, 0.2) : darken(theme.primary, 0.1)};
     ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.primary, 0.4) : darken(theme.primary, 0.1)};
     ${UI.COLOR_PRIMARY_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.primary)};
@@ -413,7 +413,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
     ${UI.COLOR_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.primary, 0.75)};
 
-    ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary}; // for now we use the same color as primary
+    ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary};
 
     ${UI.COLOR_BACKGROUND}: ${({ theme }) => theme.background};
 
@@ -470,7 +470,6 @@ export const UniThemedGlobalStyle = css`
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
-    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => theme.grey1};
     ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity

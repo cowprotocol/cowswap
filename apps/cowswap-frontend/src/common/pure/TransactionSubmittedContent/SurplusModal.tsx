@@ -9,7 +9,6 @@ import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -37,7 +36,7 @@ export const Wrapper = styled.div`
     top: -60px;
     width: calc(100% + 32px);
     height: 170px;
-    background: ${({ theme }) => transparentize(theme.success, 0.9)};
+    background: var(${UI.COLOR_SUCCESS_BG});
     z-index: -1;
   }
 
@@ -52,13 +51,14 @@ export const Wrapper = styled.div`
     text-align: center;
     position: absolute;
     top: -54px;
-    color: ${({ theme }) => theme.success};
+    color: var(${UI.COLOR_SUCCESS});
 
     > svg {
       --size: 28px;
       width: var(--size);
       height: var(--size);
-      background: var(${UI.COLOR_PAPER});
+      background: var(${UI.COLOR_SUCCESS_BG});
+      color: var(${UI.COLOR_SUCCESS_TEXT});
       border-radius: 50%;
       width: var(--size);
       height: var(--size);
@@ -67,7 +67,7 @@ export const Wrapper = styled.div`
       padding: 6px;
 
       > path {
-        fill: ${({ theme }) => theme.success};
+        fill: currentColor;
       }
     }
   }
@@ -128,7 +128,7 @@ export const Wrapper = styled.div`
 const StyledExternalLink = styled(ExternalLink)`
   border-radius: 24px;
   background: var(${UI.COLOR_PRIMARY});
-  color: ${({ theme }) => theme.white};
+  color: var(${UI.COLOR_BUTTON_TEXT});
   display: flex;
   padding: 1rem 2rem;
   width: fit-content;
@@ -136,11 +136,19 @@ const StyledExternalLink = styled(ExternalLink)`
   gap: 0.6rem;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 
   &:hover {
     text-decoration: none;
     transform: scale(1.03);
+  }
+
+  > svg {
+    color: inherit;
+  }
+
+  > svg > path {
+    fill: currentColor;
   }
 `
 

@@ -15,14 +15,16 @@ export const ContextMenuButton = styled(MenuButton)`
   margin: 0;
   display: flex;
   height: 24px;
+  color: inherit;
 
   > svg {
     height: 100%;
     width: auto;
+    color: currentColor;
   }
 
   &:hover {
-    outline: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
+    outline: currentColor;
   }
 `
 export const ContextMenuList = styled(MenuList)`
@@ -66,7 +68,7 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
   return (
     <Menu>
       <ContextMenuButton>
-        <MoreVertical color={transparentize(`var(${UI.COLOR_TEXT})`, 0.5)} />
+        <MoreVertical />
       </ContextMenuButton>
       <ContextMenuList>
         <ContextMenuItem onSelect={openReceipt}>

@@ -43,10 +43,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
     box-shadow: none;
     transform: none;
     color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
-  }
-
-  &:hover {
-    background: ${`var(${UI.COLOR_PRIMARY_DARKER})`};
+    background: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
   }
 
   &:disabled {

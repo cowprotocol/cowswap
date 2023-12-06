@@ -24,7 +24,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   outline: none;
 
   &:hover {
-    background: var(${UI.COLOR_PRIMARY_DARKER});
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 
   &:disabled {
