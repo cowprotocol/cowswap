@@ -12,3 +12,5 @@ export type ComposableCowInfo = {
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }
+
+export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default'

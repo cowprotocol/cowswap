@@ -12,7 +12,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
@@ -177,25 +176,9 @@ export function useUnknownImpactWarning() {
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
   return {
-    impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
-      impactWarningAccepted,
-      isExpertMode,
-    }),
+    impactWarningAccepted: isExpertMode || impactWarningAccepted,
     setImpactWarningAccepted,
   }
-}
-
-function _computeUnknownPriceImpactAcceptedState({
-  impactWarningAccepted,
-  isExpertMode,
-}: {
-  impactWarningAccepted: boolean
-  priceImpactParams?: PriceImpact
-  isExpertMode: boolean
-}) {
-  if (isExpertMode || impactWarningAccepted) return true
-
-  return true
 }
 
 // from the current swap inputs, compute the best trade and return it.

@@ -17,9 +17,18 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
 }
 
-export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order {
+export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order | undefined {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
+
+  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
+  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+
+  if (!inputToken || !outputToken) {
+    // FIXME: this is a hack to prevent errors, we should ensure this doesn't happen
+    console.error('mapTwapOrderToStoreOrder: inputToken or outputToken not found', { inputToken, outputToken })
+    return undefined
+  }
 
   const storeOrder: Order = {
     ...enrichedOrder,
@@ -28,8 +37,8 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
       id: order.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken,
+    outputToken,
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,

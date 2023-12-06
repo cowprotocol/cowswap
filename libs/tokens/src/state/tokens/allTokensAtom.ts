@@ -7,6 +7,7 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
+import type { TokenInfo } from '@uniswap/token-lists'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo
@@ -65,15 +66,12 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
-  const tokens = tokenMapToListWithLogo({
+  return tokenMapToListWithLogo({
+    [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
     ...tokensMap.activeTokens,
     ...lowerCaseTokensMap(userAddedTokens[chainId]),
     ...lowerCaseTokensMap(favouriteTokensState[chainId]),
   })
-
-  tokens.unshift(nativeToken)
-
-  return tokens
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
