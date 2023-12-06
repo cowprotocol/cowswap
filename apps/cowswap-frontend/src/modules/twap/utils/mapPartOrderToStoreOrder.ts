@@ -17,9 +17,14 @@ export function mapPartOrderToStoreOrder(
   isVirtualPart: boolean,
   parent: TwapOrderItem,
   tokensByAddress: TokensByAddress
-): Order {
+): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
+
+  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
+  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+
+  if (!inputToken || !outputToken) return null
 
   const storeOrder: Order = {
     ...enrichedOrder,
@@ -30,8 +35,8 @@ export function mapPartOrderToStoreOrder(
       parentId: parent.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken,
+    outputToken,
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,

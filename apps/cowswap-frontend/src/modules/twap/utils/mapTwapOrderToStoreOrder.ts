@@ -17,13 +17,13 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
 }
 
-export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order {
+export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order | null {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
   const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
   const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
 
-  if (!inputToken || !outputToken) throw new Error('Token not found')
+  if (!inputToken || !outputToken) return null
 
   const storeOrder: Order = {
     ...enrichedOrder,

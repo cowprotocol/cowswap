@@ -9,7 +9,7 @@ import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenL
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 
 export interface TokensByAddress {
-  [address: string]: TokenWithLogo
+  [address: string]: TokenWithLogo | undefined
 }
 
 export interface TokensBySymbol {

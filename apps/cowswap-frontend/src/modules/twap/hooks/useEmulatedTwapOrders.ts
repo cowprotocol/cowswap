@@ -40,11 +40,9 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      try {
-        acc.push(mapTwapOrderToStoreOrder(order, tokensByAddress))
-      } catch (e) {
-        console.error(e, order)
-      }
+      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
+
+      if (storeOrder) acc.push(storeOrder)
 
       return acc
     }, [])
