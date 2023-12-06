@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.51.0](https://github.com/cowprotocol/cowswap/compare/v1.50.2...v1.51.0) (2023-12-06)
+
+
+### Features
+
+* balances and allowances lib ([#3414](https://github.com/cowprotocol/cowswap/issues/3414)) ([d575bb0](https://github.com/cowprotocol/cowswap/commit/d575bb0f5cdc5b8d00dd8b42385af234b6535d2f))
+* **balances:** update balances for priority tokens ([#3417](https://github.com/cowprotocol/cowswap/issues/3417)) ([1d1458c](https://github.com/cowprotocol/cowswap/commit/1d1458c08a545fd2fdd067389987e99b842b68de))
+* multicall library ([#3413](https://github.com/cowprotocol/cowswap/issues/3413)) ([621a384](https://github.com/cowprotocol/cowswap/commit/621a3844b22db2bb59aecc579004f1c85768aedc))
+* replace uniswap milticall by new balances and allowances lib ([#3416](https://github.com/cowprotocol/cowswap/issues/3416)) ([1d99299](https://github.com/cowprotocol/cowswap/commit/1d99299610e03ac0644311e16005995cbe60340f))
+
+
+### Bug Fixes
+
+* **limit-orders:** remove high price impact warning flickering ([#3419](https://github.com/cowprotocol/cowswap/issues/3419)) ([8b14e71](https://github.com/cowprotocol/cowswap/commit/8b14e710db1fcacb076156356a23cac51405e238))
+* remove uknown price impact warning flickering ([#3418](https://github.com/cowprotocol/cowswap/issues/3418)) ([faca696](https://github.com/cowprotocol/cowswap/commit/faca696864961dc1ea44423aa00e421ec20d30b5))
+* **tokens-selector:** add native token to the top of the list if it's not there already ([#3471](https://github.com/cowprotocol/cowswap/issues/3471)) ([887a076](https://github.com/cowprotocol/cowswap/commit/887a07682891d9bdddebc61bd88bbbf7b11632de))
+
 ## [1.50.2](https://github.com/cowprotocol/cowswap/compare/v1.50.1...v1.50.2) (2023-11-29)
 
 
