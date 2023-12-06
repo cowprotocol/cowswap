@@ -1,32 +1,31 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-
-import { TokenAmounts } from 'modules/tokens'
-import { useAllTokensBalances } from 'modules/tokensList'
+import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { BigNumber } from '@ethersproject/bignumber'
+import { Token } from '@uniswap/sdk-core'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
 // compare two token amounts with highest one coming first
-export function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?: CurrencyAmount<Currency>) {
+export function balanceComparator(balanceA: BigNumber | undefined, balanceB: BigNumber | undefined) {
   if (balanceA && balanceB) {
-    return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
-  } else if (balanceA && balanceA.greaterThan('0')) {
+    return balanceA.gt(balanceB) ? -1 : balanceA.eq(balanceB) ? 0 : 1
+  } else if (balanceA && balanceA.gt('0')) {
     return -1
-  } else if (balanceB && balanceB.greaterThan('0')) {
+  } else if (balanceB && balanceB.gt('0')) {
     return 1
   }
   return 0
 }
 
-function getTokenComparator(balances: [TokenAmounts, boolean]): (tokenA: Token, tokenB: Token) => number {
+function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, tokenB: Token) => number {
   return function sortTokens(tokenA: Token, tokenB: Token): number {
     // -1 = a is first
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[0][tokenA.address]?.value
-    const balanceB = balances[0][tokenB.address]?.value
+    const balanceA = balances[tokenA.address.toLowerCase()]
+    const balanceB = balances[tokenB.address.toLowerCase()]
 
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp
@@ -51,7 +50,7 @@ function getTokenComparator(balances: [TokenAmounts, boolean]): (tokenA: Token, 
 }
 
 export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const balances = useAllTokensBalances()
+  const { values: balances } = useTokensBalances()
 
   const comparator = useMemo(() => getTokenComparator(balances), [balances])
 

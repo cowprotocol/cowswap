@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 
+import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
 import { maxAmountSpend } from '@cowprotocol/common-utils'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -28,6 +29,7 @@ import { PoweredFooter } from 'common/pure/PoweredFooter'
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
+import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -92,12 +94,13 @@ export function TradeWidget(props: TradeWidgetProps) {
     disablePriceImpact,
   } = params
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
+  const priorityTokenAddresses = usePriorityTokenAddresses()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
@@ -132,6 +135,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   return (
     <styledEl.Container id={id}>
+      <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
       {!disableQuotePolling && <TradeQuoteUpdater />}

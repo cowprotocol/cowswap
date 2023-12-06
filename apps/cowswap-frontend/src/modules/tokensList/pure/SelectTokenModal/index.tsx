@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { UnsupportedTokensState } from '@cowprotocol/tokens'
 
@@ -9,7 +10,6 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import * as styledEl from './styled'
 
-import { TokenAmounts } from '../../../tokens'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
 import { IconButton } from '../commonElements'
@@ -19,9 +19,8 @@ import { TokensVirtualList } from '../TokensVirtualList'
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
   favouriteTokens: TokenWithLogo[]
-  balances: TokenAmounts
+  balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
-  balancesLoading: boolean
   selectedToken?: string
   permitCompatibleTokens: PermitCompatibleTokens
   onSelectToken(token: TokenWithLogo): void
@@ -37,8 +36,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     favouriteTokens,
     allTokens,
     selectedToken,
-    balances,
-    balancesLoading,
+    balancesState,
     unsupportedTokens,
     permitCompatibleTokens,
     onSelectToken,
@@ -50,8 +48,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
   const selectTokenContext: SelectTokenContext = {
-    balances,
-    balancesLoading,
+    balancesState,
     selectedToken,
     onSelectToken,
     unsupportedTokens,

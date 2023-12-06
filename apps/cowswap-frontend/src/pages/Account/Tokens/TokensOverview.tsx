@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
@@ -14,7 +15,6 @@ import TokensTable from 'legacy/components/Tokens/TokensTable'
 import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { useAllTokensBalances } from 'modules/tokensList'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -68,7 +68,7 @@ export default function TokensOverview() {
   const theme = useTheme()
   const allTokens = useTokensByAddressMap()
   const favouriteTokens = useFavouriteTokens()
-  const balances = useAllTokensBalances()
+  const { values: balances } = useTokensBalances()
 
   // search - takes precedence re:filtering
   const [query, setQuery] = useState<string>('')

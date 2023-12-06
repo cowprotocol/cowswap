@@ -1,5 +1,6 @@
 import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { BalancesAndAllowances } from 'modules/tokens'
@@ -35,8 +36,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]?.value
-  const allowance = allowances[order.inputToken.address]?.value
+  const balance = balances[order.inputToken.address.toLowerCase()]
+  const allowance = allowances[order.inputToken.address.toLowerCase()]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,
@@ -56,10 +57,10 @@ export function getOrderParams(
 }
 
 function _hasEnoughBalanceAndAllowance(params: {
-  balance: CurrencyAmount<Token> | undefined
+  balance: BigNumber | undefined
+  allowance: BigNumber | undefined
   partiallyFillable: boolean
   sellAmount: CurrencyAmount<Token>
-  allowance: CurrencyAmount<Token> | undefined
 }): {
   hasEnoughBalance: boolean | undefined
   hasEnoughAllowance: boolean | undefined

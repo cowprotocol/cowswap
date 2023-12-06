@@ -4,11 +4,12 @@ import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { useMultipleContractSingleData } from 'lib/hooks/multicall'
+import ms from 'ms.macro'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'
@@ -23,28 +24,31 @@ const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 // Uncomment to test logic: 0xC92...522 is mainnet VaultRelayer address. Use it with one account that has given some WETH allowance to it
 // const ANYSWAP_V4_CONTRACT = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110' //'0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 
-const BLOCKS_PER_FETCH = 120 // 30min. It would actually suffice to check once, but we check every 120 blocks
+const MULTICALL_OPTIONS = {}
+const SWR_CONFIG = { refreshInterval: ms`30m` }
 
 export default function useIsAnySwapAffectedUser() {
   const { chainId, account } = useWalletInfo()
-  const result = useMultipleContractSingleData(
+  const { data: allowances } = useMultipleContractSingleData<[BigNumber]>(
     AFFECTED_TOKENS,
     ERC20_INTERFACE,
     'allowance',
     [account || ZERO_ADDRESS, ANYSWAP_V4_CONTRACT],
-    { blocksPerFetch: BLOCKS_PER_FETCH }
+    MULTICALL_OPTIONS,
+    SWR_CONFIG
   )
 
   return useMemo(() => {
     // The error affects Mainnet
-    if (chainId !== ChainId.MAINNET) {
+    if (chainId !== ChainId.MAINNET || !allowances) {
       return false
     }
 
     // Check if any of the tokens has allowance in the router contract
-    return result.some(({ result, loading, error, valid }) => {
-      const allowance = valid && !loading && !error && result ? (result[0] as BigNumber) : undefined
+    return allowances.some((result) => {
+      const allowance = result?.[0]
+
       return allowance ? !allowance.isZero() : false
     })
-  }, [chainId, result])
+  }, [chainId, allowances])
 }
