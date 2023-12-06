@@ -78,11 +78,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     canTrade && !expertMode && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
   const showRateImpactWarning =
-    canTrade &&
-    !tradeQuote.isLoading &&
-    inputCurrency &&
-    !isFractionFalsy(inputCurrencyAmount) &&
-    !isFractionFalsy(outputCurrencyAmount)
+    canTrade && inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount)
 
   const feePercentage = calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount })
 
