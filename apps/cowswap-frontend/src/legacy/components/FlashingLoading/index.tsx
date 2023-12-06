@@ -1,5 +1,4 @@
 import CowIcon from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
-import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'

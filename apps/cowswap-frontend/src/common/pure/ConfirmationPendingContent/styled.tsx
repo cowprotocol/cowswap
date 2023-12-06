@@ -408,7 +408,7 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   font-size: 13px;
   background: ${({ theme, highlight }) =>
     highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
-  border: 1px solid ${({ highlight }) => (highlight ? 'none' : transparentize(`var(${UI.COLOR_TEXT})`, 0.8))};
+  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT})`)};
   position: relative;
 
   &::before {

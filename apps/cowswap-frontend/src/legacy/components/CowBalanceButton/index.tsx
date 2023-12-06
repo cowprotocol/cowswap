@@ -1,6 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'

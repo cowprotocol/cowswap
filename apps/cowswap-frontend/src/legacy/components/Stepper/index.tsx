@@ -102,9 +102,9 @@ export const Step = styled.div<{
     font-style: normal;
     color: ${({ isActiveStep, completedStep, theme }) =>
       completedStep
-        ? transparentize(`var(${UI.COLOR_TEXT})`, 0.2)
+        ? `var(${UI.COLOR_PAPER_DARKER})`
         : isActiveStep
-        ? transparentize(`var(${UI.COLOR_TEXT})`, 0.2)
+        ? `var(${UI.COLOR_PAPER_DARKER})`
         : transparentize(theme.text, 0.4)};
     font-size: 12px;
     margin: 6px 0 0;

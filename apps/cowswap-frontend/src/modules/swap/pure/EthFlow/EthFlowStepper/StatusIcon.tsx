@@ -34,7 +34,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
       ? 'none'
       : status === 'success'
       ? 'none'
-      : `2px solid ${transparentize(`var(${UI.COLOR_TEXT})`, 0.9)}`};
+      : `2px solid var(${UI.COLOR_PAPER_DARKER})`};
   box-shadow: ${({ status, theme }) => (status === 'pending' ? theme.boxShadow3 : 'none')};
   background: ${({ status, theme }) =>
     status === 'pending'
@@ -120,7 +120,7 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
     status === 'pending'
       ? theme.text1
       : crossOut
-      ? transparentize(`var(${UI.COLOR_TEXT})`, 0.8)
+      ? `var(${UI.COLOR_PAPER_DARKER})`
       : status === 'error'
       ? theme.danger
       : status === 'success'

@@ -1,6 +1,5 @@
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const MenuFlyout = styled.ol`

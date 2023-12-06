@@ -54,7 +54,7 @@ export const SmallVolumeWarningBanner = styled.div`
   display: flex;
   align-items: center;
   background: ${({ theme }) => (theme.darkMode ? transparentize(theme.alert, 0.9) : transparentize(theme.alert, 0.85))};
-  color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.15, theme.alert)};
+  color: ${({ theme }) => darken(theme.alert, theme.darkMode ? 0 : 0.15)};
   gap: 10px;
   border-radius: 10px;
   margin: 8px auto 0;

@@ -22,7 +22,7 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit')};
+  color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.alert, theme.darkMode ? 0 : 0.15) : 'inherit')};
   cursor: ${({ showPointerCursor }) => (showPointerCursor ? 'pointer' : 'default')};
 
   ${SymbolElement} {

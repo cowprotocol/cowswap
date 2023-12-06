@@ -755,8 +755,8 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
-  color: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
+  background: ${({ isClaimed }) => (isClaimed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT})`)};
   margin: 0 auto 16px;
   font-weight: 600;
 
