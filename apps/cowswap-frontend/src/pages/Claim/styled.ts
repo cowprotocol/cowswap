@@ -1663,19 +1663,19 @@ export const SuccessBanner = styled.div<{ type: string }>`
   display: flex;
   background: ${({ type, theme }) =>
     type === 'Twitter'
-      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.twitter)
+      ? transparentize(SuccessBannerColors.twitter, SuccessBannerColors.opacity)
       : type === 'Discord'
-      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.discord)
+      ? transparentize(SuccessBannerColors.discord, SuccessBannerColors.opacity)
       : theme.blueShade3};
 
   &:hover {
     border: 2px solid
       ${({ type, theme }) =>
         type === 'Twitter'
-          ? darken(SuccessBannerColors.darken, SuccessBannerColors.twitter)
+          ? darken(SuccessBannerColors.twitter, SuccessBannerColors.darken)
           : type === 'Discord'
-          ? darken(SuccessBannerColors.darken, SuccessBannerColors.discord)
-          : darken(SuccessBannerColors.darken, theme.blueShade3)};
+          ? darken(SuccessBannerColors.discord, SuccessBannerColors.darken)
+          : darken(theme.blueShade3, SuccessBannerColors.darken)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

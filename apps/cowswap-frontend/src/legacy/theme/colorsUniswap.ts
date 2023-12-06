@@ -8,7 +8,6 @@ export function colorsUniswap(darkMode: boolean): Colors {
     black: '#000000',
 
     // text
-    text1: darkMode ? '#FFFFFF' : '#000000',
     text2: darkMode ? '#C3C5CB' : '#565A69',
     text3: darkMode ? '#8F96AC' : '#6E727D',
     text4: darkMode ? '#B2B9D2' : '#C3C5CB',

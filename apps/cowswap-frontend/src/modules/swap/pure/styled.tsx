@@ -31,7 +31,7 @@ export const BottomGrouping = styled.div`
 `
 export const LightGreyText = styled.span`
   font-weight: 400;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_75})`};
+  color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
 `
 
 export const StyledInfoIcon = styled(Info)`
