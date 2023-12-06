@@ -1,6 +1,6 @@
+import { UI } from '@cowprotocol/common-const'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'

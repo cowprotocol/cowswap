@@ -1,5 +1,5 @@
-import { ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'

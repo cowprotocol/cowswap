@@ -7,7 +7,7 @@ import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize } from '../../../../common-const/src/colors'
+import { ButtonSize } from '@cowprotocol/common-const';
 
 import {
   // Import only the basic buttons

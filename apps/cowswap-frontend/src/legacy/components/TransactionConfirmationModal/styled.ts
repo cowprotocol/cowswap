@@ -1,6 +1,6 @@
+import { UI } from '@cowprotocol/common-const'
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'

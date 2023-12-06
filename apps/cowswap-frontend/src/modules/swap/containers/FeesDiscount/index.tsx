@@ -1,6 +1,6 @@
+import { UI } from '@cowprotocol/common-const'
 import { AutoRow } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'

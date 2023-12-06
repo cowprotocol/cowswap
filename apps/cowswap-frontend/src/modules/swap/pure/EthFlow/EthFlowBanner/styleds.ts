@@ -1,5 +1,5 @@
-import { ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { isMobile } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/common-const'
+import { isMobile } from '@cowprotocol/common-utils'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'

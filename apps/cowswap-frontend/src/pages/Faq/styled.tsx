@@ -1,6 +1,6 @@
+import { UI } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 
 import styled from 'styled-components/macro'
 

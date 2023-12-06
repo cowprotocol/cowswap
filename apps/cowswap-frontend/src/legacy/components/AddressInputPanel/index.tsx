@@ -6,11 +6,11 @@ import {
   // useContext
 } from 'react'
 
+import { UI } from '@cowprotocol/common-const'
 import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'

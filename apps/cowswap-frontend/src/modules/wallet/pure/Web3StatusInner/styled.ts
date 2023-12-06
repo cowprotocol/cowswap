@@ -1,5 +1,5 @@
-import { ButtonSecondary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'
 import { Activity } from 'react-feather'

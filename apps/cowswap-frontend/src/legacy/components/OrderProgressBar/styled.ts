@@ -1,6 +1,6 @@
 import CowProtocolLogo from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
-import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'

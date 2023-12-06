@@ -1,5 +1,5 @@
-import { RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'color2k'

@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 

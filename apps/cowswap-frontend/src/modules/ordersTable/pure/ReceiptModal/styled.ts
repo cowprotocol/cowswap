@@ -1,5 +1,5 @@
-import { AutoRow } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { AutoRow } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

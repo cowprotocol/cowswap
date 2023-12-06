@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'

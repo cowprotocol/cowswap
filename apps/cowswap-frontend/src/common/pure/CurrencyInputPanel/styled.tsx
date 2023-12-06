@@ -1,5 +1,5 @@
-import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/common-const'
+import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

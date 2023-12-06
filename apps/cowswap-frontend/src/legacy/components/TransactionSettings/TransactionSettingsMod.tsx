@@ -14,10 +14,10 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
+import { UI } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { FancyButton } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
