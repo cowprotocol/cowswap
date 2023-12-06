@@ -1,3 +1,4 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -14,18 +15,21 @@ export interface UsdAmountInfo {
 
 const DEFAULT_USD_AMOUNT_STATE = { value: null, isLoading: false }
 
-export function useUsdAmount(_amount: Nullish<CurrencyAmount<Currency>>): UsdAmountInfo {
-  const amount = currencyAmountToTokenAmount(_amount)
-  const usdcPrice = useUsdPrice(amount?.currency)
+export function useUsdAmount(
+  _amount: Nullish<CurrencyAmount<Currency>>,
+  currency?: Nullish<TokenWithLogo>
+): UsdAmountInfo {
+  const amount = useSafeMemo(() => currencyAmountToTokenAmount(_amount), [_amount])
+  const usdcPrice = useUsdPrice(amount?.currency || currency)
 
   return useSafeMemo(() => {
-    if (!usdcPrice || !amount) return DEFAULT_USD_AMOUNT_STATE
+    if (!usdcPrice) return DEFAULT_USD_AMOUNT_STATE
 
     const { price, isLoading } = usdcPrice
 
     return {
-      value: price === null ? null : price.quote(amount),
+      value: price === null || !amount ? null : price.quote(amount),
       isLoading,
     }
-  }, [usdcPrice, amount])
+  }, [usdcPrice, amount, currency])
 }
