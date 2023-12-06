@@ -6,13 +6,13 @@ export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 // This wayit can be consumed by both the configurator and the widget.
 export const DEFAULT_LIGHT_PALETTE = {
   primary: '#052b65',
-  background: '#ffffff',
-  paper: '#ffffff',
+  background: '#FFFFFF',
+  paper: '#FFFFFF',
   text: '#052B65',
   danger: '#D41300',
   warning: '#F8D06B',
   alert: '#DB971E',
-  info: '#CAE9FF',
+  info: '#0d5ed9',
   success: '#007B28',
 }
 
@@ -24,6 +24,6 @@ export const DEFAULT_DARK_PALETTE = {
   danger: '#f44336',
   warning: '#F8D06B',
   alert: '#DB971E',
-  info: '#2196f3',
-  success: '#4caf50',
+  info: '#428dff',
+  success: '#00D897',
 }

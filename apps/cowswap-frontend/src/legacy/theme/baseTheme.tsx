@@ -24,13 +24,14 @@ export function colors(darkMode: boolean): Colors {
 
     secondary: darkMode ? '#0d5ed9' : '#052B65',
     background: darkMode ? '#07162D' : '#ECF1F8',
-    paper: darkMode ? '#07162D' : '#ECF1F8',
+    paper: darkMode ? '#0c264b' : '#FFFFFF',
 
     text: darkMode ? '#CAE9FF' : '#052B65',
     secondaryText: darkMode ? '#86B2DC' : '#506B93',
     disabledText: darkMode ? '#86B2DC' : '#506B93',
 
-    error: darkMode ? '#EB3030' : '#D41300',
+    danger: darkMode ? '#f44336' : '#D41300',
+    alert: darkMode ? '#FFCA4A' : '#DB971E',
     warning: darkMode ? '#ED6237' : '#D94719',
     info: darkMode ? '#428dff' : '#0d5ed9',
     success: darkMode ? '#00D897' : '#007B28',
@@ -50,11 +51,8 @@ export function colors(darkMode: boolean): Colors {
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
 
-    // States NEW
-    danger: darkMode ? '#EB3030' : '#D41300',
-
-    alert: '#DB971E',
     alert2: '#F8D06B',
+    error: darkMode ? '#EB3030' : '#D41300',
     information: darkMode ? '#428dff' : '#0d5ed9',
 
     pending: '#43758C', // deprecate
