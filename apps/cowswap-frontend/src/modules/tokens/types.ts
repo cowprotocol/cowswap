@@ -1,3 +1,4 @@
+import { AllowancesState, BalancesState } from '@cowprotocol/balances-and-allowances'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 export interface OnchainState<T> {
@@ -47,7 +48,7 @@ export interface BalancesAndAllowancesParams {
 }
 
 export interface BalancesAndAllowances {
-  balances: TokenAmounts
-  allowances: TokenAmounts
+  balances: BalancesState['values']
+  allowances: AllowancesState['values']
   isLoading: boolean
 }

@@ -1,3 +1,4 @@
+import { useTokenBalanceForAccount } from '@cowprotocol/balances-and-allowances'
 import { V_COW } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,8 +12,6 @@ import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
@@ -25,7 +24,7 @@ export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSum
 
   const vCow = chainId ? V_COW[chainId] : undefined
 
-  const vCowBalance = useTokenBalance(activeClaimAccount || undefined, vCow)
+  const { data: vCowBalance } = useTokenBalanceForAccount(vCow, activeClaimAccount || undefined)
 
   const hasClaimSummary = claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive
 
@@ -36,7 +35,7 @@ export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSum
   if (hasClaims && activeClaimAccount && unclaimedAmount) {
     totalAvailableAmount = unclaimedAmount
   } else if (isClaimed) {
-    totalAvailableAmount = vCowBalance
+    totalAvailableAmount = vCowBalance ? CurrencyAmount.fromRawAmount(vCow, vCowBalance.toHexString()) : undefined
   }
 
   return (

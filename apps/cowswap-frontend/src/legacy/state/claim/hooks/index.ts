@@ -5,18 +5,16 @@ import { TokenWithLogo, V_COW } from '@cowprotocol/common-const'
 import { useIsMounted, useVCowContract } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, formatTokenAmount, isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { CallState } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 import { PAID_CLAIM_TYPES } from './const'
 import { ClaimInput, ClaimType, RepoClaims, UserClaims, VCowPrices } from './types'
@@ -101,7 +99,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
     expired: [],
   })
 
-  const contract = useVCowContract()
+  const contract = useVCowContract() || undefined
 
   const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
 
@@ -109,7 +107,11 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
   // we check for all claims because expired now might have been claimed before
   const claimIndexes = useMemo(() => userClaims?.map(({ index }) => [index]) || [], [userClaims])
 
-  const results = useSingleContractMultipleData(contract, 'isClaimed', claimIndexes)
+  const { data: results, isLoading: isClaimLoading } = useSingleContractMultipleData(
+    contract,
+    'isClaimed',
+    claimIndexes
+  )
 
   useEffect(() => {
     const available: UserClaims = []
@@ -125,18 +127,16 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     let isContractCallLoading = false
 
-    results.forEach((result: CallState, index: number) => {
+    results?.forEach((result, index: number) => {
       const claim = userClaims[index]
 
       // Use the loading state from the multicall results
-      if (!isContractCallLoading && result.loading) {
+      if (!isContractCallLoading && isClaimLoading) {
         isContractCallLoading = true
       }
 
       if (
-        result.valid && // result is valid
-        !result.loading && // result is not loading
-        result.result?.[0] === true // result true means claimed
+        result?.[0] === true // result true means claimed
       ) {
         claimed.push(claim)
       } else if (!isAirdropWindowOpen || (!isInvestmentWindowOpen && PAID_CLAIM_TYPES.includes(claim.type))) {
@@ -148,7 +148,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     setIsLoading(isContractCallLoading)
     setClaims({ available, expired, claimed })
-  }, [isAirdropWindowOpen, isInvestmentWindowOpen, results, userClaims])
+  }, [isAirdropWindowOpen, isInvestmentWindowOpen, results, userClaims, isClaimLoading])
 
   return { ...claims, isLoading: isLoading || areClaimsLoading }
 }

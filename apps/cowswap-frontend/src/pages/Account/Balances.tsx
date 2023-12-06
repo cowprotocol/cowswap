@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
 import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW, COW_CONTRACT_ADDRESS, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useBlockNumber } from '@cowprotocol/common-hooks'
@@ -24,8 +25,6 @@ import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirma
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'
-
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { HelpCircle } from 'common/pure/HelpCircle'
@@ -68,8 +67,7 @@ export default function Profile() {
   const cowToken = COW[chainId]
   const vCowToken = V_COW[chainId]
   // Cow balance
-  const cow =
-    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
+  const cow = useCurrencyAmountBalance(chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()

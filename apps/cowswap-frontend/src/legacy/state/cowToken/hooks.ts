@@ -3,10 +3,11 @@ import { useCallback, useMemo } from 'react'
 import { V_COW } from '@cowprotocol/common-const'
 import { useVCowContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { CallStateResult as Result, useSingleCallResult } from 'lib/hooks/multicall'
+import useSWR from 'swr'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
@@ -33,18 +34,18 @@ interface SwapVCowCallbackParams {
 /**
  * Hook that parses the result input with BigNumber value to CurrencyAmount
  */
-function useParseVCowResult(result: Result | undefined) {
+function useParseVCowResult(result: BigNumber | undefined) {
   const { chainId } = useWalletInfo()
 
-  const vCowToken = chainId ? V_COW[chainId] : undefined
+  const vCowToken = V_COW[chainId]
 
   return useMemo(() => {
-    if (!chainId || !vCowToken || !result) {
+    if (!vCowToken || !result) {
       return
     }
 
-    return CurrencyAmount.fromRawAmount(vCowToken, result[0].toString())
-  }, [chainId, result, vCowToken])
+    return CurrencyAmount.fromRawAmount(vCowToken, result.toString())
+  }, [result, vCowToken])
 }
 
 /**
@@ -54,12 +55,23 @@ export function useVCowData(): VCowData {
   const vCowContract = useVCowContract()
   const { account } = useWalletInfo()
 
-  const { loading: isVestedLoading, result: vestedResult } = useSingleCallResult(vCowContract, 'swappableBalanceOf', [
-    account ?? undefined,
-  ])
-  const { loading: isTotalLoading, result: totalResult } = useSingleCallResult(vCowContract, 'balanceOf', [
-    account ?? undefined,
-  ])
+  const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
+    ['useVCowData.swappableBalanceOf', account, vCowContract],
+    async () => {
+      if (!account || !vCowContract) return undefined
+
+      return vCowContract.swappableBalanceOf(account)
+    }
+  )
+
+  const { data: totalResult, isLoading: isTotalLoading } = useSWR(
+    ['useVCowData.balanceOf', account, vCowContract],
+    async () => {
+      if (!account || !vCowContract) return undefined
+
+      return vCowContract.balanceOf(account)
+    }
+  )
 
   const vested = useParseVCowResult(vestedResult)
   const total = useParseVCowResult(totalResult)
