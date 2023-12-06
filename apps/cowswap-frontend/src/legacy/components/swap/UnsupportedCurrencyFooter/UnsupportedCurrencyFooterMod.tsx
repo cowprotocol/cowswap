@@ -6,7 +6,6 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonEmpty } from '@cowprotocol/ui'
 import { AutoRow, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 

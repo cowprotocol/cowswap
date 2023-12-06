@@ -1,7 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'

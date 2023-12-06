@@ -1,5 +1,3 @@
-import { UI } from '@cowprotocol/ui'
-
 import ICON_ARROW from 'assets/icon/arrow.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

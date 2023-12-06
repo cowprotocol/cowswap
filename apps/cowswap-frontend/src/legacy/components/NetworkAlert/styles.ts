@@ -1,5 +1,4 @@
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

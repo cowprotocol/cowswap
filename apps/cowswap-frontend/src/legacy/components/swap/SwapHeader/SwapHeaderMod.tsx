@@ -1,5 +1,4 @@
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'

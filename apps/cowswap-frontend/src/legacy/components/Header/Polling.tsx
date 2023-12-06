@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useBlockNumber, useIsOnline, useTheme } from '@cowprotocol/common-hooks'
+import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
@@ -159,7 +159,6 @@ export function Polling() {
   const [isMounting, setIsMounting] = useState(false)
   const [isHover, setIsHover] = useState(false)
   const isOnline = useIsOnline()
-  const theme = useTheme()
 
   const ethGasPrice = useGasPrice()
   const priceGwei = ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined

@@ -29,7 +29,7 @@ const DarkSpan = styled.span`
   }
 `
 
-export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...boxProps }: FeesDiscountProps) => {
+export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, ...boxProps }: FeesDiscountProps) => {
   const { subsidy } = useCowBalanceAndSubsidy()
 
   return (

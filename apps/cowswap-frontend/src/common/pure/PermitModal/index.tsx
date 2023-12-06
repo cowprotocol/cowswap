@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ICON_ARROW from 'assets/icon/arrow.svg'

@@ -1,11 +1,10 @@
+import { UI } from '@cowprotocol/ui'
+
 import { HTMLAttributes } from 'react'
 
-import { darken } from 'color2k'
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
-
-import { UI } from '@cowprotocol/ui'
 
 import { RowBetween } from '../Row'
 import { ButtonSize } from '../../enum'

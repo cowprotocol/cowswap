@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { ButtonSize, ButtonError, AutoRow, RowBetween, RowFixed } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'

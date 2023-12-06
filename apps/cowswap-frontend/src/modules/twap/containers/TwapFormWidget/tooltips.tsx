@@ -1,5 +1,4 @@
 import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
-import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
