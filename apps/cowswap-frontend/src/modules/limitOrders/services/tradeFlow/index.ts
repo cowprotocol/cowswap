@@ -1,6 +1,8 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { PERMIT_SIGNER, isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
+
+import * as Sentry from '@sentry/browser'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -67,6 +69,14 @@ export async function tradeFlow(
       appData,
       generatePermitHook,
     })
+
+    if (postOrderParams.appData.fullAppData.includes(PERMIT_SIGNER.address)) {
+      // report this to sentry if we ever use the default signer in the permit
+      Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
+        tags: { errorType: 'permitWithDefaultSigner' },
+        contexts: { params: { account } },
+      })
+    }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(swapFlowAnalyticsContext)

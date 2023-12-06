@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { BadgeType } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -26,17 +27,10 @@ interface MenuItemConfig {
   badgeType?: BadgeType
 }
 
-export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default'
-
 const MENU_ITEMS: MenuItemConfig[] = [
   { route: Routes.SWAP, label: 'Swap' },
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
-  {
-    route: Routes.ADVANCED_ORDERS,
-    label: 'TWAP',
-    badgeText: 'NEW!',
-    badgeType: 'alert2',
-  },
+  { route: Routes.ADVANCED_ORDERS, label: 'TWAP' },
 ]
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {

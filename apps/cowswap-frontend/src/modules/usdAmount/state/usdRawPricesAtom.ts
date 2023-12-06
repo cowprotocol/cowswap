@@ -5,6 +5,7 @@ import { Fraction, Token } from '@uniswap/sdk-core'
 
 export interface UsdRawPriceState {
   updatedAt?: number
+  // When we couldn't load the price for any reaason (http error, invalid value, etc.), we set it to null
   price: Fraction | null
   currency: Token
   isLoading: boolean

@@ -4,5 +4,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 export const priceImpactAtom = atom<PriceImpact>({
   priceImpact: undefined,
-  loading: false,
+  // Consider is loading by default to avoid flickering
+  // PriceImpactUpdater will set it to false anyway
+  loading: true,
 })

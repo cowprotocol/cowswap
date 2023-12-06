@@ -17,9 +17,18 @@ export function mapPartOrderToStoreOrder(
   isVirtualPart: boolean,
   parent: TwapOrderItem,
   tokensByAddress: TokensByAddress
-): Order {
+): Order | undefined {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
+
+  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
+  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+
+  if (!inputToken || !outputToken) {
+    // FIXME: this is a hack to prevent errors, we should ensure this doesn't happen
+    console.error('mapTwapOrderToStoreOrder: inputToken or outputToken not found', { inputToken, outputToken })
+    return undefined
+  }
 
   const storeOrder: Order = {
     ...enrichedOrder,
@@ -30,8 +39,8 @@ export function mapPartOrderToStoreOrder(
       parentId: parent.id,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
-    inputToken: tokensByAddress[enrichedOrder.sellToken.toLowerCase()],
-    outputToken: tokensByAddress[enrichedOrder.buyToken.toLowerCase()],
+    inputToken,
+    outputToken,
     creationTime: enrichedOrder.creationDate,
     summary: '',
     status,
@@ -44,4 +53,8 @@ export function mapPartOrderToStoreOrder(
   storeOrder.summary = summary || ''
 
   return storeOrder
+}
+
+export function isOrder(order: Order | undefined): order is Order {
+  return !!order
 }
