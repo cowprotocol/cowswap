@@ -35,7 +35,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       font-weight: ${`var(${UI.FONT_WEIGHT_MEDIUM})`};
       background: transparent;
       color: inherit !important;
-      transition: all 0.2s ease-in-out;
+      transition: all 0.1s ease-in-out;
       opacity: 0.7;
 
       &:hover,

@@ -21,6 +21,7 @@ export const ModalHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   padding: 0 0 16px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -34,6 +35,7 @@ export const ModalFooter = styled.div`
   justify-content: space-between;
   padding: 15px 0 0;
   gap: 10px;
+  color: inherit;
 
   > button {
     border-radius: 12px;

@@ -105,7 +105,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
 
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:hover {
       opacity: 1;

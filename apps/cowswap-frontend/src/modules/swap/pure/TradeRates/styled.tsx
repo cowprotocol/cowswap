@@ -31,7 +31,7 @@ export const Row = styled.div`
 
     &:first-child > span {
       color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
-      transition: color 0.15s ease-in-out;
+      transition: color 0.1s ease-in-out;
 
       &:hover {
         color: inherit;
@@ -64,11 +64,11 @@ export const Discount = styled.span`
   display: flex;
   cursor: pointer;
   padding: 2px 8px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
   border-radius: 5px;
   font-weight: 400;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

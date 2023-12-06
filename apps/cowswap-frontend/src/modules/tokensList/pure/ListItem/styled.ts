@@ -37,7 +37,7 @@ export const SettingsContainer = styled(MenuList)`
   background: var(${UI.COLOR_PAPER});
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid var(${UI.COLOR_GREY});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const SettingsAction = styled.div`
@@ -58,6 +58,6 @@ export const SettingsAction = styled.div`
 
 export const ListVersion = styled.div`
   color: var(${UI.COLOR_DISABLED_TEXT});
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
+  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKER});
   padding: 0 5px 10px 5px;
 `

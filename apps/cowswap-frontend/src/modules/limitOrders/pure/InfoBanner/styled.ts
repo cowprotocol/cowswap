@@ -58,7 +58,7 @@ export const CloseIcon = styled(X)`
   right: 10px;
   top: 10px;
   stroke-width: 3px;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   height: var(--size);
   width: var(--size);
   opacity: 0.6;

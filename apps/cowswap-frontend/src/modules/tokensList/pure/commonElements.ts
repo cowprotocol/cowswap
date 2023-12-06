@@ -19,7 +19,7 @@ export const IconButton = styled.button`
   ${blankButtonMixin}
   color: inherit;
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -40,7 +40,7 @@ export const ImportButton = styled.button`
   padding: 6px 15px;
   border-radius: 24px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out;
 
   &:hover {
     background-color: var(${UI.COLOR_PRIMARY_DARKER});

@@ -43,7 +43,7 @@ export const Wrapper = styled.div`
       }
 
       > tbody > tr {
-        background: var(${UI.COLOR_GREY});
+        background: var(${UI.COLOR_PAPER_DARKER});
       }
 
       > tbody > tr > td > span[role='img'] {
@@ -161,7 +161,7 @@ export const Menu = styled.div`
     text-decoration: none;
     color: inherit;
     opacity: 0.65;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
     display: block;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`

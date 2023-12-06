@@ -111,7 +111,7 @@ export const MenuSection = styled.div`
     padding: 0;
     color: inherit;
     opacity: 0.8;
-    transition: opacity 0.15s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     > svg,
     > img {

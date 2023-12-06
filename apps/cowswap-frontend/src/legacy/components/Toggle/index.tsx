@@ -42,7 +42,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
   animation: 0.1s
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
-  background: ${({ theme, bgColor, isActive }) =>
+  background: ${({ bgColor, isActive }) =>
     isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
@@ -56,7 +56,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_80})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -68,7 +68,7 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   ${ToggleElement} {
     color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
-    transition: background 0.2s ease-in-out;
+    transition: background 0.1s ease-in-out;
     background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
 
     &:hover {

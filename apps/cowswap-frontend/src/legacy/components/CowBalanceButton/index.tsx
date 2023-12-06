@@ -21,7 +21,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   border-radius: 21px;
   pointer-events: auto;
-  transition: width 0.2s ease-in-out, border 0.2s ease-in-out;
+  transition: width 0.1s ease-in-out, border 0.1s ease-in-out;
   cursor: pointer;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

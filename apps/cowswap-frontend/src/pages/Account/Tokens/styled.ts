@@ -197,7 +197,7 @@ export const TokenSearchInput = styled.input`
   background: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
-  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, max-width 0.1s ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;
@@ -217,7 +217,7 @@ export const TokenSearchInput = styled.input`
     font-size: 14px !important;
     color: inherit;
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
   }
 
   &:focus::placeholder {

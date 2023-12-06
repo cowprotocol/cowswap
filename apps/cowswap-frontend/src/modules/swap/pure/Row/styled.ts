@@ -13,6 +13,7 @@ export const TextWrapper = styled(Text)``
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   min-height: 24px;
   gap: 3px;
+  color: inherit;
 
   ${RowFixed} {
     gap: 3px;
@@ -23,7 +24,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     color: inherit;
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:first-child {
       opacity: 0.7;

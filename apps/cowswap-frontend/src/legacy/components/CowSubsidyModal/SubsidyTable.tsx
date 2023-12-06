@@ -24,7 +24,7 @@ const StyledSubsidyTable = styled.table`
   }
 
   tbody {
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     border-radius: 16px;
     border: 0;
   }
@@ -79,7 +79,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     `
     background: ${theme.bg2};
     color: ${theme.white};
-    transition: background 0.2s ease-in-out;
+    transition: background 0.1s ease-in-out;
 
     &::before {
       position: absolute;

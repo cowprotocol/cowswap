@@ -22,7 +22,7 @@ const StyledExternalLink = styled(ExternalLink)`
   justify-content: center;
   gap: 4px;
   color: inherit;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   opacity: 0.5;
 
   &:hover {

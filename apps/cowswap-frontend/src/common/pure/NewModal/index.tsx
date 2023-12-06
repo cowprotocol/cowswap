@@ -67,7 +67,7 @@ const IconX = styled.div`
   right: 10px;
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   margin: 0 0 0 auto;
 
   > svg {

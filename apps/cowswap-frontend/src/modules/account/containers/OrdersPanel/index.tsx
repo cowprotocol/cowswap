@@ -68,7 +68,7 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 20px 30px;
   align-items: center;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   color: inherit;
   background: var(${UI.COLOR_PAPER});
   position: sticky;

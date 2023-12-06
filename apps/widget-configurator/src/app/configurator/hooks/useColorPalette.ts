@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce'
 
 import { DEFAULT_LIGHT_PALETTE, DEFAULT_DARK_PALETTE } from '../consts'
 
-type ColorKeys = 'primary' | 'background' | 'paper' | 'text' | 'danger' | 'warning' | 'info' | 'success'
+type ColorKeys = 'primary' | 'background' | 'paper' | 'text' | 'danger' | 'warning' | 'alert' | 'info' | 'success'
 
 export type ColorPalette = {
   [key in ColorKeys]: string
@@ -37,7 +37,6 @@ export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: 
       }
       return parsedColors
     } catch (error) {
-      console.error('Error reading from localStorage', error)
       return defaultPalette
     }
   }, []) // If this function doesn't depend on external state/props, keep this array empty
@@ -66,14 +65,10 @@ export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: 
       setLightColors(newPalette)
     }
     setShouldUpdateLocalStorage(true) // Enable localStorage update
-
-    console.log('handleColorPaletteChange: newPalette => ', newPalette)
-    console.log('handleColorPaletteChange: mode => ', mode)
-    console.log('handleColorPaletteChange shouldUpdateLocalStorage => ', shouldUpdateLocalStorage)
   }
 
   const isColorKey = (key: string): key is ColorKeys => {
-    return ['primary', 'secondary', 'background', 'paper', 'text', 'error', 'warning', 'info', 'success'].includes(key)
+    return ['primary', 'background', 'paper', 'text', 'error', 'warning', 'alert', 'info', 'success'].includes(key)
   }
 
   const updateLocalStorage = useCallback(
@@ -89,12 +84,6 @@ export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: 
       } else {
         localStorage.removeItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
       }
-
-      console.log('updateLocalStorage: newColors => ', newColors)
-      console.log('updateLocalStorage: mode => ', mode)
-      console.log('updateLocalStorage: customValues => ', customValues)
-      console.log('updateLocalStorage: defaultPalette => ', defaultPalette)
-      console.log('updateLocalStorage: Object.keys(customValues).length => ', Object.keys(customValues).length)
     },
     [mode]
   )

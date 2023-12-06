@@ -4,7 +4,6 @@ import { useCallback, useEffect } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { transparentize } from 'color2k'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -35,8 +34,8 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
 
 const ActionButton = styled.button`
   display: inline-flex;
-  background: ${({ theme }) => transparentize(theme.danger, 0.86)};
-  color: ${({ theme }) => theme.danger};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
@@ -46,17 +45,17 @@ const ActionButton = styled.button`
   border: 0;
   outline: none;
   cursor: pointer;
-  transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   border-radius: 24px;
   vertical-align: center;
 
   &:hover:not([disabled]) {
-    background: ${({ theme }) => transparentize(theme.danger, 0.75)};
+    background: var(${UI.COLOR_DANGER_BG});
   }
 
   &[disabled] {
     background: transparent;
-    outline: 1px solid ${({ theme }) => transparentize(theme.text3, 0.88)};
+    outline: 1px solid var(${UI.COLOR_PAPER_DARKER});
   }
 `
 

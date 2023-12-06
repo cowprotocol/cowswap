@@ -18,10 +18,10 @@ interface FeesDiscountProps extends BoxProps {
 
 const DarkSpan = styled.span`
   padding: 2px 8px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 5px;
   color: inherit;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
 
   &:hover {
     background-color: var(${UI.COLOR_PRIMARY});
@@ -39,8 +39,6 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
-            bgColor={theme.grey1}
-            color={theme.text1}
             wrap
           >
             <StyledInfoIcon />

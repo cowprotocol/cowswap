@@ -148,7 +148,7 @@ export const Row = styled.div`
   justify-content: flex-start;
   align-items: center;
   background: transparent;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: auto;
@@ -156,7 +156,7 @@ export const Row = styled.div`
   `}
 
   &:hover {
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 `
 
@@ -194,7 +194,7 @@ export const Cell = styled.div`
 
   > a {
     text-decoration-color: transparent;
-    transition: text-decoration-color 0.2s ease-in-out;
+    transition: text-decoration-color 0.1s ease-in-out;
     overflow: hidden;
     display: flex;
     color: var(${UI.COLOR_TEXT});
@@ -227,7 +227,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   padding: 0;
   width: auto;
   font-weight: 400;
-  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
   background: transparent;
   color: ${({ color }) => color || 'inherit'};
   white-space: nowrap;
@@ -380,6 +380,7 @@ export const NoResults = styled.div`
   min-height: 400px;
   display: flex;
   align-items: center;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 200px;
@@ -391,6 +392,7 @@ export const NoResults = styled.div`
     font-size: 24px;
     font-weight: 500;
     margin: 0 auto;
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 16px;

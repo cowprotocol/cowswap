@@ -19,8 +19,6 @@ export function useWidgetParamsAndSettings(
   provider: EthereumProvider | undefined,
   configuratorState: ConfiguratorState
 ) {
-  console.log('useWidgetParamsAndSettings', configuratorState)
-
   return useMemo(() => {
     const {
       chainId,
@@ -58,10 +56,13 @@ export function useWidgetParamsAndSettings(
         text: themeColors.text,
         danger: themeColors.danger,
         warning: themeColors.warning,
+        alert: themeColors.alert,
         info: themeColors.info,
         success: themeColors.success,
       },
     }
+
+    console.log('params', params)
 
     return params
   }, [provider, configuratorState])

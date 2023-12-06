@@ -55,5 +55,5 @@ export const TipText = styled.div`
   color: var(${UI.COLOR_LINK});
   text-align: center;
   padding: 20px 0;
-  border-top: 1px solid var(${UI.COLOR_GREY});
+  border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `

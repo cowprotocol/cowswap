@@ -48,7 +48,7 @@ export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   height: 28px;
   width: 28px;
 
@@ -66,7 +66,7 @@ export const WalletIcon = styled.div`
   width: var(--icon-size);
   height: var(--icon-size);
   border-radius: var(--icon-size);
-  animation: pulser 6s 0.2s ease-in-out infinite;
+  animation: pulser 6s 0.1s ease-in-out infinite;
   position: relative;
 
   @keyframes pulser {
@@ -155,7 +155,7 @@ export const ButtonCustom = styled.button`
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out;
   cursor: pointer;
 
   &:hover {
@@ -174,7 +174,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px 16px 0 0;
   color: inherit;
 
@@ -210,6 +210,7 @@ export const LowerSection = styled.div`
     font-weight: 400;
     font-size: 21px;
     margin: 0 auto 16px;
+    color: inherit;
   }
 `
 
@@ -323,7 +324,7 @@ export const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;
@@ -369,6 +370,7 @@ export const ApproveWrapper = styled.div`
   width: 100%;
   padding: 26px 16px 32px;
   gap: 32px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -377,6 +379,7 @@ export const ApproveWrapper = styled.div`
     text-align: center;
     width: 100%;
     margin: 0 auto;
+    color: inherit;
   }
 `
 

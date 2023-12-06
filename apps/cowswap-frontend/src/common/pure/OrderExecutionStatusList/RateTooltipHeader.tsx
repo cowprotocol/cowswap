@@ -11,6 +11,7 @@ const Content = styled.div`
   justify-content: center;
   width: 100%;
   padding: 5px 10px;
+  color: inherit;
 
   > p {
     font-size: 13px;
@@ -28,6 +29,7 @@ const Content = styled.div`
     padding: 0;
     text-align: left;
     width: 100%;
+    color: inherit;
   }
 `
 

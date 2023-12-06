@@ -25,7 +25,7 @@ export const ButtonCustom = styled.button`
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out;
   cursor: pointer;
 
   &:hover {

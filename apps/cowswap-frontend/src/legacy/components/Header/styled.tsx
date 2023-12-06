@@ -146,7 +146,7 @@ export const HeaderElementUni = styled.div`
 `
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
-  transition: color 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out;
   color: inherit;
 
   &:first-of-type {
@@ -275,7 +275,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     border: 0;
     cursor: pointer;
     background: transparent;
-    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+    transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
     color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -291,7 +291,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     > svg > path {
       fill: currentColor;
-      transition: fill 0.15s ease-in-out;
+      transition: fill 0.1s ease-in-out;
     }
 
     &:hover {

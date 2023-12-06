@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 
 export const LabelText = styled.span`
   color: inherit;
-  transition: color 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out;
 `
 
 export const StyledSVG = styled(SVG)`
@@ -22,7 +22,7 @@ export const StyledSVG = styled(SVG)`
 
   > path {
     fill: var(${UI.COLOR_TEXT});
-    transition: fill 0.15s ease-in-out;
+    transition: fill 0.1s ease-in-out;
   }
 
   &.expanded {
@@ -40,16 +40,18 @@ export const StyledMenuButton = styled(MenuButton)`
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   display: flex;
   align-items: center;
-  background: ${({ theme }) => theme.bg3};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   padding: 4px 10px;
   border-radius: 8px;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
 
     > ${LabelText}, > ${StyledSVG} > path {
-      fill: ${({ theme }) => theme.white};
-      color: ${({ theme }) => theme.white};
+      fill: currentColor;
+      color: currentColor;
     }
   }
 `

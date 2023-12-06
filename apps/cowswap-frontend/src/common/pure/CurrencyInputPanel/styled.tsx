@@ -1,7 +1,6 @@
 import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
@@ -111,7 +110,8 @@ export const BalanceText = styled.span`
   display: flex;
   align-items: center;
   opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
+  color: inherit;
 
   &:hover {
     opacity: 1;
@@ -127,7 +127,7 @@ export const FiatAmountText = styled.span`
     font-size: 13px;
     opacity: 0.7;
     color: inherit;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -142,16 +142,17 @@ export const SetMaxBtn = styled.button`
   background: none;
   border: none;
   outline: none;
-  color: ${({ theme }) => theme.text3};
+  color: inherit;
   font-weight: 600;
   font-size: 11px;
-  background: ${({ theme }) => transparentize(theme.text3, 0.9)};
+  background: var(${UI.COLOR_PAPER});
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
-  transition: background 0.15s ease-in-out;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => transparentize(theme.text3, 0.7)};
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `

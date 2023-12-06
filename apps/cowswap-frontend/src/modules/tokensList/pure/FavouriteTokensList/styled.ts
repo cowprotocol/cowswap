@@ -43,7 +43,7 @@ export const TokensItem = styled.button`
   cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
   background: ${({ disabled }) => disabled && `var(${UI.COLOR_PAPER_DARKER})`};
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-  transition: border 0.2s ease-in-out;
+  transition: border 0.1s ease-in-out;
 
   :hover {
     border: 1px solid ${({ disabled }) => (disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PRIMARY})`)};

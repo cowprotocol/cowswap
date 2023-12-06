@@ -42,7 +42,7 @@ export const ArrowsWrapper = styled.div`
     overflow: hidden;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out, color 0.1s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;

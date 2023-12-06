@@ -48,7 +48,7 @@ export const StyledTokenSymbol = styled(TokenSymbol)`
 export const TokenName = styled.div`
   color: inherit;
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;

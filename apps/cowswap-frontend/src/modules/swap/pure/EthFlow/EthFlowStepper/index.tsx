@@ -73,7 +73,7 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 22px;
   border-radius: 0 0 12px 12px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;
   line-height: 1;
 
@@ -115,7 +115,7 @@ export const Progress = styled.div<ProgressProps>`
     left: 0;
     top: 0;
     height: inherit;
-    transition: width 0.3s ease-in-out, background 0.2s ease-in-out;
+    transition: width 0.3s ease-in-out, background 0.1s ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
     background: ${({ status, theme }) =>
       status === 'error' ? `var(${UI.COLOR_DANGER})` : status === 'success' ? `var(${UI.COLOR_SUCCESS})` : theme.text3};

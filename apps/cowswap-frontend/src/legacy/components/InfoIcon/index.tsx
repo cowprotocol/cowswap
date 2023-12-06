@@ -15,7 +15,7 @@ const StyledIcon = styled.div`
     stroke: currentColor;
     line-height: 0;
     vertical-align: middle;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     :hover {
       opacity: 1;

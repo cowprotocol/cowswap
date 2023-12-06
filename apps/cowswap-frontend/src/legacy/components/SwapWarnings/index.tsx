@@ -1,11 +1,10 @@
-import React, { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -144,7 +143,6 @@ export type WarningProps = {
 
 export const HighFeeWarning = (props: WarningProps) => {
   const { acceptedStatus, acceptWarningCb, trade } = props
-  const theme = useContext(ThemeContext)
   const darkMode = useIsDarkMode()
 
   const { isHighFee, feePercentage } = useHighFeeWarning(trade)
@@ -160,12 +158,7 @@ export const HighFeeWarning = (props: WarningProps) => {
       <div>
         <AlertTriangle size={24} />
         Fees exceed {level}% of the swap amount!{' '}
-        <MouseoverTooltipContent
-          bgColor={theme.bg3}
-          color={theme.text1}
-          wrap
-          content={<HighFeeWarningMessage feePercentage={feePercentage} />}
-        >
+        <MouseoverTooltipContent wrap content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
           <ErrorStyledInfoIcon />
         </MouseoverTooltipContent>{' '}
       </div>

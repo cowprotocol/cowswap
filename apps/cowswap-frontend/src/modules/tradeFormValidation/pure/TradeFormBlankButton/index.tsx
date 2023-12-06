@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { lighten, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 const LONG_TEXT_LENGTH = 20
@@ -13,24 +12,24 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   align-items: center;
   justify-content: center;
   background: var(${UI.COLOR_PRIMARY});
-  color: ${({ theme }) => theme.white};
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
   border-radius: 16px;
   cursor: pointer;
   min-height: 58px;
   text-align: center;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
   border: none;
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => transparentize(theme.bg2, 0.08)};
+    background: var(${UI.COLOR_PRIMARY_DARKER});
   }
 
   &:disabled {
-    background-color: var(${UI.COLOR_GREY});
-    color: ${({ theme }) => transparentize(theme.text, 0.4)};
+    background-color: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT_PAPER});
     background-image: none;
     border: 0;
     cursor: auto;

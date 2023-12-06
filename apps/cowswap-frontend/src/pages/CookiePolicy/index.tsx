@@ -29,7 +29,7 @@ const Wrapper = styled(MarkdownPage)`
       }
 
       > tbody > tr {
-        background: var(${UI.COLOR_GREY});
+        background: var(${UI.COLOR_PAPER_DARKER});
       }
 
       > tbody > tr > td > span[role='img'] {

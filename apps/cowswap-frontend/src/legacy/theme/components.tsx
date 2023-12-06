@@ -27,7 +27,7 @@ export const ButtonText = styled.button`
 export const CloseIcon = styled(X)<{ onClick: () => void }>`
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;

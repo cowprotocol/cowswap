@@ -365,7 +365,7 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
   padding: 0.25rem 0rem;
   font-weight: 500;
   font-size: 0.825rem;
-  color: ${({ theme }) => theme.primary1};
+  color: var(${UI.COLOR_PRIMARY});
 `
 
 // override the href, pending and success props
@@ -481,10 +481,10 @@ export const ActivityVisual = styled.div`
     padding: 2px;
     box-sizing: content-box;
     box-shadow: none;
-    background: ${({ theme }) => theme.white};
+    background: var(${UI.COLOR_PAPER});
     color: ${({ theme }) =>
       theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
-    border: 2px solid ${({ theme }) => theme.bg1};
+    border: 2px solid var(${UI.COLOR_PAPER});
   }
 
   div:not(:first-child):last-child {

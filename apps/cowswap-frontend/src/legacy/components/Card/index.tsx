@@ -24,7 +24,7 @@ export const LightCard = styled(Card)`
     width: 100%;
     border-radius: 16px;
     height: 100%;
-    border: 1px solid var(${UI.COLOR_TEXT_PAPER});
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
     opacity: 0.2;
     user-select: none;
     pointer-events: none;
@@ -36,7 +36,7 @@ export const LightGreyCard = styled(Card)`
 `
 
 export const GreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const DarkGreyCard = styled(Card)`
@@ -48,7 +48,7 @@ export const DarkCard = styled(Card)`
 `
 
 export const OutlineCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.bg3};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const YellowCard = styled(Card)`

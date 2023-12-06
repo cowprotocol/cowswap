@@ -68,7 +68,7 @@ const linkMixin = css`
   align-items: center;
   text-decoration: underline;
   text-decoration-color: transparent;
-  transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: text-decoration-color 0.1s ease-in-out, color 0.1s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
       font-size: 15px;
@@ -207,7 +207,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
       object-fit: contain;
       margin: 0 0 0 6px;
       transform: translateX(0);
-      transition: transform 0.2s ease-in-out;
+      transition: transform 0.1s ease-in-out;
 
       > path {
         fill: ${({ theme }) => theme.white};

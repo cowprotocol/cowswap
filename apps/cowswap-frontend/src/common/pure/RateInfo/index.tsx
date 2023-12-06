@@ -54,7 +54,7 @@ const RateLabel = styled.div`
   font-weight: 400;
   gap: 5px;
   text-align: left;
-  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
   color: inherit;
   opacity: 0.7;
 
@@ -89,14 +89,14 @@ const InvertIcon = styled.div`
     min-width: var(--size);
     min-height: var(--size);
     border-radius: var(--size);
-    transition: background 0.15s ease-in-out, 0.15s ease-in-out;
+    transition: background 0.1s ease-in-out, 0.1s ease-in-out;
   }
 
   > svg {
     padding: 1px;
     stroke: currentColor;
     z-index: 5;
-    transition: stroke 0.15s ease-in-out;
+    transition: stroke 0.1s ease-in-out;
   }
 
   &:hover {

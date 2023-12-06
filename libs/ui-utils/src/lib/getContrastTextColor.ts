@@ -2,7 +2,7 @@
 import { hasBadContrast } from 'color2k'
 
 function getContrastText(background: string, preferredTextColor: string | (() => string)): string {
-  const contrastStandard = 'readable' // Options: 'decorative', 'readable', 'aa', 'aaa'
+  const contrastStandard = 'aa' // Options: 'decorative', 'readable', 'aa', 'aaa'
   const darkTextPrimary = '#000000'
   const lightTextPrimary = '#FFFFFF'
   const resolvedTextColor = typeof preferredTextColor === 'function' ? preferredTextColor() : preferredTextColor

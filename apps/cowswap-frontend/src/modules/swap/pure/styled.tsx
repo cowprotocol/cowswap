@@ -39,7 +39,7 @@ export const StyledInfoIcon = styled(Info)`
   opacity: 0.6;
   line-height: 0;
   vertical-align: middle;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;

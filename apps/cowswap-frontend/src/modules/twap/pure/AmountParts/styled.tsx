@@ -26,7 +26,7 @@ export const Part = styled(TradeWidgetFieldBox)`
 export const Label = styled(TradeWidgetFieldLabel)`
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -59,7 +59,7 @@ export const Fiat = styled(FiatAmount)`
   color: inherit;
   font-size: 13px;
   opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;

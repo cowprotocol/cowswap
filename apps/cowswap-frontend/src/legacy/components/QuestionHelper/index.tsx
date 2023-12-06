@@ -24,7 +24,7 @@ export const QuestionWrapper = styled.div`
   border-radius: 16px;
   background-color: transparent;
   opacity: 0.5;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
   color: inherit;
 
   > svg {

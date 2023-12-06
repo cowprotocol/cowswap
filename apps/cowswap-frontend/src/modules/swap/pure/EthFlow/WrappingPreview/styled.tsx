@@ -45,7 +45,7 @@ export const WrappingPreviewContainer = styled.div`
 
     &:nth-of-type(2) {
       color: inherit;
-      background-color: var(${UI.COLOR_GREY});
+      background-color: var(${UI.COLOR_PAPER_DARKER});
       border: 1px solid ${({ theme }) => theme.grey1};
       border-radius: 0 16px 16px 0;
     }
@@ -65,7 +65,7 @@ export const WrappingPreviewContainer = styled.div`
     bottom: 0;
     right: 0;
     margin: auto;
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     stroke: var(${UI.COLOR_TEXT});
     width: 32px;
     height: 32px;

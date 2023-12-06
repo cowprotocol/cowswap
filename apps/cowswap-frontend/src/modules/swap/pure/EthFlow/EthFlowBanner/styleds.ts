@@ -8,7 +8,7 @@ export const BannerWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  background-color: ${({ theme }) => transparentize(theme.text3, 0.8)};
+  background-color: var(${UI.COLOR_PRIMARY});
   border-radius: 16px;
   padding: 14px;
   margin: 10px 0 0;

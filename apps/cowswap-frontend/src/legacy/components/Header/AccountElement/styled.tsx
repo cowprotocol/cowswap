@@ -33,7 +33,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
   border-radius: 21px;
   border: 2px solid transparent;
-  transition: border 0.2s ease-in-out;
+  transition: border 0.1s ease-in-out;
   pointer-events: auto;
   width: auto;
 

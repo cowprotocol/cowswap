@@ -161,6 +161,7 @@ export const ModalHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   padding: 0 0 16px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -186,7 +187,7 @@ export const ModalContent = styled.div`
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 12px;
 `
 

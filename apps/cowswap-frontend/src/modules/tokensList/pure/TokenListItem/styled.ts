@@ -22,7 +22,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   padding: 10px 20px;
   margin-bottom: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
 
   &:last-child {
     margin-bottom: 0;
@@ -30,7 +30,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
 
   &:hover {
     background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY_OPACITY_25})`};
-    color: var(${UI.COLOR_BUTTON_TEXT});
+    color: inherit;
   }
 
   ${({ $isVirtual }) =>

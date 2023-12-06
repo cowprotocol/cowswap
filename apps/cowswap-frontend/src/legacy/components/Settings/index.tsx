@@ -71,7 +71,7 @@ const Settings = styled(SettingsMod)`
     width: var(--size);
     color: inherit;
     opacity: 0.6;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -79,7 +79,7 @@ const Settings = styled(SettingsMod)`
 
     > path,
     > circle {
-      transition: stroke 0.2s ease-in-out;
+      transition: stroke 0.1s ease-in-out;
     }
   }
 

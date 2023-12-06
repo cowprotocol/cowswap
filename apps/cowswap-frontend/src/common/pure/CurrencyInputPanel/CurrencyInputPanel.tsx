@@ -152,8 +152,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             {balance && !disabled && (
               <styledEl.BalanceText>
-                <Trans>Balance</Trans>:{' '}
-                <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} opacitySymbol />
+                <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
                 {showSetMax && balance.greaterThan(0) && (
                   <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
                 )}

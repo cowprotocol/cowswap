@@ -30,7 +30,7 @@ const StyledMenuList = styled(MenuList)`
   display: flex;
   flex-flow: column wrap;
   gap: 10px;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out;
 `
 
 const StyledMenuButton = styled(MenuButton)`
@@ -55,7 +55,7 @@ const StyledMenuItem = styled(MenuItem)`
   font-size: 16px;
   color: inherit;
   opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 
   &:hover {
     opacity: 1;

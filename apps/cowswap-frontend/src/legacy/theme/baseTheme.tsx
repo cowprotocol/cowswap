@@ -275,7 +275,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
     },
     iconGradientBorder: css`
-      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.bg2} 360grad);
+      background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
     `,
     header: {
       border: 'none',
@@ -408,10 +408,10 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.primary, 0.4) : darken(theme.primary, 0.1)};
     ${UI.COLOR_PRIMARY_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.primary)};
-    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.8)};
-    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.7)};
+    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.2)};
+    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.5)};
     ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
-    ${UI.COLOR_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.primary, 0.25)};
+    ${UI.COLOR_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.primary, 0.75)};
 
     ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary}; // for now we use the same color as primary
 
@@ -421,7 +421,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PAPER_DARKER}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
-      theme.darkMode ? darken(theme.paper, 0.3) : darken(theme.paper, 0.15)};
+      theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
 
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
@@ -441,35 +441,36 @@ export const UniThemedGlobalStyle = css`
 
     ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>
-      getContrastText(
-        theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.05),
-        transparentize(theme.text, 0.5)
-      )};
+      getContrastText(theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05), theme.text)};
 
     ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
     ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => transparentize(theme.success, 0.85)};
-    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.success)};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.success, 0.15) : darken(theme.success, 0.2))};
 
     ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
     ${UI.COLOR_INFO_BG}: ${({ theme }) => transparentize(theme.info, 0.85)};
-    ${UI.COLOR_INFO_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.info)};
+    ${UI.COLOR_INFO_TEXT}: ${({ theme }) =>
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.info, 0.15) : darken(theme.info, 0.2))};
 
     ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
     ${UI.COLOR_ALERT_BG}: ${({ theme }) => transparentize(theme.alert, 0.85)};
-    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.alert)};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) =>
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.alert, 0.15) : darken(theme.alert, 0.2))};
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
-    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.warning)};
+    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.warning, 0.15) : darken(theme.warning, 0.2))};
 
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
-    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) => getContrastText(theme.paper, theme.danger)};
-
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.danger, 0.15) : darken(theme.danger, 0.2))};
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
-    ${UI.COLOR_GREY}: ${({ theme }) => theme.grey1};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => theme.grey1};
     ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity

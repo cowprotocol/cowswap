@@ -37,7 +37,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
 
 export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
   background: ${({ isChildOrder }) => (isChildOrder ? transparentize(0.91, `var(${UI.COLOR_TEXT})`) : 'transparent')};
-  transition: background 0.15s ease-in-out;
+  transition: background 0.1s ease-in-out;
   display: grid;
 
   &:hover {

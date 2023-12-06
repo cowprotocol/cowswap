@@ -97,6 +97,7 @@ export const Wrapper = styled.div`
     line-height: 1.2;
     margin: 24px auto 4px;
     font-weight: 300;
+    color: inherit;
   }
 
   > strong {

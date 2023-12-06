@@ -16,5 +16,5 @@ export const MenuBadge = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.2px;
   font-weight: 600;
-  transition: color 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out;
 `

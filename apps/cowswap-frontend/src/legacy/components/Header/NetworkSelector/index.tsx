@@ -92,7 +92,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   border-radius: 21px;
   border: 2px solid transparent;
   padding: 6px;
-  transition: border 0.2s ease-in-out;
+  transition: border 0.1s ease-in-out;
   background: transparent;
 
   > img {

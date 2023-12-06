@@ -40,6 +40,7 @@ export const Content = styled.div`
   font-size: 16px;
   margin: 0 0 28px;
   display: block;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     p > a {
@@ -53,7 +54,7 @@ export const Content = styled.div`
   }
 
   > h2 > b {
-    color: ${({ theme }) => theme.text3};
+    color: inherit;
   }
 
   > h3 {
@@ -138,7 +139,7 @@ export const BackToTopStyle = css`
   #back-to-top {
     border: 1px solid transparent;
     background: var(${UI.COLOR_PRIMARY});
-    color: ${({ theme }) => theme.white};
+    color: var(${UI.COLOR_BUTTON_TEXT});
     font-size: 18px;
     font-weight: 600;
     border: none;
@@ -147,7 +148,7 @@ export const BackToTopStyle = css`
     position: relative;
     min-height: 58px;
     padding: 16px;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
     cursor: pointer;
 
     &:focus,
@@ -172,7 +173,7 @@ export const GdocsListStyle = css`
   ol {
     margin: 24px 0;
     padding: 12px 48px;
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     border-radius: 12px;
 
     > li {

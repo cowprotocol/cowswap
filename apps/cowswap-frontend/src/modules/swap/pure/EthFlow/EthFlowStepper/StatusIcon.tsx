@@ -44,7 +44,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
       : status === 'success'
       ? transparentize(theme.success, 0.9)
       : 'transparent'};
-  transition: box-shadow 0.15s ease-in-out, background 0.15s ease-in-out, border 0.15s ease-in-out;
+  transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out, border 0.1s ease-in-out;
   position: relative;
 
   // 'PENDING' STATE only animation

@@ -184,7 +184,7 @@ export const AuxInformationContainer = styled.div<{
   disabled?: boolean
   showAux?: boolean
 }>`
-  border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg2)};
+  border: 1px solid ${({ hideInput }) => (hideInput ? ' transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
   background-color: var(${UI.COLOR_PAPER});
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
 
@@ -204,10 +204,10 @@ export const AuxInformationContainer = styled.div<{
 
   margin: ${({ margin = '0 auto' }) => margin};
   border-radius: 0 0 15px 15px;
-  border: 2px solid ${({ theme }) => theme.grey1};
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
 
   &:hover {
-    border: 2px solid ${({ theme }) => theme.grey1};
+    border: 2px solid var(${UI.COLOR_PAPER_DARKER});
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

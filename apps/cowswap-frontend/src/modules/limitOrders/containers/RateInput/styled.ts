@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 10px;
@@ -40,7 +41,7 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
 
   &:disabled {
     cursor: default;
@@ -148,7 +149,7 @@ export const EstimatedRate = styled.div`
   // TODO: Make the question helper icon transparent through a prop instead
   > b svg {
     opacity: 0.7;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 
     &:hover {
       opacity: 1;

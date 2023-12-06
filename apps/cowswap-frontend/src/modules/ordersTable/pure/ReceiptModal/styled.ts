@@ -70,7 +70,7 @@ export const Field = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   width: 100%;
   font-size: 13px;
 
@@ -93,7 +93,7 @@ export const CurrencyField = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 16px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   width: 100%;
   border-radius: 16px;
   margin: 0 0 10px;

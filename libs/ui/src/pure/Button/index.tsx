@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react'
 
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
@@ -46,7 +46,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:hover {
-    background: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+    background: ${`var(${UI.COLOR_PRIMARY_DARKER})`};
   }
 
   &:disabled {
@@ -187,10 +187,6 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
   &:active {
     background: ${`var(${UI.COLOR_DANGER})`};
     color: ${`var(${UI.COLOR_DANGER_TEXT})`};
-  }
-
-  &:hover {
-    background: ${({ theme }) => darken(0.08, theme.red1)};
   }
 `
 

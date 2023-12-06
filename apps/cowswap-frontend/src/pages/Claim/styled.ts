@@ -161,7 +161,7 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
@@ -943,7 +943,7 @@ export const FooterNavButtons = styled.div`
   ${ButtonSecondary} {
     margin: 24px auto 0;
     color: var(--colorgrey);
-    transition: color 0.2s ease-in-out;
+    transition: color 0.1s ease-in-out;
 
     &:hover {
       color: ${({ theme }) => theme.primary1};
@@ -1756,7 +1756,7 @@ export const BannerExplainer = styled.div`
   position: relative;
   overflow: hidden;
   border: 4px solid transparent;
-  transition: border 0.2s ease-in-out;
+  transition: border 0.1s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 24px;

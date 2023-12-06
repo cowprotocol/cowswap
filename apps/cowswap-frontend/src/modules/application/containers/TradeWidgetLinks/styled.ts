@@ -33,7 +33,7 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   padding: ${({ type }) => (!type || type === 'default' ? '0' : '4px 6px')};
   letter-spacing: 0.2px;
   font-weight: 600;
-  transition: color 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out;
   margin: 0;
 
   a & {
@@ -54,7 +54,7 @@ export const Link = styled(NavLink)`
   gap: 4px;
   font-weight: inherit;
   line-height: 1;
-  transition: color 0.15s ease-in-out, fill 0.15s ease-in-out;
+  transition: color 0.1s ease-in-out, fill 0.1s ease-in-out;
 
   &:hover {
     color: inherit;
@@ -98,7 +98,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '7px' : '5px 10px')};
     background: transparent;
-    transition: background 0.2s ease-in-out;
+    transition: background 0.1s ease-in-out;
     color: inherit;
 
     &:hover {
