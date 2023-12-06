@@ -1,3 +1,4 @@
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -26,7 +27,7 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (input.permitInfo) input.swapConfirmManager.requestPermitSignature()
+    if (isSupportedPermitInfo(input.permitInfo)) input.swapConfirmManager.requestPermitSignature()
 
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,

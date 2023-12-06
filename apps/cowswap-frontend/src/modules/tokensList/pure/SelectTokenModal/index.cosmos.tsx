@@ -1,9 +1,8 @@
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { getRandomInt } from '@cowprotocol/common-utils'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
-
-import { TokenAmounts } from 'modules/tokens'
 
 import { allTokensMock, favouriteTokensMock } from '../../mocks'
 
@@ -20,14 +19,8 @@ const unsupportedTokens = {}
 
 const selectedToken = favouriteTokensMock[0].address
 
-const balances = allTokensMock.reduce<TokenAmounts>((acc, token) => {
-  acc[token.address] = {
-    value: CurrencyAmount.fromRawAmount(token, getRandomInt(20_000, 120_000_000) * 10 ** token.decimals),
-    loading: false,
-    syncing: false,
-    valid: true,
-    error: false,
-  }
+const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
+  acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) * 10 ** token.decimals)
 
   return acc
 }, {})
@@ -37,8 +30,10 @@ const defaultProps: SelectTokenModalProps = {
   unsupportedTokens,
   allTokens: allTokensMock,
   favouriteTokens: favouriteTokensMock,
-  balances,
-  balancesLoading: false,
+  balancesState: {
+    values: balances,
+    isLoading: false,
+  },
   selectedToken,
   onSelectToken() {
     console.log('onSelectToken')

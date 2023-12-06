@@ -1,3 +1,4 @@
+// TODO: remove this once permitInfo contains token names
 export function fixTokenName(tokenName: string): string {
   // TODO: this is ugly and I'm not happy with it either
   // It'll probably go away when the tokens overhaul is implemented

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -30,7 +32,6 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -87,8 +88,25 @@ export function SwapWidget() {
     address: currenciesIds.INPUT,
   })
 
-  const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
-  const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
+  const inputToken = useMemo(() => {
+    if (!currencies.INPUT) return currencies.INPUT
+
+    if (currencies.INPUT.isNative) return NATIVE_CURRENCY_BUY_TOKEN[chainId]
+
+    return TokenWithLogo.fromToken(currencies.INPUT)
+  }, [chainId, currencies.INPUT])
+
+  const outputToken = useMemo(() => {
+    if (!currencies.OUTPUT) return currencies.OUTPUT
+
+    if (currencies.OUTPUT.isNative) return NATIVE_CURRENCY_BUY_TOKEN[chainId]
+
+    return TokenWithLogo.fromToken(currencies.OUTPUT)
+  }, [chainId, currencies.OUTPUT])
+
+  const inputCurrencyBalance = useCurrencyAmountBalance(inputToken) || null
+  const outputCurrencyBalance = useCurrencyAmountBalance(outputToken) || null
+
   const isSellTrade = independentField === Field.INPUT
 
   const {
@@ -126,8 +144,17 @@ export function SwapWidget() {
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
+  // Hide the price impact warning when there is priceImpact value or when it's loading
+  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
+  const hideUnknownImpactWarning =
+    isFractionFalsy(parsedAmounts.INPUT) ||
+    isFractionFalsy(parsedAmounts.OUTPUT) ||
+    !!priceImpactParams.priceImpact ||
+    priceImpactParams.loading
+
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
-  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
+  const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
+  const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 
   const openNativeWrapModal = () => setOpenNativeWrapModal(true)
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
@@ -185,14 +212,6 @@ export function SwapWidget() {
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
-
-  // Hide the price impact warning when there is priceImpact value or when it's loading
-  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
-  const hideUnknownImpactWarning =
-    isFractionFalsy(parsedAmounts.INPUT) ||
-    isFractionFalsy(parsedAmounts.OUTPUT) ||
-    !!priceImpactParams.priceImpact ||
-    priceImpactParams.loading
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,

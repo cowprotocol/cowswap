@@ -1,5 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { PERMIT_SIGNER } from '@cowprotocol/permit-utils'
+import { PERMIT_SIGNER, isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import * as Sentry from '@sentry/browser'
@@ -60,7 +60,7 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (permitInfo) beforePermit()
+    if (isSupportedPermitInfo(permitInfo)) beforePermit()
 
     postOrderParams.appData = await handlePermit({
       permitInfo,
