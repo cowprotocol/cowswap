@@ -5,8 +5,8 @@ import { UI } from 'common/constants/theme'
 export const MenuBadge = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 5px;
-  margin-left: 5px;
+  padding: 3px 5px;
+  margin: 0 0 0 5px;
   background: var(${UI.COLOR_ALERT2_BG});
   color: var(${UI.COLOR_ALERT2_TEXT});
   border: 0;

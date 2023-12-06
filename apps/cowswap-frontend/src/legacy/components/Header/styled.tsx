@@ -336,6 +336,12 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
         height: 10px;
       }
     `};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      > button > svg {
+        order: 3;
+      }
+    `};
   }
 
   ${MenuContent} {

@@ -20,8 +20,8 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { useAppData, useUploadAppData } from 'modules/appData'
 import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
@@ -82,13 +82,24 @@ interface BaseFlowContextSetup {
   dispatch: AppDispatch
 }
 
+export function useSwapAmountsWithSlippage(): [
+  CurrencyAmount<Currency> | undefined,
+  CurrencyAmount<Currency> | undefined
+] {
+  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
+
+  const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+
+  return [INPUT, OUTPUT]
+}
+
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { provider } = useWeb3React()
   const { account, chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
+  const { v2Trade: trade } = useDerivedSwapInfo()
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -104,10 +115,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
 
-  const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
-    trade,
-    allowedSlippage
-  )
+  const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
   const sellTokenContract = useTokenContract(getAddress(inputAmountWithSlippage?.currency) || undefined, true)
 
   const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
