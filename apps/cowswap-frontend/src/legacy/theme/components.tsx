@@ -54,8 +54,9 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
   text-decoration: none;
   background: none;
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text3)};
+  color: inherit;
   font-weight: 500;
+  opacity: ${({ disabled }) => (disabled ? 0.7 : 1)};
 
   :hover {
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
@@ -97,7 +98,7 @@ export const TrashIcon = styled(Trash)`
   height: 16px;
   width: 18px;
   margin-left: 10px;
-  stroke: ${({ theme }) => theme.text3};
+  stroke: currentColor;
 
   cursor: pointer;
   align-items: center;

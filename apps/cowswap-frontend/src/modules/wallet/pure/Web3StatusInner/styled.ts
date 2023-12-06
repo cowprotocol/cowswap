@@ -19,8 +19,6 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
 `
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
-  color: inherit;
-
   > svg {
     display: ${({ theme }) => (theme.isInjectedWidgetMode ? '' : 'none')};
   }

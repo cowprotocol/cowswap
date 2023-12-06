@@ -154,7 +154,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     colorScrollbar: css`
       // Firefox only
-      scrollbar-color: ${`var(${UI.COLOR_PAPER_DARKEST})`} ${`var(${UI.COLOR_PAPER_DARKER})`};
+      scrollbar-color: ${`var(${UI.COLOR_PAPER_DARKEST})`};
+      ${`var(${UI.COLOR_PAPER_DARKER})`};
       scroll-behavior: smooth;
 
       // Webkit browsers only

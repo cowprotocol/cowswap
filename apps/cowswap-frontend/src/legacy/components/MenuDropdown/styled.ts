@@ -51,9 +51,9 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.6)};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   background: var(${UI.COLOR_PAPER});
-  box-shadow: ${({ theme }) => theme.boxShadow2};
+  box-shadow: var(${UI.BOX_SHADOW});
   padding: 32px;
   gap: 62px;
   margin: 6px 0 0;

@@ -13,7 +13,7 @@ import { LinkStyledButton } from 'legacy/theme'
 // MOD imports
 export const CopyIcon = styled(LinkStyledButton)`
   --iconSize: var(${UI.ICON_SIZE_NORMAL});
-  color: ${({ theme }) => theme.text3};
+  color: inherit;
   flex-shrink: 0;
   display: flex;
   align-items: center;

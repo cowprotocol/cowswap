@@ -42,9 +42,8 @@ const FlyoutMenu = styled.div`
 const FlyoutMenuContents = styled.div`
   align-items: flex-start;
   background-color: var(${UI.COLOR_PAPER});
-  border: 1px solid ${({ theme }) => theme.bg0};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  box-shadow: var(${UI.BOX_SHADOW});
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -53,7 +52,6 @@ const FlyoutMenuContents = styled.div`
   min-width: 175px;
   z-index: 99;
   padding: 16px;
-  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.6)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
       top: 50px;

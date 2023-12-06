@@ -46,11 +46,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.text3};
+  color: var(${UI.COLOR_TEXT});
 
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text3};
+    color: var(${UI.COLOR_PRIMARY_PAPER});
   }
 `
 
@@ -63,12 +63,12 @@ const linkMixin = css`
   margin: 0;
   padding: 0;
   line-height: 1;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: inherit;
   display: flex;
   align-items: center;
   text-decoration: underline;
   text-decoration-color: transparent;
-  transition: text-decoration-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
       font-size: 15px;
@@ -338,6 +338,7 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
   align-items: flex-end;
   margin: auto 0 0;
   align-content: ${({ content }) => content || 'unset'};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -372,7 +373,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
   gap: 3px 12px;
   width: 100%;
   font-size: 14px;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     gap: 12px;
