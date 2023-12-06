@@ -29,7 +29,10 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+import { useSwapSettings } from './useSwapSettings'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
+
+import { SwapSettingsState } from '../state/swapSettingsAtom'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -80,6 +83,7 @@ interface BaseFlowContextSetup {
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
+  swapSettings: SwapSettingsState
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -114,6 +118,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const swapConfirmManager = useSwapConfirmManager()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
+  const swapSettings = useSwapSettings()
 
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
   const sellTokenContract = useTokenContract(getAddress(inputAmountWithSlippage?.currency) || undefined, true)
@@ -143,6 +148,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     closeModals,
     addOrderCallback,
     dispatch,
+    swapSettings,
   }
 }
 
@@ -189,6 +195,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     dispatch,
     flowType,
     sellTokenContract,
+    swapSettings,
   } = baseProps
 
   if (
@@ -247,7 +254,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     recipientAddressOrName,
     signer: provider.getSigner(),
     allowsOffchainSigning,
-    partiallyFillable: false, // SWAP orders are always fill or kill - for now
+    partiallyFillable: swapSettings.partiallyFillable,
     appData,
     quoteId: trade.quoteId,
   }

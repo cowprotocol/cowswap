@@ -23,9 +23,11 @@ export interface UserState {
   userDarkMode: boolean | null // the user's choice for dark mode or light mode
   userLocale: SupportedLocale | null
 
+  // TODO: move to swapSettingsAtom
   userExpertMode: boolean
 
   // TODO: mod, shouldn't be here
+  // TODO: move to swapSettingsAtom
   recipientToggleVisible: boolean
 
   userClientSideRouter: boolean // whether routes should be calculated with the client side router only
@@ -34,6 +36,7 @@ export interface UserState {
   userHideClosedPositions: boolean
 
   // user defined slippage tolerance in bips, used in all txns
+  // TODO: move to swapSettingsAtom
   userSlippageTolerance: number | 'auto'
   userSlippageToleranceHasBeenMigratedToAuto: boolean // temporary flag for migration status
 

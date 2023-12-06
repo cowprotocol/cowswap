@@ -95,7 +95,16 @@ export const MenuFlyout = styled.span`
   user-select: none;
 `
 
-export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
+/**
+ * TODO: refactor the component, make it similar to modules/limit-orders/pure/Settings
+ */
+export default function SettingsTab({
+  className,
+  placeholderSlippage,
+  SettingsButton,
+  partiallyFillable,
+  setPartiallyFillable,
+}: SettingsTabProp) {
   const node = useRef<HTMLDivElement>()
   const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
@@ -203,6 +212,34 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                 id="toggle-recipient-mode-button"
                 isActive={recipientToggleVisible}
                 toggle={toggleRecipientVisibility}
+              />
+            </RowBetween>
+
+            <RowBetween>
+              <RowFixed>
+                <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
+                  <Trans>Enable Partial Executions</Trans>
+                </ThemedText.Black>
+                <QuestionHelper
+                  bgColor={theme.grey1}
+                  color={theme.text1}
+                  text={
+                    <>
+                      Allow you to chose whether your orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
+                      <br />
+                      <br />
+                      <i>Fill or kill</i> orders will either be filled fully or not at all.
+                      <br />
+                      <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
+                      the full amount.
+                    </>
+                  }
+                />
+              </RowFixed>
+              <Toggle
+                id="toggle-partial-fill-button"
+                isActive={partiallyFillable}
+                toggle={() => setPartiallyFillable(!partiallyFillable)}
               />
             </RowBetween>
           </AutoColumn>

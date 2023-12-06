@@ -127,6 +127,8 @@ export interface SettingsButtonProps {
 export interface SettingsTabProp extends WithClassName {
   SettingsButton: React.FC<SettingsButtonProps>
   placeholderSlippage: Percent
+  partiallyFillable: boolean
+  setPartiallyFillable(value: boolean): void
 }
 
 function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {

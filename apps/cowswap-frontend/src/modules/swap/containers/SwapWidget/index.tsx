@@ -42,6 +42,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import { useSwapSettings } from '../../hooks/useSwapSettings'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
@@ -50,6 +51,7 @@ import {
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
+import { useUpdateSwapSettings } from '../../hooks/useUpdateSwapSettings'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
   SwapButtonState.ApproveAndSwap,
@@ -66,6 +68,8 @@ export function SwapWidget() {
     currenciesIds,
     v2Trade: trade,
   } = useDerivedSwapInfo()
+  const swapSettings = useSwapSettings()
+  const updateSwapSettings = useUpdateSwapSettings()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -235,7 +239,13 @@ export function SwapWidget() {
   }
 
   const slots = {
-    settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+    settingsWidget: (
+      <SettingsTab
+        placeholderSlippage={allowedSlippage}
+        partiallyFillable={swapSettings.partiallyFillable}
+        setPartiallyFillable={(value) => updateSwapSettings({ partiallyFillable: value })}
+      />
+    ),
     bottomContent: (
       <>
         <TradeRates {...tradeRatesProps} />
