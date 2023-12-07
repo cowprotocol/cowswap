@@ -175,12 +175,7 @@ export function OrderRow({
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
-  /**
-   * TODO: I'm not sure about !hasValidPendingPermit
-   * Before the fix it was: hasValidPendingPermit === false
-   * In useCheckHasValidPendingPermit() we intentionally return undefined in cases when we don't know the permit status
-   */
-  const withAllowanceWarning = hasEnoughAllowance === false && !hasValidPendingPermit
+  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
