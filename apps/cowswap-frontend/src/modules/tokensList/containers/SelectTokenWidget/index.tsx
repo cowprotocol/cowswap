@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
 import { addListAnalytics } from '@cowprotocol/analytics'
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   ListState,
@@ -20,7 +21,6 @@ import { usePermitCompatibleTokens } from 'modules/permit'
 
 import { CowModal } from 'common/pure/Modal'
 
-import { useAllTokensBalances } from '../../hooks/useAllTokensBalances'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
@@ -49,7 +49,7 @@ export function SelectTokenWidget() {
   const favouriteTokens = useFavouriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
-  const [balances, balancesLoading] = useAllTokensBalances()
+  const balancesState = useTokensBalances()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
 
@@ -131,9 +131,8 @@ export function SelectTokenWidget() {
               selectedToken={selectedToken}
               allTokens={allTokens}
               favouriteTokens={favouriteTokens}
-              balances={balances}
+              balancesState={balancesState}
               permitCompatibleTokens={permitCompatibleTokens}
-              balancesLoading={balancesLoading}
               onSelectToken={onSelectToken}
               onInputPressEnter={onInputPressEnter}
               onDismiss={onDismiss}

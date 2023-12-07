@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
-import { useBlockNumber, useMachineTimeMs, useTheme } from '@cowprotocol/common-hooks'
+import { useBlockNumber, useIsOnline, useTheme } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
@@ -9,10 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
-import ms from 'ms.macro'
 import styled, { keyframes } from 'styled-components/macro'
 
-import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import { ThemedText } from 'legacy/theme'
 
@@ -157,25 +154,18 @@ const Wrapper = styled.div`
   }
 `
 
-const DEFAULT_MS_BEFORE_WARNING = ms`10m`
-const NETWORK_HEALTH_CHECK_MS = ms`10s`
-
 export function Polling() {
   const { chainId } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [isMounting, setIsMounting] = useState(false)
   const [isHover, setIsHover] = useState(false)
-  const machineTime = useMachineTimeMs(NETWORK_HEALTH_CHECK_MS)
-  const blockTime = useCurrentBlockTimestamp()
+  const isOnline = useIsOnline()
   const theme = useTheme()
 
   const ethGasPrice = useGasPrice()
   const priceGwei = ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined
 
-  const waitMsBeforeWarning =
-    (chainId ? getChainInfo(chainId)?.blockWaitMsBeforeWarning : DEFAULT_MS_BEFORE_WARNING) ?? DEFAULT_MS_BEFORE_WARNING
-
-  const warning = Boolean(!!blockTime && machineTime - blockTime.mul(1000).toNumber() > waitMsBeforeWarning)
+  const warning = !isOnline
 
   useEffect(
     () => {
