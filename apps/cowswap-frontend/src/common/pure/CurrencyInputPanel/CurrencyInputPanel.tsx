@@ -161,9 +161,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             )}
           </div>
           <div>
-            <styledEl.FiatAmountText>
-              <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
-            </styledEl.FiatAmountText>
+            {amount && (
+              <styledEl.FiatAmountText>
+                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
+              </styledEl.FiatAmountText>
+            )}
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
