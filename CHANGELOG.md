@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.51.1](https://github.com/cowprotocol/cowswap/compare/v1.51.0...v1.51.1) (2023-12-07)
+
+
+### Features
+
+* prettify token name displaying for Gnosis chain ([#3489](https://github.com/cowprotocol/cowswap/issues/3489)) ([ac18501](https://github.com/cowprotocol/cowswap/commit/ac185010afa685cbf76da998ba5dbcd2eeedef93))
+
+
+### Bug Fixes
+
+* **orders-table:** show not enough allowance warning only when needed ([#3487](https://github.com/cowprotocol/cowswap/issues/3487)) ([88e868c](https://github.com/cowprotocol/cowswap/commit/88e868c5745f0882fa5c1d301f47df74c4be06b6))
+* **trade:** don't display fiat value when there is no amount ([#3488](https://github.com/cowprotocol/cowswap/issues/3488)) ([df4b278](https://github.com/cowprotocol/cowswap/commit/df4b2781abe904b9eb70295cdd624a4f68ef944a))
+
 ## [1.51.0](https://github.com/cowprotocol/cowswap/compare/v1.50.2...v1.51.0) (2023-12-06)
 
 
