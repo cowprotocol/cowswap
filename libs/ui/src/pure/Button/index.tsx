@@ -1,5 +1,3 @@
-import { UI } from '@cowprotocol/ui'
-
 import { HTMLAttributes } from 'react'
 
 import { ChevronDown, Star } from 'react-feather'
@@ -7,7 +5,7 @@ import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize } from '../../enum'
+import { ButtonSize, UI } from '../../enum'
 
 import {
   // Import only the basic buttons
