@@ -14,6 +14,14 @@ import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
+/**
+ * Returns a list of emulated twap orders
+ *
+ * `tokenByAddress` is a map of all known tokens, it comes from `useTwapOrdersTokens()` hook
+ * `useTwapOrdersTokens()` fetches unkown tokens from blockchain and stores them in the store
+ * So, there might be a race condition when we have an order but haven't fetched its token yet
+ * Because of it, we wrap mapTwapOrderToStoreOrder() in try/catch and just don't add an order to the list
+ */
 export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
   const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
@@ -32,10 +40,10 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      const orderDetails = mapTwapOrderToStoreOrder(order, tokensByAddress)
-      if (orderDetails) {
-        acc.push(orderDetails)
-      }
+      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
+
+      if (storeOrder) acc.push(storeOrder)
+
       return acc
     }, [])
   }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])

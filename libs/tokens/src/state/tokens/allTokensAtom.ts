@@ -10,7 +10,7 @@ import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 export interface TokensByAddress {
-  [address: string]: TokenWithLogo
+  [address: string]: TokenWithLogo | undefined
 }
 
 export interface TokensBySymbol {
