@@ -1,6 +1,8 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
@@ -10,25 +12,30 @@ import {
   AccountIndexSelect,
   HardWareWallet,
   getWeb3ReactConnection,
+  useWalletInfo,
 } from '@cowprotocol/wallet'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
-
-import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 
 import { CowModal } from 'common/pure/Modal'
 
 import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './state'
 import * as styledEl from './styled'
 
+const EMPTY_BALANCES = {}
+
 export function AccountSelectorModal() {
+  const { chainId } = useWalletInfo()
   const { isOpen } = useAtomValue(accountSelectorModalAtom)
   const closeModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const { connector } = useWeb3React()
   const addSnackbar = useAddSnackbar()
+
+  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
 
   const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
 
@@ -39,7 +46,23 @@ export function AccountSelectorModal() {
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 
-  const balances = useNativeCurrencyBalances(accountsList || undefined, true)
+  const nativeTokensBalances = useNativeTokensBalances(accountsList || undefined)
+
+  const balances = useMemo(() => {
+    if (!nativeTokensBalances) return EMPTY_BALANCES
+
+    return Object.keys(nativeTokensBalances).reduce<{ [account: string]: CurrencyAmount<Currency> | undefined }>(
+      (acc, key) => {
+        const balance = nativeTokensBalances[key]
+
+        if (balance) {
+          acc[key] = CurrencyAmount.fromRawAmount(nativeToken, balance.toString())
+        }
+        return acc
+      },
+      {}
+    )
+  }, [nativeTokensBalances, nativeToken])
 
   const loadMoreAccounts = useCallback(async () => {
     if (!accountsLoader) return

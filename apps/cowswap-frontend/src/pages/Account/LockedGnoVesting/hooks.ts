@@ -14,10 +14,10 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import useSWR from 'swr'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'
-
-import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { fetchClaim } from './claimData'
 
@@ -59,16 +59,22 @@ export const useCowFromLockedGnoBalances = () => {
     .divide(LOCKED_GNO_VESTING_DURATION)
 
   const tokenDistro = useTokenDistroContract()
-  const { result, loading } = useSingleCallResult(allocated.greaterThan(0) ? tokenDistro : null, 'balances', [
-    account ?? undefined,
-  ])
-  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, result ? result.claimed.toString() : 0), [result])
+
+  const { data, isLoading } = useSWR(['useCowFromLockedGnoBalances', account, allocated, tokenDistro], async () => {
+    if (account && tokenDistro && allocated.greaterThan(0)) {
+      return tokenDistro.balances(account)
+    }
+
+    return null
+  })
+
+  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
 
   return {
     allocated,
     vested,
     claimed,
-    loading,
+    loading: isLoading,
   }
 }
 

@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { fetchTokenFromBlockchain, TokensByAddress, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { isTruthy } from '@cowprotocol/common-utils'
+import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -12,6 +13,7 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
   const allTokens = useTokensByAddressMap()
+  const addUserTokens = useAddUserToken()
 
   const getToken = useCallback(
     async (address: string) => {
@@ -42,10 +44,13 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
 
       const fetchedTokens = await _fetchTokens(tokensToFetch, getToken)
 
+      // Add fetched tokens to the user-added tokens store to avoid re-fetching them
+      addUserTokens(Object.values(fetchedTokens).filter(isTruthy))
+
       // Merge fetched tokens with what's currently loaded
       return { ...tokens, ...fetchedTokens }
     },
-    [chainId, getToken]
+    [chainId, getToken, addUserTokens]
   )
 }
 

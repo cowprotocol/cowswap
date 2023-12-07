@@ -9,7 +9,8 @@ import { CowModal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useTradeApproveCallback } from './useTradeApproveCallback'
-import { useTradeApproveState } from './useTradeApproveState'
+
+import { useApproveState } from '../../hooks/useApproveState'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -22,7 +23,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   const currency = amountToApprove.currency
 
-  const approvalState = useTradeApproveState(amountToApprove)
+  const approvalState = useApproveState(amountToApprove)
   const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
   const zeroApprove = useZeroApprove(amountToApprove.currency)

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/analytics'
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -12,7 +13,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
@@ -23,7 +23,6 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
 
-import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
@@ -177,25 +176,9 @@ export function useUnknownImpactWarning() {
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
   return {
-    impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
-      impactWarningAccepted,
-      isExpertMode,
-    }),
+    impactWarningAccepted: isExpertMode || impactWarningAccepted,
     setImpactWarningAccepted,
   }
-}
-
-function _computeUnknownPriceImpactAcceptedState({
-  impactWarningAccepted,
-  isExpertMode,
-}: {
-  impactWarningAccepted: boolean
-  priceImpactParams?: PriceImpact
-  isExpertMode: boolean
-}) {
-  if (isExpertMode || impactWarningAccepted) return true
-
-  return true
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -220,10 +203,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient ? recipientLookup.address : account) ?? null
 
-  const relevantTokenBalances = useCurrencyBalances(
-    account ?? undefined,
-    useMemo(() => [inputCurrency ?? undefined, outputCurrency ?? undefined], [inputCurrency, outputCurrency])
-  )
+  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency)
+  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = useMemo(
@@ -285,10 +266,10 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const currencyBalances = useMemo(
     () => ({
-      [Field.INPUT]: relevantTokenBalances[0],
-      [Field.OUTPUT]: relevantTokenBalances[1],
+      [Field.INPUT]: inputCurrencyBalance,
+      [Field.OUTPUT]: outputCurrencyBalance,
     }),
-    [relevantTokenBalances]
+    [inputCurrencyBalance, outputCurrencyBalance]
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled

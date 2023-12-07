@@ -1,17 +1,19 @@
 import { useMemo } from 'react'
 
+import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { getWrappedToken } from '@cowprotocol/common-utils'
+import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
+import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined
@@ -19,18 +21,23 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>, spender?: string): ApprovalState {
-  const { account } = useWalletInfo()
+export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): ApprovalState {
+  const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
-  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
-  const pendingApproval = useHasPendingApproval(token?.address, spender)
+  const tokenAddress = token?.address?.toLowerCase()
+  const allowances = useTokensAllowances()
+  const pendingApproval = useHasPendingApproval(tokenAddress, spender)
+
+  const currentAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
 
   const approvalStateBase = useSafeMemo(() => {
-    if (!amountToApprove || !spender || !currentAllowance) {
+    if (!amountToApprove || !currentAllowance) {
       return ApprovalState.UNKNOWN
     }
 
-    if (FractionUtils.gte(currentAllowance, amountToApprove)) {
+    const amountToApproveString = amountToApprove.quotient.toString()
+
+    if (currentAllowance.gte(amountToApproveString)) {
       return ApprovalState.APPROVED
     }
 
@@ -38,12 +45,12 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
       return ApprovalState.PENDING
     }
 
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if (currentAllowance.lt(amountToApproveString)) {
       return ApprovalState.NOT_APPROVED
     }
 
     return ApprovalState.APPROVED
-  }, [amountToApprove, currentAllowance, pendingApproval, spender])
+  }, [amountToApprove, currentAllowance, pendingApproval])
 
   return useAuxApprovalState(approvalStateBase, currentAllowance)
 }
@@ -55,12 +62,9 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
  *
  * Solution: we check the prev approval state and also check if the allowance has been updated
  */
-function useAuxApprovalState(
-  approvalStateBase: ApprovalState,
-  currentAllowance?: CurrencyAmount<Currency>
-): ApprovalState {
+function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance?: BigNumber): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
-  const currentAllowanceString = currentAllowance?.quotient.toString()
+  const currentAllowanceString = currentAllowance?.toHexString()
   const previousAllowanceString = usePrevious(currentAllowanceString)
   // Has allowance actually updated?
   const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString

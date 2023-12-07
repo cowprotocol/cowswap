@@ -84,8 +84,9 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       />
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
+          withoutAccepting={isExpertMode}
           isAccepted={impactWarningAccepted}
-          acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+          acceptCallback={() => setImpactWarningAccepted((state) => !state)}
         />
       )}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
