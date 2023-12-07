@@ -77,6 +77,8 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
           `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`
         )
       } else {
+        // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
+        // TODO: better to create a separate updater for caching.
         // Otherwise, we know it is permittable or not. Cache it.
         addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
       }
