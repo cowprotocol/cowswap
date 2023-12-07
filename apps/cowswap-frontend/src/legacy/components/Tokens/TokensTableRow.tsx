@@ -6,7 +6,7 @@ import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
-import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
+import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
@@ -184,7 +184,9 @@ export const TokensTableRow = ({
               <b>
                 <TokenSymbol token={tokenData} />
               </b>
-              <i>{tokenData.name}</i>
+              <i>
+                <TokenName token={tokenData} />
+              </i>
             </span>
           </TokenText>
         </Link>
