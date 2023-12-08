@@ -34,11 +34,17 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
     const permitCompatibleTokens: PermitCompatibleTokens = {}
 
     for (const address of Object.keys(preGeneratedPermitInfoRef.current)) {
-      permitCompatibleTokens[address.toLowerCase()] = isSupportedPermitInfo(preGeneratedPermitInfoRef.current[address])
+      const addressLowerCased = address.toLowerCase()
+
+      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(
+        preGeneratedPermitInfoRef.current[addressLowerCased]
+      )
     }
 
     for (const address of Object.keys(localPermitInfoRef.current)) {
-      permitCompatibleTokens[address.toLowerCase()] = isSupportedPermitInfo(localPermitInfoRef.current[address])
+      const addressLowerCased = address.toLowerCase()
+
+      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[addressLowerCased])
     }
 
     return permitCompatibleTokens
