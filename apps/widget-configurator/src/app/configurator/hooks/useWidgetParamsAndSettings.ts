@@ -62,8 +62,6 @@ export function useWidgetParamsAndSettings(
       },
     }
 
-    console.log('params', params)
-
     return params
   }, [provider, configuratorState])
 }
