@@ -51,11 +51,11 @@ import {
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(theme.text3, 0.8)};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0;
   position: relative;
   overflow: hidden;
-  background: ${({ theme }) => transparentize(theme.bg1, 0.99)};
+  background: var(${UI.COLOR_PAPER_OPACITY_99});
   backdrop-filter: blur(20px);
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
@@ -164,7 +164,7 @@ const OrdersExplainerBanner = styled.div`
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text3, 0.88)};
+  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   padding: 0 16px;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`

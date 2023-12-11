@@ -94,7 +94,7 @@ export const AmountItem = styled.div`
   }
 
   > span > span {
-    color: var(${UI.COLOR_TEXT_OPACITY_25});
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
 
@@ -127,7 +127,7 @@ export const CellElement = styled.div<{
     gap: 2px;
 
     > i {
-      opacity: 0.6;
+      opacity: 0.7;
     }
   `}
 

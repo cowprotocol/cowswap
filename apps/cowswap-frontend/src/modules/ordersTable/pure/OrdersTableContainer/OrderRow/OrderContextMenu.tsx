@@ -16,6 +16,12 @@ export const ContextMenuButton = styled(MenuButton)`
   display: flex;
   height: 24px;
   color: inherit;
+  opacity: 0.5;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 
   > svg {
     height: 100%;

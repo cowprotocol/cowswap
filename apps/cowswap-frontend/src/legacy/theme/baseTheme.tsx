@@ -27,7 +27,7 @@ export function colors(darkMode: boolean): Colors {
     // swap.cow.fi specific overrides ======================
     paperCustom: darkMode ? '#0c264b' : '#FFFFFF',
     paperDarkerCustom: darkMode ? '#07162d' : '#ecf1f8',
-    paperDarkestCustom: darkMode ? darken('#07162d', 0.03) : darken('#ecf1f8', 0.05),
+    paperDarkestCustom: darkMode ? darken('#07162d', 0.05) : darken('#ecf1f8', 0.1),
     // =====================================================
 
     text: darkMode ? '#CAE9FF' : '#052B65',
@@ -418,6 +418,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_BACKGROUND}: ${({ theme }) => theme.background};
 
     ${UI.COLOR_PAPER}: ${({ theme }) => theme.paper};
+    ${UI.COLOR_PAPER_OPACITY_99}: ${({ theme }) => transparentize(theme.paper, 0.99)};
     ${UI.COLOR_PAPER_DARKER}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>

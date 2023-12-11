@@ -2,11 +2,12 @@ import { useContext } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
-import { darken, transparentize } from 'color2k'
+import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -53,8 +54,8 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
 const UnfillableLabel = styled.span`
   width: 100%;
   max-width: 90px;
-  background: ${({ theme }) => transparentize(theme.attention, 0.86)};
-  color: ${({ theme }) => darken(theme.attention, 0.15)};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
   position: relative;
   border-radius: 9px;
   display: flex;

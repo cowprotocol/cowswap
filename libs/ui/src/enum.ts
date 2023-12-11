@@ -21,6 +21,7 @@ export enum UI {
   COLOR_BACKGROUND = '--cow-color-background',
 
   COLOR_PAPER = '--cow-color-paper',
+  COLOR_PAPER_OPACITY_99 = '--cow-color-paper-opacity-99',
   COLOR_PAPER_DARKER = '--cow-color-paper-darker',
   COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
 

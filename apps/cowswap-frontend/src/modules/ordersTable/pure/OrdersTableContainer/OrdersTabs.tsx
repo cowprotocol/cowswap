@@ -13,7 +13,7 @@ const Tabs = styled.div`
   border-radius: 9px;
   overflow: hidden;
   margin: 0;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -24,7 +24,7 @@ const Tabs = styled.div`
 
 const TabButton = styled(Link)<{ active: string }>`
   display: inline-block;
-  background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_PAPER})` : 'transparent')};
   color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
@@ -40,8 +40,7 @@ const TabButton = styled(Link)<{ active: string }>`
   `};
 
   &:hover {
-    background: ${({ active }) =>
-      active === 'true' ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
+    background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKEST})`)};
     color: inherit;
   }
 `
