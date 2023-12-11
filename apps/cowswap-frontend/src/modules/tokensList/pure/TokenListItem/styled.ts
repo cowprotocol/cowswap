@@ -29,7 +29,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   }
 
   &:hover {
-    background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PRIMARY_OPACITY_25})`};
+    background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PAPER_DARKER})`};
     color: inherit;
   }
 

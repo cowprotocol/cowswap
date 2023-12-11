@@ -62,6 +62,10 @@ export enum UI {
 
   // ================================================================================
 
+  // Badge
+  COLOR_BADGE_YELLOW_BG = '--cow-color-badge-yellow-bg',
+  COLOR_BADGE_YELLOW_TEXT = '--cow-color-badge-yellow-text',
+
   // Colors
   COLOR_WHITE = '--cow-color-white',
   COLOR_BLUE = '--cow-color-blue',
@@ -69,7 +73,6 @@ export enum UI {
   COLOR_LIGHT_BLUE = '--cow-color-lightBlue',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
-  COLOR_YELLOW = '--cow-color-yellow',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',
   COLOR_GREEN = '--cow-color-green',
   COLOR_RED = '--cow-color-red',

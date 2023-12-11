@@ -21,10 +21,14 @@ export function colors(darkMode: boolean): Colors {
 
     // V3 colors ======================
     primary: darkMode ? '#0d5ed9' : '#052B65',
-
-    secondary: darkMode ? '#0d5ed9' : '#052B65',
     background: darkMode ? '#07162D' : '#ECF1F8',
     paper: darkMode ? '#0c264b' : '#FFFFFF',
+
+    // swap.cow.fi specific overrides ======================
+    paperCustom: darkMode ? '#0c264b' : '#FFFFFF',
+    paperDarkerCustom: darkMode ? '#07162d' : '#ecf1f8',
+    paperDarkestCustom: darkMode ? darken('#07162d', 0.03) : darken('#ecf1f8', 0.05),
+    // =====================================================
 
     text: darkMode ? '#CAE9FF' : '#052B65',
     secondaryText: darkMode ? '#86B2DC' : '#506B93',
@@ -115,8 +119,6 @@ export function colors(darkMode: boolean): Colors {
     tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
     tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
 
-    // banner styles
-    // info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
     errorText: '#b91515',
@@ -422,6 +424,23 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
 
+    ${UI.COLOR_PAPER}: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.paper : theme.paperCustom)};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.07 : 0.05)
+      } else {
+        return theme.paperDarkerCustom
+      }
+    }};
+
+    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.1 : 0.15)
+      } else {
+        return theme.paperDarkestCustom
+      }
+    }};
+
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
@@ -466,19 +485,22 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
     ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
       getContrastText(theme.paper, theme.darkMode ? lighten(theme.danger, 0.15) : darken(theme.danger, 0.2))};
+
+    // Badges
+    ${UI.COLOR_BADGE_YELLOW_BG}: ${({ theme }) => theme.alert2};
+    ${UI.COLOR_BADGE_YELLOW_TEXT}: ${({ theme }) => getContrastText(theme.alert2, darken(theme.alert2, 0.6))};
+
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
     ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity
-    ${UI.COLOR_YELLOW}: ${({ theme }) => theme.alert};
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
 
     // Base
-
     ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
