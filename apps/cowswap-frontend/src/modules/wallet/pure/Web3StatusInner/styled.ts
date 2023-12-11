@@ -40,7 +40,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       &:active,
       &:focus {
         opacity: 1 !important;
-        background: ${`var(${UI.COLOR_PAPER_DARKER}) !important`};
+        background: var(${UI.COLOR_PAPER_DARKER}) !important;
       }
 
       > svg {
