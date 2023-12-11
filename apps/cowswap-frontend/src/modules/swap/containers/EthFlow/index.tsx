@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -14,10 +15,10 @@ import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalConte
 import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
-import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
+import { useTradeApproveCallback } from 'common/containers/TradeApprove'
+import { useApproveState } from 'common/hooks/useApproveState'
 import { CowModal } from 'common/pure/Modal'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -40,11 +41,11 @@ function EthFlow({
   directSwapCallback,
   hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
-  const { account, chainId } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const isExpertMode = useIsExpertMode()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const approvalState = useTradeApproveState(nativeInput || null)
+  const approvalState = useApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
@@ -59,7 +60,10 @@ function EthFlow({
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })
-  const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
+
+  const nativeBalance = useCurrencyAmountBalance(native)
+  const wrappedBalance = useCurrencyAmountBalance(wrapped)
+
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
   const { balanceChecks } = useRemainingNativeTxsAndCosts({

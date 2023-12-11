@@ -8,11 +8,15 @@ import { priceImpactAtom } from '../state/priceImpactAtom'
 
 export function PriceImpactUpdater() {
   const updatePriceImpact = useSetAtom(priceImpactAtom)
-  const { isLoading, priceImpact } = useFiatValuePriceImpact()
+  const priceImpactState = useFiatValuePriceImpact()
 
   useSafeEffect(() => {
+    if (!priceImpactState) return
+
+    const { isLoading, priceImpact } = priceImpactState
+
     updatePriceImpact({ loading: isLoading, priceImpact })
-  }, [isLoading, updatePriceImpact, priceImpact])
+  }, [updatePriceImpact, priceImpactState])
 
   return null
 }

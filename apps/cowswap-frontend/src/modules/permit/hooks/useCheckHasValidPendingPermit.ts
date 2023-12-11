@@ -11,22 +11,35 @@ import { getAppDataHooks } from 'modules/appData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetPermitInfo } from './useGetPermitInfo'
+import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
 import { CheckHasValidPendingPermit } from '../types'
 
+/**
+ * TODO: there are some duplicated code between this and usePermitInfo.ts
+ */
 export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
   const getPermitInfo = useGetPermitInfo(chainId)
+  const { allPermitInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfo()
 
   return useCallback(
     async (order: ParsedOrder): Promise<boolean | undefined> => {
-      if (!provider) {
+      if (!provider || preGeneratedIsLoading) {
         // Missing required params, we can't tell
         return undefined
       }
 
-      const permitInfo = getPermitInfo(order.inputToken.address)
+      const tokenAddress = order.inputToken.address.toLowerCase()
+
+      const permitInfo = getPermitInfo(tokenAddress)
+      const preGeneratedPermitInfo = allPermitInfo[tokenAddress]
+
+      // If the token is not supported, we can say that there is no valid permit
+      if (preGeneratedPermitInfo?.type === 'unsupported') {
+        return false
+      }
 
       if (permitInfo === undefined) {
         // Missing permit info, we can't tell
@@ -35,7 +48,7 @@ export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
 
       return checkHasValidPendingPermit(order, provider, chainId, permitInfo)
     },
-    [chainId, getPermitInfo, provider]
+    [chainId, getPermitInfo, provider, preGeneratedIsLoading, allPermitInfo]
   )
 }
 

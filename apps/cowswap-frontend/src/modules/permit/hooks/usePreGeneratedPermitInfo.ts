@@ -12,7 +12,7 @@ import { PRE_GENERATED_PERMIT_URL } from '../const'
  * Caches result with SWR until a page refresh
  */
 export function usePreGeneratedPermitInfo(): {
-  allPermitInfo: Record<string, PermitInfo>
+  allPermitInfo: Record<string, PermitInfo | undefined>
   isLoading: boolean
 } {
   const { chainId } = useWalletInfo()
@@ -21,7 +21,7 @@ export function usePreGeneratedPermitInfo(): {
 
   const { data, isLoading } = useSWR(
     url,
-    (url: string): Promise<Record<string, PermitInfo>> =>
+    (url: string): Promise<Record<string, PermitInfo | undefined>> =>
       fetch(url)
         .then((r) => r.json())
         .then(migrateData),

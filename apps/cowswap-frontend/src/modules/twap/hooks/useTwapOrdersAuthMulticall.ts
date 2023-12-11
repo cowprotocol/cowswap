@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
-import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
+import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
+import ms from 'ms.macro'
 
 import { TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 
-const DEFAULT_LISTENER_OPTIONS: ListenerOptionsWithGas = { gasRequired: 185_000, blocksPerFetch: 5 }
+const MULTICALL_OPTIONS = {}
+const SWR_CONFIG = { refreshInterval: ms`30s` }
 
 export function useTwapOrdersAuthMulticall(
   safeAddress: string,
@@ -18,15 +19,21 @@ export function useTwapOrdersAuthMulticall(
     return ordersInfo.map(({ id }) => [safeAddress, id])
   }, [safeAddress, ordersInfo])
 
-  const results = useSingleContractMultipleData(composableCowContract, 'singleOrders', input, DEFAULT_LISTENER_OPTIONS)
+  const results = useSingleContractMultipleData<boolean>(
+    composableCowContract,
+    'singleOrders',
+    input,
+    MULTICALL_OPTIONS,
+    SWR_CONFIG
+  )
 
   return useMemo(() => {
-    const loadedResults = results.filter((result) => !result.loading && result.valid)
+    const loadedResults = results.data
 
-    if (loadedResults.length !== ordersInfo.length) return null
+    if (results.isLoading || !loadedResults || loadedResults.length !== ordersInfo.length) return null
 
     return ordersInfo.reduce((acc, val, index) => {
-      acc[val.id] = loadedResults[index].result?.[0]
+      acc[val.id] = loadedResults[index]
       return acc
     }, {} as TwapOrdersAuthResult)
   }, [ordersInfo, results])

@@ -1,17 +1,15 @@
 import { Atom, useAtomValue } from 'jotai'
 
+import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {
-  const { account } = useWalletInfo()
   const rawState = useAtomValue(stateAtom)
 
   const recipient = rawState.recipient
@@ -22,8 +20,9 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
   const inputCurrencyAmount = tryParseFractionalAmount(inputCurrency, rawState.inputCurrencyAmount)
   const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, rawState.outputCurrencyAmount)
-  const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
-  const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
+
+  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency) || null
+  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency) || null
 
   const {
     inputAmount: { value: inputCurrencyFiatAmount },

@@ -175,8 +175,9 @@ export function OrderRow({
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
 
+  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
-    (hasEnoughBalance === false || (hasEnoughAllowance === false && hasValidPendingPermit === false)) &&
+    (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const theme = useContext(ThemeContext)
@@ -185,6 +186,7 @@ export function OrderRow({
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
+
   // TODO: set the real value when API returns it
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
@@ -359,7 +361,7 @@ export function OrderRow({
                         {hasEnoughBalance === false && (
                           <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
                         )}
-                        {hasEnoughAllowance === false && hasValidPendingPermit === false && (
+                        {withAllowanceWarning && (
                           <AllowanceWarning
                             approve={() => orderActions.approveOrderToken(order.inputToken)}
                             symbol={inputTokenSymbol}

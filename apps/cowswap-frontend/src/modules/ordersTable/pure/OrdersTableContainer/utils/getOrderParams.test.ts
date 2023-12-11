@@ -1,30 +1,19 @@
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { BigNumber } from '@ethersproject/bignumber'
+
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import { getOrderParams } from './getOrderParams'
 
-import { BalancesAndAllowances } from '../../../../tokens'
 import { ordersMock } from '../orders.mock'
 
 describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]
   const BASE_BALANCES_AND_ALLOWANCES: BalancesAndAllowances = {
     balances: {
-      [BASE_ORDER.inputToken.address]: {
-        value: CurrencyAmount.fromRawAmount(BASE_ORDER.inputToken, BASE_ORDER.sellAmount),
-        loading: false,
-        syncing: false,
-        valid: true,
-        error: false,
-      },
+      [BASE_ORDER.inputToken.address.toLowerCase()]: BigNumber.from(BASE_ORDER.sellAmount),
     },
     allowances: {
-      [BASE_ORDER.inputToken.address]: {
-        value: CurrencyAmount.fromRawAmount(BASE_ORDER.inputToken, BASE_ORDER.sellAmount),
-        loading: false,
-        syncing: false,
-        valid: true,
-        error: false,
-      },
+      [BASE_ORDER.inputToken.address.toLowerCase()]: BigNumber.from(BASE_ORDER.sellAmount),
     },
     isLoading: false,
   }
@@ -78,10 +67,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [order.inputToken.address]: {
-            ...BASE_BALANCES_AND_ALLOWANCES.balances[order.inputToken.address],
-            value: CurrencyAmount.fromRawAmount(order.inputToken, String(+order.sellAmount * 0.00051)),
-          },
+          [order.inputToken.address.toLowerCase()]: BigNumber.from(String(+order.sellAmount * 0.00051)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -92,10 +78,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [order.inputToken.address]: {
-            ...BASE_BALANCES_AND_ALLOWANCES.balances[order.inputToken.address],
-            value: CurrencyAmount.fromRawAmount(order.inputToken, String(+order.sellAmount * 0.00049)),
-          },
+          [order.inputToken.address.toLowerCase()]: BigNumber.from(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -107,10 +90,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address]: {
-            ...BASE_BALANCES_AND_ALLOWANCES.allowances[order.inputToken.address],
-            value: CurrencyAmount.fromRawAmount(order.inputToken, String(+order.sellAmount * 0.00051)),
-          },
+          [order.inputToken.address.toLowerCase()]: BigNumber.from(String(+order.sellAmount * 0.00051)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -121,10 +101,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address]: {
-            ...BASE_BALANCES_AND_ALLOWANCES.allowances[order.inputToken.address],
-            value: CurrencyAmount.fromRawAmount(order.inputToken, String(+order.sellAmount * 0.00049)),
-          },
+          [order.inputToken.address.toLowerCase()]: BigNumber.from(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
