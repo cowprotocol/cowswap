@@ -102,8 +102,8 @@ const InvertIcon = styled.div`
   &:hover {
     &::before {
       opacity: 1;
-      background: ${`var(${UI.COLOR_PRIMARY})`};
-      color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+      background: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_BUTTON_TEXT});
     }
 
     > svg {

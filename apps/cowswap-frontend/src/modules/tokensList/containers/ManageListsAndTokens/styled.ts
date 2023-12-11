@@ -26,7 +26,7 @@ export const TabsContainer = styled.div`
 
 export const InputError = styled.div`
   margin-top: 20px;
-  color: ${`var(${UI.COLOR_DANGER})`};
+  color: var(${UI.COLOR_DANGER});
   font-weight: 500;
 `
 
@@ -49,7 +49,7 @@ export const PrimaryInputBox = styled.div`
 export const PrimaryInput = styled.input`
   width: 100%;
   border: none;
-  background: ${`var(${UI.COLOR_PAPER_DARKER})`};
+  background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;

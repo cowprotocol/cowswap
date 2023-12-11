@@ -27,13 +27,13 @@ const Body = styled.div`
 `
 
 const Text = styled.div`
-  color: ${`var(${UI.COLOR_DANGER})`};
+  color: var(${UI.COLOR_DANGER});
   font-weight: 500;
   font-size: 16px;
 `
 
 const AlertIcon = styled(AlertTriangle)`
-  color: ${`var(${UI.COLOR_DANGER})`};
+  color: var(${UI.COLOR_DANGER});
   stroke-width: 1.5;
   margin-bottom: 15px;
 `

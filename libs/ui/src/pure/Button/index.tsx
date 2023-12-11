@@ -21,8 +21,8 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  background: ${`var(${UI.COLOR_PRIMARY})`};
-  color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 18px;
   font-weight: 600;
   border: none;
@@ -39,14 +39,14 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:active {
     box-shadow: none;
     transform: none;
-    color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
-    background: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+    color: var(${UI.COLOR_BUTTON_TEXT});
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 
   &:disabled {
     background-image: none;
-    background-color: ${`var(${UI.COLOR_PAPER_DARKER})`};
-    color: ${`var(${UI.COLOR_BUTTON_TEXT_DISABLED})`};
+    background-color: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_BUTTON_TEXT_DISABLED});
     border: 0;
     cursor: auto;
     animation: none;
@@ -172,15 +172,15 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
-  background: ${`var(${UI.COLOR_DANGER})`};
-  color: ${`var(${UI.COLOR_DANGER_TEXT})`};
+  background: var(${UI.COLOR_DANGER});
+  color: var(${UI.COLOR_DANGER_TEXT});
   transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
-    background: ${`var(${UI.COLOR_DANGER})`};
-    color: ${`var(${UI.COLOR_DANGER_TEXT})`};
+    background: var(${UI.COLOR_DANGER});
+    color: var(${UI.COLOR_DANGER_TEXT});
   }
 `
 
@@ -189,8 +189,8 @@ export const ButtonEmpty = styled(ButtonEmptyMod)`
 `
 
 export const FancyButton = styled.button`
-  background: ${`var(${UI.COLOR_PRIMARY})`};
-  color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   align-items: center;
   height: 2rem;
   border-radius: 36px;

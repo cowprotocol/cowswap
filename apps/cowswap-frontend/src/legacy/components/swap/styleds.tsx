@@ -101,7 +101,7 @@ const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
   width: 100%;
   padding: 3rem 1.25rem 1rem 1rem;
   margin-top: -2rem;
-  color: ${`var(${UI.COLOR_DANGER})`};
+  color: var(${UI.COLOR_DANGER});
   z-index: -1;
   p {
     padding: 0;

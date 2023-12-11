@@ -8,8 +8,8 @@ import styled, { css } from 'styled-components/macro'
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
 export const Web3StatusError = styled(Web3StatusGeneric)`
-  background-color: ${`var(${UI.COLOR_DANGER})`};
-  border: 1px solid ${`var(${UI.COLOR_DANGER})`};
+  background-color: var(${UI.COLOR_DANGER});
+  border: 1px solid var(${UI.COLOR_DANGER});
   color: ${({ theme }) => theme.white};
   font-weight: 500;
   :hover,

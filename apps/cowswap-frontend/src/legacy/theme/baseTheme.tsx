@@ -152,20 +152,20 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     colorScrollbar: css`
       // Firefox only
-      scrollbar-color: ${`var(${UI.COLOR_PAPER_DARKEST})`};
+      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST});
       ${`var(${UI.COLOR_PAPER_DARKER})`};
       scroll-behavior: smooth;
 
       // Webkit browsers only
       &::-webkit-scrollbar {
-        background: ${`var(${UI.COLOR_PAPER_DARKER})`};
+        background: var(${UI.COLOR_PAPER_DARKER});
         width: 8px;
         height: 8px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: ${`var(${UI.COLOR_PAPER_DARKEST})`};
-        border: 3px solid ${`var(${UI.COLOR_PAPER_DARKEST})`};
+        background: var(${UI.COLOR_PAPER_DARKEST});
+        border: 3px solid var(${UI.COLOR_PAPER_DARKEST});
         border-radius: 14px;
         background-clip: padding-box;
       }
@@ -514,7 +514,7 @@ export const UniThemedGlobalStyle = css`
   body {
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
     scrollbar-color: ${({ theme }) => theme.colorScrollbar};
-    color: ${`var(${UI.COLOR_TEXT_PAPER})`};
+    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `
 

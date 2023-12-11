@@ -11,8 +11,8 @@ const Instruction = styled.p`
   margin-bottom: 10px;
 `
 const Input = styled.input`
-  border: 1px solid ${`var(${UI.COLOR_BORDER})`};
-  background: ${`var(${UI.COLOR_PAPER_DARKER})`};
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
   width: 100%;
   margin: 10px 0;
@@ -24,7 +24,7 @@ const Input = styled.input`
   font-weight: bold;
 
   &:focus {
-    border: 1px solid ${`var(${UI.COLOR_PRIMARY})`};
+    border: 1px solid var(${UI.COLOR_PRIMARY});
   }
 `
 

@@ -296,8 +296,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     &:hover {
       color: inherit;
-      background: ${`var(${UI.COLOR_PRIMARY})`};
-      color: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+      background: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_BUTTON_TEXT});
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
         background: transparent;
