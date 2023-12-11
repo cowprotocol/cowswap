@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  // Context,
-  ReactNode,
-  useCallback,
-  // useContext
-} from 'react'
+import { ChangeEvent, ReactNode, useCallback } from 'react'
 
 import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
@@ -14,10 +8,9 @@ import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
-import styled from 'styled-components/macro' // { DefaultTheme, ThemeContext }
+import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-// import { ThemedText } from 'legacy/theme'
 
 import { autofocus } from 'common/utils/autofocus'
 
@@ -98,13 +91,10 @@ export function AddressInputPanel({
   className?: string
   label?: ReactNode
   placeholder?: string
-  // the typed string value
   value: string
-  // triggers whenever the typed value changes
   onChange: (value: string) => void
 }) {
   const { chainId } = useWalletInfo()
-  // const theme = useContext(ThemeContext as Context<DefaultTheme>)
 
   const { address, loading, name } = useENS(value)
 
