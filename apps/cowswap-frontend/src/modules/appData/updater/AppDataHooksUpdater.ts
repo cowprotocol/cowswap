@@ -10,8 +10,6 @@ import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 
-// const count = 0
-
 function usePermitDataIfNotAllowance(): PermitHookData | undefined {
   const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
 
