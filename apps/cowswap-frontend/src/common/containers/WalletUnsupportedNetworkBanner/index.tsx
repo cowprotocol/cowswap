@@ -1,5 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
@@ -23,19 +24,21 @@ const Wrapper = styled.div`
   top: 100px;
 
   display: flex;
-  background: ${({ theme }) => theme.alert};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
+  backdrop-filter: blur(10px);
   z-index: 3;
   width: 360px;
   align-items: center;
   gap: 15px;
   padding: 15px;
   border-radius: 10px;
-  border: 2px solid rgb(7, 22, 45);
-  box-shadow: rgb(7, 22, 45) 2px 2px 0;
+  border: 1px solid var(${UI.COLOR_DANGER});
+  box-shadow: var(${UI.BOX_SHADOW});
 `
 
 const StyledAlertCircle = styled(AlertCircle)`
-  color: ${({ theme }) => theme.red3};
+  color: var(${UI.COLOR_DANGER});
 `
 
 export function WalletUnsupportedNetworkBanner() {

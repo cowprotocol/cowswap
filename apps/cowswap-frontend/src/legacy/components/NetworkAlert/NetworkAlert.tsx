@@ -7,7 +7,6 @@ import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -21,7 +20,7 @@ const L2Icon = styled.img`
 `
 
 const BodyText = styled.div`
-  color: ${({ color }) => color};
+  color: ${({ color }) => (color ? color : 'inherit')};
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -30,12 +29,12 @@ const BodyText = styled.div`
 
   :hover {
     text-decoration: underline;
-    color: ${({ theme }) => theme.primary1};
   }
 `
 const RootWrapper = styled.div`
   position: relative;
   margin-top: 16px;
+  color: inherit;
 `
 
 const SHOULD_SHOW_ALERT = {
@@ -51,7 +50,7 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
 `
 
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
-  background: ${({ theme }) => transparentize(theme.bg1, 0.4)}; // MOD
+  background: var(${UI.COLOR_PAPER_DARKER});
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out; // MOD
   border-radius: 20px;
   display: flex;
@@ -59,6 +58,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
   overflow: hidden;
   position: relative;
   width: 100%;
+  color: inherit;
 
   :before {
     background-image: url(${({ logoUrl }) => logoUrl});
@@ -88,7 +88,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
     ${BodyText},
     ${StyledArrowUpRight} {
       color: inherit;
-      stroke: var(${UI.COLOR_TEXT});
+      stroke: var(${UI.COLOR_TEXT_PAPER});
       transform: rotate(0);
     }
 
@@ -106,7 +106,7 @@ const Header = styled.h2`
 const LinkOutToBridge = styled(ExternalLink)`
   align-items: center;
   border-radius: 8px;
-  color: white;
+  color: inherit;
   display: flex;
   font-size: 16px;
   justify-content: space-between;

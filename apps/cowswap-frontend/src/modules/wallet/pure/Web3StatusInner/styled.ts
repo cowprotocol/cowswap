@@ -120,7 +120,8 @@ export const Wrapper = styled.div`
     width: 100%;
 
     > div > svg > path {
-      stroke: ${({ theme }) => theme.text3};
+      stroke: currentColor;
+      opacity: 0.5;
     }
   }
 `

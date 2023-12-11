@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
@@ -6,11 +6,11 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { UI } from '@cowprotocol/ui'
 import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
-import { ThemeContext } from 'styled-components/macro'
 
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -185,7 +185,6 @@ export function OrderRow({
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
-  const theme = useContext(ThemeContext)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
@@ -358,7 +357,6 @@ export function OrderRow({
               {withWarning && (
                 <styledEl.WarningIndicator>
                   <styledEl.StyledQuestionHelper
-                    bgColor={theme.alert}
                     placement="bottom"
                     Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
                     text={

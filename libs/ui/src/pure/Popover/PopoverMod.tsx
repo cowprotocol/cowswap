@@ -11,7 +11,6 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  color: red;
 `
 
 const ReferenceElement = styled.div`
@@ -22,6 +21,7 @@ export const Arrow = styled.div`
   width: 8px;
   height: 8px;
   z-index: 9998;
+  color: inherit;
 
   ::before {
     position: absolute;

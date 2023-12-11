@@ -141,8 +141,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       background-image: linear-gradient(
         90deg,
         transparent 0,
-        ${transparentize(colorsTheme.bg1, 0.7)} 20%,
-        ${lighten(transparentize(colorsTheme.bg1, 0.6), 0.07)} 60%,
+        var(${UI.COLOR_PAPER}) 20%,
+        var(${UI.COLOR_PAPER_DARKER}) 60%,
         transparent
       );
       animation: shimmer 2s infinite;
@@ -484,7 +484,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
     ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
-      getContrastText(theme.paper, theme.darkMode ? lighten(theme.danger, 0.15) : darken(theme.danger, 0.2))};
+      getContrastText(theme.paper, theme.darkMode ? lighten(theme.danger, 0.2) : darken(theme.danger, 0.2))};
 
     // Badges
     ${UI.COLOR_BADGE_YELLOW_BG}: ${({ theme }) => theme.alert2};

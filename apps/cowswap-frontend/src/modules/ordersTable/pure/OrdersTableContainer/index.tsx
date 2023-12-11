@@ -61,10 +61,11 @@ const Content = styled.div`
       top: 0;
       left: 0;
       background: var(${UI.COLOR_PRIMARY});
-      opacity: 0.08;
+      opacity: 0.16;
       width: var(--size);
       height: var(--size);
       border-radius: var(--size);
+      z-index: -1;
     }
 
     &:hover {

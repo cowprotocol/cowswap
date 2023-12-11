@@ -40,7 +40,7 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
           </MouseoverTooltip>
         </PriceImpactWrapper>
       ) : null}
-      {priceImpactLoading && <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />}
+      {priceImpactLoading && <Loader size="14px" />}
     </span>
   )
 }

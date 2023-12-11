@@ -21,6 +21,7 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   padding: 6px 3px;
   z-index: 10;
   font-size: 13px;
+  backdrop-filter: blur(20px);
 
   > div div {
     font-size: inherit;
@@ -33,8 +34,8 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
 
 const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`
   ::before {
-    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER})`};
-    border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+    border: 1px solid var(${UI.COLOR_PAPER});
   }
 `
 

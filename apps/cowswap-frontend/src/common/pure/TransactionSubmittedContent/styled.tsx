@@ -12,9 +12,9 @@ export const ButtonCustom = styled.button`
   align-items: center;
   border-radius: 16px;
   min-height: 52px;
-  border: 1px solid ${({ theme }) => theme.border2};
-  color: inherit;
-  background: transparent;
+  border: 0;
+  color: var(${UI.COLOR_BUTTON_TEXT});
+  background: var(${UI.COLOR_PRIMARY});
   outline: 0;
   padding: 8px 16px;
   margin: 16px 0 0;
@@ -25,7 +25,7 @@ export const ButtonCustom = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: ${({ theme }) => theme.border2};
+    background: var(${UI.COLOR_PRIMARY_DARKER});
   }
 
   > a {
