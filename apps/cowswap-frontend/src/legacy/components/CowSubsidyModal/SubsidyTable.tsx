@@ -61,7 +61,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   > td {
     font-size: 15px;
     color: inherit;
-    transition: background 0.3s ease-in-out;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   > td:first-child {
@@ -79,7 +79,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     `
     background: ${theme.bg2};
     color: ${theme.white};
-    transition: background 0.1s ease-in-out;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &::before {
       position: absolute;

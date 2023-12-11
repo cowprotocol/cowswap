@@ -105,7 +105,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
 
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -143,7 +143,7 @@ const StyledCloseIcon = styled(X)`
   height: 24px;
   width: 24px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;

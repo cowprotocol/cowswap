@@ -13,7 +13,7 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   > path {
     stroke: currentColor;
     stroke-width: 2px;
-    transition: stroke 0.1s ease-in-out;
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -36,7 +36,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 6px;
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   max-width: 190px;
 
   &:hover {
@@ -51,7 +51,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   }
 
   &:hover ${ArrowDown} > path {
-    transition: stroke 0.1s ease-in-out;
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
     stroke: ${({ $stubbed }) => ($stubbed ? 'currentColor' : `var(${UI.COLOR_BUTTON_TEXT})`)};
   }
 `
@@ -61,7 +61,7 @@ export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   font-weight: 500;
   text-align: left;
   color: inherit;
-  transition: color 0.1s ease-in-out;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 16px;

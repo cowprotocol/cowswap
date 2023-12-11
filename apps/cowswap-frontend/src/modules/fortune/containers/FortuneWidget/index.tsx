@@ -80,7 +80,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
     width: var(--size);
     height: var(--size);
-    transition: transform 0.3s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover::after {
@@ -123,7 +123,7 @@ const FortuneBanner = styled.div`
   z-index: 501;
   background: var(${UI.COLOR_PAPER_DARKER});
   padding: 0;
-  animation: open 0.3s ease-in-out forwards;
+  animation: open var(${UI.ANIMATION_DURATION}) ease-in-out forwards;
   overflow: hidden;
 
   @keyframes open {
@@ -271,7 +271,7 @@ const StyledCloseIcon = styled(X)`
   height: var(--size);
   width: var(--size);
   opacity: 0.4;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

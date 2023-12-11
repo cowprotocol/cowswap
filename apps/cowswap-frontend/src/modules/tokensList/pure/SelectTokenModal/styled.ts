@@ -79,7 +79,7 @@ export const ActionButton = styled.button`
   font-weight: 500;
   color: inherit;
   opacity: 0.6;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;

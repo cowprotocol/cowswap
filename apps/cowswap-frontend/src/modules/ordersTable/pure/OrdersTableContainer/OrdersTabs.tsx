@@ -33,7 +33,7 @@ const TabButton = styled(Link)<{ active: string }>`
   border: 0;
   outline: none;
   cursor: pointer;
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     text-align: center;

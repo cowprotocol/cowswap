@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 
 export const LabelText = styled.span`
   color: inherit;
-  transition: color 0.1s ease-in-out;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
 export const StyledSVG = styled(SVG)`
@@ -22,7 +22,7 @@ export const StyledSVG = styled(SVG)`
 
   > path {
     fill: var(${UI.COLOR_TEXT});
-    transition: fill 0.1s ease-in-out;
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &.expanded {
@@ -76,7 +76,7 @@ export const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
   border-radius: 8px;
   font-weight: 400;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

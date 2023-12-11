@@ -30,7 +30,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   border-radius: 16px;
   position: relative;
   min-height: 58px;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
   /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
@@ -136,7 +136,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
-  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  transition: box-shadow var(${UI.ANIMATION_DURATION}) ease-in-out, transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   > div {
     font-size: inherit;
@@ -174,7 +174,7 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: var(${UI.COLOR_DANGER});
   color: var(${UI.COLOR_DANGER_TEXT});
-  transition: background 0.15s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:focus,
   &:hover,
@@ -215,7 +215,7 @@ const HoverIcon = styled.div`
   margin: 0 8px 0 0;
   opacity: 0.75;
   cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;

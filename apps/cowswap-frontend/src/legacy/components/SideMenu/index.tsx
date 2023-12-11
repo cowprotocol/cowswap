@@ -50,7 +50,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     text-decoration: none;
     color: inherit;
     opacity: 0.65;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: block;
 
     ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`

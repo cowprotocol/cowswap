@@ -145,7 +145,7 @@ export const Wrapper = styled.div`
   ${WalletAction} {
     color: inherit;
     opacity: 0.85;
-    transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: auto;
     padding: 0;
     border: 0;
@@ -565,7 +565,7 @@ export const SurplusCardWrapper = styled.div`
 
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -607,7 +607,7 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
   border-radius: 16px;
   align-items: center;
   justify-content: center;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ isHardWareWallet }) =>
     isHardWareWallet &&
@@ -627,7 +627,7 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
       border-top: 4px solid var(${UI.COLOR_TEXT});
       margin-left: 8px;
       opacity: 0.5;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
 
     &:hover {

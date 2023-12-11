@@ -96,7 +96,7 @@ export function SurplusCard() {
 
     ${InfoCard} > div > span > i {
       opacity: 0.6;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {
         opacity: 1;
@@ -131,7 +131,7 @@ export function SurplusCard() {
 
     ${QuestionWrapper} {
       opacity: 0.5;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {
         opacity: 1;

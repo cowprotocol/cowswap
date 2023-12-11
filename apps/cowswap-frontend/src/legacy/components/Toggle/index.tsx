@@ -68,7 +68,7 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   ${ToggleElement} {
     color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
-    transition: background 0.1s ease-in-out;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
     background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
 
     &:hover {

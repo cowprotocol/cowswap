@@ -1,3 +1,4 @@
+import { UI } from '@cowprotocol/ui'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
@@ -24,7 +25,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     color: inherit;
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:first-child {
       opacity: 0.7;

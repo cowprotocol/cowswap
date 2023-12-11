@@ -148,7 +148,7 @@ export const Row = styled.div`
   justify-content: flex-start;
   align-items: center;
   background: transparent;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: auto;
@@ -194,7 +194,7 @@ export const Cell = styled.div`
 
   > a {
     text-decoration-color: transparent;
-    transition: text-decoration-color 0.1s ease-in-out;
+    transition: text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
     overflow: hidden;
     display: flex;
     color: var(${UI.COLOR_TEXT});
@@ -227,7 +227,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   padding: 0;
   width: auto;
   font-weight: 400;
-  transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
   color: ${({ color }) => color || 'inherit'};
   white-space: nowrap;
@@ -290,7 +290,7 @@ export const Table = styled.div`
   border: 0;
   padding: 0;
   background: transparent;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

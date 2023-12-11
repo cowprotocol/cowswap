@@ -22,7 +22,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   padding: 10px 20px;
   margin-bottom: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:last-child {
     margin-bottom: 0;

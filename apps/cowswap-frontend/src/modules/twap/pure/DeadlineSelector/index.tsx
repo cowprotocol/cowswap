@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -30,7 +31,7 @@ const StyledTradeSelect = styled(TradeSelect)`
     color: inherit;
     stroke: currentColor;
     opacity: 0.7;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover > svg {

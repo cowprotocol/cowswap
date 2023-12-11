@@ -48,7 +48,7 @@ export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   height: 28px;
   width: 28px;
 
@@ -66,7 +66,7 @@ export const WalletIcon = styled.div`
   width: var(--icon-size);
   height: var(--icon-size);
   border-radius: var(--icon-size);
-  animation: pulser 6s 0.1s ease-in-out infinite;
+  animation: pulser 6s var(${UI.ANIMATION_DURATION}) ease-in-out infinite;
   position: relative;
 
   @keyframes pulser {
@@ -155,7 +155,7 @@ export const ButtonCustom = styled.button`
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   &:hover {

@@ -115,7 +115,7 @@ export const Progress = styled.div<ProgressProps>`
     left: 0;
     top: 0;
     height: inherit;
-    transition: width 0.3s ease-in-out, background 0.1s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
     background: ${({ status, theme }) =>
       status === 'error' ? `var(${UI.COLOR_DANGER})` : status === 'success' ? `var(${UI.COLOR_SUCCESS})` : theme.text3};

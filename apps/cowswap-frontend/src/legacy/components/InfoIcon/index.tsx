@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { MouseoverTooltipContent, TooltipContainer } from '@cowprotocol/ui'
 
 import { Info, HelpCircle } from 'react-feather'
@@ -14,7 +15,7 @@ const StyledIcon = styled.div`
     stroke: currentColor;
     line-height: 0;
     vertical-align: middle;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     :hover {
       opacity: 1;

@@ -38,7 +38,7 @@ export const MenuFlyout = styled.ol`
     }
 
     > svg.expanded {
-      transition: transform 0.3s ease-in-out;
+      transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
       transform: rotate(180deg);
     }
   }
@@ -110,7 +110,7 @@ export const MenuSection = styled.div`
     padding: 0;
     color: inherit;
     opacity: 0.8;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     > svg,
     > img {

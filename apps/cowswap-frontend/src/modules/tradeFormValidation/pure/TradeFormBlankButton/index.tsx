@@ -19,7 +19,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   cursor: pointer;
   min-height: 58px;
   text-align: center;
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   border: none;
   outline: none;
 

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -109,7 +109,7 @@ const Wrapper = styled.div`
     a {
       color: inherit;
       opacity: 0.5;
-      transition: opacity 0.3s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
       text-decoration: none;
 
       &:hover {

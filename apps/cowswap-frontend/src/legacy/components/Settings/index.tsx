@@ -71,7 +71,7 @@ const Settings = styled(SettingsMod)`
     width: var(--size);
     color: inherit;
     opacity: 0.6;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -79,7 +79,7 @@ const Settings = styled(SettingsMod)`
 
     > path,
     > circle {
-      transition: stroke 0.1s ease-in-out;
+      transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
   }
 

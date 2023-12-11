@@ -1,4 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
@@ -20,7 +21,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   border-radius: 21px;
   pointer-events: auto;
-  transition: width 0.1s ease-in-out, border 0.1s ease-in-out;
+  transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, border var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

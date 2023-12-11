@@ -52,7 +52,7 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
 
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
   background: ${({ theme }) => transparentize(theme.bg1, 0.4)}; // MOD
-  transition: color 0.1s ease-in-out, background 0.1s ease-in-out; // MOD
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out; // MOD
   border-radius: 20px;
   display: flex;
   flex-direction: row;
@@ -78,7 +78,8 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
     color: inherit;
     stroke: currentColor;
     text-decoration: none;
-    transition: transform 0.1s ease-in-out, stroke 0.1s ease-in-out, color 0.1s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out, stroke var(${UI.ANIMATION_DURATION}) ease-in-out,
+      color var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover {

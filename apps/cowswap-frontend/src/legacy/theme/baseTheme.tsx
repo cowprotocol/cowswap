@@ -509,6 +509,9 @@ export const UniThemedGlobalStyle = css`
     ${UI.FONT_SIZE_LARGE}: 18px;
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
+
+    // Animation
+    ${UI.ANIMATION_DURATION}: 0.1s;
   }
 
   body {

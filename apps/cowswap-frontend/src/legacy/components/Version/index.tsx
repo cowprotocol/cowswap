@@ -2,6 +2,7 @@ import { CODE_LINK, GP_SETTLEMENT_CONTRACT_ADDRESS, GP_VAULT_RELAYER } from '@co
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -74,7 +75,7 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   > span {
     display: inline-block;
     transform: rotate(0);
-    transition: transform 0.3s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover > span {
@@ -95,7 +96,7 @@ const VersionsLinkWrapper = styled.span`
   justify-content: center;
   align-items: center;
   opacity: 0.5;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     opacity: 1;

@@ -136,7 +136,7 @@ const StyledExternalLink = styled(ExternalLink)`
   gap: 0.6rem;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease-in-out;
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     text-decoration: none;

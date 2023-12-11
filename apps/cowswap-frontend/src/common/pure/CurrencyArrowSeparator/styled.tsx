@@ -14,7 +14,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
   width: ${({ withRecipient }) => (withRecipient ? '26px' : '100%')};
   height: 26px;
   justify-content: ${({ withRecipient }) => (withRecipient ? 'intial' : 'center')};
-  transition: width 0.3s ease-in-out;
+  transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ hasSeparatorLine, withRecipient }) =>
     hasSeparatorLine &&

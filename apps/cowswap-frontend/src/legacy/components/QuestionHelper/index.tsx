@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
+import { UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -23,7 +24,7 @@ export const QuestionWrapper = styled.div`
   border-radius: 16px;
   background-color: transparent;
   opacity: 0.5;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
 
   > svg {

@@ -23,7 +23,7 @@ export const CloseIcon = styled.div`
   top: 14px;
   opacity: 0.6;
   cursor: pointer;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;

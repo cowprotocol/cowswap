@@ -43,7 +43,7 @@ export const StyledMenuButton = styled.button`
   border-radius: 0.5rem;
   height: var(${UI.ICON_SIZE_NORMAL});
   opacity: 0.6;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
 
   &:hover,

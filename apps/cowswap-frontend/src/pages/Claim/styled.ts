@@ -943,7 +943,7 @@ export const FooterNavButtons = styled.div`
   ${ButtonSecondary} {
     margin: 24px auto 0;
     color: var(--colorgrey);
-    transition: color 0.1s ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       color: ${({ theme }) => theme.primary1};
@@ -1375,7 +1375,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     left: 0;
     top: 0;
     bottom: 0;
-    transition: width 0.3s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
   }
 
@@ -1387,7 +1387,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     z-index: 1;
     height: 100%;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
-    transition: width 0.3s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: 0;
     padding: 1px 4px 0 4px;
     min-width: max-content;
@@ -1656,7 +1656,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
   font-size: 21px;
   justify-content: space-between;
   align-items: center;
-  transition: border 0.3s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   border: 2px solid transparent;
   color: ${({ type, theme }) =>
     type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.text1};
@@ -1756,7 +1756,7 @@ export const BannerExplainer = styled.div`
   position: relative;
   overflow: hidden;
   border: 4px solid transparent;
-  transition: border 0.1s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 24px;

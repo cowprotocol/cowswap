@@ -116,7 +116,7 @@ export const SettingsIcon = styled(SettingsIconRaw)`
   width: 20px;
   color: inherit;
   opacity: 0.6;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -124,7 +124,7 @@ export const SettingsIcon = styled(SettingsIconRaw)`
 
   > path,
   > circle {
-    transition: stroke 0.1s ease-in-out;
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
     stroke: currentColor;
   }
 `

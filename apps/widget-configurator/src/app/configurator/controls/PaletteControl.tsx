@@ -21,10 +21,8 @@ export function PaletteControl({
   resetColorPalette: () => void
 }) {
   const { mode } = useContext(ColorModeContext)
-  // const [colorPalette, setColorPalette, resetColorPalette] = useColorPalette(mode)
 
   const handleColorChange = (colorKey: keyof ColorPalette) => (newValue: string) => {
-    console.log('handleColorChange', colorKey, newValue)
     setColorPalette({ ...colorPalette, [colorKey]: newValue })
   }
 
@@ -57,8 +55,6 @@ export function PaletteControl({
   )
 
   const [expanded, setExpanded] = React.useState(false)
-
-  console.log('PaletteControl', { colorPalette, defaultPalette })
 
   return (
     <>

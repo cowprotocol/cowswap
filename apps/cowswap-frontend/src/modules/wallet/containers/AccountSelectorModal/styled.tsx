@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 export const CloseIcon = styled(Close)`
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
   width: 24px;
   height: 24px;

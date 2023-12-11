@@ -68,7 +68,7 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 20px 30px;
   align-items: center;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   background: var(${UI.COLOR_PAPER});
   position: sticky;
@@ -104,7 +104,7 @@ const Header = styled.div`
 
 const CloseIcon = styled(Close)`
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
   width: 24px;
   height: 24px;

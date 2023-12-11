@@ -64,7 +64,7 @@ export const CurrencyTopLabel = styled.div`
   margin: auto 0;
   color: inherit;
   opacity: 0.7;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -110,7 +110,7 @@ export const BalanceText = styled.span`
   display: flex;
   align-items: center;
   opacity: 0.7;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
 
   &:hover {
@@ -127,7 +127,7 @@ export const FiatAmountText = styled.span`
     font-size: 13px;
     opacity: 0.7;
     color: inherit;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -149,7 +149,7 @@ export const SetMaxBtn = styled.button`
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

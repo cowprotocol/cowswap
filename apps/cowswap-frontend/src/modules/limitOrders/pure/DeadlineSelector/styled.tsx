@@ -39,7 +39,7 @@ export const Label = styled.span`
   width: 100%;
   color: inherit;
   opacity: 0.7;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -195,7 +195,7 @@ export const CloseIcon = styled(X)`
   height: 28px;
   width: 28px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;

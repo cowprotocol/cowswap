@@ -31,7 +31,7 @@ export const Row = styled.div`
 
     &:first-child > span {
       color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
-      transition: color 0.1s ease-in-out;
+      transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {
         color: inherit;
@@ -68,7 +68,7 @@ export const Discount = styled.span`
   color: inherit;
   border-radius: 5px;
   font-weight: 400;
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

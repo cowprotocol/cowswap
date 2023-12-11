@@ -21,7 +21,7 @@ const DarkSpan = styled.span`
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 5px;
   color: inherit;
-  transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background-color: var(${UI.COLOR_PRIMARY});

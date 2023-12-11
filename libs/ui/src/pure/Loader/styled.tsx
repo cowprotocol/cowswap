@@ -1,3 +1,4 @@
+import { UI } from '@cowprotocol/ui'
 import styled, { css, keyframes } from 'styled-components'
 
 export const loadingAnimation = keyframes`
@@ -31,5 +32,5 @@ export const LoadingRows = styled.div`
 export const loadingOpacityMixin = css<{ $loading: boolean }>`
   filter: ${({ $loading }) => ($loading ? 'grayscale(1)' : 'none')};
   opacity: ${({ $loading }) => ($loading ? '0.4' : '1')};
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
