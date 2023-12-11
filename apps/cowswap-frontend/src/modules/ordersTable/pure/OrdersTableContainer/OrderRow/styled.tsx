@@ -94,7 +94,7 @@ export const AmountItem = styled.div`
   }
 
   > span > span {
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: var(${UI.COLOR_TEXT_OPACITY_25});
   }
 `
 

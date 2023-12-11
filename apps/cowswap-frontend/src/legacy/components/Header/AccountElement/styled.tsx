@@ -42,7 +42,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

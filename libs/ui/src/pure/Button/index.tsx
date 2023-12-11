@@ -119,10 +119,6 @@ export const ButtonSecondary = styled(ButtonPrimary)`
   box-shadow: none;
   padding: 6px 8px;
   transform: none;
-
-  &:hover,
-  &:focus {
-  }
 `
 
 export const ButtonOutlined = styled(ButtonOutlinedMod)`
@@ -199,12 +195,6 @@ export const FancyButton = styled.button`
   min-width: 3.5rem;
   border: 0;
   outline: none;
-
-  :hover {
-  }
-  :focus {
-    /* border: 1px solid ${({ theme }) => theme.primary1}; */
-  }
 `
 
 const HoverIcon = styled.div`

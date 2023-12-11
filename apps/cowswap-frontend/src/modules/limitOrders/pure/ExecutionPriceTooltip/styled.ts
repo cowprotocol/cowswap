@@ -25,7 +25,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   > i {
     font-size: 12px;
     font-style: normal;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: var(${UI.COLOR_TEXT_OPACITY_25});
     max-width: 60%;
     min-width: 50%;
     font-weight: 300;

@@ -107,7 +107,7 @@ const InvertIcon = styled.div`
     }
 
     > svg {
-      stroke: ${`var(${UI.COLOR_BUTTON_TEXT})`};
+      stroke: var(${UI.COLOR_BUTTON_TEXT});
     }
   }
 `

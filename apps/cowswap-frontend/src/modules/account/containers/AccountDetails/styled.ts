@@ -534,7 +534,7 @@ export const SurplusCardWrapper = styled.div`
     text-align: center;
     justify-content: center;
     align-items: center;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_70})`};
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 
   ${InfoCard} > div > span > p {

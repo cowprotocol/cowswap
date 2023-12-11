@@ -143,7 +143,7 @@ export const Menu = styled.div`
     font-size: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+      background: var(${UI.COLOR_TEXT_OPACITY_10});
       border-radius: 16px;
       padding: 12px;
     `}
@@ -175,7 +175,7 @@ export const Menu = styled.div`
 
     &.active {
       ${({ theme }) => theme.mediaWidth.upToSmall`
-        background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+        background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
       `}
     }

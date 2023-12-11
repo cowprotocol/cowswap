@@ -42,7 +42,7 @@ export const ClosedBannerWrapper = styled.div`
   }
 
   > svg:last-child {
-    stroke: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    stroke: var(${UI.COLOR_TEXT_OPACITY_25});
   }
 
   &:hover > svg:last-child {

@@ -30,7 +30,7 @@ export const Row = styled.div`
     }
 
     &:first-child > span {
-      color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+      color: var(${UI.COLOR_TEXT_OPACITY_25});
       transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {

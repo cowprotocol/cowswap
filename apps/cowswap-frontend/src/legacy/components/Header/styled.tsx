@@ -286,7 +286,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       font-size: 17px;
       padding: 28px 10px;
       color: inherit;
-      border-bottom: 1px solid ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+      border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
     `}
 
     > svg > path {

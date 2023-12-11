@@ -17,7 +17,7 @@ export const TransactionWrapper = styled.div`
   font-size: initial;
   display: flex;
   padding: 0;
-  border: 1px solid ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

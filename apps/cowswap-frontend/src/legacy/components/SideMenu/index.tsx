@@ -31,7 +31,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     font-size: inherit;
 
     ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-    background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 16px;
     padding: 12px;
     margin: 0 0 24px;
@@ -66,7 +66,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
       font-weight: 600;
 
       ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-        background: ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+        background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
       `}
     }

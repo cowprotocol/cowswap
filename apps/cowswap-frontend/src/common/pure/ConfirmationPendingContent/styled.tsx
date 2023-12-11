@@ -444,7 +444,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
   padding: 0;
   list-style: none;
   font-size: inherit;
-  color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+  color: var(${UI.COLOR_TEXT_OPACITY_25});
   gap: 6px;
   display: flex;
   flex-flow: column wrap;
@@ -507,7 +507,7 @@ export const ApproveFooter = styled.div`
     padding: 0;
     list-style: none;
     font-size: inherit;
-    color: ${`var(${UI.COLOR_TEXT_OPACITY_25})`};
+    color: var(${UI.COLOR_TEXT_OPACITY_25});
     gap: 6px;
     display: flex;
     flex-flow: column wrap;
