@@ -5,7 +5,7 @@ import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
 
-import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useTradeFlowContext'
+import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
