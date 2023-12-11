@@ -26,7 +26,7 @@ import { NetworkControl, NetworkOption, NetworkOptions } from './controls/Networ
 import { PaletteControl } from './controls/PaletteControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
-import { useColorPalette } from './hooks/useColorPalette'
+import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
@@ -72,8 +72,8 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  // const [colorPalette] = useColorPalette(mode)
-  const [colorPalette, setColorPalette, resetColorPalette] = useColorPalette(mode)
+  const paletteManager = useColorPaletteManager(mode)
+  const { colorPalette } = paletteManager
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -111,11 +111,6 @@ export function Configurator({ title }: { title: string }) {
   }
 
   const params = useWidgetParamsAndSettings(provider, state)
-
-  // log any changes to params to console for debugging purposes
-  useEffect(() => {
-    console.log('params changed', params)
-  }, [params])
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -156,12 +151,7 @@ export function Configurator({ title }: { title: string }) {
 
         <ThemeControl />
 
-        {/* <PaletteControl /> */}
-        <PaletteControl
-          colorPalette={colorPalette}
-          setColorPalette={setColorPalette}
-          resetColorPalette={resetColorPalette}
-        />
+        <PaletteControl paletteManager={paletteManager} />
 
         <TradeModesControl state={tradeModesState} />
 

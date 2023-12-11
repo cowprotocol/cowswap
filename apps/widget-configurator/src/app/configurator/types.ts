@@ -3,7 +3,7 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
-import type { ColorPalette } from './hooks/useColorPalette'
+import type { ColorPalette } from './hooks/useColorPaletteManager'
 
 export interface ConfiguratorState {
   chainId: SupportedChainId
