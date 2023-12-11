@@ -14,14 +14,14 @@ export type ColorPalette = {
 export const LOCAL_STORAGE_KEY_NAME = 'cow_widget_palette_'
 const DEBOUNCE_TIME = 1000
 
+// Helper function to check if a value is a valid HEX color string
+const isStringAndValidColor = (color: string | null): boolean => {
+  const hexColorRegex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
+
+  return typeof color === 'string' && hexColorRegex.test(color)
+}
+
 export const useColorPalette = (mode: PaletteMode): [ColorPalette, (newPalette: ColorPalette) => void, () => void] => {
-  // Helper function to check if a value is a valid HEX color string
-  const isStringAndValidColor = (color: string | null): boolean => {
-    const hexColorRegex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
-
-    return typeof color === 'string' && hexColorRegex.test(color)
-  }
-
   const getPaletteFromLocalStorage = useCallback((defaultPalette: ColorPalette, mode: PaletteMode): ColorPalette => {
     try {
       const savedColors = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
