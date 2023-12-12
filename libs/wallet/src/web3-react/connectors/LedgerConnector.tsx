@@ -77,10 +77,10 @@ export class Ledger extends Connector {
   async activateLedgerKit() {
     const connectKit = this.kit
 
-    await connectKit.enableDebugLogs()
+    connectKit.enableDebugLogs()
 
-    await connectKit.checkSupport({
       providerType: 'Ethereum' as SupportedProviders,
+    connectKit.checkSupport({
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
       rpc: this.options.rpc,
