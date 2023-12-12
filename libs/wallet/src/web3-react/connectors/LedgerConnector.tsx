@@ -42,11 +42,9 @@ export class Ledger extends Connector {
 
   async getAccounts() {
     const provider = await this.getProvider()
-    const accounts = (await provider.request({
+    return (await provider.request({
       method: 'eth_requestAccounts',
     })) as string[]
-
-    return accounts
   }
 
   async getChainId() {
