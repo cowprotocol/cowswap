@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { hasBadContrast } from 'color2k'
 
+const contrastStandard = 'aa' // Options: 'decorative', 'readable', 'aa', 'aaa'
+const darkTextPrimary = '#000000'
+const lightTextPrimary = '#FFFFFF'
+
 function getContrastText(background: string, preferredTextColor: string | (() => string)): string {
-  const contrastStandard = 'aa' // Options: 'decorative', 'readable', 'aa', 'aaa'
-  const darkTextPrimary = '#000000'
-  const lightTextPrimary = '#FFFFFF'
   const resolvedTextColor = typeof preferredTextColor === 'function' ? preferredTextColor() : preferredTextColor
 
   // Check if the preferred text color has bad contrast against the background

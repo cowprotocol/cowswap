@@ -56,6 +56,7 @@ export enum UI {
   COLOR_ALERT = '--cow-color-alert',
   COLOR_ALERT_BG = '--cow-color-alert-bg',
   COLOR_ALERT_TEXT = '--cow-color-alert-text',
+  COLOR_ALERT_TEXT_DARKER = '--cow-color-alert-text-darker',
 
   COLOR_DANGER = '--cow-color-danger',
   COLOR_DANGER_BG = '--cow-color-danger-bg',

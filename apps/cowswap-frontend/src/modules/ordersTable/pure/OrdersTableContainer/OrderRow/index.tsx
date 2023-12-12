@@ -101,7 +101,7 @@ function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approv
       <p>
         {isScheduled ? (
           <>
-            You haven’t given CoW Swap sufficient allowance to spend{' '}
+            You haven't given CoW Swap sufficient allowance to spend{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
@@ -358,6 +358,8 @@ export function OrderRow({
                 <styledEl.WarningIndicator>
                   <styledEl.StyledQuestionHelper
                     placement="bottom"
+                    bgColor={`var(${UI.COLOR_ALERT})`}
+                    color={`var(${UI.COLOR_ALERT_TEXT_DARKER})`}
                     Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
                     text={
                       <styledEl.WarningContent>

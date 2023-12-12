@@ -16,7 +16,7 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
   box-shadow: var(${UI.BOX_SHADOW});
-  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   border-radius: 12px;
   padding: 6px 3px;
   z-index: 10;
@@ -26,16 +26,12 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   > div div {
     font-size: inherit;
   }
-
-  .arrow-bottom {
-    background: var(${UI.COLOR_PAPER_DARKER});
-  }
 `
 
 const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`
   ::before {
     background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-    border: 1px solid var(${UI.COLOR_PAPER});
+    border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
 

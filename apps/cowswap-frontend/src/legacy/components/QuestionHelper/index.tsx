@@ -23,7 +23,6 @@ export const QuestionWrapper = styled.div`
   cursor: default;
   border-radius: 16px;
   background-color: transparent;
-  opacity: 0.5;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
 
@@ -33,10 +32,6 @@ export const QuestionWrapper = styled.div`
 
   > svg > path {
     stroke: currentColor;
-  }
-
-  :hover {
-    opacity: 1;
   }
 `
 

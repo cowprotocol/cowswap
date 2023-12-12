@@ -475,6 +475,8 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_ALERT_BG}: ${({ theme }) => transparentize(theme.alert, 0.85)};
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) =>
       getContrastText(theme.paper, theme.darkMode ? lighten(theme.alert, 0.15) : darken(theme.alert, 0.2))};
+    ${UI.COLOR_ALERT_TEXT_DARKER}: ${({ theme }) =>
+      getContrastText(theme.alert, theme.darkMode ? darken(theme.alert, 0.55) : darken(theme.alert, 0.35))};
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
