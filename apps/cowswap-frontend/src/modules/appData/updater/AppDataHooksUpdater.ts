@@ -5,22 +5,18 @@ import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
 
-import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useTradeFlowContext'
+import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 
-// const count = 0
-
 function usePermitDataIfNotAllowance(): PermitHookData | undefined {
-  const permitHookData = useAccountAgnosticPermitHookData() || {}
+  const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
 
   // Remove permitData if the user has enough allowance for the current trade
   const swapHasEnoughAllowance = useSwapEnoughAllowance()
   const limitHasEnoughAllowance = useLimitHasEnoughAllowance()
   const shouldUsePermit = swapHasEnoughAllowance === false || limitHasEnoughAllowance === false
-
-  const { target, callData, gasLimit }: Partial<PermitHookData> = permitHookData || {}
 
   return useMemo(() => {
     if (!target || !callData || !gasLimit) {
