@@ -5,7 +5,8 @@ import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { FiatRate } from 'common/pure/RateInfo/'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { FiatRate } from 'common/pure/RateInfo'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string
@@ -31,7 +32,12 @@ export function RowFeeContent(props: RowFeeContentProps) {
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <TextWrapper>Est. fees {includeGasMessage}</TextWrapper>
+        <TextWrapper>
+          <FeatureGuard featureFlag="swapZeroFee" defaultContent="Fees">
+            Est. fees
+          </FeatureGuard>
+          {includeGasMessage}
+        </TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} wrap>
             <StyledInfoIcon size={16} />
