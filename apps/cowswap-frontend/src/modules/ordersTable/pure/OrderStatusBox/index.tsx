@@ -1,6 +1,4 @@
-import { useContext } from 'react'
-
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -51,8 +49,7 @@ export type OrderStatusBoxProps = {
 }
 
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
-  const theme = useContext(ThemeContext)
-  const { title, color } = getOrderStatusTitleAndColor(order, theme)
+  const { title, color } = getOrderStatusTitleAndColor(order)
   return (
     <Wrapper color={color} widthAuto={widthAuto} withWarning={withWarning} clickable={!!onClick} onClick={onClick}>
       {/* Status overrides for special cases */}

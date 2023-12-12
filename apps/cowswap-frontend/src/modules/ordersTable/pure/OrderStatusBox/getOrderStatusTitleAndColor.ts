@@ -1,4 +1,4 @@
-import { DefaultTheme } from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -16,13 +16,13 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.SCHEDULED]: 'Scheduled',
 }
 
-export function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTheme): { title: string; color: string } {
+export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string } {
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {
     return {
       title: orderStatusTitleMap[OrderStatus.FULFILLED],
-      color: theme.success,
+      color: `var(${UI.COLOR_SUCCESS})`,
     }
   }
 
@@ -31,13 +31,13 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTh
     if (order.executionData.partiallyFilled) {
       return {
         title: 'Partially Filled',
-        color: theme.success,
+        color: `var(${UI.COLOR_SUCCESS})`,
       }
     }
 
     return {
       title: orderStatusTitleMap[order.status],
-      color: order.status === OrderStatus.EXPIRED ? theme.warning : theme.danger,
+      color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING})` : `var(${UI.COLOR_DANGER})`,
     }
   }
 
@@ -45,13 +45,13 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder, theme: DefaultTh
   if (order.isCancelling) {
     return {
       title: 'Cancelling...',
-      color: theme.text1,
+      color: `var(${UI.COLOR_TEXT})`,
     }
   }
 
   // Finally, map order status to their display version
   return {
     title: orderStatusTitleMap[order.status],
-    color: order.status === OrderStatus.PENDING ? theme.text3 : theme.text1,
+    color: order.status === OrderStatus.PENDING ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT})`,
   }
 }

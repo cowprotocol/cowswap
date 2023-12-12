@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -7,7 +9,7 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useNotificationState } from 'common/hooks/useNotificationState'
 
-type Level = 'info' | 'warning' | 'error'
+type Level = 'INFO' | 'WARNING' | 'DANGER'
 
 export interface BannerProps {
   children: React.ReactNode
@@ -23,8 +25,8 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   padding: 8px;
   border-radius: 12px;
   margin: 0 0 16px 0;
-  background-color: ${({ theme, level }) => theme[level]};
-  color: ${({ theme, level }) => theme[`${level}Text`]};
+  background-color: ${({ level }) => `var(${UI[('COLOR_' + level + '_BG') as keyof typeof UI]})`};
+  color: ${({ level }) => `var(${UI[('COLOR_' + level + '_TEXT') as keyof typeof UI]})`};
   font-size: 16px;
   text-align: center;
   justify-content: space-between;

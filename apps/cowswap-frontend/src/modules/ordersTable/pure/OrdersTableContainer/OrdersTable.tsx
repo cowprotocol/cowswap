@@ -6,7 +6,6 @@ import { UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
@@ -83,7 +82,8 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(theme.text3, 0.92) : 'transparent')};
+  background: ${({ hasBackground }) =>
+    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
 
   > span {
     display: flex;
@@ -166,6 +166,7 @@ const OrdersExplainerBanner = styled.div`
   border-top: 1px solid transparent;
   border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 16px;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     width: fit-content;
@@ -177,9 +178,10 @@ const OrdersExplainerBanner = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    color: inherit;
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(theme.text, 0.5)};
+      fill: currentColor;
     }
 
     > b {

@@ -109,7 +109,8 @@ export const CellElement = styled.div<{
   flex-direction: row;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(theme.text3, 0.92) : 'transparent')};
+  background: ${({ hasBackground }) =>
+    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
