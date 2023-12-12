@@ -1,7 +1,8 @@
-import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
+import { ExternalProvider, Web3Provider } from '@ethersproject/providers'
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 
 import { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import { WC_PROJECT_ID } from '../../constants'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -81,9 +82,11 @@ export class Ledger extends Connector {
 
     connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
+      walletConnectVersion: 2,
+      projectId: WC_PROJECT_ID,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
-      rpc: this.options.rpc,
+      rpcMap: this.options.rpc,
     })
   }
 
