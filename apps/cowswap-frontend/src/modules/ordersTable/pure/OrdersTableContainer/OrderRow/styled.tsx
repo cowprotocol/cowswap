@@ -146,7 +146,7 @@ export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
 
   > div,
   > svg {
-    border: 2px solid ${({ theme }) => theme.grey1};
+    border: 2px solid var(${UI.COLOR_PAPER});
   }
 
   > div:last-child,
@@ -204,7 +204,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   margin: 0;
   height: 5px;
   width: 100%;
-  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(theme.text, 0.92))};
+  background: var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 6px;
 
   &::before {
@@ -212,7 +212,7 @@ export const ProgressBar = styled.div<{ value: number }>`
     position: absolute;
     height: 100%;
     width: ${({ value }) => value}%;
-    background: ${({ theme }) => theme.text3};
+    background: var(${UI.COLOR_SUCCESS});
     border-radius: 5px;
   }
 `

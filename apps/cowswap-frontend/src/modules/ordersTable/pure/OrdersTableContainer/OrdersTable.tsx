@@ -157,14 +157,14 @@ const StyledCloseIcon = styled(X)`
 
 const OrdersExplainerBanner = styled.div`
   display: grid;
-  background: ${({ theme }) => theme.gradient1};
+  background: ${`linear-gradient(90deg, var(${UI.COLOR_PAPER}) 0%, var(${UI.COLOR_PAPER_DARKER}) 100%)`};
   width: 100%;
   gap: 16px;
   grid-template-columns: 6.2fr 5.5fr 24px;
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 16px;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`

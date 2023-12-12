@@ -1,3 +1,4 @@
+import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -17,7 +18,7 @@ export const TransactionWrapper = styled.div`
   font-size: initial;
   display: flex;
   padding: 0;
-  border: 1px solid ${`var(${UI.COLOR_TEXT_OPACITY_10})`};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -360,7 +361,6 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* text-decoration: none !important; */
   border-radius: 0.5rem;
   padding: 0.25rem 0rem;
   font-weight: 500;
@@ -477,20 +477,15 @@ export const ActivityVisual = styled.div`
   display: flex;
   margin: 0 0 6px;
 
-  div {
-    padding: 2px;
-    box-sizing: content-box;
-    box-shadow: none;
-    background: var(${UI.COLOR_PAPER});
-    color: var(${UI.COLOR_PAPER_DARKER});
-    border: 2px solid var(${UI.COLOR_PAPER});
+  ${TokenLogoWrapper} {
+    border: 3px solid var(${UI.COLOR_PAPER});
   }
 
-  div:not(:first-child):last-child {
+  ${TokenLogoWrapper}:not(:first-child):last-child {
     margin: 0 0 0 -9px;
   }
 
-  &:hover div {
+  &:hover ${TokenLogoWrapper} {
     animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
     transform: translateZ(0);
   }

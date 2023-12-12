@@ -1,6 +1,6 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
-
+import { UI } from '@cowprotocol/ui'
 import { darken } from 'color2k'
 import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
@@ -8,14 +8,17 @@ import { TokenSymbol, TokenSymbolProps } from '../TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
-  background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
-  color: ${({ lowVolumeWarning, theme }) =>
-    lowVolumeWarning ? darken(theme.alert, theme.darkMode ? 0 : 0.15) : 'inherit'};
+  background: ${({ lowVolumeWarning, highlight }) =>
+    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_BG})` : ''};
+  color: ${({ lowVolumeWarning, highlight }) =>
+    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
+  border-radius: 2px;
   word-break: break-word;
 `
 
 export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
-  ${({ opacitySymbol, theme }) => (opacitySymbol ? `color: ${darken(theme.text1, 0.3)}` : '')};
+  color: inherit;
+  opacity: ${({ opacitySymbol }) => (opacitySymbol ? 0.7 : 1)};
 `
 
 export interface TokenAmountProps {

@@ -284,15 +284,15 @@ export function ActivityDetails(props: {
           {/* Token Approval Currency Logo */}
           {!isOrder && singleToken && (
             <ActivityVisual>
-              <TokenLogo token={singleToken} size={24} />
+              <TokenLogo token={singleToken} size={32} />
             </ActivityVisual>
           )}
 
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <TokenLogo token={inputToken} size={24} />
-              <TokenLogo token={outputToken} size={24} />
+              <TokenLogo token={inputToken} size={32} />
+              <TokenLogo token={outputToken} size={32} />
             </ActivityVisual>
           )}
         </span>
