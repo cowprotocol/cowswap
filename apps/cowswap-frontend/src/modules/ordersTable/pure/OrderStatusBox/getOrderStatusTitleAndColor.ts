@@ -16,13 +16,14 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.SCHEDULED]: 'Scheduled',
 }
 
-export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string } {
+export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string; background: string } {
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {
     return {
       title: orderStatusTitleMap[OrderStatus.FULFILLED],
-      color: `var(${UI.COLOR_SUCCESS})`,
+      color: `var(${UI.COLOR_SUCCESS_TEXT})`,
+      background: `var(${UI.COLOR_SUCCESS_BG})`,
     }
   }
 
@@ -31,13 +32,15 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     if (order.executionData.partiallyFilled) {
       return {
         title: 'Partially Filled',
-        color: `var(${UI.COLOR_SUCCESS})`,
+        color: `var(${UI.COLOR_SUCCESS_TEXT})`,
+        background: `var(${UI.COLOR_SUCCESS_BG})`,
       }
     }
 
     return {
       title: orderStatusTitleMap[order.status],
-      color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING})` : `var(${UI.COLOR_DANGER})`,
+      color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`,
+      background: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING_BG})` : `var(${UI.COLOR_DANGER_BG})`,
     }
   }
 
@@ -46,6 +49,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     return {
       title: 'Cancelling...',
       color: `var(${UI.COLOR_TEXT})`,
+      background: `var(${UI.COLOR_TEXT_OPACITY_10})`,
     }
   }
 
@@ -53,5 +57,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
   return {
     title: orderStatusTitleMap[order.status],
     color: order.status === OrderStatus.PENDING ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT})`,
+    background:
+      order.status === OrderStatus.PENDING ? `var(${UI.COLOR_TEXT_OPACITY_10})` : `var(${UI.COLOR_TEXT_OPACITY_10})`,
   }
 }

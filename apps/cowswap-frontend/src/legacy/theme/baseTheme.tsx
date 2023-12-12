@@ -480,7 +480,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
     ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(theme.warning, 0.04) : darken(theme.warning, 0.04)};
+      theme.darkMode ? lighten(theme.warning, 0.04) : darken(theme.warning, 0.4)};
 
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
