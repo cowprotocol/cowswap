@@ -36,7 +36,7 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_BORDER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   color: inherit;
   min-height: 490px;
   padding: 0;

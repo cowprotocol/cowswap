@@ -39,8 +39,8 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
 
     return {
       title: orderStatusTitleMap[order.status],
-      color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`,
-      background: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_WARNING_BG})` : `var(${UI.COLOR_DANGER_BG})`,
+      color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`,
+      background: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_DANGER_BG})`,
     }
   }
 

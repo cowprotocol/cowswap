@@ -465,7 +465,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
     ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => transparentize(theme.success, 0.85)};
     ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(theme.success, 0.04) : darken(theme.success, 0.04)};
+      theme.darkMode ? lighten(theme.success, 0.04) : darken(theme.success, 0.1)};
 
     ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
     ${UI.COLOR_INFO_BG}: ${({ theme }) => transparentize(theme.info, 0.85)};
@@ -473,14 +473,14 @@ export const UniThemedGlobalStyle = css`
 
     ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
     ${UI.COLOR_ALERT_BG}: ${({ theme }) => transparentize(theme.alert, 0.85)};
-    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(theme.alert, 0.06) : darken(theme.alert, 0.08))};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(theme.alert, 0.06) : darken(theme.alert, 0.15))};
     ${UI.COLOR_ALERT_TEXT_DARKER}: ${({ theme }) =>
       getContrastText(theme.alert, theme.darkMode ? darken(theme.alert, 0.55) : darken(theme.alert, 0.35))};
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
     ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(theme.warning, 0.04) : darken(theme.warning, 0.4)};
+      theme.darkMode ? lighten(theme.warning, 0.04) : darken(theme.warning, 0.04)};
 
     ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
     ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};

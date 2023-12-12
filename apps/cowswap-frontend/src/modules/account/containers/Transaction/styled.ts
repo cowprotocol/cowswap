@@ -263,16 +263,19 @@ export const StatusLabel = styled.div<{
   isCreating: boolean
   color: string
 }>`
+  --statusColor: ${({ isPending, isPresignaturePending, isCreating, color }) =>
+    isPending || isPresignaturePending || isCreating
+      ? `var(${UI.COLOR_TEXT})`
+      : color === 'success'
+      ? `var(${UI.COLOR_SUCCESS})`
+      : color === 'danger'
+      ? `var(${UI.COLOR_DANGER})`
+      : `var(${UI.COLOR_ALERT})`};
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
     !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
-  color: ${({ isPending, isPresignaturePending, isCreating, theme, color }) =>
-    isPending || isPresignaturePending || isCreating
-      ? theme.text1
-      : color === 'success'
-      ? theme.success
-      : theme.attention};
+  color: var(--statusColor);
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -291,14 +294,7 @@ export const StatusLabel = styled.div<{
 
   &::before {
     content: '';
-    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-      !isCancelling && (isPending || isCreating)
-        ? 'transparent'
-        : isPresignaturePending || (isPending && isTransaction)
-        ? theme.pending
-        : color === 'success'
-        ? theme.success
-        : theme.attention};
+    background: var(--statusColor);
     position: absolute;
     left: 0;
     top: 0;
@@ -331,12 +327,7 @@ export const StatusLabel = styled.div<{
   }
 
   > svg > path {
-    fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
-      isPending || isPresignaturePending || isCreating
-        ? theme.text1
-        : color === 'success'
-        ? theme.success
-        : theme.attention};
+    fill: currentColor;
   }
 `
 
