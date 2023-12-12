@@ -1,7 +1,7 @@
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 
-import type { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -79,8 +79,8 @@ export class Ledger extends Connector {
 
     connectKit.enableDebugLogs()
 
-      providerType: 'Ethereum' as SupportedProviders,
     connectKit.checkSupport({
+      providerType: SupportedProviders.Ethereum,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
       rpc: this.options.rpc,
