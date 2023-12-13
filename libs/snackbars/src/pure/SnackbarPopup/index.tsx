@@ -31,8 +31,10 @@ const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
+  stroke: currentColor;
+  color: currentColor;
 
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `

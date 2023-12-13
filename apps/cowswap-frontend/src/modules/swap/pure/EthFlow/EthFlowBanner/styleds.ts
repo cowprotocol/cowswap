@@ -8,7 +8,7 @@ export const BannerWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  background-color: var(${UI.COLOR_PRIMARY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 14px;
   margin: 10px 0 0;
@@ -35,18 +35,21 @@ export const ClosedBannerWrapper = styled.div`
   > svg {
     margin: auto;
     cursor: pointer;
+    transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
 
     > path {
-      fill: var(${UI.COLOR_TEXT});
+      fill: currentColor;
     }
   }
 
   > svg:last-child {
-    stroke: var(${UI.COLOR_TEXT_OPACITY_25});
+    stroke: currentColor;
+    opacity: 0.7;
   }
 
   &:hover > svg:last-child {
-    stroke: var(${UI.COLOR_TEXT});
+    stroke: currentColor;
+    opacity: 1;
   }
 `
 

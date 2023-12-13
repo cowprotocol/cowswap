@@ -35,7 +35,7 @@ export const WrappingPreviewContainer = styled.div`
   overflow: hidden;
 
   > ${WrapCardWrapper} {
-    border: 1px solid ${({ theme }) => theme.bg3};
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
     &:nth-of-type(1) {
       background-color: var(${UI.COLOR_PAPER});
@@ -46,7 +46,7 @@ export const WrappingPreviewContainer = styled.div`
     &:nth-of-type(2) {
       color: inherit;
       background-color: var(${UI.COLOR_PAPER_DARKER});
-      border: 1px solid ${({ theme }) => theme.grey1};
+      border: 1px solid var(${UI.COLOR_PAPER_DARKER});
       border-radius: 0 16px 16px 0;
     }
 

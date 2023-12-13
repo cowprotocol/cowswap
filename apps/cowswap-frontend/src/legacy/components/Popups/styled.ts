@@ -10,7 +10,7 @@ const Fader = styled.div`
   left: 0px;
   width: 100%;
   height: 2px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<DefaultTheme>> }>`
@@ -24,13 +24,13 @@ export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<D
   border: 2px solid var(${UI.COLOR_PAPER_DARKER});
 
   ${Fader} {
-    background-color: ${({ theme }) => theme.disabled};
+    background-color: var(${UI.COLOR_TEXT_OPACITY_50});
     height: 4px;
   }
 
   a {
     text-decoration: underline;
-    color: ${({ theme }) => theme.textLink};
+    color: inherit;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -50,6 +50,17 @@ export const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    stroke: currentColor;
+  }
 
   :hover {
     cursor: pointer;

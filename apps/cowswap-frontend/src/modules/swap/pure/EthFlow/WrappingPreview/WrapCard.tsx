@@ -25,7 +25,8 @@ export function WrapCard(props: WrapCardProps) {
       </styledEl.BalanceLabel>
       {/* user balance */}
       <styledEl.BalanceLabel>
-        Balance: <TokenAmount amount={balance} />
+        Balance:&nbsp;
+        <TokenAmount amount={balance} />
       </styledEl.BalanceLabel>
     </styledEl.WrapCardWrapper>
   )

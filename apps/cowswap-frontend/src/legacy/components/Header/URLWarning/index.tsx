@@ -47,6 +47,8 @@ const Wrapper = styled.div`
     height: 100%;
     width: 24px;
     margin: 0;
+    color: inherit;
+    stroke: currentColor;
   }
 `
 
