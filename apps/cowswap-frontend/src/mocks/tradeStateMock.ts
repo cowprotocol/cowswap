@@ -68,6 +68,7 @@ export const tradeContextMock: TradeFlowContext = {
     allowsOffchainSigning: true,
     partiallyFillable: true,
     appData: getAppData(),
+    featureFlags: { swapZeroFee: false },
   },
   rateImpact: 0,
   provider: {} as any,

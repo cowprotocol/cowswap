@@ -28,6 +28,8 @@ import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/us
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
@@ -80,6 +82,9 @@ interface BaseFlowContextSetup {
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -100,6 +105,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade } = useDerivedSwapInfo()
+  const { swapZeroFee } = useFeatureFlags()
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -143,6 +149,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     closeModals,
     addOrderCallback,
     dispatch,
+    featureFlags: { swapZeroFee },
   }
 }
 
@@ -189,6 +196,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     dispatch,
     flowType,
     sellTokenContract,
+    featureFlags,
   } = baseProps
 
   if (
@@ -250,6 +258,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     partiallyFillable: false, // SWAP orders are always fill or kill - for now
     appData,
     quoteId: trade.quoteId,
+    featureFlags,
   }
 
   return {
