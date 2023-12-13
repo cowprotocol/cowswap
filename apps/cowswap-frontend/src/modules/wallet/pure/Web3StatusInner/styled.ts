@@ -121,7 +121,7 @@ export const Wrapper = styled.div`
 
     > div > svg > path {
       stroke: currentColor;
-      opacity: 0.5;
+      opacity: 0.7;
     }
   }
 `
