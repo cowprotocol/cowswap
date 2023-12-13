@@ -454,9 +454,10 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
 
+    ${UI.COLOR_DISABLED_TEXT}: ${({ theme }) => theme.disabledText};
+
     ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) =>
       theme.darkMode ? transparentize(theme.text, 0.6) : transparentize(theme.text, 0.5)};
-    ${UI.COLOR_DISABLED_TEXT}: ${({ theme }) => theme.disabledText};
 
     ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>

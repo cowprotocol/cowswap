@@ -9,6 +9,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
   margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-13px auto' : '2px auto')};
   cursor: pointer;
+  color: inherit;
   position: relative;
   z-index: 2;
   width: ${({ withRecipient }) => (withRecipient ? '26px' : '100%')};
@@ -66,6 +67,7 @@ export const ArrowDownIcon = styled(ArrowDown)`
   height: 100%;
   width: 20px;
   cursor: pointer;
+  color: inherit;
 `
 
 export const CowImg = styled.img`

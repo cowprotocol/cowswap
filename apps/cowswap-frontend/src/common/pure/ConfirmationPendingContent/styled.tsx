@@ -243,7 +243,7 @@ export const StepsIconWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 18px;
-    stroke: var(${UI.COLOR_TEXT});
+    stroke: var(${UI.COLOR_TEXT_PAPER});
   }
 
   @keyframes spin {

@@ -21,7 +21,7 @@ export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<D
   border-radius: 10px;
   padding: 20px 35px 20px 20px;
   overflow: hidden;
-  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 2px solid var(${UI.COLOR_TEXT_OPACITY_50});
 
   ${Fader} {
     background-color: var(${UI.COLOR_TEXT_OPACITY_50});
