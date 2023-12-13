@@ -49,14 +49,17 @@ interface ReceiptProps {
   estimatedExecutionPrice: Fraction | null
 }
 
+const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
+
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
   EXECUTES_AT:
     'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
+  FILLED_TWAP: FILLED_COMMON_TOOLTIP,
   FILLED: (
     <span>
-      How much of the order has been filled.
+      {FILLED_COMMON_TOOLTIP}
       <br />
       Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
       also be changed to <i>Fill or kill</i> through your order settings.
@@ -191,20 +194,20 @@ export function ReceiptModal({
               </styledEl.Field>
             )}
 
+            <styledEl.Field>
+              <FieldLabel label="Filled" tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
+              <FilledField order={order} />
+            </styledEl.Field>
+
+            <styledEl.Field>
+              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+              <SurplusField order={order} />
+            </styledEl.Field>
+
             {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
             {/*The condition should be removed once we have the data*/}
             {(!twapOrder || isTwapPartOrder) && (
               <>
-                <styledEl.Field>
-                  <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-                  <FilledField order={order} />
-                </styledEl.Field>
-
-                <styledEl.Field>
-                  <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
-                  <SurplusField order={order} />
-                </styledEl.Field>
-
                 <styledEl.Field>
                   <FieldLabel label="Fee" tooltip={tooltips.FEE} />
                   <FeeField order={order} />

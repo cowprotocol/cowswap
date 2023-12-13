@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { isTruthy } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -14,7 +15,7 @@ import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } fro
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
-import { isOrder, mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
 interface TwapOrderInfo {
   item: TwapPartOrderItem
@@ -69,7 +70,7 @@ export function CreatedInOrderBookOrdersUpdater() {
         .map(({ item, parent, order }) => {
           return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
         })
-        .filter(isOrder)
+        .filter(isTruthy)
     },
     [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
     []
