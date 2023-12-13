@@ -11,11 +11,13 @@ const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
 const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
 const SAFE_APP_NAME = 'Safe App'
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
+const SAFE_WALLET_NAME = 'Safe{Wallet}'
 const GNOSIS_APP_NAMES = [
   SAFE_APP_NAME,
   GNOSIS_SAFE_APP_NAME,
   WC_DESKTOP_GNOSIS_SAFE_APP_NAME,
   WC_MOBILE_GNOSIS_SAFE_APP_NAME,
+  SAFE_WALLET_NAME,
 ]
 
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
