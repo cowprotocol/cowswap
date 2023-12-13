@@ -38,8 +38,11 @@ const _computeInputAmountForSignature = (params: {
   inputWithSlippage: CurrencyAmount<Currency>
   fee?: CurrencyAmount<Currency>
   kind: OrderKind
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
 }) => {
-  const { input, inputWithSlippage, fee, kind } = params
+  const { input, inputWithSlippage, fee, kind, featureFlags } = params
   // When POSTing the order, we need to check inputAmount value depending on trade type
   // If we don't have an applicable fee amt, return the input as is
   if (!fee) return input
@@ -48,6 +51,9 @@ const _computeInputAmountForSignature = (params: {
     // User SELLING? POST inputAmount as amount with fee applied
     return input
   } else {
+    if (featureFlags.swapZeroFee) {
+      return inputWithSlippage
+    }
     // User BUYING? POST inputAmount as amount with no fee
     return inputWithSlippage.subtract(fee)
   }
@@ -244,6 +250,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
       inputWithSlippage: inputAmountWithSlippage,
       fee: trade.fee.feeAsCurrency,
       kind,
+      featureFlags,
     }),
     outputAmount: outputAmountWithSlippage,
     sellAmountBeforeFee: trade.inputAmountWithoutFee,
