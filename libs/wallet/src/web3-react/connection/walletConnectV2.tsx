@@ -24,7 +24,7 @@ import {
   getIsTrustWallet,
   getIsZengoWallet,
 } from '../../api/utils/connection'
-import { WC_DISABLED_TEXT } from '../../constants'
+import { WC_DISABLED_TEXT, WC_PROJECT_ID } from '../../constants'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 
 export const walletConnectV2Option = {
@@ -32,8 +32,6 @@ export const walletConnectV2Option = {
   icon: WalletConnectV2Image,
   id: 'wallet-connect-v2',
 }
-
-const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID || 'a6cc11517a10f6f12953fd67b1eb67e7'
 
 function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnector, Web3ReactHooks, Web3ReactStore] {
   return initializeConnector<AsyncConnector>(
