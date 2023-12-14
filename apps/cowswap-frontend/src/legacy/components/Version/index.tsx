@@ -2,12 +2,11 @@ import { CODE_LINK, GP_SETTLEMENT_CONTRACT_ADDRESS, GP_VAULT_RELAYER } from '@co
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../../../package.json'
@@ -66,7 +65,7 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   gap: 10px;
 `
 
@@ -76,7 +75,7 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   > span {
     display: inline-block;
     transform: rotate(0);
-    transition: transform 0.3s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover > span {
@@ -97,7 +96,7 @@ const VersionsLinkWrapper = styled.span`
   justify-content: center;
   align-items: center;
   opacity: 0.5;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     opacity: 1;

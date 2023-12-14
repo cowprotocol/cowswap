@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { useBlockNumber, useIsOnline, useTheme } from '@cowprotocol/common-hooks'
+import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,8 +13,6 @@ import styled, { keyframes } from 'styled-components/macro'
 
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import { ThemedText } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
@@ -98,7 +97,7 @@ export const Spinner = styled.div<{ warning: boolean }>`
 
 const Wrapper = styled.div`
   ${StyledPolling} {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     position: relative;
     margin: 0;
     padding: 0;
@@ -108,9 +107,9 @@ const Wrapper = styled.div`
     opacity: 1;
 
     a {
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
       opacity: 0.5;
-      transition: opacity 0.3s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
       text-decoration: none;
 
       &:hover {
@@ -125,7 +124,7 @@ const Wrapper = styled.div`
 
     ${StyledPollingNumber} > a {
       opacity: 1;
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
 
       &:hover {
         opacity: 1;
@@ -136,7 +135,7 @@ const Wrapper = styled.div`
 
   ${StyledGasDot},
   ${StyledPollingDot} {
-    background: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_TEXT});
   }
 
   ${StyledPollingDot} {
@@ -160,7 +159,6 @@ export function Polling() {
   const [isMounting, setIsMounting] = useState(false)
   const [isHover, setIsHover] = useState(false)
   const isOnline = useIsOnline()
-  const theme = useTheme()
 
   const ethGasPrice = useGasPrice()
   const priceGwei = ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined
@@ -194,7 +192,7 @@ export function Polling() {
           <ExternalLink href={'https://etherscan.io/gastracker'}>
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
-                <ThemedText.Main fontSize="11px" mr="8px" color={theme.text3}>
+                <ThemedText.Main fontSize="11px" mr="8px">
                   <MouseoverTooltip
                     text={
                       <Trans>

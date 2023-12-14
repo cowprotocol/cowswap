@@ -1,11 +1,11 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'
 
-import { UI } from 'common/constants/theme'
-
 const Wrapper = styled(BodyWrapperMod)`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border: 0;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};

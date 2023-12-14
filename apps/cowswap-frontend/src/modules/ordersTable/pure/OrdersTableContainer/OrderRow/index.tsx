@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
@@ -6,11 +6,11 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { UI } from '@cowprotocol/ui'
 import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
-import { ThemeContext } from 'styled-components/macro'
 
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -101,7 +101,7 @@ function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approv
       <p>
         {isScheduled ? (
           <>
-            You haven’t given CoW Swap sufficient allowance to spend{' '}
+            You haven't given CoW Swap sufficient allowance to spend{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
@@ -180,7 +180,6 @@ export function OrderRow({
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
-  const theme = useContext(ThemeContext)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
@@ -353,8 +352,9 @@ export function OrderRow({
               {withWarning && (
                 <styledEl.WarningIndicator>
                   <styledEl.StyledQuestionHelper
-                    bgColor={theme.alert}
                     placement="bottom"
+                    bgColor={`var(${UI.COLOR_ALERT})`}
+                    color={`var(${UI.COLOR_ALERT_TEXT_DARKER})`}
                     Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
                     text={
                       <styledEl.WarningContent>

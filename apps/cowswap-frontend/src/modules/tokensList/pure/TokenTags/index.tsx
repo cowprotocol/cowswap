@@ -2,6 +2,7 @@ import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 import { MouseoverTooltip } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
+import SVG from 'react-inlinesvg'
 import { HashLink } from 'react-router-hash-link'
 
 import * as styledEl from './styled'
@@ -71,7 +72,7 @@ function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: T
       {tags.map((tag) => (
         <MouseoverTooltip key={tag.id} text={tag.description}>
           <styledEl.Tag tag={tag}>
-            {tag.icon ? <img src={tag.icon} alt={tag.name} /> : null}
+            {tag.icon ? <SVG src={tag.icon} title={tag.name} /> : null}
             {tag.name}
           </styledEl.Tag>
         </MouseoverTooltip>

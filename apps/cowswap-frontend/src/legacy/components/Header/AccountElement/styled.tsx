@@ -1,4 +1,5 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
@@ -27,13 +28,12 @@ export const Wrapper = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
   white-space: nowrap;
   cursor: pointer;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
   border-radius: 21px;
   border: 2px solid transparent;
-  transition: border 0.2s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
   width: auto;
 
@@ -42,7 +42,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -52,6 +52,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&
     `
+    background-color: transparent;
     margin: 0 20px 0 auto!important;
     border: 0!important;
   `}

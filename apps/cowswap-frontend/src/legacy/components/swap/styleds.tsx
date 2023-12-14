@@ -1,15 +1,14 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TooltipContainer } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
 
@@ -33,7 +32,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   margin-top: -14px;
   margin-bottom: -14px;
   left: 16px;
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   z-index: 2;
   ${({ clickable }) =>
     clickable
@@ -93,7 +92,7 @@ export const Dots = styled.span`
 `
 
 const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
-  background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
+  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
   border-radius: 1rem;
   position: relative;
   display: flex;
@@ -102,7 +101,7 @@ const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
   width: 100%;
   padding: 3rem 1.25rem 1rem 1rem;
   margin-top: -2rem;
-  color: ${({ theme }) => theme.red1};
+  color: var(${UI.COLOR_DANGER});
   z-index: -1;
   p {
     padding: 0;
@@ -114,7 +113,7 @@ const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
 `
 
 const SwapCallbackErrorInnerAlertTriangle = styled.div`
-  background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
+  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,21 +152,21 @@ export function SwapCallbackError({ error, handleClose, showClose, ...styleProps
 }
 
 export const SwapShowAcceptChanges = styled(AutoColumn)`
-  background-color: ${({ theme }) => transparentize(0.95, theme.primary3)};
-  color: ${({ theme }) => theme.primaryText1};
+  background-color: ${({ theme }) => transparentize(theme.primary3, 0.95)};
+  color: ${({ theme }) => theme.text1};
   padding: 0.5rem;
   border-radius: 12px;
   margin-top: 8px;
 `
 
 export const TransactionDetailsLabel = styled(ThemedText.Black)`
-  border-bottom: 1px solid ${({ theme }) => theme.bg2};
+  border-bottom: 1px solid var(${UI.COLOR_PRIMARY});
   padding-bottom: 0.5rem;
 `
 
 export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: string; width?: string }>`
   background-color: ${({ theme }) => theme.bg0};
-  border: 1px solid ${({ theme }) => theme.bg2};
+  border: 1px solid var(${UI.COLOR_PRIMARY});
   padding: 1rem;
   width: ${({ width }) => width ?? 'auto'};
 
@@ -185,8 +184,8 @@ export const AuxInformationContainer = styled.div<{
   disabled?: boolean
   showAux?: boolean
 }>`
-  border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg2)};
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  border: 1px solid ${({ hideInput }) => (hideInput ? ' transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+  background-color: var(${UI.COLOR_PAPER});
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
 
   :focus,
@@ -205,10 +204,10 @@ export const AuxInformationContainer = styled.div<{
 
   margin: ${({ margin = '0 auto' }) => margin};
   border-radius: 0 0 15px 15px;
-  border: 2px solid ${({ theme }) => theme.grey1};
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
 
   &:hover {
-    border: 2px solid ${({ theme }) => theme.grey1};
+    border: 2px solid var(${UI.COLOR_PAPER_DARKER});
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

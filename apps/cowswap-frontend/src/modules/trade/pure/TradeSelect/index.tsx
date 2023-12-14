@@ -1,9 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
-import { transparentize } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
@@ -17,8 +16,9 @@ export interface TradeSelectProps extends TradeWidgetFieldProps {
 }
 
 const StyledMenuList = styled(MenuList)`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  box-shadow: ${({ theme }) => theme.boxShadow2};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  box-shadow: var(${UI.BOX_SHADOW});
+  color: inherit;
   margin: 15px 0 0 0;
   padding: 16px;
   border-radius: 20px;
@@ -30,10 +30,11 @@ const StyledMenuList = styled(MenuList)`
   display: flex;
   flex-flow: column wrap;
   gap: 10px;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
 const StyledMenuButton = styled(MenuButton)`
+  color: inherit;
   background: none;
   border: 0;
   outline: none;
@@ -46,16 +47,18 @@ const StyledMenuButton = styled(MenuButton)`
   cursor: pointer;
   width: 100%;
   justify-content: space-between;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 `
 
 const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
-  font-size: 14px;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  font-size: 16px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    opacity: 1;
   }
 
   &:not(:last-child) {

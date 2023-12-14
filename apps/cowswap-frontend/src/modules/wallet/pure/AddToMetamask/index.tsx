@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { MetaMaskLogo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -16,7 +17,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: var(--cow-color-text1);
+  color: inherit;
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -24,7 +25,7 @@ export const ButtonCustom = styled.button`
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   &:hover {

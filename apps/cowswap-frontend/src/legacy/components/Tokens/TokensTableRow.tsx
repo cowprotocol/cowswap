@@ -139,9 +139,7 @@ export const TokensTableRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.text1}>
-            Approve all
-          </TableButton>
+          <TableButton onClick={handleApprove}>Approve all</TableButton>
           <ApproveLabel color={theme.green1}>
             Approved:{' '}
             <strong>
@@ -151,15 +149,11 @@ export const TokensTableRow = ({
         </CustomLimit>
       )
     } else if (!isApproved || hasNoAllowance) {
-      return (
-        <TableButton onClick={handleApprove} color={theme.text1}>
-          Approve
-        </TableButton>
-      )
+      return <TableButton onClick={handleApprove}>Approve</TableButton>
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {

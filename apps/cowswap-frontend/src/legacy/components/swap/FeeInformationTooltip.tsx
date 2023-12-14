@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 import { FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -54,8 +53,6 @@ const FeeAmountAndFiat = styled.span`
 export function FeeInformationTooltip(props: FeeInformationTooltipProps) {
   const { trade, label, amountAfterFees, type, showHelper, fiatValue, showFiat = false, allowsOffchainSigning } = props
 
-  const theme = useTheme()
-
   const subsidyAndBalance = useCowBalanceAndSubsidy()
 
   if (!trade || !showHelper) return null
@@ -68,8 +65,6 @@ export function FeeInformationTooltip(props: FeeInformationTooltipProps) {
       <span>
         {label}{' '}
         <WrappedQuestionHelper
-          bgColor={theme.grey1}
-          color={theme.text1}
           text={
             <ReceiveAmountInfoTooltip
               receiveAmountInfo={receiveAmountInfo}

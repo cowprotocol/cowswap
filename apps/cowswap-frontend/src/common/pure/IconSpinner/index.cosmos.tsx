@@ -1,20 +1,21 @@
-import styled from 'styled-components/macro';
+import { UI } from '@cowprotocol/ui'
 
-import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos';
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
-import { IconSpinner} from './index';
+import { MOCK_TOKEN, IMAGE_ACCOUNT } from 'common/constants/cosmos'
+
+import { IconSpinner } from './index'
 
 const Wrapper = styled.div`
   width: 400px;
   height: 400px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 100px;
-`;
+`
 
 const SpinnerFixtures = {
   'token image / default size': (
@@ -42,6 +43,6 @@ const SpinnerFixtures = {
       <IconSpinner />
     </Wrapper>
   ),
-};
+}
 
-export default SpinnerFixtures;
+export default SpinnerFixtures

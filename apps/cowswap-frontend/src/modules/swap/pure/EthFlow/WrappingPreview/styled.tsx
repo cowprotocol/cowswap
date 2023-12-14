@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const WrapCardWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -35,18 +35,18 @@ export const WrappingPreviewContainer = styled.div`
   overflow: hidden;
 
   > ${WrapCardWrapper} {
-    border: 1px solid ${({ theme }) => theme.bg3};
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
     &:nth-of-type(1) {
-      background-color: var(${UI.COLOR_CONTAINER_BG_01});
+      background-color: var(${UI.COLOR_PAPER});
       border-radius: 16px 0 0 16px;
       border-right: 0;
     }
 
     &:nth-of-type(2) {
-      color: var(${UI.COLOR_TEXT1});
-      background-color: var(${UI.COLOR_GREY});
-      border: 1px solid ${({ theme }) => theme.grey1};
+      color: inherit;
+      background-color: var(${UI.COLOR_PAPER_DARKER});
+      border: 1px solid var(${UI.COLOR_PAPER_DARKER});
       border-radius: 0 16px 16px 0;
     }
 
@@ -65,8 +65,8 @@ export const WrappingPreviewContainer = styled.div`
     bottom: 0;
     right: 0;
     margin: auto;
-    background: var(${UI.COLOR_GREY});
-    stroke: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_PAPER_DARKER});
+    stroke: var(${UI.COLOR_TEXT});
     width: 32px;
     height: 32px;
     border-radius: 32px;

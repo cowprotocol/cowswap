@@ -2,22 +2,15 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
-import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components'
 
 import { PopoverContainerProps } from './index'
 
 export const PopoverContainer = styled.div<{ show: boolean }>`
-  z-index: 9999;
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  color: var(--cow-color-text1);
-  background: var(--cow-container-bg-01);
-  border: 1px solid ${({ theme }) => theme.bg3};
-  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
-  border-radius: 8px;
 `
 
 const ReferenceElement = styled.div`
@@ -28,17 +21,15 @@ export const Arrow = styled.div`
   width: 8px;
   height: 8px;
   z-index: 9998;
+  color: inherit;
 
   ::before {
     position: absolute;
     width: 8px;
     height: 8px;
     z-index: 9998;
-
     content: '';
-    border: 1px solid ${({ theme }) => theme.bg3};
     transform: rotate(45deg);
-    background: var(--cow-container-bg-01);
   }
 
   &.arrow-top {

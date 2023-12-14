@@ -3,17 +3,15 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { HideSmall } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -22,7 +20,7 @@ const L2Icon = styled.img`
 `
 
 const BodyText = styled.div`
-  color: ${({ color }) => color};
+  color: ${({ color }) => (color ? color : 'inherit')};
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -31,12 +29,12 @@ const BodyText = styled.div`
 
   :hover {
     text-decoration: underline;
-    color: ${({ theme }) => theme.primary1};
   }
 `
 const RootWrapper = styled.div`
   position: relative;
   margin-top: 16px;
+  color: inherit;
 `
 
 const SHOULD_SHOW_ALERT = {
@@ -52,14 +50,15 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
 `
 
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
-  background: ${({ theme }) => transparentize(0.4, theme.bg1)}; // MOD
-  transition: color 0.2s ease-in-out, background 0.2s ease-in-out; // MOD
+  background: var(${UI.COLOR_PAPER_DARKER});
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out; // MOD
   border-radius: 20px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
   position: relative;
   width: 100%;
+  color: inherit;
 
   :before {
     background-image: url(${({ logoUrl }) => logoUrl});
@@ -76,19 +75,20 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
   ${BodyText},
   ${StyledArrowUpRight} {
-    color: var(${UI.COLOR_TEXT2});
-    stroke: var(${UI.COLOR_TEXT2});
+    color: inherit;
+    stroke: currentColor;
     text-decoration: none;
-    transition: transform 0.2s ease-in-out, stroke 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out, stroke var(${UI.ANIMATION_DURATION}) ease-in-out,
+      color var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover {
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
 
     ${BodyText},
     ${StyledArrowUpRight} {
-      color: var(${UI.COLOR_TEXT1});
-      stroke: var(${UI.COLOR_TEXT1});
+      color: inherit;
+      stroke: var(${UI.COLOR_TEXT_PAPER});
       transform: rotate(0);
     }
 
@@ -106,7 +106,7 @@ const Header = styled.h2`
 const LinkOutToBridge = styled(ExternalLink)`
   align-items: center;
   border-radius: 8px;
-  color: white;
+  color: inherit;
   display: flex;
   font-size: 16px;
   justify-content: space-between;

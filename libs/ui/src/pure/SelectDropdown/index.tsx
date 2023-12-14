@@ -1,3 +1,4 @@
+import { UI } from '../../enum'
 import styled from 'styled-components'
 
 export const SelectDropdown = styled.select`
@@ -6,7 +7,7 @@ export const SelectDropdown = styled.select`
   border-radius: 12px;
   appearance: none;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   width: 100%;
   outline: none;
   border: 1px solid var(--cow-color-border);

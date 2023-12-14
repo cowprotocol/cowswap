@@ -1,4 +1,5 @@
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
@@ -26,14 +27,14 @@ const Body = styled.div`
 `
 
 const Text = styled.div`
-  color: ${({ theme }) => theme.red1};
+  color: var(${UI.COLOR_DANGER});
   font-weight: 500;
   font-size: 16px;
 `
 
 const AlertIcon = styled(AlertTriangle)`
-  color: ${({ theme }) => theme.red1};
-  strokewidth: 1.5;
+  color: var(${UI.COLOR_DANGER});
+  stroke-width: 1.5;
   margin-bottom: 15px;
 `
 

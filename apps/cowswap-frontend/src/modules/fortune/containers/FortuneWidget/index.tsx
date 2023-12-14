@@ -8,6 +8,7 @@ import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { useInterval } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
@@ -24,7 +25,6 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { UI } from 'common/constants/theme'
 import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
@@ -80,7 +80,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
     width: var(--size);
     height: var(--size);
-    transition: transform 0.3s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover::after {
@@ -121,9 +121,9 @@ const FortuneBanner = styled.div`
   left: 0;
   bottom: 0;
   z-index: 501;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   padding: 0;
-  animation: open 0.3s ease-in-out forwards;
+  animation: open var(${UI.ANIMATION_DURATION}) ease-in-out forwards;
   overflow: hidden;
 
   @keyframes open {
@@ -184,7 +184,7 @@ const FortuneTitle = styled.h2`
   font-size: 21px;
   text-align: center;
   font-weight: 700;
-  color: var(${UI.COLOR_TEXT2});
+  color: inherit;
 
   > i {
     font-size: 16px;
@@ -206,7 +206,7 @@ const FortuneText = styled.h3`
   font-weight: 700;
   text-align: center;
   position: relative;
-  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : theme.text1)};
+  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : `var(${UI.COLOR_TEXT})`)};
   background: ${({ theme }) => theme.white};
 
   // small device
@@ -228,7 +228,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     font-size: 100px;
     position: absolute;
     z-index: 1;
@@ -244,11 +244,11 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 `
 
 const StyledExternalLink = styled(ExternalLink)`
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 `
 
@@ -257,7 +257,7 @@ const HeaderElement = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   position: fixed;
   padding: 0 16px;
   top: 0;
@@ -271,7 +271,7 @@ const StyledCloseIcon = styled(X)`
   height: var(--size);
   width: var(--size);
   opacity: 0.4;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -284,7 +284,7 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 

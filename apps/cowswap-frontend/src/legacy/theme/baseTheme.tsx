@@ -2,15 +2,14 @@ import Cursor1 from '@cowprotocol/assets/cow-swap/cursor1.gif'
 import Cursor2 from '@cowprotocol/assets/cow-swap/cursor2.gif'
 import Cursor3 from '@cowprotocol/assets/cow-swap/cursor3.gif'
 import Cursor4 from '@cowprotocol/assets/cow-swap/cursor4.gif'
-import { ButtonSize } from '@cowprotocol/ui'
+import { UI, ButtonSize } from '@cowprotocol/ui'
+import { getContrastText } from '@cowprotocol/ui-utils'
 
-import { transparentize, lighten, darken } from 'polished'
+import { transparentize, lighten, darken } from 'color2k'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { colorsUniswap } from 'legacy/theme/colorsUniswap'
 import { Colors } from 'legacy/theme/styled'
-
-import { UI } from 'common/constants/theme'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
@@ -19,6 +18,27 @@ import { UI } from 'common/constants/theme'
 export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
+
+    // V3 colors ======================
+    primary: darkMode ? '#0d5ed9' : '#052B65',
+    background: darkMode ? '#07162D' : '#ECF1F8',
+    paper: darkMode ? '#0c264b' : '#FFFFFF',
+
+    // swap.cow.fi specific overrides ======================
+    paperCustom: darkMode ? '#0c264b' : '#FFFFFF',
+    paperDarkerCustom: darkMode ? '#07162d' : '#ecf1f8',
+    paperDarkestCustom: darkMode ? darken('#07162d', 0.05) : darken('#ecf1f8', 0.1),
+    // =====================================================
+
+    text: darkMode ? '#CAE9FF' : '#052B65',
+    secondaryText: darkMode ? '#86B2DC' : '#506B93',
+    disabledText: darkMode ? '#86B2DC' : '#506B93',
+
+    danger: darkMode ? '#f44336' : '#D41300',
+    alert: darkMode ? '#FFCA4A' : '#DB971E',
+    warning: darkMode ? '#ED6237' : '#D94719',
+    info: darkMode ? '#428dff' : '#0d5ed9',
+    success: darkMode ? '#00D897' : '#007B28',
 
     // CoW Swap V2 colors ======================
     white: darkMode ? '#CAE9FF' : '#ffffff',
@@ -35,13 +55,10 @@ export function colors(darkMode: boolean): Colors {
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
 
-    // States NEW
-    danger: darkMode ? '#EB3030' : '#D41300',
-    warning: darkMode ? '#ED6237' : '#D94719',
-    alert: '#DB971E',
     alert2: '#F8D06B',
+    error: darkMode ? '#EB3030' : '#D41300',
     information: darkMode ? '#428dff' : '#0d5ed9',
-    success: darkMode ? '#00D897' : '#007B28',
+
     pending: '#43758C', // deprecate
     attention: '#ff5722', // deprecate
 
@@ -52,7 +69,7 @@ export function colors(darkMode: boolean): Colors {
     primary4: darkMode ? '#0d5ed9' : '#052B65',
     primary5: darkMode ? '#0d5ed9' : '#052B65',
     red1: darkMode ? '#EB3030' : '#D41300',
-    error: darkMode ? '#EB3030' : '#D41300',
+
     // ==========================================
 
     // ****** text ******
@@ -67,9 +84,6 @@ export function colors(darkMode: boolean): Colors {
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
-
-    // ****** color text ******
-    primaryText1: darkMode ? '#021E34' : '#000000',
 
     // ****** secondary colors ******
     secondary1: darkMode ? '#2172E5' : '#8958FF',
@@ -105,8 +119,6 @@ export function colors(darkMode: boolean): Colors {
     tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
     tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
 
-    // banner styles
-    info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
     errorText: '#b91515',
@@ -129,8 +141,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       background-image: linear-gradient(
         90deg,
         transparent 0,
-        ${transparentize(0.7, colorsTheme.bg1)} 20%,
-        ${lighten(0.07, transparentize(0.6, colorsTheme.bg1))} 60%,
+        var(${UI.COLOR_PAPER}) 20%,
+        var(${UI.COLOR_PAPER_DARKER}) 60%,
         transparent
       );
       animation: shimmer 2s infinite;
@@ -142,19 +154,19 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     colorScrollbar: css`
       // Firefox only
-      scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
+      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}), var(${UI.COLOR_PAPER_DARKER});
       scroll-behavior: smooth;
 
       // Webkit browsers only
       &::-webkit-scrollbar {
-        background: ${transparentize(0.6, colorsTheme.grey1)};
+        background: var(${UI.COLOR_PAPER_DARKER});
         width: 8px;
         height: 8px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: ${transparentize(0.7, colorsTheme.text2)};
-        border: 3px solid ${transparentize(0.7, colorsTheme.text2)};
+        background: var(${UI.COLOR_PAPER_DARKEST});
+        border: 3px solid var(${UI.COLOR_PAPER_DARKEST});
         border-radius: 14px;
         background-clip: padding-box;
       }
@@ -162,21 +174,18 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     textShadow1: `
       ${
         darkMode
-          ? `0px 0px 26px ${transparentize(0.9, colorsTheme.text1)}, 0px 0px 28px ${transparentize(
-              0.8,
-              colorsTheme.text1
-            )}`
+          ? `0px 0px 26px ${`var(${UI.COLOR_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_TEXT_OPACITY_25})`}`
           : 'none'
       }
     `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    boxShadow3: `0 4px 12px 0 ${transparentize(0.9, colorsTheme.text3)}`,
+    boxShadow3: `0 4px 12px 0 ${transparentize(colorsTheme.text3, 0.9)}`,
     gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
-    gradient2: `linear-gradient(250deg, ${transparentize(0.92, colorsTheme.alert)} 10%, ${transparentize(
-      0.92,
-      colorsTheme.success
-    )} 50%, ${transparentize(0.92, colorsTheme.success)} 100%);`,
+    gradient2: `linear-gradient(250deg, ${transparentize(colorsTheme.alert, 0.92)} 10%, ${transparentize(
+      colorsTheme.success,
+      0.92
+    )} 50%, ${transparentize(colorsTheme.success, 0.92)} 100%);`,
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
@@ -184,7 +193,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       bg1: darkMode
         ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
         : '#052B65',
-      text1: darkMode ? colorsTheme.text1 : '#FFFFFF',
+      text1: darkMode ? `var(${UI.COLOR_TEXT})` : '#FFFFFF',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
@@ -261,19 +270,19 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1});
+        background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
     iconGradientBorder: css`
-      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.bg2} 360grad);
+      background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
     `,
     header: {
       border: 'none',
       menuFlyout: {
         background: 'transparent',
-        color: darkMode ? colorsTheme.text1 : colorsTheme.text2,
-        colorHover: darkMode ? colorsTheme.text1 : colorsTheme.text2,
+        color: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.text2,
+        colorHover: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.text2,
         colorHoverBg: darkMode ? colorsTheme.black : colorsTheme.disabled,
         closeButtonBg: darkMode ? colorsTheme.white : colorsTheme.disabled,
         closeButtonColor: colorsTheme.black,
@@ -308,7 +317,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     buttonOutlined: {
       background: css`
         background: ${colorsTheme.bg1};
-        color: ${colorsTheme.text1};
+        color: inherit;
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
@@ -323,26 +332,26 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     currencyInput: {
       background: `${darkMode ? colorsTheme.blueShade : colorsTheme.white}`,
-      color: colorsTheme.text1,
+      color: `var(${UI.COLOR_TEXT})`,
       border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`,
     },
     buttonCurrencySelect: {
       background: colorsTheme.bg1,
       border: `0`,
       boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.06);`,
-      color: colorsTheme.text1,
-      colorSelected: colorsTheme.text1,
+      color: `var(${UI.COLOR_TEXT})`,
+      colorSelected: `var(${UI.COLOR_TEXT})`,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    footerColor: darkMode ? colorsTheme.text1 : colorsTheme.greenShade,
+    footerColor: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.greenShade,
     networkCard: {
       background: 'rgb(255 120 74 / 60%)',
       text: colorsTheme.black,
     },
     wallet: {
-      color: colorsTheme.text1,
+      color: `var(${UI.COLOR_TEXT})`,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
@@ -390,74 +399,128 @@ export const UniFixedGlobalStyle = css`
 
 export const UniThemedGlobalStyle = css`
   :root {
+    // V3
+    ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
+    ${UI.COLOR_PRIMARY_LIGHTER}: ${({ theme }) =>
+      theme.darkMode ? lighten(theme.primary, 0.1) : lighten(theme.primary, 0.2)};
+    ${UI.COLOR_PRIMARY_DARKER}: ${({ theme }) =>
+      theme.darkMode ? darken(theme.primary, 0.2) : darken(theme.primary, 0.1)};
+    ${UI.COLOR_PRIMARY_DARKEST}: ${({ theme }) =>
+      theme.darkMode ? darken(theme.primary, 0.4) : darken(theme.primary, 0.1)};
+    ${UI.COLOR_PRIMARY_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.primary)};
+    ${UI.COLOR_PRIMARY_OPACITY_80}: ${({ theme }) => transparentize(theme.primary, 0.2)};
+    ${UI.COLOR_PRIMARY_OPACITY_70}: ${({ theme }) => transparentize(theme.primary, 0.5)};
+    ${UI.COLOR_PRIMARY_OPACITY_50}: ${({ theme }) => transparentize(theme.primary, 0.5)};
+    ${UI.COLOR_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.primary, 0.75)};
+    ${UI.COLOR_PRIMARY_OPACITY_10}: ${({ theme }) => transparentize(theme.primary, 0.9)};
+
+    ${UI.COLOR_SECONDARY}: ${({ theme }) => theme.primary};
+
+    ${UI.COLOR_BACKGROUND}: ${({ theme }) => theme.background};
+
+    ${UI.COLOR_PAPER}: ${({ theme }) => theme.paper};
+    ${UI.COLOR_PAPER_OPACITY_99}: ${({ theme }) => transparentize(theme.paper, 0.99)};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) =>
+      theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
+    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
+      theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
+
+    ${UI.COLOR_PAPER}: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.paper : theme.paperCustom)};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.07 : 0.05)
+      } else {
+        return theme.paperDarkerCustom
+      }
+    }};
+
+    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.1 : 0.15)
+      } else {
+        return theme.paperDarkestCustom
+      }
+    }};
+
+    ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
+    ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
+    ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
+
+    ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
+    ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};
+
+    ${UI.COLOR_TEXT_OPACITY_70}: ${({ theme }) => transparentize(theme.text, 0.3)};
+    ${UI.COLOR_TEXT_OPACITY_50}: ${({ theme }) => transparentize(theme.text, 0.5)};
+    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
+
+    ${UI.COLOR_DISABLED_TEXT}: ${({ theme }) => theme.disabledText};
+
+    ${UI.COLOR_SECONDARY_TEXT}: ${({ theme }) =>
+      theme.darkMode ? transparentize(theme.text, 0.6) : transparentize(theme.text, 0.5)};
+
+    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
+    ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>
+      getContrastText(theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05), theme.text)};
+
+    ${UI.COLOR_SUCCESS}: ${({ theme }) => theme.success};
+    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) => transparentize(theme.success, 0.85)};
+    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(theme.success, 0.04) : darken(theme.success, 0.1)};
+
+    ${UI.COLOR_INFO}: ${({ theme }) => theme.info};
+    ${UI.COLOR_INFO_BG}: ${({ theme }) => transparentize(theme.info, 0.85)};
+    ${UI.COLOR_INFO_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(theme.info, 0.04) : darken(theme.info, 0.04))};
+
+    ${UI.COLOR_ALERT}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_ALERT_BG}: ${({ theme }) => transparentize(theme.alert, 0.85)};
+    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(theme.alert, 0.06) : darken(theme.alert, 0.15))};
+    ${UI.COLOR_ALERT_TEXT_DARKER}: ${({ theme }) =>
+      getContrastText(theme.alert, theme.darkMode ? darken(theme.alert, 0.55) : darken(theme.alert, 0.35))};
+
+    ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
+    ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};
+    ${UI.COLOR_WARNING_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(theme.warning, 0.04) : darken(theme.warning, 0.04)};
+
+    ${UI.COLOR_DANGER}: ${({ theme }) => theme.danger};
+    ${UI.COLOR_DANGER_BG}: ${({ theme }) => transparentize(theme.danger, 0.85)};
+    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
+      theme.darkMode ? lighten(theme.danger, 0.04) : darken(theme.danger, 0.04)};
+
+    // Badges
+    ${UI.COLOR_BADGE_YELLOW_BG}: ${({ theme }) => theme.alert2};
+    ${UI.COLOR_BADGE_YELLOW_TEXT}: ${({ theme }) => getContrastText(theme.alert2, darken(theme.alert2, 0.6))};
+
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
-    ${UI.COLOR_GREY}: ${({ theme }) => theme.grey1};
     ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
-    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(0.2, theme.information)}; // 80% opacity
-    ${UI.COLOR_YELLOW}: ${({ theme }) => theme.alert};
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
 
     // Base
-    ${UI.COLOR_BORDER}: var(${UI.COLOR_GREY});
-    ${UI.COLOR_CONTAINER_BG_01}: ${({ theme }) => theme.bg1};
-    ${UI.COLOR_CONTAINER_BG_02}: ${({ theme }) => theme.bg2};
-    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT1});
+    ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
+    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
-    ${UI.BOX_SHADOW_NORMAL}: 0 1.5rem 1rem #00000008,0 .75rem .75rem #0000000a,0 .25rem .375rem #0000000d;
 
     // Icons
     ${UI.ICON_SIZE_LARGE}: 36px;
     ${UI.ICON_SIZE_NORMAL}: 20px;
     ${UI.ICON_SIZE_SMALL}: 16px;
     ${UI.ICON_SIZE_XSMALL}: 14px;
-    ${UI.ICON_COLOR_NORMAL}: var(${UI.COLOR_TEXT1});
-
-    // [STATE] Information (light blue)
-    ${UI.COLOR_INFORMATION}: var(${UI.COLOR_LIGHT_BLUE});
-    ${UI.COLOR_INFORMATION_BG}: ${({ theme }) =>
-      theme.darkMode ? transparentize(0.9, theme.information) : transparentize(0.85, theme.information)};
-    ${UI.COLOR_INFORMATION_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(0.2, theme.information) : darken(0.2, theme.information)};
-
-    // [STATE] Alert (yellow)
-    ${UI.COLOR_ALERT}: var(${UI.COLOR_YELLOW});
-    ${UI.COLOR_ALERT_BG}: ${({ theme }) =>
-      theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
-    ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.alert) : darken(0.2, theme.alert))};
-
-    // [STATE] Alert2 (yellow lighter)
-    ${UI.COLOR_ALERT2}: var(${UI.COLOR_YELLOW_LIGHT});
-    ${UI.COLOR_ALERT2_BG}: var(${UI.COLOR_YELLOW_LIGHT});
-    ${UI.COLOR_ALERT2_TEXT}: var(${UI.COLOR_BLUE});
-
-    // [STATE] Success (green)
-    ${UI.COLOR_SUCCESS}: var(${UI.COLOR_GREEN});
-    ${UI.COLOR_SUCCESS_BG}: ${({ theme }) =>
-      theme.darkMode ? transparentize(0.9, theme.success) : transparentize(0.85, theme.success)};
-    ${UI.COLOR_SUCCESS_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(0.2, theme.success) : darken(0.1, theme.success)};
-
-    // [STATE] Danger (red)
-    ${UI.COLOR_DANGER}: var(${UI.COLOR_RED});
-    ${UI.COLOR_DANGER_BG}: ${({ theme }) =>
-      theme.darkMode ? transparentize(0.9, theme.danger) : transparentize(0.85, theme.danger)};
-    ${UI.COLOR_DANGER_TEXT}: ${({ theme }) =>
-      theme.darkMode ? lighten(0.2, theme.danger) : darken(0.2, theme.danger)};
+    ${UI.ICON_COLOR_NORMAL}: ${({ theme }) => theme.text};
 
     // Text
-    ${UI.COLOR_TEXT1}: ${({ theme }) => theme.text1};
-    ${UI.COLOR_TEXT1_INACTIVE}: ${({ theme }) => transparentize(0.4, theme.text1)};
-    ${UI.COLOR_TEXT1_OPACITY_25}: ${({ theme }) => transparentize(0.75, theme.text1)};
-    ${UI.COLOR_TEXT1_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text1)};
-    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(0.3, theme.text1)};
-    ${UI.COLOR_LINK}: ${({ theme }) => theme.text3};
-    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(0.9, theme.text3)};
+    ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
+    ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
+    ${UI.COLOR_LINK}: ${`var(${UI.COLOR_PRIMARY})`};
+    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.text3, 0.9)};
 
     // Font Weights & Sizes
     ${UI.FONT_WEIGHT_NORMAL}: 400;
@@ -470,14 +533,15 @@ export const UniThemedGlobalStyle = css`
     ${UI.FONT_SIZE_LARGE}: 18px;
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
+
+    // Animation
+    ${UI.ANIMATION_DURATION}: 0.1s;
   }
 
-  html {
-    color: var(${UI.COLOR_TEXT1});
-  }
   body {
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
     scrollbar-color: ${({ theme }) => theme.colorScrollbar};
+    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `
 
@@ -506,8 +570,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: var(${UI.COLOR_CONTAINER_BG_02});
-    color: var(${UI.COLOR_WHITE});
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
   // TODO: Can be removed once we control this component

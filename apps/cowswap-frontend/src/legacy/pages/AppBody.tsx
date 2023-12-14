@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { Z_INDEX } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   position: relative;

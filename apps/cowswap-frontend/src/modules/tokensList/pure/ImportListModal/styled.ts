@@ -1,12 +1,12 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
   overflow: auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
 `
 
@@ -19,7 +19,7 @@ export const Contents = styled.div`
   padding: 20px;
   margin: 20px;
   border-radius: 20px;
-  color: var(${UI.COLOR_RED});
+  color: var(${UI.COLOR_DANGER_TEXT});
   background: var(${UI.COLOR_DANGER_BG});
 `
 

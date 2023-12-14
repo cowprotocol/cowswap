@@ -17,10 +17,10 @@ function getPriceImpactColor(theme: DefaultTheme, priceImpact: Percent): string 
   const severity = warningSeverity(priceImpact)
 
   if (severity === -1) return theme.success
-  if (severity < 1) return theme.text1
+  if (severity < 1) return theme.text
   if (severity < 3) return theme.danger
 
-  return theme.red1
+  return theme.danger
 }
 
 const PriceImpactWrapper = styled.span<{ priceImpact$: Percent }>`
@@ -40,7 +40,7 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
           </MouseoverTooltip>
         </PriceImpactWrapper>
       ) : null}
-      {priceImpactLoading && <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />}
+      {priceImpactLoading && <Loader size="14px" />}
     </span>
   )
 }

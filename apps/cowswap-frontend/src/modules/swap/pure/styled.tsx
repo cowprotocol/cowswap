@@ -1,10 +1,8 @@
 import { RowBetween } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   ...props,
@@ -28,22 +26,22 @@ export const BottomGrouping = styled.div`
 
   div > svg,
   div > svg > path {
-    stroke: var(${UI.COLOR_TEXT2});
+    stroke: currentColor;
   }
 `
 export const LightGreyText = styled.span`
   font-weight: 400;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const StyledInfoIcon = styled(Info)`
-  opacity: 0.5;
-  stroke: var(${UI.COLOR_TEXT1});
+  color: inherit;
+  opacity: 0.6;
   line-height: 0;
   vertical-align: middle;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  :hover {
+  &:hover {
     opacity: 1;
   }
 `

@@ -2,11 +2,10 @@ import iconInformation from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import iconAlert from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconDanger from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export enum IconType {
   ALERT = 'ALERT',
@@ -57,7 +56,7 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
   }
 
   > svg > path {
-    fill: ${({ color = UI.COLOR_TEXT1 }) => `var(${color})`};
+    fill: ${({ color = UI.COLOR_TEXT }) => `var(${color})`};
   }
 `
 

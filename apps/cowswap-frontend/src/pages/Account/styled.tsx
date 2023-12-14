@@ -1,7 +1,7 @@
 import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
@@ -46,11 +46,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.text3};
+  color: var(${UI.COLOR_TEXT});
 
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text3};
+    color: var(${UI.COLOR_PRIMARY_PAPER});
   }
 `
 
@@ -63,12 +63,13 @@ const linkMixin = css`
   margin: 0;
   padding: 0;
   line-height: 1;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
   display: flex;
   align-items: center;
   text-decoration: underline;
   text-decoration-color: transparent;
-  transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
       font-size: 15px;
@@ -207,7 +208,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
       object-fit: contain;
       margin: 0 0 0 6px;
       transform: translateX(0);
-      transition: transform 0.2s ease-in-out;
+      transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       > path {
         fill: ${({ theme }) => theme.white};
@@ -338,6 +339,7 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
   align-items: flex-end;
   margin: auto 0 0;
   align-content: ${({ content }) => content || 'unset'};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -372,7 +374,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
   gap: 3px 12px;
   width: 100%;
   font-size: 14px;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     gap: 12px;
@@ -414,7 +416,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
     display: flex;
     align-items: center;
     gap: 0 6px;
-    color: ${({ theme, altColor }) => (altColor ? theme.text3 : theme.text1)};
+    color: ${({ theme, altColor }) => (altColor ? theme.text3 : `var(${UI.COLOR_TEXT})`)};
     font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
 
     ${({ theme }) => theme.mediaWidth.upToMedium`

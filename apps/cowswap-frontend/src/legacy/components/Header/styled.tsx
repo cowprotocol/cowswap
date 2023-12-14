@@ -1,15 +1,13 @@
 import { PropsWithChildren } from 'react'
 
 import { Row, RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
-import { transparentize, darken } from 'polished'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
-
-import { UI } from 'common/constants/theme'
 
 const activeClassName = 'active'
 
@@ -58,20 +56,21 @@ export const StyledNavLinkUni = styled(NavLink)`
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: var(${UI.COLOR_TEXT2});
+  color: inherit;
   font-size: 1rem;
   width: fit-content;
   margin: 0 12px;
   font-weight: 500;
+
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   :hover,
   :focus {
-    color: ${({ theme }) => darken(0.1, theme.text1)};
+    color: inherit;
   }
 `
 
@@ -88,9 +87,10 @@ export const StyledMenuButton = styled.button`
   margin-left: 8px;
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
+  color: inherit;
 
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     cursor: pointer;
     outline: none;
     background-color: ${({ theme }) => theme.bg4};
@@ -98,9 +98,6 @@ export const StyledMenuButton = styled.button`
 
   svg {
     margin-top: 2px;
-  }
-  > * {
-    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -149,8 +146,8 @@ export const HeaderElementUni = styled.div`
 `
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
-  transition: color 0.15s ease-in-out;
-  color: ${({ theme }) => darken(0.3, theme.text1)};
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  color: inherit;
 
   &:first-of-type {
     margin: 0 12px 0 0;
@@ -158,7 +155,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
   &:hover,
   &:focus {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 `
 
@@ -188,7 +185,7 @@ export const HeaderElement = styled(HeaderElementUni)`
     width: 100%;
     border-radius: 0;
     height: 64px;
-    background-color: var(${UI.COLOR_CONTAINER_BG_01});
+    background-color: var(${UI.COLOR_PAPER});
     border-top: 1px solid ${({ theme }) => theme.grey1};
     backdrop-filter: blur(21px);
     padding: 10px 16px;
@@ -218,7 +215,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             width: 100%;
             display: flex;
             height: 60px;
-            background: var(${UI.COLOR_CONTAINER_BG_01});
+            background: var(${UI.COLOR_PAPER});
             position: fixed;
             top: 0;
             left: 0;
@@ -248,7 +245,7 @@ export const HeaderModWrapper = styled(HeaderMod)``
 export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   margin: 0;
   text-decoration: none;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
@@ -278,8 +275,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     border: 0;
     cursor: pointer;
     background: transparent;
-    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-    color: var(${UI.COLOR_TEXT2});
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 100%;
@@ -288,25 +285,26 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       font-weight: 600;
       font-size: 17px;
       padding: 28px 10px;
-      color: var(${UI.COLOR_TEXT1});
-      border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+      color: inherit;
+      border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
     `}
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT2});
-      transition: fill 0.15s ease-in-out;
+      fill: currentColor;
+      transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
 
     &:hover {
-      color: var(${UI.COLOR_TEXT1});
-      background: ${({ theme }) => transparentize(0.95, theme.text1)};
+      color: inherit;
+      background: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_BUTTON_TEXT});
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
         background: transparent;
       `};
 
       > svg > path {
-        fill: var(${UI.COLOR_TEXT1});
+        fill: currentColor;
       }
     }
 
@@ -321,7 +319,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.ACTIVE {
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
       font-weight: 600;
     }
   }
@@ -374,7 +372,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     left: 0;
     bottom: 0;
     z-index: 3;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     outline: 0;
     padding: 60px 8px;
     overflow-y: scroll;
@@ -409,11 +407,11 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a > svg > path {
-    fill: var(${UI.COLOR_TEXT1});
+    fill: var(${UI.COLOR_TEXT});
   }
 
   > a:hover > svg > path {
-    fill: var(${UI.COLOR_TEXT1});
+    fill: var(${UI.COLOR_TEXT});
   }
 `
 

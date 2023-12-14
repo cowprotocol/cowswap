@@ -2,6 +2,7 @@ import { useFetchFile } from '@cowprotocol/common-hooks'
 import { hashCode } from '@cowprotocol/common-utils'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertTriangle } from 'react-feather'
@@ -21,7 +22,7 @@ const Wrapper = styled.div`
     justify-content: center;
     font-size: 12px;
     padding: 8px;
-    background-color: ${({ theme }) => theme.bg2};
+    background-color: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
 
     > div {
@@ -46,6 +47,8 @@ const Wrapper = styled.div`
     height: 100%;
     width: 24px;
     margin: 0;
+    color: inherit;
+    stroke: currentColor;
   }
 `
 

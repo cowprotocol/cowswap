@@ -3,15 +3,14 @@ import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'r
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { UI } from 'common/constants/theme'
 import { usePrice } from 'common/hooks/usePrice'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 
@@ -55,19 +54,19 @@ const RateLabel = styled.div`
   font-weight: 400;
   gap: 5px;
   text-align: left;
-  transition: color 0.15s ease-in-out;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  color: inherit;
+  opacity: 0.7;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    opacity: 1;
   }
 `
 
 const InvertIcon = styled.div`
   --size: 17px;
   cursor: pointer;
-  background: ${({ theme }) => transparentize(0.9, theme.text1)};
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   width: var(--size);
   height: var(--size);
   min-width: var(--size);
@@ -76,17 +75,39 @@ const InvertIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  position: relative;
+
+  &::before {
+    background: currentColor;
+    opacity: 0.1;
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
+    border-radius: var(--size);
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, var(${UI.ANIMATION_DURATION}) ease-in-out;
+  }
 
   > svg {
     padding: 1px;
+    stroke: currentColor;
+    z-index: 5;
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    &::before {
+      opacity: 1;
+      background: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_BUTTON_TEXT});
+    }
 
     > svg {
-      stroke: ${({ theme }) => theme.white};
+      stroke: var(${UI.COLOR_BUTTON_TEXT});
     }
   }
 `
@@ -108,7 +129,8 @@ export const RateWrapper = styled.button`
 `
 
 export const FiatRate = styled.span`
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
+  opacity: 0.7;
   font-weight: 400;
   text-align: right;
 `

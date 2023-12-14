@@ -2,9 +2,10 @@ import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { formatParameters } from './formatParameters'
 
+import { ColorPalette } from '../../configurator/types'
 import { COMMENTS_BEFORE_PARAMS } from '../const'
 
-export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
+export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams): string {
   <div id="app"></div>
   <script>
     // ${COMMENTS_BEFORE_PARAMS}
-    const params = ${formatParameters(params, 4, false)}
+    const params = ${formatParameters(params, 4, false, defaultPalette)}
 
     cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
   </script>

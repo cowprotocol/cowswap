@@ -1,31 +1,46 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 const Card = styled(Box)<{ width?: string; padding?: string; border?: string; $borderRadius?: string }>`
   width: ${({ width }) => width ?? '100%'};
   padding: ${({ padding }) => padding ?? '1rem'};
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '16px'};
   border: ${({ border }) => border};
+  color: inherit;
 `
 export default Card
 
 export const LightCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.bg2};
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 16px;
+    height: 100%;
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    opacity: 0.2;
+    user-select: none;
+    pointer-events: none;
+  }
 `
 
 export const LightGreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `
 
 export const GreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const DarkGreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `
 
 export const DarkCard = styled(Card)`
@@ -33,7 +48,7 @@ export const DarkCard = styled(Card)`
 `
 
 export const OutlineCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.bg3};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const YellowCard = styled(Card)`

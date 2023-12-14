@@ -1,11 +1,9 @@
-import { useContext } from 'react'
+import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
@@ -17,18 +15,26 @@ export const ContextMenuButton = styled(MenuButton)`
   margin: 0;
   display: flex;
   height: 24px;
+  color: inherit;
+  opacity: 0.5;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 
   > svg {
     height: 100%;
     width: auto;
+    color: currentColor;
   }
 
   &:hover {
-    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+    outline: currentColor;
   }
 `
 export const ContextMenuList = styled(MenuList)`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 12px;
   overflow: hidden;
   position: relative;
@@ -49,10 +55,10 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   align-items: center;
   font-size: 15px;
   font-weight: 500;
-  color: ${({ theme, $red }) => ($red ? `var(${UI.COLOR_DANGER})` : theme.text1)};
+  color: ${({ $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    background: ${({ theme }) => transparentize(theme.text3, 0.8)};
   }
 `
 
@@ -65,12 +71,10 @@ export interface OrderContextMenuProps {
 }
 
 export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
-  const theme = useContext(ThemeContext)
-
   return (
     <Menu>
       <ContextMenuButton>
-        <MoreVertical color={transparentize(0.5, theme.text1)} />
+        <MoreVertical />
       </ContextMenuButton>
       <ContextMenuList>
         <ContextMenuItem onSelect={openReceipt}>

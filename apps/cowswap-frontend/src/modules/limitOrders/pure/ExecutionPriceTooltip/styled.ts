@@ -1,14 +1,13 @@
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const FeeTooltipWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 `
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`
@@ -20,13 +19,13 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   padding: ${({ borderTop }) => (borderTop ? '16px 10px 10px' : '10px')};
   border-radius: ${({ highlighted }) => (highlighted ? '10px' : '0')};
   background: ${({ theme, highlighted }) => (highlighted ? theme.bg1 : 'transparent')};
-  border-top: ${({ theme, borderTop }) => (borderTop ? `1px solid ${transparentize(0.9, theme.text1)}` : 'none')};
+  border-top: ${({ borderTop }) => (borderTop ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
   gap: 4px;
 
   > i {
     font-size: 12px;
     font-style: normal;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: var(${UI.COLOR_TEXT_OPACITY_25});
     max-width: 60%;
     min-width: 50%;
     font-weight: 300;

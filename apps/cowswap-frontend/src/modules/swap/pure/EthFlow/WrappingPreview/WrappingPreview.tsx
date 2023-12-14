@@ -2,12 +2,8 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import { ArrowRight } from 'react-feather'
 
-import { colors } from 'legacy/theme'
-
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
-
-const COLOUR_SHEET = colors(false)
 
 export type WrappingPreviewProps = {
   native: Currency
@@ -25,7 +21,7 @@ export const WrappingPreview = (props: WrappingPreviewProps) => {
       {/* To Wrap */}
       <WrapCard balance={nativeBalance} currency={native} amountToWrap={amount} />
 
-      <ArrowRight size={18} color={COLOUR_SHEET.primary1} />
+      <ArrowRight size={18} />
 
       {/* Wrap Outcome */}
       <WrapCard balance={wrappedBalance} currency={wrapped} amountToWrap={amount} />

@@ -1,25 +1,26 @@
-import { transparentize, darken } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import { transparentize, darken } from 'color2k'
+import styled from 'styled-components/macro'
 
 export const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(0.03, theme.bg1) : theme.grey1)};
+  background: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const TitleSection = styled.div`
   text-align: center;
   font-size: 20px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   margin: 24px auto 42px;
 
   > h3 {
     font-weight: 400;
     font-size: inherit;
     margin: 0 0 4px;
-    color: ${({ theme }) => transparentize(0.2, theme.text1)};
+    color: inherit;
+    opacity: 0.7;
   }
 
   > strong {
@@ -54,7 +55,7 @@ export const List = styled.ul`
     position: relative;
 
     &[data-is-new='true'] {
-      background: ${({ theme }) => transparentize(0.87, theme.success)};
+      background: ${({ theme }) => transparentize(theme.success, 0.87)};
 
       &::after {
         content: 'NEW!';
@@ -64,7 +65,7 @@ export const List = styled.ul`
         display: block;
         padding: 3px 5px;
         background: ${({ theme }) => theme.success};
-        color: ${({ theme }) => (theme.darkMode ? darken(0.5, theme.success) : theme.white)};
+        color: ${({ theme }) => (theme.darkMode ? darken(theme.success, 0.5) : theme.white)};
         border-radius: 10px;
         font-size: 9px;
         font-weight: bold;
@@ -87,15 +88,17 @@ export const List = styled.ul`
   }
 
   > li > span > svg > path {
-    fill: ${({ theme }) => theme.success};
+    fill: var(${UI.COLOR_SUCCESS});
   }
 `
 
 export const ControlSection = styled.div`
   text-align: center;
+  color: inherit;
 
   & span {
-    margin-bottom: 1.2rem;
+    margin: 0 0 1.2rem;
     display: block;
+    color: inherit;
   }
 `

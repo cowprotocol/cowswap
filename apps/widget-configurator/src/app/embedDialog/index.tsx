@@ -27,12 +27,13 @@ import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
 
 import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
+import { ColorPalette } from '../configurator/types'
 
 interface TabInfo {
   id: number
   label: string
   language: string
-  snippetFromParams(params: CowSwapWidgetProps['params']): string
+  snippetFromParams(params: CowSwapWidgetProps['params'], defaultPalette: ColorPalette): string
   icon: string
 }
 
@@ -80,11 +81,12 @@ function a11yProps(id: number) {
 
 export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
+  defaultPalette: ColorPalette
   open: boolean
   handleClose: () => void
 }
 
-export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
+export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps) {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo
@@ -116,8 +118,8 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
   }, [open])
 
   const code = useMemo(() => {
-    return snippetFromParams(params)
-  }, [snippetFromParams, params])
+    return snippetFromParams(params, defaultPalette)
+  }, [snippetFromParams, params, defaultPalette])
 
   const onChangeTab = useCallback((_event: SyntheticEvent, newValue: TabInfo) => setCurrentTabInfo(newValue), [])
 

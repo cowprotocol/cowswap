@@ -1,21 +1,20 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
 export const Web3StatusError = styled(Web3StatusGeneric)`
-  background-color: ${({ theme }) => theme.red1};
-  border: 1px solid ${({ theme }) => theme.red1};
+  background-color: var(${UI.COLOR_DANGER});
+  border: 1px solid var(${UI.COLOR_DANGER});
   color: ${({ theme }) => theme.white};
   font-weight: 500;
   :hover,
   :focus {
-    background-color: ${({ theme }) => darken(0.1, theme.red1)};
+    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 `
 
@@ -26,20 +25,22 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&
-    `
+    css`
       margin: 0;
       padding: 6px 12px;
-      background: 0;
       border: 0;
       font-size: 14px;
       font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-      color: var(${UI.COLOR_TEXT1})!important;
-      transition: all 0.2s ease-in-out;
-      gap: 6px;
+      background: transparent;
+      color: inherit !important;
+      transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
       opacity: 0.7;
 
-      &:hover {
-        background: var(${UI.COLOR_GREY});
+      &:hover,
+      &:active,
+      &:focus {
+        opacity: 1 !important;
+        background: var(${UI.COLOR_PAPER_DARKER}) !important;
       }
 
       > svg {
@@ -50,20 +51,20 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       }
 
       > svg > path {
-        fill: var(${UI.COLOR_TEXT1});
+        fill: currentColor;
       }
-  `}
+    `}
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid transparent;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-weight: 500;
 
   &:hover {
-    background-color: var(${UI.COLOR_GREY});
-    color: var(${UI.COLOR_TEXT1});
+    background-color: var(${UI.COLOR_PAPER_DARKEST});
+    color: inherit;
   }
 
   ${({ clickDisabled }) =>
@@ -93,7 +94,7 @@ export const NetworkIcon = styled(Activity)`
 `
 
 export const Wrapper = styled.div`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '40px')};
   display: flex;
   padding: 0;
@@ -119,7 +120,8 @@ export const Wrapper = styled.div`
     width: 100%;
 
     > div > svg > path {
-      stroke: ${({ theme }) => theme.text3};
+      stroke: currentColor;
+      opacity: 0.7;
     }
   }
 `

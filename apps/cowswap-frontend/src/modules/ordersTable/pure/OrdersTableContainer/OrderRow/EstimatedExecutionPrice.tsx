@@ -1,14 +1,13 @@
-import { useContext } from 'react'
-
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
-import { darken, transparentize } from 'polished'
+import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculateOrderExecutionStatus, ExecuteIndicator } from 'common/pure/OrderExecutionStatusList'
@@ -22,7 +21,7 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit')};
+  color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.alert, theme.darkMode ? 0 : 0.15) : 'inherit')};
   cursor: ${({ showPointerCursor }) => (showPointerCursor ? 'pointer' : 'default')};
 
   ${SymbolElement} {
@@ -53,8 +52,8 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
 const UnfillableLabel = styled.span`
   width: 100%;
   max-width: 90px;
-  background: ${({ theme }) => transparentize(0.86, theme.attention)};
-  color: ${({ theme }) => darken(0.15, theme.attention)};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
   position: relative;
   border-radius: 9px;
   display: flex;
@@ -157,7 +156,6 @@ export type UnlikelyToExecuteWarningProps = {
 }
 
 export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
-  const theme = useContext(ThemeContext)
   const { feePercentage, feeAmount } = props
 
   if (!feePercentage || !feeAmount) {
@@ -168,7 +166,9 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
     <styledEl.WarningIndicator hasBackground={false}>
       <MouseoverTooltipContent
         wrap={true}
-        bgColor={theme.alert}
+        placement="bottom"
+        bgColor={`var(${UI.COLOR_ALERT_BG})`}
+        color={`var(${UI.COLOR_ALERT_TEXT})`}
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>
@@ -181,7 +181,6 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
             of your sell amount! Therefore, your order is unlikely to execute.
           </styledEl.WarningContent>
         }
-        placement="bottom"
       >
         <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
       </MouseoverTooltipContent>

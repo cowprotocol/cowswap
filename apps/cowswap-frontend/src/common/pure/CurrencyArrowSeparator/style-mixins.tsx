@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import { css } from 'styled-components/macro'
 
 export const loadingAnimationMixin = css`
@@ -16,7 +18,15 @@ export const loadingAnimationMixin = css`
     position: absolute;
     left: -2px;
     top: -2px;
-    background: linear-gradient(45deg, #e57751, #c5daef, #275194, ${({ theme }) => theme.bg4}, #c5daef, #1b5a7a);
+    background: linear-gradient(
+      45deg,
+      var(${UI.COLOR_PRIMARY}),
+      var(${UI.COLOR_PAPER}),
+      var(${UI.COLOR_PRIMARY}),
+      var(${UI.COLOR_PAPER_DARKER}),
+      var(${UI.COLOR_PRIMARY}),
+      var(${UI.COLOR_PAPER})
+    );
     background-size: 800%;
     width: calc(100% + 4px);
     height: calc(100% + 4px);

@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled, { css } from 'styled-components/macro'
 
 export const blankButtonMixin = css`
   background: none;
@@ -18,29 +18,33 @@ export const blankButtonMixin = css`
 export const IconButton = styled.button`
   ${blankButtonMixin}
 
-  > svg {
-    color: var(${UI.COLOR_TEXT1});
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-    &:hover {
-      color: var(${UI.COLOR_TEXT2});
-    }
+  &:hover {
+    opacity: 1;
+  }
+
+  > svg {
+    color: inherit;
   }
 `
 
 export const ImportButton = styled.button`
   ${blankButtonMixin};
 
-  background-color: var(${UI.COLOR_CONTAINER_BG_02});
-  color: var(${UI.COLOR_WHITE});
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 16px;
   font-weight: 600;
   padding: 6px 15px;
   border-radius: 24px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background-color: var(${UI.COLOR_LINK});
+    background-color: var(${UI.COLOR_PRIMARY_DARKER});
   }
 `
 

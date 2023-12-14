@@ -1,7 +1,6 @@
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../../pure/commonElements'
 
@@ -10,7 +9,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   flex: 1;
   width: 100%;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
 `
 
@@ -27,47 +26,43 @@ export const TabsContainer = styled.div`
 
 export const InputError = styled.div`
   margin-top: 20px;
-  color: var(${UI.COLOR_RED});
+  color: var(${UI.COLOR_DANGER});
   font-weight: 500;
 `
 
 export const Tab = styled.button<{ active$: boolean }>`
   ${blankButtonMixin};
 
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
   padding: 10px;
   font-size: 16px;
   font-weight: 600;
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT2});
-  }
 `
 
 export const PrimaryInputBox = styled.div`
   margin: 10px 0 0 0;
   padding: 0 20px 20px 20px;
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
+  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKEST});
 `
 
 export const PrimaryInput = styled.input`
   width: 100%;
   border: none;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   outline: none;
 
   ::placeholder {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   &:focus {
     ::placeholder {
-      color: ${({ theme }) => transparentize(0.7, theme.text1)};
+      color: var(${UI.COLOR_TEXT_OPACITY_70});
     }
   }
 `

@@ -1,8 +1,8 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export interface OrdersTablePaginationProps {
   getPageUrl?(index: number): Partial<{ pathname: string; search: string }>
@@ -29,20 +29,20 @@ const PaginationBox = styled.div`
 `
 
 const pageButtonStyles = css<{ $active?: boolean }>`
-  background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.text1))};
+  background: ${({ theme, $active }) => ($active ? transparentize(theme.text3, 0.9) : 'transparent')};
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;
   padding: 5px 10px;
   border-radius: 4px;
   margin: 0 5px;
   cursor: pointer;
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   text-decoration: none;
 
   &:hover {
-    background: var(${UI.COLOR_CONTAINER_BG_01});
-    color: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_PAPER});
+    color: inherit;
   }
 `
 

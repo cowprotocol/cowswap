@@ -1,21 +1,21 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { MouseoverTooltipContent, TooltipContainer } from '@cowprotocol/ui'
 
 import { Info, HelpCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 const StyledIcon = styled.div`
   display: inline-block;
+  color: inherit;
 
   > svg {
-    opacity: 0.5;
-    stroke: var(${UI.COLOR_TEXT1});
+    opacity: 0.6;
+    stroke: currentColor;
     line-height: 0;
     vertical-align: middle;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     :hover {
       opacity: 1;

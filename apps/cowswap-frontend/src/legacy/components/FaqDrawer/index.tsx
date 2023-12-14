@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
@@ -22,7 +24,7 @@ const Item = styled.div`
     overflow: hidden;
     position: relative;
     opacity: 0;
-    transition: 0.4s ease-in-out;
+    transition: var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   > input {
@@ -61,7 +63,7 @@ const Item = styled.div`
     top: -2px;
     line-height: 1;
     opacity: 0.5;
-    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   > label:hover > span {

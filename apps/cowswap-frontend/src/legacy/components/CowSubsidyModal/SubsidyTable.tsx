@@ -1,14 +1,13 @@
 import { V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { transparentize, lighten } from 'polished'
+import { transparentize, lighten } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { UI } from 'common/constants/theme'
 
 import { COW_SUBSIDY_DATA } from './constants'
 
@@ -25,7 +24,7 @@ const StyledSubsidyTable = styled.table`
   }
 
   tbody {
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     border-radius: 16px;
     border: 0;
   }
@@ -43,15 +42,15 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
 
   &:last-child {
     border-bottom: 0;
   }
 
   &:hover > td {
-    color: var(${UI.COLOR_TEXT1});
-    background: ${({ theme }) => transparentize(0.9, theme.text1)};
+    color: inherit;
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
   }
 
   > th {
@@ -61,12 +60,12 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
-    color: var(${UI.COLOR_TEXT2});
-    transition: background 0.3s ease-in-out;
+    color: inherit;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   > td:first-child {
-    border-right: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
+    border-right: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
   }
 
   > td,
@@ -80,7 +79,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     `
     background: ${theme.bg2};
     color: ${theme.white};
-    transition: background 0.2s ease-in-out;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &::before {
       position: absolute;
@@ -135,7 +134,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     }
 
     &:hover {
-      background: ${lighten(0.05, theme.bg2)};
+      background: ${lighten(theme.bg2, 0.05)};
 
         > td {
           background: transparent;
@@ -148,11 +147,11 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     `
     @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.white)};
+        box-shadow: 0 0 0 0 ${transparentize(theme.white, 0.7)};
       }
 
       100% {
-        box-shadow: 0 0 0 8px ${transparentize(1, theme.white)};
+        box-shadow: 0 0 0 8px ${transparentize(theme.white, 1)};
       }
     }
   `}
