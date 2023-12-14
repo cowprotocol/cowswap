@@ -1,11 +1,12 @@
-import { transparentize, darken } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize, darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import Column from 'legacy/components/Column'
 import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
 import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`
@@ -17,8 +18,8 @@ export const MenuButton = styled.button`
   outline: none;
   border: none;
   cursor: pointer;
-  color: var(${UI.COLOR_TEXT1});
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  color: inherit;
+  background: var(${UI.COLOR_PAPER});
   height: 44px;
   border-radius: 21px;
   padding: 0 16px;
@@ -35,7 +36,7 @@ export const StyledChevronDown = styled(ChevronDown)`
 
 export const Menu = styled.div`
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(0.09, theme.bg5) : theme.bg4)};
+  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg5, 0.09) : theme.bg4)};
   box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   display: flex;
   flex-direction: column;
@@ -52,7 +53,7 @@ export const Menu = styled.div`
 export const MenuItem = styled.div<{ active: boolean }>`
   transition: background 0.2s ease-in;
   background-color: ${({ active, theme }) => (active ? theme.grey1 : 'transparent')};
-  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  color: ${({ active, theme }) => (active ? theme.text2 : `var(${UI.COLOR_TEXT})`)};
   justify-content: space-between;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;
@@ -88,7 +89,7 @@ export const AccountPageWrapper = styled.div`
 `
 
 export const MainText = styled(ThemedText.Main)`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-size: 14px;
 `
 
@@ -132,7 +133,8 @@ export const ClearSearchInput = styled.div`
 `
 
 export const Overview = styled.div`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
+  color: inherit;
   border-radius: 16px;
   gap: 16px;
   margin: 0;
@@ -151,7 +153,7 @@ export const Overview = styled.div`
       content: "";
       display: block;
       background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
-    transparentize(1, theme.bg1)} 100%);
+    transparentize(theme.bg1, 1)} 100%);
       pointer-events: none;
       height: 100%;
       width: 80px;
@@ -169,21 +171,19 @@ export const SearchInputFormatter = styled(Column)`
   width: 100%;
   flex: 1 1 fit-content;
   position: relative;
+  color: inherit;
 
   > input {
     border: none;
-    transition: background 0.3s ease-in-out;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
-    color: var(${UI.COLOR_TEXT1});
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+    background: var(${UI.COLOR_PAPER});
+    color: inherit;
   }
 
   > input::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
-  }
-
-  > input:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.9, theme.text1)};
+    color: inherit;
+    opacity: 0.5;
   }
 `
 
@@ -194,10 +194,10 @@ export const TokenSearchInput = styled.input`
   width: 100%;
   align-self: flex-end;
   box-shadow: none;
-  background: var(${UI.COLOR_GREY});
-  border: 1px solid ${({ theme }) => theme.bg1};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
-  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, max-width var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;
@@ -205,7 +205,7 @@ export const TokenSearchInput = styled.input`
 
   &:focus {
     max-width: 500px;
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
     outline: 0;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -215,11 +215,14 @@ export const TokenSearchInput = styled.input`
 
   &::placeholder {
     font-size: 14px !important;
-    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)};
+    color: inherit;
+    opacity: 1;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

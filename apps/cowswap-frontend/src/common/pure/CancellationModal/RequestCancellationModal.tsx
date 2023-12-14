@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
-import { UI } from 'common/constants/theme'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 
 export type RequestCancellationModalProps = {
@@ -39,8 +39,8 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
   align-items: center;
   justify-content: space-between;
   gap: 5px;
-  background: ${({ theme, isOnChain$ }) => (isOnChain$ ? theme.info : theme.grey1)};
-  color: ${({ theme, isOnChain$ }) => (isOnChain$ ? theme.infoText : 'inherit')};
+  background: ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_TEXT})` : 'inherit')};
   padding: 4px 8px;
   border-radius: 4px;
   outline: none;
@@ -50,7 +50,8 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
   cursor: pointer;
 
   :hover {
-    outline: 1px solid ${({ theme }) => theme.border2};
+    outline: 1px solid
+      ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   }
 `
 
@@ -64,14 +65,14 @@ const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   line-height: 1.6;
 `
 
 const OrderTypeDetails = styled.div`
   margin: 0 0 15px 5px;
   padding-left: 10px;
-  border-left: 3px solid ${({ theme }) => theme.grey1};
+  border-left: 3px solid var(${UI.COLOR_TEXT_OPACITY_25});
 
   > p {
     margin: 0 0 10px 0;
@@ -144,7 +145,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
                 </NavHashLink>
                 .
                 {isOnChainType && (
-                  <StyledNotificationBanner isVisible={true} canClose={false} level="info">
+                  <StyledNotificationBanner isVisible={true} canClose={false} level="INFO">
                     <div>
                       Tx cost:{' '}
                       {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : 'Unknown'}

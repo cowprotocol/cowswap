@@ -4,11 +4,10 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { useFavouriteTokens, useToggleFavouriteToken } from '@cowprotocol/tokens'
 import { ButtonStar } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;
@@ -40,7 +39,7 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
   return (
     <StyledButtonStar
       stroke={theme.text1}
-      fill={isFavouriteToken ? `var(${UI.COLOR_TEXT1})` : undefined}
+      fill={isFavouriteToken ? `var(${UI.COLOR_TEXT})` : undefined}
       onClick={handleFavouriteToken}
     />
   )

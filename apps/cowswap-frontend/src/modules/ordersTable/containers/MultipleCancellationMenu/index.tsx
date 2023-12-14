@@ -1,13 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { transparentize } from 'polished'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -35,8 +34,8 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
 
 const ActionButton = styled.button`
   display: inline-flex;
-  background: ${({ theme }) => transparentize(0.86, theme.danger)};
-  color: ${({ theme }) => theme.danger};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
@@ -46,23 +45,23 @@ const ActionButton = styled.button`
   border: 0;
   outline: none;
   cursor: pointer;
-  transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   border-radius: 24px;
   vertical-align: center;
 
   &:hover:not([disabled]) {
-    background: ${({ theme }) => transparentize(0.75, theme.danger)};
+    background: var(${UI.COLOR_DANGER_BG});
   }
 
   &[disabled] {
     background: transparent;
-    outline: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
+    outline: 1px solid var(${UI.COLOR_PAPER_DARKER});
   }
 `
 
 const TextButton = styled.button`
   display: inline-block;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-size: 13px;
   padding: 5px 10px;
   cursor: pointer;

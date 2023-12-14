@@ -16,10 +16,10 @@ const PILL_COLOUR_MAP = {
   PRESIGNATURE_PENDING: 'pending',
   CREATING: 'pending',
   PENDING_TX: 'pending',
-  EXPIRED_ORDER: 'attention',
-  CANCELLED_ORDER: 'attention',
-  CANCELLING_ORDER: 'attention',
-  FAILED: 'attention',
+  EXPIRED_ORDER: 'alert',
+  CANCELLED_ORDER: 'danger',
+  CANCELLING_ORDER: 'danger',
+  FAILED: 'danger',
 }
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {

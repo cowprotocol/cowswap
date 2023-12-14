@@ -3,11 +3,12 @@ import { anonymizeLink } from '@cowprotocol/common-utils'
 import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
 import styled from 'styled-components'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
+import { UI } from '../../enum'
 
 export const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.text3};
+  color: var(${UI.COLOR_TEXT});
   font-weight: 500;
 
   :hover {
@@ -47,8 +48,8 @@ const LinkIconWrapper = styled.a`
 export const LinkIcon = styled(LinkIconFeather)`
   height: 16px;
   width: 18px;
-  margin-left: 10px;
-  stroke: ${({ theme }) => theme.text3};
+  margin: 0 10px 0 0;
+  stroke: currentColor;
 `
 
 export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {

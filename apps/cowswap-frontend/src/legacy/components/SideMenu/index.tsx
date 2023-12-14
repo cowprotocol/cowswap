@@ -1,7 +1,6 @@
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   display: flex;
@@ -10,7 +9,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   font-weight: 500;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   height: max-content;
   position: sticky;
   top: 0;
@@ -32,7 +31,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     font-size: inherit;
 
     ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-    background: ${({ theme }) => transparentize(0.9, theme.text1)};
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 16px;
     padding: 12px;
     margin: 0 0 24px;
@@ -51,7 +50,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     text-decoration: none;
     color: inherit;
     opacity: 0.65;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: block;
 
     ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
@@ -67,7 +66,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
       font-weight: 600;
 
       ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-        background: ${({ theme }) => transparentize(0.9, theme.text1)};
+        background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
       `}
     }

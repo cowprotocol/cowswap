@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { ArrowLeft, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const ButtonText = styled.button`
   outline: none;
@@ -27,7 +27,7 @@ export const ButtonText = styled.button`
 export const CloseIcon = styled(X)<{ onClick: () => void }>`
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -54,8 +54,9 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
   text-decoration: none;
   background: none;
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text3)};
+  color: inherit;
   font-weight: 500;
+  opacity: ${({ disabled }) => (disabled ? 0.7 : 1)};
 
   :hover {
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
@@ -75,11 +76,12 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
 export const StyledInternalLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.text3};
+  color: var(${UI.COLOR_PRIMARY_PAPER});
   font-weight: 500;
 
   :hover {
     text-decoration: underline;
+    color: var(${UI.COLOR_PRIMARY_DARKER});
   }
 
   :focus {
@@ -96,7 +98,7 @@ export const TrashIcon = styled(Trash)`
   height: 16px;
   width: 18px;
   margin-left: 10px;
-  stroke: ${({ theme }) => theme.text3};
+  stroke: currentColor;
 
   cursor: pointer;
   align-items: center;
@@ -140,7 +142,7 @@ export const Spinner = styled.img`
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 `
 export function BackArrow({ to }: { to: string }) {
   return (
@@ -177,5 +179,5 @@ export const SmallOnly = styled.span`
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: var(${UI.COLOR_PRIMARY});
 `

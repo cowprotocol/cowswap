@@ -1,14 +1,13 @@
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { CloseIcon } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -46,7 +45,7 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
   left: 0;
@@ -59,7 +58,7 @@ export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   height: 28px;
   width: 28px;
 
@@ -77,7 +76,7 @@ export const WalletIcon = styled.div`
   width: var(--icon-size);
   height: var(--icon-size);
   border-radius: var(--icon-size);
-  animation: pulser 6s 0.2s ease-in-out infinite;
+  animation: pulser 6s var(${UI.ANIMATION_DURATION}) ease-in-out infinite;
   position: relative;
 
   @keyframes pulser {
@@ -119,7 +118,7 @@ export const GPModalHeader = styled(RowBetween)`
   left: 0;
   width: 100%;
   padding: 16px 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   z-index: 20;
 `
 
@@ -158,7 +157,7 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 1px solid ${({ theme }) => theme.border2};
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   background: transparent;
   outline: 0;
   padding: 8px 16px;
@@ -166,7 +165,7 @@ export const ButtonCustom = styled.button`
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   &:hover {
@@ -185,7 +184,7 @@ export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   padding: 16px 16px 32px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px 16px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -250,7 +249,7 @@ export const StepsIconWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 18px;
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT_PAPER});
   }
 
   @keyframes spin {
@@ -308,7 +307,7 @@ export const StepsWrapper = styled.div`
     flex: 1 1 auto;
     height: 2px;
     border: 0;
-    background: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_TEXT});
     margin: auto;
     position: absolute;
     width: 100%;
@@ -331,7 +330,7 @@ export const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;
@@ -377,6 +376,7 @@ export const ApproveWrapper = styled.div`
   width: 100%;
   padding: 26px 16px 32px;
   gap: 32px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -385,6 +385,7 @@ export const ApproveWrapper = styled.div`
     text-align: center;
     width: 100%;
     margin: 0 auto;
+    color: inherit;
   }
 `
 
@@ -412,8 +413,8 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   border-radius: 12px;
   font-size: 13px;
   background: ${({ theme, highlight }) =>
-    highlight ? (theme.darkMode ? transparentize(0.8, theme.text3) : transparentize(0.9, theme.text3)) : theme.bg1};
-  border: 1px solid ${({ theme, highlight }) => (highlight ? 'none' : transparentize(0.8, theme.text1))};
+    highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
+  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT})`)};
   position: relative;
 
   &::before {
@@ -449,7 +450,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
   padding: 0;
   list-style: none;
   font-size: inherit;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  color: var(${UI.COLOR_TEXT_OPACITY_25});
   gap: 6px;
   display: flex;
   flex-flow: column wrap;
@@ -487,7 +488,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       listIconAlert &&
       css`
         > path {
-          fill: ${({ theme }) => transparentize(0.6, theme.text1)};
+          fill: ${({ theme }) => transparentize(theme.text, 0.6)};
         }
       `}
   }
@@ -512,7 +513,7 @@ export const ApproveFooter = styled.div`
     padding: 0;
     list-style: none;
     font-size: inherit;
-    color: ${({ theme }) => transparentize(0.2, theme.text1)};
+    color: var(${UI.COLOR_TEXT_OPACITY_25});
     gap: 6px;
     display: flex;
     flex-flow: column wrap;

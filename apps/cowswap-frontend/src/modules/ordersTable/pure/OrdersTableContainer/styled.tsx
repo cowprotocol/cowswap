@@ -1,7 +1,8 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
@@ -17,7 +18,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 12px;
 
   ${({ theme, isRowSelectable, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
@@ -35,12 +36,12 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
 `
 
 export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
-  background: ${({ isChildOrder, theme }) => (isChildOrder ? transparentize(0.91, theme.text1) : 'transparent')};
-  transition: background 0.15s ease-in-out;
+  background: ${({ isChildOrder }) => (isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: grid;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.bg1)};
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 
   > div:first-child {
@@ -48,7 +49,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      color: ${({ theme }) => transparentize(theme.text, 0.5)};
       content: '↳';
       text-decoration: none !important;
     }
@@ -59,7 +60,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(0.6, theme.text3)};
+      color: ${({ theme }) => transparentize(theme.text3, 0.6)};
       content: '↳';
       text-decoration: none !important;
     }
@@ -98,9 +99,10 @@ export const CheckboxCheckmark = styled.span`
     margin: auto;
     width: 31%;
     height: 66%;
-    border: solid ${({ theme }) => theme.bg1};
+    border: solid var(${UI.COLOR_BUTTON_TEXT});
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+    transition: border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       border-width: 0 3px 3px 0;
@@ -112,14 +114,19 @@ export const TableRowCheckbox = styled.input`
   width: var(--checkboxSize);
   height: var(--checkboxSize);
   background: transparent;
-  border: 2px solid ${({ theme }) => transparentize(0.5, theme.text1)};
+  border: 2px solid var(${UI.COLOR_TEXT});
   border-radius: var(--checkBoxBorderRadius);
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   margin: 0;
   outline: 0;
+  opacity: 0.5;
 
   &:checked {
-    background-color: var(${UI.COLOR_TEXT1});
+    border-color: var(${UI.COLOR_PRIMARY});
+    background: var(${UI.COLOR_PRIMARY});
+    opacity: 1;
   }
 
   &:checked + ${CheckboxCheckmark}::after {
@@ -127,12 +134,13 @@ export const TableRowCheckbox = styled.input`
   }
 
   &:indeterminate {
-    border-color: var(${UI.COLOR_TEXT1});
+    background: var(${UI.COLOR_PRIMARY});
+    border-color: var(${UI.COLOR_PRIMARY});
   }
 
   &:indeterminate + ${CheckboxCheckmark}::after {
     display: block;
-    border: solid ${({ theme }) => theme.text1};
+    border: solid var(${UI.COLOR_BUTTON_TEXT});
     border-width: 2px 0 0 0;
     top: calc(50% + 3px);
     transform: none;
@@ -158,6 +166,13 @@ export const TableRowCheckboxWrapper = styled.label`
   cursor: pointer;
 
   &:hover > ${TableRowCheckbox}:not(:checked):not([disabled]) {
-    background: ${({ theme }) => transparentize(0.85, theme.text1)};
+    background: var(${UI.COLOR_PRIMARY});
+    border-color: var(${UI.COLOR_PRIMARY});
+    opacity: 0.5;
+
+    + ${CheckboxCheckmark}::after {
+      display: block;
+      border-color: var(${UI.COLOR_BUTTON_TEXT});
+    }
   }
 `

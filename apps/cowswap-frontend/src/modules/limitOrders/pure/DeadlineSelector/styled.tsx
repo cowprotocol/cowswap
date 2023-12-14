@@ -1,12 +1,13 @@
+import { UI } from '@cowprotocol/ui'
+
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   border-radius: 16px;
   padding: 10px 16px;
   min-height: ${({ minHeight }) => minHeight || '80px'};
@@ -36,11 +37,17 @@ export const Label = styled.span`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
   font-weight: 500;
@@ -77,7 +84,7 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
 
 export const ListWrapper = styled(MenuList)`
   display: block;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
   padding: 10px 15px;
@@ -90,7 +97,7 @@ export const ListWrapper = styled(MenuList)`
 `
 
 export const ListItem = styled(MenuItem)`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   background: none;
   border: 0;
   outline: none;
@@ -112,22 +119,22 @@ export const CustomInput = styled.input`
   font-size: 21px;
   border-radius: 8px;
   width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)};
-  color: var(${UI.COLOR_TEXT1});
+  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.7)};
+  color: inherit;
   padding: 4px 8px;
   outline: 0;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 
   &::-webkit-calendar-picker-indicator {
     filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
   }
 
   &::-webkit-datetime-edit {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   &::-webkit-datetime-edit[disabled] {
-    color: ${({ theme }) => transparentize(0.7, theme.text1)};
+    color: ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 `
 
@@ -154,6 +161,7 @@ export const ModalHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   padding: 0 0 16px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -179,7 +187,7 @@ export const ModalContent = styled.div`
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 12px;
 `
 
@@ -187,7 +195,7 @@ export const CloseIcon = styled(X)`
   height: 28px;
   width: 28px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;
@@ -195,6 +203,6 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `

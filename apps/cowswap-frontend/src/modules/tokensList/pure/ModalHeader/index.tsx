@@ -1,7 +1,7 @@
+import { UI } from '@cowprotocol/ui'
+
 import { ArrowLeft, X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 import { IconButton } from '../commonElements'
 

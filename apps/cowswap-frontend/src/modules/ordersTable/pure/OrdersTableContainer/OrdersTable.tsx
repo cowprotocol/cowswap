@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router-dom'
@@ -27,7 +27,6 @@ import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { UI } from 'common/constants/theme'
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -51,11 +50,11 @@ import {
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0;
   position: relative;
   overflow: hidden;
-  background: ${({ theme }) => transparentize(0.99, theme.bg1)};
+  background: var(${UI.COLOR_PAPER_OPACITY_99});
   backdrop-filter: blur(20px);
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
@@ -83,7 +82,8 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
+  background: ${({ hasBackground }) =>
+    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
 
   > span {
     display: flex;
@@ -105,7 +105,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
 
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -143,7 +143,7 @@ const StyledCloseIcon = styled(X)`
   height: 24px;
   width: 24px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;
@@ -151,21 +151,22 @@ const StyledCloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 
 const OrdersExplainerBanner = styled.div`
   display: grid;
-  background: ${({ theme }) => theme.gradient1};
+  background: ${`linear-gradient(90deg, var(${UI.COLOR_PAPER}) 0%, var(${UI.COLOR_PAPER_DARKER}) 100%)`};
   width: 100%;
   gap: 16px;
   grid-template-columns: 6.2fr 5.5fr 24px;
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 16px;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     width: fit-content;
@@ -177,9 +178,10 @@ const OrdersExplainerBanner = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    color: inherit;
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(0.5, theme.text1)};
+      fill: currentColor;
     }
 
     > b {

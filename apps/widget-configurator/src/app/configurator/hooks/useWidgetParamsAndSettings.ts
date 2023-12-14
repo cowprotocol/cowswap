@@ -28,7 +28,14 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
+      customColors,
+      defaultColors,
     } = configuratorState
+
+    const themeColors = {
+      ...defaultColors,
+      ...customColors,
+    }
 
     const params: CowSwapWidgetProps['params'] = {
       appCode: 'CoW Widget: Configurator',
@@ -41,14 +48,18 @@ export function useWidgetParamsAndSettings(
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      theme,
-      // theme: {
-      //   baseTheme: theme,
-      //   primaryColor: '#d9258e',
-      //   screenBackground: '#ee00cd',
-      //   widgetBackground: '#b900ff',
-      //   textColor: '#b348cc',
-      // },
+      theme: {
+        baseTheme: theme,
+        primary: themeColors.primary,
+        background: themeColors.background,
+        paper: themeColors.paper,
+        text: themeColors.text,
+        danger: themeColors.danger,
+        warning: themeColors.warning,
+        alert: themeColors.alert,
+        info: themeColors.info,
+        success: themeColors.success,
+      },
     }
 
     return params

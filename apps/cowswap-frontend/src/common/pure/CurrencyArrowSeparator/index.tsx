@@ -15,12 +15,12 @@ export interface CurrencyArrowSeparatorProps {
 }
 
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
-  const { isLoading, onSwitchTokens, withRecipient, isCollapsed = true, hasSeparatorLine, border } = props
+  const { isLoading, onSwitchTokens, withRecipient, isCollapsed = true, hasSeparatorLine } = props
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <styledEl.Box withRecipient={withRecipient} isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
-      <styledEl.LoadingWrapper isLoading={isLoading} border={border}>
+      <styledEl.LoadingWrapper isLoading={isLoading}>
         {!isInjectedWidgetMode && isLoading ? (
           <styledEl.CowImg src={loadingCowWebp} alt="loading" />
         ) : (

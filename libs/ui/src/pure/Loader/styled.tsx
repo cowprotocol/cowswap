@@ -1,3 +1,4 @@
+import { UI } from '../../enum'
 import styled, { css, keyframes } from 'styled-components'
 
 export const loadingAnimation = keyframes`
@@ -17,9 +18,9 @@ export const LoadingRows = styled.div`
     animation-fill-mode: both;
     background: linear-gradient(
       to left,
-      ${({ theme }) => theme.bg1} 25%,
-      ${({ theme }) => theme.bg2} 50%,
-      ${({ theme }) => theme.bg1} 75%
+      var(${UI.COLOR_PAPER}) 25%,
+      var(${UI.COLOR_PAPER_DARKER}) 50%,
+      var(${UI.COLOR_PAPER}) 75%
     );
     background-size: 400%;
     border-radius: 12px;
@@ -31,5 +32,5 @@ export const LoadingRows = styled.div`
 export const loadingOpacityMixin = css<{ $loading: boolean }>`
   filter: ${({ $loading }) => ($loading ? 'grayscale(1)' : 'none')};
   opacity: ${({ $loading }) => ($loading ? '0.4' : '1')};
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 `

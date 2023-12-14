@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../../pure/commonElements'
 
@@ -14,7 +14,7 @@ const RowBox = styled.div`
 export const SearchResults = styled.div`
   margin-top: 15px;
   padding-bottom: 15px;
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
 
 export const Header = styled(RowBox)`
@@ -55,5 +55,5 @@ export const TipText = styled.div`
   color: var(${UI.COLOR_LINK});
   text-align: center;
   padding: 20px 0;
-  border-top: 1px solid var(${UI.COLOR_GREY});
+  border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `

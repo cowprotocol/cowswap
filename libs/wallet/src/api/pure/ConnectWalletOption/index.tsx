@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { darken, lighten } from 'polished'
 import styled from 'styled-components/macro'
+
+import { UI } from '@cowprotocol/ui'
 
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
 
@@ -33,24 +34,19 @@ const OptionCardLeft = styled.div`
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
   margin-top: 0;
   opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
-  background-color: ${({ theme, active }) => (active ? theme.bg2 : theme.grey1)};
-  color: ${({ theme, active }) => (active ? theme.white : theme.text1)};
-
+  background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : 'inherit')};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease-in;
   height: 120px;
-  border: 1px solid transparent;
+  border: 0;
 
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    background-color: ${({ theme, clickable }) => {
-      if (!clickable) return
-      else if (!theme.darkMode) return darken(0.05, theme.bg3)
-      else return lighten(0.2, theme.bg3)
-    }};
+    background-color: ${({ clickable }) => clickable && `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
 
@@ -77,13 +73,13 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  font-size: 0.7rem;
+  font-size: 13px;
   font-weight: 400;
   white-space: nowrap;
 `
 
 const SubHeader = styled.div`
-  color: var(--cow-color-text1);
+  color: inherit;
   margin-top: 10px;
   font-size: 12px;
 `

@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
 import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 
@@ -25,9 +26,9 @@ const colorEnumsMap: Record<BannerType, ColorEnums> = {
   },
   information: {
     icon: IconType.INFORMATION,
-    color: UI.COLOR_INFORMATION_TEXT,
-    bg: UI.COLOR_INFORMATION_BG,
-    text: UI.COLOR_INFORMATION_TEXT,
+    color: UI.COLOR_INFO_TEXT,
+    bg: UI.COLOR_INFO_BG,
+    text: UI.COLOR_INFO_TEXT,
   },
   success: {
     icon: IconType.SUCCESS,

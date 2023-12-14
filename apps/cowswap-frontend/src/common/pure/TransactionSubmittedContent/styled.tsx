@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
-
-import { UI } from 'common/constants/theme'
 
 export const ButtonCustom = styled.button`
   display: flex;
@@ -12,20 +12,20 @@ export const ButtonCustom = styled.button`
   align-items: center;
   border-radius: 16px;
   min-height: 52px;
-  border: 1px solid ${({ theme }) => theme.border2};
-  color: var(${UI.COLOR_TEXT1});
-  background: transparent;
+  border: 0;
+  color: var(${UI.COLOR_BUTTON_TEXT});
+  background: var(${UI.COLOR_PRIMARY});
   outline: 0;
   padding: 8px 16px;
   margin: 16px 0 0;
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  transition: background 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   &:hover {
-    background: ${({ theme }) => theme.border2};
+    background: var(${UI.COLOR_PRIMARY_DARKER});
   }
 
   > a {
@@ -53,7 +53,7 @@ export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   height: 28px;
   width: 28px;
 

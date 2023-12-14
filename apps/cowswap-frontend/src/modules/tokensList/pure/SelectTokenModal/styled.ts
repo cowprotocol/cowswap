@@ -1,13 +1,13 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
   width: 100%;
 `
@@ -43,22 +43,22 @@ export const SearchInput = styled.input`
   width: 100%;
   white-space: nowrap;
   outline: none;
-  background: var(${UI.COLOR_GREY});
-  color: var(${UI.COLOR_TEXT1});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   border: 1px solid var(${UI.COLOR_BORDER});
   appearance: none;
   font-size: 16px;
   border-radius: 12px;
 
   ::placeholder {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     opacity: 0.7;
   }
 
   transition: border 100ms;
 
   :focus {
-    border: 1px solid var(${UI.COLOR_LINK});
+    border: 1px solid var(${UI.COLOR_PRIMARY});
     outline: none;
   }
 `
@@ -77,9 +77,11 @@ export const ActionButton = styled.button`
   margin: 0;
   font-size: 16px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    opacity: 0.7;
+    opacity: 1;
   }
 `

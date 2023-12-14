@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 const ModalInner = styled.div`
   display: flex;
@@ -23,9 +23,9 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
   height: 100%;
   margin: auto;
   overflow-y: auto;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: var(${UI.BOX_SHADOW_NORMAL});
+  box-shadow: var(${UI.BOX_SHADOW});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
@@ -67,7 +67,7 @@ const IconX = styled.div`
   right: 10px;
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
   > svg {
@@ -105,7 +105,7 @@ const NewModalContent = styled.div<{ paddingTop?: number }>`
   p {
     font-size: var(${UI.FONT_SIZE_NORMAL});
     font-weight: var(${UI.FONT_WEIGHT_NORMAL});
-    color: var(${UI.COLOR_TEXT2});
+    color: inherit;
     margin: 0 auto;
     padding: 0;
   }

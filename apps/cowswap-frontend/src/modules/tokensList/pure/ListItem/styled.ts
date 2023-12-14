@@ -1,8 +1,7 @@
-import { MenuButton, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import { MenuButton, MenuList } from '@reach/menu-button'
+import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
 
@@ -13,29 +12,31 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
   margin: 20px;
   padding: 20px;
   border-radius: 20px;
-  border: 1px solid var(${UI.COLOR_GREY});
-  background-color: ${({ $enabled, theme }) => ($enabled ? transparentize(0.8, theme.bg2) : 'transparent')};
+  border: 1px solid ${({ $enabled }) => ($enabled ? `transparent` : `var(${UI.COLOR_BORDER})`)};
+  background-color: ${({ $enabled }) => ($enabled ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 `
 
 export const SettingsButton = styled(MenuButton)`
   ${blankButtonMixin}
+  color: inherit;
 
   > svg {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
+    stroke: currentColor;
+  }
 
-    &:hover {
-      color: var(${UI.COLOR_TEXT2});
-    }
+  > svg > path {
+    stroke: currentColor;
   }
 `
 
 export const SettingsContainer = styled(MenuList)`
   position: relative;
   z-index: 12;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid var(${UI.COLOR_GREY});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const SettingsAction = styled.div`
@@ -55,7 +56,7 @@ export const SettingsAction = styled.div`
 `
 
 export const ListVersion = styled.div`
-  color: var(${UI.COLOR_TEXT1_INACTIVE});
-  border-bottom: 1px solid var(${UI.COLOR_GREY});
+  color: var(${UI.COLOR_DISABLED_TEXT});
+  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKER});
   padding: 0 5px 10px 5px;
 `

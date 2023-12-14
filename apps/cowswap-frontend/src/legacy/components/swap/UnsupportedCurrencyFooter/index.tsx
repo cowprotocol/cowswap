@@ -1,6 +1,6 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
@@ -34,7 +34,7 @@ const Wrapper = styled.div`
     transform: none;
     padding: 24px;
     border-radius: 16px;
-    background: ${({ theme }) => transparentize(0.9, theme.danger)};
+    background: ${({ theme }) => transparentize(theme.danger, 0.9)};
   }
 `
 

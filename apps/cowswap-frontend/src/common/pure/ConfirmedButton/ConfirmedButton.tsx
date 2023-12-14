@@ -1,10 +1,9 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
 import { ButtonError } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 const Container = styled.div``
 const Instruction = styled.p`
@@ -12,19 +11,20 @@ const Instruction = styled.p`
   margin-bottom: 10px;
 `
 const Input = styled.input`
-  border: 1px solid ${({ theme }) => theme.border2};
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   width: 100%;
   margin: 10px 0;
   margin-top: 0;
   padding: 10px;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.bg3};
-  color: var(${UI.COLOR_TEXT1});
+  border-radius: 12px;
   outline: none;
   font-size: 15px;
+  font-weight: bold;
 
   &:focus {
-    border: 1px solid ${({ theme }) => theme.blue2};
+    border: 1px solid var(${UI.COLOR_PRIMARY});
   }
 `
 

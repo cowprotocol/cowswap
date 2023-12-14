@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'
@@ -74,7 +73,7 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 22px;
   border-radius: 0 0 12px 12px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;
   line-height: 1;
 
@@ -96,7 +95,7 @@ export const Progress = styled.div<ProgressProps>`
   height: var(--height);
   position: relative;
   display: flex;
-  background: ${({ theme }) => transparentize(0.9, theme.text1)};
+  background: var(${UI.COLOR_TEXT_OPACITY_10});
   margin: 28px 0 0;
   border-radius: var(--height);
 
@@ -116,7 +115,7 @@ export const Progress = styled.div<ProgressProps>`
     left: 0;
     top: 0;
     height: inherit;
-    transition: width 0.3s ease-in-out, background 0.2s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
     background: ${({ status, theme }) =>
       status === 'error' ? `var(${UI.COLOR_DANGER})` : status === 'success' ? `var(${UI.COLOR_SUCCESS})` : theme.text3};

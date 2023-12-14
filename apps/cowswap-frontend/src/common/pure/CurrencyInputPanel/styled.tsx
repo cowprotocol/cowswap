@@ -1,11 +1,9 @@
 import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
-
-import { UI } from 'common/constants/theme'
 
 export const OuterWrapper = styled.div`
   max-width: 100%;
@@ -19,9 +17,10 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   align-content: space-between;
   gap: 10px;
   padding: 16px;
-  background: ${({ theme, readOnly }) => (readOnly ? 'transparent' : theme.input.bg1)};
-  border: ${({ theme, readOnly }) => (readOnly ? `1px solid ${theme.grey1}` : 'none')};
+  background: ${({ readOnly }) => (readOnly ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border: ${({ readOnly }) => (readOnly ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
+  color: inherit;
   min-height: 106px;
   pointer-events: ${({ pointerDisabled }) => (pointerDisabled ? 'none' : '')};
   max-width: 100%;
@@ -40,7 +39,7 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 8px;
@@ -50,6 +49,7 @@ export const CurrencyInputBox = styled.div`
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+    color: inherit;
   }
 
   > div:last-child {
@@ -62,7 +62,13 @@ export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;
   margin: auto 0;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -73,10 +79,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    opacity: 0.7;
+    color: inherit;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -89,7 +96,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;
@@ -102,13 +109,29 @@ export const BalanceText = styled.span`
   gap: 5px;
   display: flex;
   align-items: center;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  color: inherit;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const FiatAmountText = styled.span`
   // TODO: inherit font styles from 'CurrencyInputBox' instead
+  color: inherit;
+
   > div {
-    font-weight: 400;
+    font-weight: 500;
     font-size: 13px;
+    opacity: 0.7;
+    color: inherit;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 `
 
@@ -119,16 +142,17 @@ export const SetMaxBtn = styled.button`
   background: none;
   border: none;
   outline: none;
-  color: ${({ theme }) => theme.text3};
+  color: inherit;
   font-weight: 600;
   font-size: 11px;
-  background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  background: var(${UI.COLOR_PAPER});
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
-  transition: background 0.15s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => transparentize(0.7, theme.text3)};
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `

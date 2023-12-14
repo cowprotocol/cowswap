@@ -1,5 +1,6 @@
 import { AutoRow } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'
@@ -11,37 +12,33 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 
-import { UI } from 'common/constants/theme'
-
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
 }
 
 const DarkSpan = styled.span`
   padding: 2px 8px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 5px;
-  color: var(${UI.COLOR_TEXT1});
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  color: inherit;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bg2};
+    background-color: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
   }
 `
 
-export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...boxProps }: FeesDiscountProps) => {
+export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, ...boxProps }: FeesDiscountProps) => {
   const { subsidy } = useCowBalanceAndSubsidy()
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      <Text fontWeight={500} fontSize={14} color={theme.text2} alignItems={'center'}>
+      <Text fontWeight={500} fontSize={14} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
-            bgColor={theme.grey1}
-            color={theme.text1}
             wrap
           >
             <StyledInfoIcon />

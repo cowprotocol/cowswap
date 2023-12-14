@@ -1,7 +1,7 @@
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
@@ -51,7 +51,7 @@ const WalletError = styled.div`
   padding: 1rem;
   text-align: center;
   border-radius: 12px;
-  background: ${({ theme }) => transparentize(0.7, theme.disabled)};
+  background: ${({ theme }) => transparentize(theme.disabled, 0.7)};
   margin: -15px 0 20px 0;
 `
 

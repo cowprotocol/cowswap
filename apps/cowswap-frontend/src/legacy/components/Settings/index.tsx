@@ -1,20 +1,19 @@
 import { RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
-
-import { UI } from 'common/constants/theme'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
-    border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
-    background-color: var(${UI.COLOR_CONTAINER_BG_01});
-    color: var(${UI.COLOR_TEXT1});
+    border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
+    background-color: var(${UI.COLOR_PAPER});
+    color: inherit;
     padding: 0;
     margin: 0;
     top: 36px;
@@ -23,8 +22,10 @@ const Settings = styled(SettingsMod)`
   }
 
   ${RowFixed} {
+    color: inherit;
+
     > div {
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
       opacity: 0.85;
     }
   }
@@ -38,18 +39,20 @@ const Settings = styled(SettingsMod)`
     background-color: transparent;
     margin: 0;
     padding: 0;
+    color: inherit;
 
     &:hover,
     &:focus {
       cursor: pointer;
       outline: none;
-      color: var(${UI.COLOR_TEXT1});
+      color: currentColor;
     }
 
     svg {
       opacity: 1;
       margin: 0;
       transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+      color: inherit;
     }
 
     &:hover > svg {
@@ -58,7 +61,7 @@ const Settings = styled(SettingsMod)`
 
     &:hover svg > path,
     &:hover svg > circle {
-      stroke: var(${UI.COLOR_TEXT1});
+      stroke: currentColor;
     }
   }
 
@@ -66,11 +69,17 @@ const Settings = styled(SettingsMod)`
     --size: var(${UI.ICON_SIZE_NORMAL});
     height: var(--size);
     width: var(--size);
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
 
     > path,
     > circle {
-      stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
-      transition: stroke 0.3s ease-in-out;
+      transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
   }
 

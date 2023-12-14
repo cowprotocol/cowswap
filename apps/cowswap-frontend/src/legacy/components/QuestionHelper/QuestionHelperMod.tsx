@@ -10,6 +10,7 @@ const QuestionHelperContainer = styled.span`
   margin-left: 4px;
   display: flex;
   align-items: center;
+  color: inherit;
 `
 
 export interface QuestionHelperProps extends Omit<TooltipProps, 'children' | 'show'> {

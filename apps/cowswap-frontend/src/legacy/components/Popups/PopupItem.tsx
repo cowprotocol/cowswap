@@ -1,7 +1,6 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { useSpring } from '@react-spring/web'
-import { ThemeContext } from 'styled-components/macro'
 
 import { FailedNetworkSwitchPopup } from 'legacy/components/Popups/FailedNetworkSwitchPopup'
 import { WarningPopup } from 'legacy/components/Popups/WarningPopup'
@@ -37,8 +36,6 @@ export function PopupItem({
     }
   }, [removeAfterMs, removeThisPopup])
 
-  const theme = useContext(ThemeContext)
-
   const isTxn = 'txn' in content
   const isMetaTxn = 'metatxn' in content
   const isWarningTxn = 'warning' in content
@@ -68,7 +65,7 @@ export function PopupItem({
 
   return (
     <PopupWrapper css={content.styles}>
-      <StyledClose stroke={theme.text2} onClick={removeThisPopup} />
+      <StyledClose onClick={removeThisPopup} />
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </PopupWrapper>

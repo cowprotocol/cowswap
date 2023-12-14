@@ -1,14 +1,13 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-
-import { UI } from 'common/constants/theme'
 
 import {
   StatusLabelWrapper,
@@ -80,12 +79,12 @@ export const WalletActions = styled.div`
 
 export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
   font-size: 0.825rem;
-  color: ${({ theme }) => theme.text3};
+  color: inherit;
   margin-left: 1rem;
   font-size: 0.825rem;
   display: flex;
   :hover {
-    color: var(${UI.COLOR_TEXT2});
+    color: inherit;
   }
 `
 
@@ -130,7 +129,7 @@ export const WalletNameAddress = styled.div`
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   padding: 0;
   height: 100%;
   margin: 0 24px;
@@ -144,9 +143,9 @@ export const Wrapper = styled.div`
   ${AddressLink},
   ${CopyIcon},
   ${WalletAction} {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     opacity: 0.85;
-    transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: auto;
     padding: 0;
     border: 0;
@@ -171,7 +170,7 @@ export const Wrapper = styled.div`
     margin: 0 0 0 8px;
     align-self: center;
     font-size: 21px;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   ${WalletName} {
@@ -269,7 +268,8 @@ export const InfoCard = styled.div`
   justify-content: space-between;
   border-radius: 16px;
   padding: 24px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
 
   &:not(:first-child) {
     margin: 24px 0;
@@ -285,7 +285,7 @@ export const InfoCard = styled.div`
 `
 
 export const AccountSection = styled.div`
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   padding: 0;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
 `
@@ -293,7 +293,7 @@ export const AccountSection = styled.div`
 export const AccountGroupingRow = styled.div`
   justify-content: space-between;
   align-items: center;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 
   div {
     ${({ theme }) => theme.flexRowNoWrap}
@@ -315,7 +315,7 @@ export const AccountGroupingRow = styled.div`
 
 export const NoActivityMessage = styled.p`
   font-size: 14px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   width: 100%;
   padding: 24px 0 0;
   text-align: center;
@@ -329,10 +329,11 @@ export const LowerSection = styled.div`
   width: 100%;
   align-items: flex-start;
   justify-content: flex-start;
+  color: inherit;
 
   > span {
     display: flex;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     justify-content: space-between;
     padding: 0 0 12px;
 
@@ -347,6 +348,7 @@ export const LowerSection = styled.div`
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
+    color: inherit;
 
     > ${StyledLink} {
       width: 100%;
@@ -366,11 +368,12 @@ export const LowerSection = styled.div`
     > span {
       opacity: 0.6;
       margin: 0 0 0 4px;
+      color: inherit;
     }
   }
 
   > span > ${StyledLink} {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     text-decoration: underline;
     font-size: 14px;
 
@@ -451,8 +454,8 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
-  color: var(${UI.COLOR_TEXT1});
+  background-color: var(${UI.COLOR_PAPER});
+  color: inherit;
   padding: 6px 8px;
   font-size: 13px;
   margin: 0;
@@ -531,17 +534,17 @@ export const SurplusCardWrapper = styled.div`
     text-align: center;
     justify-content: center;
     align-items: center;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 
   ${InfoCard} > div > span > p {
-    color: var(${UI.COLOR_TEXT1});
+    color: var(${UI.COLOR_TEXT});
   }
 
   ${InfoCard} > div > span > b {
     font-size: 28px;
     font-weight: bold;
-    color: ${({ theme }) => theme.success};
+    color: var(${UI.COLOR_SUCCESS});
     width: 100%;
     text-align: center;
     margin: 20px auto 0;
@@ -556,13 +559,13 @@ export const SurplusCardWrapper = styled.div`
     font-size: 15px;
     font-weight: 500;
     line-height: 1.1;
-    color: ${({ theme }) => transparentize(0.5, theme.text1)};
+    color: ${({ theme }) => transparentize(theme.text, 0.5)};
     margin: 3px auto 0;
   }
 
   ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -587,7 +590,7 @@ export const WalletIconWrapper = styled.div`
   }
 
   > svg > path {
-    --color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     fill: var(--color);
     stroke: var(--color);
     stroke-width: 0.5px;
@@ -604,13 +607,13 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
   border-radius: 16px;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ isHardWareWallet }) =>
     isHardWareWallet &&
     `
     cursor: pointer;
-    border: 1px solid var(${UI.COLOR_TEXT1_OPACITY_25});
+    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
     background: transparent;
     padding: 6px 10px;
 
@@ -621,14 +624,14 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
       height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-top: 4px solid var(${UI.COLOR_TEXT1});
+      border-top: 4px solid var(${UI.COLOR_TEXT});
       margin-left: 8px;
       opacity: 0.5;
-      transition: opacity 0.2s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
 
     &:hover {
-      background: var(${UI.COLOR_TEXT1_OPACITY_25});
+      background: var(${UI.COLOR_TEXT_OPACITY_25});
     }
 
     &:hover::after {

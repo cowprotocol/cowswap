@@ -1,28 +1,28 @@
 import React from 'react'
 
 import { escapeRegExp } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
-  color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
+  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   width: 0;
   position: relative;
   font-weight: 500;
   outline: none;
   border: none;
   flex: 1 1 auto;
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   font-size: ${({ fontSize }) => fontSize ?? '28px'};
   text-align: ${({ align }) => align && align};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px;
-  -webkit-appearance: textfield;
+  appearance: textfield;
   text-align: right;
 
   ::-webkit-search-decoration {
@@ -39,7 +39,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   }
 
   ::placeholder {
-    color: ${({ theme }) => theme.text4};
+    color: inherit;
   }
 `
 
