@@ -40,7 +40,7 @@ export {
 } from './web3-react/connection/injected'
 
 export { InstallKeystoneOption, KeystoneOption } from './web3-react/connection/keystone'
-export { LedgerOption } from './web3-react/connection/ledger'
+// export { LedgerOption } from './web3-react/connection/ledger'
 export { TrezorOption } from './web3-react/connection/trezor'
 export { TrustWalletOption } from './web3-react/connection/trust'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
