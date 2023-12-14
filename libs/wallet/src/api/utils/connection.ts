@@ -1,6 +1,6 @@
 import CoinbaseWalletIcon from '../assets/coinbase.svg'
 import KeystoneImage from '../assets/keystone.svg'
-import LedgerIcon from '../assets/ledger.svg'
+// import LedgerIcon from '../assets/ledger.svg'
 import TallyIcon from '../assets/tally.svg'
 import TrezorIcon from '../assets/trezor.svg'
 import TrustIcon from '../assets/trust.svg'

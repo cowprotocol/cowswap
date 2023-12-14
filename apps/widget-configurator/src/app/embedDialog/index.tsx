@@ -119,7 +119,7 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
 
   const code = useMemo(() => {
     return snippetFromParams(params, defaultPalette)
-  }, [snippetFromParams, params])
+  }, [snippetFromParams, params, defaultPalette])
 
   const onChangeTab = useCallback((_event: SyntheticEvent, newValue: TabInfo) => setCurrentTabInfo(newValue), [])
 
