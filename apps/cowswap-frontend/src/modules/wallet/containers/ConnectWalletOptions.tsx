@@ -10,7 +10,7 @@ import {
   OpenMetaMaskMobileOption,
   InstallKeystoneOption,
   KeystoneOption,
-  LedgerOption,
+  // LedgerOption,
   TrezorOption,
   TrustWalletOption,
   WalletConnectV2Option,
@@ -65,7 +65,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   // const zengoOption = (!isInjectedMobileBrowser && <ZengoOption {...connectionProps} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption {...connectionProps} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption {...connectionProps} />) ?? null
-  const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption {...connectionProps} />) ?? null
+  // const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption {...connectionProps} />) ?? null
   const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
   const keystoneOption =
     (showKeystone && <KeystoneOption {...connectionProps} />) || (!isMobile && <InstallKeystoneOption />)
@@ -79,7 +79,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {injectedOption}
       {walletConnectionV2Option}
       {coinbaseWalletOption}
-      {ledgerOption}
+      {/*{ledgerOption}*/}
       {trezorOption}
       {/*{zengoOption}*/}
       {ambireOption}
