@@ -19,7 +19,7 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.ALPHA]: 'Alpha',
   [ConnectionType.TALLY]: 'Tally',
   [ConnectionType.TRUST]: 'Trust',
-  [ConnectionType.LEDGER]: 'Ledger',
+  // [ConnectionType.LEDGER]: 'Ledger',
   [ConnectionType.KEYSTONE]: 'Keystone',
   [ConnectionType.TREZOR]: 'Trezor',
 }
@@ -37,7 +37,7 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
   [ConnectionType.TRUST]: TrustIcon,
   [ConnectionType.TALLY]: TallyIcon,
-  [ConnectionType.LEDGER]: LedgerIcon,
+  // [ConnectionType.LEDGER]: LedgerIcon,
   [ConnectionType.TREZOR]: TrezorIcon,
   [ConnectionType.KEYSTONE]: KeystoneImage,
   [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
