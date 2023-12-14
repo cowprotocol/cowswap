@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.2](https://github.com/cowprotocol/cowswap/compare/v1.51.1...v1.51.2) (2023-12-14)
+
+
+### Bug Fixes
+
+* remove ledger integration because it's hacked ([#3509](https://github.com/cowprotocol/cowswap/issues/3509)) ([cbf10a4](https://github.com/cowprotocol/cowswap/commit/cbf10a4e32aeb548840510f2cd1902e5e77d7e1e))
+
 ## [1.51.1](https://github.com/cowprotocol/cowswap/compare/v1.51.0...v1.51.1) (2023-12-07)
 
 
