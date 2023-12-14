@@ -301,6 +301,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
       ${({ theme }) => theme.mediaWidth.upToLarge`
         background: transparent;
+        color: inherit;
       `};
 
       > svg > path {

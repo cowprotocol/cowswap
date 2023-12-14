@@ -444,7 +444,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
   padding: 0;
   list-style: none;
   font-size: inherit;
-  color: var(${UI.COLOR_TEXT_OPACITY_25});
+  color: inherit;
   gap: 6px;
   display: flex;
   flex-flow: column wrap;

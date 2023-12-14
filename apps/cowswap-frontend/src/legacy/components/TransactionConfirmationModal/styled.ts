@@ -412,9 +412,8 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   gap: 16px;
   border-radius: 12px;
   font-size: 13px;
-  background: ${({ theme, highlight }) =>
-    highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
-  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT})`)};
+  background: ${({ highlight }) => (highlight ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT_OPACITY_10})`)};
   position: relative;
 
   &::before {
@@ -433,8 +432,8 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
     font-weight: bold;
     letter-spacing: 0.5px;
     text-align: center;
-    background: ${({ theme }) => theme.text3};
-    color: ${({ theme }) => (theme.darkMode ? theme.blueDark1 : theme.white)};
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
   > h5 {
@@ -450,7 +449,7 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
   padding: 0;
   list-style: none;
   font-size: inherit;
-  color: var(${UI.COLOR_TEXT_OPACITY_25});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   gap: 6px;
   display: flex;
   flex-flow: column wrap;
@@ -471,16 +470,16 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       !listIconAlert &&
       css`
         > path:nth-child(1) {
-          fill: ${({ theme }) => theme.text3};
+          fill: var(${UI.COLOR_PRIMARY});
           opacity: 1;
         }
 
         > path:nth-child(2) {
-          fill: ${({ theme }) => theme.text3};
+          fill: var(${UI.COLOR_PRIMARY});
         }
 
         > path:nth-child(3) {
-          fill: ${({ theme }) => theme.white};
+          fill: var(${UI.COLOR_BUTTON_TEXT});
         }
       `}
 
@@ -513,7 +512,7 @@ export const ApproveFooter = styled.div`
     padding: 0;
     list-style: none;
     font-size: inherit;
-    color: var(${UI.COLOR_TEXT_OPACITY_25});
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
     gap: 6px;
     display: flex;
     flex-flow: column wrap;
@@ -532,16 +531,16 @@ export const ApproveFooter = styled.div`
     margin: 0 6px 0 0;
 
     > path:nth-child(1) {
-      fill: ${({ theme }) => theme.text3};
+      fill: var(${UI.COLOR_PRIMARY});
       opacity: 1;
     }
 
     > path:nth-child(2) {
-      fill: ${({ theme }) => theme.text3};
+      fill: var(${UI.COLOR_PRIMARY});
     }
 
     > path:nth-child(3) {
-      fill: ${({ theme }) => theme.white};
+      fill: var(${UI.COLOR_BUTTON_TEXT});
     }
   }
 `
