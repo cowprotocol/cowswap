@@ -5,7 +5,7 @@ import { coinbaseWalletConnection } from '../connection/coinbase'
 import { injectedConnection } from '../connection/injected'
 import { injectedWidgetConnection } from '../connection/injectedWidget'
 import { keystoneConnection } from '../connection/keystone'
-import { ledgerConnection } from '../connection/ledger'
+// import { ledgerConnection } from '../connection/ledger'
 import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
 import { tallyWalletConnection } from '../connection/tally'
@@ -25,7 +25,7 @@ const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = 
   [ConnectionType.ALPHA]: walletConnectConnectionV2,
   [ConnectionType.TALLY]: tallyWalletConnection,
   [ConnectionType.TRUST]: trustWalletConnection,
-  [ConnectionType.LEDGER]: ledgerConnection,
+  // [ConnectionType.LEDGER]: ledgerConnection,
   [ConnectionType.KEYSTONE]: keystoneConnection,
   [ConnectionType.INJECTED_WIDGET]: injectedWidgetConnection,
   [ConnectionType.TREZOR]: trezorConnection,
