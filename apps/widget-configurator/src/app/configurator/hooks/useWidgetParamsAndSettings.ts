@@ -4,7 +4,6 @@ import type { CowSwapWidgetEnv, EthereumProvider } from '@cowprotocol/widget-lib
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
-import { DEFAULT_LIGHT_PALETTE, DEFAULT_DARK_PALETTE } from '../consts'
 import { ConfiguratorState } from '../types'
 
 const getEnv = (): CowSwapWidgetEnv => {
@@ -30,10 +29,11 @@ export function useWidgetParamsAndSettings(
       buyToken,
       buyTokenAmount,
       customColors,
+      defaultColors,
     } = configuratorState
 
     const themeColors = {
-      ...(theme === 'dark' ? DEFAULT_DARK_PALETTE : DEFAULT_LIGHT_PALETTE),
+      ...defaultColors,
       ...customColors,
     }
 

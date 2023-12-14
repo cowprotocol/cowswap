@@ -1,23 +1,9 @@
-import { useState, useEffect, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { PaletteMode } from '@mui/material'
 
-import { DEFAULT_LIGHT_PALETTE, DEFAULT_DARK_PALETTE } from '../consts'
-
-export type ColorKeys =
-  | 'primary'
-  | 'background'
-  | 'paper'
-  | 'text'
-  | 'danger'
-  | 'warning'
-  | 'alert'
-  | 'info'
-  | 'success'
-
-export type ColorPalette = {
-  [key in ColorKeys]: string
-}
+import { DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from '../consts'
+import { ColorPalette } from '../types'
 
 const LOCAL_STORAGE_KEY_NAME = 'COW_WIDGET_PALETTE_'
 

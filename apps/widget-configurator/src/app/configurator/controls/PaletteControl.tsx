@@ -3,7 +3,8 @@ import React from 'react'
 import { FormControl, Button, Collapse } from '@mui/material'
 import { MuiColorInput } from 'mui-color-input'
 
-import { ColorPalette, ColorPaletteManager } from '../hooks/useColorPaletteManager'
+import { ColorPaletteManager } from '../hooks/useColorPaletteManager'
+import { ColorPalette } from '../types'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 

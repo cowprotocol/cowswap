@@ -73,7 +73,7 @@ export function Configurator({ title }: { title: string }) {
   const [buyTokenAmount] = buyTokenAmountState
 
   const paletteManager = useColorPaletteManager(mode)
-  const { colorPalette } = paletteManager
+  const { colorPalette, defaultPalette } = paletteManager
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -108,6 +108,7 @@ export function Configurator({ title }: { title: string }) {
     buyToken,
     buyTokenAmount,
     customColors: colorPalette,
+    defaultColors: defaultPalette,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)
@@ -205,7 +206,12 @@ export function Configurator({ title }: { title: string }) {
       <Box sx={ContentStyled}>
         {params && (
           <>
-            <EmbedDialog params={params} open={dialogOpen} handleClose={handleDialogClose} />
+            <EmbedDialog
+              params={params}
+              defaultPalette={defaultPalette}
+              open={dialogOpen}
+              handleClose={handleDialogClose}
+            />
             <br />
             <CowSwapWidget provider={provider} params={params} />
           </>
