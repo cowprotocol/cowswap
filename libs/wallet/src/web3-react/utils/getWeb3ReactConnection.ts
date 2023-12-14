@@ -25,7 +25,7 @@ const connectionTypeToConnection: Record<ConnectionType, Web3ReactConnection> = 
   [ConnectionType.ALPHA]: walletConnectConnectionV2,
   [ConnectionType.TALLY]: tallyWalletConnection,
   [ConnectionType.TRUST]: trustWalletConnection,
-  [ConnectionType.LEDGER]: ledgerConnection,
+  // [ConnectionType.LEDGER]: ledgerConnection,
   [ConnectionType.KEYSTONE]: keystoneConnection,
   [ConnectionType.INJECTED_WIDGET]: injectedWidgetConnection,
   [ConnectionType.TREZOR]: trezorConnection,
