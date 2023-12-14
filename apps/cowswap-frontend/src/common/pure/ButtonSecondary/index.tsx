@@ -3,8 +3,8 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: string }>`
-  background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_90});
-  color: var(${UI.COLOR_LIGHT_BLUE});
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 12px;
   font-weight: 600;
   border: 0;
@@ -18,6 +18,6 @@ export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: str
   white-space: nowrap;
 
   &:hover {
-    background: var(${UI.COLOR_LIGHT_BLUE_OPACITY_80});
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 `
