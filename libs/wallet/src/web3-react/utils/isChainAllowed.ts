@@ -14,7 +14,7 @@ const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
   [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.TALLY]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.TRUST]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.LEDGER]: ALL_SUPPORTED_CHAIN_IDS,
+  // [ConnectionType.LEDGER]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.KEYSTONE]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.ALPHA]: [],

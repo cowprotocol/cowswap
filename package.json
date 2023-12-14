@@ -1,6 +1,6 @@
 {
   "name": "cowswap",
-  "version": "1.51.1",
+  "version": "1.51.2",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
@@ -68,7 +68,6 @@
     "@ethvault/iframe-provider": "^0.1.10",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
-    "@ledgerhq/connect-kit-loader": "^1.0.2",
     "@lingui/cli": "^4.3.0",
     "@lingui/core": "^4.3.0",
     "@lingui/macro": "^4.3.0",
