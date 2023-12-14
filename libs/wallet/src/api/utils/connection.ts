@@ -9,7 +9,7 @@ import { ConnectionType } from '../types'
 
 const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.INJECTED]: 'injected',
-  [ConnectionType.INJECTED_WIDGET]: 'CowSwap widget',
+  [ConnectionType.INJECTED_WIDGET]: 'CoW Swap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
   [ConnectionType.NETWORK]: 'Network',
