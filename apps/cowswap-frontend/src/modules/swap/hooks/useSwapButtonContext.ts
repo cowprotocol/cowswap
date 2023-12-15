@@ -32,12 +32,12 @@ import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
-import { useFeatureFlags } from '../../../common/hooks/featureFlags/useFeatureFlags'
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
 
 export interface SwapButtonInput {
