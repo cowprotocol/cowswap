@@ -8,12 +8,10 @@ import styled from 'styled-components/macro'
 
 import { SwapCallbackError } from 'legacy/components/swap/styleds'
 
-import { UI } from 'common/constants/theme'
-
 const Wrapper = styled.div`
   ${RowBetween} > div,
   ${RowFixed} > div {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 `
 

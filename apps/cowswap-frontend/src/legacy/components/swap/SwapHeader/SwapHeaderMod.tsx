@@ -7,11 +7,9 @@ import SettingsTab from 'legacy/components/Settings'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 
-import { UI } from 'common/constants/theme'
-
 const StyledSwapHeader = styled.div`
   width: 100%;
-  color: var(${UI.COLOR_TEXT2});
+  color: inherit;
 `
 
 export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {

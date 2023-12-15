@@ -33,7 +33,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           <Trans>
             You can now trade <TokenSymbol token={currency} />
           </Trans>
-          <CheckCircle size="24" color={theme.text1} />
+          <CheckCircle size="24" />
         </>
       )
     } else {
@@ -53,7 +53,7 @@ export function ApproveButton(props: ApproveButtonProps) {
               </Trans>
             }
           >
-            {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" color={theme.white} />}
+            {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
           </MouseoverTooltip>
         </>
       )

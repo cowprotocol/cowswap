@@ -5,6 +5,7 @@ import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -14,8 +15,6 @@ import { cowSwapStore, AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
-
-import { UI } from 'common/constants/theme'
 
 const FlexContainer = styled.div`
   display: flex;
@@ -40,14 +39,14 @@ const StyledParagraph = styled.p`
 `
 
 const CodeBlockWrapper = styled.div`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   overflow: auto;
   white-space: pre;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
-  color: var(${UI.COLOR_TEXT2});
+  color: inherit;
 
   /* MOD */
   ${({ theme }) => theme.mediaWidth.upToSmall`

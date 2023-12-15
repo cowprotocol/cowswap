@@ -4,7 +4,7 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { StrictMode } from 'react'
+import { useEffect, StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -41,46 +41,62 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-const root = createRoot(document.getElementById('root')!)
-const isInjectedWidgetMode = isInjectedWidget()
+function Main() {
+  const isInjectedWidgetMode = isInjectedWidget()
 
-root.render(
-  <StrictMode>
-    <FixedGlobalStyle />
-    <Provider store={cowSwapStore}>
-      <AtomProvider store={jotaiStore}>
-        <HashRouter>
-          <LanguageProvider>
-            <Web3Provider>
-              <ThemeProvider>
-                <ThemedGlobalStyle />
-                <WalletUnsupportedNetworkBanner />
-                <BlockNumberProvider>
-                  <WithLDProvider>
-                    <Updaters />
+  useEffect(() => {
+    const skeleton = document.getElementById('skeleton')
+    if (skeleton) {
+      skeleton.parentNode?.removeChild(skeleton)
+    }
+  }, [])
 
-                    {!isInjectedWidgetMode && (
-                      <>
-                        <FeatureGuard featureFlag="cowFortuneEnabled">
-                          <FortuneWidget />
-                        </FeatureGuard>
-                        <AppziButton />
-                      </>
-                    )}
+  return (
+    <StrictMode>
+      <FixedGlobalStyle />
+      <Provider store={cowSwapStore}>
+        <AtomProvider store={jotaiStore}>
+          <HashRouter>
+            <LanguageProvider>
+              <Web3Provider>
+                <ThemeProvider>
+                  <ThemedGlobalStyle />
+                  <WalletUnsupportedNetworkBanner />
+                  <BlockNumberProvider>
+                    <WithLDProvider>
+                      <Updaters />
 
-                    <Popups />
-                    <SnackbarsWidget />
-                    <App />
-                  </WithLDProvider>
-                </BlockNumberProvider>
-              </ThemeProvider>
-            </Web3Provider>
-          </LanguageProvider>
-        </HashRouter>
-      </AtomProvider>
-    </Provider>
-  </StrictMode>
-)
+                      {!isInjectedWidgetMode && (
+                        <>
+                          <FeatureGuard featureFlag="cowFortuneEnabled">
+                            <FortuneWidget />
+                          </FeatureGuard>
+                          <AppziButton />
+                        </>
+                      )}
+
+                      <Popups />
+                      <SnackbarsWidget />
+                      <App />
+                    </WithLDProvider>
+                  </BlockNumberProvider>
+                </ThemeProvider>
+              </Web3Provider>
+            </LanguageProvider>
+          </HashRouter>
+        </AtomProvider>
+      </Provider>
+    </StrictMode>
+  )
+}
+
+const container = document.getElementById('root')
+if (container !== null) {
+  const root = createRoot(container)
+  root.render(<Main />)
+} else {
+  console.error('Failed to find the root element')
+}
 
 if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
   serviceWorkerRegistration.register()

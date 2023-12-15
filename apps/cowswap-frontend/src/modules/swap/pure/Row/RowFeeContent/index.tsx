@@ -31,7 +31,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <TextWrapper>Fees {includeGasMessage}</TextWrapper>
+        <TextWrapper>Est. fees {includeGasMessage}</TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} wrap>
             <StyledInfoIcon size={16} />

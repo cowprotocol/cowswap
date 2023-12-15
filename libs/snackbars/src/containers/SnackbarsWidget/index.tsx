@@ -5,8 +5,8 @@ import { SnackbarPopup } from '../../pure/SnackbarPopup'
 import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { ReactElement, useCallback, useMemo } from 'react'
-import { transparentize } from 'polished'
 import { useResetAtom } from 'jotai/utils'
+import { darken } from 'color2k'
 
 const Overlay = styled.div`
   display: none;
@@ -16,7 +16,7 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 4;
-  background: ${({ theme }) => transparentize(0.2, theme.bg1)};
+  background: ${({ theme }) => darken(theme.bg1, 0.2)};
 `
 
 const List = styled.div`
@@ -46,7 +46,7 @@ const SuccessIcon = styled(CheckCircle)`
 `
 
 const AlertIcon = styled(AlertCircle)`
-  color: ${({ theme }) => theme.red1};
+  color: ${({ theme }) => theme.danger};
 `
 
 const DEFAULT_DURATION = ms`6s`

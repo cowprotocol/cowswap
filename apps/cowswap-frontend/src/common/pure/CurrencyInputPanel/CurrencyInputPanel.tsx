@@ -152,8 +152,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             {balance && !disabled && (
               <styledEl.BalanceText>
-                <Trans>Balance</Trans>:{' '}
-                <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} opacitySymbol />
+                <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
                 {showSetMax && balance.greaterThan(0) && (
                   <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
                 )}
@@ -161,9 +160,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             )}
           </div>
           <div>
-            <styledEl.FiatAmountText>
-              <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
-            </styledEl.FiatAmountText>
+            {amount && (
+              <styledEl.FiatAmountText>
+                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
+              </styledEl.FiatAmountText>
+            )}
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>

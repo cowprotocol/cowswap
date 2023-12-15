@@ -7,6 +7,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
@@ -16,7 +17,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { UI } from 'common/constants/theme'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -284,15 +284,15 @@ export function ActivityDetails(props: {
           {/* Token Approval Currency Logo */}
           {!isOrder && singleToken && (
             <ActivityVisual>
-              <TokenLogo token={singleToken} size={24} />
+              <TokenLogo token={singleToken} size={32} />
             </ActivityVisual>
           )}
 
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <TokenLogo token={inputToken} size={24} />
-              <TokenLogo token={outputToken} size={24} />
+              <TokenLogo token={inputToken} size={32} />
+              <TokenLogo token={outputToken} size={32} />
             </ActivityVisual>
           )}
         </span>

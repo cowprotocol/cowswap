@@ -1,4 +1,4 @@
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
@@ -25,6 +25,7 @@ export const RateWrapper = styled.div`
   grid-template-columns: auto 150px;
   gap: 6px;
   text-align: right;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
@@ -52,8 +53,8 @@ export const StyledOrderType = styled(OrderType)`
 export const SmallVolumeWarningBanner = styled.div`
   display: flex;
   align-items: center;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
-  color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.15, theme.alert)};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(theme.alert, 0.9) : transparentize(theme.alert, 0.85))};
+  color: ${({ theme }) => darken(theme.alert, theme.darkMode ? 0 : 0.15)};
   gap: 10px;
   border-radius: 10px;
   margin: 8px auto 0;

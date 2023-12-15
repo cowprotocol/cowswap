@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -25,24 +27,25 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   justify-content: center;
   align-items: center;
   margin: 0 0 6px;
-  border: ${({ status, theme }) =>
+  border: ${({ status }) =>
     status === 'pending'
       ? 'none'
       : status === 'error'
       ? 'none'
       : status === 'success'
       ? 'none'
-      : `2px solid ${transparentize(0.9, theme.text1)}`};
+      : `2px solid var(${UI.COLOR_PAPER_DARKER})`};
   box-shadow: ${({ status, theme }) => (status === 'pending' ? theme.boxShadow3 : 'none')};
   background: ${({ status, theme }) =>
     status === 'pending'
       ? 'transparent'
       : status === 'error'
-      ? transparentize(0.9, theme.danger)
+      ? transparentize(theme.danger, 0.9)
       : status === 'success'
-      ? transparentize(0.9, theme.success)
+      ? transparentize(theme.success, 0.9)
       : 'transparent'};
-  transition: box-shadow 0.15s ease-in-out, background 0.15s ease-in-out, border 0.15s ease-in-out;
+  transition: box-shadow var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border var(${UI.ANIMATION_DURATION}) ease-in-out;
   position: relative;
 
   // 'PENDING' STATE only animation
@@ -87,7 +90,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
         ? theme.danger
         : status === 'pending'
         ? theme.text3
-        : transparentize(0.4, theme.text1)};
+        : transparentize(theme.text, 0.4)};
     object-fit: contain;
     width: 24px;
     height: 19px;
@@ -118,12 +121,12 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
     status === 'pending'
       ? theme.text1
       : crossOut
-      ? transparentize(0.8, theme.text1)
+      ? `var(${UI.COLOR_PAPER_DARKER})`
       : status === 'error'
       ? theme.danger
       : status === 'success'
       ? theme.success
-      : transparentize(0.4, theme.text1)};
+      : transparentize(theme.text, 0.4)};
   color: var(--color);
   font-weight: ${({ status }) => (status === 'pending' ? '600' : '500')};
   font-size: 14px;
@@ -134,7 +137,7 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
 
   // Sublabel text
   > span {
-    background: ${({ status, theme }) => (status === 'error' ? transparentize(0.9, theme.danger) : 'transparent')};
+    background: ${({ status, theme }) => (status === 'error' ? transparentize(theme.danger, 0.9) : 'transparent')};
     font-size: 13px;
     font-weight: 500;
     display: inline-block;

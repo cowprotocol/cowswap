@@ -5,12 +5,12 @@ import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { useIsTokenPermittable } from 'modules/permit'
+import { useTokenSupportsPermit } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useTradeApproveState } from 'common/containers/TradeApprove'
+import { useApproveState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -20,7 +20,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
-  const approvalState = useTradeApproveState(slippageAdjustedSellAmount)
+  const approvalState = useApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
@@ -32,7 +32,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
 
-  const isPermitSupported = !!useIsTokenPermittable(inputCurrency, tradeType)
+  const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
   const commonContext = {
     account,

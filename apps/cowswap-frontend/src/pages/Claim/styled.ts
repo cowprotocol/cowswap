@@ -3,8 +3,9 @@ import LogoETH from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import LogoUSDC from '@cowprotocol/assets/cow-swap/usdc.png'
 import LogoXDAI from '@cowprotocol/assets/cow-swap/xdai.png'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize, darken, lighten } from 'polished'
+import { transparentize, darken, lighten } from 'color2k'
 import { CheckCircle, Frown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -13,8 +14,6 @@ import { CopyIcon } from 'legacy/components/Copy'
 import { Icon } from 'legacy/components/CowProtocolLogo'
 import { Step } from 'legacy/components/Stepper'
 
-import { UI } from 'common/constants/theme'
-
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
 export const InnerPageWrapper = styled.div`
@@ -22,11 +21,11 @@ export const InnerPageWrapper = styled.div`
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   padding: 30px;
   border: none;
   box-shadow: ${({ theme }) => theme.boxShadow1};
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   min-height: 450px;
   justify-content: center;
   align-items: center;
@@ -35,79 +34,77 @@ export const InnerPageWrapper = styled.div`
     padding: 16px;
     border-radius: var(--border-radius-small);
   `};
-}
 
-a {
-  color: ${({ theme }) => theme.primary4};
-}
+  a {
+    color: ${({ theme }) => theme.primary4};
+  }
 
-> a {
-  width: 100%;
-}
+  > a {
+    width: 100%;
+  }
 
-p {
-  font-size: 16px;
-  display: block;
-  line-height: 1.6;
-  font-weight: 300;
-  margin: 0 0 24px;
-  text-align: center;
-}
+  p {
+    font-size: 16px;
+    display: block;
+    line-height: 1.6;
+    font-weight: 300;
+    margin: 0 0 24px;
+    text-align: center;
+  }
 
-p > i {
-  color: ${({ theme }) => theme.primary1};
-}
+  p > i {
+    color: ${({ theme }) => theme.primary1};
+  }
 
-p > a {
-  display: inline;
-  color: ${({ theme }) => darken(0.1, theme.primary1)};
-}
+  p > a {
+    display: inline;
+    color: ${({ theme }) => darken(theme.primary1, 0.1)};
+  }
 
-${ButtonPrimary} {
-  border-radius: var(--border-radius);
-  width: 100%;
-  font-size: 21px;
-  padding: 24px 16px;
+  ${ButtonPrimary} {
+    border-radius: var(--border-radius);
+    width: 100%;
+    font-size: 21px;
+    padding: 24px 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 auto 24px;
   `};
 
-  &[disabled] {
-    cursor: not-allowed;
-    pointer-events: all;
+    &[disabled] {
+      cursor: not-allowed;
+      pointer-events: all;
+    }
   }
-}
 
-${ButtonSecondary} {
-  background: 0;
-  color: ${({ theme }) => theme.primary4};
-  border: none;
-
-  &:hover {
-    border: 0;
-    box-shadow: none;
-    transform: none;
+  ${ButtonSecondary} {
     background: 0;
     color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
-  }
-}
+    border: none;
 
-${Step} {
-  > b {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    &:hover {
+      border: 0;
+      box-shadow: none;
+      transform: none;
+      background: 0;
+      color: ${({ theme }) => theme.primary4};
+      text-decoration: underline;
+    }
+  }
+
+  ${Step} {
+    > b {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 13px;
     `};
-  }
+    }
 
-  > i {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    > i {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       display: none;
     `};
+    }
   }
-
-}
 `
 
 export const PageWrapper = styled.div`
@@ -164,7 +161,7 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
@@ -204,7 +201,7 @@ export const IntroDescription = styled.div<{ center?: boolean }>`
   }
 
   > p > i {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     font-weight: 600;
     font-style: normal;
   }
@@ -434,7 +431,7 @@ export const ClaimTable = styled.div`
     text-align: left;
     font-weight: normal;
     font-size: 15px;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     position: relative;
   }
 
@@ -445,7 +442,7 @@ export const ClaimTable = styled.div`
   td {
     display: flex;
     align-items: center;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     word-break: break-word;
     background: ${({ theme }) => theme.blueShade3};
   }
@@ -502,13 +499,13 @@ export const ClaimTable = styled.div`
     `};
 
     > span {
-      color: ${({ theme }) => transparentize(0.1, theme.text1)};
+      color: ${({ theme }) => transparentize(theme.text, 0.1)};
       font-weight: 300;
     }
 
     > span > b {
       font-weight: 500;
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
     }
   }
 
@@ -546,12 +543,12 @@ export const UserMessage = styled.div<{ variant?: string }>`
   display: flex;
   background: ${({ variant, theme }) =>
     variant === 'danger'
-      ? transparentize(0.9, theme.danger)
+      ? transparentize(theme.danger, 0.9)
       : variant === 'info'
-      ? transparentize(0.9, theme.blue2)
-      : transparentize(0.9, theme.attention)};
+      ? transparentize(theme.blue2, 0.9)
+      : transparentize(theme.attention, 0.9)};
   color: ${({ variant, theme }) =>
-    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+    variant === 'danger' ? `var(${UI.COLOR_DANGER})` : variant === 'info' ? theme.blue2 : darken(theme.attention, 0.1)};
   margin: 0 auto;
   align-items: center;
   font-size: 15px;
@@ -578,7 +575,7 @@ export const UserMessage = styled.div<{ variant?: string }>`
         ? `var(${UI.COLOR_DANGER})`
         : variant === 'info'
         ? theme.blue2
-        : darken(0.1, theme.attention)};
+        : darken(theme.attention, 0.1)};
   }
 
   > span {
@@ -659,7 +656,7 @@ export const ClaimTotal = styled.div`
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
   padding: 24px 24px 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -677,7 +674,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 26px;
@@ -758,8 +755,8 @@ export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
-  color: ${({ theme, isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : theme.blue2)};
+  background: ${({ isClaimed }) => (isClaimed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ isClaimed }) => (!isClaimed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT})`)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -787,7 +784,7 @@ export const InputField = styled.div`
   padding: 18px 18px 18px 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   display: flex;
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
@@ -799,7 +796,7 @@ export const InputField = styled.div`
     border: 0;
     font-size: 24px;
     outline: 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     width: 100%;
   }
 
@@ -830,7 +827,7 @@ export const InputField = styled.div`
 
     &:focus,
     &:hover {
-      background-color: ${({ theme }) => darken(0.05, theme.bg5)};
+      background-color: ${({ theme }) => darken(theme.bg5, 0.05)};
     }
   }
 
@@ -846,7 +843,7 @@ export const InputField = styled.div`
     padding: 0;
     font-size: 22px;
     font-weight: 600;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   > span {
@@ -897,6 +894,7 @@ export const CheckAddress = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 0 0 6px;
    `}
+
     > h1 {
       font-size: 32px;
       font-weight: 300;
@@ -913,6 +911,7 @@ export const CheckAddress = styled.div`
       line-height: 1.2;
       margin: 0 0 24px;
     }
+  }
 `
 
 export const ClaimBreakdown = styled.div`
@@ -944,7 +943,7 @@ export const FooterNavButtons = styled.div`
   ${ButtonSecondary} {
     margin: 24px auto 0;
     color: var(--colorgrey);
-    transition: color 0.2s ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       color: ${({ theme }) => theme.primary1};
@@ -968,7 +967,7 @@ export const TopNav = styled.div`
 
   ${ButtonSecondary} {
     margin: 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     font-size: 15px;
     width: auto;
   }
@@ -1205,12 +1204,12 @@ export const UnderlineButton = styled.button`
   }
 
   &:hover {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 
   &:disabled {
     text-decoration: none;
-    color: ${({ theme }) => transparentize(0.35, theme.primary4)};
+    color: ${({ theme }) => transparentize(theme.primary4, 0.35)};
     cursor: auto;
     font-style: italic;
   }
@@ -1265,7 +1264,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     background: ${({ theme }) => theme.bg5};
     border-radius: 12px;
     padding: 0 12px;
@@ -1278,7 +1277,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
   }
 
   > div > label > input {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     border: none;
     padding: 12px 70px 0 0;
     font-size: 26px;
@@ -1349,6 +1348,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
       margin: 0;
       padding: 0;
     `};
+  }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1360,7 +1360,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   justify-content: flex-start;
   overflow: hidden;
   border-radius: 24px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   margin: 6px 0;
   padding: 0;
 
@@ -1368,14 +1368,14 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: '';
     display: block;
     background: ${({ theme }) =>
-      `linear-gradient(to right, ${transparentize(0.2, theme.primary5)}, ${theme.primary4})`};
+      `linear-gradient(to right, ${transparentize(theme.primary5, 0.2)}, ${theme.primary4})`};
     height: 100%;
     border-radius: 24px 0 0 24px;
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    transition: width 0.3s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
   }
 
@@ -1383,11 +1383,11 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: block;
     font-size: 12px;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     z-index: 1;
     height: 100%;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
-    transition: width 0.3s ease-in-out;
+    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: 0;
     padding: 1px 4px 0 4px;
     min-width: max-content;
@@ -1410,7 +1410,7 @@ export const InvestSummary = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 18px;
-    color: ${({ theme }) => transparentize(0.1, theme.text1)};
+    color: ${({ theme }) => transparentize(theme.text, 0.1)};
     gap: 4px;
   }
 
@@ -1432,7 +1432,7 @@ export const InvestSummary = styled.div`
 
   > span > b {
     font-weight: 600;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 `
 
@@ -1526,7 +1526,7 @@ export const AccountClaimSummary = styled.div`
     border-radius: var(--iconSize);
     width: var(--iconSize);
     height: var(--iconSize);
-    background: var(${UI.COLOR_CONTAINER_BG_01});
+    background: var(${UI.COLOR_PAPER});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       transform: rotate(90deg);
@@ -1539,7 +1539,7 @@ export const AccountClaimSummary = styled.div`
     }
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_TEXT});
     }
   }
 `
@@ -1596,7 +1596,7 @@ export const CowSpinner = styled.div`
     height: 94%;
     width: 94%;
     padding: 0;
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
     border-radius: var(--circle-size);
     z-index: 1;
   }
@@ -1656,26 +1656,26 @@ export const SuccessBanner = styled.div<{ type: string }>`
   font-size: 21px;
   justify-content: space-between;
   align-items: center;
-  transition: border 0.3s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   border: 2px solid transparent;
   color: ${({ type, theme }) =>
     type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.text1};
   display: flex;
   background: ${({ type, theme }) =>
     type === 'Twitter'
-      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.twitter)
+      ? transparentize(SuccessBannerColors.twitter, SuccessBannerColors.opacity)
       : type === 'Discord'
-      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.discord)
+      ? transparentize(SuccessBannerColors.discord, SuccessBannerColors.opacity)
       : theme.blueShade3};
 
   &:hover {
     border: 2px solid
       ${({ type, theme }) =>
         type === 'Twitter'
-          ? darken(SuccessBannerColors.darken, SuccessBannerColors.twitter)
+          ? darken(SuccessBannerColors.twitter, SuccessBannerColors.darken)
           : type === 'Discord'
-          ? darken(SuccessBannerColors.darken, SuccessBannerColors.discord)
-          : darken(SuccessBannerColors.darken, theme.blueShade3)};
+          ? darken(SuccessBannerColors.discord, SuccessBannerColors.darken)
+          : darken(theme.blueShade3, SuccessBannerColors.darken)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -1707,7 +1707,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
           ? SuccessBannerColors.discord
           : theme.text1};
     }
-
+  }
 `
 
 export const StepExplainer = styled.div`
@@ -1756,7 +1756,7 @@ export const BannerExplainer = styled.div`
   position: relative;
   overflow: hidden;
   border: 4px solid transparent;
-  transition: border 0.2s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 24px;
@@ -1779,7 +1779,7 @@ export const BannerExplainer = styled.div`
   > span > b {
     @supports (-webkit-background-clip: text) {
       background: ${({ theme }) =>
-        `linear-gradient(80deg, ${theme.primary1}, ${lighten(0.2, theme.primary1)}, ${theme.white}, #5ea2fb)`};
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(theme.primary1, 0.2)}, ${theme.white}, #5ea2fb)`};
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }

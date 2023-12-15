@@ -1,9 +1,8 @@
 import { TokenLogo } from '@cowprotocol/tokens'
+import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 interface IconSpinnerProps {
   currency?: Currency | null
@@ -45,7 +44,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
     object-fit: contain;
     z-index: 2;
     position: relative;
-    border: ${({ spinnerWidth }) => spinnerWidth}px solid var(${UI.COLOR_CONTAINER_BG_01});
+    border: ${({ spinnerWidth }) => spinnerWidth}px solid var(${UI.COLOR_PAPER});
     border-radius: ${({ size }) => size}px;
     background-color: var(--bgColor);
     width: 100%;
@@ -70,7 +69,7 @@ export function IconSpinner({
   image,
   size = 24,
   children,
-  bgColor = UI.COLOR_CONTAINER_BG_01,
+  bgColor = UI.COLOR_PAPER,
   spinnerWidth = 2,
 }: IconSpinnerProps) {
   return (

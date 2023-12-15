@@ -1,11 +1,10 @@
 import CowProtocolLogo from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
@@ -18,8 +17,8 @@ export const ProgressBarWrapper = animated(styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px 20px 0;
-  color: var(${UI.COLOR_TEXT1});
-  background-color: var(${UI.COLOR_GREY});
+  color: inherit;
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -34,7 +33,7 @@ export const ProgressBarWrapper = animated(styled.div`
 `)
 
 export const ProgressBarInnerWrapper = styled.div`
-  background-color: ${({ theme }) => theme.blue4};
+  background-color: var(${UI.COLOR_PAPER_DARKEST});
   border-radius: 18px;
   overflow: visible !important;
   position: relative;
@@ -124,33 +123,27 @@ export const DelayedProgress = styled(ProgressBarIndicator)`
 `
 
 export const GreenClockIcon = styled(Clock)`
-  margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.success};
-  width: 24px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 13px;
-    margin: 0 0.3rem 0 0;
-  `};
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+  color: var(${UI.COLOR_SUCCESS});
 `
 
 export const GreenCheckIcon = styled(CheckCircle)`
-  margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.success};
-  width: 24px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 13px;
-    margin: 0 0.3rem 0 0;
-  `};
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+  color: var(${UI.COLOR_SUCCESS});
 `
 
 export const OrangeClockIcon = styled(Clock)`
-  margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.yellow1};
-  width: 24px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 13px;
-    margin: 0 0.3rem 0 0;
-  `};
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+  color: var(${UI.COLOR_ALERT_TEXT_DARKER});
 `
 
 export const StatusMsgContainer = styled.div`
@@ -176,11 +169,17 @@ export const StatusGraph = styled.div`
   align-items: center;
   margin: 42px auto 0;
   gap: 10px;
-  border: 1px solid ${({ theme }) => theme.bg1};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   border-radius: 16px;
-  padding: 0 0.9rem;
+  padding: 16px;
   min-height: 100px;
   width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  `};
 
   > img {
     margin: 0 10px 0 0;
@@ -188,38 +187,35 @@ export const StatusGraph = styled.div`
 
   p {
     font-size: 15px;
+    padding: 0;
+    margin: 0;
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    gap: 0rem;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 0.4rem 0.8rem;
-  `};
 `
 
 export const StatusWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 8px;
 `
 
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   margin: 0;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 0.835rem;
   `};
-  button {
-    color: ${({ theme }) => theme.orange} !important;
-    padding-left: 0 !important;
+
+  > button {
+    color: inherit;
+    padding: 0;
   }
 `
 
 export const StyledCoWLink = styled(ExternalLink)`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   text-decoration: underline;
   opacity: 1 !important;
 

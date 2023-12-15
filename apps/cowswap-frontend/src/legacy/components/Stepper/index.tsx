@@ -1,9 +1,8 @@
 import CheckCircle from '@cowprotocol/assets/cow-swap/check.svg'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div<{ totalSteps: number }>`
   width: 100%;
@@ -69,7 +68,7 @@ export const Step = styled.div<{
     font-size: 100%;
     position: relative;
     color: ${({ isActiveStep, completedStep, theme }) =>
-      completedStep ? theme.black : isActiveStep ? theme.black : transparentize(0.4, theme.text1)};
+      completedStep ? theme.black : isActiveStep ? theme.black : transparentize(theme.text, 0.4)};
     background: ${({ isActiveStep, completedStep, theme, circleSize }) =>
       completedStep
         ? `url(${CheckCircle}) no-repeat center/${circleSize ? `${circleSize}px` : 'var(--circleSize)'}`
@@ -87,10 +86,10 @@ export const Step = styled.div<{
   > b {
     color: ${({ isActiveStep, completedStep, theme }) =>
       completedStep
-        ? `var(${UI.COLOR_TEXT1})`
+        ? `var(${UI.COLOR_TEXT})`
         : isActiveStep
-        ? `var(${UI.COLOR_TEXT1})`
-        : transparentize(0.4, theme.text1)};
+        ? `var(${UI.COLOR_TEXT})`
+        : transparentize(theme.text, 0.4)};
     font-weight: ${({ isActiveStep, completedStep }) => (completedStep ? '300' : isActiveStep ? 'bold' : '300')};
     text-align: center;
 
@@ -103,10 +102,10 @@ export const Step = styled.div<{
     font-style: normal;
     color: ${({ isActiveStep, completedStep, theme }) =>
       completedStep
-        ? transparentize(0.2, theme.text1)
+        ? `var(${UI.COLOR_PAPER_DARKER})`
         : isActiveStep
-        ? transparentize(0.2, theme.text1)
-        : transparentize(0.4, theme.text1)};
+        ? `var(${UI.COLOR_PAPER_DARKER})`
+        : transparentize(theme.text, 0.4)};
     font-size: 12px;
     margin: 6px 0 0;
     padding: 0 24px;

@@ -1,11 +1,10 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
-
-import { UI } from 'common/constants/theme'
 
 import { OrderTab } from '../../const/tabs'
 
@@ -14,7 +13,7 @@ const Tabs = styled.div`
   border-radius: 9px;
   overflow: hidden;
   margin: 0;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -25,8 +24,8 @@ const Tabs = styled.div`
 
 const TabButton = styled(Link)<{ active: string }>`
   display: inline-block;
-  background: ${({ theme, active }) => (active === 'true' ? transparentize(0.88, theme.text3) : 'transparent')};
-  color: ${({ theme, active }) => (active === 'true' ? `var(${UI.COLOR_TEXT1})` : transparentize(0.2, theme.text1))};
+  background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
+  color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
   font-size: 13px;
@@ -34,15 +33,16 @@ const TabButton = styled(Link)<{ active: string }>`
   border: 0;
   outline: none;
   cursor: pointer;
-  transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     text-align: center;
   `};
 
   &:hover {
-    background: var(${UI.COLOR_CONTAINER_BG_01});
-    color: var(${UI.COLOR_TEXT1});
+    background: ${({ active }) =>
+      active === 'true' ? `var(${UI.COLOR_TEXT_OPACITY_10})` : `var(${UI.COLOR_TEXT_OPACITY_10})`};
+    color: inherit;
   }
 `
 

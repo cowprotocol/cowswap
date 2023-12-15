@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -9,8 +11,6 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'
-
-import { TokenAmounts } from 'modules/tokens'
 
 import { balanceComparator, useTokenComparator } from './sorting'
 import {
@@ -36,12 +36,10 @@ enum SORT_FIELD {
   BALANCE = 'balance',
 }
 
-type BalanceType = [TokenAmounts, boolean]
-
 type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
-  balances?: BalanceType
+  balances?: BalancesState['values']
   page: number
   setPage: (page: number) => void
   query: string
@@ -113,8 +111,8 @@ export default function TokenTable({
               // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[0][tokenA.address]?.value
-              const balanceB = balances[0][tokenB.address]?.value
+              const balanceA = balances[tokenA.address.toLowerCase()]
+              const balanceB = balances[tokenB.address.toLowerCase()]
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
@@ -202,13 +200,16 @@ export default function TokenTable({
 
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
+              const balanceRaw = balances && balances[data.address.toLowerCase()]
+              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
+
               if (data) {
                 return (
                   <Row key={data.address}>
                     <TokensTableRow
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}
-                      balance={balances && balances[0][data.address]?.value}
+                      balance={balance}
                       openTransactionConfirmationModal={openModal}
                       closeModals={closeModal}
                       index={getTokenIndex(i)}

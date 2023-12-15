@@ -55,7 +55,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
                   before placing your order.
                 </>
               ) : null}{' '}
-              This way, you&apos;ll take of advantage of:
+              This way, you&apos;ll take advantage of:
             </p>
             <ul>
               <li>Lower overall fees</li>

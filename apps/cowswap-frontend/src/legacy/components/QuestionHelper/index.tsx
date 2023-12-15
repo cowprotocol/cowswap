@@ -1,12 +1,11 @@
 import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
+import { UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
@@ -24,9 +23,15 @@ export const QuestionWrapper = styled.div`
   cursor: default;
   border-radius: 16px;
   background-color: transparent;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  color: inherit;
+
+  > svg {
+    color: inherit;
+  }
 
   > svg > path {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: currentColor;
   }
 `
 

@@ -1,11 +1,11 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import { ArrowDownCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 export const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  background-color: ${({ theme }) => transparentize(theme.bg4, 0.4)};
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
@@ -19,7 +19,7 @@ export const ActiveRowLinkList = styled.div`
 
   & > a {
     align-items: center;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     display: flex;
     flex-direction: row;
     font-size: 14px;
@@ -51,11 +51,11 @@ export const FlyoutRow = styled.div<{ active: boolean }>`
   padding: 6px 8px;
   text-align: left;
   width: 100%;
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+  color: ${({ active, theme }) => (active ? theme.white : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && transparentize(0.9, theme.text1)};
+    background: ${({ theme, active }) => !active && transparentize(theme.text, 0.9)};
   }
 
   transition: background 0.13s ease-in-out;

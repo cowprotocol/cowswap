@@ -1,4 +1,5 @@
 import { questionIcon } from '@cowprotocol/assets/cow-swap/question'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -11,7 +12,7 @@ const HelpCircleWrapper = styled.div`
 
   > svg {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;

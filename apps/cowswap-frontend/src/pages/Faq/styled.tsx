@@ -1,14 +1,12 @@
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import { StyledInternalLink } from 'legacy/theme'
 
 import { Content } from 'modules/application/pure/Page'
-
-import { UI } from 'common/constants/theme'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;
@@ -38,14 +36,14 @@ export const Wrapper = styled.div`
     > table {
       width: 100%;
       border-spacing: 1px;
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
 
       > thead {
         background: ${({ theme }) => theme.bg3};
       }
 
       > tbody > tr {
-        background: var(${UI.COLOR_GREY});
+        background: var(${UI.COLOR_PAPER_DARKER});
       }
 
       > tbody > tr > td > span[role='img'] {
@@ -123,7 +121,7 @@ export const Menu = styled.div`
   font-weight: bold;
   line-height: 1;
   margin: 0 24px 0 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   height: max-content;
   position: sticky;
   top: 0;
@@ -145,7 +143,7 @@ export const Menu = styled.div`
     font-size: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      background: ${({ theme }) => transparentize(0.9, theme.text1)};
+      background: var(${UI.COLOR_TEXT_OPACITY_10});
       border-radius: 16px;
       padding: 12px;
     `}
@@ -163,7 +161,7 @@ export const Menu = styled.div`
     text-decoration: none;
     color: inherit;
     opacity: 0.65;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: block;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -177,7 +175,7 @@ export const Menu = styled.div`
 
     &.active {
       ${({ theme }) => theme.mediaWidth.upToSmall`
-        background: ${({ theme }) => transparentize(0.9, theme.text1)};
+        background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
       `}
     }

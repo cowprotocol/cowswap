@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const Header = styled.div`
   display: flex;
@@ -36,15 +36,16 @@ export const TokensItem = styled.button`
   outline: none;
   padding: 6px 10px;
   border-radius: 10px;
-  color: var(${UI.COLOR_TEXT1});
-  border: 1px solid var(${UI.COLOR_GREY});
+  color: inherit;
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   font-weight: 500;
   font-size: 16px;
   cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
-  background-color: ${({ theme, disabled }) => disabled && theme.bg3};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  background: ${({ disabled }) => disabled && `var(${UI.COLOR_PAPER_DARKER})`};
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   :hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
+    border: 1px solid ${({ disabled }) => (disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PRIMARY})`)};
   }
 `

@@ -1,15 +1,15 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { LightCard as LightCardUni } from 'legacy/components/Card'
 import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 
-import { UI } from 'common/constants/theme'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   border: none;
   ${({ flatBorder = false }) => flatBorder && `border-radius: 20px 20px 0 0;`};
 `
@@ -25,18 +25,14 @@ export const Wrapper = styled.div`
   `};
 
   ${SwapShowAcceptChanges} {
-    background: ${({ theme }) => transparentize(0.85, theme.alert)};
-    border: 1px solid ${({ theme }) => transparentize(0.75, theme.alert)};
+    background: var(${UI.COLOR_ALERT_BG});
+    color: var(${UI.COLOR_ALERT_TEXT});
     padding: 8px 8px 8px 16px;
     margin: 8px 0 0;
 
     svg {
-      stroke: ${({ theme }) => theme.alert};
+      stroke: currentColor;
     }
-  }
-
-  svg {
-    stroke: var(${UI.COLOR_TEXT1});
   }
 `
 
@@ -53,12 +49,12 @@ export const ArrowWrapper = styled.div`
   align-items: center;
   z-index: 2;
   border-radius: 8px;
-  border: ${({ theme }) => `2px solid ${theme.grey1}`};
-  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
+  border: 2px solid var(${UI.COLOR_PAPER});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 
   > svg {
     stroke-width: 2px;
+    stroke: currentColor;
     padding: 1px;
     height: 100%;
     width: 100%;

@@ -1,17 +1,17 @@
+import { UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
-
-import { UI } from 'common/constants/theme'
 
 const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 16px 0 0;
   width: 100%;
-  color: ${({ theme }) => transparentize(0.15, theme.text1)};
+  color: ${({ theme }) => transparentize(theme.text, 0.15)};
   font-size: 14px;
   line-height: 1.3;
 
@@ -26,8 +26,8 @@ const ModalMessage = styled.div`
 
 const LowBalanceMessage = styled(ModalMessage)`
   margin: 0 0 10px;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
-  color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_ALERT})` : darken(0.2, theme.alert))};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(theme.alert, 0.9) : transparentize(theme.alert, 0.85))};
+  color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_ALERT})` : darken(theme.alert, 0.2))};
   padding: 16px;
   border-radius: 16px;
   width: 100%;

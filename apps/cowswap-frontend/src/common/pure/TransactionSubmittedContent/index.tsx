@@ -1,6 +1,7 @@
 import React from 'react'
 
 import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -65,6 +66,8 @@ export function TransactionSubmittedContent({
     return null
   }
 
+  const isInjectedWidgetMode = isInjectedWidget()
+
   return (
     <styledEl.Wrapper>
       <styledEl.Section>
@@ -86,12 +89,14 @@ export function TransactionSubmittedContent({
               {/*TODO: refactor AddToMetamask to make it pure*/}
               <AddToMetamask shortLabel currency={currencyToAdd} />
 
-              <styledEl.ButtonCustom>
-                <Link to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
-                  <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
-                  Play the CoW Runner Game!
-                </Link>
-              </styledEl.ButtonCustom>
+              {!isInjectedWidgetMode && (
+                <styledEl.ButtonCustom>
+                  <Link to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
+                    <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
+                    Play the CoW Runner Game!
+                  </Link>
+                </styledEl.ButtonCustom>
+              )}
             </styledEl.ButtonGroup>
           </>
         )}

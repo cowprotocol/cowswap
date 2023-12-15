@@ -1,13 +1,12 @@
 import { TokenSymbol } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-
-import { UI } from 'common/constants/theme'
 
 interface RateImpactProps {
   rateImpact: number
@@ -22,7 +21,7 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   align-items: center;
   gap: 2px;
   color: ${({ isPositive, isTooLowRate }) =>
-    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT1})`};
+    isPositive ? `var(${UI.COLOR_SUCCESS})` : isTooLowRate ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`};
 `
 const ImpactTooltip = styled.span`
   display: block;

@@ -3,9 +3,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useAllTokens } from '@cowprotocol/tokens'
+import { TokensByAddress, useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
@@ -33,7 +32,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 function _transformGpOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
-  allTokens: { [address: string]: Token }
+  allTokens: TokensByAddress
 ): Order | undefined {
   const {
     uid: id,
@@ -111,12 +110,12 @@ function _getInputToken(
   isEthFlow: boolean,
   chainId: ChainId,
   sellToken: string,
-  allTokens: { [address: string]: Token }
+  allTokens: TokensByAddress
 ): ReturnType<typeof getTokenFromMapping> {
   return isEthFlow ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
 }
 
-function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token>, chainId: ChainId): Order[] {
+function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
     const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {

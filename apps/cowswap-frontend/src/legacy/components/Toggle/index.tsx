@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { darken, transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { darken } from 'color2k'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
-
-import { UI } from 'common/constants/theme'
 
 const turnOnToggle = keyframes`
   from {
@@ -34,7 +34,7 @@ const ToggleElementHoverStyle = (hasBgColor: boolean, theme: any, isActive?: boo
         opacity: '0.8',
       }
     : {
-        background: isActive ? darken(0.05, theme.primary1) : darken(0.05, theme.bg4),
+        background: isActive ? darken(theme.primary1, 0.05) : darken(theme.bg4, 0.05),
         color: isActive ? theme.white : theme.text3,
       }
 
@@ -42,8 +42,8 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
   animation: 0.1s
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
-  background: ${({ theme, bgColor, isActive }) =>
-    isActive ? bgColor ?? theme.primary1 : bgColor ? theme.bg4 : theme.text3};
+  background: ${({ bgColor, isActive }) =>
+    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
   :hover {
@@ -56,8 +56,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  background: ${({ theme, isActive }) => (isActive ? theme.bg2 : theme.grey1)};
+  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -67,14 +66,14 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 
   ${ToggleElement} {
-    color: ${({ theme, isActive }) => (isActive ? theme.white : transparentize(0.4, theme.text1))};
+    color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
-    transition: background 0.2s ease-in-out;
-    background: ${({ theme, isActive }) => (isActive ? theme.white : transparentize(0.4, theme.text1))};
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+    background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
 
     &:hover {
-      color: ${({ theme, isActive }) => (isActive ? theme.white : theme.text1)};
-      background: ${({ theme, isActive }) => (isActive ? theme.white : theme.text1)};
+      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`)};
     }
   }
 

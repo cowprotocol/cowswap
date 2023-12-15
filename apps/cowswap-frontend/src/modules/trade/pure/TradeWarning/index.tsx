@@ -1,4 +1,6 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
+
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
@@ -7,9 +9,9 @@ import styled from 'styled-components/macro'
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
 export enum TradeWarningType {
-  LOW,
-  MEDIUM,
-  HIGH,
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
 }
 
 export interface TradeWarningProps {
@@ -23,19 +25,39 @@ export interface TradeWarningProps {
   acceptCallback?: (isAccepted: boolean) => void
 }
 
-const warningColorMap: { [key in TradeWarningType]: string } = {
-  [TradeWarningType.LOW]: '#FFEDAF',
-  [TradeWarningType.MEDIUM]: '#FFC7AF',
-  [TradeWarningType.HIGH]: '#FF7676',
+const getWarningBoxStyles = (type: TradeWarningType) => {
+  switch (type) {
+    case TradeWarningType.LOW:
+      return {
+        background: `var(${UI.COLOR_ALERT_BG})`,
+        color: `var(${UI.COLOR_ALERT_TEXT})`,
+      }
+    case TradeWarningType.MEDIUM:
+      return {
+        background: `var(${UI.COLOR_WARNING_BG})`,
+        color: `var(${UI.COLOR_WARNING_TEXT})`,
+      }
+    // return DANGER by default
+    default:
+      return {
+        background: `var(${UI.COLOR_DANGER_BG})`,
+        color: `var(${UI.COLOR_DANGER_TEXT})`,
+      }
+  }
 }
 
-const WarningBox = styled.div<{ color: string }>`
+const WarningBox = styled.div<{ color: TradeWarningType }>`
+  ${({ color }) => {
+    const { background, color: textColor } = getWarningBoxStyles(color)
+    return `
+      background: ${background};
+      color: ${textColor};
+    `
+  }}
   border-radius: 7px;
   padding: 5px 12px;
   font-size: 13px;
   font-weight: 500;
-  background: ${({ color }) => color};
-  color: ${({ theme }) => theme.black};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,7 +65,7 @@ const WarningBox = styled.div<{ color: string }>`
   width: 99%;
 
   svg {
-    stroke: ${({ theme }) => theme.black}!important;
+    stroke: currentColor;
   }
 `
 
@@ -83,10 +105,9 @@ export function TradeWarning(props: TradeWarningProps) {
     isAccepted,
     className,
   } = props
-  const color = warningColorMap[type]
 
   return (
-    <WarningBox color={color} className={className}>
+    <WarningBox color={type} className={className}>
       <InfoBox withoutAccepting={!!withoutAccepting}>
         <AlertIcon size={18} />
         <span>{text}</span>

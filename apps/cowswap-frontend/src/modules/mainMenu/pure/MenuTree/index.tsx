@@ -127,10 +127,10 @@ interface DropdownProps {
 }
 
 const DropDown = ({ item, context }: DropdownProps) => {
-  const { title, items } = item
+  const { title, items, badge } = item
 
   return (
-    <MenuDropdown title={title}>
+    <MenuDropdown title={title} badge={badge}>
       {items?.map((item, index) => {
         const { sectionTitle, links } = item
         return (

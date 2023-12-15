@@ -1,4 +1,4 @@
-import { transparentize } from 'polished'
+import { UI } from '../../enum'
 import styled from 'styled-components'
 
 import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod } from './PopoverMod'
@@ -13,14 +13,15 @@ export interface PopoverContainerProps {
 }
 
 const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
-  background: ${({ theme, bgColor }) => bgColor || theme.grey1};
-  color: ${({ theme, color }) => color || theme.text1};
-  box-shadow: ${({ theme }) => theme.boxShadow2};
-  border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
+  box-shadow: var(${UI.BOX_SHADOW});
+  border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   border-radius: 12px;
   padding: 6px 3px;
   z-index: 10;
   font-size: 13px;
+  backdrop-filter: blur(20px);
 
   > div div {
     font-size: inherit;
@@ -29,7 +30,8 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
 
 const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`
   ::before {
-    background: ${({ theme, bgColor }) => bgColor || theme.grey1};
+    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+    border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
 

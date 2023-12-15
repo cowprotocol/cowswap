@@ -4,22 +4,22 @@ import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { UI } from 'common/constants/theme'
 import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 const OrdersBox = styled.div`
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_CONTAINER_BG_01})` : 'transparent')};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
+  color: inherit;
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: none;
@@ -36,7 +36,8 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  color: inherit;
   min-height: 490px;
   padding: 0;
 
@@ -48,10 +49,24 @@ const Content = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     margin: 0 0 16px;
-    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    color: inherit;
     transform: rotate(0);
     transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: var(${UI.COLOR_PRIMARY});
+      opacity: 0.16;
+      width: var(--size);
+      height: var(--size);
+      border-radius: var(--size);
+      z-index: -1;
+    }
 
     &:hover {
       transform: rotate(360deg);
@@ -70,7 +85,8 @@ const Content = styled.div`
 
     > svg {
       padding: 28px;
-      fill: ${({ theme }) => transparentize(0.3, theme.text1)};
+      fill: currentColor;
+      opacity: 0.5;
     }
   }
 
@@ -88,7 +104,7 @@ const Content = styled.div`
     margin: 0 auto 21px;
     font-weight: 400;
     text-align: center;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: inherit;
   }
 `
 
@@ -175,7 +191,6 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
-
   const content = () => {
     if (!isWalletConnected) {
       return (

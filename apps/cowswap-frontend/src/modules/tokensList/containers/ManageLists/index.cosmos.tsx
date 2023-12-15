@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 import { importListsMock, listsMock } from '../../mocks'
 
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   margin: 20px auto;
   display: flex;
   width: 450px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 `
 
 const emptyListSearchResponse = {

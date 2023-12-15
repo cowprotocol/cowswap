@@ -1,5 +1,93 @@
 # Changelog
 
+## [1.51.2](https://github.com/cowprotocol/cowswap/compare/v1.51.1...v1.51.2) (2023-12-14)
+
+
+### Bug Fixes
+
+* remove ledger integration because it's hacked ([#3509](https://github.com/cowprotocol/cowswap/issues/3509)) ([cbf10a4](https://github.com/cowprotocol/cowswap/commit/cbf10a4e32aeb548840510f2cd1902e5e77d7e1e))
+
+## [1.51.1](https://github.com/cowprotocol/cowswap/compare/v1.51.0...v1.51.1) (2023-12-07)
+
+
+### Features
+
+* prettify token name displaying for Gnosis chain ([#3489](https://github.com/cowprotocol/cowswap/issues/3489)) ([ac18501](https://github.com/cowprotocol/cowswap/commit/ac185010afa685cbf76da998ba5dbcd2eeedef93))
+
+
+### Bug Fixes
+
+* **orders-table:** show not enough allowance warning only when needed ([#3487](https://github.com/cowprotocol/cowswap/issues/3487)) ([88e868c](https://github.com/cowprotocol/cowswap/commit/88e868c5745f0882fa5c1d301f47df74c4be06b6))
+* **trade:** don't display fiat value when there is no amount ([#3488](https://github.com/cowprotocol/cowswap/issues/3488)) ([df4b278](https://github.com/cowprotocol/cowswap/commit/df4b2781abe904b9eb70295cdd624a4f68ef944a))
+
+## [1.51.0](https://github.com/cowprotocol/cowswap/compare/v1.50.2...v1.51.0) (2023-12-06)
+
+
+### Features
+
+* balances and allowances lib ([#3414](https://github.com/cowprotocol/cowswap/issues/3414)) ([d575bb0](https://github.com/cowprotocol/cowswap/commit/d575bb0f5cdc5b8d00dd8b42385af234b6535d2f))
+* **balances:** update balances for priority tokens ([#3417](https://github.com/cowprotocol/cowswap/issues/3417)) ([1d1458c](https://github.com/cowprotocol/cowswap/commit/1d1458c08a545fd2fdd067389987e99b842b68de))
+* multicall library ([#3413](https://github.com/cowprotocol/cowswap/issues/3413)) ([621a384](https://github.com/cowprotocol/cowswap/commit/621a3844b22db2bb59aecc579004f1c85768aedc))
+* replace uniswap milticall by new balances and allowances lib ([#3416](https://github.com/cowprotocol/cowswap/issues/3416)) ([1d99299](https://github.com/cowprotocol/cowswap/commit/1d99299610e03ac0644311e16005995cbe60340f))
+
+
+### Bug Fixes
+
+* **limit-orders:** remove high price impact warning flickering ([#3419](https://github.com/cowprotocol/cowswap/issues/3419)) ([8b14e71](https://github.com/cowprotocol/cowswap/commit/8b14e710db1fcacb076156356a23cac51405e238))
+* remove uknown price impact warning flickering ([#3418](https://github.com/cowprotocol/cowswap/issues/3418)) ([faca696](https://github.com/cowprotocol/cowswap/commit/faca696864961dc1ea44423aa00e421ec20d30b5))
+* **tokens-selector:** add native token to the top of the list if it's not there already ([#3471](https://github.com/cowprotocol/cowswap/issues/3471)) ([887a076](https://github.com/cowprotocol/cowswap/commit/887a07682891d9bdddebc61bd88bbbf7b11632de))
+
+## [1.50.2](https://github.com/cowprotocol/cowswap/compare/v1.50.1...v1.50.2) (2023-11-29)
+
+
+### Bug Fixes
+
+* make typescript happy ([24d3924](https://github.com/cowprotocol/cowswap/commit/24d39246a5343656b402671a5bca8cbc94b79242))
+
+## [1.50.1](https://github.com/cowprotocol/cowswap/compare/v1.50.0...v1.50.1) (2023-11-27)
+
+
+### Bug Fixes
+
+* adds NEW! tag to MORE menu item ([#3448](https://github.com/cowprotocol/cowswap/issues/3448)) ([f6a4358](https://github.com/cowprotocol/cowswap/commit/f6a435847bd872f4e9464ee2eaffced8ea17b755))
+
+## [1.50.0](https://github.com/cowprotocol/cowswap/compare/v1.49.6...v1.50.0) (2023-11-24)
+
+
+### Features
+
+* refactor snippets ([#3409](https://github.com/cowprotocol/cowswap/issues/3409)) ([1b703ea](https://github.com/cowprotocol/cowswap/commit/1b703ea2aa1735a19be9b90d403b9e952e9a4310))
+* widget skeleton ([#3393](https://github.com/cowprotocol/cowswap/issues/3393)) ([af1add9](https://github.com/cowprotocol/cowswap/commit/af1add99627abf7787e6957724fdec67c4cebf9a))
+* **widget:** embed icons ([#3389](https://github.com/cowprotocol/cowswap/issues/3389)) ([c07a25f](https://github.com/cowprotocol/cowswap/commit/c07a25f5ba1b9bbbdf90ba5d0406d03d4dda9043))
+
+
+### Bug Fixes
+
+* do not send permit to quote when enough allowance ([#3433](https://github.com/cowprotocol/cowswap/issues/3433)) ([58b6ade](https://github.com/cowprotocol/cowswap/commit/58b6ade450537d7bb304947697e7b3e47b34408e))
+* **widget-configurator:** set default trade pair USDC/COW ([#3420](https://github.com/cowprotocol/cowswap/issues/3420)) ([86743fe](https://github.com/cowprotocol/cowswap/commit/86743fe2d51b851d1830fe9b14e7e4b640a36114))
+
+## [1.49.6](https://github.com/cowprotocol/cowswap/compare/v1.49.5...v1.49.6) (2023-11-16)
+
+
+### Bug Fixes
+
+* **permit:** disable permit for sc wallets ([#3404](https://github.com/cowprotocol/cowswap/issues/3404)) ([db40626](https://github.com/cowprotocol/cowswap/commit/db406264549efa37b988971b66e02f3d4cf02f3b))
+* **widget-react:** export all not just types ([#3402](https://github.com/cowprotocol/cowswap/issues/3402)) ([f7c4b40](https://github.com/cowprotocol/cowswap/commit/f7c4b4070748e3b7733f1835e3542296fbb149fe))
+
+## [1.49.5](https://github.com/cowprotocol/cowswap/compare/v1.49.4...v1.49.5) (2023-11-15)
+
+
+### Bug Fixes
+
+* **token-selector:** show direct match on top ([#3395](https://github.com/cowprotocol/cowswap/issues/3395)) ([e4c24b0](https://github.com/cowprotocol/cowswap/commit/e4c24b0fb2dc530dda1ba82c67adf6d1aa830fa6))
+
+## [1.49.4](https://github.com/cowprotocol/cowswap/compare/v1.49.3...v1.49.4) (2023-11-14)
+
+
+### Bug Fixes
+
+* fix issue with ts usage ([8101d29](https://github.com/cowprotocol/cowswap/commit/8101d296099a3eb43efdff3dc53c02af8a6c8fc8))
+
 ## [1.49.3](https://github.com/cowprotocol/cowswap/compare/v1.49.1...v1.49.3) (2023-11-11)
 
 

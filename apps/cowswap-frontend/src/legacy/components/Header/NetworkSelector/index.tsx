@@ -1,11 +1,12 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -14,13 +15,12 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-weight: 400;
 `
 
@@ -41,10 +41,9 @@ const FlyoutMenu = styled.div`
 
 const FlyoutMenuContents = styled.div`
   align-items: flex-start;
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
-  border: 1px solid ${({ theme }) => theme.bg0};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
+  background-color: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  box-shadow: var(${UI.BOX_SHADOW});
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -53,11 +52,10 @@ const FlyoutMenuContents = styled.div`
   min-width: 175px;
   z-index: 99;
   padding: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
       top: 50px;
-      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(0.1, theme.black)}};
+      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
     `};
 
   & > *:not(:last-child) {
@@ -80,19 +78,19 @@ const SelectorLabel = styled.div`
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   display: flex;
   font-weight: 500;
   justify-content: space-between;
 
   :focus {
-    background-color: ${({ theme }) => darken(0.1, theme.red1)};
+    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 
   border-radius: 21px;
   border: 2px solid transparent;
   padding: 6px;
-  transition: border 0.2s ease-in-out;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
 
   > img {
@@ -103,21 +101,22 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   }
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
   ${({ isChainIdUnsupported, theme }) =>
     isChainIdUnsupported &&
     `
       color: ${theme.danger}!important;
-      background: ${transparentize(0.85, theme.danger)}!important;
-      border: 2px solid ${transparentize(0.5, theme.danger)}!important;
+      background: ${transparentize(theme.danger, 0.85)}!important;
+      border: 2px solid ${transparentize(theme.danger, 0.5)}!important;
     `}
 `
 const SelectorLogo = styled.img<{ interactive?: boolean }>`
   width: 24px;
   height: 24px;
   margin-right: ${({ interactive }) => (interactive ? 8 : 0)}px;
+
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     margin-right: 8px;
   }

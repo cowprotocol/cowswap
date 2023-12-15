@@ -1,12 +1,13 @@
+import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { LinkStyledButton } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`
@@ -17,7 +18,7 @@ export const TransactionWrapper = styled.div`
   font-size: initial;
   display: flex;
   padding: 0;
-  border: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -89,7 +90,7 @@ export const Summary = styled.div`
   padding: 22px;
   grid-template-rows: 1fr;
   grid-template-columns: 80px auto min-content;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
@@ -153,7 +154,7 @@ export const SummaryInner = styled.div`
   }
 
   > a {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     text-decoration: underline;
     font-size: 14px;
 
@@ -170,6 +171,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   grid-template-columns: 100px 1fr;
   width: 100%;
   margin: 0 0 4px;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr;
@@ -191,7 +193,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
 
   > b {
     padding: 0;
-    opacity: 0.85;
+    opacity: 0.7;
   }
 
   > i {
@@ -261,16 +263,19 @@ export const StatusLabel = styled.div<{
   isCreating: boolean
   color: string
 }>`
+  --statusColor: ${({ isPending, isPresignaturePending, isCreating, color }) =>
+    isPending || isPresignaturePending || isCreating
+      ? `var(${UI.COLOR_TEXT})`
+      : color === 'success'
+      ? `var(${UI.COLOR_SUCCESS})`
+      : color === 'danger'
+      ? `var(${UI.COLOR_DANGER})`
+      : `var(${UI.COLOR_ALERT})`};
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
     !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
-  color: ${({ isPending, isPresignaturePending, isCreating, theme, color }) =>
-    isPending || isPresignaturePending || isCreating
-      ? theme.text1
-      : color === 'success'
-      ? theme.success
-      : theme.attention};
+  color: var(--statusColor);
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -289,14 +294,7 @@ export const StatusLabel = styled.div<{
 
   &::before {
     content: '';
-    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-      !isCancelling && (isPending || isCreating)
-        ? 'transparent'
-        : isPresignaturePending || (isPending && isTransaction)
-        ? theme.pending
-        : color === 'success'
-        ? theme.success
-        : theme.attention};
+    background: var(--statusColor);
     position: absolute;
     left: 0;
     top: 0;
@@ -329,12 +327,7 @@ export const StatusLabel = styled.div<{
   }
 
   > svg > path {
-    fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
-      isPending || isPresignaturePending || isCreating
-        ? theme.text1
-        : color === 'success'
-        ? theme.success
-        : theme.attention};
+    fill: currentColor;
   }
 `
 
@@ -346,12 +339,12 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   font-size: 12px;
   line-height: 1.1;
   margin: 7px auto 0;
-  color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT1})` : 'inherit')};
+  color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT})` : 'inherit')};
 
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
   }
 `
 
@@ -359,12 +352,11 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* text-decoration: none !important; */
   border-radius: 0.5rem;
   padding: 0.25rem 0rem;
   font-weight: 500;
   font-size: 0.825rem;
-  color: ${({ theme }) => theme.primary1};
+  color: var(${UI.COLOR_PRIMARY});
 `
 
 // override the href, pending and success props
@@ -397,7 +389,7 @@ export const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
 `
 
 export const TransactionInnerDetail = styled.div`
@@ -405,7 +397,7 @@ export const TransactionInnerDetail = styled.div`
   flex-flow: column wrap;
   border-radius: 12px;
   padding: 20px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => theme.card.border};
 
@@ -440,7 +432,7 @@ export const TransactionInnerDetail = styled.div`
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
   background: ${({ theme, isPending }) =>
-    isPending ? transparentize(0.85, theme.attention) : transparentize(0.85, theme.success)};
+    isPending ? transparentize(theme.attention, 0.85) : transparentize(theme.success, 0.85)};
   margin: 6px 0 16px;
   padding: 8px 12px;
   color: ${({ theme, isPending }) => (isPending ? theme.attention : theme.success)};
@@ -476,21 +468,15 @@ export const ActivityVisual = styled.div`
   display: flex;
   margin: 0 0 6px;
 
-  div {
-    padding: 2px;
-    box-sizing: content-box;
-    box-shadow: none;
-    background: ${({ theme }) => theme.white};
-    color: ${({ theme }) =>
-      theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
-    border: 2px solid ${({ theme }) => theme.bg1};
+  ${TokenLogoWrapper} {
+    border: 3px solid var(${UI.COLOR_PAPER});
   }
 
-  div:not(:first-child):last-child {
+  ${TokenLogoWrapper}:not(:first-child):last-child {
     margin: 0 0 0 -9px;
   }
 
-  &:hover div {
+  &:hover ${TokenLogoWrapper} {
     animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
     transform: translateZ(0);
   }

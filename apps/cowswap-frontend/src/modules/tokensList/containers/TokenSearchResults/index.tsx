@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
@@ -16,7 +17,7 @@ import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { SelectTokenContext } from '../../types'
 
-const searchResultsLimit = 10
+const SEARCH_RESULTS_LIMIT = 10
 
 export interface TokenSearchResultsProps extends SelectTokenContext {
   searchInput: string
@@ -24,13 +25,14 @@ export interface TokenSearchResultsProps extends SelectTokenContext {
 
 export function TokenSearchResults({
   searchInput,
-  balances,
+  balancesState,
   selectedToken,
   onSelectToken,
   unsupportedTokens,
   permitCompatibleTokens,
 }: TokenSearchResultsProps) {
   const searchResults = useSearchToken(searchInput)
+  const { values: balances } = balancesState
 
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
@@ -53,16 +55,31 @@ export function TokenSearchResults({
     return searchCount === 0
   }, [isLoading, searchCount])
 
+  const [matchedToken, activeList] = useMemo(() => {
+    let matched: TokenWithLogo | undefined = undefined
+    const remaining: TokenWithLogo[] = []
+
+    for (const t of activeListsResult) {
+      if (doesTokenMatchSymbolOrAddress(t, searchInput)) {
+        matched = t
+      } else {
+        remaining.push(t)
+      }
+    }
+
+    return [matched, remaining]
+  }, [activeListsResult, searchInput])
+
+  const matchedTokenAddress = matchedToken?.address.toLowerCase()
+
   // On press Enter, select first token if only one token is found or it's fully matches to the search input
   const onInputPressEnter = useCallback(() => {
     if (!searchInput || !activeListsResult) return
 
-    const matchedToken = activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, searchInput))
-
     if (activeListsResult.length === 1 || matchedToken) {
       onSelectToken(matchedToken || activeListsResult[0])
     }
-  }, [searchInput, activeListsResult, onSelectToken])
+  }, [searchInput, activeListsResult, matchedToken, onSelectToken])
 
   useEffect(() => {
     updateSelectTokenWidget({
@@ -84,9 +101,20 @@ export function TokenSearchResults({
 
         return (
           <>
+            {/*Exact match*/}
+            {matchedToken && matchedTokenAddress && (
+              <TokenListItem
+                token={matchedToken}
+                balance={balances ? balances[matchedTokenAddress] : undefined}
+                onSelectToken={onSelectToken}
+                selectedToken={selectedToken}
+                isUnsupported={!!unsupportedTokens[matchedTokenAddress]}
+                isPermitCompatible={permitCompatibleTokens[matchedTokenAddress]}
+              />
+            )}
             {/*Tokens from active lists*/}
-            {activeListsResult &&
-              activeListsResult.slice(0, searchResultsLimit).map((token) => {
+            {activeList &&
+              activeList.map((token) => {
                 const addressLowerCase = token.address.toLowerCase()
 
                 return (
@@ -96,7 +124,7 @@ export function TokenSearchResults({
                     isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
                     selectedToken={selectedToken}
                     token={token}
-                    balance={balances ? balances[token.address]?.value : undefined}
+                    balance={balances ? balances[token.address.toLowerCase()] : undefined}
                     onSelectToken={onSelectToken}
                   />
                 )
@@ -105,7 +133,7 @@ export function TokenSearchResults({
             {/*Tokens from blockchain*/}
             {blockchainResult?.length ? (
               <styledEl.ImportTokenWrapper id="currency-import">
-                {blockchainResult.slice(0, searchResultsLimit).map((token) => {
+                {blockchainResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
                   return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
                 })}
               </styledEl.ImportTokenWrapper>
@@ -118,7 +146,7 @@ export function TokenSearchResults({
                   Expanded results from inactive Token Lists
                 </TokenSourceTitle>
                 <div>
-                  {inactiveListsResult.slice(0, searchResultsLimit).map((token) => {
+                  {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
                     return (
                       <ImportTokenItem
                         key={token.address}

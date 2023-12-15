@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
-
-import { UI } from 'common/constants/theme'
 
 export const ReceiveAmountBox = styled.div`
   display: flex;
@@ -11,8 +11,8 @@ export const ReceiveAmountBox = styled.div`
   border-radius: 0 0 16px 16px;
   font-size: 14px;
   font-weight: 600;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  border: 2px solid ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_PAPER});
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -42,10 +42,4 @@ export const QuestionHelperWrapped = styled(QuestionHelper)`
   display: inline-block;
   vertical-align: bottom;
   line-height: 0;
-  opacity: 0.5;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
 `

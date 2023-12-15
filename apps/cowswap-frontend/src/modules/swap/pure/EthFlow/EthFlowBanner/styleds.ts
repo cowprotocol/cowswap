@@ -1,15 +1,14 @@
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const BannerWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  background-color: ${({ theme }) => transparentize(0.8, theme.text3)};
+  background-color: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 14px;
   margin: 10px 0 0;
@@ -36,18 +35,21 @@ export const ClosedBannerWrapper = styled.div`
   > svg {
     margin: auto;
     cursor: pointer;
+    transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
 
     > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: currentColor;
     }
   }
 
   > svg:last-child {
-    stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+    stroke: currentColor;
+    opacity: 0.7;
   }
 
   &:hover > svg:last-child {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: currentColor;
+    opacity: 1;
   }
 `
 
@@ -66,7 +68,7 @@ export const BannerInnerWrapper = styled.div`
 
   > p,
   ul {
-    color: ${({ theme }) => transparentize(0.15, theme.text1)};
+    color: ${({ theme }) => transparentize(theme.text, 0.15)};
     line-height: 1.5;
   }
 

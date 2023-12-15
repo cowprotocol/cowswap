@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Trans } from '@lingui/macro'
-import { lighten, transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import { Trans } from '@lingui/macro'
+import styled from 'styled-components/macro'
 
 const LONG_TEXT_LENGTH = 20
 
@@ -12,25 +11,25 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.white};
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
   border-radius: 16px;
   cursor: pointer;
   min-height: 58px;
   text-align: center;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   border: none;
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => lighten(0.08, theme.bg2)};
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 
   &:disabled {
-    background-color: var(${UI.COLOR_GREY});
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+    background-color: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT_PAPER});
     background-image: none;
     border: 0;
     cursor: auto;

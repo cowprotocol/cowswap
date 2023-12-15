@@ -1,9 +1,6 @@
-import React, { useContext } from 'react'
-
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
 
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -16,7 +13,6 @@ type DisplayLinkProps = {
 }
 
 export function DisplayLink({ id, chainId }: DisplayLinkProps) {
-  const theme = useContext(ThemeContext)
   const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
 
   if (!id || !chainId) {
@@ -34,7 +30,7 @@ export function DisplayLink({ id, chainId }: DisplayLinkProps) {
 
   return (
     <ExternalLinkCustom href={href}>
-      <Text fontWeight={500} fontSize={14} color={theme.text3}>
+      <Text fontWeight={500} fontSize={14}>
         {label} ↗
       </Text>
     </ExternalLinkCustom>

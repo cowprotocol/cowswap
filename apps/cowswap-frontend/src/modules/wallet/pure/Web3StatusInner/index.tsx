@@ -51,7 +51,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
                 <Trans>{pendingCount} Pending</Trans>
               </Text>{' '}
             </FollowPendingTxPopup>
-            <Loader stroke="white" />
+            <Loader stroke="currentColor" />
           </RowBetween>
         ) : (
           <Text>{ensName || shortenAddress(account)}</Text>

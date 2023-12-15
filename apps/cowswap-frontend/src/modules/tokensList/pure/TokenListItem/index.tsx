@@ -1,6 +1,7 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { BigNumber } from '@ethersproject/bignumber'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
 
@@ -12,7 +13,7 @@ import type { VirtualItem } from '@tanstack/react-virtual'
 export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: string
-  balance: CurrencyAmount<Token> | undefined
+  balance: BigNumber | undefined
   onSelectToken(token: TokenWithLogo): void
   virtualRow?: VirtualItem
   isUnsupported: boolean
@@ -23,6 +24,8 @@ export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, virtualRow, isUnsupported, isPermitCompatible } = props
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+
+  const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
   return (
     <styledEl.TokenItem
@@ -38,9 +41,7 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo token={token} />
       <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-      <span>
-        <TokenAmount amount={balance} />
-      </span>
+      <span>{balanceAmount && <TokenAmount amount={balanceAmount} />}</span>
     </styledEl.TokenItem>
   )
 }

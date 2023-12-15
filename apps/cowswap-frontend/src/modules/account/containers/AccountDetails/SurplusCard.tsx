@@ -1,14 +1,14 @@
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { UI } from 'common/constants/theme'
 import { useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -31,6 +31,7 @@ export function SurplusCard() {
     gap: 24px;
     box-sizing: border-box;
     padding: 0;
+    color: inherit;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       display: flex;
@@ -51,6 +52,7 @@ export function SurplusCard() {
       width: 100%;
       max-width: 100%;
       margin: 0;
+      color: inherit;
     }
 
     ${InfoCard} > div {
@@ -58,6 +60,7 @@ export function SurplusCard() {
       flex-flow: column wrap;
       align-items: center;
       justify-content: center;
+      color: inherit;
 
       &:first-child {
         margin: 20px auto 0;
@@ -73,6 +76,7 @@ export function SurplusCard() {
       flex-flow: column wrap;
       align-items: center;
       justify-content: center;
+      color: inherit;
     }
 
     ${InfoCard} > div > span > i,
@@ -87,17 +91,26 @@ export function SurplusCard() {
       text-align: center;
       justify-content: center;
       align-items: center;
-      color: ${({ theme }) => transparentize(0.3, theme.text1)};
+      color: inherit;
+    }
+
+    ${InfoCard} > div > span > i {
+      opacity: 0.6;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     ${InfoCard} > div > span > p {
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
     }
 
     ${InfoCard} > div > span > b {
       font-size: 28px;
       font-weight: bold;
-      color: ${({ theme }) => theme.success};
+      color: var(${UI.COLOR_SUCCESS});
       width: 100%;
       text-align: center;
       margin: 12px auto 0;
@@ -112,13 +125,13 @@ export function SurplusCard() {
       font-size: 15px;
       font-weight: 500;
       line-height: 1.1;
-      color: ${({ theme }) => transparentize(0.5, theme.text1)};
+      color: ${({ theme }) => transparentize(theme.text, 0.5)};
       margin: 3px auto 0;
     }
 
     ${QuestionWrapper} {
       opacity: 0.5;
-      transition: opacity 0.2s ease-in-out;
+      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {
         opacity: 1;

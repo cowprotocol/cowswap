@@ -1,14 +1,16 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { CopyIcon } from './CopyMod'
 
 export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
-  color: ${({ theme, isCopied }) => (isCopied ? theme.green1 : theme.text3)};
   ${({ theme }) => theme.flexRowNoWrap};
+  color: ${({ isCopied }) => (isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
   align-items: center;
 
   ${CopyIcon} {
-    color: ${({ theme, isCopied }) => (isCopied ? theme.green1 : theme.text3)};
+    color: currentColor;
   }
 `
 

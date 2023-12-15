@@ -1,6 +1,6 @@
 import CoinbaseWalletIcon from '../assets/coinbase.svg'
 import KeystoneImage from '../assets/keystone.svg'
-import LedgerIcon from '../assets/ledger.svg'
+// import LedgerIcon from '../assets/ledger.svg'
 import TallyIcon from '../assets/tally.svg'
 import TrezorIcon from '../assets/trezor.svg'
 import TrustIcon from '../assets/trust.svg'
@@ -9,7 +9,7 @@ import { ConnectionType } from '../types'
 
 const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.INJECTED]: 'injected',
-  [ConnectionType.INJECTED_WIDGET]: 'CowSwap widget',
+  [ConnectionType.INJECTED_WIDGET]: 'CoW Swap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
   [ConnectionType.NETWORK]: 'Network',
@@ -19,7 +19,7 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.ALPHA]: 'Alpha',
   [ConnectionType.TALLY]: 'Tally',
   [ConnectionType.TRUST]: 'Trust',
-  [ConnectionType.LEDGER]: 'Ledger',
+  // [ConnectionType.LEDGER]: 'Ledger',
   [ConnectionType.KEYSTONE]: 'Keystone',
   [ConnectionType.TREZOR]: 'Trezor',
 }
@@ -37,7 +37,7 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
   [ConnectionType.TRUST]: TrustIcon,
   [ConnectionType.TALLY]: TallyIcon,
-  [ConnectionType.LEDGER]: LedgerIcon,
+  // [ConnectionType.LEDGER]: LedgerIcon,
   [ConnectionType.TREZOR]: TrezorIcon,
   [ConnectionType.KEYSTONE]: KeystoneImage,
   [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,

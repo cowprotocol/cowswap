@@ -1,18 +1,18 @@
-import styled from 'styled-components/macro';
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
-import { Stepper } from './index';
+import { Stepper } from './index'
 
 const Wrapper = styled.div`
   width: 90%;
   height: 120px;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const StepperFixtures = {
   'Stepper start': (
@@ -57,6 +57,6 @@ const StepperFixtures = {
       />
     </Wrapper>
   ),
-};
+}
 
-export default StepperFixtures;
+export default StepperFixtures

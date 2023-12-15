@@ -6,7 +6,7 @@ import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
-import { TokenAmount, TokenSymbol, Loader } from '@cowprotocol/ui'
+import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
@@ -139,9 +139,7 @@ export const TokensTableRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.text1}>
-            Approve all
-          </TableButton>
+          <TableButton onClick={handleApprove}>Approve all</TableButton>
           <ApproveLabel color={theme.green1}>
             Approved:{' '}
             <strong>
@@ -151,15 +149,11 @@ export const TokensTableRow = ({
         </CustomLimit>
       )
     } else if (!isApproved || hasNoAllowance) {
-      return (
-        <TableButton onClick={handleApprove} color={theme.text1}>
-          Approve
-        </TableButton>
-      )
+      return <TableButton onClick={handleApprove}>Approve</TableButton>
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -184,7 +178,9 @@ export const TokensTableRow = ({
               <b>
                 <TokenSymbol token={tokenData} />
               </b>
-              <i>{tokenData.name}</i>
+              <i>
+                <TokenName token={tokenData} />
+              </i>
             </span>
           </TokenText>
         </Link>
