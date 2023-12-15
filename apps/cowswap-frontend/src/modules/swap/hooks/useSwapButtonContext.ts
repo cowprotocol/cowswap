@@ -70,7 +70,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
-  const featureFlags = useFeatureFlags()
+  const { swapZeroFee } = useFeatureFlags()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -109,10 +109,10 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
           trade,
           kind: trade?.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
           allowedSlippage,
-          featureFlags,
+          featureFlags: { swapZeroFee },
         })
       : undefined
-  }, [trade, allowedSlippage, featureFlags])
+  }, [trade, allowedSlippage, swapZeroFee])
 
   const swapButtonState = getSwapButtonState({
     account,

@@ -88,7 +88,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade } = useDerivedSwapInfo()
-  const featureFlags = useFeatureFlags()
+  const { swapZeroFee } = useFeatureFlags()
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -134,7 +134,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     addOrderCallback,
     dispatch,
     allowedSlippage,
-    featureFlags,
+    featureFlags: { swapZeroFee },
   }
 }
 
