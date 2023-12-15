@@ -180,7 +180,7 @@
     "use-count-up": "^2.2.5",
     "use-resize-observer": "^8.0.0",
     "viem": "1.16.6",
-    "wagmi": "^1.4.5",
+    "wagmi": "^1.4.12",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
