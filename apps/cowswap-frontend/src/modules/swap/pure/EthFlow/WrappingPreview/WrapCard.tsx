@@ -1,6 +1,6 @@
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 
@@ -25,7 +25,8 @@ export function WrapCard(props: WrapCardProps) {
       </styledEl.BalanceLabel>
       {/* user balance */}
       <styledEl.BalanceLabel>
-        Balance: <TokenAmount amount={balance} />
+        Balance:&nbsp;
+        <TokenAmount amount={balance} />
       </styledEl.BalanceLabel>
     </styledEl.WrapCardWrapper>
   )
