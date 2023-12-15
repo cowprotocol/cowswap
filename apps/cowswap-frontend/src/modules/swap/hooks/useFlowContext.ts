@@ -7,7 +7,7 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
@@ -33,31 +33,7 @@ import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
-const _computeInputAmountForSignature = (params: {
-  input: CurrencyAmount<Currency>
-  inputWithSlippage: CurrencyAmount<Currency>
-  fee?: CurrencyAmount<Currency>
-  kind: OrderKind
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
-}) => {
-  const { input, inputWithSlippage, fee, kind, featureFlags } = params
-  // When POSTing the order, we need to check inputAmount value depending on trade type
-  // If we don't have an applicable fee amt, return the input as is
-  if (!fee) return input
-
-  if (kind === OrderKind.SELL) {
-    // User SELLING? POST inputAmount as amount with fee applied
-    return input
-  } else {
-    if (featureFlags.swapZeroFee) {
-      return inputWithSlippage
-    }
-    // User BUYING? POST inputAmount as amount with no fee
-    return inputWithSlippage.subtract(fee)
-  }
-}
+import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
 
 export enum FlowType {
   REGULAR = 'REGULAR',
@@ -88,6 +64,7 @@ interface BaseFlowContextSetup {
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
+  allowedSlippage: Percent
   featureFlags: {
     swapZeroFee: boolean | undefined
   }
@@ -111,7 +88,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade } = useDerivedSwapInfo()
-  const { swapZeroFee } = useFeatureFlags()
+  const featureFlags = useFeatureFlags()
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -127,6 +104,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
 
+  const { allowedSlippage } = useDerivedSwapInfo()
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
   const sellTokenContract = useTokenContract(getAddress(inputAmountWithSlippage?.currency) || undefined, true)
 
@@ -155,7 +133,8 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     closeModals,
     addOrderCallback,
     dispatch,
-    featureFlags: { swapZeroFee },
+    allowedSlippage,
+    featureFlags,
   }
 }
 
@@ -203,6 +182,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     flowType,
     sellTokenContract,
     featureFlags,
+    allowedSlippage,
   } = baseProps
 
   if (
@@ -239,20 +219,19 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
 
   const validTo = calculateValidTo(deadline)
 
+  const amountsForSignature = getAmountsForSignature({
+    trade,
+    kind,
+    allowedSlippage,
+    featureFlags,
+  })
+
   const orderParams: PostOrderParams = {
     class: OrderClass.MARKET,
     kind,
     account,
     chainId,
-    // unadjusted inputAmount
-    inputAmount: _computeInputAmountForSignature({
-      input: trade.inputAmountWithFee,
-      inputWithSlippage: inputAmountWithSlippage,
-      fee: trade.fee.feeAsCurrency,
-      kind,
-      featureFlags,
-    }),
-    outputAmount: outputAmountWithSlippage,
+    ...amountsForSignature,
     sellAmountBeforeFee: trade.inputAmountWithoutFee,
     feeAmount: trade.fee.feeAsCurrency,
     buyToken,
