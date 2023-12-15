@@ -463,3 +463,21 @@ export const HeaderRow = styled(RowFixed)`
    width: 100%;
   `};
 `
+
+export const WinterHat = styled.div`
+  display: flex;
+  position: absolute;
+  top: -10px;
+  left: 6px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 0;
+    right: 0;
+    margin: auto;
+  `}
+
+  > svg {
+    height: 15px;
+    width: auto;
+  }
+`
