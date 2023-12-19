@@ -20,20 +20,9 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-
-export function useLimitHasEnoughAllowance(): boolean | undefined {
-  const state = useLimitOrdersDerivedState()
-  const { chainId, account } = useWalletInfo()
-
-  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
-  const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    account,
-    amount: state.slippageAdjustedSellAmount || undefined,
-    checkAllowanceAddress,
-  })
-  return enoughAllowance
-}
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -48,6 +37,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
+  const { swapZeroFee } = useFeatureFlags()
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -108,6 +98,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       partiallyFillable,
       appData,
       quoteId,
+      featureFlags: {
+        swapZeroFee,
+      },
     },
   }
 }

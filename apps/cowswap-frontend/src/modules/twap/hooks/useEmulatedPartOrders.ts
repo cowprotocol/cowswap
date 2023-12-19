@@ -46,9 +46,7 @@ function emulatePartOrders(
     const enrichedOrder = emulatePartAsOrder(item, parent)
     const order = mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
 
-    if (order) {
-      acc.push(order)
-    }
+    if (order) acc.push(order)
 
     return acc
   }, [])

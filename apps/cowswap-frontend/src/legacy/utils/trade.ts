@@ -40,6 +40,9 @@ export type PostOrderParams = {
   appData: AppDataInfo
   class: OrderClass
   partiallyFillable: boolean
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
   quoteId?: number
 }
 
@@ -95,15 +98,17 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   const {
     kind,
     inputAmount,
+    sellAmountBeforeFee,
     outputAmount,
     sellToken,
     buyToken,
-    feeAmount,
     validTo,
     recipient,
     partiallyFillable,
     appData,
     quoteId,
+    feeAmount,
+    featureFlags: { swapZeroFee },
   } = params
   const sellTokenAddress = sellToken.address
 
@@ -111,8 +116,10 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
   }
 
+  const isSellTrade = kind === OrderKind.SELL
+
   // fee adjusted input amount
-  const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
+  const sellAmount = (swapZeroFee && isSellTrade ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
@@ -130,7 +137,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
       buyAmount,
       validTo,
       appData: appData.appDataKeccak256,
-      feeAmount: feeAmount?.quotient.toString() || '0',
+      feeAmount: (swapZeroFee ? '0' : feeAmount?.quotient.toString()) || '0',
       kind,
       receiver,
       partiallyFillable,
