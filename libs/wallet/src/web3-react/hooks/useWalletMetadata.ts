@@ -12,12 +12,14 @@ const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
 const SAFE_APP_NAME = 'Safe App'
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const SAFE_WALLET_NAME = 'Safe{Wallet}'
+const SAFE_WALLET_IOS = 'Safe (iOS)'
 const GNOSIS_APP_NAMES = [
   SAFE_APP_NAME,
   GNOSIS_SAFE_APP_NAME,
   WC_DESKTOP_GNOSIS_SAFE_APP_NAME,
   WC_MOBILE_GNOSIS_SAFE_APP_NAME,
   SAFE_WALLET_NAME,
+  SAFE_WALLET_IOS,
 ]
 
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
@@ -112,7 +114,7 @@ export function useIsSafeWallet(): boolean {
 
   if (!walletName) return false
 
-  return GNOSIS_APP_NAMES.includes(walletName)
+  return GNOSIS_APP_NAMES.includes(walletName.trim())
 }
 
 /**
