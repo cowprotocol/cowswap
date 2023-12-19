@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.51.3](https://github.com/cowprotocol/cowswap/compare/v1.51.2...v1.51.3) (2023-12-19)
+## [1.52.0](https://github.com/cowprotocol/cowswap/compare/v1.51.2...v1.52.0) (2023-12-19)
 
 
 ### Bug Fixes
