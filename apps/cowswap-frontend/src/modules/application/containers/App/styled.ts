@@ -37,6 +37,7 @@ export const BodyWrapper = styled.div`
   justify-content: center;
   flex: 1 1 auto;
   z-index: 2;
+  color: inherit;
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px 16px 0' : '5vh 16px 0')};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

@@ -1,7 +1,6 @@
-import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled from 'styled-components/macro'
 
 export const MenuFlyout = styled.ol`
   display: flex;
@@ -39,7 +38,7 @@ export const MenuFlyout = styled.ol`
     }
 
     > svg.expanded {
-      transition: transform 0.3s ease-in-out;
+      transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
       transform: rotate(180deg);
     }
   }
@@ -51,9 +50,9 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  box-shadow: ${({ theme }) => theme.boxShadow2};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  background: var(${UI.COLOR_PAPER});
+  box-shadow: var(${UI.BOX_SHADOW});
   padding: 32px;
   gap: 62px;
   margin: 6px 0 0;
@@ -109,9 +108,9 @@ export const MenuSection = styled.div`
     font-weight: 500;
     margin: 0;
     padding: 0;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     opacity: 0.8;
-    transition: opacity 0.15s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     > svg,
     > img {
@@ -120,11 +119,11 @@ export const MenuSection = styled.div`
       max-height: 21px;
       margin: 0 7px 0 0;
       object-fit: contain;
-      color: var(${UI.COLOR_TEXT1});
+      color: inherit;
     }
 
     > svg > path {
-      fill: var(${UI.COLOR_TEXT1});
+      fill: var(${UI.COLOR_TEXT});
     }
 
     &:hover {

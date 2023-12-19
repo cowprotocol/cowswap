@@ -1,14 +1,13 @@
 import { TokenSymbol } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
   overflow: auto;
 `
@@ -47,7 +46,13 @@ export const StyledTokenSymbol = styled(TokenSymbol)`
 `
 
 export const TokenName = styled.div`
-  color: var(${UI.COLOR_LINK});
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const UnknownSourceWarning = styled.div`

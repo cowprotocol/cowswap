@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import { UI } from '@cowprotocol/ui'
 
-import { UI } from 'common/constants/theme'
+import styled, { css } from 'styled-components/macro'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?: number; lineSize?: number }>`
   z-index: 102;
@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   height: ${({ height = 18 }) => `${height}px`};
 
   span {
-    background-color: var(${UI.COLOR_TEXT1});
+    background-color: var(${UI.COLOR_TEXT});
     border-radius: 3px;
     height: ${({ lineSize = 2 }) => `${lineSize}px`};
     position: absolute;
@@ -39,7 +39,6 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
     width: 75%;
   }
 
-
   ${({ isMobileMenuOpen }) =>
     isMobileMenuOpen &&
     css`
@@ -60,8 +59,6 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
         width: 100%;
       }
     `};
-  
-}
 `
 
 interface IconProps {

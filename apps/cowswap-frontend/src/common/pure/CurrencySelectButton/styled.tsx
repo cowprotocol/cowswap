@@ -1,37 +1,7 @@
 import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
+import { UI } from '@cowprotocol/ui'
 
-import { lighten, transparentize } from 'polished'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
-
-export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  gap: 6px;
-  border: ${({ theme }) => (theme.darkMode ? `1px solid ${transparentize(0.5, theme.grey1)}` : 0)};
-  outline: none;
-  background-color: ${({ theme, $stubbed }) => ($stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
-  color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
-  box-shadow: ${({ theme }) =>
-    theme.darkMode
-      ? `0px 4px 8px ${transparentize(0.32, theme.black)}`
-      : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
-  opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
-  pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  padding: 6px;
-  transition: background-color 0.15s ease-in-out;
-  max-width: 190px;
-
-  &:hover {
-    // TODO: Check what 'readonlyMode' does and proper style it.
-    background-color: ${({ readonlyMode, $stubbed, theme }) =>
-      readonlyMode ? 'red' : $stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1)};
-  }
-`
 
 export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   margin: 0 3px;
@@ -41,8 +11,9 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   min-height: 7px;
 
   > path {
-    stroke: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
+    stroke: currentColor;
     stroke-width: 2px;
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -50,11 +21,47 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   `};
 `
 
+export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+  border: 0;
+  outline: none;
+  background: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER})`)};
+  color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`)};
+  box-shadow: var(${UI.BOX_SHADOW_2});
+  opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
+  pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  padding: 6px;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  max-width: 190px;
+
+  &:hover {
+    // TODO: Check what 'readonlyMode' does and proper style it.
+    color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    background: ${({ readonlyMode, $stubbed }) =>
+      readonlyMode
+        ? `var(${UI.COLOR_DANGER});`
+        : $stubbed
+        ? `var(${UI.COLOR_PRIMARY_LIGHTER});`
+        : `var(${UI.COLOR_PRIMARY});`};
+  }
+
+  &:hover ${ArrowDown} > path {
+    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
+    stroke: ${({ $stubbed }) => ($stubbed ? 'currentColor' : `var(${UI.COLOR_BUTTON_TEXT})`)};
+  }
+`
+
 export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   font-size: 19px;
   font-weight: 500;
   text-align: left;
-  color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
+  color: inherit;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 16px;

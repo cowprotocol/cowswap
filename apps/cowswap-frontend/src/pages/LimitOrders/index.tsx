@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
@@ -13,9 +12,9 @@ import {
   InitialPriceUpdater,
   ExecutionPriceUpdater,
   FillLimitOrdersDerivedStateUpdater,
-  limitOrdersRawStateAtom,
   LIMIT_ORDER_SLIPPAGE,
   SetupLimitOrderAmountsFromUrlUpdater,
+  useIsWidgetUnlocked,
 } from 'modules/limitOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
@@ -25,9 +24,10 @@ import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableC
 
 export default function LimitOrderPage() {
   const { chainId, account } = useWalletInfo()
-  const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
   const allLimitOrders = useOrders(chainId, account, OrderClass.LIMIT)
   const onlyPlainLimitOrders = useMemo(() => allLimitOrders.filter(getIsNotComposableCowOrder), [allLimitOrders])
+
+  const isUnlocked = useIsWidgetUnlocked()
 
   return (
     <>

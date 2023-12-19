@@ -1,3 +1,4 @@
+import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -17,6 +18,12 @@ const Wrapper = styled.span`
   justify-content: flex-start;
   text-align: left;
   gap: 0 3px;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {

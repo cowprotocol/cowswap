@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { X as CloseIcon } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 const Container = styled.header`
   display: flex;
@@ -12,7 +12,7 @@ const Container = styled.header`
   padding: 0 0 16px;
   margin: 0 0 24px;
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
 `
 
 const Title = styled.b`
@@ -24,7 +24,7 @@ const Close = styled(CloseIcon)`
   height: 28px;
   width: 28px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;
@@ -32,7 +32,7 @@ const Close = styled(CloseIcon)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 

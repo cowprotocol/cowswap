@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
@@ -9,12 +10,10 @@ import styled from 'styled-components/macro'
 import { TransactionStatusText } from 'legacy/components/Copy/index'
 import { LinkStyledButton } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
-
 // MOD imports
 export const CopyIcon = styled(LinkStyledButton)`
   --iconSize: var(${UI.ICON_SIZE_NORMAL});
-  color: ${({ theme }) => theme.text3};
+  color: inherit;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -30,7 +29,7 @@ export const CopyIcon = styled(LinkStyledButton)`
   :active,
   :focus {
     text-decoration: none;
-    color: var(${UI.COLOR_TEXT2});
+    color: inherit;
   }
 `
 

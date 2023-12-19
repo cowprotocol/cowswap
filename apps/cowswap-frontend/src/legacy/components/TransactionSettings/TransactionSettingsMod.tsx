@@ -16,11 +16,13 @@ import {
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { FancyButton } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { darken } from 'polished'
+import { darken } from 'color2k'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -31,7 +33,6 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
-import { UI } from 'common/constants/theme'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
@@ -48,29 +49,9 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-export const FancyButton = styled.button`
-  color: var(${UI.COLOR_TEXT1});
-  align-items: center;
-  height: 2rem;
-  border-radius: 36px;
-  font-size: 1rem;
-  width: auto;
-  min-width: 3.5rem;
-  /* border: 1px solid ${({ theme }) => theme.bg3}; */
-  border: 0; // mod
-  outline: none;
-  /* background: var(${UI.COLOR_CONTAINER_BG_01}); */
-  background: ${({ theme }) => theme.bg2}; // mod
-  :hover {
-    /* border: 1px solid ${({ theme }) => theme.bg4}; */
-  }
-  :focus {
-    /* border: 1px solid ${({ theme }) => theme.primary1}; */
-  }
-`
-
 const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
+
   :hover {
     cursor: pointer;
   }
@@ -79,14 +60,10 @@ const Option = styled(FancyButton)<{ active: boolean }>`
     border: none;
     pointer-events: none;
   }
-  /* background-color: ${({ active, theme }) => active && theme.primary1}; */
-  background-color: ${({ active, theme }) => (active ? theme.bg2 : theme.grey1)}; // MOD
-  /* color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; */
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; // MOD
 `
 
 export const Input = styled.input`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  background: var(${UI.COLOR_PAPER});
   font-size: 16px;
   width: auto;
   outline: none;
@@ -94,7 +71,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : theme.text1)};
+  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
   text-align: right;
 `
 
@@ -106,7 +83,7 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.red1 : theme.primary1}`};
   :hover {
     border: ${({ theme, active, warning }) =>
-      active && `1px solid ${warning ? darken(0.1, theme.red1) : darken(0.1, theme.primary1)}`};
+      active && `1px solid ${warning ? darken(theme.red1, 0.1) : darken(theme.primary1, 0.1)}`};
   }
 
   input {
@@ -233,13 +210,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
         <RowFixed>
-          <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
+          <ThemedText.Black fontWeight={400} fontSize={14}>
             <Trans>MEV protected slippage</Trans>
           </ThemedText.Black>
           <QuestionHelper
-            // bgColor={theme.bg3}
-            bgColor={theme.grey1} // mod
-            color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               isEoaEthFlow
@@ -322,13 +296,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       {showCustomDeadlineRow && (
         <AutoColumn gap="sm">
           <RowFixed>
-            <ThemedText.Black fontSize={14} fontWeight={400} color={theme.text2}>
+            <ThemedText.Black fontSize={14} fontWeight={400}>
               <Trans>Swap deadline</Trans>
             </ThemedText.Black>
             <QuestionHelper
-              // bgColor={theme.bg3}
-              bgColor={theme.grey1} // mod
-              color={theme.text1}
               text={
                 <Trans>
                   {isEoaEthFlow

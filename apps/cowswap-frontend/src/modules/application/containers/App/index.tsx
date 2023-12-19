@@ -9,6 +9,7 @@ import DarkModeQueryParamReader from 'legacy/theme'
 
 import { OrdersPanel } from 'modules/account'
 import { useInitializeUtm } from 'modules/utm'
+import { WinterFooter } from 'modules/winterEdition'
 
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -50,6 +51,7 @@ export function App() {
         ) : (
           <styledEl.FooterWrapper>
             <Footer />
+            <WinterFooter /> {/* Winter Themed Footer */}
           </styledEl.FooterWrapper>
         )}
       </styledEl.AppWrapper>

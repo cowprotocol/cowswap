@@ -1,14 +1,12 @@
 import { Loader } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
 
-import { UI } from 'common/constants/theme'
-
 export const Wrapper = styled.div`
-  background: var(${UI.COLOR_GREY});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 10px 16px;
   flex: 1 1 70%;
@@ -16,6 +14,7 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 10px;
@@ -29,12 +28,12 @@ export const Header = styled.div`
   font-size: 13px;
   font-weight: 500;
   width: 100%;
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: inherit;
 `
 
 export const MarketPriceButton = styled.button`
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  color: var(${UI.COLOR_TEXT1});
+  background: var(${UI.COLOR_PAPER});
+  color: inherit;
   white-space: nowrap;
   border: none;
   font-weight: 500;
@@ -42,10 +41,16 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:disabled {
     cursor: default;
     opacity: 0.6;
+  }
+
+  &:not(:disabled):hover {
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
 
@@ -55,6 +60,7 @@ export const Body = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 8px;
+  color: inherit;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -64,9 +70,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   border: none;
   width: 100%;
   text-align: left;
+  color: inherit;
 
   &::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    opacity: 0.7;
+    color: inherit;
   }
 `
 
@@ -81,11 +89,12 @@ export const ActiveCurrency = styled.button`
   gap: 8px;
   max-width: 130px;
   width: auto;
+  color: inherit;
   cursor: pointer;
 `
 
 export const ActiveSymbol = styled.span`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-size: 13px;
   font-weight: 500;
   text-align: right;
@@ -94,8 +103,8 @@ export const ActiveSymbol = styled.span`
 
 export const ActiveIcon = styled.div`
   --size: 20px;
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
-  color: var(${UI.COLOR_TEXT1});
+  background-color: var(${UI.COLOR_PAPER});
+  color: inherit;
   width: var(--size);
   min-width: var(--size);
   height: var(--size);
@@ -120,21 +129,27 @@ export const EstimatedRate = styled.div`
   font-size: 13px;
   border-radius: 0 0 16px 16px;
   font-weight: 400;
-  background: var(${UI.COLOR_CONTAINER_BG_01});
-  border: 2px solid ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_PAPER});
+  border: 2px solid var(${UI.COLOR_PAPER_DARKER});
+  background: red;
 
   > b {
     display: flex;
     flex-flow: row nowrap;
     font-weight: normal;
     text-align: left;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    opacity: 0.7;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   // TODO: Make the question helper icon transparent through a prop instead
   > b svg {
     opacity: 0.7;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -143,6 +158,7 @@ export const EstimatedRate = styled.div`
 
   > span > i {
     font-style: normal;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: inherit;
+    opacity: 0.7;
   }
 `

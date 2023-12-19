@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -24,9 +25,22 @@ const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VA
 
 const StyledTradeSelect = styled(TradeSelect)`
   font-weight: 500;
+  color: inherit;
+
+  > svg {
+    color: inherit;
+    stroke: currentColor;
+    opacity: 0.7;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  }
+
+  &:hover > svg {
+    opacity: 1;
+  }
 
   ${Content} {
     width: 100%;
+    color: inherit;
   }
 
   ${Content} > div {

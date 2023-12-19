@@ -1,6 +1,4 @@
-import { useContext } from 'react'
-
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -8,12 +6,14 @@ import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
 
 const Wrapper = styled.div<{
   color: string
+  background: string
   withWarning?: boolean
   widthAuto?: boolean
   clickable?: boolean
 }>`
   --height: 28px;
   --statusColor: ${({ color }) => color};
+  --statusBackground: ${({ background }) => background};
 
   display: flex;
   align-items: center;
@@ -36,8 +36,8 @@ const Wrapper = styled.div<{
     display: block;
     left: 0;
     top: 0;
-    background: var(--statusColor);
-    opacity: 0.14;
+    background: var(--statusBackground);
+    /* opacity: 0.14; */
     z-index: 1;
     border-radius: ${({ withWarning }) => (withWarning ? '9px 0 0 9px' : '9px')};
   }
@@ -51,10 +51,16 @@ export type OrderStatusBoxProps = {
 }
 
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
-  const theme = useContext(ThemeContext)
-  const { title, color } = getOrderStatusTitleAndColor(order, theme)
+  const { title, color, background } = getOrderStatusTitleAndColor(order)
   return (
-    <Wrapper color={color} widthAuto={widthAuto} withWarning={withWarning} clickable={!!onClick} onClick={onClick}>
+    <Wrapper
+      color={color}
+      background={background}
+      widthAuto={widthAuto}
+      withWarning={withWarning}
+      clickable={!!onClick}
+      onClick={onClick}
+    >
       {/* Status overrides for special cases */}
       {title}
     </Wrapper>

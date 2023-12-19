@@ -1,21 +1,17 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
-import { UI } from 'common/constants/theme'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
   margin: 0;
-  background: ${({ theme, hasBackground = true }) =>
-    hasBackground
-      ? theme.darkMode
-        ? transparentize(0.9, theme.alert)
-        : transparentize(0.85, theme.alert)
-      : 'transparent'};
-  color: ${({ theme }) => theme.alert};
+  background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_ALERT_BG})` : 'transparent')};
+  color: var(${UI.COLOR_ALERT_TEXT});
   line-height: 0;
   border: 0;
   padding: 0 5px;
@@ -23,8 +19,12 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   height: var(--height);
   border-radius: 0 9px 9px 0;
 
+  svg {
+    color: inherit;
+  }
+
   svg > path {
-    fill: ${({ theme }) => theme.alert};
+    fill: currentColor;
     stroke: none;
   }
 `
@@ -32,8 +32,6 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
 export const WarningContent = styled.div`
   max-width: 270px;
   padding: 10px;
-  color: ${({ theme }) => theme.black};
-  background: ${({ theme }) => theme.alert};
 
   h3,
   p {
@@ -93,7 +91,7 @@ export const AmountItem = styled.div`
   }
 
   > span > span {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
 
@@ -111,7 +109,8 @@ export const CellElement = styled.div<{
   flex-direction: row;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
+  background: ${({ hasBackground }) =>
+    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
@@ -126,7 +125,7 @@ export const CellElement = styled.div<{
     gap: 2px;
 
     > i {
-      opacity: 0.6;
+      opacity: 0.7;
     }
   `}
 
@@ -148,7 +147,7 @@ export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
 
   > div,
   > svg {
-    border: 2px solid ${({ theme }) => theme.grey1};
+    border: 2px solid var(${UI.COLOR_PAPER});
   }
 
   > div:last-child,
@@ -206,7 +205,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   margin: 0;
   height: 5px;
   width: 100%;
-  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1))};
+  background: var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 6px;
 
   &::before {
@@ -214,7 +213,7 @@ export const ProgressBar = styled.div<{ value: number }>`
     position: absolute;
     height: 100%;
     width: ${({ value }) => value}%;
-    background: ${({ theme }) => theme.text3};
+    background: var(${UI.COLOR_SUCCESS});
     border-radius: 5px;
   }
 `
@@ -241,11 +240,11 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   width: 100%;
   height: 28px;
 
-  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.7, theme.bg1)} 100%);
+  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.7)} 100%);
   background-size: 200% 100%;
   background-position: 100% 0;
 
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
   padding: 0 6px 0 10px;
   cursor: pointer;
   transition: background 0.5s ease-in-out;
@@ -271,10 +270,10 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
       background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%);
     }
     50% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.1, theme.bg1)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.1)} 100%);
     }
     100% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(0.5, theme.bg1)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.5)} 100%);
     }
   }
 
@@ -298,7 +297,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     margin: 0 0 0 6px;
     cursor: pointer;
     outline: none;
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     transition: color 0.2s ease-out;
     position: relative;
     height: var(--height);
@@ -309,7 +308,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     min-height: var(--size);
     line-height: 1;
     background: transparent;
-    border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+    border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
     border-radius: 6px;
     user-select: none;
   }

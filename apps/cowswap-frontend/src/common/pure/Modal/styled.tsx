@@ -1,11 +1,11 @@
 import React from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -19,17 +19,20 @@ export const HeaderRow = styled.div`
 
 export const CloseIcon = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 14px;
   top: 14px;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
   &:hover {
-    cursor: pointer;
-    opacity: 0.6;
+    opacity: 1;
   }
 `
 
 export const HoverText = styled.div`
   text-decoration: none;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   display: flex;
   align-items: center;
 
@@ -40,7 +43,7 @@ export const HoverText = styled.div`
 
 export const ContentWrapper = styled.div`
   /* background-color: ${({ theme }) => theme.bg0}; */
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -75,16 +78,14 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
 
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    background-color: ${({ theme }) => theme.bg0};
-    border: 1px solid ${({ theme }) => theme.bg1};
-    box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
+    background: var(${UI.COLOR_PAPER});
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
     padding: 0px;
     width: 50vw;
     overflow-y: auto;
     overflow-x: hidden;
-
     align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
-
     max-width: 420px;
     ${({ $maxHeight }) =>
       $maxHeight &&

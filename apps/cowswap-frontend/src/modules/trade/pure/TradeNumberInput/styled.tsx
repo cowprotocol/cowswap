@@ -1,9 +1,8 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
-
-import { UI } from 'common/constants/theme'
 
 export const Suffix = styled.span`
   margin: 0 0 0 3px;
@@ -19,6 +18,7 @@ export const ArrowsWrapper = styled.div`
   inset-block-start: 0;
   inset-inline-end: 0;
   background: transparent;
+  color: inherit;
   border-radius: 6px;
   display: flex;
   flex-flow: column wrap;
@@ -35,12 +35,14 @@ export const ArrowsWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: 100%;
+    color: inherit;
   }
 
   > span {
     overflow: hidden;
     cursor: pointer;
-    transition: color 0.2s linear;
+    opacity: 0.5;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,8 +50,10 @@ export const ArrowsWrapper = styled.div`
     height: 50%;
 
     &:hover {
+      opacity: 1;
+
       > span > svg > path {
-        fill: var(${UI.COLOR_TEXT1});
+        fill: currentColor;
       }
     }
   }
@@ -62,11 +66,11 @@ export const ArrowsWrapper = styled.div`
     border-radius: var(--size);
     object-fit: contain;
     cursor: pointer;
+    color: currentColor;
   }
 
   > span > span > svg > path {
-    fill: ${({ theme }) => transparentize(0.7, theme.text1)};
-    transition: fill 0.2s linear;
+    fill: currentColor;
   }
 
   > span:first-child > span > svg {
@@ -94,10 +98,10 @@ export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArro
 `
 
 export const NumericalInput = styled(Input)<{ color?: string }>`
-  color: ${({ theme, color }) => {
-    if (color === 'red') return theme.red1
-    if (color === 'yellow') return theme.yellow2
-    return theme.text1
+  color: ${({ color }) => {
+    if (color === 'red') return `var(${UI.COLOR_DANGER})`
+    if (color === 'yellow') return `var(${UI.COLOR_WARNING})`
+    return 'inherit'
   }};
   display: flex;
   align-items: center;

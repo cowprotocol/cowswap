@@ -94,11 +94,10 @@ export type SignOrderParams = {
 export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   const {
     kind,
-    inputAmount,
+    sellAmountBeforeFee,
     outputAmount,
     sellToken,
     buyToken,
-    feeAmount,
     validTo,
     recipient,
     partiallyFillable,
@@ -112,7 +111,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   }
 
   // fee adjusted input amount
-  const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
+  const sellAmount = sellAmountBeforeFee.quotient.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
@@ -130,7 +129,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
       buyAmount,
       validTo,
       appData: appData.appDataKeccak256,
-      feeAmount: feeAmount?.quotient.toString() || '0',
+      feeAmount: '0',
       kind,
       receiver,
       partiallyFillable,

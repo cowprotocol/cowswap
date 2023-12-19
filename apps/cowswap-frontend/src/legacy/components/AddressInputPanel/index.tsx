@@ -1,25 +1,25 @@
-import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
+import { ChangeEvent, ReactNode, useCallback } from 'react'
 
 import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
 
-import { UI } from 'common/constants/theme'
 import { autofocus } from 'common/utils/autofocus'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: 16px;
-  background-color: var(${UI.COLOR_GREY});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   z-index: 1;
   width: 100%;
 `
@@ -30,7 +30,8 @@ const ContainerRow = styled.div<{ error: boolean }>`
   align-items: center;
   border-radius: 16px;
   border: 0;
-  background-color: var(${UI.COLOR_GREY});
+  color: inherit;
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const InputContainer = styled.div`
@@ -44,15 +45,16 @@ const Input = styled.input<{ error?: boolean }>`
   border: none;
   flex: 1 1 auto;
   background: none;
-  transition: color 300ms ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
+  transition: color 0.2s ${({ error }) => (error ? 'step-end' : 'step-start')};
+  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER}` : 'inherit')};
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
 
   &&::placeholder {
-    color: var(${UI.COLOR_TEXT2});
+    color: inherit;
+    opacity: 0.5;
   }
 
   &:focus::placeholder {
@@ -60,6 +62,7 @@ const Input = styled.input<{ error?: boolean }>`
   }
 
   padding: 0px;
+  appearance: textfield;
   -webkit-appearance: textfield;
 
   ::-webkit-search-decoration {
@@ -88,13 +91,10 @@ export function AddressInputPanel({
   className?: string
   label?: ReactNode
   placeholder?: string
-  // the typed string value
   value: string
-  // triggers whenever the typed value changes
   onChange: (value: string) => void
 }) {
   const { chainId } = useWalletInfo()
-  const theme = useContext(ThemeContext as Context<DefaultTheme>)
 
   const { address, loading, name } = useENS(value)
 
@@ -115,9 +115,7 @@ export function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <ThemedText.Black color={theme.text1} fontWeight={500} fontSize={14}>
-                {label ?? <Trans>Recipient</Trans>}
-              </ThemedText.Black>
+              <span>{label ?? <Trans>Recipient</Trans>}</span>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>

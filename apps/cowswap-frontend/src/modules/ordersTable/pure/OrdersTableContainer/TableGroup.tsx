@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -23,7 +23,7 @@ import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 const GroupBox = styled.div``
 
 const Pagination = styled(OrdersTablePagination)`
-  background: ${({ theme }) => transparentize(0.91, theme.text1)};
+  background: ${({ theme }) => transparentize(theme.text, 0.91)};
   margin: 0;
   padding: 10px 0;
 `

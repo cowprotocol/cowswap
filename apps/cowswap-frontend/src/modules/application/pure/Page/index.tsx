@@ -1,13 +1,13 @@
 import { PropsWithChildren } from 'react'
 
-import { lighten } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
+import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
 import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'
-
-import { UI } from 'common/constants/theme'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
@@ -18,7 +18,7 @@ export const PageWrapper = styled(Widget)`
 export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
 
@@ -40,6 +40,7 @@ export const Content = styled.div`
   font-size: 16px;
   margin: 0 0 28px;
   display: block;
+  color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     p > a {
@@ -53,7 +54,7 @@ export const Content = styled.div`
   }
 
   > h2 > b {
-    color: ${({ theme }) => theme.text3};
+    color: inherit;
   }
 
   > h3 {
@@ -137,8 +138,8 @@ export const Content = styled.div`
 export const BackToTopStyle = css`
   #back-to-top {
     border: 1px solid transparent;
-    background: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.white};
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
     font-size: 18px;
     font-weight: 600;
     border: none;
@@ -147,7 +148,7 @@ export const BackToTopStyle = css`
     position: relative;
     min-height: 58px;
     padding: 16px;
-    transition: all 0.2s ease-in-out;
+    transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
     cursor: pointer;
 
     &:focus,
@@ -159,7 +160,7 @@ export const BackToTopStyle = css`
     }
 
     &:hover {
-      background: ${({ theme }) => lighten(0.08, theme.bg2)};
+      background: ${({ theme }) => lighten(theme.bg2, 0.08)};
     }
   }
 `
@@ -172,7 +173,7 @@ export const GdocsListStyle = css`
   ol {
     margin: 24px 0;
     padding: 12px 48px;
-    background: var(${UI.COLOR_GREY});
+    background: var(${UI.COLOR_PAPER_DARKER});
     border-radius: 12px;
 
     > li {

@@ -1,18 +1,17 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { TokenAmount } from '@cowprotocol/ui'
 
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-
-import { UI } from 'common/constants/theme'
 
 import { useCombinedBalance } from '../../hooks/useCombinedBalance'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   padding: 6px 12px;
   border: 2px solid transparent;
   font-weight: 500;
@@ -22,7 +21,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   border-radius: 21px;
   pointer-events: auto;
-  transition: width 0.2s ease-in-out, border 0.2s ease-in-out;
+  transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, border var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -36,7 +35,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   `};
 
   &:hover {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
   ${({ theme, isLoading }) =>

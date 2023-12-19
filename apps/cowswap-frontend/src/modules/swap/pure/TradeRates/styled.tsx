@@ -1,10 +1,10 @@
-import { transparentize } from 'polished'
+import { UI } from '@cowprotocol/ui'
+
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
-import { UI } from 'common/constants/theme'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Box = styled.div`
@@ -16,7 +16,7 @@ export const Row = styled.div`
   justify-content: space-between;
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   min-height: 24px;
   gap: 3px;
 
@@ -30,11 +30,11 @@ export const Row = styled.div`
     }
 
     &:first-child > span {
-      color: ${({ theme }) => transparentize(0.2, theme.text1)};
-      transition: color 0.15s ease-in-out;
+      color: var(${UI.COLOR_TEXT_OPACITY_25});
+      transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       &:hover {
-        color: var(${UI.COLOR_TEXT1});
+        color: inherit;
       }
     }
 
@@ -64,14 +64,14 @@ export const Discount = styled.span`
   display: flex;
   cursor: pointer;
   padding: 2px 8px;
-  background: var(${UI.COLOR_GREY});
-  color: var(${UI.COLOR_TEXT1});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   border-radius: 5px;
   font-weight: 400;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
   }
 `

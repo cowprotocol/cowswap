@@ -5,6 +5,22 @@ export type Color = string
 interface ColorsUniswap {
   darkMode: boolean
 
+  // V3 =======================
+  primary: Color
+  secondary: Color
+  background: Color
+  paper: Color
+
+  text: Color
+  secondaryText: Color
+  disabledText: Color
+
+  error: Color
+  warning: Color
+  info: Color
+  success: Color
+  // ===========================
+
   // base
   white: Color
   black: Color
@@ -30,14 +46,13 @@ interface ColorsUniswap {
   modalBG: Color
   advancedBG: Color
 
-  //blues
   primary1: Color
   primary2: Color
   primary3: Color
   primary4: Color
   primary5: Color
 
-  primaryText1: Color
+  text1: Color
 
   // pinks
   secondary1: Color
@@ -104,6 +119,10 @@ export interface Colors extends ColorsUniswap {
   blueLight1: Color
   grey1: Color
   red1: Color
+  paperCustom: Color
+  paperDarkerCustom: Color
+  paperDarkestCustom: Color
+  paperLighterCustom: Color
 }
 
 declare module 'styled-components' {

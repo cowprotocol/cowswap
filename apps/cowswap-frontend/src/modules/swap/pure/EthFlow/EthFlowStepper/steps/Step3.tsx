@@ -7,13 +7,11 @@ import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
-
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-weight: 500;
 `
 

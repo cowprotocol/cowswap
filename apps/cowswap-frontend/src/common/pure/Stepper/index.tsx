@@ -1,8 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import ICON_CHECK from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { UI } from 'common/constants/theme'
 import { IconSpinner } from 'common/pure/IconSpinner'
 
 type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'
@@ -22,16 +23,16 @@ interface StepStyles {
 }
 
 const stateStyles: Record<StepState, StepStyles> = {
-  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_TEXT1 },
-  finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT1 },
+  active: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_TEXT },
+  finished: { dotBackground: UI.COLOR_LINK_OPACITY_10, dotColor: UI.COLOR_LINK, labelColor: UI.COLOR_TEXT },
   disabled: {
-    dotBackground: UI.COLOR_TEXT1_OPACITY_25,
-    dotColor: UI.COLOR_TEXT1_OPACITY_25,
-    labelColor: UI.COLOR_TEXT1_OPACITY_25,
+    dotBackground: UI.COLOR_TEXT_OPACITY_25,
+    dotColor: UI.COLOR_TEXT_OPACITY_25,
+    labelColor: UI.COLOR_TEXT_OPACITY_25,
   },
   error: { dotBackground: UI.COLOR_DANGER_BG, dotColor: UI.COLOR_DANGER, labelColor: UI.COLOR_DANGER },
-  loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_CONTAINER_BG_01, labelColor: UI.COLOR_LINK },
-  open: { dotBackground: UI.COLOR_TEXT1_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
+  loading: { dotBackground: UI.COLOR_LINK, dotColor: UI.COLOR_PAPER, labelColor: UI.COLOR_LINK },
+  open: { dotBackground: UI.COLOR_TEXT_OPACITY_10, dotColor: UI.COLOR_TEXT2, labelColor: UI.COLOR_TEXT2 },
 }
 
 const Step = styled.div<StepProps>`
@@ -55,7 +56,7 @@ const Step = styled.div<StepProps>`
     max-width: var(--dotSize);
     max-height: var(--dotSize);
     border-radius: var(--dotSize);
-    border: 1px solid ${({ dotBorderColor = UI.COLOR_CONTAINER_BG_01 }) => `var(${dotBorderColor})`};
+    border: 1px solid ${({ dotBorderColor = UI.COLOR_PAPER }) => `var(${dotBorderColor})`};
     background: ${({ stepState }) => `var(${stateStyles[stepState].dotBackground})`};
     color: ${({ stepState }) => `var(${stateStyles[stepState].dotColor})`};
     flex: 0 0 auto;
@@ -90,7 +91,7 @@ const Step = styled.div<StepProps>`
         ? `var(${stateStyles['error'].dotBackground})`
         : stepState === 'finished'
         ? `var(${stateStyles['finished'].dotBackground})`
-        : `var(${UI.COLOR_TEXT1_OPACITY_25})`};
+        : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   }
 

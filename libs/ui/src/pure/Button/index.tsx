@@ -1,12 +1,11 @@
 import { HTMLAttributes } from 'react'
 
-import { transparentize, darken, lighten } from 'polished'
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize } from '../../enum'
+import { ButtonSize, UI } from '../../enum'
 
 import {
   // Import only the basic buttons
@@ -22,16 +21,16 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  background: ${({ theme }) => theme.bg2};
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 18px;
   font-weight: 600;
   border: none;
   box-shadow: none;
   border-radius: 16px;
-  color: ${({ theme }) => theme.white};
   position: relative;
   min-height: 58px;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
   /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
@@ -40,17 +39,14 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:active {
     box-shadow: none;
     transform: none;
-    color: ${({ theme }) => theme.white};
-  }
-
-  &:hover {
-    background: ${({ theme }) => lighten(0.08, theme.bg2)};
+    color: var(${UI.COLOR_BUTTON_TEXT});
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
   }
 
   &:disabled {
-    background-color: var(--cow-color-grey);
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
+    background-color: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_BUTTON_TEXT_DISABLED});
     border: 0;
     cursor: auto;
     animation: none;
@@ -61,7 +57,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
 export const ButtonLight = styled(ButtonPrimary)`
   // CSS override
   ${({ theme }) => theme.buttonLight.background}
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   font-size: ${({ theme }) => theme.buttonLight.fontSize};
   font-weight: ${({ theme }) => theme.buttonLight.fontWeight};
   border: ${({ theme }) => theme.buttonLight.border};
@@ -94,7 +90,7 @@ export const ButtonLight = styled(ButtonPrimary)`
     opacity: 0.4;
     cursor: auto;
     animation: none;
-    color: ${({ theme }) => theme.primaryText1};
+    color: ${({ theme }) => theme.text1};
 
     &:hover {
       cursor: auto;
@@ -123,10 +119,6 @@ export const ButtonSecondary = styled(ButtonPrimary)`
   box-shadow: none;
   padding: 6px 8px;
   transform: none;
-
-  &:hover,
-  &:focus {
-  }
 `
 
 export const ButtonOutlined = styled(ButtonOutlinedMod)`
@@ -140,7 +132,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
-  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  transition: box-shadow var(${UI.ANIMATION_DURATION}) ease-in-out, transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   > div {
     font-size: inherit;
@@ -176,24 +168,33 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
-  background: ${({ theme }) => theme.red1};
-  color: var(--cow-container-bg-01);
-  transition: background 0.15s ease-in-out;
+  background: var(${UI.COLOR_DANGER});
+  color: var(${UI.COLOR_DANGER_TEXT});
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
-    background: ${({ theme }) => theme.red1};
-    color: var(--cow-container-bg-01);
-  }
-
-  &:hover {
-    background: ${({ theme }) => darken(0.08, theme.red1)};
+    background: var(${UI.COLOR_DANGER});
+    color: var(${UI.COLOR_DANGER_TEXT});
   }
 `
 
 export const ButtonEmpty = styled(ButtonEmptyMod)`
   // CSS overrides
+`
+
+export const FancyButton = styled.button`
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
+  align-items: center;
+  height: 2rem;
+  border-radius: 36px;
+  font-size: 1rem;
+  width: auto;
+  min-width: 3.5rem;
+  border: 0;
+  outline: none;
 `
 
 const HoverIcon = styled.div`
@@ -204,7 +205,7 @@ const HoverIcon = styled.div`
   margin: 0 8px 0 0;
   opacity: 0.75;
   cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 1;

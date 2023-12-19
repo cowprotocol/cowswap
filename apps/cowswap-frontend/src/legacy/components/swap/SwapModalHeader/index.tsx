@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { INPUT_OUTPUT_EXPLANATION } from '@cowprotocol/common-const'
 import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
@@ -8,10 +8,8 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'polished'
 import { ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
@@ -84,8 +82,6 @@ function SwapModalHeaderComponent({
     [trade, allowedSlippage]
   )
 
-  const theme = useContext(ThemeContext)
-
   const {
     inputAmount: { value: fiatValueInput },
     outputAmount: { value: fiatValueOutput },
@@ -110,7 +106,7 @@ function SwapModalHeaderComponent({
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body fontWeight={500} fontSize={14}>
               <Trans>From</Trans>
             </ThemedText.Body>
             <FiatValue fiatValue={fiatValueInput} />
@@ -148,7 +144,7 @@ function SwapModalHeaderComponent({
         </AuxInformationContainer>
       )}
       <ArrowWrapper>
-        <ArrowDown size="16" color={theme.text2} />
+        <ArrowDown size="16" />
       </ArrowWrapper>
       <LightCard
         flatBorder={!!exactOutLabel}
@@ -157,10 +153,10 @@ function SwapModalHeaderComponent({
       >
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body fontWeight={500} fontSize={14}>
               <Trans>To</Trans>
             </ThemedText.Body>
-            <ThemedText.Body fontSize={14} color={theme.text3}>
+            <ThemedText.Body fontSize={14}>
               <FiatValue fiatValue={fiatValueOutput} priceImpactParams={{ priceImpact, loading: false }} />
             </ThemedText.Body>
           </RowBetween>
@@ -182,7 +178,7 @@ function SwapModalHeaderComponent({
         </AutoColumn>
       </LightCard>
       {!!exactOutLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer margin="-4px auto 4px" hideInput>
           <FeeInformationTooltip
             amountAfterFees={<TokenAmount amount={trade.outputAmount} />}
             amountBeforeFees={<TokenAmount amount={trade.outputAmountWithoutFee} />}

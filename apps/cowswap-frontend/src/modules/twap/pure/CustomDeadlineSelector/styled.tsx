@@ -1,12 +1,11 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
 import { TradeWidgetFieldBox } from 'modules/trade/pure/TradeWidgetField/styled'
-
-import { UI } from 'common/constants/theme'
 
 export const ModalWrapper = styled.div`
   display: flex;
@@ -22,6 +21,7 @@ export const ModalHeader = styled.div`
   width: 100%;
   justify-content: space-between;
   padding: 0 0 16px;
+  color: inherit;
 
   > h3 {
     font-size: 21px;
@@ -35,6 +35,7 @@ export const ModalFooter = styled.div`
   justify-content: space-between;
   padding: 15px 0 0;
   gap: 10px;
+  color: inherit;
 
   > button {
     border-radius: 12px;
@@ -64,7 +65,7 @@ export const CloseIcon = styled(X)`
   height: 28px;
   width: 28px;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     cursor: pointer;
@@ -72,19 +73,18 @@ export const CloseIcon = styled(X)`
   }
 
   > line {
-    stroke: var(${UI.COLOR_TEXT1});
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 
 export const CancelButton = styled(ButtonSecondary)`
   background: transparent;
-  color: var(${UI.COLOR_TEXT1});
-  border: 1px solid ${({ theme }) => theme.text1};
+  color: inherit;
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
   :hover {
-    background: transparent;
-    color: var(${UI.COLOR_TEXT1});
-    border: 1px solid ${({ theme }) => theme.text1};
+    background: var(${UI.COLOR_PAPER_DARKER});
+    color: inherit;
   }
 `
 

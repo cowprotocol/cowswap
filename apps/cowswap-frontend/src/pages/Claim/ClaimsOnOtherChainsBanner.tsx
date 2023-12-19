@@ -96,7 +96,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
   }
 
   return (
-    <NotificationBanner className={className} isVisible id={account ?? undefined} level="info" canClose={false}>
+    <NotificationBanner className={className} isVisible id={account ?? undefined} level="INFO" canClose={false}>
       <Wrapper>
         <AlertTriangle />
         <div>This account has available claims on</div>

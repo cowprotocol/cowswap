@@ -1,8 +1,8 @@
+import { UI } from '@cowprotocol/ui'
+
 import { animated } from '@react-spring/web'
 import { X } from 'react-feather'
 import styled, { DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 const Fader = styled.div`
   position: absolute;
@@ -10,28 +10,27 @@ const Fader = styled.div`
   left: 0px;
   width: 100%;
   height: 2px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const PopupWrapper = styled.div<{ css?: FlattenInterpolation<ThemeProps<DefaultTheme>> }>`
   display: inline-block;
   width: 100%;
-  background-color: var(${UI.COLOR_CONTAINER_BG_01});
+  background-color: var(${UI.COLOR_PAPER});
   position: relative;
   border-radius: 10px;
   padding: 20px 35px 20px 20px;
   overflow: hidden;
-  border: 2px solid ${({ theme }) => theme.black};
-  box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
+  border: 2px solid var(${UI.COLOR_TEXT_OPACITY_50});
 
   ${Fader} {
-    background-color: ${({ theme }) => theme.disabled};
+    background-color: var(${UI.COLOR_TEXT_OPACITY_50});
     height: 4px;
   }
 
   a {
     text-decoration: underline;
-    color: ${({ theme }) => theme.textLink};
+    color: inherit;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -51,6 +50,17 @@ export const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    stroke: currentColor;
+  }
 
   :hover {
     cursor: pointer;

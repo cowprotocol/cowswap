@@ -5,16 +5,13 @@ import styled from 'styled-components/macro'
 
 import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
-import { UI } from 'common/constants/theme'
-
 const IconImage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 
   > svg {
-    opacity: 0.5;
-    fill: var(${UI.COLOR_TEXT1});
+    fill: currentColor;
     margin: 0 3px 0 0;
   }
 `

@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -95,9 +94,10 @@ export const CowModal = styled(Modal)<{
   padding?: string
 }>`
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  color: var(${UI.COLOR_TEXT_PAPER});
 
   > [data-reach-dialog-content] {
-    color: var(${UI.COLOR_TEXT1});
+    color: inherit;
     width: 100%;
     max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
@@ -105,7 +105,7 @@ export const CowModal = styled(Modal)<{
     padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
-    background-color: var(${UI.COLOR_CONTAINER_BG_01});
+    background-color: var(${UI.COLOR_PAPER});
     overflow: hidden;
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
@@ -124,7 +124,7 @@ export const CowModal = styled(Modal)<{
         left: 0;
         width: 100%;
         padding: 16px;
-        background: var(${UI.COLOR_CONTAINER_BG_01});
+        background: var(${UI.COLOR_PAPER});
         z-index: 20;
       `}
     }

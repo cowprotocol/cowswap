@@ -23,8 +23,10 @@ import { TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
+import { PaletteControl } from './controls/PaletteControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
@@ -70,6 +72,9 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  const paletteManager = useColorPaletteManager(mode)
+  const { colorPalette, defaultPalette } = paletteManager
+
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
   const LINKS = [
@@ -102,6 +107,8 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
+    customColors: colorPalette,
+    defaultColors: defaultPalette,
   }
 
   const params = useWidgetParamsAndSettings(provider, state)
@@ -144,6 +151,8 @@ export function Configurator({ title }: { title: string }) {
         </div>
 
         <ThemeControl />
+
+        <PaletteControl paletteManager={paletteManager} />
 
         <TradeModesControl state={tradeModesState} />
 
@@ -197,7 +206,12 @@ export function Configurator({ title }: { title: string }) {
       <Box sx={ContentStyled}>
         {params && (
           <>
-            <EmbedDialog params={params} open={dialogOpen} handleClose={handleDialogClose} />
+            <EmbedDialog
+              params={params}
+              defaultPalette={defaultPalette}
+              open={dialogOpen}
+              handleClose={handleDialogClose}
+            />
             <br />
             <CowSwapWidget provider={provider} params={params} />
           </>

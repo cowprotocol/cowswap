@@ -1,8 +1,9 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
-import { UI } from 'common/constants/theme'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const DetailsRow = styled.div`
@@ -31,7 +32,7 @@ export const DetailsRow = styled.div`
 
   > div > span ${QuestionWrapper} {
     opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:hover {
       opacity: 1;
@@ -42,7 +43,7 @@ export const DetailsRow = styled.div`
 export const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   min-height: 24px;
   gap: 3px;
 `

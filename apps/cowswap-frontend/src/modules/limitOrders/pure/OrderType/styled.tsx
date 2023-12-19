@@ -1,17 +1,17 @@
+import { UI } from '@cowprotocol/ui'
+
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'polished'
+import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { UI } from 'common/constants/theme'
 
 export const Wrapper = styled.div`
   position: relative;
 `
 
 export const LabelText = styled.span`
-  color: var(${UI.COLOR_TEXT1});
-  transition: color 0.15s ease-in-out;
+  color: inherit;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
 export const StyledSVG = styled(SVG)`
@@ -21,8 +21,8 @@ export const StyledSVG = styled(SVG)`
   height: var(--size);
 
   > path {
-    fill: var(${UI.COLOR_TEXT1});
-    transition: fill 0.15s ease-in-out;
+    fill: var(${UI.COLOR_TEXT});
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   &.expanded {
@@ -40,23 +40,25 @@ export const StyledMenuButton = styled(MenuButton)`
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   display: flex;
   align-items: center;
-  background: ${({ theme }) => theme.bg3};
+  background: var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
   padding: 4px 10px;
   border-radius: 8px;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
 
     > ${LabelText}, > ${StyledSVG} > path {
-      fill: ${({ theme }) => theme.white};
-      color: ${({ theme }) => theme.white};
+      fill: currentColor;
+      color: currentColor;
     }
   }
 `
 
 export const StyledMenuList = styled(MenuList)`
-  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
-  background: var(${UI.COLOR_CONTAINER_BG_01});
+  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
+  background: var(${UI.COLOR_PAPER});
   border-radius: 8px;
   z-index: 2;
   min-width: 100%;
@@ -69,15 +71,15 @@ export const StyledMenuList = styled(MenuList)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 6px 12px;
-  color: var(${UI.COLOR_TEXT1});
+  color: inherit;
   font-size: 13px;
   cursor: pointer;
   border-radius: 8px;
   font-weight: 400;
-  transition: background 0.1s ease-in-out;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.bg2};
+    background: var(${UI.COLOR_PRIMARY});
     color: ${({ theme }) => theme.white};
   }
 `
