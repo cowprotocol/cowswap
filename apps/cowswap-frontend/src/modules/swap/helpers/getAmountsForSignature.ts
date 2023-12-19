@@ -31,7 +31,7 @@ function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmou
   if (kind === OrderKind.SELL) {
     return trade.inputAmountWithFee
   } else {
-    return trade.inputAmountWithFee.multiply(slippageCoeff) // subtract slippage
+    return trade.inputAmountWithFee.multiply(slippageCoeff) // add slippage
   }
 }
 
@@ -57,7 +57,7 @@ function outputAmountForSignature(params: AmountForSignatureParams): CurrencyAmo
     return trade.outputAmount
   }
 
-  return trade.outputAmount.multiply(slippageCoeff) // add slippage
+  return trade.outputAmount.multiply(slippageCoeff) // subtract slippage
 }
 
 export interface AmountsForSignature {

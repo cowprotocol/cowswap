@@ -68,7 +68,7 @@ describe('getAmountsForSignature()', () => {
       expect(result.inputAmount.toFixed()).toEqual('3004.000000')
 
       // Fee in WETH = 0.005312084993359893
-      // outputAmount = (2 - 0.005312) - 5% = 1.89468
+      // outputAmount = (2 - 0.005312) - 5% = 1.89495
       expect(result.outputAmount.toFixed()).toEqual('1.894953519256308100')
     })
 

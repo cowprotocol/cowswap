@@ -123,10 +123,8 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.SwapDisabled
   }
 
-  if (amountsForSignature) {
-    if (amountsForSignature.outputAmount.lessThan(0)) {
-      return SwapButtonState.FeesExceedFromAmount
-    }
+  if (amountsForSignature?.outputAmount.lessThan(0)) {
+    return SwapButtonState.FeesExceedFromAmount
   }
 
   if (input.isNativeIn) {
