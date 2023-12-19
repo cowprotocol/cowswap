@@ -39,10 +39,10 @@ export function useAppCodeWidgetAware(appCodeOfficial: string | null): AppCodeWi
     if (appCodeInjectedHostApp) {
       return {
         // The main appCode will be the one of the host app that uses the widget
-        appCode: appCodeInjectedHostApp,
+        appCode: appCodeOfficial,
         widget: {
           // In the widget appCode we include the official appCode and environment (this way we report which app is backing the widget iframe)
-          appCode: appCodeOfficial,
+          appCode: appCodeInjectedHostApp,
           environment: environmentName,
         },
       }
