@@ -1,6 +1,5 @@
 import { wrapAnalytics } from '@cowprotocol/analytics'
-import { RADIX_HEX } from '@cowprotocol/common-const'
-import { getChainCurrencySymbols } from '@cowprotocol/common-const'
+import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
@@ -14,8 +13,6 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-
-import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { getOperationMessage } from '../components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { ConfirmOperationType } from '../state/types'
@@ -44,8 +41,6 @@ export interface WrapUnwrapContext {
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
-  tradeState: TradeRawState
-  updateTradeState: (update: Partial<ExtendedTradeRawState>) => void
   closeModals: () => void
   openTransactionConfirmationModal: OpenSwapConfirmModalCallback
 }
@@ -54,16 +49,7 @@ export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true }
 ): Promise<TransactionResponse | null> {
-  const {
-    chainId,
-    amount,
-    wethContract,
-    addTransaction,
-    openTransactionConfirmationModal,
-    closeModals,
-    updateTradeState,
-    tradeState,
-  } = context
+  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
   const operationType = isNativeIn ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
@@ -84,9 +70,6 @@ export async function wrapUnwrapCallback(
       summary,
     })
     useModals && closeModals()
-
-    // Clean up form fields after successful wrap/unwrap
-    updateTradeState({ ...tradeState, inputCurrencyAmount: '', outputCurrencyAmount: '' })
 
     return txReceipt
   } catch (error: any) {

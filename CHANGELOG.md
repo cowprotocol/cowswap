@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.52.0](https://github.com/cowprotocol/cowswap/compare/v1.51.2...v1.52.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* **classic-eth-flow:** wrap no longer clears input amounts ([#3518](https://github.com/cowprotocol/cowswap/issues/3518)) ([cfe5c72](https://github.com/cowprotocol/cowswap/commit/cfe5c72b6f3e3cbf7d153d5840446c1c64f8110c))
+* **lint:** comment out unused LedgerIcon import ([3c2cea1](https://github.com/cowprotocol/cowswap/commit/3c2cea1b7dcd4e9a032e51874afd917c9f347c73))
+* **swap:** fix sell amount for buy orders with zero fee ([#3506](https://github.com/cowprotocol/cowswap/issues/3506)) ([2af7a10](https://github.com/cowprotocol/cowswap/commit/2af7a10fe446ec210e7a6146cd02e65c0b393601))
+* **twap:** deduplicate safe transactions with the same order ([#3521](https://github.com/cowprotocol/cowswap/issues/3521)) ([77a9447](https://github.com/cowprotocol/cowswap/commit/77a9447974db8a12770499af29efae01863c5cb2))
+* **wallet:** recognize Safe iOS wallet name ([#3524](https://github.com/cowprotocol/cowswap/issues/3524)) ([5b422d7](https://github.com/cowprotocol/cowswap/commit/5b422d75b708e7afd533f5f4f0dda963758d2b7a))
+
 ## [1.51.2](https://github.com/cowprotocol/cowswap/compare/v1.51.1...v1.51.2) (2023-12-14)
 
 
