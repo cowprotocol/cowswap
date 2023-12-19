@@ -116,8 +116,10 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
   }
 
+  const isSellTrade = kind === OrderKind.SELL
+
   // fee adjusted input amount
-  const sellAmount = (swapZeroFee ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)
+  const sellAmount = (swapZeroFee && isSellTrade ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
