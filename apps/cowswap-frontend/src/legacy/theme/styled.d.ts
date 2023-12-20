@@ -51,9 +51,7 @@ interface ColorsUniswap {
   primary3: Color
   primary4: Color
   primary5: Color
-
-  text1: Color
-
+  
   // pinks
   secondary1: Color
   secondary2: Color
@@ -71,9 +69,6 @@ interface ColorsUniswap {
   blue2: Color
   blue4: Color
 
-  error: Color
-  success: Color
-  warning: Color
 }
 
 // Override colors
@@ -103,7 +98,6 @@ export interface Colors extends ColorsUniswap {
   info: Color
   information: Color
   warning: Color
-  danger: Color
   alert: Color
   alert2: Color
   error: Color
