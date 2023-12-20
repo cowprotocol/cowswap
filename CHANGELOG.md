@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.53.0](https://github.com/cowprotocol/cowswap/compare/v1.52.0...v1.53.0) (2023-12-20)
+
+
+### Features
+
+* replace time column labels with nouns ([#3531](https://github.com/cowprotocol/cowswap/issues/3531)) ([bba989a](https://github.com/cowprotocol/cowswap/commit/bba989ad7fdc289cd89e1384c4780facee3624c5))
+* styling fix ([#3515](https://github.com/cowprotocol/cowswap/issues/3515)) ([6bf809b](https://github.com/cowprotocol/cowswap/commit/6bf809b90b23d812969c4d5f722915135b86d90e))
+* winter theme ([#3514](https://github.com/cowprotocol/cowswap/issues/3514)) ([a8dbf9d](https://github.com/cowprotocol/cowswap/commit/a8dbf9d78c258a1ed56ff6c2e9a03dda7794b79a))
+
+
+### Bug Fixes
+
+* **deps:** upgrade wagmi version to remove ledger lib ([#3513](https://github.com/cowprotocol/cowswap/issues/3513)) ([bd935a7](https://github.com/cowprotocol/cowswap/commit/bd935a7c129bb1e84c45be4a0697f776d3a444e8))
+* fix cosmos ([#3535](https://github.com/cowprotocol/cowswap/issues/3535)) ([c8df8f2](https://github.com/cowprotocol/cowswap/commit/c8df8f2503ff7a7d7997729cc053cf0ac607e18a))
+* fix ethflow stepper border color ([#3536](https://github.com/cowprotocol/cowswap/issues/3536)) ([a0ba534](https://github.com/cowprotocol/cowswap/commit/a0ba5347e3f822679464ef3457356a6df3c47630))
+* remove ledger connector completely ([#3529](https://github.com/cowprotocol/cowswap/issues/3529)) ([96e349f](https://github.com/cowprotocol/cowswap/commit/96e349fd022622e3f5683fd3217c1ff8ce6fa048))
+* terms and conditions link hover color ([#3538](https://github.com/cowprotocol/cowswap/issues/3538)) ([f91aabb](https://github.com/cowprotocol/cowswap/commit/f91aabb1573c3e9fc514efe4bb28169a4febe922))
+* unsupported token button text color ([#3537](https://github.com/cowprotocol/cowswap/issues/3537)) ([ec4b222](https://github.com/cowprotocol/cowswap/commit/ec4b222aa499699195f4b8f25befeca4fcf5c5f7))
+* use button text color for error button ([#3534](https://github.com/cowprotocol/cowswap/issues/3534)) ([179b0b8](https://github.com/cowprotocol/cowswap/commit/179b0b8a76003cfae8ac8b3d1a8b842b6dd00833))
+
 ## [1.52.0](https://github.com/cowprotocol/cowswap/compare/v1.51.2...v1.52.0) (2023-12-19)
 
 
