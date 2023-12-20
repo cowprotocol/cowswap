@@ -1,7 +1,8 @@
-import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
+import { ExternalProvider, Web3Provider } from '@ethersproject/providers'
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 
-import type { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import { WC_PROJECT_ID } from '../../constants'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -42,11 +43,9 @@ export class Ledger extends Connector {
 
   async getAccounts() {
     const provider = await this.getProvider()
-    const accounts = (await provider.request({
+    return (await provider.request({
       method: 'eth_requestAccounts',
     })) as string[]
-
-    return accounts
   }
 
   async getChainId() {
@@ -79,13 +78,15 @@ export class Ledger extends Connector {
   async activateLedgerKit() {
     const connectKit = this.kit
 
-    await connectKit.enableDebugLogs()
+    connectKit.enableDebugLogs()
 
-    await connectKit.checkSupport({
-      providerType: 'Ethereum' as SupportedProviders,
+    connectKit.checkSupport({
+      providerType: SupportedProviders.Ethereum,
+      walletConnectVersion: 2,
+      projectId: WC_PROJECT_ID,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
-      rpc: this.options.rpc,
+      rpcMap: this.options.rpc,
     })
   }
 

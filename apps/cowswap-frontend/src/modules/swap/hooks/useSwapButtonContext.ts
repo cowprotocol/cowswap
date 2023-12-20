@@ -1,5 +1,8 @@
+import { useMemo } from 'react'
+
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
@@ -8,7 +11,7 @@ import {
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, TradeType as UniTradeType } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -29,10 +32,13 @@ import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
+
+import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -53,6 +59,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currencies,
     currenciesIds,
     inputError: swapInputError,
+    allowedSlippage,
   } = useDerivedSwapInfo()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
@@ -63,6 +70,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
+  const { swapZeroFee } = useFeatureFlags()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -95,6 +103,17 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
 
+  const amountsForSignature = useMemo(() => {
+    return trade
+      ? getAmountsForSignature({
+          trade,
+          kind: trade?.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+          allowedSlippage,
+          featureFlags: { swapZeroFee },
+        })
+      : undefined
+  }, [trade, allowedSlippage, swapZeroFee])
+
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
@@ -115,6 +134,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
+    amountsForSignature,
   })
 
   return {
