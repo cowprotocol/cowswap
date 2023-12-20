@@ -12,5 +12,5 @@ export default {
   coverageDirectory: '../../coverage/cowswap',
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   setupFiles: ['dotenv/config'],
-  transformIgnorePatterns: ['node_modules/(?!@ledgerhq/connect-kit-loader)'],
+  transformIgnorePatterns: [],
 }
