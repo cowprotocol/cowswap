@@ -49,6 +49,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
     ]
   },
   "dependencies": {
