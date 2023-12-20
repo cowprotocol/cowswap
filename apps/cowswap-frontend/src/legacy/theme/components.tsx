@@ -81,7 +81,7 @@ export const StyledInternalLink = styled(Link)`
 
   :hover {
     text-decoration: underline;
-    color: var(${UI.COLOR_PRIMARY_DARKER});
+    color: var(${UI.COLOR_PRIMARY});
   }
 
   :focus {
