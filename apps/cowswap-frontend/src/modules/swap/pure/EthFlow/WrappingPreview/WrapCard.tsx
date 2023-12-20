@@ -1,6 +1,6 @@
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 
