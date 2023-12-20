@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
 import {
   Checkbox,
@@ -19,7 +19,7 @@ import {
   Box,
 } from '@mui/material'
 
-import { TOKEN_LISTS } from '../consts'
+import { TokenListItem } from '../types'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -33,12 +33,10 @@ const MenuProps = {
 }
 
 type TokenListControlProps = {
-  onTokenListSelect: (selectedUrls: string[]) => void
-  initialSelectedTokenLists: string[]
+  tokenListsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
 }
 
 type CustomList = {
-  name: string
   url: string
 }
 
@@ -49,12 +47,8 @@ type AddCustomListDialogProps = {
 }
 
 const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps) => {
-  const [customList, setCustomList] = useState<CustomList>({ name: '', url: '' })
-  const [errors, setErrors] = useState({ name: false, url: false })
-
-  const validateName = (name: string) => {
-    return name.trim() !== ''
-  }
+  const [customList, setCustomList] = useState<CustomList>({ url: '' })
+  const [errors, setErrors] = useState({ url: false })
 
   const validateURL = (url: string) => {
     const pattern = new RegExp(
@@ -73,25 +67,19 @@ const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps)
     const { id, value } = e.target
     setCustomList({ ...customList, [id]: value })
 
-    if (id === 'name') {
-      setErrors({ ...errors, name: !validateName(value) })
-    } else if (id === 'url') {
-      setErrors({ ...errors, url: !validateURL(value) })
-    }
+    setErrors({ ...errors, url: !validateURL(value) })
   }
 
   const handleAdd = () => {
-    const isNameValid = validateName(customList.name)
     const isUrlValid = validateURL(customList.url)
 
     setErrors({
-      name: !isNameValid,
       url: !isUrlValid,
     })
 
-    if (isNameValid && isUrlValid) {
+    if (isUrlValid) {
       onAdd(customList)
-      setCustomList({ name: '', url: '' }) // Reset the custom list
+      setCustomList({ url: '' }) // Reset the custom list
       onClose()
     }
   }
@@ -100,21 +88,6 @@ const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps)
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Custom Token List</DialogTitle>
       <DialogContent>
-        <TextField
-          error={errors.name}
-          autoFocus
-          margin="dense"
-          id="name"
-          label="List Name"
-          type="text"
-          fullWidth
-          variant="outlined"
-          value={customList.name}
-          onChange={handleInputChange}
-          helperText={errors.name && 'Name cannot be empty'}
-          required
-          autoComplete="off"
-        />
         <TextField
           error={errors.url}
           margin="dense"
@@ -138,39 +111,54 @@ const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps)
   )
 }
 
-export const TokenListControl = ({ onTokenListSelect, initialSelectedTokenLists }: TokenListControlProps) => {
-  const [selectedTokenLists, setSelectedTokenLists] = useState<string[]>(initialSelectedTokenLists)
+export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => {
+  const [tokenLists, setTokenLists] = tokenListsState
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleChange = useCallback(
     (event: SelectChangeEvent<string[]>) => {
-      const value = event.target.value as string[]
-      setSelectedTokenLists(value)
-      onTokenListSelect(value)
+      const selected = event.target.value as string[]
+
+      setTokenLists((prev) =>
+        prev.map((list) => ({
+          ...list,
+          enabled: selected.includes(list.url),
+        }))
+      )
     },
-    [onTokenListSelect]
+    [setTokenLists]
   )
 
   const handleAddCustomList = useCallback(
     (newList: CustomList) => {
-      if (!TOKEN_LISTS.some((list) => list.url === newList.url)) {
-        TOKEN_LISTS.push(newList)
-        setSelectedTokenLists((prev) => [...prev, newList.url])
-        onTokenListSelect([...selectedTokenLists, newList.url])
-      }
+      const existing = tokenLists.find((list) => list.url.toLowerCase() === newList.url.toLowerCase())
+
+      if (existing) return
+
+      setTokenLists((prev) => [...prev, { ...newList, enabled: true }])
     },
-    [selectedTokenLists, onTokenListSelect]
+    [tokenLists, setTokenLists]
   )
 
   const tokenListOptions = useMemo(
     () =>
-      TOKEN_LISTS.map((list) => (
-        <MenuItem key={list.url} value={list.url}>
-          <Checkbox checked={selectedTokenLists.includes(list.url)} />
-          <ListItemText primary={list.name} />
-        </MenuItem>
-      )),
-    [selectedTokenLists]
+      tokenLists
+        .sort((a) => (a.enabled ? -1 : 1))
+        .map((list) => (
+          <MenuItem key={list.url} value={list.url}>
+            <Checkbox checked={list.enabled} />
+            <ListItemText
+              primary={list.url}
+              disableTypography={true}
+              style={{
+                fontSize: '13px',
+                whiteSpace: 'initial',
+                wordBreak: 'break-word',
+              }}
+            />
+          </MenuItem>
+        )),
+    [tokenLists]
   )
 
   return (
@@ -182,13 +170,13 @@ export const TokenListControl = ({ onTokenListSelect, initialSelectedTokenLists 
             labelId="token-list-chip-label"
             id="token-list-chip-select"
             multiple
-            value={selectedTokenLists}
+            value={tokenLists.filter((list) => list.enabled).map((list) => list.url)}
             onChange={handleChange}
             input={<OutlinedInput label="Active Token Lists" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                 {selected.map((url) => (
-                  <Chip key={url} label={TOKEN_LISTS.find((list) => list.url === url)?.name || url} />
+                  <Chip key={url} label={url} />
                 ))}
               </Box>
             )}

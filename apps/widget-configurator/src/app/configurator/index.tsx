@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { TradeType, TokenList } from '@cowprotocol/widget-lib'
+import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -19,8 +19,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { TOKEN_LISTS } from './consts'
-import { TRADE_MODES } from './consts'
+import { DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
@@ -34,7 +33,7 @@ import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
-import { ConfiguratorState } from './types'
+import { ConfiguratorState, TokenListItem } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
@@ -46,7 +45,6 @@ const DEFAULT_STATE = {
   buyToken: 'COW',
   sellAmount: 100000,
   buyAmount: 0,
-  activeTokenLists: ['CoW Protocol', 'CoinGecko'],
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
@@ -75,16 +73,9 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const defaultTokenLists = TOKEN_LISTS.filter((list) => DEFAULT_STATE.activeTokenLists.includes(list.name))
-  const [selectedTokenLists, setSelectedTokenLists] = useState<TokenList[]>(defaultTokenLists)
+  const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
+  const [tokenLists] = tokenListsState
 
-  const handleTokenListSelect = (selectedUrls: string[]) => {
-    const selectedLists = selectedUrls.map((url) => {
-      const foundList = TOKEN_LISTS.find((list) => list.url === url)
-      return foundList || { name: 'Custom List', url: url } // Handle custom lists
-    })
-    setSelectedTokenLists(selectedLists)
-  }
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -120,7 +111,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    selectedTokenLists,
+    tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
   }
@@ -174,10 +165,7 @@ export function Configurator({ title }: { title: string }) {
 
         <NetworkControl state={networkControlState} />
 
-        <TokenListControl
-          onTokenListSelect={handleTokenListSelect}
-          initialSelectedTokenLists={selectedTokenLists.map((list) => list.url)}
-        />
+        <TokenListControl tokenListsState={tokenListsState} />
 
         <Divider variant="middle">Token selection</Divider>
 

@@ -28,7 +28,7 @@ export function useWidgetParamsAndSettings(
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      selectedTokenLists,
+      tokenLists,
       customColors,
       defaultColors,
     } = configuratorState
@@ -44,12 +44,13 @@ export function useWidgetParamsAndSettings(
       height: '640px',
       provider,
       chainId,
-      tokenLists: selectedTokenLists,
+      tokenLists: tokenLists.filter((list) => list.enabled).map((list) => ({ url: list.url })),
       env: getEnv(),
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
+      useOnlyProvidedTokenLists: false,
       theme: {
         baseTheme: theme,
         primary: themeColors.primary,

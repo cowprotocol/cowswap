@@ -1,7 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface TokenList {
-  name: string
   url: string
 }
 
@@ -101,7 +100,12 @@ interface CowSwapWidgetConfig {
    */
   chainId: SupportedChainId
   /**
-   * The token lists to use in the widget. Default: CoW Protocol token list.
+   * When enabled, the widget will only use the token lists provided in the `tokenLists` property.
+   * Otherwise, it will append the provided token lists to default ones.
+   */
+  useOnlyProvidedTokenLists: boolean
+  /**
+   * The token lists to use in the widget
    */
   tokenLists: TokenList[]
   /**
