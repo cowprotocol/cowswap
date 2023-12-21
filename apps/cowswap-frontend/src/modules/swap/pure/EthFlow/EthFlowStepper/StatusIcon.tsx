@@ -34,7 +34,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
       ? 'none'
       : status === 'success'
       ? 'none'
-      : `2px solid var(${UI.COLOR_PAPER_DARKER})`};
+      : `2px solid var(${UI.COLOR_PAPER})`};
   box-shadow: ${({ status, theme }) => (status === 'pending' ? theme.boxShadow3 : 'none')};
   background: ${({ status, theme }) =>
     status === 'pending'
