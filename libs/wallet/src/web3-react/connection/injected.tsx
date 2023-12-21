@@ -12,6 +12,17 @@ import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 import { onError } from './onError'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 
+class MetaMaskEnhanced extends MetaMask {
+  /**
+   * The trick is to override the activate method in order to call it without parameters
+   * Because if we call it as activate(chainId)
+   * It will request network change if the wallet is connected to a different chain
+   */
+  activate(): Promise<void> {
+    return super.activate()
+  }
+}
+
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
 const metamaskCommonOption = {
@@ -45,7 +56,9 @@ export const metamaskInjectedOption = {
   header: 'MetaMask',
 }
 
-const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
+const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMaskEnhanced>(
+  (actions) => new MetaMaskEnhanced({ actions, onError })
+)
 export const injectedConnection: Web3ReactConnection = {
   connector: web3Injected,
   hooks: web3InjectedHooks,
