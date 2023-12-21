@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.1](https://github.com/cowprotocol/cowswap/compare/v1.53.0...v1.53.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* revert "fix: terms and conditions link hover color ([#3538](https://github.com/cowprotocol/cowswap/issues/3538))" ([#3540](https://github.com/cowprotocol/cowswap/issues/3540)) ([94099aa](https://github.com/cowprotocol/cowswap/commit/94099aae21f96c856099d9a322dc93c0b6e0d8ed))
+
 ## [1.53.0](https://github.com/cowprotocol/cowswap/compare/v1.52.0...v1.53.0) (2023-12-20)
 
 
