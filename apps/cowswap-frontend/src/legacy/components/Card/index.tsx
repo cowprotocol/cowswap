@@ -24,7 +24,7 @@ export const LightCard = styled(Card)`
     width: 100%;
     border-radius: 16px;
     height: 100%;
-    border: 1px solid var(${UI.COLOR_TEXT_PAPER});
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
     opacity: 0.2;
     user-select: none;
     pointer-events: none;
