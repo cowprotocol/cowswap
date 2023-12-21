@@ -21,7 +21,7 @@ interface AccountElementProps {
 export function AccountElement({ className, isWidgetMode, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-  const userEthBalance = useNativeCurrencyAmount()
+  const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
   const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId].symbol
 

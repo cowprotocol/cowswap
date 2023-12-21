@@ -10,6 +10,7 @@ export { useNativeTokensBalances } from './hooks/useNativeTokensBalances'
 export { useNativeCurrencyAmount } from './hooks/useNativeCurrencyAmount'
 export { useCurrencyAmountBalance } from './hooks/useCurrencyAmountBalance'
 export { useTokenBalanceForAccount } from './hooks/useTokenBalanceForAccount'
+export { useAddPriorityAllowance } from './hooks/useAddPriorityAllowance'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'

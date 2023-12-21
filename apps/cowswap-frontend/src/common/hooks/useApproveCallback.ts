@@ -74,7 +74,7 @@ export function useApproveCallback(
         addTransaction({
           hash: response.hash,
           summary: amountToApprove.greaterThan('0') ? `Approve ${token.symbol}` : `Revoke ${token.symbol} approval`,
-          approval: { tokenAddress: token.address, spender },
+          approval: { tokenAddress: token.address, spender, amount: '0x' + amountToApprove.quotient.toString(16) },
         })
         return response
       })

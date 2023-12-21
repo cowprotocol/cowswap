@@ -36,7 +36,12 @@ export interface EnhancedTransactionDetails {
   data?: any // any attached data type
 
   // Operations
-  approval?: { tokenAddress: string; spender: string }
+  approval?: {
+    tokenAddress: string
+    spender: string
+    // Hex string
+    amount: string
+  }
   presign?: { orderId: string }
   claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
   swapVCow?: boolean

@@ -147,7 +147,7 @@ export function useApproveCallback({
             addTransaction({
               hash: response.hash,
               summary: optionalParams?.transactionSummary || 'Approve ' + amountToApprove.currency.symbol,
-              approval: { tokenAddress: token.address, spender },
+              approval: { tokenAddress: token.address, spender, amount: '0x' + amountToApprove.quotient.toString(16) },
             })
             return response
           })
@@ -216,16 +216,19 @@ export function useApproveCallback({
           optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
           ConfirmOperationType.REVOKE_APPROVE_TOKEN
         )
+
+      const amount = '0'
+
       return (
         tokenContract
-          .approve(spender, '0', {
+          .approve(spender, amount, {
             gasLimit: calculateGasMargin(estimatedGas),
           })
           .then((response: TransactionResponse) => {
             addTransaction({
               hash: response.hash,
               summary: optionalParams?.transactionSummary || `Revoke ${token.symbol} approval from ${spender}`,
-              approval: { tokenAddress: getWrappedToken(token).address, spender },
+              approval: { tokenAddress: getWrappedToken(token).address, spender, amount },
             })
           })
           // .catch((error: Error) => {
