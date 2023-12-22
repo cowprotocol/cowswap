@@ -23,7 +23,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   const setBalances = useSetAtom(balancesAtom)
 
   const allTokens = useAllTokens()
-  const { data: nativeTokenBalance } = useNativeTokenBalance()
+  const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
   const tokenAddresses = useMemo(() => allTokens.map((token) => token.address), [allTokens])
 

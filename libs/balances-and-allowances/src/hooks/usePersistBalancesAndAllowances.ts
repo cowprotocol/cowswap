@@ -11,7 +11,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
-import { AllowancesState, allowancesState } from '../state/allowancesAtom'
+import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
@@ -29,10 +29,10 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const { account, chainId, tokenAddresses, setLoadingState, balancesSwrConfig, allowancesSwrConfig } = params
 
   const setBalances = useSetAtom(balancesAtom)
-  const setAllowances = useSetAtom(allowancesState)
+  const setAllowances = useSetAtom(allowancesFullState)
 
   const resetBalances = useResetAtom(balancesAtom)
-  const resetAllowances = useResetAtom(allowancesState)
+  const resetAllowances = useResetAtom(allowancesFullState)
 
   const spender = GP_VAULT_RELAYER[chainId]
 
