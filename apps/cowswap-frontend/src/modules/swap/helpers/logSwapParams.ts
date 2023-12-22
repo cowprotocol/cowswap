@@ -8,5 +8,5 @@ export function logSwapParams(key: string, data: SwapParamsData) {
   if (cached && JSON.stringify(cached) === JSON.stringify(data)) return
 
   CACHE[key] = data
-  console.debug(`[SWAP PARAMS] ${key}`, data)
+  console.log(`[SWAP PARAMS] ${key}`, data)
 }
