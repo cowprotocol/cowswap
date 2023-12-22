@@ -22,12 +22,10 @@ export function useAddPriorityAllowance() {
 
   return useCallback(
     ({ chainId, account, tokenAddress, blockNumber }: PriorityAllowanceParams) => {
-      if (!provider || !account) return undefined
+      if (!provider || !account || !blockNumber) return undefined
 
       const spender = GP_VAULT_RELAYER[chainId]
       const tokenContract = new Contract(tokenAddress, ERC_20_INTERFACE, provider) as Erc20
-
-      if (!blockNumber) return
 
       tokenContract.callStatic.allowance(account, spender, { blockTag: blockNumber }).then((result) => {
         setAllowance((state) => ({
