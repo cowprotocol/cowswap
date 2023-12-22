@@ -67,7 +67,7 @@ export function OrdersTableWidget({
   const location = useLocation()
   const navigate = useNavigate()
   const cancelOrder = useCancelOrder()
-  const ordersList = useOrdersTableList(allOrders)
+  const ordersList = useOrdersTableList(allOrders, orderType)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)

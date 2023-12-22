@@ -1,11 +1,8 @@
 import { useState } from 'react'
 
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
-import { useIsUnsupportedToken } from '@cowprotocol/tokens'
-import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonEmpty } from '@cowprotocol/ui'
-import { AutoRow, RowBetween } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
+import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
+import { AutoRow, ButtonEmpty, ExternalLink, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -117,7 +114,7 @@ export default function UnsupportedCurrencyFooter({
         </Card>
       </Modal>
       <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
-        <ThemedText.Error error={!!showDetailsText}>
+        <ThemedText.Error error={!!showDetailsText} color={'danger'}>
           <Trans>{showDetailsText}</Trans>
         </ThemedText.Error>
       </StyledButtonEmpty>
