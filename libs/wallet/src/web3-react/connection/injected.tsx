@@ -11,15 +11,18 @@ import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 import { onError } from './onError'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { AddEthereumChainParameter } from '@web3-react/types'
 
 class MetaMaskEnhanced extends MetaMask {
   /**
    * The trick is to override the activate method in order to call it without parameters
    * Because if we call it as activate(chainId)
    * It will request network change if the wallet is connected to a different chain
+   *
+   * @param chain when number, it means the initial request to connect, otherwise it's a request to change network
    */
-  activate(): Promise<void> {
-    return super.activate()
+  activate(chain: number | AddEthereumChainParameter): Promise<void> {
+    return super.activate(typeof chain === 'number' ? undefined : chain)
   }
 }
 
