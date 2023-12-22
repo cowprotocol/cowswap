@@ -16,7 +16,7 @@ const PRIORITY_VALUE_TTL = ms`30s`
 export interface AllowancesState extends Erc20MulticallState {
   /**
    * Since we update allowances periodically, we have a lag between the current allowance (in atom) and the actual allowance (blockchain)
-   * To avid this, we have a priority value that is updated immediately after tx mined (see FinalizeTxUpdater)
+   * To avoid this, we have a priority value that is updated immediately after tx mined (see FinalizeTxUpdater)
    */
   priorityValues: {
     [address: string]: {
