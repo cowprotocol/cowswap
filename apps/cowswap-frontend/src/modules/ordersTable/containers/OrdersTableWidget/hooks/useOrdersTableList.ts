@@ -33,10 +33,10 @@ export function useOrdersTableList(allOrders: Order[], orderType: TabOrderTypes)
       (acc, item) => {
         const order = isParsedOrder(item) ? item : item.parent
 
-        if (
-          (orderType === TabOrderTypes.ADVANCED && getIsNotComposableCowOrder(order)) ||
-          (orderType === TabOrderTypes.LIMIT && getIsComposableCowOrder(order))
-        ) {
+        const advancedTabNonAdvancedOrder = orderType === TabOrderTypes.ADVANCED && getIsNotComposableCowOrder(order)
+        const limitTabNonLimitOrder = orderType === TabOrderTypes.LIMIT && getIsComposableCowOrder(order)
+
+        if (advancedTabNonAdvancedOrder || limitTabNonLimitOrder) {
           // Skip if order type doesn't match
           return acc
         }
