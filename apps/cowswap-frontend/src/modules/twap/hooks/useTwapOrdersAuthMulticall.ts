@@ -7,6 +7,7 @@ import ms from 'ms.macro'
 
 import { TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 
+const EMPTY_AUTH_RESULT = {}
 const MULTICALL_OPTIONS = {}
 const SWR_CONFIG = { refreshInterval: ms`30s` }
 
@@ -29,6 +30,8 @@ export function useTwapOrdersAuthMulticall(
 
   return useMemo(() => {
     const loadedResults = results.data
+
+    if (ordersInfo.length === 0) return EMPTY_AUTH_RESULT
 
     if (results.isLoading || !loadedResults || loadedResults.length !== ordersInfo.length) return null
 
