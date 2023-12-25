@@ -11,10 +11,6 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: 'https://tokens.1inch.eth.link', enabled: false },
   { url: 'https://tokenlist.aave.eth.link', enabled: false },
   { url: 'https://datafi.theagora.eth.link', enabled: false },
-  {
-    url: 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json',
-    enabled: false,
-  },
   { url: 'https://defi.cmc.eth.link', enabled: false },
   { url: 'https://stablecoin.cmc.eth.link', enabled: false },
   { url: 'https://erc20.cmc.eth.link', enabled: false },
