@@ -50,7 +50,6 @@ export function useWidgetParamsAndSettings(
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      useOnlyProvidedTokenLists: false,
       theme: {
         baseTheme: theme,
         primary: themeColors.primary,

@@ -31,7 +31,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode, useOnlyProvidedTokenLists } = useInjectedWidgetParams()
+  const { tokenLists, appCode } = useInjectedWidgetParams()
 
   return (
     <>
@@ -60,11 +60,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
-      <WidgetTokensListsUpdater
-        tokenLists={tokenLists}
-        appCode={appCode}
-        useOnlyProvidedTokenLists={useOnlyProvidedTokenLists}
-      />
+      <WidgetTokensListsUpdater tokenLists={tokenLists} appCode={appCode} />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
     </>

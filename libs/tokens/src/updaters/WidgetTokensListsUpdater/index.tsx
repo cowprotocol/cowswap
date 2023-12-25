@@ -16,7 +16,6 @@ interface TokenList {
 export interface CustomTokensListsUpdaterProps {
   tokenLists?: TokenList[]
   appCode?: string
-  useOnlyProvidedTokenLists?: boolean
 }
 
 /**
@@ -26,20 +25,17 @@ export interface CustomTokensListsUpdaterProps {
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
 export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
-  const { tokenLists, appCode, useOnlyProvidedTokenLists } = props
+  const { tokenLists, appCode } = props
   const addList = useAddList()
   const removeList = useRemoveList()
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
 
   useEffect(() => {
-    const selectedLists =
-      useOnlyProvidedTokenLists && tokenLists
-        ? { selectedLists: tokenLists.map((list) => list.url.toLowerCase()) }
-        : undefined
+    const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.url.toLowerCase()) } : undefined
 
     setEnvironment({ widgetAppCode: appCode, ...selectedLists })
-  }, [setEnvironment, appCode, useOnlyProvidedTokenLists, tokenLists])
+  }, [setEnvironment, appCode, tokenLists])
 
   // Take only lists that are not already in the default token lists
   const listsToImport = useMemo(() => {

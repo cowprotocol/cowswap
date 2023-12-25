@@ -100,11 +100,6 @@ interface CowSwapWidgetConfig {
    */
   chainId: SupportedChainId
   /**
-   * When enabled, the widget will only use the token lists provided in the `tokenLists` property.
-   * Otherwise, it will append the provided token lists to default ones.
-   */
-  useOnlyProvidedTokenLists: boolean
-  /**
    * The token lists to use in the widget
    */
   tokenLists: TokenList[]
