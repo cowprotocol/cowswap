@@ -1,4 +1,5 @@
-// TODO: revert this change, this is just for testing
+import { useFlags } from 'launchdarkly-react-client-sdk'
+
 export function useFeatureFlags() {
-  return { swapZeroFee: true } as any
+  return useFlags()
 }
