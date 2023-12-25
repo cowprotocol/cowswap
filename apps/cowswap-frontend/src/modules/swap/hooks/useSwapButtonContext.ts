@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -38,7 +36,9 @@ import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
+import { useSafeMemo } from '../../../common/hooks/useSafeMemo'
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
+import { logSwapParams } from '../helpers/logSwapParams'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -103,8 +103,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
 
-  const amountsForSignature = useMemo(() => {
-    return trade
+  const amountsForSignature = useSafeMemo(() => {
+    const amounts = trade
       ? getAmountsForSignature({
           trade,
           kind: trade?.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
@@ -112,6 +112,16 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
           featureFlags: { swapZeroFee },
         })
       : undefined
+
+    if (amounts) {
+      logSwapParams('amounts to sign', {
+        inputAmount: amounts.inputAmount.quotient.toString(),
+        outputAmount: amounts.outputAmount.quotient.toString(),
+        allowedSlippage: allowedSlippage?.toFixed(2),
+      })
+    }
+
+    return amounts
   }, [trade, allowedSlippage, swapZeroFee])
 
   const swapButtonState = getSwapButtonState({
