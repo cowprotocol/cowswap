@@ -99,7 +99,7 @@ describe('getAmountsForSignature()', () => {
 
     /**
      * Sell amount is just what user entered
-     * Output amount calculated as: (outputAmount - slippage) - fee
+     * Output amount calculated as: outputAmount - slippage
      */
     it('Sell order', () => {
       const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount })
@@ -114,13 +114,12 @@ describe('getAmountsForSignature()', () => {
       // Input amount the same, because we don't subtract fee
       expect(result.inputAmount.toFixed()).toEqual('3012.000000')
 
-      // Fee in WETH = 0.005312084993359893
-      // outputAmount = (2 - 5%) - 0.005312 = 1.89468
-      expect(result.outputAmount.toFixed()).toEqual('1.894687915006640106')
+      // outputAmount = 2 - 5% = 1.894953
+      expect(result.outputAmount.toFixed()).toEqual('1.894953519256308100')
     })
 
     /**
-     * Sell amount calculated as: (inputAmount + slippage) + fee
+     * Sell amount calculated as: inputAmount + slippage
      * Output amount is just what user entered
      */
     it('Buy order', () => {
@@ -133,8 +132,8 @@ describe('getAmountsForSignature()', () => {
         kind: OrderKind.BUY,
       })
 
-      // inputAmount = (3012 + 5%) + 8 = 3170
-      expect(result.inputAmount.toFixed()).toEqual('3170.600000')
+      // inputAmount = 3012 + 5% = 3162.600000
+      expect(result.inputAmount.toFixed()).toEqual('3162.600000')
 
       // Output amount the same, because this is buy order
       expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
