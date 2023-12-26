@@ -43,7 +43,7 @@ export enum FlowType {
 }
 
 interface BaseFlowContextSetup {
-  chainId: number | undefined
+  chainId: SupportedChainId
   account: string | undefined
   sellTokenContract: Erc20 | null
   provider: Web3Provider | undefined

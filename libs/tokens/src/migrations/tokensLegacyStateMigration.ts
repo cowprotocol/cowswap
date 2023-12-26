@@ -67,12 +67,14 @@ function migrateLegacyTokenLists() {
     [SupportedChainId.MAINNET]: [],
     [SupportedChainId.GNOSIS_CHAIN]: [],
     [SupportedChainId.GOERLI]: [],
+    [SupportedChainId.SEPOLIA]: [],
   }
 
   const tokenListsState: TokenListsState = {
     [SupportedChainId.MAINNET]: {},
     [SupportedChainId.GNOSIS_CHAIN]: {},
     [SupportedChainId.GOERLI]: {},
+    [SupportedChainId.SEPOLIA]: {},
   }
 
   Object.keys(listsState).forEach((chainIdStr) => {

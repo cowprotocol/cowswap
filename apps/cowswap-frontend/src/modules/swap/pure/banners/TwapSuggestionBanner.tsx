@@ -34,6 +34,7 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 50_000, // $50,000
   [SupportedChainId.GNOSIS_CHAIN]: 500, // $500
   [SupportedChainId.GOERLI]: 100, // $100
+  [SupportedChainId.SEPOLIA]: 100, // $100
 }
 
 export function TwapSuggestionBanner({

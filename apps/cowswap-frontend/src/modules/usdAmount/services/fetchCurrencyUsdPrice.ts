@@ -16,6 +16,7 @@ const coingeckoUnknownCurrencies: Record<SupportedChainId, { [address: string]: 
   [SupportedChainId.MAINNET]: {},
   [SupportedChainId.GNOSIS_CHAIN]: {},
   [SupportedChainId.GOERLI]: {},
+  [SupportedChainId.SEPOLIA]: {},
 }
 
 function getShouldSkipCoingecko(currency: Token): boolean {

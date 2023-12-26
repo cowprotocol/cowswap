@@ -15,6 +15,7 @@ export const permittableTokensAtom = atomWithStorage<PermittableTokens>('permitt
   [SupportedChainId.MAINNET]: {},
   [SupportedChainId.GOERLI]: {},
   [SupportedChainId.GNOSIS_CHAIN]: {},
+  [SupportedChainId.SEPOLIA]: {},
 })
 
 /**

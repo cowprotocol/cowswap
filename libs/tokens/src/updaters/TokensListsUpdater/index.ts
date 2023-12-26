@@ -18,6 +18,7 @@ const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomW
     [SupportedChainId.MAINNET]: 0,
     [SupportedChainId.GNOSIS_CHAIN]: 0,
     [SupportedChainId.GOERLI]: 0,
+    [SupportedChainId.SEPOLIA]: 0,
   })
 )
 

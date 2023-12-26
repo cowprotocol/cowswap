@@ -10,16 +10,18 @@ interface Claim {
   proof: string[]
 }
 
-const indexFiles = {
+const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
   [SupportedChainId.GOERLI]: goerliIndex,
+  [SupportedChainId.SEPOLIA]: [], // TODO SEPOLIA: check it
 }
 
-const chainNames = {
+const chainNames: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
   [SupportedChainId.GOERLI]: 'goerli',
+  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'

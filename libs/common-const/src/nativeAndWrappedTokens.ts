@@ -32,15 +32,25 @@ export const WETH_GOERLI = new TokenWithLogo(
   'WETH',
   'Wrapped Görli Ether'
 )
+export const WETH_SEPOLIA = new TokenWithLogo(
+  WETH_MAINNET.logoURI,
+  ChainId.SEPOLIA,
+  '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
+  18,
+  'WETH',
+  'Wrapped Ether'
+)
 export const WRAPPED_NATIVE_CURRENCY: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: WETH_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
   [SupportedChainId.GOERLI]: WETH_GOERLI,
+  [SupportedChainId.SEPOLIA]: WETH_SEPOLIA,
 }
 
-export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId]: TokenWithLogo } = {
+export const NATIVE_CURRENCY_BUY_TOKEN: Record<SupportedChainId, TokenWithLogo> = {
   [ChainId.MAINNET]: new TokenWithLogo(undefined, ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GOERLI]: new TokenWithLogo(undefined, ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
+  [ChainId.SEPOLIA]: new TokenWithLogo(undefined, ChainId.SEPOLIA, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GNOSIS_CHAIN]: new TokenWithLogo(
     undefined,
     ChainId.GNOSIS_CHAIN,

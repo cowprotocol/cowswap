@@ -10,6 +10,7 @@ export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, Un
     [SupportedChainId.MAINNET]: {},
     [SupportedChainId.GNOSIS_CHAIN]: {},
     [SupportedChainId.GOERLI]: {},
+    [SupportedChainId.SEPOLIA]: {},
   }
 )
 

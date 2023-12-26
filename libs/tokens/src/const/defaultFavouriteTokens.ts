@@ -10,6 +10,7 @@ import {
   USDC_GNOSIS_CHAIN,
   USDC_GOERLI,
   USDC_MAINNET,
+  USDC_SEPOLIA,
   USDT,
   WBTC,
   WBTC_GNOSIS_CHAIN,
@@ -53,5 +54,10 @@ export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     COW[SupportedChainId.GOERLI],
     DAI_GOERLI,
     USDC_GOERLI,
+  ]),
+  [SupportedChainId.SEPOLIA]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.SEPOLIA],
+    COW[SupportedChainId.SEPOLIA],
+    USDC_SEPOLIA,
   ]),
 }

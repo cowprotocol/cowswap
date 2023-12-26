@@ -73,5 +73,12 @@
       "enabledByDefault": true,
       "source": "https://tokens.honeyswap.org"
     }
+  ],
+  "11155111": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json"
+    }
   ]
 }
