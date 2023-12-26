@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -294,7 +294,7 @@ export const useCombinedPendingOrders = ({
  * The difference is that this hook returns only orders that have the status PENDING
  * while usePendingOrders aggregates all pending states
  */
-export const useOnlyPendingOrders = (chainId: SupportedChainId, orderClass: OrderClass): Order[] => {
+export const useOnlyPendingOrders = (chainId: SupportedChainId, uiOrderType: UiOrderType): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.pending
   )
@@ -303,10 +303,10 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId, orderClass: Orde
     if (!state) return []
 
     return Object.values(state)
-      .filter((order) => order?.order.class === orderClass)
+      .filter((order) => order && getUiOrderType(order.order) === uiOrderType)
       .map(_deserializeOrder)
       .filter(isTruthy)
-  }, [state, orderClass])
+  }, [state, uiOrderType])
 }
 
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
