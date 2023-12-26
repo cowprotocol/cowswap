@@ -15,16 +15,13 @@ interface AmountForSignatureParams {
 
 function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmount<Currency> {
   const { trade, allowedSlippage, kind, featureFlags } = params
-  const fee = trade.fee.feeAsCurrency
   const slippageCoeff = ONE_FRACTION.add(allowedSlippage)
 
   if (featureFlags.swapZeroFee) {
     if (kind === OrderKind.SELL) {
       return trade.inputAmount
     } else {
-      return trade.inputAmountWithoutFee
-        .multiply(slippageCoeff) // add slippage
-        .add(fee) // add fee
+      return trade.inputAmountWithoutFee.multiply(slippageCoeff) // add slippage
     }
   }
 
@@ -41,13 +38,7 @@ function outputAmountForSignature(params: AmountForSignatureParams): CurrencyAmo
 
   if (featureFlags.swapZeroFee) {
     if (kind === OrderKind.SELL) {
-      const shouldRevertPrice = trade.executionPrice.quoteCurrency.equals(trade.fee.feeAsCurrency.currency)
-      const price = shouldRevertPrice ? trade.executionPrice.invert() : trade.executionPrice
-      const feeInOutputCurrency = price.quote(trade.fee.feeAsCurrency)
-
-      return trade.outputAmountWithoutFee
-        .multiply(slippageCoeff) // subtract slippage
-        .subtract(feeInOutputCurrency) // subtract fee
+      return trade.outputAmount.multiply(slippageCoeff) // subtract slippage
     } else {
       return trade.outputAmountWithoutFee
     }
