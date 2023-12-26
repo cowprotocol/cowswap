@@ -6,11 +6,14 @@ import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
 import {
   addOrUpdateOrders,
   AddOrUpdateOrdersParams,
   addPendingOrder,
   cancelOrdersBatch,
+  clearOrdersStorage,
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
@@ -26,7 +29,6 @@ import {
   setOrderCancellationHash,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
-  clearOrdersStorage,
 } from './actions'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
@@ -181,7 +183,11 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
   }, [JSON.stringify(ordersState), chainId])
 }
 
-export const useOrders = (chainId: SupportedChainId, account: string | undefined, orderClass: OrderClass): Order[] => {
+export const useOrders = (
+  chainId: SupportedChainId,
+  account: string | undefined,
+  uiOrderType: UiOrderType
+): Order[] => {
   const state = useOrdersStateNetwork(chainId)
   const accountLowerCase = account?.toLowerCase()
 
@@ -192,7 +198,8 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
       if (!order) return acc
 
       const doesBelongToAccount = order.order.owner.toLowerCase() === accountLowerCase
-      const doesMatchClass = order.order.class === orderClass
+      const orderType = getUiOrderType(order.order)
+      const doesMatchClass = orderType === uiOrderType
 
       if (doesBelongToAccount && doesMatchClass) {
         const mappedOrder = _deserializeOrder(order)
@@ -204,7 +211,7 @@ export const useOrders = (chainId: SupportedChainId, account: string | undefined
 
       return acc
     }, [])
-  }, [state, accountLowerCase, orderClass])
+  }, [state, accountLowerCase, uiOrderType])
 }
 
 const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
