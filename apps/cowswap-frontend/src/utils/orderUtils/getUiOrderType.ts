@@ -34,7 +34,7 @@ export function getUiOrderType({
   fullAppData,
   composableCowInfo,
   class: orderClass,
-}: Pick<Order, 'fullAppData' | 'apiAdditionalInfo' | 'composableCowInfo' | 'class'>): UiOrderType {
+}: Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>): UiOrderType {
   const parsedAppData = decodeAppData(fullAppData)
 
   const appDataOrderClass = parsedAppData?.metadata?.orderClass as AppDataMetadataOrderClass | undefined
