@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.54.0](https://github.com/cowprotocol/cowswap/compare/v1.53.1...v1.54.0) (2023-12-26)
+
+
+### Bug Fixes
+
+* filter out twap orders from limit ([#3550](https://github.com/cowprotocol/cowswap/issues/3550)) ([91ccf8c](https://github.com/cowprotocol/cowswap/commit/91ccf8ceaf52e609b69deab98c2e921f4dd647be))
+* **swap:** don't add/sub fee for swap orders ([#3552](https://github.com/cowprotocol/cowswap/issues/3552)) ([784d3a8](https://github.com/cowprotocol/cowswap/commit/784d3a8c847cedf88dbab918bdd03e8a18f1a64f))
+* **trade:** update allowance immediately after approval tx mined ([#3543](https://github.com/cowprotocol/cowswap/issues/3543)) ([c0474aa](https://github.com/cowprotocol/cowswap/commit/c0474aa3b8bd4af9995acc0d84d8e8e46d12786a))
+* **twap:** display twap orders history ([#3553](https://github.com/cowprotocol/cowswap/issues/3553)) ([4046d59](https://github.com/cowprotocol/cowswap/commit/4046d591c08d49102a413722a927857a5f219158))
+* **wallets:** don't request network change when connect injected wallet ([#3544](https://github.com/cowprotocol/cowswap/issues/3544)) ([a6eaaf0](https://github.com/cowprotocol/cowswap/commit/a6eaaf0925248251bac6e9e77b02125e46fd4518))
+* **wallets:** send request to switch network ([#3551](https://github.com/cowprotocol/cowswap/issues/3551)) ([2bbb745](https://github.com/cowprotocol/cowswap/commit/2bbb74548a290480c6b3001e7e4a8b2eff9032e0))
+
 ## [1.53.1](https://github.com/cowprotocol/cowswap/compare/v1.53.0...v1.53.1) (2023-12-21)
 
 
