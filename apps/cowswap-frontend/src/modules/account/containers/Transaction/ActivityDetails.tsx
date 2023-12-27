@@ -1,13 +1,11 @@
 import { ReactNode } from 'react'
 
-import { V_COW_CONTRACT_ADDRESS, V_COW, COW } from '@cowprotocol/common-const'
+import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { TokenLogo } from '@cowprotocol/tokens'
-import { ExternalLink, TokenAmount } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { ExternalLink, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
@@ -22,7 +20,7 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { Icon } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
-import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
   useHideReceiverWalletBanner,
@@ -178,7 +176,7 @@ export function ActivityDetails(props: {
   const getShowCancellationModal = useCancelOrder()
 
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
-  const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
+  const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
