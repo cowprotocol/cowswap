@@ -35,6 +35,42 @@ function getWcWalletIcon(meta: any) {
   return meta.icons?.length > 0 ? meta.icons[0] : undefined
 }
 
+function getSafeAppHostname(): string {
+  // return window.parent.location.origin
+  return document.referrer
+}
+
+const ALTERNATIVE_SAFE_APPS_METADATA: Record<string, WalletMetaData> = {
+  'safe\\.global': METADATA_SAFE,
+  'coinshift\\.xyz': {
+    walletName: 'Coinshift',
+    // TODO: get the real one from them
+    icon: 'https://uploads-ssl.webflow.com/640888e3259d86996ed8c6dd/643e7f44d3a00404bc08adfd_favicon-light%20theme.svg',
+  },
+  'ambire\\.com': {
+    walletName: 'Ambire',
+    // TODO: get the real one from them
+    icon: 'https://www.ambire.com/favicon.png',
+  },
+}
+
+function getSafeAppMetadata(): WalletMetaData {
+  const hostname = getSafeAppHostname()
+
+  // iterate over alternative safe apps metadata
+  for (const [hostnamePattern, metadata] of Object.entries(ALTERNATIVE_SAFE_APPS_METADATA)) {
+    // if hostname matches the pattern
+    if (new RegExp(hostnamePattern).test(hostname)) {
+      return metadata
+    }
+  }
+  // Fallback to hostname, if available, and Safe's icon because it's still a Safe context
+  return {
+    walletName: hostname || SAFE_APP_NAME,
+    icon: SAFE_ICON_URL,
+  }
+}
+
 function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   // fix for this https://github.com/gnosis/cowswap/issues/1929
   const defaultOutput = { walletName: undefined, icon: undefined }
@@ -76,8 +112,7 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     if (connectionType === ConnectionType.GNOSIS_SAFE) {
-      // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
-      return METADATA_SAFE
+      return getSafeAppMetadata()
     }
 
     return METADATA_DISCONNECTED
