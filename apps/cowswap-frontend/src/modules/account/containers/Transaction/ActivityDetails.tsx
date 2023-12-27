@@ -26,6 +26,7 @@ import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
@@ -175,7 +176,9 @@ export function ActivityDetails(props: {
 
   const getShowCancellationModal = useCancelOrder()
 
-  const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
+  const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+
+  const showProgressBar = (activityState === 'open' || activityState === 'filled') && isSwap
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
