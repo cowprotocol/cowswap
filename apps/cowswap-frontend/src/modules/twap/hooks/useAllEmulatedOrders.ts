@@ -18,10 +18,10 @@ export function useAllEmulatedOrders(): Order[] {
   const emulatedPartOrders = useEmulatedPartOrders(twapOrdersTokens)
   const isSafeApp = useIsSafeApp()
 
-  const limitOrders = useOrders(chainId, account, UiOrderType.TWAP)
+  const twapOrders = useOrders(chainId, account, UiOrderType.TWAP)
   const discreteTwapOrders = useMemo(() => {
-    return limitOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
-  }, [limitOrders])
+    return twapOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
+  }, [twapOrders])
 
   return useMemo(() => {
     if (!isSafeApp) return []
