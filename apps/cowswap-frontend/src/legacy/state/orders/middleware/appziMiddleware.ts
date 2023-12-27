@@ -4,10 +4,12 @@ import {
   openNpsAppziSometimes,
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
-import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { AppState } from '../../index'
 import * as OrderActions from '../actions'
@@ -49,9 +51,12 @@ function _triggerNps(
   const openSince = order?.openSince
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
+  const uiOrderType = order && getUiOrderType(order)
+
+  // TODO: should we show NPS for TWAP orders as well?
   // Open Appzi NPS for limit orders only if they were filled before `PENDING_TOO_LONG_TIME` since creating
   const isLimitOrderRecentlyTraded =
-    order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
+    uiOrderType === UiOrderType.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
 
   // Do not show NPS if the order is hidden and expired
   const isHiddenAndExpired = order?.isHidden && npsParams?.expired

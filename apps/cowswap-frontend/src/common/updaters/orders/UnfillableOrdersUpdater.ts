@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
@@ -7,7 +7,7 @@ import { NATIVE_CURRENCY_BUY_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '@cowprotoc
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
-import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
@@ -30,6 +30,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
@@ -43,7 +44,10 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pending = useOnlyPendingOrders(chainId, OrderClass.LIMIT)
+  const pendingLimit = useOnlyPendingOrders(chainId, UiOrderType.LIMIT)
+  const pendingTwap = useOnlyPendingOrders(chainId, UiOrderType.TWAP)
+  const pending = useMemo(() => pendingLimit.concat(pendingTwap), [pendingLimit, pendingTwap])
+
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 
@@ -94,10 +98,12 @@ export function UnfillableOrdersUpdater(): null {
 
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
-      const isUnfillable = order.class === OrderClass.MARKET && isOrderUnfillable(order, orderPrice, marketPrice)
+
+      const isSwap = getUiOrderType(order) === UiOrderType.SWAP
+      const isUnfillable = isSwap && isOrderUnfillable(order, orderPrice, marketPrice)
 
       // Only trigger state update if flag changed
-      if (order.isUnfillable !== isUnfillable && order.class === OrderClass.MARKET) {
+      if (order.isUnfillable !== isUnfillable && isSwap) {
         setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
