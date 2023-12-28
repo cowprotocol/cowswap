@@ -1,4 +1,5 @@
-import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo, PERMIT_SIGNER } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -36,6 +37,11 @@ export async function swapFlow(
       permitInfo: input.permitInfo,
       generatePermitHook: input.generatePermitHook,
     })
+
+    if (input.orderParams.appData.fullAppData.includes(PERMIT_SIGNER.address)) {
+      reportPermitWithDefaultSigner(input.orderParams)
+    }
+
     input.swapConfirmManager.permitSigned()
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
