@@ -4,10 +4,9 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
-import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { UI } from '@cowprotocol/ui'
-import { Loader, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -36,6 +35,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
@@ -307,7 +307,7 @@ export function OrderRow({
                 amountDifference={priceDiffs?.amount}
                 percentageFee={feeDifference}
                 amountFee={feeAmount}
-                canShowWarning={order.class !== OrderClass.MARKET && !isUnfillable}
+                canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
                 isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>

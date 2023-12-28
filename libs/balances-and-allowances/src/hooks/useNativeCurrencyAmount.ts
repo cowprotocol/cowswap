@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useNativeTokenBalance } from './useNativeTokenBalance'
 
-export function useNativeCurrencyAmount(): CurrencyAmount<TokenWithLogo> | undefined {
-  const { chainId } = useWalletInfo()
-  const { data: nativeTokenBalance } = useNativeTokenBalance()
+export function useNativeCurrencyAmount(
+  chainId: SupportedChainId,
+  account: string | undefined
+): CurrencyAmount<TokenWithLogo> | undefined {
+  const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
   return useMemo(() => {
     if (!nativeTokenBalance) return undefined

@@ -1,7 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
@@ -53,13 +55,15 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
 }
 
 interface CheckEthereumTransactions {
-  chainId: number
+  chainId: SupportedChainId
+  account: string | undefined
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
   getReceipt: GetReceipt
   getSafeInfo: GetSafeInfo
   dispatch: AppDispatch
   addPopup: ReturnType<typeof useAddPopup>
+  addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
@@ -72,10 +76,20 @@ function finalizeEthereumTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, addPopup, dispatch } = params
+  const { chainId, account, addPopup, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
+
+  // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
+  if (transaction.approval) {
+    addPriorityAllowance({
+      chainId,
+      account,
+      blockNumber: receipt.blockNumber,
+      tokenAddress: transaction.approval.tokenAddress,
+    })
+  }
 
   dispatch(
     finalizeTransaction({
@@ -264,6 +278,7 @@ export function FinalizeTxUpdater(): null {
   const cancelOrdersBatch = useCancelOrdersBatch()
   const getReceipt = useGetReceipt(chainId)
   const getSafeInfo = useGetSafeInfo()
+  const addPriorityAllowance = useAddPriorityAllowance()
   const addPopup = useAddPopup()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
@@ -292,6 +307,8 @@ export function FinalizeTxUpdater(): null {
       removeInFlightOrderId,
       nativeCurrencySymbol,
       cancelOrdersBatch,
+      addPriorityAllowance,
+      account,
     })
 
     return () => {
@@ -300,6 +317,7 @@ export function FinalizeTxUpdater(): null {
     }
   }, [
     chainId,
+    account,
     provider,
     transactions,
     lastBlockNumber,
@@ -310,6 +328,7 @@ export function FinalizeTxUpdater(): null {
     removeInFlightOrderId,
     nativeCurrencySymbol,
     cancelOrdersBatch,
+    addPriorityAllowance,
   ])
 
   return null

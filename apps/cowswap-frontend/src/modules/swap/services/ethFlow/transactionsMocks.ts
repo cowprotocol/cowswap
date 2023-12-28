@@ -84,6 +84,7 @@ export function mockEthFlowPendingTxs() {
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        amount: '0x1',
       },
       summary: 'Approve GNO',
     })
@@ -98,6 +99,7 @@ export function mockEthFlowPendingTxs() {
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        amount: '0x1',
       },
       summary: 'Approve GNO',
     })
@@ -128,6 +130,7 @@ export function mockEthFlowPendingTxs() {
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        amount: '0x1',
       },
       summary: 'Approve GNO',
     })

@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useEmulatedPartOrders } from './useEmulatedPartOrders'
 import { useEmulatedTwapOrders } from './useEmulatedTwapOrders'
@@ -17,16 +18,14 @@ export function useAllEmulatedOrders(): Order[] {
   const emulatedPartOrders = useEmulatedPartOrders(twapOrdersTokens)
   const isSafeApp = useIsSafeApp()
 
-  const limitOrders = useOrders(chainId, account, OrderClass.LIMIT)
+  const twapOrders = useOrders(chainId, account, UiOrderType.TWAP)
   const discreteTwapOrders = useMemo(() => {
-    return limitOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
-  }, [limitOrders])
+    return twapOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
+  }, [twapOrders])
 
-  const allEmulatedOrders = useMemo(() => {
+  return useMemo(() => {
     if (!isSafeApp) return []
 
     return emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
   }, [emulatedTwapOrders, emulatedPartOrders, discreteTwapOrders, isSafeApp])
-
-  return allEmulatedOrders
 }

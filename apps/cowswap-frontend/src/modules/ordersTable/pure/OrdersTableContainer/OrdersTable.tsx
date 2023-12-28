@@ -365,9 +365,9 @@ export function OrdersTable({
 
             {isOpenOrdersTab && (
               <HeaderElement doubleRow>
-                <Trans>Expires</Trans>
+                <Trans>Expiration</Trans>
                 <i>
-                  <Trans>Created</Trans>
+                  <Trans>Creation</Trans>
                 </i>
               </HeaderElement>
             )}

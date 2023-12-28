@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import {
   getExplorerOrderLink,
@@ -7,7 +7,7 @@ import {
   openNpsAppziSometimes,
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
-import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
@@ -33,6 +33,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
@@ -234,7 +235,11 @@ async function _updateOrders({
     })
     // add to surplus queue
     fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
-      if (!apiAdditionalInfo || apiAdditionalInfo.class === OrderClass.MARKET) {
+      if (
+        !apiAdditionalInfo ||
+        getUiOrderType({ fullAppData: apiAdditionalInfo.fullAppData, class: apiAdditionalInfo.class }) ===
+          UiOrderType.SWAP
+      ) {
         addOrderToSurplusQueue(id)
       }
     })
@@ -253,8 +258,8 @@ async function _updateOrders({
 function _triggerNps(pending: Order[], chainId: ChainId) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
-    // Check if there's any MARKET pending for more than `PENDING_TOO_LONG_TIME`
-    if (order.class === OrderClass.MARKET && isOrderInPendingTooLong(openSince)) {
+    // Check if there's any SWAP pending for more than `PENDING_TOO_LONG_TIME`
+    if (getUiOrderType(order) === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
       openNpsAppziSometimes({
@@ -277,6 +282,16 @@ export function PendingOrdersUpdater(): null {
   // TODO: Implement using SWR or retry/cancellable promises
   const isUpdatingMarket = useRef(false)
   const isUpdatingLimit = useRef(false)
+  const isUpdatingTwap = useRef(false)
+
+  const updatersRefMap = useMemo(
+    () => ({
+      [UiOrderType.SWAP]: isUpdatingMarket,
+      [UiOrderType.LIMIT]: isUpdatingLimit,
+      [UiOrderType.TWAP]: isUpdatingTwap,
+    }),
+    []
+  )
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -302,12 +317,12 @@ export function PendingOrdersUpdater(): null {
   )
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string, orderClass: OrderClass) => {
+    async (chainId: ChainId, account: string, uiOrderType: UiOrderType) => {
       if (!account) {
         return []
       }
 
-      const isUpdating = orderClass === OrderClass.LIMIT ? isUpdatingLimit : isUpdatingMarket
+      const isUpdating = updatersRefMap[uiOrderType]
 
       if (!isUpdating.current) {
         isUpdating.current = true
@@ -316,7 +331,7 @@ export function PendingOrdersUpdater(): null {
         return _updateOrders({
           account,
           chainId,
-          orders: pendingRef.current.filter((order) => order.class === orderClass),
+          orders: pendingRef.current.filter((order) => getUiOrderType(order) === uiOrderType),
           addOrUpdateOrders,
           fulfillOrdersBatch,
           expireOrdersBatch,
@@ -333,6 +348,7 @@ export function PendingOrdersUpdater(): null {
       }
     },
     [
+      updatersRefMap,
       addOrUpdateOrders,
       fulfillOrdersBatch,
       expireOrdersBatch,
@@ -351,20 +367,26 @@ export function PendingOrdersUpdater(): null {
     }
 
     const marketInterval = setInterval(
-      () => updateOrders(chainId, account, OrderClass.MARKET),
+      () => updateOrders(chainId, account, UiOrderType.SWAP),
       MARKET_OPERATOR_API_POLL_INTERVAL
     )
     const limitInterval = setInterval(
-      () => updateOrders(chainId, account, OrderClass.LIMIT),
+      () => updateOrders(chainId, account, UiOrderType.LIMIT),
+      LIMIT_OPERATOR_API_POLL_INTERVAL
+    )
+    const twapInterval = setInterval(
+      () => updateOrders(chainId, account, UiOrderType.TWAP),
       LIMIT_OPERATOR_API_POLL_INTERVAL
     )
 
-    updateOrders(chainId, account, OrderClass.MARKET)
-    updateOrders(chainId, account, OrderClass.LIMIT)
+    updateOrders(chainId, account, UiOrderType.SWAP)
+    updateOrders(chainId, account, UiOrderType.LIMIT)
+    updateOrders(chainId, account, UiOrderType.TWAP)
 
     return () => {
       clearInterval(marketInterval)
       clearInterval(limitInterval)
+      clearInterval(twapInterval)
     }
   }, [account, chainId, updateOrders])
 

@@ -2,13 +2,15 @@ import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
-import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -48,7 +50,7 @@ enum TxReceiptStatus {
 export function useRecentActivity(): TransactionAndOrder[] {
   const { chainId, account } = useWalletInfo()
   const allTransactions = useAllTransactions()
-  const allNonEmptyOrders = useOrders(chainId, account, OrderClass.MARKET)
+  const allNonEmptyOrders = useOrders(chainId, account, UiOrderType.SWAP)
 
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
     return (

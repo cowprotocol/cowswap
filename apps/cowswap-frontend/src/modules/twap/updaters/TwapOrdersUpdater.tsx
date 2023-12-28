@@ -89,21 +89,39 @@ export function TwapOrdersUpdater(props: {
 }
 
 function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
-  return ordersSafeData.reduce<TwapOrderInfo[]>((acc, data) => {
+  const ordersInfoMap = ordersSafeData.reduce<{ [id: string]: TwapOrderInfo }>((acc, data) => {
     try {
+      const id = getConditionalOrderId(data.conditionalOrderParams)
+      const existingOrder = acc[id]
+
+      /**
+       * There might be two Safe transactions with the same order inside.
+       * But only one of them will be executed.
+       *
+       * For example, you propose a transaction with TWAP order and execute it.
+       * Then, you propose another transaction with the same TWAP order.
+       * After you realize that the proposed transaction is a duplicate, and you replace it or cancel.
+       * In this case we should skip the second transaction, because the first one is already executed.
+       */
+      if (existingOrder?.safeData.safeTxParams.isExecuted) {
+        return acc
+      }
+
       const info = {
-        id: getConditionalOrderId(data.conditionalOrderParams),
+        id,
         orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput),
         safeData: data,
       }
 
-      acc.push(info)
+      acc[id] = info
     } catch (e) {
       // Do nothing
     }
 
     return acc
-  }, [])
+  }, {})
+
+  return Object.values(ordersInfoMap)
 }
 
 const AUTH_TIME_THRESHOLD = ms`1m`
