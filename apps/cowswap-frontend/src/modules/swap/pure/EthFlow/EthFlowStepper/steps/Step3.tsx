@@ -4,6 +4,7 @@ import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
 import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -16,7 +17,7 @@ const RefundMessage = styled.span`
 `
 
 const ExpiredMessage = styled.span`
-  color: ${({ theme }) => theme.warning};
+  color: var(${UI.COLOR_WARNING});
 `
 
 export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, cancellation }: EthFlowStepperProps) {
