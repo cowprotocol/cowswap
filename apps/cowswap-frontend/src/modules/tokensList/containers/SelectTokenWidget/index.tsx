@@ -49,6 +49,9 @@ export function SelectTokenWidget() {
   const favouriteTokens = useFavouriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
+  console.log('LISTS DEBUG 3', {
+    allTokenLists,
+  })
   const balancesState = useTokensBalances()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()

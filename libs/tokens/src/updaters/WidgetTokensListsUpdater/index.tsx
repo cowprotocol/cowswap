@@ -34,6 +34,10 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
   useEffect(() => {
     const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.url.toLowerCase()) } : undefined
 
+    console.log('LISTS DEBUG 2', {
+      tokenLists,
+      appCode,
+    })
     setEnvironment({ widgetAppCode: appCode, ...selectedLists })
   }, [setEnvironment, appCode, tokenLists])
 
