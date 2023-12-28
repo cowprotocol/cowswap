@@ -17,7 +17,7 @@ export const allListsSourcesAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
-  return [...DEFAULT_TOKENS_LISTS[chainId], ...userAddedTokenLists[chainId]]
+  return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
 })
 
 // Lists states

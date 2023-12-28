@@ -139,7 +139,7 @@ const GNO_GOERLI = new TokenWithLogo(
 
 const GNO_SEPOLIA = new TokenWithLogo(
   GNO_MAINNET.logoURI,
-  SupportedChainId.GOERLI,
+  SupportedChainId.SEPOLIA,
   '0xd3f3d46FeBCD4CdAa2B83799b7A5CdcB69d135De',
   18,
   'GNO',
@@ -149,7 +149,7 @@ const GNO_SEPOLIA = new TokenWithLogo(
 // Sepolia
 export const USDC_SEPOLIA = new TokenWithLogo(
   USDC_MAINNET.logoURI,
-  SupportedChainId.GOERLI,
+  SupportedChainId.SEPOLIA,
   '0xbe72E441BF55620febc26715db68d3494213D8Cb',
   18,
   'USDC',
@@ -250,8 +250,8 @@ const COW_TOKEN_GOERLI = new TokenWithLogo(
 
 const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.GOERLI,
-  COW_CONTRACT_ADDRESS[SupportedChainId.GOERLI] || '',
+  SupportedChainId.SEPOLIA,
+  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
   18,
   'COW',
   'CoW Protocol Token'
