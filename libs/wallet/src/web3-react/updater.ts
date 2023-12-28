@@ -9,7 +9,7 @@ import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 import { useWalletMetaData } from './hooks/useWalletMetadata'
 
-import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
+import { gnosisSafeInfoAtom, iframeReferrerAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
@@ -92,6 +92,13 @@ export function WalletUpdater() {
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+  const setIframeReferrerAtom = useSetAtom(iframeReferrerAtom)
+
+  useEffect(() => {
+    const referrer = getIframeReferrer()
+    console.log('[WalletUpdater] setIframeReferrerAtom', referrer)
+    setIframeReferrerAtom(referrer)
+  }, [setIframeReferrerAtom])
 
   // Update wallet info
   useEffect(() => {
@@ -116,4 +123,14 @@ export function WalletUpdater() {
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
   return null
+}
+
+function getIframeReferrer(): string {
+  // Only available on chrome based browsers https://caniuse.com/?search=ancestorOrigins
+  const ancestorOrigins = window.location.ancestorOrigins?.[0]
+  // Might not be correctly populated on all occasions
+  const referrer = document.referrer
+
+  console.log(`getIframeReferrer: ancestor: '${ancestorOrigins}' referrer: '${referrer}'`)
+  return ancestorOrigins || referrer
 }
