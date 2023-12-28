@@ -36,8 +36,13 @@ function getWcWalletIcon(meta: any) {
 }
 
 function getSafeAppHostname(): string {
-  // return window.parent.location.origin
-  return document.referrer
+  // Only available on chrome based browsers https://caniuse.com/?search=ancestorOrigins
+  const ancestorOrigins = window.location.ancestorOrigins?.[0]
+  // Might not be correctly populated on all occasions
+  const referrer = document.referrer
+
+  console.log(`getSafeAppHostname::referrer: `, ancestorOrigins, referrer)
+  return ancestorOrigins || referrer
 }
 
 const ALTERNATIVE_SAFE_APPS_METADATA: Record<string, WalletMetaData> = {
