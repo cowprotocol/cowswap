@@ -8,6 +8,7 @@ import { fetchTokenList } from '../../services/fetchTokenList'
 import { updateEnvironmentAtom } from '../../state/environmentAtom'
 import { useSetAtom } from 'jotai'
 import { useRemoveList } from '../../hooks/lists/useRemoveList'
+import { getFulfilledResults } from '../TokensListsUpdater/helpers'
 
 interface TokenList {
   url: string
@@ -34,10 +35,6 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
   useEffect(() => {
     const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.url.toLowerCase()) } : undefined
 
-    console.log('LISTS DEBUG 2', {
-      tokenLists,
-      appCode,
-    })
     setEnvironment({ widgetAppCode: appCode, ...selectedLists })
   }, [setEnvironment, appCode, tokenLists])
 
@@ -59,7 +56,15 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
     () => {
       if (!listsToImport) return null
 
-      return Promise.all(listsToImport.map(({ url }) => fetchTokenList({ source: url })))
+      return Promise.allSettled(
+        listsToImport.map(({ url }) => {
+          return fetchTokenList({ source: url }).catch((error) => {
+            console.error('Failed to fetch token list: ' + url, error)
+
+            return Promise.reject(error)
+          })
+        })
+      ).then(getFulfilledResults)
     },
     {}
   )

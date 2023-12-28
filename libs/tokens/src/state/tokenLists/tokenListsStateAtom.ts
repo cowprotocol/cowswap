@@ -33,7 +33,7 @@ export const listsStatesMapAtom = atom((get) => {
   const allTokenListsInfo = get(listsStatesByChainAtom)
   const currentNetworkLists = allTokenListsInfo[chainId]
 
-  const res = Object.keys(currentNetworkLists).reduce<{ [source: string]: ListState }>((acc, source) => {
+  return Object.keys(currentNetworkLists).reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]
     const isDefaultList = !list.widgetAppCode
     const sourceLowerCased = source.toLowerCase()
@@ -58,16 +58,6 @@ export const listsStatesMapAtom = atom((get) => {
 
     return acc
   }, {})
-
-  console.log('LISTS DEBUG 1', {
-    allTokenListsInfo,
-    chainId,
-    widgetAppCode,
-    selectedLists,
-    res,
-  })
-
-  return res
 })
 
 export const listsStatesListAtom = atom((get) => {
