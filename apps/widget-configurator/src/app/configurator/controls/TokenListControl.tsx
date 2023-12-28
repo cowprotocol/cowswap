@@ -143,7 +143,11 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
   const tokenListOptions = useMemo(
     () =>
       tokenLists
-        .sort((a) => (a.enabled ? -1 : 1))
+        .sort((a, b) => {
+          if (a.enabled) return -1
+
+          return a.url.length > b.url.length ? 1 : -1
+        })
         .map((list) => (
           <MenuItem key={list.url} value={list.url}>
             <Checkbox checked={list.enabled} />
