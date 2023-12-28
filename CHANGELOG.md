@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.1](https://github.com/cowprotocol/cowswap/compare/v1.54.0...v1.54.1) (2023-12-28)
+
+
+### Bug Fixes
+
+* **permit:** replace permit signer used for quoting ([#3562](https://github.com/cowprotocol/cowswap/issues/3562)) ([907d908](https://github.com/cowprotocol/cowswap/commit/907d90825643a5ad5824ed4ff5d24a9227f96f71))
+
 ## [1.54.0](https://github.com/cowprotocol/cowswap/compare/v1.53.1...v1.54.0) (2023-12-26)
 
 
