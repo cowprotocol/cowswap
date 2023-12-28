@@ -65,9 +65,7 @@ export type BlockExplorerLinkType =
   | 'composable-order'
 
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
-  const url = CHAIN_INFO[chainId].explorer
-
-  const basePath = `https://${url}`
+  const basePath = CHAIN_INFO[chainId].explorer
 
   switch (type) {
     case 'transaction': {
