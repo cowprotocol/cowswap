@@ -13,13 +13,15 @@ describe('transaction reducer', () => {
   describe('addTransaction', () => {
     it('adds the transaction', () => {
       const beforeTime = new Date().getTime()
+      const approval = { tokenAddress: 'abc', spender: 'def', amount: '0x1' }
+
       store.dispatch(
         addTransaction({
           hash: '0x0',
           hashType: HashType.ETHEREUM_TX,
           chainId: 1,
           summary: 'hello world',
-          approval: { tokenAddress: 'abc', spender: 'def' },
+          approval,
           from: 'abc',
         })
       )
@@ -30,7 +32,7 @@ describe('transaction reducer', () => {
       expect(tx).toBeTruthy()
       expect(tx?.hash).toEqual('0x0')
       expect(tx?.summary).toEqual('hello world')
-      expect(tx?.approval).toEqual({ tokenAddress: 'abc', spender: 'def' })
+      expect(tx?.approval).toEqual(approval)
       expect(tx?.from).toEqual('abc')
       expect(tx?.addedTime).toBeGreaterThanOrEqual(beforeTime)
     })
@@ -62,7 +64,7 @@ describe('transaction reducer', () => {
           hash: '0x0',
           hashType: HashType.ETHEREUM_TX,
           chainId: 4,
-          approval: { spender: '0x0', tokenAddress: '0x0' },
+          approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
         })
@@ -117,7 +119,7 @@ describe('transaction reducer', () => {
           hash: '0x0',
           hashType: HashType.ETHEREUM_TX,
           chainId: 4,
-          approval: { spender: '0x0', tokenAddress: '0x0' },
+          approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
         })
@@ -138,7 +140,7 @@ describe('transaction reducer', () => {
           hash: '0x0',
           hashType: HashType.ETHEREUM_TX,
           chainId: 4,
-          approval: { spender: '0x0', tokenAddress: '0x0' },
+          approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
         })
@@ -170,7 +172,7 @@ describe('transaction reducer', () => {
           hashType: HashType.ETHEREUM_TX,
           chainId: 1,
           summary: 'hello world',
-          approval: { tokenAddress: 'abc', spender: 'def' },
+          approval: { tokenAddress: 'abc', spender: 'def', amount: '0x1' },
           from: 'abc',
         })
       )
@@ -180,7 +182,7 @@ describe('transaction reducer', () => {
           hashType: HashType.ETHEREUM_TX,
           chainId: 4,
           summary: 'hello world',
-          approval: { tokenAddress: 'abc', spender: 'def' },
+          approval: { tokenAddress: 'abc', spender: 'def', amount: '0x1' },
           from: 'abc',
         })
       )

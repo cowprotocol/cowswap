@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.54.0](https://github.com/cowprotocol/cowswap/compare/v1.53.1...v1.54.0) (2023-12-26)
+
+
+### Bug Fixes
+
+* filter out twap orders from limit ([#3550](https://github.com/cowprotocol/cowswap/issues/3550)) ([91ccf8c](https://github.com/cowprotocol/cowswap/commit/91ccf8ceaf52e609b69deab98c2e921f4dd647be))
+* **swap:** don't add/sub fee for swap orders ([#3552](https://github.com/cowprotocol/cowswap/issues/3552)) ([784d3a8](https://github.com/cowprotocol/cowswap/commit/784d3a8c847cedf88dbab918bdd03e8a18f1a64f))
+* **trade:** update allowance immediately after approval tx mined ([#3543](https://github.com/cowprotocol/cowswap/issues/3543)) ([c0474aa](https://github.com/cowprotocol/cowswap/commit/c0474aa3b8bd4af9995acc0d84d8e8e46d12786a))
+* **twap:** display twap orders history ([#3553](https://github.com/cowprotocol/cowswap/issues/3553)) ([4046d59](https://github.com/cowprotocol/cowswap/commit/4046d591c08d49102a413722a927857a5f219158))
+* **wallets:** don't request network change when connect injected wallet ([#3544](https://github.com/cowprotocol/cowswap/issues/3544)) ([a6eaaf0](https://github.com/cowprotocol/cowswap/commit/a6eaaf0925248251bac6e9e77b02125e46fd4518))
+* **wallets:** send request to switch network ([#3551](https://github.com/cowprotocol/cowswap/issues/3551)) ([2bbb745](https://github.com/cowprotocol/cowswap/commit/2bbb74548a290480c6b3001e7e4a8b2eff9032e0))
+
+## [1.53.1](https://github.com/cowprotocol/cowswap/compare/v1.53.0...v1.53.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* revert "fix: terms and conditions link hover color ([#3538](https://github.com/cowprotocol/cowswap/issues/3538))" ([#3540](https://github.com/cowprotocol/cowswap/issues/3540)) ([94099aa](https://github.com/cowprotocol/cowswap/commit/94099aae21f96c856099d9a322dc93c0b6e0d8ed))
+
+## [1.53.0](https://github.com/cowprotocol/cowswap/compare/v1.52.0...v1.53.0) (2023-12-20)
+
+
+### Features
+
+* replace time column labels with nouns ([#3531](https://github.com/cowprotocol/cowswap/issues/3531)) ([bba989a](https://github.com/cowprotocol/cowswap/commit/bba989ad7fdc289cd89e1384c4780facee3624c5))
+* styling fix ([#3515](https://github.com/cowprotocol/cowswap/issues/3515)) ([6bf809b](https://github.com/cowprotocol/cowswap/commit/6bf809b90b23d812969c4d5f722915135b86d90e))
+* winter theme ([#3514](https://github.com/cowprotocol/cowswap/issues/3514)) ([a8dbf9d](https://github.com/cowprotocol/cowswap/commit/a8dbf9d78c258a1ed56ff6c2e9a03dda7794b79a))
+
+
+### Bug Fixes
+
+* **deps:** upgrade wagmi version to remove ledger lib ([#3513](https://github.com/cowprotocol/cowswap/issues/3513)) ([bd935a7](https://github.com/cowprotocol/cowswap/commit/bd935a7c129bb1e84c45be4a0697f776d3a444e8))
+* fix cosmos ([#3535](https://github.com/cowprotocol/cowswap/issues/3535)) ([c8df8f2](https://github.com/cowprotocol/cowswap/commit/c8df8f2503ff7a7d7997729cc053cf0ac607e18a))
+* fix ethflow stepper border color ([#3536](https://github.com/cowprotocol/cowswap/issues/3536)) ([a0ba534](https://github.com/cowprotocol/cowswap/commit/a0ba5347e3f822679464ef3457356a6df3c47630))
+* remove ledger connector completely ([#3529](https://github.com/cowprotocol/cowswap/issues/3529)) ([96e349f](https://github.com/cowprotocol/cowswap/commit/96e349fd022622e3f5683fd3217c1ff8ce6fa048))
+* terms and conditions link hover color ([#3538](https://github.com/cowprotocol/cowswap/issues/3538)) ([f91aabb](https://github.com/cowprotocol/cowswap/commit/f91aabb1573c3e9fc514efe4bb28169a4febe922))
+* unsupported token button text color ([#3537](https://github.com/cowprotocol/cowswap/issues/3537)) ([ec4b222](https://github.com/cowprotocol/cowswap/commit/ec4b222aa499699195f4b8f25befeca4fcf5c5f7))
+* use button text color for error button ([#3534](https://github.com/cowprotocol/cowswap/issues/3534)) ([179b0b8](https://github.com/cowprotocol/cowswap/commit/179b0b8a76003cfae8ac8b3d1a8b842b6dd00833))
+
+## [1.52.0](https://github.com/cowprotocol/cowswap/compare/v1.51.2...v1.52.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* **classic-eth-flow:** wrap no longer clears input amounts ([#3518](https://github.com/cowprotocol/cowswap/issues/3518)) ([cfe5c72](https://github.com/cowprotocol/cowswap/commit/cfe5c72b6f3e3cbf7d153d5840446c1c64f8110c))
+* **lint:** comment out unused LedgerIcon import ([3c2cea1](https://github.com/cowprotocol/cowswap/commit/3c2cea1b7dcd4e9a032e51874afd917c9f347c73))
+* **swap:** fix sell amount for buy orders with zero fee ([#3506](https://github.com/cowprotocol/cowswap/issues/3506)) ([2af7a10](https://github.com/cowprotocol/cowswap/commit/2af7a10fe446ec210e7a6146cd02e65c0b393601))
+* **twap:** deduplicate safe transactions with the same order ([#3521](https://github.com/cowprotocol/cowswap/issues/3521)) ([77a9447](https://github.com/cowprotocol/cowswap/commit/77a9447974db8a12770499af29efae01863c5cb2))
+* **wallet:** recognize Safe iOS wallet name ([#3524](https://github.com/cowprotocol/cowswap/issues/3524)) ([5b422d7](https://github.com/cowprotocol/cowswap/commit/5b422d75b708e7afd533f5f4f0dda963758d2b7a))
+
 ## [1.51.2](https://github.com/cowprotocol/cowswap/compare/v1.51.1...v1.51.2) (2023-12-14)
 
 

@@ -8,13 +8,11 @@ import { RowBetween } from '../Row'
 import { ButtonSize, UI } from '../../enum'
 
 import {
-  // Import only the basic buttons
-  ButtonPrimary as ButtonPrimaryMod,
+  ButtonConfirmedStyle as ButtonConfirmedStyleMod,
+  ButtonEmpty as ButtonEmptyMod,
   ButtonGray as ButtonGrayMod,
   ButtonOutlined as ButtonOutlinedMod,
-  ButtonEmpty as ButtonEmptyMod,
-  ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  // We don't import the "composite" buttons, they are just redefined (c&p actually)
+  ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
 
 export * from './ButtonMod'
@@ -169,14 +167,14 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: var(${UI.COLOR_DANGER});
-  color: var(${UI.COLOR_DANGER_TEXT});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
-    background: var(${UI.COLOR_DANGER});
-    color: var(${UI.COLOR_DANGER_TEXT});
+    background: var(${UI.COLOR_WARNING});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
 

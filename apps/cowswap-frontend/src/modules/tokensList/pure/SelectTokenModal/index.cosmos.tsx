@@ -20,7 +20,7 @@ const unsupportedTokens = {}
 const selectedToken = favouriteTokensMock[0].address
 
 const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
-  acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) * 10 ** token.decimals)
+  acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) + '0'.repeat(token.decimals))
 
   return acc
 }, {})

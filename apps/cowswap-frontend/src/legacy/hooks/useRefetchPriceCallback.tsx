@@ -9,7 +9,7 @@ import {
   calculateValidTo,
   getQuoteUnsupportedToken,
 } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality, OrderKind } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken, useIsUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
@@ -28,6 +28,8 @@ import GpQuoteError, {
   GpQuoteErrorDetails,
   isValidQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
+
+import { logSwapParams } from '../../modules/swap/helpers/logSwapParams'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -184,6 +186,13 @@ export function useRefetchQuoteCallback() {
           removeGpUnsupportedToken(previouslyUnsupportedToken)
         }
 
+        logSwapParams('quote', {
+          sellAmount: quoteData.kind === OrderKind.SELL ? quoteData.amount : price.value.amount,
+          buyAmount: quoteData.kind === OrderKind.BUY ? quoteData.amount : price.value.amount,
+          feeAmount: fee.value.amount,
+          sellDecimals: quoteData.fromDecimals,
+          buyDecimals: quoteData.toDecimals,
+        })
         // Update quote
         updateQuote({ ...quoteData, isBestQuote })
       }

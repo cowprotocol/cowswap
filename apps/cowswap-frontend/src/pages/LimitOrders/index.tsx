@@ -1,18 +1,15 @@
-import { useMemo } from 'react'
-
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { AppDataUpdater } from 'modules/appData'
 import {
-  LimitOrdersWidget,
-  QuoteObserverUpdater,
-  InitialPriceUpdater,
   ExecutionPriceUpdater,
   FillLimitOrdersDerivedStateUpdater,
+  InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
+  LimitOrdersWidget,
+  QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   useIsWidgetUnlocked,
 } from 'modules/limitOrders'
@@ -20,12 +17,11 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
-import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export default function LimitOrderPage() {
   const { chainId, account } = useWalletInfo()
-  const allLimitOrders = useOrders(chainId, account, OrderClass.LIMIT)
-  const onlyPlainLimitOrders = useMemo(() => allLimitOrders.filter(getIsNotComposableCowOrder), [allLimitOrders])
+  const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
 
   const isUnlocked = useIsWidgetUnlocked()
 
@@ -46,7 +42,7 @@ export default function LimitOrderPage() {
           <OrdersTableWidget
             displayOrdersOnlyForSafeApp={false}
             orderType={TabOrderTypes.LIMIT}
-            orders={onlyPlainLimitOrders}
+            orders={allLimitOrders}
           />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>

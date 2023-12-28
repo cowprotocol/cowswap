@@ -37,4 +37,5 @@ export enum Dimensions {
   injectedWidgetAppId = 'injectedWidgetAppId',
 }
 
+// TODO: use UiOrderType instead
 export type AnalyticsOrderType = OrderClass | 'TWAP'
