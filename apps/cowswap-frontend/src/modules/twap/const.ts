@@ -6,6 +6,8 @@ import ms from 'ms.macro'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
+import { MAX_CUSTOM_DEADLINE } from '../limitOrders/pure/DeadlineSelector/deadlines'
+
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export const MAX_TWAP_SLIPPAGE = 100 // 100%
@@ -44,6 +46,7 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
+export const MAX_PART_TIME = MAX_CUSTOM_DEADLINE / 1000 // in seconds
 
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedSellAmount: '0',
