@@ -1,5 +1,5 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { isSupportedPermitInfo, PERMIT_SIGNER } from '@cowprotocol/permit-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -7,6 +7,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { handlePermit } from 'modules/permit'
+import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -38,7 +39,7 @@ export async function swapFlow(
       generatePermitHook: input.generatePermitHook,
     })
 
-    if (input.orderParams.appData.fullAppData.includes(PERMIT_SIGNER.address)) {
+    if (appDataContainsPermitSigner(input.orderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(input.orderParams)
     }
 
