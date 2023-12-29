@@ -8,7 +8,7 @@ export function BigPartTimeWarning() {
 
   return (
     <InlineBanner>
-      <strong>Insufficient time between parts</strong>
+      <strong>Too much time between parts</strong>
       <p>
         A maximum of <strong>{time}</strong> between parts is required. Increase the number of parts or decrease the
         total duration.
