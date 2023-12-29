@@ -18,4 +18,5 @@ export const limitOrdersDeadlines: LimitOrderDeadline[] = [
   { title: '3 Days', value: ms`3d` },
   defaultLimitOrderDeadline,
   { title: '1 Month', value: ms`30d` },
+  { title: 'Max', value: MAX_CUSTOM_DEADLINE },
 ]
