@@ -6,9 +6,8 @@ const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
 
 export function customDeadlineToSeconds(customDeadline: TwapOrdersDeadline['customDeadline']): number {
   const hoursToMinutes = customDeadline.hours * 60
-  const minutesToSeconds = (hoursToMinutes + customDeadline.minutes) * 60
 
-  return minutesToSeconds
+  return (hoursToMinutes + customDeadline.minutes) * 60
 }
 
 export function deadlinePartsDisplay(timeInterval: number, longLabels = false): string {
