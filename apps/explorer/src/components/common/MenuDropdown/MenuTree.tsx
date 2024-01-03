@@ -37,8 +37,7 @@ export interface MenuTreeProps {
 export function MenuTree(props: MenuTreeProps): JSX.Element {
   const { isMobileMenuOpen, handleMobileMenuOnClick, isMobile, menuList = MAIN_MENU } = props
   return (
-    <>
-      <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
         <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
           {menuList.map((menuItem, index) => (
             <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
@@ -46,6 +45,5 @@ export function MenuTree(props: MenuTreeProps): JSX.Element {
         </MenuContainer>
         {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
       </Wrapper>
-    </>
   )
 }

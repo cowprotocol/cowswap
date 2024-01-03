@@ -1,4 +1,4 @@
-import { ExplorerAppState } from 'apps/explorer/state'
+import { ExplorerAppState } from '../../explorer/state'
 import useGlobalState from 'hooks/useGlobalState'
 import { Network } from 'types'
 

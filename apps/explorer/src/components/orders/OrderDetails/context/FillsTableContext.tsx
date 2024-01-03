@@ -1,6 +1,6 @@
 import React from 'react'
 import { Trade } from 'api/operator'
-import { TableState, TableStateSetters } from 'apps/explorer/components/TokensTableWidget/useTable'
+import { TableState, TableStateSetters } from '../../../../explorer/components/TokensTableWidget/useTable'
 
 type CommonState = {
   trades: Trade[]

@@ -1,5 +1,5 @@
 import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
-import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
+import { NETWORK_ID_SEARCH_LIST } from '../../explorer/const'
 import { Network } from 'types'
 
 export type SingleOrder = RawOrder | null
@@ -44,7 +44,7 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   }
 
   // If we didn't find the order in the current network, we look in different networks
-  const remainingNetworkIds = networkIdSearchListRemaining.filter((network) => network != networkId)
+  const remainingNetworkIds = networkIdSearchListRemaining.filter((network) => network !== networkId)
 
   // Try to get the order in another network (to see if the ID is OK, but the network not)
   for (const currentNetworkId of remainingNetworkIds) {

@@ -6,11 +6,11 @@ import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-pol
 import stdLibBrowser from 'node-stdlib-browser'
 import { loadConfig } from './loadConfig'
 
-const CONFIG = loadConfig()
+import { version as APP_VERSION } from './package.json'
+import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json'
+import { version as DEX_JS_VERSION } from '@gnosis.pm/dex-js/package.json'
 
-// TODO: MGR
-// TODO: I have no idea why this is needed, but it is
-CONFIG.appId = 1
+const CONFIG = loadConfig()
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -23,9 +23,9 @@ export default defineConfig({
 
   define: {
     CONFIG,
-    VERSION: JSON.stringify(require('./package.json').version),
-    CONTRACT_VERSION: JSON.stringify(require('@cowprotocol/contracts/package.json').version),
-    DEX_JS_VERSION: JSON.stringify(require('@gnosis.pm/dex-js/package.json').version),
+    VERSION: `'${APP_VERSION}'`,
+    CONTRACT_VERSION: `'${CONTRACT_VERSION}'`,
+    DEX_JS_VERSION: `'${DEX_JS_VERSION}'`,
   },
 
   server: {
@@ -71,13 +71,4 @@ export default defineConfig({
   //    }),
   //  ],
   // },
-
-  test: {
-    globals: true,
-    cache: {
-      dir: '../../node_modules/.vitest',
-    },
-    environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  },
 })

@@ -12,7 +12,7 @@ function _assertOrderPrice(
   getPriceFn: (params: GetRawOrderPriceParams | GetOrderLimitPriceParams) => BigNumber
 ): void {
   const params =
-    getPriceFn.name == 'getOrderLimitPrice' ? { buyAmount: order.buyAmount, sellAmount: order.sellAmount } : { order }
+    getPriceFn.name === 'getOrderLimitPrice' ? { buyAmount: order.buyAmount, sellAmount: order.sellAmount } : { order }
 
   test('Buy token decimals == sell token decimals', () => {
     expect(getPriceFn({ ...params, buyTokenDecimals: 2, sellTokenDecimals: 2 })).toEqual(TEN_BIG_NUMBER)
