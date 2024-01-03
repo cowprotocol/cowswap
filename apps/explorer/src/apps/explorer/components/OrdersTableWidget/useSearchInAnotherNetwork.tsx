@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 import { abbreviateString } from 'utils'
 import { Network } from 'types'
-import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 import { BlockchainNetwork } from './context/OrdersTableContext'
 import { Order, getAccountOrders } from 'api/operator'
 import CowLoading from 'components/common/CowLoading'
@@ -12,6 +11,7 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { MEDIA } from 'const'
 import { PREFIX_BY_NETWORK_ID } from 'state/network'
 import { networkOptions } from 'components/NetworkSelector'
+import { NETWORK_ID_SEARCH_LIST } from '../../const'
 
 const Wrapper = styled.div`
   display: flex;
@@ -138,7 +138,7 @@ export const EmptyOrdersMessage = ({
 export const useSearchInAnotherNetwork = (
   networkId: BlockchainNetwork,
   ownerAddress: string,
-  orders: Order[] | undefined,
+  orders: Order[] | undefined
 ): ResultSearchInAnotherNetwork => {
   const [ordersInNetworks, setOrdersInNetworks] = useState<OrdersInNetwork[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -160,16 +160,16 @@ export const useSearchInAnotherNetwork = (
             // Msg for when there are no orders on any network and a request has failed
             setError('An error has occurred while requesting the data.')
             console.error(`Failed to fetch order in ${Network[network]}`, e)
-          }),
+          })
       )
 
       const networksHaveOrders = (await Promise.allSettled(promises)).filter(
-        (e) => e.status === 'fulfilled' && e.value?.network,
+        (e) => e.status === 'fulfilled' && e.value?.network
       )
-      setOrdersInNetworks(networksHaveOrders.map((e: PromiseFulfilledResult<OrdersInNetwork>) => e.value))
+      setOrdersInNetworks(networksHaveOrders.map((e) => (e.status === 'fulfilled' ? e.value : e.reason)))
       setIsLoading(false)
     },
-    [ownerAddress],
+    [ownerAddress]
   )
 
   useEffect(() => {

@@ -23,17 +23,15 @@ export type GetOrderApi<T, R> = {
   defaultParams: GetOrderParamsApi<T>
 }
 
-type TypeOrderApiParams = GetOrderParams | GetTxOrdersParams
-
 export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkId: Network,
-  getOrderApi: GetOrderApi<TypeOrderApiParams, TypeOrderResult>,
-  networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST,
+  getOrderApi: GetOrderApi<GetOrderParams, TypeOrderResult> | GetOrderApi<GetTxOrdersParams, TypeOrderResult>,
+  networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
-  let order = null
+  let order: TypeOrderResult | null = null
   try {
-    order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId })
+    order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId } as never)
   } catch (error) {
     console.log('Order not found', { ...getOrderApi.defaultParams, networkId })
   }
@@ -50,9 +48,9 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
 
   // Try to get the order in another network (to see if the ID is OK, but the network not)
   for (const currentNetworkId of remainingNetworkIds) {
-    let order = null
+    let order: TypeOrderResult | null = null
     try {
-      order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId: currentNetworkId })
+      order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId: currentNetworkId } as never)
     } catch (error) {
       console.log('Order not found', { ...getOrderApi.defaultParams, networkId: currentNetworkId })
     }

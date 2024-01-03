@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
 import { RawOrder } from 'api/operator'
 import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
 import { RAW_ORDER } from '../../data'
@@ -9,7 +9,7 @@ const ZERO_DOT_ONE = new BigNumber('0.1')
 
 function _assertOrderPrice(
   order: RawOrder,
-  getPriceFn: (params: GetRawOrderPriceParams | GetOrderLimitPriceParams) => BigNumber,
+  getPriceFn: (params: GetRawOrderPriceParams | GetOrderLimitPriceParams) => BigNumber
 ): void {
   const params =
     getPriceFn.name == 'getOrderLimitPrice' ? { buyAmount: order.buyAmount, sellAmount: order.sellAmount } : { order }
@@ -41,7 +41,7 @@ function _assertOrderPriceWithoutFills(_order: RawOrder): void {
   })
   test('Inverted price', () => {
     expect(getOrderExecutedPrice({ order, buyTokenDecimals: 2, sellTokenDecimals: 2, inverted: true })).toEqual(
-      ZERO_BIG_NUMBER,
+      ZERO_BIG_NUMBER
     )
   })
 }

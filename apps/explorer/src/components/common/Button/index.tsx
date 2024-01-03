@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { ThemeValue, variants } from 'styled-theming'
 
-import { COLOURS, BASE_STYLES } from 'styles'
+import { BASE_STYLES, COLOURS } from 'styles'
 import ThemeProvider, { Theme } from 'theme'
 
 const {
@@ -177,7 +177,8 @@ export const ButtonTheme = variants('mode', 'variant', {
       background: ${disabledLight};
     `,
     get light(): ThemeValue {
-      return this.dark
+      // TODO: MGR
+      return this[Theme.DARK]
     },
   },
   theme: {

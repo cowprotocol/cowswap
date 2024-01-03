@@ -13,7 +13,8 @@ const TransactionDetails: React.FC = () => {
   const { txHash } = useParams<{ txHash: string }>()
   const networkId = useNetworkId() || undefined
 
-  if (!isATxHash(txHash)) {
+  // TODO: MGR
+  if (txHash ? !isATxHash(txHash) : false) {
     return <RedirectToSearch from="tx" />
   }
 
@@ -22,7 +23,7 @@ const TransactionDetails: React.FC = () => {
       <Helmet>
         <title>Transaction Details - {APP_TITLE}</title>
       </Helmet>
-      <TransactionsTableWidget txHash={txHash} networkId={networkId} />
+      {txHash && <TransactionsTableWidget txHash={txHash} networkId={networkId} />}
     </Wrapper>
   )
 }

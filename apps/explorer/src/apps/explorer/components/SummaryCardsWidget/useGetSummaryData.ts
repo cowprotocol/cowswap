@@ -66,7 +66,7 @@ function getTransactionsAndFees(data: Array<{ orders: string; feesUsd: string }>
       acc.fees += Number(curr.feesUsd)
       return acc
     },
-    { fees: 0, transactions: 0 },
+    { fees: 0, transactions: 0 }
   )
 }
 
@@ -87,7 +87,7 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    subgraphApiSDK.runQuery(summaryQuery, undefined, { chainId: network }).then((data: SummaryQuery) => {
+    subgraphApiSDK.runQuery<SummaryQuery>(summaryQuery, undefined, { chainId: network }).then((data) => {
       const summary = buildSummary(data)
       setSummary({ ...summary, isLoading: false })
     })

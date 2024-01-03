@@ -16,7 +16,8 @@ const RedirectToSearch: React.FC<RedirectToSearchParams> = ({ from, data }) => {
   const newPath =
     pathMatchArray && pathMatchArray.length > 0 ? `${prefixPath}/search${pathMatchArray[1]}` : `${prefixPath}${suffix}`
 
-  return <Navigate to={{ pathname: newPath, state: { referrer: from, data } }} />
+  // TODO: MGR
+  return <Navigate to={newPath} />
 }
 
 export default RedirectToSearch

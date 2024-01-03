@@ -71,7 +71,7 @@ export const SubstituteNetworkName = (from: string, toNetworkName = ''): string 
 export const RedirectMainnet = (): JSX.Element => {
   const newPath = SubstituteNetworkName('mainnet')
 
-  return <Redirect push={false} to={newPath} />
+  return <Navigate to={newPath} />
 }
 
 /** Redirects to the xDai to the GnosisChain new name */

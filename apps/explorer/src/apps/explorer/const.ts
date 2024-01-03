@@ -49,7 +49,7 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 
 export const APP_TITLE = 'CoW Protocol Explorer'
 
-export const SPECIAL_ADDRESSES = {
+export const SPECIAL_ADDRESSES: { [key: string]: string } = {
   '0xa03be496e67ec29bc62f01a428683d7f9c204930': 'Solver Rewards Safe',
   '0xca771eda0c70aa7d053ab1b25004559b918fe662': 'CoW DAO',
 }

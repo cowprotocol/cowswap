@@ -8,7 +8,7 @@ interface AddressAccount {
   ens?: string
 }
 
-export function useResolveEns(address: string): AddressAccount | undefined {
+export function useResolveEns(address: string | undefined): AddressAccount | undefined {
   const [addressAccount, setAddressAccount] = useState<AddressAccount | undefined>()
 
   useEffect(() => {
@@ -18,9 +18,10 @@ export function useResolveEns(address: string): AddressAccount | undefined {
     }
 
     setAddressAccount(undefined)
-    if (isEns(address)) {
+
+    if (address && isEns(address)) {
       _resolveENS(address)
-    } else if (isAddress(address)) {
+    } else if (address && isAddress(address)) {
       setAddressAccount({ address })
     } else {
       setAddressAccount({ address: null })

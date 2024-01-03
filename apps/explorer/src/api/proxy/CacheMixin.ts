@@ -30,14 +30,14 @@ export class CacheMixin {
       const { method } = cacheConfig
       const methodName = method.toString()
 
-      const fnToCache = instance[methodName].bind(instance)
+      const fnToCache = (instance as any)[methodName].bind(instance)
 
       const params: CacheMethodParams<T, ReturnType<typeof fnToCache>> = {
         ...cacheConfig,
         fnToCache,
       }
 
-      instance[methodName] = this.cacheMethod(params)
+      ;(instance as any)[methodName] = this.cacheMethod(params)
     })
   }
 

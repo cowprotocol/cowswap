@@ -3,7 +3,6 @@
 import { useNetworkId } from 'state/network'
 import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
-import { RouteComponentProps } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
@@ -26,7 +25,7 @@ export function outboundLink(
   }: {
     label: string
   },
-  hitCallback: () => unknown,
+  hitCallback: () => unknown
 ): any {
   return googleAnalytics.outboundLink({ label }, hitCallback)
 }
@@ -65,7 +64,7 @@ function reportWebVitals({ name, delta, id }: Metric): void {
 }
 
 // tracks web vitals and pageviews
-export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location'], app: string): void {
+export function useAnalyticsReporter({ pathname, search }: { pathname: string; search: string }, app: string): void {
   useEffect(() => {
     getFCP(reportWebVitals)
     getFID(reportWebVitals)

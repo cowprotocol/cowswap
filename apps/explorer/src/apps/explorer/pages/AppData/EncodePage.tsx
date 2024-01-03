@@ -41,12 +41,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     encode.options.invalidFormDataAttempted ?? {
       appData: false,
       ipfs: false,
-    },
+    }
   )
   const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>(encode.options.ipfsHashInfo)
   const [ipfsCredentials /* setIpfsCredentials */] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
-    encode.options.ipfsCredentials ?? {},
+    encode.options.ipfsCredentials ?? {}
   )
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
@@ -130,7 +130,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
   const handleMetadataErrors = useCallback(
     (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabledAppData),
-    [],
+    []
   )
 
   // const handleIPFSErrors = useCallback(
@@ -154,7 +154,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         setError(undefined)
       }
     },
-    [ipfsHashInfo],
+    [ipfsHashInfo]
   )
 
   // const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
@@ -260,7 +260,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                 <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
               </>
             )}
-            {ipfsHashInfo && (
+            {!!ipfsHashInfo && (
               <>
                 <h2>🐮 AppData hex</h2>
                 <p>

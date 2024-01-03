@@ -1,4 +1,4 @@
-import { BATCH_TIME } from 'const'
+import { BATCH_TIME } from '../../const'
 import BN from 'bn.js'
 import { Receipt } from 'types'
 

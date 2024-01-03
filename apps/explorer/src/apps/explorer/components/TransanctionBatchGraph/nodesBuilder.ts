@@ -29,7 +29,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
   txSettlement: Settlement,
   networkId: Network,
   heightSize: number,
-  layout: string,
+  layout: string
 ): ElementDefinition[] {
   if (!txSettlement.accounts) return []
 
@@ -57,9 +57,9 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
     if (getTypeNode(account) === TypeNodeOnTx.CowProtocol) {
       builder.center({ type: TypeNodeOnTx.CowProtocol, entity: account, id: key }, parentNodeName)
     } else {
-      const receivers = Object.keys(txSettlement.accounts).reduce(
+      const receivers = Object.keys(txSettlement.accounts).reduce<(string | undefined)[]>(
         (acc, key) => (txSettlement.accounts?.[key].owner ? [...acc, txSettlement.accounts?.[key].owner] : acc),
-        [],
+        []
       )
 
       if (receivers.includes(key) && account.owner !== key) {
@@ -76,7 +76,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
           type: getTypeNode(account),
           entity: showTraderAddress(account, key),
         },
-        parentNodeName,
+        parentNodeName
       )
     }
   }
@@ -100,7 +100,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
           id: fromId,
         },
         // Put it inside the parent node
-        getInternalParentNode(groupNodes, transfer),
+        getInternalParentNode(groupNodes, transfer)
       )
     }
 
@@ -127,14 +127,14 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
               to: transfer.to,
             }),
         amount: `${tokenAmount} ${tokenSymbol}`,
-      },
+      }
     )
   })
 
   return builder.build(
     layout === 'grid'
       ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
-      : undefined,
+      : undefined
   )
 }
 
@@ -188,7 +188,7 @@ ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 export function getContractTrades(
   trades: Trade[],
   transfers: Transfer[],
-  orders: Order[] | undefined,
+  orders: Order[] | undefined
 ): ContractTrade[] {
   const userAddresses = new Set<string>()
   const contractAddresses = new Set<string>()
@@ -274,7 +274,7 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
 export function getNotesAndEdges(
   userTrades: Trade[],
   contractTrades: ContractTrade[],
-  networkId: SupportedChainId,
+  networkId: SupportedChainId
 ): NodesAndEdges {
   const nodes: Record<string, TokenNode> = {}
   const edges: TokenEdge[] = []
@@ -331,7 +331,7 @@ export function getNotesAndEdges(
             address: trade.address,
             fromTransfer: transfer,
             ...(nodeExists ? undefined : { hyperNode: 'to' }),
-          }),
+          })
         )
         // one edge for each buyToken
         trade.buyTransfers.forEach((transfer) =>
@@ -341,7 +341,7 @@ export function getNotesAndEdges(
             address: trade.address,
             toTransfer: transfer,
             ...(nodeExists ? undefined : { hyperNode: 'from' }),
-          }),
+          })
         )
       }
     })
@@ -363,7 +363,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   txSettlement: Settlement,
   networkId: Network,
   heightSize: number,
-  layout: string,
+  layout: string
 ): ElementDefinition[] {
   const networkName = networkOptions.find((network) => network.id === networkId)?.name
   const networkNode = { alias: `${networkName} Liquidity` || '' }
@@ -409,7 +409,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   return builder.build(
     layout === 'grid'
       ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
-      : undefined,
+      : undefined
   )
 }
 
@@ -452,7 +452,7 @@ function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): 
 function getNodeTooltip(
   node: TokenNode,
   edges: TokenEdge[],
-  tokens: Record<string, SingleErc20State>,
+  tokens: Record<string, SingleErc20State>
 ): Record<string, string> | undefined {
   if (node.isHyperNode) {
     return undefined
@@ -494,7 +494,7 @@ function getTokenTooltipAmount(token: SingleErc20State, value: string | undefine
     amount = formattingAmountPrecision(
       new BigNumber(amount_atoms_abs.toString()),
       token,
-      FormatAmountPrecision.highPrecision,
+      FormatAmountPrecision.highPrecision
     )
   } else {
     amount = '-'

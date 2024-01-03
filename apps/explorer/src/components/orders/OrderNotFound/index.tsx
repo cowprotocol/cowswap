@@ -78,13 +78,10 @@ const Support = styled.a`
     text-decoration: none;
   }
 `
-interface LocationState {
-  referrer: string
-  data: unknown
-}
+
 export const OrderAddressNotFound: React.FC = (): JSX.Element => {
   const { searchString } = useParams<{ searchString: string }>()
-  const location = useLocation<LocationState>()
+  const location = useLocation()
   const navigate = useNavigate()
   const { referrer, data } = location.state || { referrer: null, data: null }
   const wasRedirected = referrer ? true : false
@@ -132,7 +129,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
       </Content>
       {showLinkData && (
         <LinkData>
-          This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...(data as never)} />
+          This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...data} />
         </LinkData>
       )}
     </>

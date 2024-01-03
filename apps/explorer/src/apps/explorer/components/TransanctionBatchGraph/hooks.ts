@@ -64,14 +64,17 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const [tokensStylesheets, setTokensStylesheets] = useState<Cytoscape.Stylesheet[]>([])
 
   const setCytoscape = useCallback(
-    (ref: Cytoscape.Core) => {
+    (ref: Cytoscape.Core | null) => {
       cytoscapeRef.current = ref
-      ref.removeListener('resize')
-      ref.on('resize', () => {
-        updateLayout(ref, layout.name, true)
-      })
+
+      if (ref) {
+        ref.removeListener('resize')
+        ref.on('resize', () => {
+          updateLayout(ref, layout.name, true)
+        })
+      }
     },
-    [layout.name],
+    [layout.name]
   )
 
   const stableTxSettlement = JSON.stringify(txSettlement)
@@ -162,7 +165,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
 }
 
 function getStylesheets(
-  nodes: ElementDefinition[],
+  nodes: ElementDefinition[]
   // networkId: SupportedChainId,
 ): Stylesheet[] {
   const stylesheets: Stylesheet[] = []
@@ -213,7 +216,7 @@ export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,
   txHash: string,
-  visualization: ViewType,
+  visualization: ViewType
 ): GetTxBatchTradesResult {
   // Fetch data from tenderly
   const txData = useTransactionData(networkId, txHash)
@@ -236,7 +239,7 @@ export function useTxBatchData(
 
         return acc
       }, {}) || {},
-    [orders],
+    [orders]
   )
 
   // Collect addresses of missing tokens which were not part of any order
@@ -290,7 +293,7 @@ export function useVisualization(): UseVisualizationReturn {
   const updateVisQuery = useUpdateVisQuery()
 
   const [visualizationViewSelected, setVisualizationViewSelected] = useState<ViewType>(
-    ViewType[visualization] || DEFAULT_VIEW_TYPE,
+    ViewType[visualization] || DEFAULT_VIEW_TYPE
   )
 
   const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])

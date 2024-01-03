@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router'
 export function useOrderIdParam(): string {
   const { orderId } = useParams<{ orderId: string }>()
 
-  return orderId
+  return orderId || ''
 }
 
 /**

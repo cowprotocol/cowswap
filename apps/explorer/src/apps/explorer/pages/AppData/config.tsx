@@ -33,7 +33,7 @@ export const getSchema = async (): Promise<JSONSchema7> => {
 const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
-  return errors.reduce((errorsList, error) => {
+  return errors.reduce<AjvError[]>((errorsList, error) => {
     if (error.name === 'required') {
       // Disable the non-required fields (it validates the required fields on un-required fields)
       // error.message = ERROR_MESSAGES.REQUIRED
@@ -58,7 +58,7 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
 export const handleErrors = (
   ref: RefObject<Form<FormProps>>,
   errors: FormValidation,
-  handler: (value: boolean) => void,
+  handler: (value: boolean) => void
 ): FormValidation => {
   if (!ref.current) return errors
   const { errors: formErrors } = ref.current?.state as FormProps

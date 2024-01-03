@@ -2,11 +2,11 @@ import BN from 'bn.js'
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
 
-const toChecksumAddress = Web3.utils.toChecksumAddress
-
 import { Network, Unpromise } from 'types'
 import { AssertionError } from 'assert'
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
+
+const toChecksumAddress = Web3.utils.toChecksumAddress
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
   if (val === undefined || val === null) {
@@ -139,7 +139,7 @@ export function divideBN(numerator: BN, denominator: BN): BigNumber {
   return new BigNumber(numerator.toString()).dividedBy(denominator.toString())
 }
 
-export const RequireContextMock: __WebpackModuleApi.RequireContext = Object.assign(() => '', {
+export const RequireContextMock = Object.assign(() => '', {
   keys: () => [],
   resolve: () => '',
   id: '',
