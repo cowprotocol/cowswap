@@ -29,13 +29,10 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   useEffect(() => setHoursValue(hours), [hours, isOpen])
   useEffect(() => setMinutesValue(minutes), [minutes, isOpen])
 
-  const [error] = useState<string | null>(null)
-
   const onHoursChange = useCallback((v: number | null) => setHoursValue(!v ? 0 : Math.round(v)), [])
   const onMinutesChange = useCallback((v: number | null) => setMinutesValue(!v ? 0 : Math.round(v)), [])
 
-  const noValues = !hoursValue && !minutesValue
-  const isDisabled = !!error || noValues
+  const isDisabled = !hoursValue && !minutesValue
 
   const onApply = () => {
     onDismiss()
@@ -79,8 +76,6 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
             max={null}
           />
         </styledEl.ModalContent>
-
-        {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
 
         <styledEl.ModalFooter>
           <styledEl.CancelButton onClick={_onDismiss}>
