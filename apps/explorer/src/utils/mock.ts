@@ -1,6 +1,6 @@
 import { TxOptionalParams } from 'types'
 import { wait } from './time'
-import { RECEIPT } from '../../test/data'
+import { RECEIPT } from '../test/data'
 
 export async function waitAndSendReceipt(params: {
   waitTime?: number

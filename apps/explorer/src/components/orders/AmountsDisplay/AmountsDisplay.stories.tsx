@@ -7,7 +7,7 @@ import { GlobalStyles, NetworkDecorator, ThemeToggler } from 'storybook/decorato
 
 import { AmountsDisplay, Props } from '.'
 
-import { RICH_ORDER } from '../../../../test/data'
+import { RICH_ORDER } from '../../../test/data'
 
 export default {
   title: 'orders/AmountsDisplay',

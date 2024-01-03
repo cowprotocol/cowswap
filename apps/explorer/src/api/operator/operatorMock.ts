@@ -8,7 +8,7 @@ import {
   RawTrade,
 } from './types'
 
-import { RAW_ORDER, RAW_TRADE } from '../../../test/data'
+import { RAW_ORDER, RAW_TRADE } from '../../test/data'
 import { GetAccountOrdersResponse } from './accountOrderUtils'
 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {

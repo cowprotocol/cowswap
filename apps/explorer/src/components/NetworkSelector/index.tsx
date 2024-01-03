@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router'
 import { useLocation } from 'react-router-dom'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
@@ -38,7 +38,7 @@ export const networkOptions: NetworkOptions[] = [
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const name = networkOptions.find((network) => network.id === networkId)?.name.toLowerCase()
   const [open, setOpen] = useState(false)
@@ -67,7 +67,8 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
 
   const redirectToNetwork = (newNetwork: string, currentNetwork: number): void => {
     const shouldNotRedirectHome = NO_REDIRECT_HOME_ROUTES.some((r: string) => location.pathname.includes(r))
-    history.push(shouldNotRedirectHome ? replaceURL(location.pathname, newNetwork, currentNetwork) : `/${newNetwork}`)
+    // TODO: MGR
+    navigate(shouldNotRedirectHome ? replaceURL(location.pathname, newNetwork, currentNetwork) : `/${newNetwork}`)
   }
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>

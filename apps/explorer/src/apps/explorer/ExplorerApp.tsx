@@ -1,6 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect, useLocation } from 'react-router-dom'
-import { hot } from 'react-hot-loader/root'
+import { BrowserRouter, HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
 import Console from 'Console'
@@ -42,7 +41,7 @@ const NotFound = React.lazy(
     import(
       /* webpackChunkName: "Extra_routes_chunk"*/
       './pages/NotFound'
-    ),
+    )
 )
 
 const AppDataDetails = React.lazy(
@@ -50,7 +49,7 @@ const AppDataDetails = React.lazy(
     import(
       /* webpackChunkName: "Metadata_chunk"*/
       './pages/AppData'
-    ),
+    )
 )
 
 const SearchNotFound = React.lazy(
@@ -58,7 +57,7 @@ const SearchNotFound = React.lazy(
     import(
       /* webpackChunkName: "SearchNotFound_chunk"*/
       './pages/SearchNotFound'
-    ),
+    )
 )
 
 const Home = React.lazy(
@@ -66,7 +65,7 @@ const Home = React.lazy(
     import(
       /* webpackChunkName: "Trade_chunk"*/
       './pages/Home'
-    ),
+    )
 )
 
 const Order = React.lazy(
@@ -74,7 +73,7 @@ const Order = React.lazy(
     import(
       /* webpackChunkName: "Order_chunk"*/
       './pages/Order'
-    ),
+    )
 )
 
 const UserDetails = React.lazy(
@@ -82,7 +81,7 @@ const UserDetails = React.lazy(
     import(
       /* webpackChunkName: "UserDetails_chunk"*/
       './pages/UserDetails'
-    ),
+    )
 )
 
 const TransactionDetails = React.lazy(
@@ -90,7 +89,7 @@ const TransactionDetails = React.lazy(
     import(
       /* webpackChunkName: "TransactionDetails_chunk"*/
       './pages/TransactionDetails'
-    ),
+    )
 )
 
 /**
@@ -103,28 +102,26 @@ function StateUpdaters(): JSX.Element {
 /** App content */
 const AppContent = (): JSX.Element => {
   const location = useLocation()
-  const { path } = useRouteMatch()
-  const pathPrefix = path == '/' ? '' : path
+  const { pathname: path } = useLocation() // TODO: MGR
+  const pathPrefix = path == '/' ? '' : `/${path.split('/')[1]}`
 
   useAnalyticsReporter(location, 'Explorer')
 
   return (
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
-        <Switch>
-          <Route path={pathPrefix + '/'} exact component={Home} />
-          <Route
-            path={[pathPrefix + '/address/', pathPrefix + '/orders/', pathPrefix + '/tx/']}
-            exact
-            component={(): JSX.Element => <Redirect to={pathPrefix + '/search/'} />}
-          />
-          <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
-          <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
-          <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
-          <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
-          <Route path={pathPrefix + '/appdata'} exact component={AppDataDetails} />
-          <Route component={NotFound} />
-        </Switch>
+        <Routes>
+          <Route path={pathPrefix + '/'} element={<Home />} />
+          <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+          <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
+          <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+          <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
+          <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
+          <Route element={<NotFound />} />
+        </Routes>
       </React.Suspense>
     </GenericLayout>
   )
@@ -140,11 +137,11 @@ export const ExplorerApp: React.FC = () => {
       <MainWrapper>
         <Router basename={process.env.BASE_URL}>
           <StateUpdaters />
-          <Switch>
-            <Route path="/mainnet" component={RedirectMainnet} />
-            <Route path="/xdai" component={RedirectXdai} />
-            <Route path={['/gc', '/goerli', '/']} component={AppContent} />
-          </Switch>
+          <Routes>
+            <Route path="/mainnet" element={<RedirectMainnet />} />
+            <Route path="/xdai" element={<RedirectXdai />} />
+            <Route path="*" element={<AppContent />} />
+          </Routes>
         </Router>
         {process.env.NODE_ENV === 'development' && <Console />}
       </MainWrapper>
@@ -152,11 +149,9 @@ export const ExplorerApp: React.FC = () => {
   )
 }
 
-export default hot(
-  withGlobalContext(
-    ExplorerApp,
-    // Initial State
-    INITIAL_STATE,
-    rootReducer,
-  ),
+export default withGlobalContext(
+  ExplorerApp,
+  // Initial State
+  INITIAL_STATE,
+  rootReducer
 )

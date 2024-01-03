@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Index, SearchOptions } from 'flexsearch'
+import Index, { SearchOptions } from 'flexsearch'
 
 const SEARCH_INDEX = new Index({
   tokenize: 'forward',
@@ -13,7 +13,7 @@ export const useFlexSearch = (
   query: string,
   data: Item[],
   filterValues: Array<string>,
-  searchOptions?: SearchOptions,
+  searchOptions?: SearchOptions
 ): Item[] => {
   const [index, setIndex] = useState(SEARCH_INDEX)
   const [filteredResults, setFilteredResults] = useState<Item[]>(data)

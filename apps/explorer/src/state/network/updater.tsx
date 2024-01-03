@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Redirect, useLocation } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 import { Network } from 'types'
 import useGlobalState from 'hooks/useGlobalState'
@@ -56,7 +56,7 @@ export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | 
   const prefixPath = prefix ? `/${prefix}` : ''
   const newPath = prefixPath + '/' + pathnameSuffix
 
-  return <Redirect push={false} to={newPath} />
+  return <Navigate to={newPath} />
 }
 
 /** Replace Network name in URL from X to Y */
@@ -78,7 +78,7 @@ export const RedirectMainnet = (): JSX.Element => {
 export const RedirectXdai = (): JSX.Element => {
   const newPath = SubstituteNetworkName('xdai', '/gc')
 
-  return <Redirect push={false} to={newPath} />
+  return <Navigate to={newPath} />
 }
 
 export const NetworkUpdater: React.FC = () => {

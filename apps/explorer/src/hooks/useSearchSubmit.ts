@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
 import { usePathPrefix } from 'state/network'
 import { web3 } from 'apps/explorer/api'
@@ -30,7 +30,7 @@ export async function resolveENS(name: string): Promise<string | null> {
 }
 
 export function useSearchSubmit(): (query: string) => void {
-  const history = useHistory()
+  const navigate = useNavigate()
   const prefixNetwork = usePathPrefix()
 
   return useCallback(
@@ -41,11 +41,12 @@ export function useSearchSubmit(): (query: string) => void {
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
 
       if (path === 'address' && isEns(query)) {
-        history.push(`/${path}/${query}`)
+        // TODO: MGR
+        navigate(`/${path}/${query}`)
       } else {
-        query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)
+        query && query.length > 0 && navigate(`/${pathPrefix}/${query}`)
       }
     },
-    [history, prefixNetwork],
+    [navigate, prefixNetwork]
   )
 }

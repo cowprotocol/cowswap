@@ -6,7 +6,7 @@ import { GlobalStyles, Router, ThemeToggler } from 'storybook/decorators'
 
 import { OrderDetails, Props } from '.'
 
-import { RICH_ORDER } from '../../../../test/data'
+import { RICH_ORDER } from '../../../test/data'
 
 export default {
   title: 'orders/OrderDetails',

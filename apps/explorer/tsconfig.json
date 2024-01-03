@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "jsx": "react-jsx",
-    "allowJs": false,
-    "esModuleInterop": false,
+    "allowJs": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "types": ["vite/client", "vitest"]
+    "types": ["vite/client", "vitest", "node"]
   },
   "files": [],
   "include": [],
