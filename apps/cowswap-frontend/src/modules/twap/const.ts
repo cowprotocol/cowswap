@@ -23,6 +23,8 @@ export const ORDER_DEADLINES: OrderDeadline[] = [
   { label: '6 Hours', value: ms`6 hour` },
   { label: '12 Hours', value: ms`12 hour` },
   { label: '24 Hours', value: ms`1d` },
+  { label: '1 Week', value: ms`1d` * 7 },
+  { label: '1 Month', value: ms`1d` * 30 },
 ]
 
 export const TWAP_ORDER_STRUCT =
