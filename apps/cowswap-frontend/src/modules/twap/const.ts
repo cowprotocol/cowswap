@@ -4,9 +4,9 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
-import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
+import { MAX_ORDER_DEADLINE } from 'common/constants/common'
 
-import { MAX_CUSTOM_DEADLINE } from '../limitOrders/pure/DeadlineSelector/deadlines'
+import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
@@ -46,7 +46,7 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
-export const MAX_PART_TIME = MAX_CUSTOM_DEADLINE / 1000 // in seconds
+export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
 
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedSellAmount: '0',
