@@ -100,11 +100,14 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
+const networkPrefixes = ['gc', 'goerli']
+
 /** App content */
 const AppContent = (): JSX.Element => {
   const location = useLocation()
   const { pathname: path } = useLocation() // TODO: MGR
-  const pathPrefix = path == '/' ? '' : `/${path.split('/')[1]}`
+  const prefix = path === '' ? '' : `${path.split('/')[1]}`
+  const pathPrefix = networkPrefixes.includes(prefix) ? `/${prefix}` : '/'
 
   useAnalyticsReporter(location, 'Explorer')
 
