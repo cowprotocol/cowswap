@@ -51,7 +51,13 @@ function infuraProvider(networkId: Network): string {
     throw new Error(`INFURA_ID not set`)
   }
 
-  const network = getNetworkFromId(networkId).toLowerCase()
+  const network = (() => {
+    if (networkId === Network.SEPOLIA) {
+      return 'sepolia'
+    }
+
+    return getNetworkFromId(networkId).toLowerCase()
+  })()
 
   if (isWebsocketConnection()) {
     return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
@@ -88,6 +94,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
   switch (networkId) {
     case Network.MAINNET:
     case Network.GOERLI:
+    case Network.SEPOLIA:
       return infuraProvider(networkId)
     case Network.GNOSIS_CHAIN:
       return 'https://rpc.gnosis.gateway.fm/'

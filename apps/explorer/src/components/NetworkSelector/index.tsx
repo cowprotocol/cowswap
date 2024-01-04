@@ -34,6 +34,11 @@ export const networkOptions: NetworkOptions[] = [
     name: 'Görli',
     url: 'goerli',
   },
+  {
+    id: Network.SEPOLIA,
+    name: 'Sepolia',
+    url: 'sepolia',
+  },
 ]
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
