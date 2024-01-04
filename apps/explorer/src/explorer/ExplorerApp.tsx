@@ -103,6 +103,7 @@ function StateUpdaters(): JSX.Element {
 const networkPrefixes = ['gc', 'goerli']
 
 /** App content */
+
 const AppContent = (): JSX.Element => {
   const location = useLocation()
   const { pathname: path } = useLocation() // TODO: MGR
