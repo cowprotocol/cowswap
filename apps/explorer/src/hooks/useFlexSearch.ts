@@ -23,7 +23,7 @@ export const useFlexSearch = (
       const filteredObj = Object.keys(el)
         .filter((key) => filterValues.includes(key))
         .reduce((cur, key) => Object.assign(cur, { [key]: el[key] }), {})
-      ;(index as unknown).add(el.id, JSON.stringify(filteredObj))
+      ;(index as any).add(el.id, JSON.stringify(filteredObj))
     })
   }, [index, data, filterValues])
 
@@ -34,7 +34,7 @@ export const useFlexSearch = (
   useEffect(() => {
     if (!query) return
 
-    const result = (index as unknown).search(query, searchOptions)
+    const result = (index as any).search(query, searchOptions)
     const filteredResults = data.filter((el: Item) => result.includes(el.id))
     setFilteredResults(filteredResults)
   }, [query, index, searchOptions, data])

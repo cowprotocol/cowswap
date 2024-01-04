@@ -19,8 +19,8 @@ export enum TabView {
 }
 
 export type TabData = {
-  encode: { formData: FormProps; options: unknown }
-  decode: { formData: FormProps; options: unknown }
+  encode: { formData: FormProps; options: any }
+  decode: { formData: FormProps; options: any }
 }
 
 const DEFAULT_TAB = TabView[1]

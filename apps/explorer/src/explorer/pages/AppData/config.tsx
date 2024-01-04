@@ -22,7 +22,7 @@ export const INITIAL_FORM_VALUES = {
 //   "Failed to execute 'setRequestHeader' on 'XMLHttpRequest': String contains non ISO-8859-1 code point.",
 // ]
 
-export type FormProps = Record<string, unknown>
+export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
