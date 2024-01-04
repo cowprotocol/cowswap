@@ -237,7 +237,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const params = {
     compactView: false,
-    disableNativeSelling: true,
     isExpertMode,
     recipient,
     showRecipient,
