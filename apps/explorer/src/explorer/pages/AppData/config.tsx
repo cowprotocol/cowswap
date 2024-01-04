@@ -25,7 +25,9 @@ export const INITIAL_FORM_VALUES = {
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const latestSchema = (await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
+  const latestSchema = (await metadataApiSDK
+    .getAppDataSchema(LATEST_APP_DATA_VERSION)
+    .then((m) => m.default)) as JSONSchema7
 
   return makeSchemaCopy(latestSchema)
 }
