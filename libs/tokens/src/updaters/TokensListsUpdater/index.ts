@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import { useEffect } from 'react'
 
@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { fetchTokenList } from '../../services/fetchTokenList'
-import { environmentAtom } from '../../state/environmentAtom'
+import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
 import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 import { ListState } from '../../types'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
@@ -26,8 +26,13 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-export function TokensListsUpdater({ chainId: currentChainId }: { chainId: SupportedChainId }) {
-  const [{ chainId }, setEnvironment] = useAtom(environmentAtom)
+interface TokensListsUpdaterProps {
+  chainId: SupportedChainId
+}
+
+export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdaterProps) {
+  const { chainId } = useAtomValue(environmentAtom)
+  const setEnvironment = useSetAtom(updateEnvironmentAtom)
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const lastUpdateTimeState = useAtomValue(lastUpdateTimeAtom)
   const updateLastUpdateTime = useSetAtom(updateLastUpdateTimeAtom)

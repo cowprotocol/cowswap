@@ -18,6 +18,11 @@ export type ColorPalette = {
   [key in ColorKeys]: string
 }
 
+export interface TokenListItem {
+  url: string
+  enabled: boolean
+}
+
 export interface ConfiguratorState {
   chainId: SupportedChainId
   theme: PaletteMode
@@ -27,6 +32,7 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
+  tokenLists: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
 }
