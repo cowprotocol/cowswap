@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { useIsSafeApp, useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -98,7 +98,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
-  const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
     !isConfirmScreen &&
@@ -114,7 +113,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const isNativeIn = useIsNativeIn()
   const isWrappedOut = useIsWrappedOut()
 
-  const showNativeSellWarning = isNativeIn && !isWrappedOut && native && wrapped && !isSafeApp
+  // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
+  const showNativeSellWarning = isNativeIn && !isWrappedOut && native && wrapped
 
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
 
