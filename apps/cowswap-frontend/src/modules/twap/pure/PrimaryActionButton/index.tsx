@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
 import { TwapFormState } from './getTwapFormState'
 
@@ -27,6 +27,11 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
   [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Interval time too short
+    </ButtonPrimary>
+  ),
+  [TwapFormState.PART_TIME_INTERVAL_TOO_LONG]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      Interval time too long
     </ButtonPrimary>
   ),
 }
