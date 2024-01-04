@@ -4,7 +4,13 @@ import { useCallback } from 'react'
 import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
+import { Field } from 'legacy/state/types'
+
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 
@@ -13,8 +19,10 @@ import {
   BannerOrientation,
   BundleTxApprovalBanner,
   CustomRecipientWarningBanner,
+  SellNativeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import {
   FallbackHandlerWarning,
@@ -87,6 +95,17 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showRecipientWarning = isConfirmationModal && twapOrder?.receiver && twapOrder.receiver !== account
 
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+
+  const native = useNativeCurrency()
+  const wrapped = useWrappedToken()
+  const isNativeIn = useIsNativeIn()
+  const isWrappedOut = useIsWrappedOut()
+
+  // TODO: implement Safe App EthFlow bundling for TWAP and disable the warning in that case
+  const showNativeSellWarning =
+    isNativeIn && !isWrappedOut && native && wrapped && primaryFormValidation === TradeFormValidation.SellNativeToken
+
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
@@ -116,6 +135,17 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
+        }
+
+        if (showNativeSellWarning) {
+          return (
+            <SellNativeWarningBanner
+              nativeSymbol={native.symbol}
+              wrappedNativeSymbol={wrapped.symbol}
+              sellWrapped={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}
+              wrapNative={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped)}
+            />
+          )
         }
 
         if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
