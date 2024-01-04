@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TradeType, TokenList } from '@cowprotocol/widget-lib'
+import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -18,6 +18,11 @@ export type ColorPalette = {
   [key in ColorKeys]: string
 }
 
+export interface TokenListItem {
+  url: string
+  enabled: boolean
+}
+
 export interface ConfiguratorState {
   chainId: SupportedChainId
   theme: PaletteMode
@@ -27,7 +32,7 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
-  selectedTokenLists: TokenList[]
+  tokenLists: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
 }

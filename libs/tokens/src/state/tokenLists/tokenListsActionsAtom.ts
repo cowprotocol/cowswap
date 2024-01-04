@@ -32,10 +32,14 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
   })
 })
 export const addListAtom = atom(null, (get, set, state: ListState) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, widgetAppCode } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
   state.isEnabled = true
+
+  if (widgetAppCode) {
+    state.widgetAppCode = widgetAppCode
+  }
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
