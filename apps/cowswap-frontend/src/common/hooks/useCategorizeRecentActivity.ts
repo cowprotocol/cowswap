@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
-import { OrderClass } from '@cowprotocol/cow-sdk'
-
 import { useRecentActivity } from 'legacy/hooks/useRecentActivity'
-import { OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export const isPending = ({ status }: { status: OrderStatus }) => PENDING_STATES.includes(status)
 
@@ -19,7 +18,7 @@ export function useCategorizeRecentActivity() {
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
           // Only display regular on-chain transactions (wrap, approval, etc) OR MARKET orders
-          if (!activity.class || activity.class === OrderClass.MARKET) {
+          if (!activity.class || getUiOrderType(activity as Order) === UiOrderType.SWAP) {
             if (isPending(activity)) {
               acc[0].push(activity.id)
             } else if (getIsFinalizedOrder(activity)) {

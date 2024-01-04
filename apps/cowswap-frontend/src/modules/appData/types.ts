@@ -21,6 +21,7 @@ export type AppDataKeyParams = {
 
 export type AppDataRecord = AppDataInfo & AppDataUploadStatus & AppDataKeyParams
 
+export type AppDataMetadataOrderClass = latest.OrderClass
 export type AppDataOrderClass = latest.OrderClass['orderClass']
 
 export type AppDataPendingToUpload = Array<AppDataRecord>
