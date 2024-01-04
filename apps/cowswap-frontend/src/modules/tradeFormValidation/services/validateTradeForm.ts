@@ -1,4 +1,4 @@
-import { isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
 import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 
@@ -21,6 +21,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
+  const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency)
 
   const approvalRequired =
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
@@ -58,6 +59,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isSwapUnsupported) {
       return TradeFormValidation.CurrencyNotSupported
+    }
+
+    if (isNativeIn) {
+      return TradeFormValidation.SellNativeToken
     }
 
     if (!tradeQuote.response) {

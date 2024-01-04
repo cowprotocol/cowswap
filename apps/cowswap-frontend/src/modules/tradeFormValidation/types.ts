@@ -32,6 +32,9 @@ export enum TradeFormValidation {
   ExpertApproveAndSwap,
   ApproveAndSwap,
   ApproveRequired,
+
+  // Native
+  SellNativeToken,
 }
 
 export interface TradeFormValidationLocalContext {

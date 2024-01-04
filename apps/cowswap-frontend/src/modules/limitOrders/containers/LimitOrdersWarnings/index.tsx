@@ -2,11 +2,13 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeApp, useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { Field } from 'legacy/state/types'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
@@ -18,6 +20,10 @@ import {
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -29,9 +35,11 @@ import {
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
   CustomRecipientWarningBanner,
+  SellNativeWarningBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
@@ -90,6 +98,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
+  const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
     !isConfirmScreen &&
@@ -100,6 +109,14 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { state } = useDerivedTradeState()
   const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
 
+  const native = useNativeCurrency()
+  const wrapped = useWrappedToken()
+  const isNativeIn = useIsNativeIn()
+  const isWrappedOut = useIsWrappedOut()
+  const isNativeSell = isNativeIn && !isWrappedOut && native && wrapped && !isSafeApp
+
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+
   const isVisible =
     showPriceImpactWarning ||
     rateImpact < 0 ||
@@ -107,7 +124,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
     shouldZeroApprove ||
-    showRecipientWarning
+    showRecipientWarning ||
+    isNativeSell
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -156,6 +174,14 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
+      {isNativeSell && (
+        <SellNativeWarningBanner
+          nativeSymbol={native.symbol}
+          wrappedNativeSymbol={wrapped.symbol}
+          sellWrapped={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}
+          wrapNative={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped)}
+        />
+      )}
     </Wrapper>
   ) : null
 }

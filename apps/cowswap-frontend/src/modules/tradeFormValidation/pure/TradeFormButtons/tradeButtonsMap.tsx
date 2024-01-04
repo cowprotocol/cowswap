@@ -69,6 +69,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
+
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',
   },
@@ -156,6 +157,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>
       </TradeApproveButton>
+    )
+  },
+  [TradeFormValidation.SellNativeToken]: (context) => {
+    const currency = context.derivedState.inputCurrency
+    const isNativeIn = !!currency && getIsNativeToken(currency)
+
+    if (!isNativeIn) return null
+
+    return (
+      <TradeFormBlankButton disabled>
+        <Trans>Selling {currency.symbol} is not supported</Trans>
+      </TradeFormBlankButton>
     )
   },
 }
