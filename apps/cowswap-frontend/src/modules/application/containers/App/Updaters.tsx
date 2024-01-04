@@ -1,11 +1,11 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
-import { TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import { WidgetTokensListsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
-import { InjectedWidgetUpdater } from 'modules/injectedWidget'
+import { InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
@@ -31,6 +31,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
+  const { tokenLists, appCode } = useInjectedWidgetParams()
 
   return (
     <>
@@ -59,6 +60,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
+      <WidgetTokensListsUpdater tokenLists={tokenLists} appCode={appCode} />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
     </>
