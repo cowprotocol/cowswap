@@ -1,8 +1,7 @@
+import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { PERMIT_SIGNER, isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
-
-import * as Sentry from '@sentry/browser'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -13,6 +12,7 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { handlePermit } from 'modules/permit'
+import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -70,12 +70,8 @@ export async function tradeFlow(
       generatePermitHook,
     })
 
-    if (postOrderParams.appData.fullAppData.includes(PERMIT_SIGNER.address)) {
-      // report this to sentry if we ever use the default signer in the permit
-      Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
-        tags: { errorType: 'permitWithDefaultSigner' },
-        contexts: { params: { account } },
-      })
+    if (appDataContainsPermitSigner(postOrderParams.appData.fullAppData)) {
+      reportPermitWithDefaultSigner(postOrderParams)
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
