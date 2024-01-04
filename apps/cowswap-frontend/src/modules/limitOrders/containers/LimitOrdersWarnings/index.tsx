@@ -113,7 +113,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const wrapped = useWrappedToken()
   const isNativeIn = useIsNativeIn()
   const isWrappedOut = useIsWrappedOut()
-  const isNativeSell = isNativeIn && !isWrappedOut && native && wrapped && !isSafeApp
+
+  const showNativeSellWarning = isNativeIn && !isWrappedOut && native && wrapped && !isSafeApp
 
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
 
@@ -125,7 +126,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     showSafeWcBundlingBanner ||
     shouldZeroApprove ||
     showRecipientWarning ||
-    isNativeSell
+    showNativeSellWarning
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -174,7 +175,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
-      {isNativeSell && (
+      {showNativeSellWarning && (
         <SellNativeWarningBanner
           nativeSymbol={native.symbol}
           wrappedNativeSymbol={wrapped.symbol}
