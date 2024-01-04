@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/explorer"
+        "outputPath": "build/explorer"
       },
       "configurations": {
         "development": {
