@@ -22,6 +22,7 @@ import {
   SmallPartVolumeWarning,
   UnsupportedWalletWarning,
 } from './warnings'
+import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
@@ -123,6 +124,10 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
           return <SmallPartTimeWarning />
+        }
+
+        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
+          return <BigPartTimeWarning />
         }
 
         if (showFallbackHandlerWarning) {
