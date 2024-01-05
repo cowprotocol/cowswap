@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
@@ -44,9 +44,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pendingLimit = useOnlyPendingOrders(chainId, UiOrderType.LIMIT)
-  const pendingTwap = useOnlyPendingOrders(chainId, UiOrderType.TWAP)
-  const pending = useMemo(() => pendingLimit.concat(pendingTwap), [pendingLimit, pendingTwap])
+  const pending = useOnlyPendingOrders(chainId)
 
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
