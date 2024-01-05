@@ -19,7 +19,7 @@ function _getExplorerUrlByEnvironment() {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.GOERLI]: `${baseUrl}/goerli`,
     [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
-    [ChainId.SEPOLIA]: `${baseUrl}/sepolia`, // TODO SEPOLIA: check it
+    [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
   }
 }
 

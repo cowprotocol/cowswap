@@ -12,8 +12,8 @@ export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 55_000,
   [SupportedChainId.GNOSIS_CHAIN]: 55_000,
+  [SupportedChainId.SEPOLIA]: 55_000,
   [SupportedChainId.GOERLI]: 36_000,
-  [SupportedChainId.SEPOLIA]: 36_000, // TODO SEPOLIA: check it
 }
 
 export const DEFAULT_PERMIT_GAS_LIMIT = '80000'
