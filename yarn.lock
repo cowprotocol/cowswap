@@ -1479,9 +1479,9 @@
     graphql-request "^4.3.0"
     limiter "^2.1.0"
 
-"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
+"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.1.0-artifacts":
   version "1.0.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/fde2916c90e30f57612427cbfde8b8a0284bf383"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/58dd33fa5250f31ff99008c1bf3c626ffe63bee0"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
