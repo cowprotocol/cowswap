@@ -263,6 +263,8 @@ async function _getOrderPrice(
     receiver: order.receiver,
     isEthFlow,
     priceQuality: getPriceQuality({ verifyQuote }),
+    appData: order.appData ?? undefined,
+    appDataHash: order.appDataHash ?? undefined,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
