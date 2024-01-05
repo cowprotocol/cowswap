@@ -223,6 +223,9 @@ async function _getOrderPrice(
 
   const amount = getRemainderAmount(order.kind, order)
 
+  // Don't quote if there's nothing left to match in this order
+  if (amount === '0') return null
+
   if (order.kind === 'sell') {
     // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
