@@ -8,9 +8,11 @@ const PERMIT_PK = '0x4dae303b820e9878cafeb0f84edcc015e8a81b1bff510e824e4fc27544e
 
 export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 
+// TODO: change key to SupportedChainId after updating cow-sdk version in this repo
 export const PERMIT_GAS_LIMIT_MIN: Record<number, number> = {
   1: 55_000,
   100: 55_000,
+  11155111: 55_000,
   5: 36_000,
 }
 
