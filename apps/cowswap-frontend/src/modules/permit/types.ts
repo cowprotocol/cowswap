@@ -8,8 +8,6 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export type IsTokenPermittableResult = PermitInfo | undefined
 
-export type PermittableTokens = Record<SupportedChainId, Record<string, PermitInfo>>
-
 export type AddPermitTokenParams = {
   chainId: SupportedChainId
   tokenAddress: string
