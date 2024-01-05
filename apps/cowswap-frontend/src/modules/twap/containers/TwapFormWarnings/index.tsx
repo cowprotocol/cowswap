@@ -4,14 +4,13 @@ import { useCallback } from 'react'
 import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
-import { Field } from 'legacy/state/types'
-
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -19,10 +18,8 @@ import {
   BannerOrientation,
   BundleTxApprovalBanner,
   CustomRecipientWarningBanner,
-  SellNativeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import {
   FallbackHandlerWarning,
@@ -34,8 +31,6 @@ import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
-import { useAdvancedOrdersDerivedState } from '../../../advancedOrders'
-import { TradeFormValidation, useGetTradeFormValidation } from '../../../tradeFormValidation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
@@ -95,16 +90,12 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showRecipientWarning = isConfirmationModal && twapOrder?.receiver && twapOrder.receiver !== account
 
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
-
-  const native = useNativeCurrency()
-  const wrapped = useWrappedToken()
   const isNativeIn = useIsNativeIn()
   const isWrappedOut = useIsWrappedOut()
 
   // TODO: implement Safe App EthFlow bundling for TWAP and disable the warning in that case
   const showNativeSellWarning =
-    isNativeIn && !isWrappedOut && native && wrapped && primaryFormValidation === TradeFormValidation.SellNativeToken
+    isNativeIn && !isWrappedOut && primaryFormValidation === TradeFormValidation.SellNativeToken
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
@@ -138,14 +129,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (showNativeSellWarning) {
-          return (
-            <SellNativeWarningBanner
-              nativeSymbol={native.symbol}
-              wrappedNativeSymbol={wrapped.symbol}
-              sellWrapped={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}
-              wrapNative={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped)}
-            />
-          )
+          return <SellNativeWarningBanner />
         }
 
         if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {

@@ -8,8 +8,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { Field } from 'legacy/state/types'
-
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -19,11 +17,10 @@ import {
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
+import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -35,11 +32,9 @@ import {
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
   CustomRecipientWarningBanner,
-  SellNativeWarningBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
@@ -108,15 +103,11 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { state } = useDerivedTradeState()
   const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
 
-  const native = useNativeCurrency()
-  const wrapped = useWrappedToken()
   const isNativeIn = useIsNativeIn()
   const isWrappedOut = useIsWrappedOut()
 
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
-  const showNativeSellWarning = isNativeIn && !isWrappedOut && native && wrapped
-
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const showNativeSellWarning = isNativeIn && !isWrappedOut
 
   const isVisible =
     showPriceImpactWarning ||
@@ -175,14 +166,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
-      {showNativeSellWarning && (
-        <SellNativeWarningBanner
-          nativeSymbol={native.symbol}
-          wrappedNativeSymbol={wrapped.symbol}
-          sellWrapped={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}
-          wrapNative={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped)}
-        />
-      )}
+      {showNativeSellWarning && <SellNativeWarningBanner />}
     </Wrapper>
   ) : null
 }
