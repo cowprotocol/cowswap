@@ -9,5 +9,5 @@ export const MAINNET_NATIVE_CURRENCY = NATIVE_CURRENCY_BUY_TOKEN[SupportedChainI
 export default function useNativeCurrency(): TokenWithLogo {
   const { chainId } = useWalletInfo()
 
-  return useMemo(() => NATIVE_CURRENCY_BUY_TOKEN[chainId] || MAINNET_NATIVE_CURRENCY, [chainId])
+  return useMemo(() => NATIVE_CURRENCY_BUY_TOKEN[chainId], [chainId])
 }

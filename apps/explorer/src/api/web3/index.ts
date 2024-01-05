@@ -51,6 +51,7 @@ function infuraProvider(networkId: Network): string {
     throw new Error(`INFURA_ID not set`)
   }
 
+  // TODO: get rid of @gnosis.pm/dex-js usage
   const network = (() => {
     if (networkId === Network.SEPOLIA) {
       return 'sepolia'
