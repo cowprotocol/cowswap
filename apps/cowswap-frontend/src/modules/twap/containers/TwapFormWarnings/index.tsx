@@ -6,8 +6,6 @@ import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
-import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
-import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -90,13 +88,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showRecipientWarning = isConfirmationModal && twapOrder?.receiver && twapOrder.receiver !== account
 
-  const isNativeIn = useIsNativeIn()
-  const isWrappedOut = useIsWrappedOut()
-
-  // TODO: implement Safe App EthFlow bundling for TWAP and disable the warning in that case
-  const showNativeSellWarning =
-    isNativeIn && !isWrappedOut && primaryFormValidation === TradeFormValidation.SellNativeToken
-
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
@@ -128,7 +119,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
         }
 
-        if (showNativeSellWarning) {
+        if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
           return <SellNativeWarningBanner />
         }
 
