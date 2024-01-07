@@ -7,6 +7,7 @@ tokensLegacyStateMigration()
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
+export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'

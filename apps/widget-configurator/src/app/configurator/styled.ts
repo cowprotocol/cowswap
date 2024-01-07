@@ -10,7 +10,7 @@ export const DrawerStyled = (theme: Theme) => ({
     width: '29rem',
     boxSizing: 'border-box',
     display: 'flex',
-    flexFlow: 'column wrap',
+    flexFlow: 'column',
     gap: '1.6rem',
     height: '100%',
     border: 0,

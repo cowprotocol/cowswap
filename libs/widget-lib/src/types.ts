@@ -1,5 +1,9 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+export interface TokenList {
+  url: string
+}
+
 export interface JsonRpcRequest {
   id: number
   method: string
@@ -95,6 +99,10 @@ interface CowSwapWidgetConfig {
    * Network ID.
    */
   chainId: SupportedChainId
+  /**
+   * The token lists to use in the widget
+   */
+  tokenLists: TokenList[]
   /**
    * Swap, Limit or Advanced (Twap).
    */

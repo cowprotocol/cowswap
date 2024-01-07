@@ -1,8 +1,15 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
 
+import { useFeatureFlags } from './featureFlags/useFeatureFlags'
+
 export function useIsProviderNetworkUnsupported(): boolean {
   const { chainId } = useWeb3React()
+  const { isSepoliaEnabled } = useFeatureFlags()
+
+  if (chainId === SupportedChainId.SEPOLIA && !isSepoliaEnabled) {
+    return true
+  }
 
   return !!chainId && !(chainId in SupportedChainId)
 }

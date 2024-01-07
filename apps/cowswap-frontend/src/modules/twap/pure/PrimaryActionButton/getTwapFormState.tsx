@@ -6,6 +6,7 @@ import { Nullish } from 'types'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
+import { isPartTimeIntervalTooLong } from '../../utils/isPartTimeIntervalTooLong'
 import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooShort'
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
@@ -23,6 +24,7 @@ export enum TwapFormState {
   NOT_SAFE = 'NOT_SAFE',
   SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
   PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
+  PART_TIME_INTERVAL_TOO_LONG = 'PART_TIME_INTERVAL_TOO_LONG',
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
@@ -39,6 +41,9 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
   // Not using `twapOrder.timeInterval` because it's not filled until the order is ready
   if (isPartTimeIntervalTooShort(partTime)) {
     return TwapFormState.PART_TIME_INTERVAL_TOO_SHORT
+  }
+  if (isPartTimeIntervalTooLong(partTime)) {
+    return TwapFormState.PART_TIME_INTERVAL_TOO_LONG
   }
 
   return null

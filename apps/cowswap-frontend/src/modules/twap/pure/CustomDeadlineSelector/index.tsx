@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import ms from 'ms'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
@@ -20,9 +19,6 @@ interface CustomDeadlineSelectorProps {
   selectCustomDeadline(deadline: CustomDeadline): void
 }
 
-const MAX_TWAP_ORDER_DEADLINE = ms(`30d`) * 6 // ~ 6months
-const MAX_DEADLINE_ERROR = 'Twap order deadline cannot be longer then 6 months'
-
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline
@@ -33,13 +29,10 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   useEffect(() => setHoursValue(hours), [hours, isOpen])
   useEffect(() => setMinutesValue(minutes), [minutes, isOpen])
 
-  const [error, setError] = useState<string | null>(null)
-
   const onHoursChange = useCallback((v: number | null) => setHoursValue(!v ? 0 : Math.round(v)), [])
   const onMinutesChange = useCallback((v: number | null) => setMinutesValue(!v ? 0 : Math.round(v)), [])
 
-  const noValues = !hoursValue && !minutesValue
-  const isDisabled = !!error || noValues
+  const isDisabled = !hoursValue && !minutesValue
 
   const onApply = () => {
     onDismiss()
@@ -54,16 +47,6 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
     setMinutesValue(minutes || 0)
     onDismiss()
   }, [hours, minutes, onDismiss])
-
-  useEffect(() => {
-    const totalTime = ms(`${hoursValue}h`) + ms(`${minutesValue}m`)
-
-    if (totalTime > MAX_TWAP_ORDER_DEADLINE) {
-      setError(MAX_DEADLINE_ERROR)
-    } else {
-      setError(null)
-    }
-  }, [hoursValue, minutesValue])
 
   return (
     <Modal isOpen={isOpen} onDismiss={_onDismiss}>
@@ -93,8 +76,6 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
             max={null}
           />
         </styledEl.ModalContent>
-
-        {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
 
         <styledEl.ModalFooter>
           <styledEl.CancelButton onClick={_onDismiss}>

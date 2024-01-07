@@ -137,16 +137,37 @@ const GNO_GOERLI = new TokenWithLogo(
   'Gnosis'
 )
 
+const GNO_SEPOLIA = new TokenWithLogo(
+  GNO_MAINNET.logoURI,
+  SupportedChainId.SEPOLIA,
+  '0xd3f3d46FeBCD4CdAa2B83799b7A5CdcB69d135De',
+  18,
+  'GNO',
+  'GNO (test)'
+)
+
+// Sepolia
+export const USDC_SEPOLIA = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.SEPOLIA,
+  '0xbe72E441BF55620febc26715db68d3494213D8Cb',
+  18,
+  'USDC',
+  'USDC (test)'
+)
+
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GOERLI]: USDC_GOERLI,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
+  [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,
 }
 
-export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedChainId]?: string } } = {
+export const TOKEN_SHORTHANDS: { [shorthand: string]: Record<SupportedChainId, string> } = {
   USDC: {
     [SupportedChainId.MAINNET]: USDC_MAINNET.address,
     [SupportedChainId.GOERLI]: USDC_GOERLI.address,
+    [SupportedChainId.SEPOLIA]: USDC_SEPOLIA.address,
     [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN.address,
   },
 }
@@ -181,10 +202,20 @@ const V_COW_TOKEN_GOERLI = new TokenWithLogo(
   'CoW Protocol Virtual Token'
 )
 
+const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
+  V_COW_TOKEN_MAINNET.logoURI,
+  SupportedChainId.SEPOLIA,
+  V_COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
+  18,
+  'vCOW',
+  'CoW Protocol Virtual Token'
+)
+
 export const V_COW: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: V_COW_TOKEN_XDAI,
   [SupportedChainId.GOERLI]: V_COW_TOKEN_GOERLI,
+  [SupportedChainId.SEPOLIA]: V_COW_TOKEN_SEPOLIA,
 }
 
 /**
@@ -217,16 +248,27 @@ const COW_TOKEN_GOERLI = new TokenWithLogo(
   'CoW Protocol Token'
 )
 
+const COW_TOKEN_SEPOLIA = new TokenWithLogo(
+  COW_TOKEN_MAINNET.logoURI,
+  SupportedChainId.SEPOLIA,
+  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
 export const COW: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: COW_TOKEN_XDAI,
   [SupportedChainId.GOERLI]: COW_TOKEN_GOERLI,
+  [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: GNO_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: GNO_GNOSIS_CHAIN,
   [SupportedChainId.GOERLI]: GNO_GOERLI,
+  [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
 }
 
 export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
@@ -242,14 +284,16 @@ export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
  * Addresses related to COW vesting for Locked GNO
  * These are used in src/custom/pages/Account/LockedGnoVesting hooks and index files
  */
-export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
+export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.GOERLI]: '0xD47569F96AEF2ce1CE3B3805fAA0B90045faff8A',
   [SupportedChainId.GNOSIS_CHAIN]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
+  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
 
-export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<number, string> = {
+export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
   [SupportedChainId.GOERLI]: '0x2f453f48a374Dd286d0Dc9aa110309c1623b29Fd',
   [SupportedChainId.GNOSIS_CHAIN]: '0x3d610e917130f9D036e85A030596807f57e11093',
+  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
