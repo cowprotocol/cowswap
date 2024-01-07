@@ -1,4 +1,4 @@
-import { DAI, USDC_MAINNET, USDT } from '@cowprotocol/common-const'
+import { DAI, USDC_MAINNET, USDC_SEPOLIA, USDT } from '@cowprotocol/common-const'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from '@cowprotocol/common-const'
@@ -9,13 +9,14 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
-const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
+const STABLE_COINS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [USDC_MAINNET, USDT, DAI].map((token) => token.address.toLowerCase()),
   [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI]
     .map((token) => token.address.toLowerCase())
     // XDAI and WXDAI are stable-coins
     .concat(NATIVE_CURRENCY_BUY_ADDRESS),
   [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
+  [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
 }
 
 /**

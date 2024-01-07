@@ -3,16 +3,14 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useFeatureFlags } from './useFeatureFlags'
 
 export function useVerifiedQuotesEnabled(chainId: SupportedChainId): boolean {
-  const { verifyQuotesMainnet, verifyQuotesGoerli, verifyQuotesGnosis } = useFeatureFlags()
+  const { verifyQuotesMainnet, verifyQuotesGoerli, verifyQuotesGnosis, verifyQuotesSepolia } = useFeatureFlags()
 
-  switch (chainId) {
-    case SupportedChainId.MAINNET:
-      return !!verifyQuotesMainnet
-    case SupportedChainId.GNOSIS_CHAIN:
-      return !!verifyQuotesGnosis
-    case SupportedChainId.GOERLI:
-      return !!verifyQuotesGoerli
-    default:
-      return false
+  const map: Record<SupportedChainId, boolean> = {
+    [SupportedChainId.MAINNET]: !!verifyQuotesMainnet,
+    [SupportedChainId.GNOSIS_CHAIN]: !!verifyQuotesGnosis,
+    [SupportedChainId.GOERLI]: !!verifyQuotesGoerli,
+    [SupportedChainId.SEPOLIA]: !!verifyQuotesSepolia,
   }
+
+  return map[chainId]
 }

@@ -57,25 +57,12 @@ const LevinSwapImage = { src: Levinswap, alt: 'Levinswap 0x' }
 const SymmetricImage = { src: Symmetric, alt: 'Symmetric 0x' }
 const ZeroXImage = { src: ZeroX, alt: 'AMMs 0x' }
 
+const ETH_AMM_LOGOS = [SushiImage, OneInchImage, ParaSwapImage, UniswapImage, CurveImage, MatchaImage, ZeroXImage]
+
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
-  [SupportedChainId.MAINNET]: [
-    SushiImage,
-    OneInchImage,
-    ParaSwapImage,
-    UniswapImage,
-    CurveImage,
-    MatchaImage,
-    ZeroXImage,
-  ],
-  [SupportedChainId.GOERLI]: [
-    SushiImage,
-    OneInchImage,
-    ParaSwapImage,
-    UniswapImage,
-    CurveImage,
-    MatchaImage,
-    ZeroXImage,
-  ],
+  [SupportedChainId.MAINNET]: ETH_AMM_LOGOS,
+  [SupportedChainId.GOERLI]: ETH_AMM_LOGOS,
+  [SupportedChainId.SEPOLIA]: ETH_AMM_LOGOS,
   [SupportedChainId.GNOSIS_CHAIN]: [
     SushiImage,
     BaoSwapImage,

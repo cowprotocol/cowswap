@@ -19,12 +19,13 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { TRADE_MODES } from './consts'
+import { DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { ThemeControl } from './controls/ThemeControl'
+import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
 import { TradeModesControl } from './controls/TradeModesControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
@@ -32,7 +33,7 @@ import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
-import { ConfiguratorState } from './types'
+import { ConfiguratorState, TokenListItem } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
@@ -72,6 +73,9 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
+  const [tokenLists] = tokenListsState
+
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -96,9 +100,9 @@ export function Configurator({ title }: { title: string }) {
 
   const provider = useProvider()
 
+  // Don't change chainId in the widget URL if the user is connected to a wallet
+  // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
-    // Don't change chainId in the widget URL if the user is connected to a wallet
-    // Because useSyncWidgetNetwork() will send a request to change the network
     chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
@@ -107,6 +111,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
+    tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
   }
@@ -135,7 +140,7 @@ export function Configurator({ title }: { title: string }) {
             e.stopPropagation()
             setIsDrawerOpen(true)
           }}
-          style={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
+          sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
         >
           <EditIcon />
         </Fab>
@@ -160,6 +165,8 @@ export function Configurator({ title }: { title: string }) {
 
         <NetworkControl state={networkControlState} />
 
+        <TokenListControl tokenListsState={tokenListsState} />
+
         <Divider variant="middle">Token selection</Divider>
 
         <CurrencyInputControl
@@ -176,7 +183,7 @@ export function Configurator({ title }: { title: string }) {
             color="primary"
             aria-label="hide drawer"
             onClick={() => setIsDrawerOpen(false)}
-            style={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
+            sx={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
           >
             <KeyboardDoubleArrowLeftIcon />
           </Fab>
@@ -195,6 +202,7 @@ export function Configurator({ title }: { title: string }) {
               target={onClick ? undefined : '_blank'}
               rel={onClick ? undefined : 'noopener noreferrer'}
               onClick={onClick}
+              sx={{ width: '100%' }}
             >
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={label} />

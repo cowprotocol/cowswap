@@ -19,10 +19,11 @@ function _getExplorerUrlByEnvironment() {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.GOERLI]: `${baseUrl}/goerli`,
     [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
+    [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
   }
 }
 
-const EXPLORER_BASE_URL: Partial<Record<ChainId, string>> = _getExplorerUrlByEnvironment()
+const EXPLORER_BASE_URL: Record<ChainId, string> = _getExplorerUrlByEnvironment()
 
 export function getExplorerBaseUrl(chainId: ChainId): string {
   const baseUrl = EXPLORER_BASE_URL[chainId]
