@@ -16,6 +16,7 @@ export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.GOERLI]: null,
+  [SupportedChainId.SEPOLIA]: null,
 }
 
 const BASE_URL = 'https://api.coingecko.com/api/v3/simple/token_price'

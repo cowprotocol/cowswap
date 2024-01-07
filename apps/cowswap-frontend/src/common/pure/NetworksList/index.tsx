@@ -1,7 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -9,17 +8,21 @@ import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
 
 export interface NetworksListProps {
+  isSepoliaEnabled: boolean
   currentChainId: SupportedChainId | null
-
   onSelectChain(targetChainId: SupportedChainId): void
 }
 
 export function NetworksList(props: NetworksListProps) {
-  const { currentChainId, onSelectChain } = props
+  const { currentChainId, onSelectChain, isSepoliaEnabled } = props
+
+  const networksToDisplay = isSepoliaEnabled
+    ? ALL_SUPPORTED_CHAIN_IDS
+    : ALL_SUPPORTED_CHAIN_IDS.filter((chainId) => chainId !== SupportedChainId.SEPOLIA)
 
   return (
     <>
-      {ALL_SUPPORTED_CHAIN_IDS.map((targetChainId: SupportedChainId) => {
+      {networksToDisplay.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logoUrl, bridge, explorer, explorerTitle, helpCenterUrl } = info
 

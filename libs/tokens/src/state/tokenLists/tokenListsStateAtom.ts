@@ -1,30 +1,28 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { ListsSourcesByNetwork, ListState, TokenListsState } from '../../types'
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
 
-export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>('userAddedTokenListsAtom:v2', {
-  [SupportedChainId.MAINNET]: [],
-  [SupportedChainId.GNOSIS_CHAIN]: [],
-  [SupportedChainId.GOERLI]: [],
-})
+export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
+  'userAddedTokenListsAtom:v2',
+  mapSupportedNetworks([])
+)
 
 export const allListsSourcesAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
-  return [...DEFAULT_TOKENS_LISTS[chainId], ...userAddedTokenLists[chainId]]
+  return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
 })
 
 // Lists states
-export const listsStatesByChainAtom = atomWithStorage<TokenListsState>('allTokenListsInfoAtom:v2', {
-  [SupportedChainId.MAINNET]: {},
-  [SupportedChainId.GNOSIS_CHAIN]: {},
-  [SupportedChainId.GOERLI]: {},
-})
+export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
+  'allTokenListsInfoAtom:v2',
+  mapSupportedNetworks({})
+)
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
 

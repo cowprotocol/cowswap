@@ -1,5 +1,5 @@
 import { ListsSourcesByNetwork, TokenListsState } from '../types'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { DEFAULT_TOKENS_LISTS } from '../const/tokensLists'
 
 const MIGRATION_KEY = 'TOKENS_REFACTORING_MIGRATED'
@@ -38,9 +38,7 @@ function migrateLegacyTokensInUserState() {
     localStorage.setItem(
       'userAddedTokensAtom:v1',
       JSON.stringify({
-        [SupportedChainId.MAINNET]: {},
-        [SupportedChainId.GNOSIS_CHAIN]: {},
-        [SupportedChainId.GOERLI]: {},
+        ...mapSupportedNetworks({}),
         ...userState.tokens,
       })
     )
@@ -63,17 +61,9 @@ function migrateLegacyTokenLists() {
 
   const listsState = JSON.parse(listsStateRaw)
 
-  const userAddedListsSources: ListsSourcesByNetwork = {
-    [SupportedChainId.MAINNET]: [],
-    [SupportedChainId.GNOSIS_CHAIN]: [],
-    [SupportedChainId.GOERLI]: [],
-  }
+  const userAddedListsSources: ListsSourcesByNetwork = mapSupportedNetworks([])
 
-  const tokenListsState: TokenListsState = {
-    [SupportedChainId.MAINNET]: {},
-    [SupportedChainId.GNOSIS_CHAIN]: {},
-    [SupportedChainId.GOERLI]: {},
-  }
+  const tokenListsState: TokenListsState = mapSupportedNetworks({})
 
   Object.keys(listsState).forEach((chainIdStr) => {
     const networkLists = listsState[chainIdStr]

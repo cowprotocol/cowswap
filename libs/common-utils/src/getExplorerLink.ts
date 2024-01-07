@@ -1,10 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-const BLOCK_EXPLORER_PREFIXES: { [chainId: number]: string } = {
-  [SupportedChainId.MAINNET]: 'https://etherscan.io',
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosisscan.io',
-  [SupportedChainId.GOERLI]: 'https://goerli.etherscan.io',
-}
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 
 export enum ExplorerDataType {
   TRANSACTION = 'transaction',
@@ -20,7 +15,7 @@ export enum ExplorerDataType {
  * @param type the type of the data
  */
 export function getExplorerLink(chainId: number, data: string, type: ExplorerDataType): string {
-  const prefix = BLOCK_EXPLORER_PREFIXES[chainId] ?? 'https://etherscan.io'
+  const prefix = CHAIN_INFO[chainId as SupportedChainId]?.explorer ?? 'https://etherscan.io'
 
   switch (type) {
     case ExplorerDataType.TRANSACTION:

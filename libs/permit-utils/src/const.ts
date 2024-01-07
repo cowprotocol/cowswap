@@ -1,3 +1,4 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Wallet } from '@ethersproject/wallet'
 import ms from 'ms.macro'
@@ -8,10 +9,11 @@ const PERMIT_PK = '0x4dae303b820e9878cafeb0f84edcc015e8a81b1bff510e824e4fc27544e
 
 export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 
-export const PERMIT_GAS_LIMIT_MIN: Record<number, number> = {
-  1: 55_000,
-  100: 55_000,
-  5: 36_000,
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: 55_000,
+  [SupportedChainId.GNOSIS_CHAIN]: 55_000,
+  [SupportedChainId.SEPOLIA]: 55_000,
+  [SupportedChainId.GOERLI]: 36_000,
 }
 
 export const DEFAULT_PERMIT_GAS_LIMIT = '80000'

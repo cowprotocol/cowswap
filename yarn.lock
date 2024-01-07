@@ -1465,22 +1465,23 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^3.0.0-rc.0":
-  version "3.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-3.0.0-rc.0.tgz#2583d3726a0f559b2a2faf86ed86261820b93311"
-  integrity sha512-hdAkLKdda7kPXHZxhDKvRo01MbFMHM+WV8okPJL0xgpVsjzQTCitKkitUf3e9kSdyUebdaGe3iWVZviCiI72ew==
+"@cowprotocol/cow-sdk@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-4.0.5.tgz#a10382d008ffde3fc11d469cdef084ab6249bb76"
+  integrity sha512-UmuRVdeA43Tvwh4tgiKE+UIT4MZHPnz8Tzpetcfsin7qL34jgfFSbr/Q5knlnz2NrWoGnHcunLXCenIhDyDFdw==
   dependencies:
     "@cowprotocol/contracts" "^1.4.0"
     "@ethersproject/abstract-signer" "^5.7.0"
     "@openzeppelin/merkle-tree" "^1.0.5"
     cross-fetch "^3.1.5"
     exponential-backoff "^3.1.1"
+    graphql "^16.3.0"
     graphql-request "^4.3.0"
     limiter "^2.1.0"
 
-"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
+"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.1.0-artifacts":
   version "1.0.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/2ded2e64f3ee2f543999b312c75c771480b8b636"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/58dd33fa5250f31ff99008c1bf3c626ffe63bee0"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -13762,6 +13763,11 @@ graphql-request@4.3.0, graphql-request@^4.3.0:
     cross-fetch "^3.1.5"
     extract-files "^9.0.0"
     form-data "^3.0.0"
+
+graphql@^16.3.0:
+  version "16.8.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.8.1.tgz#1930a965bef1170603702acdb68aedd3f3cf6f07"
+  integrity sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==
 
 graphql@^16.8.0:
   version "16.8.0"
