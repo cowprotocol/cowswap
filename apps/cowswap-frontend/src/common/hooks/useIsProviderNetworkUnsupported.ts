@@ -7,8 +7,8 @@ export function useIsProviderNetworkUnsupported(): boolean {
   const { chainId } = useWeb3React()
   const { isSepoliaEnabled } = useFeatureFlags()
 
-  if (chainId === SupportedChainId.SEPOLIA && !isSepoliaEnabled) {
-    return true
+  if (chainId === SupportedChainId.SEPOLIA) {
+    return !isSepoliaEnabled
   }
 
   return !!chainId && !(chainId in SupportedChainId)
