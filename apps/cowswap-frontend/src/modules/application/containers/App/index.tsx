@@ -1,3 +1,4 @@
+import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -51,7 +52,7 @@ export function App() {
         ) : (
           <styledEl.FooterWrapper>
             <Footer />
-            <WinterFooter /> {/* Winter Themed Footer */}
+            {CHRISTMAS_THEME_ENABLED && <WinterFooter />} {/* Winter Themed Footer */}
           </styledEl.FooterWrapper>
         )}
       </styledEl.AppWrapper>
