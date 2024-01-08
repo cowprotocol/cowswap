@@ -44,6 +44,9 @@ const StyledAlertCircle = styled(AlertCircle)`
 export function WalletUnsupportedNetworkBanner() {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
+  console.log('TEST2', {
+    isChainIdUnsupported,
+  })
   return (
     <>
       {isChainIdUnsupported && (

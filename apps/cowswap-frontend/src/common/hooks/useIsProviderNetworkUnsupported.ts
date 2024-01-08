@@ -8,6 +8,7 @@ export function useIsProviderNetworkUnsupported(): boolean {
   const { isSepoliaEnabled } = useFeatureFlags()
 
   console.log('TEST', {
+    SP: SupportedChainId.SEPOLIA,
     chainId,
     isSepoliaEnabled,
   })
