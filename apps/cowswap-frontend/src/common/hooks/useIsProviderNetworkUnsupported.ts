@@ -7,9 +7,10 @@ import { useFeatureFlags } from './featureFlags/useFeatureFlags'
 
 export function useIsProviderNetworkUnsupported(): boolean {
   const { chainId } = useWeb3React()
-  const { isSepoliaEnabled } = useFeatureFlags()
+  const flags = useFeatureFlags()
 
   return useMemo(() => {
+    const { isSepoliaEnabled } = flags
     console.log('TEST', {
       SP: SupportedChainId.SEPOLIA,
       chainId,
@@ -23,5 +24,5 @@ export function useIsProviderNetworkUnsupported(): boolean {
     }
 
     return !(chainId in SupportedChainId)
-  }, [chainId, isSepoliaEnabled])
+  }, [chainId, flags])
 }
