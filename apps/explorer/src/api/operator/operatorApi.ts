@@ -33,7 +33,6 @@ const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS: Headers = new Headers({
   'Content-Type': 'application/json',
-  'X-AppId': CONFIG.appId.toString(),
 })
 
 /**
@@ -88,7 +87,7 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   }
 
   console.log(
-    `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`,
+    `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`
   )
 
   const searchString = buildSearchString({ ...searchParams, ...defaultValues, minValidTo: String(minValidTo) })
@@ -131,7 +130,7 @@ export async function getTrades(
   params: {
     owner?: Address
     orderId?: UID
-  } & WithNetworkId,
+  } & WithNetworkId
 ): Promise<RawTrade[]> {
   const { networkId, owner, orderId: orderUid } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid })
