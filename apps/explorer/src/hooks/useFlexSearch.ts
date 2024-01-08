@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Index, { SearchOptions } from 'flexsearch'
+import { Index, SearchOptions } from 'flexsearch'
 
 // TODO: MGR
 // tokenize: 'forward',
