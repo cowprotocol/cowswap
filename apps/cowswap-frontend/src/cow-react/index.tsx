@@ -32,7 +32,6 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
-import { useIsProviderNetworkUnsupported } from '../common/hooks/useIsProviderNetworkUnsupported'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -44,7 +43,6 @@ if (window.ethereum) {
 
 function Main() {
   const isInjectedWidgetMode = isInjectedWidget()
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   useEffect(() => {
     const skeleton = document.getElementById('skeleton')
@@ -63,7 +61,7 @@ function Main() {
               <Web3Provider>
                 <ThemeProvider>
                   <ThemedGlobalStyle />
-                  <WalletUnsupportedNetworkBanner isChainIdUnsupported={isChainIdUnsupported} />
+                  <WalletUnsupportedNetworkBanner />
                   <BlockNumberProvider>
                     <WithLDProvider>
                       <Updaters />
