@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
@@ -32,7 +34,7 @@ const StepWrapper = styled.div`
     display: block;
     font-weight: 500;
     text-decoration: underline;
-    color: ${({ theme }) => theme.text3};
+    color: var(${UI.COLOR_TEXT});
     opacity: 1;
     font-size: 13px;
   }
