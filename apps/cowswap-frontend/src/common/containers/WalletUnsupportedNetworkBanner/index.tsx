@@ -6,8 +6,6 @@ import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-
 export const UNSUPPORTED_WALLET_TEXT = (
   <Trans>
     Please connect your wallet to one of our supported networks:
@@ -41,13 +39,7 @@ const StyledAlertCircle = styled(AlertCircle)`
   color: var(${UI.COLOR_DANGER});
 `
 
-export function WalletUnsupportedNetworkBanner() {
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-
-  console.log('TEST2', {
-    isChainIdUnsupported,
-  })
-
+export function WalletUnsupportedNetworkBanner({ isChainIdUnsupported }: { isChainIdUnsupported: boolean }) {
   if (!isChainIdUnsupported) return null
 
   return (
