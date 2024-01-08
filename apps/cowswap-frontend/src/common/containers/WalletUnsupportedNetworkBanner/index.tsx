@@ -8,8 +8,6 @@ import styled from 'styled-components/macro'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { useFeatureFlags } from '../../hooks/featureFlags/useFeatureFlags'
-
 export const UNSUPPORTED_WALLET_TEXT = (
   <Trans>
     Please connect your wallet to one of our supported networks:
@@ -44,13 +42,8 @@ const StyledAlertCircle = styled(AlertCircle)`
 `
 
 export function WalletUnsupportedNetworkBanner() {
-  const { isSepoliaEnabled } = useFeatureFlags()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
-  console.log('TEST2', {
-    isChainIdUnsupported,
-    isSepoliaEnabled,
-  })
   return (
     <>
       {isChainIdUnsupported && (
