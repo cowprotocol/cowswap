@@ -16,6 +16,6 @@ export function useIsProviderNetworkUnsupported(): boolean {
       return !isSepoliaEnabled
     }
 
-    return !(chainId! in SupportedChainId)
+    return !(chainId in SupportedChainId)
   }, [chainId, isSepoliaEnabled])
 }
