@@ -15,6 +15,7 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'leg
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
@@ -166,6 +167,7 @@ export function NetworkSelector() {
   const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
+  const { isSepoliaEnabled } = useFeatureFlags()
 
   const onSelectChain = useOnSelectNetwork()
 
@@ -204,7 +206,11 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
+            <NetworksList
+              isSepoliaEnabled={isSepoliaEnabled}
+              currentChainId={isChainIdUnsupported ? null : chainId}
+              onSelectChain={onSelectChain}
+            />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

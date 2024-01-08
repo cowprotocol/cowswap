@@ -1,9 +1,10 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { getExplorerOrderLink } from './explorer'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 
 const ORDER_ID_SHORT_LENGTH = 8
 
@@ -55,15 +56,6 @@ export function escapeRegExp(string: string): string {
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
 
-const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
-  1: 'etherscan.io',
-  // 3: 'ropsten.etherscan.io',
-  // 4: 'rinkeby.etherscan.io',
-  5: 'goerli.etherscan.io',
-  // 42: 'kovan.etherscan.io',
-  100: 'gnosisscan.io',
-}
-
 export type BlockExplorerLinkType =
   | 'transaction'
   | 'token'
@@ -72,10 +64,8 @@ export type BlockExplorerLinkType =
   | 'token-transfer'
   | 'composable-order'
 
-function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  const url = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]
-
-  const basePath = `https://${url}`
+function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
+  const basePath = CHAIN_INFO[chainId].explorer
 
   switch (type) {
     case 'transaction': {
@@ -98,7 +88,7 @@ function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLink
 }
 
 // Get the right block explorer URL by chainId
-export function getBlockExplorerUrl(chainId: ChainId, type: BlockExplorerLinkType, data: string): string {
+export function getBlockExplorerUrl(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
   return getEtherscanUrl(chainId, data, type)
 }
 
@@ -108,7 +98,7 @@ export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
   return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
 }
 
-export function getEtherscanLink(chainId: ChainId, type: BlockExplorerLinkType, data: string): string {
+export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
   if (isCowOrder(type, data)) {
     // Explorer for CoW orders:
     //    If a transaction has the size of the CoW orderId, then it's a meta-tx
@@ -118,10 +108,10 @@ export function getEtherscanLink(chainId: ChainId, type: BlockExplorerLinkType, 
   }
 }
 
-export function getExplorerLabel(chainId: ChainId, type: BlockExplorerLinkType, data?: string): string {
+export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   if (isCowOrder(type, data)) {
     return 'View on Explorer'
-  } else if (chainId === ChainId.GNOSIS_CHAIN) {
+  } else if (chainId === SupportedChainId.GNOSIS_CHAIN) {
     return 'View on Gnosisscan'
   } else {
     return 'View on Etherscan'

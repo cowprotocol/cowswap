@@ -39,6 +39,7 @@ const DEFAULT_CLAIM_INFO_PER_CHAIN: ClaimInfoPerChain = {
   [SupportedChainId.MAINNET]: { ...DEFAULT_CLAIM_INFO },
   [SupportedChainId.GNOSIS_CHAIN]: { ...DEFAULT_CLAIM_INFO },
   [SupportedChainId.GOERLI]: { ...DEFAULT_CLAIM_INFO },
+  [SupportedChainId.SEPOLIA]: { ...DEFAULT_CLAIM_INFO },
 }
 
 type ClaimInfoPerAccount = Record<string, ClaimInfoPerChain>

@@ -1,5 +1,5 @@
 import { USDC } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapAddressToSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -31,11 +31,7 @@ export const TWAP_ORDER_STRUCT =
   'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'
 
 const twapHandlerAddress = '0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5'
-export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
-  1: twapHandlerAddress,
-  100: twapHandlerAddress,
-  5: twapHandlerAddress,
-}
+export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = mapAddressToSupportedNetworks(twapHandlerAddress)
 
 export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Cancelling]
 
@@ -44,6 +40,7 @@ export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.E
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 5_000e6), // 5k
   [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6), // 100
+  [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6), // 100
   [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 5e6), // 5
 }
 

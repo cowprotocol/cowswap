@@ -171,7 +171,8 @@ export function ActivityDetails(props: {
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
-    enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
+    enhancedTransaction?.approval?.tokenAddress ||
+    (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
   const getShowCancellationModal = useCancelOrder()

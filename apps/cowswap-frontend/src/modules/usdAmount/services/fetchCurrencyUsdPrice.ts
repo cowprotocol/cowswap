@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import {
@@ -10,13 +10,11 @@ import {
 } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 
+type UnknownCurrencies = { [address: string]: true }
+
 let coingeckoRateLimitHitTimestamp: null | number = null
 
-const coingeckoUnknownCurrencies: Record<SupportedChainId, { [address: string]: true }> = {
-  [SupportedChainId.MAINNET]: {},
-  [SupportedChainId.GNOSIS_CHAIN]: {},
-  [SupportedChainId.GOERLI]: {},
-}
+const coingeckoUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
 
 function getShouldSkipCoingecko(currency: Token): boolean {
   const chainId = currency.chainId as SupportedChainId

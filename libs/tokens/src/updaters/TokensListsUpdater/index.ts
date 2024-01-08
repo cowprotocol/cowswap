@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import { useEffect } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { fetchTokenList } from '../../services/fetchTokenList'
@@ -14,11 +14,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, number>>('tokens:lastUpdateTimeAtom:v0', {
-    [SupportedChainId.MAINNET]: 0,
-    [SupportedChainId.GNOSIS_CHAIN]: 0,
-    [SupportedChainId.GOERLI]: 0,
-  })
+  atomWithStorage<Record<SupportedChainId, number>>('tokens:lastUpdateTimeAtom:v0', mapSupportedNetworks(0))
 )
 
 const swrOptions: SWRConfiguration = {

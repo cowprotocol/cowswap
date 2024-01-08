@@ -1,5 +1,9 @@
-import networksJson from '@cowprotocol/contracts/networks.json'
-import { IpfsConfig, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  IpfsConfig,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -10,7 +14,6 @@ import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
 
 // TODO: move those consts to src/constants/common
 
-const { GPv2Settlement, GPv2VaultRelayer } = networksJson
 const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
 const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
 
@@ -49,41 +52,37 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<number, string>>> = {
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<SupportedChainId, string>>> = {
   prod: {
-    [ChainId.MAINNET]: EthFlowProd[ChainId.MAINNET].address,
-    [ChainId.GNOSIS_CHAIN]: EthFlowProd[ChainId.GNOSIS_CHAIN].address,
-    [ChainId.GOERLI]: EthFlowProd[ChainId.GOERLI].address,
+    [SupportedChainId.MAINNET]: EthFlowProd[SupportedChainId.MAINNET].address,
+    [SupportedChainId.GNOSIS_CHAIN]: EthFlowProd[SupportedChainId.GNOSIS_CHAIN].address,
+    [SupportedChainId.GOERLI]: EthFlowProd[SupportedChainId.GOERLI].address,
+    [SupportedChainId.SEPOLIA]: EthFlowProd[SupportedChainId.SEPOLIA].address,
   },
   barn: {
-    [ChainId.MAINNET]: EthFlowBarn[ChainId.MAINNET].address,
-    [ChainId.GNOSIS_CHAIN]: EthFlowBarn[ChainId.GNOSIS_CHAIN].address,
-    [ChainId.GOERLI]: EthFlowBarn[ChainId.GOERLI].address,
+    [SupportedChainId.MAINNET]: EthFlowBarn[SupportedChainId.MAINNET].address,
+    [SupportedChainId.GNOSIS_CHAIN]: EthFlowBarn[SupportedChainId.GNOSIS_CHAIN].address,
+    [SupportedChainId.GOERLI]: EthFlowBarn[SupportedChainId.GOERLI].address,
+    [SupportedChainId.SEPOLIA]: EthFlowBarn[SupportedChainId.SEPOLIA].address,
   },
 }
 
-export const GP_SETTLEMENT_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
-  [ChainId.GNOSIS_CHAIN]: GPv2Settlement[ChainId.GNOSIS_CHAIN].address,
-  [ChainId.GOERLI]: GPv2Settlement[ChainId.GOERLI].address,
+export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS
+
+export const GP_VAULT_RELAYER = COW_PROTOCOL_VAULT_RELAYER_ADDRESS
+
+export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [SupportedChainId.GOERLI]: '0x7B878668Cd1a3adF89764D3a331E0A7BB832192D',
+  [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
 }
 
-export const GP_VAULT_RELAYER: Record<number, string> = {
-  [ChainId.MAINNET]: GPv2VaultRelayer[ChainId.MAINNET].address,
-  [ChainId.GNOSIS_CHAIN]: GPv2VaultRelayer[ChainId.GNOSIS_CHAIN].address,
-  [ChainId.GOERLI]: GPv2VaultRelayer[ChainId.GOERLI].address,
-}
-
-export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
-  [ChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [ChainId.GOERLI]: '0x7B878668Cd1a3adF89764D3a331E0A7BB832192D',
-}
-
-export const COW_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
-  [ChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
-  [ChainId.GOERLI]: '0x91056D4A53E1faa1A84306D4deAEc71085394bC8',
+export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
+  [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
+  [SupportedChainId.GOERLI]: '0x91056D4A53E1faa1A84306D4deAEc71085394bC8',
+  [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
@@ -124,15 +123,17 @@ export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
-export const GAS_FEE_ENDPOINTS = {
-  [ChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
-  [ChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
-  [ChainId.GOERLI]: '',
+export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
+  [SupportedChainId.GOERLI]: '',
+  [SupportedChainId.SEPOLIA]: '',
 }
-export const GAS_API_KEYS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
-  [ChainId.GNOSIS_CHAIN]: '',
-  [ChainId.GOERLI]: '',
+export const GAS_API_KEYS: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || '',
+  [SupportedChainId.GNOSIS_CHAIN]: '',
+  [SupportedChainId.GOERLI]: '',
+  [SupportedChainId.SEPOLIA]: '',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
