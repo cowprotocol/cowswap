@@ -8,6 +8,7 @@ const NETWORK_PREFIXES_RAW: [Network, string][] = [
   [Network.MAINNET, ''],
   [Network.GNOSIS_CHAIN, 'gc'],
   [Network.GOERLI, 'goerli'],
+  [Network.SEPOLIA, 'sepolia'],
 ]
 export const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
 
@@ -23,7 +24,7 @@ function getNetworkPrefix(network: Network): string {
  */
 export const useDecomposedPath = (): [string, string] | [] => {
   const { pathname } = useLocation()
-  const pathMatchArray = pathname.match('/(xdai|mainnet|gc|goerli)?/?(.*)')
+  const pathMatchArray = pathname.match('/(xdai|mainnet|gc|goerli|sepolia)?/?(.*)')
 
   return pathMatchArray == null ? [] : [pathMatchArray[1], pathMatchArray[2]]
 }

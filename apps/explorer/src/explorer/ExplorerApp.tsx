@@ -100,7 +100,7 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
-const networkPrefixes = ['gc', 'goerli']
+const networkPrefixes = ['gc', 'goerli', 'sepolia']
 
 /** App content */
 

@@ -51,7 +51,14 @@ function infuraProvider(networkId: Network): string {
     throw new Error(`INFURA_ID not set`)
   }
 
-  const network = getNetworkFromId(networkId).toLowerCase()
+  // TODO: get rid of @gnosis.pm/dex-js usage
+  const network = (() => {
+    if (networkId === Network.SEPOLIA) {
+      return 'sepolia'
+    }
+
+    return getNetworkFromId(networkId).toLowerCase()
+  })()
 
   if (isWebsocketConnection()) {
     return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
@@ -84,16 +91,12 @@ function isWebsocketConnection(): boolean {
 }
 
 // For now only infura provider is available
-export function getProviderByNetwork(networkId: Network | null): string | undefined {
-  switch (networkId) {
-    case Network.MAINNET:
-    case Network.GOERLI:
-      return infuraProvider(networkId)
-    case Network.GNOSIS_CHAIN:
-      return 'https://rpc.gnosis.gateway.fm/'
-    default:
-      return undefined
+export function getProviderByNetwork(networkId: Network): string | undefined {
+  if (networkId === Network.GNOSIS_CHAIN) {
+    return 'https://rpc.gnosis.gateway.fm/'
   }
+
+  return infuraProvider(networkId)
 }
 
 // Approach 2: update the provider in a single web3 instance

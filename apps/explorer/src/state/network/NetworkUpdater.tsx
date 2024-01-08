@@ -5,19 +5,22 @@ import { useLocation } from 'react-router-dom'
 import { setNetwork } from './actions'
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
-import { Network } from '../../types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const MAINNET_PREFIX = ''
-const NETWORK_PREFIXES_RAW: [Network, string][] = [
-  [Network.MAINNET, ''],
-  [Network.GNOSIS_CHAIN, 'gc'],
-  [Network.GOERLI, 'goerli'],
+const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = [
+  [SupportedChainId.MAINNET, ''],
+  [SupportedChainId.GNOSIS_CHAIN, 'gc'],
+  [SupportedChainId.GOERLI, 'goerli'],
+  [SupportedChainId.SEPOLIA, 'sepolia'],
 ]
-const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
+const NETWORK_ID_BY_PREFIX: Map<string, SupportedChainId> = new Map(
+  NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key])
+)
 
-function getNetworkId(network = MAINNET_PREFIX): Network {
+function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
   const networkId = NETWORK_ID_BY_PREFIX.get(network)
-  return networkId || Network.MAINNET
+  return networkId || SupportedChainId.MAINNET
 }
 
 export const NetworkUpdater: React.FC = () => {
@@ -28,7 +31,7 @@ export const NetworkUpdater: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const networkMatchArray = location.pathname.match('^/(gc|goerli)')
+    const networkMatchArray = location.pathname.match('^/(gc|goerli|sepolia)')
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
     const networkId = getNetworkId(network)
 
