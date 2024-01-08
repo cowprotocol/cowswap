@@ -17,11 +17,6 @@ export const INITIAL_FORM_VALUES = {
   metadata: {},
 }
 
-// export const INVALID_IPFS_CREDENTIALS = [
-//   'Type error',
-//   "Failed to execute 'setRequestHeader' on 'XMLHttpRequest': String contains non ISO-8859-1 code point.",
-// ]
-
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
@@ -67,23 +62,6 @@ export const handleErrors = (
   handler(Array.isArray(formErrors) && formErrors?.length > 0)
   return errors
 }
-
-// export const ipfsSchema: JSONSchema7 = {
-//   type: 'object',
-//   required: ['pinataApiKey', 'pinataApiSecret'],
-//   properties: {
-//     pinataApiKey: {
-//       type: 'string',
-//       title: 'Pinata API key',
-//       description: 'Add your Pinata API key.',
-//     },
-//     pinataApiSecret: {
-//       type: 'string',
-//       title: 'Pinata API secret',
-//       description: 'Add your Pinata API secret.',
-//     },
-//   },
-// }
 
 export const decodeAppDataSchema: JSONSchema7 = {
   type: 'object',
@@ -154,14 +132,3 @@ export const uiSchema = {
     },
   },
 }
-
-// export const ipfsUiSchema = {
-//   pinataApiKey: {
-//     'ui:field': 'cField',
-//     tooltip: 'Add your Pinata API key.',
-//   },
-//   pinataApiSecret: {
-//     'ui:field': 'cField',
-//     tooltip: 'Add your Pinata API secret key.',
-//   },
-// }
