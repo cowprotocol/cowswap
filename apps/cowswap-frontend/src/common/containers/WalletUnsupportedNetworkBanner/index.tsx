@@ -47,16 +47,15 @@ export function WalletUnsupportedNetworkBanner() {
   console.log('TEST2', {
     isChainIdUnsupported,
   })
+
+  if (!isChainIdUnsupported) return null
+
   return (
-    <>
-      {isChainIdUnsupported && (
-        <Wrapper>
-          <div>
-            <StyledAlertCircle size={24} />
-          </div>
-          <div>{UNSUPPORTED_WALLET_TEXT}</div>
-        </Wrapper>
-      )}
-    </>
+    <Wrapper>
+      <div>
+        <StyledAlertCircle size={24} />
+      </div>
+      <div>{UNSUPPORTED_WALLET_TEXT}</div>
+    </Wrapper>
   )
 }
