@@ -13,7 +13,7 @@ import {
   TypeOfTrace,
 } from './types'
 import { abbreviateString } from 'utils'
-import { SPECIAL_ADDRESSES } from 'apps/explorer/const'
+import { SPECIAL_ADDRESSES } from '../../explorer/const'
 
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
@@ -132,7 +132,7 @@ export async function getTradesAccount(
   networkId: Network,
   txHash: string,
   trades: Array<Trade>,
-  transfers: Array<Transfer>,
+  transfers: Array<Transfer>
 ): Promise<Map<string, Account>> {
   const contracts = await _fetchTradesAccounts(networkId, txHash)
 
@@ -146,7 +146,7 @@ export async function getTradesAccount(
 export function accountAddressesInvolved(
   contracts: Contract[],
   trades: Array<Trade>,
-  transfers: Array<Transfer>,
+  transfers: Array<Transfer>
 ): Map<string, Account> {
   const result = new Map()
 

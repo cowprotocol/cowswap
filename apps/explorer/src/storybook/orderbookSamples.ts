@@ -375,7 +375,7 @@ export default [
     bids: [
       {
         volume: 125,
-        price: 99.999999999999999999,
+        price: 99.9999999999,
       },
       {
         volume: 126,

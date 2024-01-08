@@ -15,7 +15,7 @@ import { media } from 'theme/styles/media'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
 import Icon from 'components/Icon'
@@ -23,7 +23,7 @@ import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icon
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
-import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
@@ -227,7 +227,7 @@ function calculateExecutionPrice(
   sellAmount: BigNumber,
   buyAmount: BigNumber,
   sellToken?: TokenErc20 | null,
-  buyToken?: TokenErc20 | null,
+  buyToken?: TokenErc20 | null
 ): BigNumber | null {
   if (!sellToken || !buyToken) return null
 

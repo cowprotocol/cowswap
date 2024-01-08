@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/decorators'
 
 import { Order } from 'api/operator'
-import { RICH_ORDER, TUSD, WETH } from '../../../../test/data'
+import { RICH_ORDER, TUSD, WETH } from '../../../test/data'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 export default {

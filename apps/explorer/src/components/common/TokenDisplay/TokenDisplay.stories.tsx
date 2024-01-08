@@ -10,7 +10,7 @@ import { ETH, XDAI } from 'const'
 
 import { TokenDisplay, Props } from '.'
 
-import { USDT } from '../../../../test/data'
+import { USDT } from '../../../test/data'
 
 export default {
   title: 'Common/TokenDisplay',

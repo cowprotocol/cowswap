@@ -9,7 +9,7 @@ import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
-import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
+import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
   const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
@@ -348,7 +348,7 @@ export enum FormatAmountPrecision {
 export function formattedAmount(
   erc20: TokenErc20 | null | undefined,
   amount: BigNumber,
-  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision,
+  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision
 ): string {
   if (!isTokenErc20(erc20)) return '-'
 

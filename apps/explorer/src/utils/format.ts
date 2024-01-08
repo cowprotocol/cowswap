@@ -17,7 +17,7 @@ import {
   HIGH_PRECISION_SMALL_LIMIT,
   MIDDLE_PRECISION_DECIMALS,
   NO_ADJUSTMENT_NEEDED_PRECISION,
-} from 'apps/explorer/const'
+} from '../explorer/const'
 import { batchIdToDate, FormatAmountPrecision } from 'utils'
 
 export {
@@ -123,9 +123,9 @@ export function formatPartialNumber(value: string): string {
 export const formatTimeInHours = (
   validTime: string | number,
   matchedConstraintText: string,
-  errorText = 'Invalid time - time cannot be negative',
+  errorText = 'Invalid time - time cannot be negative'
 ): string =>
-  +validTime == 0
+  +validTime === 0
     ? matchedConstraintText
     : +validTime < 0
     ? errorText
@@ -268,7 +268,7 @@ export function formatCalculatedPriceToDisplay(
   calculatedPrice: BigNumber,
   buyToken: TokenErc20,
   sellToken: TokenErc20,
-  isPriceInverted?: boolean,
+  isPriceInverted?: boolean
 ): string {
   const displayPrice = calculatedPrice.toString(10)
   const formattedPrice = formatSmart({
@@ -289,7 +289,7 @@ export function formatExecutedPriceToDisplay(
   calculatedPrice: BigNumber,
   buyToken: TokenErc20,
   sellToken: TokenErc20,
-  isPriceInverted?: boolean,
+  isPriceInverted?: boolean
 ): string {
   const displayPrice = calculatedPrice.toString(10)
   const formattedPrice = formatSmart({
@@ -312,7 +312,7 @@ export function formatExecutedPriceToDisplay(
 export function formattingAmountPrecision(
   amount: BigNumber,
   token: TokenErc20 | null,
-  typePrecision: FormatAmountPrecision,
+  typePrecision: FormatAmountPrecision
 ): string {
   const typeFormatPrecision = {
     [FormatAmountPrecision.highPrecision]: HIGH_PRECISION_DECIMALS,

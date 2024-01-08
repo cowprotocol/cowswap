@@ -24,7 +24,7 @@ import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import DecodeAppData from 'components/AppData/DecodeAppData'
-import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
+import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {

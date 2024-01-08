@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Wrapper, Input, SearchIcon } from 'apps/explorer/components/common/Search/Search.styled'
+import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 import { media } from 'theme/styles/media'
 
 // assets

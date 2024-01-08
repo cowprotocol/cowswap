@@ -3,7 +3,7 @@ import { assert } from '@gnosis.pm/dex-js'
 
 import { Receipt } from 'types'
 import { ZERO, ALLOWANCE_MAX_VALUE } from 'const'
-import { RECEIPT } from '../../../test/data'
+import { RECEIPT } from '../../test/data'
 import { logDebug } from 'utils'
 import { waitAndSendReceipt } from 'utils/mock'
 import {
@@ -139,7 +139,7 @@ export class Erc20ApiMock implements Erc20Api {
     this._initAllowances({ userAddress, tokenAddress, spenderAddress })
     this._allowances[userAddress][tokenAddress][spenderAddress] = amount
     logDebug(
-      `[Erc20ApiMock] Approved ${amount} for the spender ${spenderAddress} on the token ${tokenAddress}. User ${userAddress}`,
+      `[Erc20ApiMock] Approved ${amount} for the spender ${spenderAddress} on the token ${tokenAddress}. User ${userAddress}`
     )
 
     return RECEIPT
@@ -172,7 +172,7 @@ export class Erc20ApiMock implements Erc20Api {
     this._balances[toAddress][tokenAddress] = this._balances[toAddress][tokenAddress].add(amount)
 
     logDebug(
-      `[Erc20ApiMock:transfer] Transferred ${amount} of the token ${tokenAddress} from ${userAddress} to ${toAddress}`,
+      `[Erc20ApiMock:transfer] Transferred ${amount} of the token ${tokenAddress} from ${userAddress} to ${toAddress}`
     )
 
     return RECEIPT
@@ -206,19 +206,19 @@ export class Erc20ApiMock implements Erc20Api {
 
     assert(
       this._hasAllowance({ fromAddress, tokenAddress, spenderAddress: userAddress, amount }),
-      'Not allowed to perform this transfer',
+      'Not allowed to perform this transfer'
     )
     const allowance = this._allowances[fromAddress][tokenAddress][userAddress]
     this._allowances[fromAddress][tokenAddress][userAddress] = allowance.sub(amount)
     logDebug(
-      `[Erc20ApiMock:transferFrom] Updated allowance: ${allowance} => ${this._allowances[fromAddress][tokenAddress][userAddress]}`,
+      `[Erc20ApiMock:transferFrom] Updated allowance: ${allowance} => ${this._allowances[fromAddress][tokenAddress][userAddress]}`
     )
 
     this._balances[fromAddress][tokenAddress] = balance.sub(amount)
     this._balances[toAddress][tokenAddress] = this._balances[toAddress][tokenAddress].add(amount)
 
     logDebug(
-      `[Erc20ApiMock:transferFrom] Transferred ${amount} of the token ${tokenAddress} from ${fromAddress} to ${toAddress} by the spender ${userAddress}`,
+      `[Erc20ApiMock:transferFrom] Transferred ${amount} of the token ${tokenAddress} from ${fromAddress} to ${toAddress} by the spender ${userAddress}`
     )
 
     return RECEIPT

@@ -63,7 +63,7 @@ export class TheGraphApiImpl {
   private urlByNetwork: { [networkId: number]: string } = {}
 
   public constructor(params: TheGraphApiImplParams) {
-    this.urlByNetwork = params.reduce((acc, endpoint) => {
+    this.urlByNetwork = params.reduce<{ [key: string]: string }>((acc, endpoint) => {
       acc[endpoint.networkId] = endpoint.url
       return acc
     }, {})
@@ -71,7 +71,7 @@ export class TheGraphApiImpl {
 
   public async getPrice({ tokenId, ...params }: GetPriceParams): Promise<BigNumber | null> {
     // syntactic sugar
-    const prices = this.getPrices({ ...params, tokenIds: [tokenId] })
+    const prices = await this.getPrices({ ...params, tokenIds: [tokenId] })
     return prices[tokenId]
   }
 
@@ -126,9 +126,9 @@ export class TheGraphApiImpl {
 
   private buildPartialPriceQuery(tokenId: number): string {
     return `Token${tokenId}: prices(
-  first: 1, 
-  orderBy: batchId, 
-  orderDirection: desc, 
+  first: 1,
+  orderBy: batchId,
+  orderDirection: desc,
   where: {token: "${tokenId}"}
 ) {
   priceInOwlNumerator
@@ -140,7 +140,7 @@ export class TheGraphApiImpl {
   }
 
   private parsePricesResponse({ data }: PricesResponse, inWei: boolean): GetPricesResult {
-    return Object.keys(data).reduce((acc, tokenKey) => {
+    return Object.keys(data).reduce<{ [key: string]: BigNumber | null }>((acc, tokenKey) => {
       // not possible to have a key with only integers, thus `Token` prefix was added
       const tokenId = +tokenKey.replace('Token', '')
 

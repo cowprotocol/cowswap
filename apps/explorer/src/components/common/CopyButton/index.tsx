@@ -5,7 +5,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
-import { DISPLAY_TEXT_COPIED_CHECK } from 'apps/explorer/const'
+import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
 import { media } from 'theme/styles/media'
 
 // Why is `copied` not a boolean?

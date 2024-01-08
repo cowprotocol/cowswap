@@ -11,7 +11,7 @@ import { ONE_BIG_NUMBER } from 'const'
 
 import { FilledProgress, Props } from '.'
 
-import { RICH_ORDER } from '../../../../test/data'
+import { RICH_ORDER } from '../../../test/data'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 export default {

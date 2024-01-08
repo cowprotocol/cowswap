@@ -9,7 +9,7 @@ import { ETH_NODE_URL, INFURA_ID } from 'const'
 // TODO connect to mainnet if we need AUTOCONNECT at all
 export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
 
-const web3cache = {}
+const web3cache: { [key: string]: Web3 } = {}
 
 export function createWeb3Api(provider?: string): Web3 {
   const _provider = provider || getDefaultProvider() || ''
@@ -28,7 +28,7 @@ export function createWeb3Api(provider?: string): Web3 {
             onTimeout: false,
           },
         })
-      : _provider,
+      : _provider
   )
 
   // `handleRevert = true` makes `require` failures to throw

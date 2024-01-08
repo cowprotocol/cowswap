@@ -2,10 +2,9 @@ import BigNumber from 'bignumber.js'
 
 import { Order, RawOrder, RawTrade } from 'api/operator'
 
-import { ZERO_BIG_NUMBER } from 'const'
-
 import { USDT, WETH } from './erc20s'
 import { OrderClass, OrderStatus, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
+import { ZERO_BIG_NUMBER } from '../../const'
 
 export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',

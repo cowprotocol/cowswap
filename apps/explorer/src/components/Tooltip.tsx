@@ -1,4 +1,4 @@
-import React, { ReactNode, CSSProperties, useCallback } from 'react'
+import React, { ReactNode, CSSProperties, useCallback, PropsWithChildren } from 'react'
 import { State, Placement } from '@popperjs/core'
 import styled from 'styled-components'
 import { isElement, isFragment } from 'react-is'
@@ -85,8 +85,8 @@ interface TooltipBaseProps {
 }
 
 const TooltipBase: React.ForwardRefRenderFunction<HTMLDivElement, TooltipBaseProps> = (
-  { children, isShown, state },
-  ref,
+  { children, isShown, state }: PropsWithChildren<TooltipBaseProps>,
+  ref
 ) => {
   const { placement, styles = {} } = state
 
@@ -233,7 +233,7 @@ export const BaseIconTooltipOnClick: React.FC<BaseTooltipsProps> = ({
       e.stopPropagation()
       onClick()
     },
-    [onClick],
+    [onClick]
   )
 
   return (

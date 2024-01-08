@@ -13,6 +13,5 @@ export function createTheGraphApi(): TheGraphApi {
       throw new Error('Unknown implementation for TheGraphApi: ' + type)
   }
 
-  window['theGraphApi'] = theGraphApi
   return theGraphApi
 }

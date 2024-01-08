@@ -15,7 +15,7 @@ export interface Props {
   /**
    * address or transaction or other hash
    */
-  identifier: string
+  identifier: string | undefined
   /**
    * network number | chain id
    */

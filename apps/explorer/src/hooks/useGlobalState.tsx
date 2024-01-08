@@ -3,10 +3,10 @@ import { AnyAction } from 'combine-reducers'
 
 const GlobalStateContext = React.createContext({})
 
-export function withGlobalContext<P, State>(
+export function withGlobalContext<P extends JSX.IntrinsicAttributes, State>(
   WrappedComponent: React.FC<P>,
   initialStateFunc: () => State,
-  reducer: React.Reducer<State, AnyAction>,
+  reducer: React.Reducer<State, AnyAction>
 ): (props: P) => JSX.Element {
   return function WrappedComponentWithGlobalState(props: P): JSX.Element {
     const [state, dispatch] = useReducer(reducer, initialStateFunc())
