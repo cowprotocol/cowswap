@@ -6,21 +6,9 @@ import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
+import { useGnosisSafeInfo } from '../../api/hooks'
 
-const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
-const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
 const SAFE_APP_NAME = 'Safe App'
-const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
-const SAFE_WALLET_NAME = 'Safe{Wallet}'
-const SAFE_WALLET_IOS = 'Safe (iOS)'
-const GNOSIS_APP_NAMES = [
-  SAFE_APP_NAME,
-  GNOSIS_SAFE_APP_NAME,
-  WC_DESKTOP_GNOSIS_SAFE_APP_NAME,
-  WC_MOBILE_GNOSIS_SAFE_APP_NAME,
-  SAFE_WALLET_NAME,
-  SAFE_WALLET_IOS,
-]
 
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
@@ -88,6 +76,7 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     if (connectionType === ConnectionType.GNOSIS_SAFE) {
+      // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
       return METADATA_SAFE
     }
 
@@ -100,9 +89,15 @@ export function useWalletMetaData(): WalletMetaData {
  * It'll be false if connected to Safe wallet via WalletConnect
  */
 export function useIsSafeApp(): boolean {
-  const { walletName } = useWalletMetaData()
+  const isSafeWallet = useIsSafeWallet()
 
-  return walletName === SAFE_APP_NAME
+  if (!isSafeWallet) {
+    return false
+  }
+
+  // Will only be a SafeApp if within an iframe
+  // Which means, window.parent is different than window
+  return window?.parent !== window
 }
 
 /**
@@ -110,11 +105,7 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  const { walletName } = useWalletMetaData()
-
-  if (!walletName) return false
-
-  return GNOSIS_APP_NAMES.includes(walletName.trim())
+  return !!useGnosisSafeInfo()
 }
 
 /**
