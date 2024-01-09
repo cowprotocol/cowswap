@@ -26,9 +26,7 @@ function _getApiBaseUrl(networkId: SupportedChainId): string {
   const baseUrl = API_BASE_URLs[networkId]
 
   if (!baseUrl) {
-    throw new Error(
-      'Unsupported SupportedChainId. The tenderly API is not available in the SupportedChainId ' + networkId
-    )
+    throw new Error('Unsupported Network. The tenderly API is not available in the SupportedChainId ' + networkId)
   } else {
     return baseUrl
   }
