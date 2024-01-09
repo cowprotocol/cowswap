@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.2](https://github.com/cowprotocol/cowswap/compare/v1.54.1...v1.54.2) (2024-01-08)
+
+
+### Bug Fixes
+
+* disable Christmas theme ([#3582](https://github.com/cowprotocol/cowswap/issues/3582)) ([94643fb](https://github.com/cowprotocol/cowswap/commit/94643fb3ca77aea37b772d823cc48665b441eeaa))
+
 ## [1.54.1](https://github.com/cowprotocol/cowswap/compare/v1.54.0...v1.54.1) (2023-12-28)
 
 
