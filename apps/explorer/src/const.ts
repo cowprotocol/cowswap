@@ -206,5 +206,3 @@ export const IPFS_INVALID_APP_IDS = [
  * Instead, the Surplus amount will be used
  */
 export const MAX_SURPLUS_PERCENTAGE = '1000'
-
-export const NETWORKS_WITHOUT_SUBGRAPH: ReadonlyArray<SupportedChainId> = [SupportedChainId.SEPOLIA]

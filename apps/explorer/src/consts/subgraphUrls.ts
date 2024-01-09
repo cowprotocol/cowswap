@@ -1,0 +1,15 @@
+import { SUBGRAPH_PROD_CONFIG, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+function getSubgraphUrl(chainId: SupportedChainId, suffix: string): string | undefined {
+  return process.env[`REACT_APP_SUBGRAPH_URL_${suffix}`] || SUBGRAPH_PROD_CONFIG[chainId] || undefined
+}
+
+/**
+ * When value is undefined, then Subgraph is not supported for the network
+ */
+export const SUBGRAPH_URLS: Record<SupportedChainId, string | undefined> = {
+  [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
+  [SupportedChainId.GNOSIS_CHAIN]: getSubgraphUrl(SupportedChainId.GNOSIS_CHAIN, 'GNOSIS_CHAIN'),
+  [SupportedChainId.GOERLI]: getSubgraphUrl(SupportedChainId.GOERLI, 'GOERLI'),
+  [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
+}

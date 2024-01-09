@@ -8,7 +8,7 @@ import { useNetworkId } from '../../../state/network'
 import { TokensTableWidget } from '../../components/TokensTableWidget'
 import { Helmet } from 'react-helmet'
 import { APP_TITLE } from '../../const'
-import { NETWORKS_WITHOUT_SUBGRAPH } from '../../../const'
+import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -50,7 +50,7 @@ const SummaryWrapper = styled.section`
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
-  const showCharts = !!networkId && !NETWORKS_WITHOUT_SUBGRAPH.includes(networkId)
+  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== undefined
 
   return (
     <Wrapper>
