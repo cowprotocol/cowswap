@@ -13,7 +13,6 @@ function getSubgraphUrls(): Record<SupportedChainId, string> {
 
   return {
     ...SUBGRAPH_PROD_CONFIG,
-    ...{ [SupportedChainId.SEPOLIA]: 'https://api.thegraph.com/subgraphs/name/cowprotocol/sepolia' },
     ...(mainnetUrl ? { [SupportedChainId.MAINNET]: mainnetUrl } : undefined),
     ...(gcUrl ? { [SupportedChainId.GNOSIS_CHAIN]: gcUrl } : undefined),
     ...(goerliUrl ? { [SupportedChainId.GOERLI]: goerliUrl } : undefined),
