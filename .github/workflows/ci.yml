@@ -166,8 +166,8 @@ jobs:
         id: cypress-run
         uses: cypress-io/github-action@v5.8.3
         with:
-          wait-on: http://localhost:3000
-          wait-on-timeout: 200
+          wait-on: http://[::1]:3000
+          wait-on-timeout: 600
           install: false
           working-directory: apps/cowswap-frontend-e2e
         env:

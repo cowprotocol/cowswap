@@ -6,7 +6,6 @@ import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
 const API_NAME = 'CoW Protocol'
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
-
 const ENV_BASE = environmentName !== 'production' ? 'barn' : environmentName
 const STRATEGY_URL = STRATEGY_URL_BASE + ENV_BASE + '/strategies'
 
