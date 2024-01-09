@@ -6,6 +6,7 @@ import { setNetwork } from './actions'
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NETWORK_PREFIXES } from '../../consts/network'
 
 const MAINNET_PREFIX = ''
 const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = [
@@ -23,6 +24,8 @@ function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
   return networkId || SupportedChainId.MAINNET
 }
 
+const NETWORK_MATCH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})`)
+
 export const NetworkUpdater: React.FC = () => {
   // TODO: why not using useDispatch from https://react-redux.js.org/introduction/quick-start
   // const dispatch = useDispatch()
@@ -31,7 +34,7 @@ export const NetworkUpdater: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const networkMatchArray = location.pathname.match('^/(gc|goerli|sepolia)')
+    const networkMatchArray = location.pathname.match(NETWORK_MATCH_REGEX)
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
     const networkId = getNetworkId(network)
 

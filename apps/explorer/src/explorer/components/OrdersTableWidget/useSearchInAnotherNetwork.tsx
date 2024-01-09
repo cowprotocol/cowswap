@@ -9,9 +9,8 @@ import { Order, getAccountOrders } from '../../../api/operator'
 import CowLoading from '../../../components/common/CowLoading'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
 import { MEDIA } from '../../../const'
-import { PREFIX_BY_NETWORK_ID } from '../../../state/network'
-import { networkOptions } from '../../../components/NetworkSelector'
 import { NETWORK_ID_SEARCH_LIST } from '../../const'
+import { CHAIN_ID_TO_URL_PREFIX, NETWORK_OPTIONS } from '../../../consts/network'
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,11 +68,11 @@ type EmptyMessageProps = ResultSearchInAnotherNetwork & {
 }
 
 const _findNetworkName = (networkId: number): string => {
-  return networkOptions.find((e) => e.id === networkId)?.name || 'Unknown network'
+  return NETWORK_OPTIONS.find((e) => e.id === networkId)?.name || 'Unknown network'
 }
 
 const _buildInternalNetworkUrl = (networkId: number, ownerAddress: string): string => {
-  const networkPrefix = PREFIX_BY_NETWORK_ID.get(networkId)
+  const networkPrefix = CHAIN_ID_TO_URL_PREFIX[networkId]
 
   return `${networkPrefix && '/' + networkPrefix}/address/${ownerAddress}`
 }

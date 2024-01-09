@@ -8,7 +8,6 @@ import { rootReducer, INITIAL_STATE } from './state'
 import { GenericLayout } from '../components/layout'
 import { Header } from './layout/Header'
 
-import { RedirectMainnet, RedirectXdai } from '../state/network'
 import { useAnalyticsReporter } from '../components/analytics'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
@@ -16,6 +15,7 @@ import { environmentName } from '../utils/env'
 import { version } from '../../package.json'
 import { GlobalStyle, MainWrapper } from './styled'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
+import { NETWORK_OPTIONS } from '../consts/network'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -100,7 +100,7 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
-const networkPrefixes = ['gc', 'goerli', 'sepolia']
+const networkPrefixes = NETWORK_OPTIONS.map((option) => option.url)
 
 /** App content */
 
@@ -143,8 +143,6 @@ export const ExplorerApp: React.FC = () => {
         <Router basename={process.env.BASE_URL}>
           <StateUpdaters />
           <Routes>
-            <Route path="/mainnet" element={<RedirectMainnet />} />
-            <Route path="/xdai" element={<RedirectXdai />} />
             <Route path="*" element={<AppContent />} />
           </Routes>
         </Router>

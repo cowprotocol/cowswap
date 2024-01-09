@@ -2,11 +2,12 @@ import React, { useState, useCallback, useEffect } from 'react'
 
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
 import { NetworkSelector } from '../../components/NetworkSelector'
-import { PREFIX_BY_NETWORK_ID, useNetworkId } from '../../state/network'
+import { useNetworkId } from '../../state/network'
 import { FlexWrap } from '../pages/styled'
 import { useMediaBreakpoint } from '../../hooks/useMediaBreakPoint'
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
+import { CHAIN_ID_TO_URL_PREFIX } from '../../consts/network'
 
 export const Header: React.FC = () => {
   const isMobile = useMediaBreakpoint(['xs', 'sm'])
@@ -27,7 +28,7 @@ export const Header: React.FC = () => {
     return null
   }
 
-  const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
+  const prefixNetwork = CHAIN_ID_TO_URL_PREFIX[networkId]
 
   return (
     <GenericHeader
