@@ -50,7 +50,7 @@ const SummaryWrapper = styled.section`
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
-  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== undefined
+  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== null
 
   return (
     <Wrapper>
