@@ -70,7 +70,7 @@ function useIsArgentWallet(): boolean {
     () => {
       if (!argentWalletContract || !account) return Promise.resolve(false)
 
-      return argentWalletContract.callStatic.isArgentWallet(account)
+      return argentWalletContract.callStatic.isArgentWallet(account).catch(() => false)
     },
     [argentWalletContract],
     false
