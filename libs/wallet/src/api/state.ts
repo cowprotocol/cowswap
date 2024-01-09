@@ -30,3 +30,5 @@ export const walletDisplayedAddress = atom((get) => {
 })
 
 export const hwAccountIndexAtom = atomWithStorage<number>('hw-account-index:v1', 0)
+
+export const iframeReferrerAtom = atomWithStorage<string>('iframeReferrerAtom:v0', '')

@@ -18,7 +18,9 @@ export function useWalletDisplayedAddress(): string {
 }
 
 export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
-  return useAtomValue(gnosisSafeInfoAtom)
+  const v = useAtomValue(gnosisSafeInfoAtom)
+  console.log(`fuuuuck`, v)
+  return v
 }
 
 export function useIsBundlingSupported(): boolean {

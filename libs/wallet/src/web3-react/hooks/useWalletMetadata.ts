@@ -6,21 +6,9 @@ import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
+import { useGnosisSafeInfo } from '../../api/hooks'
 
-const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
-const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
 const SAFE_APP_NAME = 'Safe App'
-const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
-const SAFE_WALLET_NAME = 'Safe{Wallet}'
-const SAFE_WALLET_IOS = 'Safe (iOS)'
-const GNOSIS_APP_NAMES = [
-  SAFE_APP_NAME,
-  GNOSIS_SAFE_APP_NAME,
-  WC_DESKTOP_GNOSIS_SAFE_APP_NAME,
-  WC_MOBILE_GNOSIS_SAFE_APP_NAME,
-  SAFE_WALLET_NAME,
-  SAFE_WALLET_IOS,
-]
 
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
@@ -45,6 +33,47 @@ function getWcWalletIcon(meta: any) {
   }
 
   return meta.icons?.length > 0 ? meta.icons[0] : undefined
+}
+
+function getSafeAppHostname(): string {
+  // Only available on chrome based browsers https://caniuse.com/?search=ancestorOrigins
+  const ancestorOrigins = window.location.ancestorOrigins?.[0]
+  // Might not be correctly populated on all occasions
+  const referrer = document.referrer
+
+  console.log(`getSafeAppHostname::referrer: `, ancestorOrigins, referrer)
+  return ancestorOrigins || referrer
+}
+
+const ALTERNATIVE_SAFE_APPS_METADATA: Record<string, WalletMetaData> = {
+  'safe\\.global': METADATA_SAFE,
+  'coinshift\\.xyz': {
+    walletName: 'Coinshift',
+    // TODO: get the real one from them
+    icon: 'https://uploads-ssl.webflow.com/640888e3259d86996ed8c6dd/643e7f44d3a00404bc08adfd_favicon-light%20theme.svg',
+  },
+  'ambire\\.com': {
+    walletName: 'Ambire',
+    // TODO: get the real one from them
+    icon: 'https://www.ambire.com/favicon.png',
+  },
+}
+
+function getSafeAppMetadata(): WalletMetaData {
+  const hostname = getSafeAppHostname()
+
+  // iterate over alternative safe apps metadata
+  for (const [hostnamePattern, metadata] of Object.entries(ALTERNATIVE_SAFE_APPS_METADATA)) {
+    // if hostname matches the pattern
+    if (new RegExp(hostnamePattern).test(hostname)) {
+      return metadata
+    }
+  }
+  // Fallback to hostname, if available, and Safe's icon because it's still a Safe context
+  return {
+    walletName: hostname || SAFE_APP_NAME,
+    icon: SAFE_ICON_URL,
+  }
 }
 
 function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
@@ -88,7 +117,7 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     if (connectionType === ConnectionType.GNOSIS_SAFE) {
-      return METADATA_SAFE
+      return getSafeAppMetadata()
     }
 
     return METADATA_DISCONNECTED
@@ -100,9 +129,15 @@ export function useWalletMetaData(): WalletMetaData {
  * It'll be false if connected to Safe wallet via WalletConnect
  */
 export function useIsSafeApp(): boolean {
-  const { walletName } = useWalletMetaData()
+  const isSafeWallet = useIsSafeWallet()
 
-  return walletName === SAFE_APP_NAME
+  if (!isSafeWallet) {
+    return false
+  }
+
+  // Will only be a SafeApp if within an iframe
+  // Which means, window.parent is different than window
+  return window?.parent !== window
 }
 
 /**
@@ -110,11 +145,7 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  const { walletName } = useWalletMetaData()
-
-  if (!walletName) return false
-
-  return GNOSIS_APP_NAMES.includes(walletName.trim())
+  return !!useGnosisSafeInfo()
 }
 
 /**
@@ -125,5 +156,6 @@ export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
   const isSafeWallet = useIsSafeWallet()
 
+  console.log(`fuuuuuck`, { isSafeWallet, isSafeApp })
   return isSafeWallet && !isSafeApp
 }
