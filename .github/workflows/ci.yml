@@ -163,8 +163,8 @@ jobs:
         uses: cypress-io/github-action@v5.0.5
         with:
           start: yarn start
-          wait-on: http://localhost:3000
-          wait-on-timeout: 200
+          wait-on: http://[::1]:3000
+          wait-on-timeout: 1000
         env:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
           CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
