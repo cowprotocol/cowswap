@@ -95,7 +95,7 @@ export const Progress = styled.div<ProgressProps>`
   height: var(--height);
   position: relative;
   display: flex;
-  background: var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
   margin: 28px 0 0;
   border-radius: var(--height);
 
@@ -117,8 +117,14 @@ export const Progress = styled.div<ProgressProps>`
     height: inherit;
     transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
-    background: ${({ status, theme }) =>
-      status === 'error' ? `var(${UI.COLOR_DANGER})` : status === 'success' ? `var(${UI.COLOR_SUCCESS})` : theme.text3};
+    background: ${({ status }) =>
+      status === 'error'
+        ? `var(${UI.COLOR_DANGER})`
+        : status === 'success'
+        ? `var(${UI.COLOR_SUCCESS})`
+        : status === 'pending'
+        ? `var(${UI.COLOR_PRIMARY})`
+        : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(--height);
 
     ${({ theme }) => theme.mediaWidth.upToSmall<ProgressProps>`

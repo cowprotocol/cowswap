@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWeb3React } from '@web3-react/core'
 
@@ -7,9 +9,13 @@ export function useIsProviderNetworkUnsupported(): boolean {
   const { chainId } = useWeb3React()
   const { isSepoliaEnabled } = useFeatureFlags()
 
-  if (chainId === SupportedChainId.SEPOLIA && !isSepoliaEnabled) {
-    return true
-  }
+  return useMemo(() => {
+    if (!chainId) return false
 
-  return !!chainId && !(chainId in SupportedChainId)
+    if (chainId === SupportedChainId.SEPOLIA) {
+      return !isSepoliaEnabled
+    }
+
+    return !(chainId in SupportedChainId)
+  }, [chainId, isSepoliaEnabled])
 }
