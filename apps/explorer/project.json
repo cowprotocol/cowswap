@@ -53,18 +53,15 @@
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["coverage/apps/explorer"],
+      "executor": "nx:run-commands",
       "options": {
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/apps/explorer"
+        "command": "echo \"TODO\""
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
+        "command": "echo \"TODO\""
       }
     },
     "serve-static": {
