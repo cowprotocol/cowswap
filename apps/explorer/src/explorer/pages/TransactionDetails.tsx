@@ -13,7 +13,6 @@ const TransactionDetails: React.FC = () => {
   const { txHash } = useParams<{ txHash: string }>()
   const networkId = useNetworkId() || undefined
 
-  // TODO: MGR
   if (txHash ? !isATxHash(txHash) : false) {
     return <RedirectToSearch from="tx" />
   }

@@ -30,7 +30,6 @@ export interface WrapperProps {
   faded?: boolean
 }
 
-// TODO: MGR
 const tokensIconsRequire =
   process.env.NODE_ENV === 'test'
     ? RequireContextMock
