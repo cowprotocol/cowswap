@@ -41,7 +41,7 @@ export function useUpdateQueryString(): (key: string, value: string) => void {
   return useCallback(
     (key: string, value: string) => {
       query.set(key, value)
-      // TODO: MGR
+
       navigate({ search: query.toString() }, { replace: true })
     },
     [navigate, query]

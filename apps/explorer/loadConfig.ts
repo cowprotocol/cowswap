@@ -17,11 +17,6 @@ function parseJsonOrYaml(filePath: string) {
 
 export function loadConfig() {
   const configPath = path.resolve(__dirname, CONFIG_FILE)
-  const CONFIG = parseJsonOrYaml(configPath)
 
-  // TODO: MGR
-  // TODO: I have no idea why this is needed, but it is
-  CONFIG.appId = 1
-
-  return CONFIG
+  return parseJsonOrYaml(configPath)
 }

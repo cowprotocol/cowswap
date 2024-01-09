@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
+import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -107,9 +108,11 @@ export default function Header() {
                 </LogoImage>
 
                 {/* WINTER THEME ONLY */}
-                <WinterHat>
-                  <SVG src={winterThemeHat(darkMode)} />
-                </WinterHat>
+                {CHRISTMAS_THEME_ENABLED && (
+                  <WinterHat>
+                    <SVG src={winterThemeHat(darkMode)} />
+                  </WinterHat>
+                )}
                 {/* WINTER THEME ONLY */}
               </UniIcon>
             </Title>

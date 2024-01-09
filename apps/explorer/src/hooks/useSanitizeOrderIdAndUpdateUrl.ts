@@ -28,7 +28,6 @@ export function useSanitizeOrderIdAndUpdateUrl(): string {
   // If there's an orderId in the url AND it's not yet nice, update the URL
   if (regexMatch && sanitizedOrderId !== orderId) {
     // TODO: is there a better way to do this?
-    // TODO: MGR
     const newPath = pathname.replace(orderId, sanitizedOrderId)
     navigate(newPath)
   }

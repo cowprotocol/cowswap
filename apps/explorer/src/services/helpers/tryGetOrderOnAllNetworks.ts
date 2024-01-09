@@ -31,6 +31,7 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   // Get order
   let order: TypeOrderResult | null = null
   try {
+    // TODO: fix type
     order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId } as never)
   } catch (error) {
     console.log('Order not found', { ...getOrderApi.defaultParams, networkId })

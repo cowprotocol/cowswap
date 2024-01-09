@@ -67,7 +67,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
 
   const redirectToNetwork = (newNetwork: string, currentNetwork: number): void => {
     const shouldNotRedirectHome = NO_REDIRECT_HOME_ROUTES.some((r: string) => location.pathname.includes(r))
-    // TODO: MGR
+
     navigate(shouldNotRedirectHome ? replaceURL(location.pathname, newNetwork, currentNetwork) : `/${newNetwork}`)
   }
   return (
