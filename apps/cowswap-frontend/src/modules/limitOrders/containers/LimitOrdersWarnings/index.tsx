@@ -73,7 +73,9 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const tradeQuote = useTradeQuote()
   const priceImpactParams = useTradePriceImpact()
 
-  const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
+  const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
+
+  const canTrade = localFormValidation === null && (primaryFormValidation === null || isBundling) && !tradeQuote.error
   const showPriceImpactWarning =
     canTrade && !expertMode && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
@@ -84,8 +86,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
-  const showApprovalBundlingBanner =
-    !isConfirmScreen && primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
+  const showApprovalBundlingBanner = !isConfirmScreen && isBundling
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
