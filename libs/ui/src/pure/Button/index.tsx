@@ -173,7 +173,7 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
   &:focus,
   &:hover,
   &:active {
-    background: var(${UI.COLOR_WARNING});
+    background: var(${UI.COLOR_DANGER});
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
