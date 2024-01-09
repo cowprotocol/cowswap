@@ -29,7 +29,7 @@ export const tokenListsUpdatingAtom = atom<boolean>(false)
 export const listsStatesMapAtom = atom((get) => {
   const { chainId, widgetAppCode, selectedLists } = get(environmentAtom)
   const allTokenListsInfo = get(listsStatesByChainAtom)
-  const currentNetworkLists = allTokenListsInfo[chainId]
+  const currentNetworkLists = allTokenListsInfo[chainId] || {}
 
   return Object.keys(currentNetworkLists).reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]

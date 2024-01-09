@@ -24,4 +24,4 @@ export interface ListState {
   isEnabled?: boolean
 }
 
-export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState }>
+export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState } | undefined>
