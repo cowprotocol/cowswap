@@ -36,3 +36,25 @@ export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | 
 
   return <Navigate to={newPath} />
 }
+
+/** Replace Network name in URL from X to Y */
+const SubstituteNetworkName = (from: string, toNetworkName = ''): string => {
+  const { pathname } = useLocation()
+
+  const pathMatchArray = pathname.match(`/${from}(.*)`)
+  return pathMatchArray && pathMatchArray.length > 0 ? `${toNetworkName}${pathMatchArray[1]}` : '/'
+}
+
+/** Redirects to the canonnical URL for mainnet */
+export const RedirectMainnet = (): JSX.Element => {
+  const newPath = SubstituteNetworkName('mainnet')
+
+  return <Navigate to={newPath} />
+}
+
+/** Redirects to the xDai to the GnosisChain new name */
+export const RedirectXdai = (): JSX.Element => {
+  const newPath = SubstituteNetworkName('xdai', '/gc')
+
+  return <Navigate to={newPath} />
+}
