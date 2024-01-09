@@ -20,7 +20,6 @@ export const INITIAL_FORM_VALUES = {
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  console.log('TTTTTESST', metadataApiSDK, LATEST_APP_DATA_VERSION)
   const latestSchema = (await metadataApiSDK
     .getAppDataSchema(LATEST_APP_DATA_VERSION)
     .then((m) => m.default)) as JSONSchema7
