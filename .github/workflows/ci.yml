@@ -158,13 +158,18 @@ jobs:
         if: steps.cypress-deps.outcome == 'failure'
         run: npx cypress install
 
+      - name: Start server in the background
+        run: yarn start &
+
+      # Actually run tests, building repo
       - name: Cypress run
         id: cypress-run
-        uses: cypress-io/github-action@v5.0.5
+        uses: cypress-io/github-action@v5.8.3
         with:
-          start: yarn start
           wait-on: http://[::1]:3000
-          wait-on-timeout: 1000
+          wait-on-timeout: 600
+          install: false
+          working-directory: apps/cowswap-frontend-e2e
         env:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
           CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
