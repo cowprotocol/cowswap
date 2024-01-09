@@ -78,12 +78,12 @@ export default createReducer<SwapState>(initialState, (builder) =>
       const { chainId, recipient, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount } =
         payload
 
-      const probableTypedValue = state.independentField === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
+      const defaultTypedValue = state.independentField === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
       const { independentField, typedValue } = getEthFlowOverridesOnSelect(
         inputCurrencyId,
         state.independentField,
-        probableTypedValue || state.typedValue,
+        defaultTypedValue || state.typedValue,
         state
       )
 
