@@ -145,6 +145,10 @@ const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   `};
 `
 
+const ExternalLinkStyled = styled(ExternalLink)`
+  text-decoration: underline;
+`
+
 // Todo: Makes this arrow default behavior of <ExternalLink />
 const ExternalArrow = styled.span`
   display: inline-block;
@@ -236,10 +240,10 @@ export function OrdersTableContainer({
                 <Trans>You don't have any {isOpenOrdersTab ? 'open' : ''} orders at the moment.</Trans> <br />
                 <Trans>Time to create a new one!</Trans> {/* TODO: add link for Advanced orders also */}
                 {orderType === TabOrderTypes.LIMIT ? (
-                  <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                  <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
                     <Trans>Learn more</Trans>
                     <ExternalArrow />
-                  </ExternalLink>
+                  </ExternalLinkStyled>
                 ) : null}
               </>
             )}

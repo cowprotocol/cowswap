@@ -89,13 +89,11 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
   // used after refresh by remove referrer state if was redirected
   useEffect(() => {
     window.addEventListener('beforeunload', () => {
-      // TODO: MGR
       navigate(location.pathname, { replace: true })
     })
 
     return (): void => {
       window.removeEventListener('beforeunload', () => {
-        // TODO: MGR
         navigate(location.pathname, { replace: true })
       })
     }

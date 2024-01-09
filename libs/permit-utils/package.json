@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "dependencies": {
     "ethers": "^5.7.2",

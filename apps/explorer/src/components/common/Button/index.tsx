@@ -177,7 +177,6 @@ export const ButtonTheme = variants('mode', 'variant', {
       background: ${disabledLight};
     `,
     get light(): ThemeValue {
-      // TODO: MGR
       return this[Theme.DARK]
     },
   },

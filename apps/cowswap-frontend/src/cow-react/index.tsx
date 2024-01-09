@@ -61,9 +61,9 @@ function Main() {
               <Web3Provider>
                 <ThemeProvider>
                   <ThemedGlobalStyle />
-                  <WalletUnsupportedNetworkBanner />
                   <BlockNumberProvider>
                     <WithLDProvider>
+                      <WalletUnsupportedNetworkBanner />
                       <Updaters />
 
                       {!isInjectedWidgetMode && (

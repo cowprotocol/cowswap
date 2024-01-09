@@ -28,7 +28,6 @@ export function useSearchSubmit(): (query: string) => void {
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
 
       if (path === 'address' && isEns(query)) {
-        // TODO: MGR
         navigate(`/${path}/${query}`)
       } else {
         query && query.length > 0 && navigate(`/${pathPrefix}/${query}`)

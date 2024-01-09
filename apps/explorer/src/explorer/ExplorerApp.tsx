@@ -125,7 +125,7 @@ const AppContent = (): JSX.Element => {
           <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
           <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
           <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
-          <Route element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </React.Suspense>
     </GenericLayout>
