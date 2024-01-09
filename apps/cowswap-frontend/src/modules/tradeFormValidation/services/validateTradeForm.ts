@@ -21,7 +21,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
-  const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency)
+  const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
 
   const approvalRequired =
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
@@ -48,6 +48,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.CurrencyNotSet
   }
 
+  if (isNativeIn) {
+    return TradeFormValidation.SellNativeToken
+  }
+
   if (inputAmountIsNotSet) {
     return TradeFormValidation.InputAmountNotSet
   }
@@ -59,10 +63,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isSwapUnsupported) {
       return TradeFormValidation.CurrencyNotSupported
-    }
-
-    if (isNativeIn) {
-      return TradeFormValidation.SellNativeToken
     }
 
     if (!tradeQuote.response) {
