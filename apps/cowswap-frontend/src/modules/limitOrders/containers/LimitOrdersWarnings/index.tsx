@@ -19,8 +19,6 @@ import {
 import { useTradePriceImpact } from 'modules/trade'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
-import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -103,11 +101,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { state } = useDerivedTradeState()
   const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
 
-  const isNativeIn = useIsNativeIn()
-  const isWrappedOut = useIsWrappedOut()
-
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
-  const showNativeSellWarning = isNativeIn && !isWrappedOut
+  const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken
 
   const isVisible =
     showPriceImpactWarning ||
