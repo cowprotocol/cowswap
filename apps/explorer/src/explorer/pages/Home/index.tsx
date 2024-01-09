@@ -13,7 +13,7 @@ import { NETWORKS_WITHOUT_SUBGRAPH } from '../../../const'
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
   flex-flow: column wrap;
-  justify-content: flex-start;
+  justify-content: center;
   display: flex;
   padding-top: 10rem;
 
