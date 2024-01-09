@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react-swc'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { loadConfig } from './loadConfig'
+import dynamicImport from 'vite-plugin-dynamic-import'
 
 import { version as APP_VERSION } from './package.json'
 import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json'
@@ -33,6 +34,7 @@ export default defineConfig(({ mode }) => {
           // search up for workspace root
           searchForWorkspaceRoot(process.cwd()),
           // your custom rules
+          'node_modules/@cowprotocol/app-data/schemas',
           'apps/explorer/src',
           'libs',
         ],
@@ -56,6 +58,13 @@ export default defineConfig(({ mode }) => {
       react({}),
       viteTsConfigPaths({
         root: '../../',
+      }),
+      dynamicImport({
+        filter(id) {
+          if (id.includes('/node_modules/@cowprotocol')) {
+            return true
+          }
+        },
       }),
     ],
 
