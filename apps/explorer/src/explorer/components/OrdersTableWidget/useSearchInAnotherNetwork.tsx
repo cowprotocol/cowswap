@@ -9,8 +9,8 @@ import { Order, getAccountOrders } from '../../../api/operator'
 import CowLoading from '../../../components/common/CowLoading'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
 import { MEDIA } from '../../../const'
-import { NETWORK_ID_SEARCH_LIST } from '../../const'
 import { CHAIN_ID_TO_URL_PREFIX, NETWORK_OPTIONS } from '../../../consts/network'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 const Wrapper = styled.div`
   display: flex;
@@ -148,7 +148,7 @@ export const useSearchInAnotherNetwork = (
     async (_networkId: Network) => {
       setIsLoading(true)
       setError(null)
-      const promises = NETWORK_ID_SEARCH_LIST.filter((net) => net !== _networkId).map((network) =>
+      const promises = ALL_SUPPORTED_CHAIN_IDS.filter((net) => net !== _networkId).map((network) =>
         getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
           .then((response) => {
             if (!response.orders.length) return
