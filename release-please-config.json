@@ -1,5 +1,5 @@
 {
-  "bootstrap-sha": "f8bb906f11b926b2d5ae8010acb6e7132062fa5d",
+  "bootstrap-sha": "dbf70fcb64ad3255b34779821721fc7b2dab0c31",
   "packages": {
     "apps/cowswap-frontend": {
       "changelog-path": "CHANGELOG.md",
