@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
@@ -44,9 +44,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pendingLimit = useOnlyPendingOrders(chainId, UiOrderType.LIMIT)
-  const pendingTwap = useOnlyPendingOrders(chainId, UiOrderType.TWAP)
-  const pending = useMemo(() => pendingLimit.concat(pendingTwap), [pendingLimit, pendingTwap])
+  const pending = useOnlyPendingOrders(chainId)
 
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
@@ -225,6 +223,9 @@ async function _getOrderPrice(
 
   const amount = getRemainderAmount(order.kind, order)
 
+  // Don't quote if there's nothing left to match in this order
+  if (amount === '0') return null
+
   if (order.kind === 'sell') {
     // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
@@ -262,6 +263,8 @@ async function _getOrderPrice(
     receiver: order.receiver,
     isEthFlow,
     priceQuality: getPriceQuality({ verifyQuote }),
+    appData: order.appData ?? undefined,
+    appDataHash: order.appDataHash ?? undefined,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
