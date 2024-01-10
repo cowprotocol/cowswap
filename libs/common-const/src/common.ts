@@ -2,9 +2,9 @@ import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   IpfsConfig,
-  mapAddressToSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
+import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -13,6 +13,10 @@ import ms from 'ms.macro'
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
 
 // TODO: move those consts to src/constants/common
+
+const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
+const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
+
 export const ZERO_BIG_NUMBER = new BigNumber(0)
 export const ZERO_FRACTION = new Fraction(0)
 
@@ -48,12 +52,19 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 
-const COWSWAP_ETHFLOW_CONTRACT_PROD = '0x40A50cf069e992AA4536211B23F286eF88752187'
-const COWSWAP_ETHFLOW_CONTRACT_BARN = '0xD02De8Da0B71E1B59489794F423FaBBa2AdC4d93'
-
 export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<SupportedChainId, string>>> = {
-  prod: mapAddressToSupportedNetworks(COWSWAP_ETHFLOW_CONTRACT_PROD),
-  barn: mapAddressToSupportedNetworks(COWSWAP_ETHFLOW_CONTRACT_BARN),
+  prod: {
+    [SupportedChainId.MAINNET]: EthFlowProd[SupportedChainId.MAINNET].address,
+    [SupportedChainId.GNOSIS_CHAIN]: EthFlowProd[SupportedChainId.GNOSIS_CHAIN].address,
+    [SupportedChainId.GOERLI]: EthFlowProd[SupportedChainId.GOERLI].address,
+    [SupportedChainId.SEPOLIA]: EthFlowProd[SupportedChainId.SEPOLIA].address,
+  },
+  barn: {
+    [SupportedChainId.MAINNET]: EthFlowBarn[SupportedChainId.MAINNET].address,
+    [SupportedChainId.GNOSIS_CHAIN]: EthFlowBarn[SupportedChainId.GNOSIS_CHAIN].address,
+    [SupportedChainId.GOERLI]: EthFlowBarn[SupportedChainId.GOERLI].address,
+    [SupportedChainId.SEPOLIA]: EthFlowBarn[SupportedChainId.SEPOLIA].address,
+  },
 }
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS
