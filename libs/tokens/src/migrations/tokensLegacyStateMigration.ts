@@ -87,10 +87,14 @@ function migrateLegacyTokenLists() {
         source: listSource,
       })
 
-      tokenListsState[chainId][listSource] = {
-        source: listSource,
-        list: list.current,
-        isEnabled: !!networkLists.activeListUrls?.includes(listSource),
+      const networkState = tokenListsState[chainId]
+
+      if (networkState) {
+        networkState[listSource] = {
+          source: listSource,
+          list: list.current,
+          isEnabled: !!networkLists.activeListUrls?.includes(listSource),
+        }
       }
     })
   })
