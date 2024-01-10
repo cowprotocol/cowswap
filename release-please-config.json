@@ -1,5 +1,5 @@
 {
-  "release-search-depth": 100,
+  "release-search-depth": 20,
   "packages": {
     "apps/cowswap-frontend": {
       "changelog-path": "CHANGELOG.md",
