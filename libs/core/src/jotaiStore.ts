@@ -18,3 +18,29 @@ export const getJotaiIsolatedStorage = <T>() => {
 
   return storage
 }
+
+/**
+ * Creates a new jotai json storage which merges the existing local storage with given state
+ *
+ * By default, jotai returns the initial state when localStorage is unset
+ * When it's set, though, it takes precedence, even if doesn't contain info in the initial state.
+ * This is why we merge the initial state with the localStorage info.
+ *
+ * Based on https://github.com/pmndrs/jotai/discussions/1357
+ *
+ * @param initialState initial state to merge with localStorage info
+ * @returns jotai json storage with merged localStorage info and initial state.
+ *
+ * @example
+ * const storage = getJotaiMergerStorage({ foo: 'bar' })
+ */
+export function getJotaiMergerStorage<T>(initialState: T) {
+  const storage = createJSONStorage<T>(() => localStorage)
+
+  function getItem(key: string) {
+    const value = storage.getItem(key, initialState)
+    return { ...value, ...initialState }
+  }
+
+  return { ...storage, getItem }
+}
