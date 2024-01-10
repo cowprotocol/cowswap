@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router'
 import { useCallback, useMemo } from 'react'
 import { checkDateOrValidBatchTime, sanitizeInput } from 'utils'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export function useQuery(): URLSearchParams {
   const { search } = useLocation()
@@ -36,13 +36,14 @@ export function useQueryTradeParams(): {
 
 export function useUpdateQueryString(): (key: string, value: string) => void {
   const query = useQuery()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return useCallback(
     (key: string, value: string) => {
       query.set(key, value)
-      history.replace({ search: query.toString() })
+
+      navigate({ search: query.toString() }, { replace: true })
     },
-    [history, query],
+    [navigate, query]
   )
 }

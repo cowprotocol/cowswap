@@ -1,6 +1,6 @@
 import React from 'react'
 import { usePathPrefix, usePathSuffix } from 'state/network'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 interface RedirectToSearchParams {
   from: string
@@ -16,7 +16,7 @@ const RedirectToSearch: React.FC<RedirectToSearchParams> = ({ from, data }) => {
   const newPath =
     pathMatchArray && pathMatchArray.length > 0 ? `${prefixPath}/search${pathMatchArray[1]}` : `${prefixPath}${suffix}`
 
-  return <Redirect push={false} to={{ pathname: newPath, state: { referrer: from, data } }} />
+  return <Navigate to={newPath} />
 }
 
 export default RedirectToSearch

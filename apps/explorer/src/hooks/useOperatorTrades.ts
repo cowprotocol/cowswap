@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformTrade } from 'utils'
-import { web3 } from 'apps/explorer/api'
+import { web3 } from '../explorer/api'
 
 type Result = {
   trades: Trade[]
@@ -73,7 +73,7 @@ export function useOrderTrades(order: Order | null): Result {
         setError({ message: msg, type: 'error' })
       }
     },
-    [order],
+    [order]
   )
 
   // Fetch blocks timestamps for trades

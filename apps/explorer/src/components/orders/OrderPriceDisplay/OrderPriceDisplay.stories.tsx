@@ -4,7 +4,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { WETH, USDT } from '../../../../test/data'
+import { WETH, USDT } from '../../../test/data'
 
 import { OrderPriceDisplay, Props } from './'
 

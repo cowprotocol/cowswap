@@ -9,7 +9,7 @@ import { OrderSurplusDisplay, Props } from '.'
 
 import { ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { RICH_ORDER } from '../../../../test/data'
+import { RICH_ORDER } from '../../../test/data'
 import { Order } from 'api/operator'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 

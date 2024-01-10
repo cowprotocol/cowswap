@@ -1,5 +1,5 @@
 import { RawOrder } from 'api/operator'
-import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
+import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
 
 import { getOrderStatus } from 'utils'
 

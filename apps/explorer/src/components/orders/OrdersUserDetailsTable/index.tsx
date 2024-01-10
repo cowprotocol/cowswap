@@ -20,7 +20,7 @@ import StyledUserDetailsTable, {
 import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
 import Spinner from 'components/common/Spinner'
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 

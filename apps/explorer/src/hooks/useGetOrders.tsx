@@ -3,12 +3,12 @@ import { useState, useEffect, useCallback } from 'react'
 import { Network, UiError } from 'types'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { updateWeb3Provider } from 'api/web3'
-import { web3 } from 'apps/explorer/api'
+import { web3 } from '../explorer/api'
 import { getAccountOrders, getTxOrders, Order } from 'api/operator'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { useNetworkId } from 'state/network'
 import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL, NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
+import { ORDERS_QUERY_INTERVAL, NETWORK_ID_SEARCH_LIST } from '../explorer/const'
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import {
   GetOrderResult,
@@ -64,7 +64,7 @@ interface UseOrdersWithTokenInfo {
 
 export function getTxOrderOnEveryNetworkAndEnvironment(
   networkId: Network,
-  txHash: string,
+  txHash: string
 ): Promise<GetOrderResult<MultipleOrders>> {
   const defaultParams: GetTxOrdersParams = { networkId, txHash }
   const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
@@ -141,7 +141,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
         setIsLoading(false)
       }
     },
-    [setErc20Addresses, setMountNewOrders, setOrders],
+    [setErc20Addresses, setMountNewOrders, setOrders]
   )
 
   useEffect(() => {
@@ -157,7 +157,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
 
 export function useTxOrderExplorerLink(
   txHash: string,
-  isZeroOrders: boolean,
+  isZeroOrders: boolean
 ): ExplorerLinkProps | Record<string, unknown> | undefined {
   const networkId = useNetworkId() || undefined
   const [explorerLink, setExplorerLink] = useState<ExplorerLinkProps | Record<string, unknown> | undefined>()
@@ -192,7 +192,7 @@ export function useGetAccountOrders(
   ownerAddress: string,
   limit = 1000,
   offset = 0,
-  pageIndex?: number,
+  pageIndex?: number
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
   const [isLoading, setIsLoading] = useState(false)
@@ -221,7 +221,7 @@ export function useGetAccountOrders(
         setIsLoading(false)
       }
     },
-    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders],
+    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders]
   )
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { GasFeeDisplay, Props } from '.'
 
-import { RICH_ORDER, WETH } from '../../../../test/data'
+import { RICH_ORDER, WETH } from '../../../test/data'
 import { ZERO_BIG_NUMBER } from 'const'
 
 export default {

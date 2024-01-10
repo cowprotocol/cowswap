@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, PropsWithChildren } from 'react'
 
 const CSS_DEFAULT: CSSProperties = {
   margin: '2rem auto',
@@ -10,6 +10,6 @@ interface Props {
   style?: CSSProperties
 }
 
-export const Frame: React.FC<Props> = ({ style, children }) => (
+export const Frame = ({ style, children }: PropsWithChildren<Props>) => (
   <div style={{ ...CSS_DEFAULT, ...style }}>{children}</div>
 )

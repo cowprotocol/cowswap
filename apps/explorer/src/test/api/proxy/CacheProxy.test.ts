@@ -40,7 +40,7 @@ class TestApiImpl implements TestApi {
   }
 }
 
-function hashFn(..._params: any[]): string {
+function hashFn(..._params: unknown[]): string {
   return 'always the same lol'
 }
 

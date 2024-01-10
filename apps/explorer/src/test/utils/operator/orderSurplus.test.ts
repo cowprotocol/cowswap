@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
 
 import { getOrderSurplus, ZERO_SURPLUS } from 'utils'
 

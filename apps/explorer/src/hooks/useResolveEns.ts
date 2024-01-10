@@ -1,14 +1,14 @@
 import { isAddress } from 'web3-utils'
 import { useState, useEffect } from 'react'
 import { isEns } from 'utils'
-import { resolveENS } from './useSearchSubmit'
+import { web3 } from '../explorer/api'
 
 interface AddressAccount {
   address: string | null
   ens?: string
 }
 
-export function useResolveEns(address: string): AddressAccount | undefined {
+export function useResolveEns(address: string | undefined): AddressAccount | undefined {
   const [addressAccount, setAddressAccount] = useState<AddressAccount | undefined>()
 
   useEffect(() => {
@@ -18,9 +18,10 @@ export function useResolveEns(address: string): AddressAccount | undefined {
     }
 
     setAddressAccount(undefined)
-    if (isEns(address)) {
+
+    if (address && isEns(address)) {
       _resolveENS(address)
-    } else if (isAddress(address)) {
+    } else if (address && isAddress(address)) {
       setAddressAccount({ address })
     } else {
       setAddressAccount({ address: null })
@@ -28,4 +29,16 @@ export function useResolveEns(address: string): AddressAccount | undefined {
   }, [address])
 
   return addressAccount
+}
+
+async function resolveENS(name: string): Promise<string | null> {
+  if (!web3) return null
+
+  try {
+    const address = await web3.eth.ens.getAddress(name)
+    return address && address.length > 0 ? address : null
+  } catch (e) {
+    console.error(`[web3:api] Could not resolve ${name} ENS. `, e)
+    return null
+  }
 }

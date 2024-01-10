@@ -1,5 +1,5 @@
-import { formatPercentage } from '../../../src/utils/format'
 import BigNumber from 'bignumber.js'
+import { formatPercentage } from '../../../utils'
 
 const CASES = [
   { given: '0', result: '0%' },

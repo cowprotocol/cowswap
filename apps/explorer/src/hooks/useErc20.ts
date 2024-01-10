@@ -13,7 +13,7 @@ import {
 
 import { getErc20Info } from 'services/helpers'
 
-import { web3, erc20Api } from 'apps/explorer/api'
+import { web3, erc20Api } from '../explorer/api'
 
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { isNativeToken, retry } from 'utils'
@@ -107,7 +107,7 @@ export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network 
  * Returns `error` with the error messages, if any.
  */
 export function useMultipleErc20(
-  params: UseMultipleErc20Params,
+  params: UseMultipleErc20Params
 ): Return<Record<string, UiError>, Record<string, SingleErc20State>> {
   const { addresses, networkId } = params
 
@@ -137,7 +137,7 @@ export function useMultipleErc20(
         address,
         networkId,
         setError: (error) => setErrors((curr) => ({ ...curr, [address]: error })),
-      }),
+      })
     )
 
     const fetched = await Promise.all(promises)

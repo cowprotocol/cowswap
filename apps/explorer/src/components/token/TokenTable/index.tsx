@@ -16,10 +16,10 @@ import StyledUserDetailsTable, {
 import { media } from 'theme/styles/media'
 import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
-import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
-import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
-import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
-import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { numberFormatter } from '../../../explorer/components/SummaryCardsWidget/utils'
+import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
+import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -227,7 +227,7 @@ function _buildChart(
   chartContainer: HTMLDivElement,
   width: number | undefined,
   height: number,
-  theme: DefaultTheme,
+  theme: DefaultTheme
 ): IChartApi {
   return createChart(chartContainer, {
     width,
@@ -359,7 +359,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
             captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
           >
             {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>,
+          </HeaderValue>
         )}
       </td>
       <td>
@@ -372,7 +372,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
             }
           >
             {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>,
+          </HeaderValue>
         )}
       </td>
       <td>
@@ -401,7 +401,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
             >
               ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
             </TextWithTooltip>
-          </HeaderValue>,
+          </HeaderValue>
         )}
       </td>
       <td>

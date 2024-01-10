@@ -1,1 +1,1 @@
-import './apps/explorer'
+import './explorer'

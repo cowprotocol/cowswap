@@ -11,9 +11,7 @@ interface Props {
 
 function wrapperMemoryRouter(props: Props): JSX.Element {
   return (
-    <>
-      <MemoryRouter initialEntries={[props.mockLocation]}>{props.children}</MemoryRouter>
-    </>
+    <MemoryRouter initialEntries={[props.mockLocation]}>{props.children}</MemoryRouter>
   )
 }
 

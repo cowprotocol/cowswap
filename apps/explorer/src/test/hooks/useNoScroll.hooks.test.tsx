@@ -18,7 +18,7 @@ const TestScrollComponent: React.FC = () => {
   )
 }
 
-let container: HTMLDivElement
+let container: HTMLDivElement | null
 const { classList } = document.body
 
 beforeEach(() => {
@@ -28,8 +28,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  document.body.removeChild(container)
-  // @ts-ignore
+  if (container) {
+    document.body.removeChild(container)
+  }
+
   container = null
 })
 
@@ -40,17 +42,15 @@ it('can render and show proper text', () => {
   })
 
   act(() => {
-    // @ts-ignore
-    ;(global as jest.Global).innerWidth = 450
-    // @ts-ignore
-    ;(global as jest.Global).dispatchEvent(new Event('resize'))
+    global.innerWidth = 450
+    global.dispatchEvent(new Event('resize'))
   })
 
   act(() => {
     ReactDOM.render(<TestScrollComponent />, container)
   })
 
-  expect(innerWidth).toBe(450)
+  expect(global.innerWidth).toBe(450)
 })
 
 it('Body has noScroll deactvated', () => {
@@ -61,10 +61,8 @@ it('On resize to small screens - noScroll is added to body', () => {
   act(() => {
     ReactDOM.render(<TestScrollComponent />, container)
     // RESIZE to small (from 1024)
-    // @ts-ignore
-    ;(global as jest.Global).innerWidth = 450
-    // @ts-ignore
-    ;(global as jest.Global).dispatchEvent(new Event('resize'))
+    global.innerWidth = 450
+    global.dispatchEvent(new Event('resize'))
 
     ReactDOM.render(<TestScrollComponent />, container)
   })
@@ -77,18 +75,14 @@ it('On resize to large screens - noScroll is removed from body', () => {
   expect(classList.contains('noScroll')).toBe(true)
 
   act(() => {
-    // @ts-ignore
-    ;(global as jest.Global).innerWidth = 1200
-    // @ts-ignore
-    ;(global as jest.Global).dispatchEvent(new Event('resize'))
-    expect(innerWidth).toBe(1200)
+    global.innerWidth = 1200
+    global.dispatchEvent(new Event('resize'))
+    expect(global.innerWidth).toBe(1200)
 
     ReactDOM.render(<TestScrollComponent />, container)
     // RESIZE to small (from 1024)
-    // @ts-ignore
-    ;(global as jest.Global).innerWidth = 600
-    // @ts-ignore
-    ;(global as jest.Global).dispatchEvent(new Event('resize'))
+    global.innerWidth = 600
+    global.dispatchEvent(new Event('resize'))
 
     ReactDOM.render(<TestScrollComponent />, container)
   })

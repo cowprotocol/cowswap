@@ -10,7 +10,7 @@ import { ONE_BIG_NUMBER } from 'const'
 
 import { DetailsTable, Props } from '.'
 
-import { RICH_ORDER } from '../../../../test/data'
+import { RICH_ORDER } from '../../../test/data'
 
 export default {
   title: 'orders/DetailsTable',

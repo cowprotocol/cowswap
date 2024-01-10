@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { Search } from 'apps/explorer/components/common/Search'
+import { Search } from '../../../explorer/components/common/Search'
 import SupportIcon from 'assets/img/support.png'
 import { MEDIA } from 'const'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -78,29 +78,26 @@ const Support = styled.a`
     text-decoration: none;
   }
 `
-interface LocationState {
-  referrer: string
-  data: unknown
-}
+
 export const OrderAddressNotFound: React.FC = (): JSX.Element => {
   const { searchString } = useParams<{ searchString: string }>()
-  const location = useLocation<LocationState>()
-  const history = useHistory()
+  const location = useLocation()
+  const navigate = useNavigate()
   const { referrer, data } = location.state || { referrer: null, data: null }
   const wasRedirected = referrer ? true : false
   const showLinkData = referrer === 'tx' && data
   // used after refresh by remove referrer state if was redirected
   useEffect(() => {
     window.addEventListener('beforeunload', () => {
-      history.replace(location.pathname, null)
+      navigate(location.pathname, { replace: true })
     })
 
     return (): void => {
       window.removeEventListener('beforeunload', () => {
-        history.replace(location.pathname, null)
+        navigate(location.pathname, { replace: true })
       })
     }
-  }, [history, location.pathname])
+  }, [navigate, location.pathname])
 
   return (
     <>
@@ -130,7 +127,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
       </Content>
       {showLinkData && (
         <LinkData>
-          This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...(data as never)} />
+          This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...data} />
         </LinkData>
       )}
     </>

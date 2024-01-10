@@ -16,12 +16,12 @@ import { ConnectionStatus } from 'components/ConnectionStatus'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import CowLoading from 'components/common/CowLoading'
-import TablePagination, { PaginationWrapper } from 'apps/explorer/components/common/TablePagination'
-import { useTable } from 'apps/explorer/components/TokensTableWidget/useTable'
-import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+import TablePagination, { PaginationWrapper } from '../../../explorer/components/common/TablePagination'
+import { useTable } from '../../../explorer/components/TokensTableWidget/useTable'
+import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/ExplorerTabs'
 
 import { FillsTableWithData } from './FillsTableWithData'
-import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
+import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -84,7 +84,7 @@ const tabItems = (
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
   isPriceInverted: boolean,
-  invertPrice: () => void,
+  invertPrice: () => void
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
@@ -197,7 +197,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   useEffect(
     () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString],
+    [tabViewSelected, updateQueryString]
   )
 
   if (redirectTo) {
@@ -234,7 +234,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             isOrderLoading,
             onChangeTab,
             isPriceInverted,
-            invertPrice,
+            invertPrice
           )}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}

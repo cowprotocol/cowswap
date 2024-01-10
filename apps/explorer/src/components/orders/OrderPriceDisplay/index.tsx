@@ -10,7 +10,7 @@ import {
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
-} from 'apps/explorer/const'
+} from '../../../explorer/const'
 
 const Wrapper = styled.span`
   display: flex;

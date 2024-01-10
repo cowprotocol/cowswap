@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/explorer"
+        "outputPath": "build/explorer"
       },
       "configurations": {
         "development": {
@@ -53,15 +53,17 @@
       }
     },
     "test": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/jest:jest",
       "options": {
-        "command": "echo \"TODO\""
+        "passWithNoTests": true,
+        "jestConfig": "apps/explorer/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "command": "echo \"TODO\""
+        "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "serve-static": {

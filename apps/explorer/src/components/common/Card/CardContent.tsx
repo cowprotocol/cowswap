@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { media } from 'theme/styles/media'
 
 export type statusType = 'success' | 'danger'
