@@ -15,7 +15,7 @@ export function useGetPermitInfo(chainId: SupportedChainId): (tokenAddress: stri
   const permittableTokens = useAtomValue(permittableTokensAtom)
 
   return useCallback(
-    (tokenAddress: string) => permittableTokens[chainId][tokenAddress.toLowerCase()],
+    (tokenAddress: string) => permittableTokens[chainId]?.[tokenAddress.toLowerCase()],
     [chainId, permittableTokens]
   )
 }

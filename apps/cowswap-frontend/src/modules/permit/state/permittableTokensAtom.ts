@@ -15,7 +15,7 @@ type PermittableTokens = Record<string, PermitInfo>
  * Contains either the permit info for every token checked locally
  */
 
-export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens>>(
+export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens | undefined>>(
   'permittableTokens:v2',
   mapSupportedNetworks({})
 )
@@ -28,7 +28,10 @@ export const addPermitInfoForTokenAtom = atom(
   (get, set, { chainId, tokenAddress, permitInfo }: AddPermitTokenParams) => {
     const permittableTokens = { ...get(permittableTokensAtom) }
 
-    permittableTokens[chainId][tokenAddress.toLowerCase()] = permitInfo
+    permittableTokens[chainId] = {
+      ...permittableTokens[chainId],
+      [tokenAddress.toLowerCase()]: permitInfo,
+    }
 
     set(permittableTokensAtom, permittableTokens)
   }
