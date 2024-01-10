@@ -5,7 +5,7 @@ function getSubgraphUrl(chainId: SupportedChainId, suffix: string): string | nul
 }
 
 /**
- * When value is undefined, then Subgraph is not supported for the network
+ * When value is null, then Subgraph is not supported for the network
  */
 export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
