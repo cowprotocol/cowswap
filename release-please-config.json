@@ -1,5 +1,5 @@
 {
-  "release-search-depth": 5,
+  "bootstrap-sha": "f8bb906f11b926b2d5ae8010acb6e7132062fa5d",
   "packages": {
     "apps/cowswap-frontend": {
       "changelog-path": "CHANGELOG.md",
