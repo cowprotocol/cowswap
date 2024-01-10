@@ -14,15 +14,11 @@ import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
-type LastUpdateTimeAtom = Record<SupportedChainId, number>
-
-const INITIAL_STATE: LastUpdateTimeAtom = mapSupportedNetworks(0)
-
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<LastUpdateTimeAtom>(
+  atomWithStorage<Record<SupportedChainId, number>>(
     'tokens:lastUpdateTimeAtom:v0',
-    INITIAL_STATE,
-    getJotaiMergerStorage(INITIAL_STATE)
+    mapSupportedNetworks(0),
+    getJotaiMergerStorage()
   )
 )
 

@@ -8,9 +8,6 @@ import { PermitInfo } from '@cowprotocol/permit-utils'
 import { AddPermitTokenParams } from '../types'
 
 type PermittableTokens = Record<string, PermitInfo>
-type PermittableTokensAtom = Record<SupportedChainId, PermittableTokens>
-
-const INITIAL_STATE: PermittableTokensAtom = mapSupportedNetworks({})
 
 /**
  * Atom that stores the permittable tokens info for each chain on localStorage.
@@ -19,10 +16,10 @@ const INITIAL_STATE: PermittableTokensAtom = mapSupportedNetworks({})
  * Contains either the permit info for every token checked locally
  */
 
-export const permittableTokensAtom = atomWithStorage<PermittableTokensAtom>(
+export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens>>(
   'permittableTokens:v2',
-  INITIAL_STATE,
-  getJotaiMergerStorage(INITIAL_STATE)
+  mapSupportedNetworks({}),
+  getJotaiMergerStorage()
 )
 
 /**
