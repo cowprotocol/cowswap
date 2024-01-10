@@ -1,12 +1,18 @@
 import { atomWithStorage } from 'jotai/utils'
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { environmentAtom } from '../environmentAtom'
 import { UnsupportedTokensState } from '../../types'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 
-export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, UnsupportedTokensState>>(
+type UnsupportedTokensAtom = Record<SupportedChainId, UnsupportedTokensState>
+
+const INITIAL_STATE: UnsupportedTokensAtom = mapSupportedNetworks({})
+
+export const unsupportedTokensAtom = atomWithStorage<UnsupportedTokensAtom>(
   'unsupportedTokensAtom:v1',
-  mapSupportedNetworks({})
+  INITIAL_STATE,
+  getJotaiMergerStorage(INITIAL_STATE)
 )
 
 export const currentUnsupportedTokensAtom = atom((get) => {

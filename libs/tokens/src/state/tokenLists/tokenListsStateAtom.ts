@@ -5,10 +5,14 @@ import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { ListsSourcesByNetwork, ListState, TokenListsState } from '../../types'
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
+
+const USER_ADDED_LISTS_INITIAL_STATE: ListsSourcesByNetwork = mapSupportedNetworks([])
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v2',
-  mapSupportedNetworks([])
+  USER_ADDED_LISTS_INITIAL_STATE,
+  getJotaiMergerStorage(USER_ADDED_LISTS_INITIAL_STATE)
 )
 
 export const allListsSourcesAtom = atom((get) => {
@@ -18,10 +22,13 @@ export const allListsSourcesAtom = atom((get) => {
   return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
 })
 
+const LIST_STATES_INITIAL_STATE: TokenListsState = mapSupportedNetworks({})
+
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
   'allTokenListsInfoAtom:v2',
-  mapSupportedNetworks({})
+  LIST_STATES_INITIAL_STATE,
+  getJotaiMergerStorage(LIST_STATES_INITIAL_STATE)
 )
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
