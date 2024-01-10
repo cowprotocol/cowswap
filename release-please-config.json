@@ -7,7 +7,7 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "release-search-depth": 20
+      "release-search-depth": 2
     },
     "apps/explorer": {
       "changelog-path": "CHANGELOG.md",
@@ -16,7 +16,7 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "release-search-depth": 20
+      "release-search-depth": 2
     },
     "libs/permit-utils": {
       "changelog-path": "CHANGELOG.md",
@@ -25,7 +25,7 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "release-search-depth": 20
+      "release-search-depth": 2
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
