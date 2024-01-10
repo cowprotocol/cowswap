@@ -28,18 +28,22 @@ export const getJotaiIsolatedStorage = <T>() => {
  *
  * Based on https://github.com/pmndrs/jotai/discussions/1357
  *
- * @param initialState initial state to merge with localStorage info
  * @returns jotai json storage with merged localStorage info and initial state.
  *
  * @example
  * const storage = getJotaiMergerStorage({ foo: 'bar' })
  */
-export function getJotaiMergerStorage<T>(initialState: T) {
+export function getJotaiMergerStorage<T>() {
   const storage = createJSONStorage<T>(() => localStorage)
 
-  function getItem(key: string) {
-    const value = storage.getItem(key, initialState)
-    return { ...value, ...initialState }
+  function getItem(key: string, initial: T) {
+    const value = storage.getItem(key, initial)
+
+    const r = { ...initial, ...value }
+
+    console.log(`jotaiStore: ${key}`, value, initial, r)
+
+    return r
   }
 
   return { ...storage, getItem }
