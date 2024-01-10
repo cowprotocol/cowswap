@@ -23,10 +23,6 @@ export default defineConfig({
     DEX_JS_VERSION: `'${DEX_JS_VERSION}'`,
   },
 
-  resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
-  },
-
   server: {
     port: 4200,
     host: 'localhost',
