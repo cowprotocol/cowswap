@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-10)
+
+
+### Features
+
+* **explorer:** update project and migrate to vite ([#3579](https://github.com/cowprotocol/cowswap/issues/3579)) ([3056162](https://github.com/cowprotocol/cowswap/commit/30561629f872612e85d64757004d9400f1600781))
+* **fee=0:** classify order types ([#3559](https://github.com/cowprotocol/cowswap/issues/3559)) ([a2f8def](https://github.com/cowprotocol/cowswap/commit/a2f8def2f203301885e4548b49f73336abbabe21))
+* **limit:** max limit order deadline ([#3567](https://github.com/cowprotocol/cowswap/issues/3567)) ([1428596](https://github.com/cowprotocol/cowswap/commit/1428596de28027ea36edbb8a912e7d27750b70d3))
+* **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
+* **surplus:** update surplus percentage calculation ([#3548](https://github.com/cowprotocol/cowswap/issues/3548)) ([3d6dc3d](https://github.com/cowprotocol/cowswap/commit/3d6dc3da1927b9debcbb0458991f18a90c749ca8))
+* **twap:** unlimited twap deadline ([#3568](https://github.com/cowprotocol/cowswap/issues/3568)) ([378977c](https://github.com/cowprotocol/cowswap/commit/378977cf0a4d71f165d968d5b665ad6bb524ba67))
+* **widget:** custom token lists in widget ([#3390](https://github.com/cowprotocol/cowswap/issues/3390)) ([7eabe06](https://github.com/cowprotocol/cowswap/commit/7eabe06d043703718d742809791eda555dff5058))
+
+
+### Bug Fixes
+
+* disable Christmas theme ([#3582](https://github.com/cowprotocol/cowswap/issues/3582)) ([94643fb](https://github.com/cowprotocol/cowswap/commit/94643fb3ca77aea37b772d823cc48665b441eeaa))
+* **limit:** show price impact warning for Safe App when bundling ([#3571](https://github.com/cowprotocol/cowswap/issues/3571)) ([98a11e7](https://github.com/cowprotocol/cowswap/commit/98a11e7f9d41442db9c2ced08430813afce85572))
+* **permit:** report wrong permit to sentry for limit and swap flows ([#3565](https://github.com/cowprotocol/cowswap/issues/3565)) ([7067919](https://github.com/cowprotocol/cowswap/commit/706791978ca2e3412ceb33b5a1ff1ed878dd7f84))
+* **swap:** disable eth flow selling on buy orders ([#3574](https://github.com/cowprotocol/cowswap/issues/3574)) ([17f484b](https://github.com/cowprotocol/cowswap/commit/17f484b4162f0a25f655b49902cf4a33b468db33))
+
 ## [1.54.2](https://github.com/cowprotocol/cowswap/compare/v1.54.1...v1.54.2) (2024-01-08)
 
 
