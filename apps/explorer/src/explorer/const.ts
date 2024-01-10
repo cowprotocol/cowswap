@@ -1,5 +1,3 @@
-import { AnalyticsDimension, Network } from '../types'
-
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
 export const ORDERS_QUERY_INTERVAL = 30000 // in ms
