@@ -7,6 +7,10 @@ on:
         description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
         required: true
         type: string
+      app:
+        description: 'Application to deploy. Options are: all, cowswap, explorer, and widget'
+        required: true
+        type: string
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -17,13 +21,17 @@ jobs:
     environment: ${{ inputs.env_name }} # Environment rules defined on GH UI
     concurrency: ${{ inputs.env_name }} # Only one run per env at a time
 
+    strategy:
+      matrix:
+        project_suffix: ${{ inputs.app == 'all' && [cowswap, explorer, widget] || [input.app] }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set VERCEL_PROJECT_ID env var
         # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
-        run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+        run: echo "VERCEL_PROJECT_ID=${{ secrets[format('VERCEL_PROJECT_ID_{0}', matrix.project_suffix)] }}" >> $GITHUB_ENV
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
