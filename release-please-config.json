@@ -7,7 +7,7 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "bootstrap-sha": "385417f5afd830a62a0b06c9e620a78be3c1ccdd"
+      "last-release-sha": "385417f5afd830a62a0b06c9e620a78be3c1ccdd"
     },
     "apps/explorer": {
       "changelog-path": "CHANGELOG.md",
