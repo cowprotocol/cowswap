@@ -1,7 +1,7 @@
 {
   "name": "cowswap-monorepo",
   "version": "2.0.0",
-  "description": "CoW Swap Protocol",
+  "description": "CoW Protocol",
   "main": "index.js",
   "author": "",
   "license": "ISC",
