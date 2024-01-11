@@ -1,8 +1,4 @@
 // this is not used for now. we use "craco test", but eventually we will
-import { loadConfig } from './loadConfig'
-
-const CONFIG = loadConfig()
-
 /* eslint-disable */
 export default {
   displayName: 'explorer',
@@ -15,5 +11,4 @@ export default {
   coverageDirectory: '../../coverage/explorer',
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   setupFiles: ['dotenv/config'],
-  globals: { CONFIG },
 }
