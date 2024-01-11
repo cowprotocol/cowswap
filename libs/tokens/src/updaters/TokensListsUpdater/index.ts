@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import useSWR, { SWRConfiguration } from 'swr'
 import { useEffect } from 'react'
 
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { fetchTokenList } from '../../services/fetchTokenList'
@@ -12,9 +12,14 @@ import { ListState } from '../../types'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, number>>('tokens:lastUpdateTimeAtom:v0', mapSupportedNetworks(0))
+  atomWithStorage<Record<SupportedChainId, number>>(
+    'tokens:lastUpdateTimeAtom:v0',
+    mapSupportedNetworks(0),
+    getJotaiMergerStorage()
+  )
 )
 
 const swrOptions: SWRConfiguration = {
