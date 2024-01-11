@@ -18,7 +18,7 @@ import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { NETWORK_OPTIONS } from '../consts/network'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
 
-const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
+const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
 if (SENTRY_DSN) {
