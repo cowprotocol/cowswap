@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        project_suffix: ${{ inputs.app == 'ALL' && [COWSWAP, EXPLORER] || [input.app] }}
+        project_suffix: ${{ inputs.app == 'ALL' && fromJSON('["COWSWAP", "EXPLORER"]') || (inputs.app) }}
 
     steps:
       - name: Checkout code
