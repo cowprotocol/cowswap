@@ -5,20 +5,24 @@ import { useLocation } from 'react-router-dom'
 import { setNetwork } from './actions'
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
-import { Network } from '../../types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CHAIN_ID_TO_URL_PREFIX, NETWORK_PREFIXES } from '../../consts/network'
 
-const MAINNET_PREFIX = ''
-const NETWORK_PREFIXES_RAW: [Network, string][] = [
-  [Network.MAINNET, ''],
-  [Network.GNOSIS_CHAIN, 'gc'],
-  [Network.GOERLI, 'goerli'],
-]
-const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
+const MAINNET_PREFIX = CHAIN_ID_TO_URL_PREFIX[SupportedChainId.MAINNET]
+const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_ID_TO_URL_PREFIX).map((key) => [
+  key as unknown as SupportedChainId,
+  CHAIN_ID_TO_URL_PREFIX[key],
+])
+const NETWORK_ID_BY_PREFIX: Map<string, SupportedChainId> = new Map(
+  NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key])
+)
 
-function getNetworkId(network = MAINNET_PREFIX): Network {
+function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
   const networkId = NETWORK_ID_BY_PREFIX.get(network)
-  return networkId || Network.MAINNET
+  return networkId || SupportedChainId.MAINNET
 }
+
+const NETWORK_MATCH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})`)
 
 export const NetworkUpdater: React.FC = () => {
   // TODO: why not using useDispatch from https://react-redux.js.org/introduction/quick-start
@@ -28,7 +32,7 @@ export const NetworkUpdater: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const networkMatchArray = location.pathname.match('^/(gc|goerli)')
+    const networkMatchArray = location.pathname.match(NETWORK_MATCH_REGEX)
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
     const networkId = getNetworkId(network)
 

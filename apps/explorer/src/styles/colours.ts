@@ -5,6 +5,7 @@ export const COLOURS = {
   blueDark: '#185afb',
   gnosisChainColor: '#07795b',
   goerliColor: 'rgb(47, 153, 242)',
+  sepoliaColor: 'rgb(193,47,242)',
   purple: '#8958FF',
   bgLight: '#edf2f7',
   bgDark: 'linear-gradient(0deg, #21222E 0.05%, #2C2D3F 100%)',

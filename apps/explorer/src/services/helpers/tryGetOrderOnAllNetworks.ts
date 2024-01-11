@@ -1,6 +1,6 @@
 import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
-import { NETWORK_ID_SEARCH_LIST } from '../../explorer/const'
 import { Network } from 'types'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 export type SingleOrder = RawOrder | null
 export type MultipleOrders = RawOrder[] | null
@@ -26,7 +26,7 @@ export type GetOrderApi<T, R> = {
 export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkId: Network,
   getOrderApi: GetOrderApi<GetOrderParams, TypeOrderResult> | GetOrderApi<GetTxOrdersParams, TypeOrderResult>,
-  networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST
+  networkIdSearchListRemaining: Network[] = ALL_SUPPORTED_CHAIN_IDS
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
   let order: TypeOrderResult | null = null
