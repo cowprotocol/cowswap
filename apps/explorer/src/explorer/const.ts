@@ -1,5 +1,3 @@
-import { AnalyticsDimension, Network } from '../types'
-
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
 export const ORDERS_QUERY_INTERVAL = 30000 // in ms
@@ -15,14 +13,6 @@ export const HIGH_PRECISION_DECIMALS = 8 // display stuff with up to 8 digits: 0
 export const HIGH_PRECISION_SMALL_LIMIT = '0.00000001' // what is considered too small. See https://github.com/gnosis/dex-js/blob/master/src/utils/format.ts#L78-L80
 export const PERCENTAGE_PRECISION = -2 // assumes 100% === 1; 1/10^-2 => 100
 export const NO_ADJUSTMENT_NEEDED_PRECISION = 0 // 1.4 => 1.4
-
-// Analytics
-export const DIMENSION_NAMES = {
-  [AnalyticsDimension.NETWORK]: 'dimension1',
-  [AnalyticsDimension.BROWSER_TYPE]: 'dimension2',
-}
-
-export const NETWORK_ID_SEARCH_LIST = [Network.MAINNET, Network.GNOSIS_CHAIN, Network.GOERLI]
 
 // Estimation heigh of the header + footer space
 export const HEIGHT_HEADER_FOOTER = 257
