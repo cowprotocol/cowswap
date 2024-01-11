@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       app:
-        description: 'Application to deploy. Options are: all, cowswap, explorer, and widget'
+        description: 'Application to deploy. Options are: ALL, COWSWAP, EXPLORER'
         required: true
         type: string
 
