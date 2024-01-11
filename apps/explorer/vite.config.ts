@@ -18,6 +18,10 @@ export default defineConfig(({ mode }) => {
     base: './',
     cacheDir: '../../node_modules/.vite/explorer',
 
+    resolve: {
+      extensions: mode === 'development' ? ['.js', '.ts', '.jsx', '.tsx', '.json'] : undefined,
+    },
+
     define: {
       ...getReactProcessEnv(mode),
       CONFIG,
