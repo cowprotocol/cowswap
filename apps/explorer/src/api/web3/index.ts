@@ -1,10 +1,8 @@
 import Web3 from 'web3'
-import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { parseUserAgent } from 'detect-browser'
 
-import { Network } from 'types'
-
 import { ETH_NODE_URL, INFURA_ID } from 'const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 // TODO connect to mainnet if we need AUTOCONNECT at all
 export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
@@ -44,14 +42,21 @@ export function createWeb3Api(provider?: string): Web3 {
   return web3
 }
 
-function infuraProvider(networkId: Network): string {
+const INFURA_NETWORK_NAME_MAP: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: 'Mainnet',
+  [SupportedChainId.GNOSIS_CHAIN]: 'xDai',
+  [SupportedChainId.GOERLI]: 'Goerli',
+  [SupportedChainId.SEPOLIA]: 'Sepolia',
+}
+
+function infuraProvider(networkId: SupportedChainId): string {
   // INFURA_ID relies on mesa `config` file logic.
   // We can be independent of that config by relying on the env var directly
   if (!INFURA_ID) {
     throw new Error(`INFURA_ID not set`)
   }
 
-  const network = getNetworkFromId(networkId).toLowerCase()
+  const network = INFURA_NETWORK_NAME_MAP[networkId]
 
   if (isWebsocketConnection()) {
     return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
@@ -84,23 +89,19 @@ function isWebsocketConnection(): boolean {
 }
 
 // For now only infura provider is available
-export function getProviderByNetwork(networkId: Network | null): string | undefined {
-  switch (networkId) {
-    case Network.MAINNET:
-    case Network.GOERLI:
-      return infuraProvider(networkId)
-    case Network.GNOSIS_CHAIN:
-      return 'https://rpc.gnosis.gateway.fm/'
-    default:
-      return undefined
+export function getProviderByNetwork(networkId: SupportedChainId): string | undefined {
+  if (networkId === SupportedChainId.GNOSIS_CHAIN) {
+    return 'https://rpc.gnosis.gateway.fm/'
   }
+
+  return infuraProvider(networkId)
 }
 
 // Approach 2: update the provider in a single web3 instance
 // Advantage is that regular APIs that require web3 instance should work without any changes
 // Also, there's no change to consumers currently importing from <app>/api module
 // Side effect is applied at reducer level (state/network/updater module)
-export function updateWeb3Provider(web3: Web3, networkId?: Network | null): void {
+export function updateWeb3Provider(web3: Web3, networkId?: SupportedChainId | null): void {
   if (!networkId) {
     return
   }

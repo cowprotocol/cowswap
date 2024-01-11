@@ -5,42 +5,18 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
 import { replaceURL } from 'utils/url'
 import { NO_REDIRECT_HOME_ROUTES } from 'const'
-import { Network } from 'types'
 import { cleanNetworkName } from 'utils'
+import { NETWORK_OPTIONS } from '../../consts/network'
 
 type networkSelectorProps = {
   networkId: number
 }
 
-type NetworkOptions = {
-  id: Network
-  name: string
-  url: string
-}
-
-export const networkOptions: NetworkOptions[] = [
-  {
-    id: Network.MAINNET,
-    name: 'Ethereum',
-    url: '',
-  },
-  {
-    id: Network.GNOSIS_CHAIN,
-    name: 'Gnosis Chain',
-    url: 'gc',
-  },
-  {
-    id: Network.GOERLI,
-    name: 'Görli',
-    url: 'goerli',
-  },
-]
-
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
-  const name = networkOptions.find((network) => network.id === networkId)?.name.toLowerCase()
+  const name = NETWORK_OPTIONS.find((network) => network.id === networkId)?.name.toLowerCase()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -77,7 +53,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
-          {networkOptions.map((network) => (
+          {NETWORK_OPTIONS.map((network) => (
             <Option onClick={(): void => redirectToNetwork(network.url, networkId)} key={network.id}>
               <div className={`dot ${cleanNetworkName(network.name)} `} />
               <div className={`name ${network.id === networkId && 'selected'}`}>{network.name}</div>

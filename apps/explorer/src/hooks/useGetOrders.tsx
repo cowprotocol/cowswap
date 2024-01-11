@@ -8,7 +8,7 @@ import { getAccountOrders, getTxOrders, Order } from 'api/operator'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { useNetworkId } from 'state/network'
 import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL, NETWORK_ID_SEARCH_LIST } from '../explorer/const'
+import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import {
   GetOrderResult,
@@ -16,6 +16,7 @@ import {
   GetOrderApi,
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -165,7 +166,7 @@ export function useTxOrderExplorerLink(
   useEffect(() => {
     if (!networkId || !isZeroOrders) return
 
-    for (const network of NETWORK_ID_SEARCH_LIST) {
+    for (const network of ALL_SUPPORTED_CHAIN_IDS) {
       //update provider to find tx in network
       updateWeb3Provider(web3, network)
       web3.eth.getTransaction(txHash).then((tx) => {

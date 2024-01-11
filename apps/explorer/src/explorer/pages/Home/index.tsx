@@ -8,11 +8,12 @@ import { useNetworkId } from '../../../state/network'
 import { TokensTableWidget } from '../../components/TokensTableWidget'
 import { Helmet } from 'react-helmet'
 import { APP_TITLE } from '../../const'
+import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
   flex-flow: column wrap;
-  justify-content: flex-start;
+  justify-content: center;
   display: flex;
   padding-top: 10rem;
 
@@ -49,6 +50,8 @@ const SummaryWrapper = styled.section`
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
+  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== null
+
   return (
     <Wrapper>
       <Helmet>
@@ -57,8 +60,12 @@ export const Home: React.FC = () => {
       <h1>Search on CoW Protocol Explorer</h1>
       <Search className="home" />
       <SummaryWrapper>
-        <StatsSummaryCardsWidget />
-        <TokensTableWidget networkId={networkId} />
+        {showCharts && (
+          <>
+            <StatsSummaryCardsWidget />
+            <TokensTableWidget networkId={networkId} />
+          </>
+        )}
       </SummaryWrapper>
     </Wrapper>
   )

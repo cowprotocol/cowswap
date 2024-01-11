@@ -39,15 +39,15 @@ export async function getErc20Info({ tokenAddress, networkId, erc20Api, web3 }: 
   const [symbol, name, decimals] = await Promise.all([
     silentPromise(
       retry(() => erc20Api.symbol({ tokenAddress, networkId }), retryOptions),
-      errorMsg,
+      errorMsg
     ),
     silentPromise(
       retry(() => erc20Api.name({ tokenAddress, networkId }), retryOptions),
-      errorMsg,
+      errorMsg
     ),
     silentPromise(
       retry(() => erc20Api.decimals({ tokenAddress, networkId }), retryOptions),
-      errorMsg,
+      errorMsg
     ),
   ])
 

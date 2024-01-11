@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
@@ -12,6 +11,7 @@ import { useNetworkId } from 'state/network'
 import { footerConfig } from '../Footer/config'
 import { Network } from 'types'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 
 const FooterStyled = styled.footer`
   display: flex;
@@ -120,8 +120,9 @@ export interface FooterType {
 export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const networkId = useNetworkId() || Network.MAINNET
-  const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
-  const vaultRelayerContractAddress = getGpV2ContractAddress(networkId, 'GPv2VaultRelayer')
+  const settlementContractAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
+  const vaultRelayerContractAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[networkId]
+
   return (
     <FooterStyled>
       {isBeta && <BetaWrapper>This project is in beta. Use at your own risk.</BetaWrapper>}
