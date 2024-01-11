@@ -1,14 +1,16 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Token } from '@uniswap/sdk-core'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
   'userAddedTokensAtom:v1',
-  mapSupportedNetworks({})
+  mapSupportedNetworks({}),
+  getJotaiMergerStorage()
 )
 
 export const userAddedTokensListAtom = atom((get) => {
