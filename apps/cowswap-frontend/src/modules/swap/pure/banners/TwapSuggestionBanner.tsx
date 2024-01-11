@@ -1,12 +1,12 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { parameterizeTradeSearch } from 'modules/trade/utils/parameterizeTradeSearch'
 
 import { Routes } from 'common/constants/routes'
 import { InlineBanner } from 'common/pure/InlineBanner'
@@ -52,7 +52,12 @@ export function TwapSuggestionBanner({
   if (!shouldSuggestTwap) return null
 
   const routePath =
-    parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) + `?${TRADE_URL_SELL_AMOUNT_KEY}=${sellAmount}`
+    parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) +
+    '?' +
+    parameterizeTradeSearch('', {
+      amount: sellAmount,
+      kind: OrderKind.SELL,
+    })
 
   return (
     <InlineBanner bannerType="alert" iconSize={32}>
