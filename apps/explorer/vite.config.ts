@@ -11,7 +11,6 @@ import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json
 import { version as DEX_JS_VERSION } from '@gnosis.pm/dex-js/package.json'
 
 const CONFIG = loadConfig()
-const APP_DATA_SCHEMAS_PATH = 'node_modules/@cowprotocol/app-data/schemas'
 
 export default defineConfig({
   base: './',
@@ -32,7 +31,6 @@ export default defineConfig({
         // search up for workspace root
         searchForWorkspaceRoot(process.cwd()),
         // your custom rules
-        APP_DATA_SCHEMAS_PATH,
         'apps/explorer/src',
         'libs',
       ],
@@ -59,7 +57,7 @@ export default defineConfig({
     }),
     dynamicImport({
       filter(id) {
-        if (id.includes(APP_DATA_SCHEMAS_PATH)) {
+        if (id.includes('/node_modules/@cowprotocol')) {
           return true
         }
       },
