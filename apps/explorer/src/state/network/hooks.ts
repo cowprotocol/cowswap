@@ -5,7 +5,7 @@ import { Network } from 'types'
 export function useNetworkId(): Network | null {
   const [{ networkId }] = useGlobalState<ExplorerAppState>()
 
-  return networkId
+  return networkId ? +networkId : networkId
 }
 
 export function useNetworkOrDefault(): Network {

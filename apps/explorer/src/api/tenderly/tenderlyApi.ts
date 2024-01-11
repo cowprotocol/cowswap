@@ -1,5 +1,4 @@
 import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, TENDERLY_API_URL } from 'const'
-import { Network } from 'types'
 import { fetchQuery } from 'api/baseApi'
 import {
   Account,
@@ -14,59 +13,56 @@ import {
 } from './types'
 import { abbreviateString } from 'utils'
 import { SPECIAL_ADDRESSES } from '../../explorer/const'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
-const API_BASE_URLs = _urlAvailableNetwork()
 
-function _urlAvailableNetwork(): Partial<Record<Network, string>> {
-  const urlNetwork = (_networkId: Network): string => `${TENDERLY_API_URL}/${_networkId}`
+const API_BASE_URLs: Record<SupportedChainId, string> = mapSupportedNetworks(
+  (_networkId: SupportedChainId): string => `${TENDERLY_API_URL}/${_networkId}`
+)
 
-  return {
-    [Network.MAINNET]: urlNetwork(Network.MAINNET),
-    [Network.GNOSIS_CHAIN]: urlNetwork(Network.GNOSIS_CHAIN),
-    [Network.GOERLI]: urlNetwork(Network.GOERLI),
-  }
-}
-
-function _getApiBaseUrl(networkId: Network): string {
+function _getApiBaseUrl(networkId: SupportedChainId): string {
   const baseUrl = API_BASE_URLs[networkId]
 
   if (!baseUrl) {
-    throw new Error('Unsupported Network. The tenderly API is not available in the Network ' + networkId)
+    throw new Error('Unsupported Network. The tenderly API is not available in the SupportedChainId ' + networkId)
   } else {
     return baseUrl
   }
 }
 
-function _get(networkId: Network, url: string): Promise<Response> {
+function _get(networkId: SupportedChainId, url: string): Promise<Response> {
   const baseUrl = _getApiBaseUrl(networkId)
   return fetch(baseUrl + url)
 }
 
-function _fetchTrace(networkId: Network, txHash: string): Promise<Trace> {
+function _fetchTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
   const queryString = `/trace/${txHash}`
   console.log(`[tenderlyApi:fetchTrace] Fetching trace tx ${txHash} on network ${networkId}`)
 
   return fetchQuery<Trace>({ get: () => _get(networkId, queryString) }, queryString)
 }
 
-function _fetchTradesAccounts(networkId: Network, txHash: string): Promise<Contract[]> {
+function _fetchTradesAccounts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
   const queryString = `/tx/${txHash}/contracts`
   console.log(`[tenderlyApi:fetchTradesAccounts] Fetching tx trades account on network ${networkId}`)
 
   return fetchQuery<Array<Contract>>({ get: () => _get(networkId, queryString) }, queryString)
 }
 
-export async function getTransactionTrace(networkId: Network, txHash: string): Promise<Trace> {
+export async function getTransactionTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
   return _fetchTrace(networkId, txHash)
 }
 
-export async function getTransactionContracts(networkId: Network, txHash: string): Promise<Contract[]> {
+export async function getTransactionContracts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
   return _fetchTradesAccounts(networkId, txHash)
 }
 
-export async function getTradesAndTransfers(networkId: Network, txHash: string): Promise<TxTradesAndTransfers> {
+export async function getTradesAndTransfers(
+  networkId: SupportedChainId,
+  txHash: string
+): Promise<TxTradesAndTransfers> {
   const trace = await _fetchTrace(networkId, txHash)
 
   return traceToTransfersAndTrades(trace)
@@ -129,7 +125,7 @@ export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
 }
 
 export async function getTradesAccount(
-  networkId: Network,
+  networkId: SupportedChainId,
   txHash: string,
   trades: Array<Trade>,
   transfers: Array<Transfer>

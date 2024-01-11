@@ -1,7 +1,6 @@
 import { Network } from '../../../types'
 import { Order } from '../../../api/operator'
 import { ElementDefinition } from 'cytoscape'
-import { networkOptions } from '../../../components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from './elementsBuilder'
 import {
   BuildNodesFn,
@@ -21,6 +20,7 @@ import { Account, ALIAS_TRADER_NAME, Trade, Transfer } from '../../../api/tender
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
 import { SingleErc20State } from '../../../state/erc20'
+import { NETWORK_OPTIONS } from '../../../consts/network'
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -33,7 +33,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
 ): ElementDefinition[] {
   if (!txSettlement.accounts) return []
 
-  const networkName = networkOptions.find((network) => network.id === networkId)?.name
+  const networkName = NETWORK_OPTIONS.find((network) => network.id === networkId)?.name
   const networkNode = { alias: `${networkName} Liquidity` || '' }
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
@@ -365,7 +365,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   heightSize: number,
   layout: string
 ): ElementDefinition[] {
-  const networkName = networkOptions.find((network) => network.id === networkId)?.name
+  const networkName = NETWORK_OPTIONS.find((network) => network.id === networkId)?.name
   const networkNode = { alias: `${networkName} Liquidity` || '' }
   const builder = new ElementsBuilder(heightSize)
 

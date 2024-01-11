@@ -10,9 +10,7 @@ interface Props {
 }
 
 function wrapperMemoryRouter(props: Props): JSX.Element {
-  return (
-    <MemoryRouter initialEntries={[props.mockLocation]}>{props.children}</MemoryRouter>
-  )
+  return <MemoryRouter initialEntries={[props.mockLocation]}>{props.children}</MemoryRouter>
 }
 
 describe('useDecomposedPath', () => {
@@ -45,7 +43,7 @@ describe('useDecomposedPath', () => {
 
 describe('usePathPrefix', () => {
   it('should return network prefix when it matches the regex', () => {
-    const networkPrefix = '/xdai'
+    const networkPrefix = '/sepolia'
     const pathSuffix = '/address/123'
     const mockLocation = networkPrefix + pathSuffix
 
@@ -70,7 +68,7 @@ describe('usePathPrefix', () => {
 
 describe('usePathSuffix', () => {
   it('should return paht suffix', () => {
-    const networkPrefix = '/xdai'
+    const networkPrefix = '/gc'
     const pathSuffix = '/address/123'
     const mockLocation = networkPrefix + pathSuffix
 
@@ -82,7 +80,7 @@ describe('usePathSuffix', () => {
   })
 
   it('should return undefined when it does not match regex', () => {
-    const mockLocation = '/xdai'
+    const mockLocation = '/gc'
 
     //when
     const { result } = renderHook(() => usePathSuffix(), {

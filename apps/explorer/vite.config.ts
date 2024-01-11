@@ -34,7 +34,6 @@ export default defineConfig(({ mode }) => {
           // search up for workspace root
           searchForWorkspaceRoot(process.cwd()),
           // your custom rules
-          'node_modules/@cowprotocol/app-data/schemas',
           'apps/explorer/src',
           'libs',
         ],
