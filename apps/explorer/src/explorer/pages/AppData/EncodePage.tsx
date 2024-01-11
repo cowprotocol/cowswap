@@ -103,7 +103,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   useEffect(() => {
     setIsLoading(true)
 
-    // Get the fullAppData (dermenistic stringify JSON)
+    // Get the fullAppData (deterministic stringify JSON)
     _toFullAppData(appDataForm)
       .then((fullAppData) => {
         // Update the fullAppData
@@ -133,11 +133,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     []
   )
 
-  // const handleIPFSErrors = useCallback(
-  //   (_: FormProps, errors: FormValidation): FormValidation => handleErrors(ipfsFormRef, errors, setDisabledIPFS),
-  //   [],
-  // )
-
   const handleOnChange = useCallback(
     ({ formData }: FormProps): void => {
       const resetFormFields = (form: string): void => {
@@ -156,34 +151,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     },
     [ipfsHashInfo]
   )
-
-  // const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
-  //   setIpfsCredentials(ipfsData)
-  //   if (JSON.stringify(ipfsData) !== JSON.stringify({})) {
-  //     setDisabledIPFS(false)
-  //   }
-  // }, [])
-
-  // const onUploadToIPFS = useCallback(
-  //   async ({ formData }: FormProps): Promise<void> => {
-  //     if (!ipfsHashInfo) return
-  //     setIsLoading(true)
-  //     try {
-  //       await metadataApiSDK.uploadMetadataDocToIpfsLegacy(handleFormatData(appDataForm), formData)
-  //       setIsDocUploaded(true)
-  //     } catch (e) {
-  //       if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
-  //         e.message = 'Invalid API keys provided.'
-  //       }
-  //       setError(e.message)
-  //       setIsDocUploaded(false)
-  //     } finally {
-  //       setIsLoading(false)
-  //       toggleInvalid({ ipfs: true })
-  //     }
-  //   },
-  //   [appDataForm, ipfsHashInfo],
-  // )
 
   return (
     <>
@@ -319,91 +286,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           </div>
         </AppDataWrapper>
       </div>
-      {/* <div className="ipfs-container">
-        {ipfsHashInfo && (
-          <>
-            <IpfsWrapper>
-              <div className="info-header inner-form">
-                <h2>IPFS UPLOAD</h2>
-                <p>
-                  We offer an integrated way to upload the generated file to IPFS directly through
-                  <a target="_blank" href="https://docs.pinata.cloud/pinata-api" rel="noreferrer">
-                    Pinata’s
-                  </a>
-                  API.
-                </p>
-                <p>
-                  Insert your credentials and hit upload. The resulting <strong>appData</strong> hash is displayed on
-                  the generated section.
-                </p>
-                <p>
-                  Once uploaded, you can use the <strong>appData</strong> hash in the
-                  <a onClick={(): void => handleTabChange(TabView.DECODE)}>Decode</a>
-                  tab to verify it.
-                </p>
-              </div>
-              <Form
-                className="data-form"
-                showErrorList={false}
-                onSubmit={onUploadToIPFS}
-                liveValidate={invalidFormDataAttempted.ipfs}
-                onChange={handleIPFSOnChange}
-                formData={ipfsCredentials}
-                validate={handleIPFSErrors}
-                fields={{ cField: CustomField }}
-                ref={ipfsFormRef}
-                noHtml5Validate
-                onError={(): void => toggleInvalid({ ipfs: true })}
-                transformErrors={transformErrors}
-                schema={ipfsSchema}
-                uiSchema={ipfsUiSchema}
-              >
-                <span className="disclaimer">
-                  <strong>Notes:</strong>
-                  <ol>
-                    <li>
-                      The credentials are kept in memory only while you are at this page. When you navigate away or
-                      close the browser tab it’ll be cleared.
-                    </li>
-                    <li>
-                      If you upload the file directly, the resulting hash/appDataHash might differ. The hash/IPFS CID
-                      calculated by the tool is a minified and stringified file without a new line at the end. That
-                      means that you will get different results if the file is uploaded directly as a file.
-                    </li>
-                  </ol>
-                </span>
-                <button className="btn btn-info" disabled={disabledIPFS} type="submit">
-                  UPLOAD APPDATA TO IPFS
-                </button>
-              </Form>
-            </IpfsWrapper>
-          </>
-        )}
-        {isDocUploaded && (
-          <>
-            <RowWithCopyButton
-              className="appData-hash"
-              textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cid}`}
-              contentsToDisplay={
-                <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cid}`} target="_blank" rel="noopener noreferrer">
-                  {ipfsHashInfo?.cid}
-                </a>
-              }
-            />
-            <Notification
-              type="success"
-              message="Document uploaded successfully!"
-              closable={false}
-              appendMessage={false}
-            />
-          </>
-        )}
-        {isLoading && <Spinner />}
-        {error && !isDocUploaded && (
-          <Notification type="error" message={error} closable={false} appendMessage={false} />
-        )}
-      </div>
-      */}
     </>
   )
 }

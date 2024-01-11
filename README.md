@@ -47,6 +47,23 @@ yarn build
 yarn test
 ```
 
+# 🔎 Explorer
+
+Start the Explorer on http://localhost:4200
+
+[Read more about the Explorer](apps/explorer/README.md)
+
+### Start
+```bash
+yarn start:explorer
+```
+
+### Build
+```bash
+yarn build:explorer
+```
+
+
 # 🖼️ Widget Configurator
 
 Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
