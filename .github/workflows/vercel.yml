@@ -41,6 +41,7 @@ jobs:
 
       - name: Build Project Artifacts
         run: >
+        # CoWSwap env vars
           REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
           REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
@@ -53,6 +54,14 @@ jobs:
           REACT_APP_NETWORK_URL_5=${{ secrets.REACT_APP_NETWORK_URL_5 }}
           REACT_APP_NETWORK_URL_11155111=${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
           REACT_APP_WC_PROJECT_ID=${{ secrets.REACT_APP_WC_PROJECT_ID }}
+        # Explorer env vars
+          REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
+          REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          REACT_APP_SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+          REACT_APP_EXPLORER_GOOGLE_ANALYTICS_ID=${{ secrets.EXPLORER_GOOGLE_ANALYTICS_ID }}
+          REACT_APP_SUBGRAPH_URL_MAINNET=${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
+          REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN=${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
+          REACT_APP_SUBGRAPH_URL_GOERLI=${{ secrets.REACT_APP_SUBGRAPH_URL_GOERLI }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version
