@@ -17,6 +17,7 @@ import {
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
+import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -100,6 +101,9 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { state } = useDerivedTradeState()
   const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
 
+  // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
+  const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken
+
   const isVisible =
     showPriceImpactWarning ||
     rateImpact < 0 ||
@@ -107,7 +111,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
     shouldZeroApprove ||
-    showRecipientWarning
+    showRecipientWarning ||
+    showNativeSellWarning
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -156,6 +161,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
+      {showNativeSellWarning && <SellNativeWarningBanner />}
     </Wrapper>
   ) : null
 }

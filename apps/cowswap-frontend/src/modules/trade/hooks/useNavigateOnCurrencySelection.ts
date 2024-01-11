@@ -6,13 +6,16 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { useTradeNavigate } from './useTradeNavigate'
+import { useTradeState } from './useTradeState'
+
+import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
 export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
-  stateUpdateCallback?: () => void
+  stateUpdateCallback?: () => void,
+  searchParams?: TradeSearchParams
 ) => void
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
@@ -40,7 +43,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
-    (field: Field, currency: Currency | null, stateUpdateCallback?: () => void) => {
+    (field: Field, currency: Currency | null, stateUpdateCallback?: () => void, searchParams?: TradeSearchParams) => {
       if (!state) return
 
       const { inputCurrencyId, outputCurrencyId } = state
@@ -58,7 +61,8 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           : {
               inputCurrencyId: targetInputCurrencyId,
               outputCurrencyId: targetOutputCurrencyId,
-            }
+            },
+        searchParams
       )
 
       stateUpdateCallback?.()
