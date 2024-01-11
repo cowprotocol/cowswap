@@ -151,7 +151,7 @@ export default function LimitOrderFAQ() {
             <p>
               Surplus-capturing means that the protocol tries to improve prices even more than what users expect when
               they place their limit orders. CoW Protocol can do this by matching{' '}
-              <ExternalLinkFaq href="https://docs.cow.fi/overview/coincidence-of-wants">
+              <ExternalLinkFaq href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants">
                 Coincidences of Wants
               </ExternalLinkFaq>{' '}
               within batches, and by capturing favorable price movements between the time orders are sent and the time
