@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Project Artifacts
         run: >
-# CoWSwap env vars
+          : # CoWSwap env vars
           REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
           REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
@@ -54,7 +54,7 @@ jobs:
           REACT_APP_NETWORK_URL_5=${{ secrets.REACT_APP_NETWORK_URL_5 }}
           REACT_APP_NETWORK_URL_11155111=${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
           REACT_APP_WC_PROJECT_ID=${{ secrets.REACT_APP_WC_PROJECT_ID }}
-# Explorer env vars
+          : # Explorer env vars
           REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
           REACT_APP_EXPLORER_SENTRY_DSN=${{ secrets.EXPLORER_SENTRY_DSN }}
           REACT_APP_EXPLORER_SENTRY_AUTH_TOKEN=${{ secrets.EXPLORER_SENTRY_AUTH_TOKEN }}
