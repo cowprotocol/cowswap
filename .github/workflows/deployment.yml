@@ -12,10 +12,9 @@ on:
         required: true
         type: choice
         options:
-          - cowswap
-          - explorer
-          - widget
-          - all
+          - COWSWAP
+          - EXPLORER
+          - ALL
 
 jobs:
 
@@ -27,7 +26,7 @@ jobs:
     secrets: inherit
     with:
       env_name: dev
-      app: all
+      app: ALL
 
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments
@@ -40,7 +39,7 @@ jobs:
         env_name: [barn, staging] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
-      app: all
+      app: ALL
 
   vercel-prod:
     # Deploys to Vercel prod environment

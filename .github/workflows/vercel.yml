@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        project_suffix: ${{ inputs.app == 'all' && [cowswap, explorer, widget] || [input.app] }}
+        project_suffix: ${{ inputs.app == 'ALL' && [COWSWAP, EXPLORER] || [input.app] }}
 
     steps:
       - name: Checkout code
