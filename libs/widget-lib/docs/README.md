@@ -45,7 +45,7 @@ orders.
 The key must be a UTF8 string of up to `50 chars`.
 
 It will be a part of orders meta-data, see more in
-the [CoW Protocol Docs](https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/appcode).
+the [CoW Protocol Tutorial](https://learn.cow.fi/tutorial/simple-app-data).
 
 ## Interface fee
 

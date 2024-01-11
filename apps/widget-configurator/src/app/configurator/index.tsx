@@ -87,7 +87,7 @@ export function Configurator({ title }: { title: string }) {
     {
       icon: <ChromeReaderModeIcon />,
       label: 'Developer docs',
-      url: `https://docs.cow.fi/widget/get-started?${UTM_PARAMS}`,
+      url: `https://docs.cow.fi/cow-protocol/tutorials/widget?${UTM_PARAMS}`,
     },
   ]
 
