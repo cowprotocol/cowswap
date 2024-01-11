@@ -9,67 +9,75 @@ import dynamicImport from 'vite-plugin-dynamic-import'
 import { version as APP_VERSION } from './package.json'
 import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json'
 import { version as DEX_JS_VERSION } from '@gnosis.pm/dex-js/package.json'
+import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 const CONFIG = loadConfig()
 
-export default defineConfig({
-  base: './',
-  cacheDir: '../../node_modules/.vite/explorer',
+export default defineConfig(({ mode }) => {
+  return {
+    base: './',
+    cacheDir: '../../node_modules/.vite/explorer',
 
-  define: {
-    CONFIG,
-    VERSION: `'${APP_VERSION}'`,
-    CONTRACT_VERSION: `'${CONTRACT_VERSION}'`,
-    DEX_JS_VERSION: `'${DEX_JS_VERSION}'`,
-  },
-
-  server: {
-    port: 4200,
-    host: 'localhost',
-    fs: {
-      allow: [
-        // search up for workspace root
-        searchForWorkspaceRoot(process.cwd()),
-        // your custom rules
-        'apps/explorer/src',
-        'libs',
-      ],
+    resolve: {
+      extensions: mode === 'development' ? ['.js', '.ts', '.jsx', '.tsx', '.json'] : undefined,
     },
-  },
 
-  preview: {
-    port: 4300,
-    host: 'localhost',
-  },
+    define: {
+      ...getReactProcessEnv(mode),
+      CONFIG,
+      VERSION: `'${APP_VERSION}'`,
+      CONTRACT_VERSION: `'${CONTRACT_VERSION}'`,
+      DEX_JS_VERSION: `'${DEX_JS_VERSION}'`,
+    },
 
-  plugins: [
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-        global: true,
-        process: true,
+    server: {
+      port: 4200,
+      host: 'localhost',
+      fs: {
+        allow: [
+          // search up for workspace root
+          searchForWorkspaceRoot(process.cwd()),
+          // your custom rules
+          'apps/explorer/src',
+          'libs',
+        ],
       },
-      protocolImports: true,
-    }),
-    react({}),
-    viteTsConfigPaths({
-      root: '../../',
-    }),
-    dynamicImport({
-      filter(id) {
-        if (id.includes('/node_modules/@cowprotocol')) {
-          return true
-        }
-      },
-    }),
-  ],
+    },
 
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [
-  //    viteTsConfigPaths({
-  //      root: '../../',
-  //    }),
-  //  ],
-  // },
+    preview: {
+      port: 4300,
+      host: 'localhost',
+    },
+
+    plugins: [
+      nodePolyfills({
+        globals: {
+          Buffer: true,
+          global: true,
+          process: true,
+        },
+        protocolImports: true,
+      }),
+      react({}),
+      viteTsConfigPaths({
+        root: '../../',
+      }),
+      dynamicImport({
+        filter(id) {
+          if (id.includes('/node_modules/@cowprotocol')) {
+            return true
+          }
+        },
+      }),
+    ],
+
+    // Uncomment this if you are using workers.
+    // worker: {
+    //  plugins: [
+    //    viteTsConfigPaths({
+    //      root: '../../',
+    //    }),
+    //  ],
+    // },
+  }
 })
