@@ -55,13 +55,15 @@ export function TokenSearchResults({
     return searchCount === 0
   }, [isLoading, searchCount])
 
-  const [matchedToken, activeList] = useMemo(() => {
-    let matched: TokenWithLogo | undefined = undefined
+  const [matchedTokens, activeList] = useMemo(() => {
+    const matched: TokenWithLogo[] = []
     const remaining: TokenWithLogo[] = []
 
     for (const t of activeListsResult) {
       if (doesTokenMatchSymbolOrAddress(t, searchInput)) {
-        matched = t
+        // There should ever be only 1 token with a given address
+        // There can be multiple with the same symbol
+        matched.push(t)
       } else {
         remaining.push(t)
       }
@@ -70,16 +72,14 @@ export function TokenSearchResults({
     return [matched, remaining]
   }, [activeListsResult, searchInput])
 
-  const matchedTokenAddress = matchedToken?.address.toLowerCase()
-
-  // On press Enter, select first token if only one token is found or it's fully matches to the search input
+  // On press Enter, select first token if only one token is found or it fully matches to the search input
   const onInputPressEnter = useCallback(() => {
     if (!searchInput || !activeListsResult) return
 
-    if (activeListsResult.length === 1 || matchedToken) {
-      onSelectToken(matchedToken || activeListsResult[0])
+    if (activeListsResult.length === 1 || matchedTokens.length === 1) {
+      onSelectToken(matchedTokens[0] || activeListsResult[0])
     }
-  }, [searchInput, activeListsResult, matchedToken, onSelectToken])
+  }, [searchInput, activeListsResult, matchedTokens, onSelectToken])
 
   useEffect(() => {
     updateSelectTokenWidget({
@@ -101,34 +101,22 @@ export function TokenSearchResults({
 
         return (
           <>
-            {/*Exact match*/}
-            {matchedToken && matchedTokenAddress && (
-              <TokenListItem
-                token={matchedToken}
-                balance={balances ? balances[matchedTokenAddress] : undefined}
-                onSelectToken={onSelectToken}
-                selectedToken={selectedToken}
-                isUnsupported={!!unsupportedTokens[matchedTokenAddress]}
-                isPermitCompatible={permitCompatibleTokens[matchedTokenAddress]}
-              />
-            )}
-            {/*Tokens from active lists*/}
-            {activeList &&
-              activeList.map((token) => {
-                const addressLowerCase = token.address.toLowerCase()
+            {/*Matched tokens first, followed by tokens from active lists*/}
+            {matchedTokens.concat(activeList).map((token) => {
+              const addressLowerCase = token.address.toLowerCase()
 
-                return (
-                  <TokenListItem
-                    key={token.address}
-                    isUnsupported={!!unsupportedTokens[addressLowerCase]}
-                    isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
-                    selectedToken={selectedToken}
-                    token={token}
-                    balance={balances ? balances[token.address.toLowerCase()] : undefined}
-                    onSelectToken={onSelectToken}
-                  />
-                )
-              })}
+              return (
+                <TokenListItem
+                  key={token.address}
+                  isUnsupported={!!unsupportedTokens[addressLowerCase]}
+                  isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
+                  selectedToken={selectedToken}
+                  token={token}
+                  balance={balances ? balances[token.address.toLowerCase()] : undefined}
+                  onSelectToken={onSelectToken}
+                />
+              )
+            })}
 
             {/*Tokens from blockchain*/}
             {blockchainResult?.length ? (
