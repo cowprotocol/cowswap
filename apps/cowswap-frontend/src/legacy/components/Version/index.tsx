@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import styled from 'styled-components/macro'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import pkg from '../../../../../../package.json'
+import pkg from '../../../../package.json'
 
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]

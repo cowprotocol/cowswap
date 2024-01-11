@@ -63,23 +63,6 @@ export const handleErrors = (
   return errors
 }
 
-// export const ipfsSchema: JSONSchema7 = {
-//   type: 'object',
-//   required: ['pinataApiKey', 'pinataApiSecret'],
-//   properties: {
-//     pinataApiKey: {
-//       type: 'string',
-//       title: 'Pinata API key',
-//       description: 'Add your Pinata API key.',
-//     },
-//     pinataApiSecret: {
-//       type: 'string',
-//       title: 'Pinata API secret',
-//       description: 'Add your Pinata API secret.',
-//     },
-//   },
-// }
-
 export const decodeAppDataSchema: JSONSchema7 = {
   type: 'object',
   title: 'AppData Decode',
@@ -149,14 +132,3 @@ export const uiSchema = {
     },
   },
 }
-
-// export const ipfsUiSchema = {
-//   pinataApiKey: {
-//     'ui:field': 'cField',
-//     tooltip: 'Add your Pinata API key.',
-//   },
-//   pinataApiSecret: {
-//     'ui:field': 'cField',
-//     tooltip: 'Add your Pinata API secret key.',
-//   },
-// }

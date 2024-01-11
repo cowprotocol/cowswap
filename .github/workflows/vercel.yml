@@ -7,6 +7,10 @@ on:
         description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
         required: true
         type: string
+      app:
+        description: 'Application to deploy. Options are: ALL, COWSWAP, EXPLORER'
+        required: true
+        type: string
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -17,13 +21,17 @@ jobs:
     environment: ${{ inputs.env_name }} # Environment rules defined on GH UI
     concurrency: ${{ inputs.env_name }} # Only one run per env at a time
 
+    strategy:
+      matrix:
+        project_suffix: ${{ inputs.app == 'ALL' && fromJSON('["COWSWAP", "EXPLORER"]') || (inputs.app) }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set VERCEL_PROJECT_ID env var
         # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
-        run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+        run: echo "VERCEL_PROJECT_ID=${{ secrets[format('VERCEL_PROJECT_ID_{0}', matrix.project_suffix)] }}" >> $GITHUB_ENV
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -45,6 +53,12 @@ jobs:
           REACT_APP_NETWORK_URL_5=${{ secrets.REACT_APP_NETWORK_URL_5 }}
           REACT_APP_NETWORK_URL_11155111=${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
           REACT_APP_WC_PROJECT_ID=${{ secrets.REACT_APP_WC_PROJECT_ID }}
+          REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
+          REACT_APP_EXPLORER_SENTRY_DSN=${{ secrets.EXPLORER_SENTRY_DSN }}
+          REACT_APP_EXPLORER_GOOGLE_ANALYTICS_ID=${{ secrets.EXPLORER_GOOGLE_ANALYTICS_ID }}
+          REACT_APP_SUBGRAPH_URL_MAINNET=${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
+          REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN=${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
+          REACT_APP_SUBGRAPH_URL_GOERLI=${{ secrets.REACT_APP_SUBGRAPH_URL_GOERLI }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version
