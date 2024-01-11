@@ -6,6 +6,15 @@ on:
     branches: [main, develop]
     tags: [v*]
   workflow_dispatch: # Manually trigger it via UI/CLI/API
+    inputs:
+      app:
+        description: App to deploy
+        required: true
+        type: choice
+        options:
+          - COWSWAP
+          - EXPLORER
+          - ALL
 
 jobs:
 
@@ -17,6 +26,7 @@ jobs:
     secrets: inherit
     with:
       env_name: dev
+      app: ALL
 
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments
@@ -29,6 +39,7 @@ jobs:
         env_name: [barn, staging] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
+      app: ALL
 
   vercel-prod:
     # Deploys to Vercel prod environment
@@ -38,3 +49,4 @@ jobs:
     secrets: inherit
     with:
       env_name: prod
+      app: ${{ inputs.app }}
