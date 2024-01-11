@@ -11,7 +11,6 @@ const useMock = process.env.MOCK_OPERATOR === 'true'
 export const {
   // functions that have a mock
   getOrder,
-  getOrders,
   getAccountOrders,
   getTxOrders,
   getTrades,
