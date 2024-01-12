@@ -113,6 +113,7 @@ export type OrderInfoApi = Pick<
   | 'ethflowData'
   | 'onchainOrderData'
   | 'class'
+  | 'fullAppData'
 >
 
 /**

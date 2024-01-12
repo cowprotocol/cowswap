@@ -6,18 +6,15 @@ import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
 const API_NAME = 'CoW Protocol'
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
+const ENV_BASE = environmentName !== 'production' ? 'barn' : environmentName
+const STRATEGY_URL = STRATEGY_URL_BASE + ENV_BASE + '/strategies'
 
-function getPriceStrategyUrl(): Record<SupportedChainId, string> {
-  const environment = environmentName !== 'production' ? 'barn' : environmentName
-  const url = STRATEGY_URL_BASE + environment + '/strategies'
-  return {
-    [SupportedChainId.MAINNET]: url + '/strategy-1.json',
-    [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
-    [SupportedChainId.GOERLI]: url + '/strategy-5.json',
-  }
+const STRATEGY_API_URL: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: STRATEGY_URL + '/strategy-1.json',
+  [SupportedChainId.GNOSIS_CHAIN]: STRATEGY_URL + '/strategy-100.json',
+  [SupportedChainId.GOERLI]: STRATEGY_URL + '/strategy-5.json',
+  [SupportedChainId.SEPOLIA]: STRATEGY_URL + '/strategy-11155111.json',
 }
-
-const STRATEGY_API_URL = getPriceStrategyUrl()
 
 export type PriceStrategy = {
   primary: GpPriceStrategy

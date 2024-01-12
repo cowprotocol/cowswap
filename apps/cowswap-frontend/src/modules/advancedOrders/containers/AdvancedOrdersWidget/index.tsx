@@ -107,7 +107,6 @@ export function AdvancedOrdersWidget({ children, updaters, params }: AdvancedOrd
   const tradeWidgetParams = {
     recipient,
     compactView: true,
-    disableNativeSelling: true,
     showRecipient,
     isTradePriceUpdating,
     priceImpact,

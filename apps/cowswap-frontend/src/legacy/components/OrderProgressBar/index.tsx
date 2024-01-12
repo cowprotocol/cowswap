@@ -150,7 +150,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <GreenClockIcon size={16} />
                 <StatusMsg>
                   Order Status: <strong>Looking for a</strong>{' '}
-                  <StyledCoWLink href="https://docs.cow.fi/overview/coincidence-of-wants" className="cowlink">
+                  <StyledCoWLink
+                    href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
+                    className="cowlink"
+                  >
                     <strong>
                       <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW) ↗
                     </strong>

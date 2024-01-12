@@ -1,7 +1,10 @@
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { LinkStyledButton } from 'legacy/theme'
 
 import { ButtonSecondary } from '../ButtonSecondary'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
@@ -118,6 +121,38 @@ export function CustomRecipientWarningBanner({
           Dismiss
         </ButtonSecondary>
       )}
+    </InlineBanner>
+  )
+}
+
+export type SellNativeWarningBannerProps = {
+  sellWrapped: () => void
+  wrapNative: () => void
+  nativeSymbol: string | undefined
+  wrappedNativeSymbol: string | undefined
+}
+
+const Button = styled(LinkStyledButton)`
+  text-decoration: underline;
+`
+
+export function SellNativeWarningBanner({
+  sellWrapped,
+  wrapNative,
+  nativeSymbol = 'native',
+  wrappedNativeSymbol = 'wrapped native',
+}: SellNativeWarningBannerProps) {
+  return (
+    <InlineBanner bannerType="alert" iconSize={32}>
+      <strong>Cannot sell {nativeSymbol}</strong>
+      <p>Selling {nativeSymbol} is only supported on SWAP orders.</p>
+      <p>
+        <Button onClick={sellWrapped}>Switch to {wrappedNativeSymbol}</Button>or
+        <Button onClick={wrapNative}>
+          Wrap {nativeSymbol} to {wrappedNativeSymbol}
+        </Button>
+        first.
+      </p>
     </InlineBanner>
   )
 }

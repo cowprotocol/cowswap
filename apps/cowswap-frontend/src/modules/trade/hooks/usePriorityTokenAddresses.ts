@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
 import { getAddress, isTruthy } from '@cowprotocol/common-utils'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSelector } from 'react-redux'
 
 import { AppState } from 'legacy/state'
 import { PartialOrdersMap } from 'legacy/state/orders/reducer'
+
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
@@ -24,7 +25,7 @@ export function usePriorityTokenAddresses(): string[] {
 
     return Object.values(pending)
       .filter(isTruthy)
-      .filter(({ order }) => order.class === OrderClass.MARKET)
+      .filter(({ order }) => getUiOrderType(order) === UiOrderType.SWAP)
       .map(({ order }) => {
         return [order.inputToken.address, order.outputToken.address]
       })

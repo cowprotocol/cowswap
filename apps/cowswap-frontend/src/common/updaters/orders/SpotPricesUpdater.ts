@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -12,6 +12,8 @@ import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useSafeMemo } from '../../hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '../../utils/markets'
@@ -31,8 +33,8 @@ function useMarkets(chainId: SupportedChainId, account: string | undefined): Mar
   return useSafeMemo(() => {
     return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(
       (acc, order) => {
-        // Query spot prices only for Limit orders
-        if (order.class !== OrderClass.LIMIT) return acc
+        // Do not query spot prices for SWAP
+        if (getUiOrderType(order) === UiOrderType.SWAP) return acc
 
         // Aggregating pending orders per market. No need to query multiple times same market
         const { marketInverted, marketKey } = getCanonicalMarketChainKey(chainId, order.sellToken, order.buyToken)

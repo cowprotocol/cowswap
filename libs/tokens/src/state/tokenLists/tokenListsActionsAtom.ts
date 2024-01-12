@@ -17,7 +17,7 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
   const update = listsStates.reduce<{ [listId: string]: ListState }>((acc, list) => {
     acc[list.source] = {
       ...list,
-      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState[list.source]?.isEnabled,
+      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState?.[list.source]?.isEnabled,
     }
 
     return acc
@@ -32,10 +32,14 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
   })
 })
 export const addListAtom = atom(null, (get, set, state: ListState) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, widgetAppCode } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
   state.isEnabled = true
+
+  if (widgetAppCode) {
+    state.widgetAppCode = widgetAppCode
+  }
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
@@ -56,7 +60,11 @@ export const removeListAtom = atom(null, (get, set, source: string) => {
 
   const stateCopy = { ...get(listsStatesByChainAtom) }
 
-  delete stateCopy[chainId][source]
+  const networkState = stateCopy[chainId]
+
+  if (networkState) {
+    delete networkState[source]
+  }
 
   set(listsStatesByChainAtom, stateCopy)
 })

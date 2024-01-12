@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%if (htmlWebpackPlugin.options.ipfsHack) { %>
+  <base href="/">
+  <script>
+    (function () {
+      const { pathname, hostname, protocol } = window.location
+
+      // redirect to https on non-localhost
+      if (protocol === 'http:' && hostname !== 'localhost') {
+        window.location.protocol = 'https'
+        return
+      }
+
+      const ipfsMatch = /.*\/Qm\w{44}/.exec(pathname)
+      let arweaveMatch = false
+
+      if (ipfsMatch) {
+        changeBaseHref(ipfsMatch)
+      } else {
+        // (*.)?arweave.net/<hash> detection
+        arweaveMatch = /(\w+.)?arweave\.net/.test(hostname) && /\/.{43}($|\/)/.exec(pathname)
+        if (arweaveMatch) {
+          changeBaseHref(arweaveMatch)
+        }
+      }
+
+      window.IS_IPFS = !!ipfsMatch || hostname.endsWith('.eth.link') || !!arweaveMatch
+
+      function changeBaseHref(match) {
+        const base = document.querySelector('base')
+
+        let baseHref = match[0]
+        if (!baseHref.endsWith('/')) baseHref += '/'
+
+        base.href = baseHref
+      }
+
+    })();
+  </script>
+  <% } %>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title><%= htmlWebpackPlugin.options.title || 'Webpack App'%></title>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>

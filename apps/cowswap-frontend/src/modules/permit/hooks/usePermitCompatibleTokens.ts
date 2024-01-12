@@ -13,7 +13,8 @@ import { PermitCompatibleTokens } from '../types'
 
 export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   const { chainId } = useWalletInfo()
-  const localPermitInfo = useAtomValue(permittableTokensAtom)[chainId]
+  const permitInfoAllChains = useAtomValue(permittableTokensAtom)
+  const localPermitInfo = permitInfoAllChains[chainId] || {}
   const { allPermitInfo } = usePreGeneratedPermitInfo()
 
   const isPermitEnabled = useIsPermitEnabled()

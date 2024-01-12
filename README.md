@@ -47,6 +47,23 @@ yarn build
 yarn test
 ```
 
+# 🔎 Explorer
+
+Start the Explorer on http://localhost:4200
+
+[Read more about the Explorer](apps/explorer/README.md)
+
+### Start
+```bash
+yarn start:explorer
+```
+
+### Build
+```bash
+yarn build:explorer
+```
+
+
 # 🖼️ Widget Configurator
 
 Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
@@ -133,6 +150,7 @@ Alternatively you can define the RPC URLs directly with the following environmen
 ```ini
 REACT_APP_NETWORK_URL_1: https://...
 REACT_APP_NETWORK_URL_5: https://...
+REACT_APP_NETWORK_URL_11155111: https://...
 REACT_APP_NETWORK_URL_100: https://...
 ```
 

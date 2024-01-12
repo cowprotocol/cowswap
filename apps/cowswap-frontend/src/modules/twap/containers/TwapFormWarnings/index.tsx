@@ -4,8 +4,11 @@ import { useCallback } from 'react'
 import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -22,11 +25,10 @@ import {
   SmallPartVolumeWarning,
   UnsupportedWalletWarning,
 } from './warnings'
+import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
-import { useAdvancedOrdersDerivedState } from '../../../advancedOrders'
-import { TradeFormValidation, useGetTradeFormValidation } from '../../../tradeFormValidation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
@@ -117,12 +119,20 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
         }
 
+        if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
+          return <SellNativeWarningBanner />
+        }
+
         if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
           return <SmallPartVolumeWarning chainId={chainId} />
         }
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
           return <SmallPartTimeWarning />
+        }
+
+        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
+          return <BigPartTimeWarning />
         }
 
         if (showFallbackHandlerWarning) {

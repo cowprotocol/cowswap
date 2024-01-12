@@ -1,12 +1,14 @@
 import ms from 'ms.macro'
 
+import { MAX_ORDER_DEADLINE } from 'common/constants/common'
+
 export interface LimitOrderDeadline {
   title: string
   value: number
 }
 
 export const MIN_CUSTOM_DEADLINE = ms`30min`
-export const MAX_CUSTOM_DEADLINE = Math.round(ms`1y` / 2) // 6 months
+export const MAX_CUSTOM_DEADLINE = MAX_ORDER_DEADLINE
 
 export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: '7 Days', value: ms`7d` }
 
@@ -18,4 +20,5 @@ export const limitOrdersDeadlines: LimitOrderDeadline[] = [
   { title: '3 Days', value: ms`3d` },
   defaultLimitOrderDeadline,
   { title: '1 Month', value: ms`30d` },
+  { title: '6 Months (max)', value: MAX_CUSTOM_DEADLINE },
 ]

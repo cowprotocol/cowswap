@@ -7,10 +7,11 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
-const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
+const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<SupportedChainId, string>> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
   [SupportedChainId.GOERLI]: 'https://safe-transaction-goerli.safe.global',
+  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
@@ -18,6 +19,7 @@ const CHAIN_SHORT_NAME: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
   [SupportedChainId.GNOSIS_CHAIN]: 'gno', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
   [SupportedChainId.GOERLI]: 'gor', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
+  [SupportedChainId.SEPOLIA]: 'sep', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-11155111.json
 }
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKit | null>> = {}
@@ -47,7 +49,7 @@ function _createSafeEthAdapter(library: Web3Provider): EthersAdapter {
 }
 
 export function createSafeApiKitInstance(chainId: number, library: Web3Provider): SafeApiKit | null {
-  const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
+  const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
   if (!url) {
     return null
   }

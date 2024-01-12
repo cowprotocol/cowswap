@@ -7,6 +7,6 @@ import { TokensMap } from '../types'
  */
 export function tokenMapToListWithLogo(tokenMap: TokensMap): TokenWithLogo[] {
   return Object.values(tokenMap)
-    .sort((a, b) => (a.symbol > b.symbol ? 1 : -1))
+    .sort((a, b) => a.symbol.localeCompare(b.symbol))
     .map((token) => TokenWithLogo.fromToken(token, token.logoURI))
 }

@@ -2,6 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export type ListSourceConfig = {
+  widgetAppCode?: string
   priority?: number
   enabledByDefault?: boolean
   source: string
@@ -18,8 +19,9 @@ export type ListsEnabledState = { [listId: string]: boolean | undefined }
 export interface ListState {
   source: string
   list: UniTokenList
+  widgetAppCode?: string
   priority?: number
   isEnabled?: boolean
 }
 
-export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState }>
+export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState } | undefined>

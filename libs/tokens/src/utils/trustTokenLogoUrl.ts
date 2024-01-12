@@ -4,6 +4,7 @@ const chainIdToName: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.GOERLI]: 'ethereum',
+  [SupportedChainId.SEPOLIA]: 'ethereum',
 }
 
 export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): string {

@@ -30,7 +30,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   border: ${({ status }) =>
     status === 'pending'
       ? 'none'
-      : status === 'error'
+      : status === 'error' || status === 'cancelled'
       ? 'none'
       : status === 'success'
       ? 'none'
@@ -39,7 +39,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   background: ${({ status, theme }) =>
     status === 'pending'
       ? 'transparent'
-      : status === 'error'
+      : status === 'error' || status === 'cancelled'
       ? transparentize(theme.danger, 0.9)
       : status === 'success'
       ? transparentize(theme.success, 0.9)
@@ -83,14 +83,14 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   }
 
   > svg {
-    --color: ${({ status, theme }) =>
+    --color: ${({ status }) =>
       status === 'success'
-        ? theme.success
-        : status === 'error'
-        ? theme.danger
+        ? `var(${UI.COLOR_SUCCESS})`
+        : status === 'error' || status === 'cancelled'
+        ? `var(${UI.COLOR_DANGER})`
         : status === 'pending'
-        ? theme.text3
-        : transparentize(theme.text, 0.4)};
+        ? `var(${UI.COLOR_TEXT})`
+        : `var(${UI.COLOR_TEXT_OPACITY_70})`};
     object-fit: contain;
     width: 24px;
     height: 19px;
@@ -117,16 +117,16 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
 `
 
 const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
-  --color: ${({ status, crossOut, theme }) =>
+  --color: ${({ status, crossOut }) =>
     status === 'pending'
-      ? theme.text1
+      ? `var(${UI.COLOR_TEXT})`
       : crossOut
       ? `var(${UI.COLOR_PAPER_DARKER})`
-      : status === 'error'
-      ? theme.danger
+      : status === 'error' || status === 'cancelled'
+      ? `var(${UI.COLOR_DANGER})`
       : status === 'success'
-      ? theme.success
-      : transparentize(theme.text, 0.4)};
+      ? `var(${UI.COLOR_SUCCESS})`
+      : `var(${UI.COLOR_TEXT_OPACITY_70})`};
   color: var(--color);
   font-weight: ${({ status }) => (status === 'pending' ? '600' : '500')};
   font-size: 14px;

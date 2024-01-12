@@ -1,4 +1,4 @@
-import { transparentize, darken } from 'color2k'
+import { darken, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
@@ -22,7 +22,7 @@ export const FooterBox = styled.div`
 
 export const RateWrapper = styled.div`
   display: grid;
-  grid-template-columns: auto 150px;
+  grid-template-columns: auto 151px;
   gap: 6px;
   text-align: right;
   color: inherit;
