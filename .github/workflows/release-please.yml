@@ -17,6 +17,6 @@ jobs:
         name: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_AUTH }}
-          release-type: node
-          package-name: release-please-action
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
           default-branch: main
