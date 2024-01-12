@@ -72,7 +72,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 
   useEffect(() => {
     setIsLoading(true)
-  }, [input])
+  }, [inputLowerCase])
 
   useEffect(() => {
     // When there are results from toke lists, then we don't need to wait for the rest
