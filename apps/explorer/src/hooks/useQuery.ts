@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router'
 import { useCallback, useMemo } from 'react'
-import { checkDateOrValidBatchTime, sanitizeInput } from 'utils'
 import { useNavigate } from 'react-router-dom'
 
 export function useQuery(): URLSearchParams {
@@ -16,22 +15,6 @@ export function useQuery(): URLSearchParams {
  */
 export function buildSearchQuery(params: { [key in string]: string }): URLSearchParams {
   return new URLSearchParams(params)
-}
-
-export function useQueryTradeParams(): {
-  sellAmount: string
-  price: string
-  validFrom: string | null
-  validUntil: string | null
-} {
-  const query = useQuery()
-
-  return {
-    sellAmount: sanitizeInput(query.get('sell')),
-    price: sanitizeInput(query.get('price')),
-    validFrom: checkDateOrValidBatchTime(query.get('from')),
-    validUntil: checkDateOrValidBatchTime(query.get('expires')),
-  }
 }
 
 export function useUpdateQueryString(): (key: string, value: string) => void {
