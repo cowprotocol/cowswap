@@ -1,4 +1,6 @@
-# Explorer
+# CoW Protocol Explorer
+
+Allows you to explore the protocol orders and trades.
 
 ## 🏃‍♀️ Run it locally
 

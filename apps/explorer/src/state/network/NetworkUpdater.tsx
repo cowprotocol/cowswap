@@ -10,7 +10,7 @@ import { CHAIN_ID_TO_URL_PREFIX, NETWORK_PREFIXES } from '../../consts/network'
 
 const MAINNET_PREFIX = CHAIN_ID_TO_URL_PREFIX[SupportedChainId.MAINNET]
 const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_ID_TO_URL_PREFIX).map((key) => [
-  key as unknown as SupportedChainId,
+  +key, // SupportedChainId is a number enum
   CHAIN_ID_TO_URL_PREFIX[key],
 ])
 const NETWORK_ID_BY_PREFIX: Map<string, SupportedChainId> = new Map(
