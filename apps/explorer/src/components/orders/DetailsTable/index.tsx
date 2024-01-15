@@ -25,6 +25,7 @@ import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { getUiOrderType } from 'utils/getUiOrderType'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
@@ -301,7 +302,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} {order.class} order {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
+              {capitalize(kind)} {getUiOrderType(order).toLowerCase()} order{' '}
+              {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
             </td>
           </tr>
           <tr>

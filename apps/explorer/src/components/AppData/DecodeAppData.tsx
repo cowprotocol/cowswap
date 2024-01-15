@@ -7,6 +7,7 @@ import Spinner from 'components/common/Spinner'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { appDataHexToCid, fetchDocFromAppDataHex } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
+import { decodeFullAppData } from 'utils/decodeFullAppData'
 
 type Props = {
   appData: string
@@ -17,12 +18,12 @@ type Props = {
 async function _getDecodedAppData(
   appData: string,
   isLegacyAppDataHex: boolean,
-  fullAppData?: string,
+  fullAppData?: string
 ): Promise<{ decodedAppData?: void | AnyAppDataDocVersion; isError: boolean }> {
   // If the full appData is available, we try to parse it as JSON
   if (fullAppData) {
     try {
-      const decodedAppData = JSON.parse(fullAppData)
+      const decodedAppData = decodeFullAppData(fullAppData, true)
       return { decodedAppData, isError: false }
     } catch (error) {
       console.error('Error parsing fullAppData from the API', { fullAppData }, error)
@@ -94,7 +95,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
       setShowDecodedAppData,
       showDecodedAppData,
       isLegacyAppDataHex,
-    ],
+    ]
   )
 
   useEffect(() => {
