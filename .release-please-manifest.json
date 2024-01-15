@@ -3,5 +3,6 @@
   "apps/explorer": "2.26.0",
   "libs/permit-utils": "0.0.2",
   "libs/widget-lib": "0.2.1",
-  "libs/widget-react": "0.2.3"
+  "libs/widget-react": "0.2.3",
+  ".": "1.55.0"
 }
