@@ -29,9 +29,9 @@ jobs:
       app: ALL
 
   vercel-pre-prod:
-    # Deploys to Vercel staging and barn environments
+    # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: (startsWith(github.ref, 'refs/tags/cowswap') || startsWith(github.ref, 'refs/tags/explorer'))
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     strategy:
