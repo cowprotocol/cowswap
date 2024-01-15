@@ -14,3 +14,4 @@
 ### Bug Fixes
 
 * **explorer:** cast string SupportedChainId to number ([#3624](https://github.com/cowprotocol/cowswap/issues/3624)) ([784ce32](https://github.com/cowprotocol/cowswap/commit/784ce32bcfa7908999f3130357582602f02802a5))
+* **explorer:** change link to explorer version ([#3653](https://github.com/cowprotocol/cowswap/issues/3653)) ([e086118](https://github.com/cowprotocol/cowswap/commit/e086118295fe788afc9aac6ecd68defc9d634e79))
