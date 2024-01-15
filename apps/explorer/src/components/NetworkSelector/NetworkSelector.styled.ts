@@ -77,7 +77,7 @@ export const NetworkLabel = styled.span<{ color: string }>`
   letter-spacing: 0.1rem;
 
   background: ${({ color }) => color};
-  color: ${({ theme }): string => theme.white};
+  color: ${({ theme }): string => theme.textSecondary1};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`
