@@ -13,6 +13,8 @@ import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
   isExpertMode: boolean
@@ -33,6 +35,8 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const { swapZeroFee } = useFeatureFlags()
+
   const showRowSlippage =
     (isEoaEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
     !isWrapOrUnwrap
@@ -51,7 +55,12 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
       {/* Slippage */}
       {showRowSlippage && <RowSlippage allowedSlippage={allowedSlippagePercent} />}
       {showRowReceivedAfterSlippage && (
-        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
+        <RowReceivedAfterSlippage
+          trade={trade}
+          allowedSlippage={allowedSlippagePercent}
+          showHelpers={true}
+          withoutFee={swapZeroFee}
+        />
       )}
     </LowerSectionWrapper>
   )

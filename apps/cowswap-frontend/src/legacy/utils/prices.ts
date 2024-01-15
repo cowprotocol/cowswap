@@ -34,10 +34,11 @@ export function warningSeverity(priceImpact: Percent | undefined): WarningSeveri
 export function computeSlippageAdjustedAmounts(
   //   trade: Trade | undefined,
   trade: TradeGp | undefined,
-  allowedSlippage: Percent
+  allowedSlippage: Percent,
+  withoutFee?: boolean
 ): { [field in Field]?: CurrencyAmount<Currency> } {
   return {
-    [Field.INPUT]: trade?.maximumAmountIn(allowedSlippage),
+    [Field.INPUT]: trade?.maximumAmountIn(allowedSlippage, withoutFee),
     [Field.OUTPUT]: trade?.minimumAmountOut(allowedSlippage),
   }
 }

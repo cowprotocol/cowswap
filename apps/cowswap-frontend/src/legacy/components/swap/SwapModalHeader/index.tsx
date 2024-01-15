@@ -23,6 +23,7 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { PriceUpdatedBanner } from 'modules/trade/pure/PriceUpdatedBanner'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { FiatValue } from 'common/pure/FiatValue'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -77,9 +78,11 @@ function SwapModalHeaderComponent({
   allowsOffchainSigning,
   rateInfoParams,
 }: SwapModalHeaderProps) {
+  const { swapZeroFee } = useFeatureFlags()
+
   const slippageAdjustedAmounts = useMemo(
-    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
-    [trade, allowedSlippage]
+    () => computeSlippageAdjustedAmounts(trade, allowedSlippage, swapZeroFee),
+    [trade, allowedSlippage, swapZeroFee]
   )
 
   const {
