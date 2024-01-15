@@ -4,13 +4,16 @@ import * as styledEl from './styled'
 
 export type Props = {
   order: ParsedOrder
+  isTwapOrder: boolean
 }
 
-export function OrderTypeField({ order }: Props) {
+export function OrderTypeField({ order, isTwapOrder }: Props) {
+  const orderClass = isTwapOrder ? 'TWAP' : order.class
+
   return (
     <styledEl.Value>
       <styledEl.OrderTypeValue>
-        {order.class} {order.kind} order {order.partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
+        {orderClass} {order.kind} order {order.partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
       </styledEl.OrderTypeValue>
     </styledEl.Value>
   )

@@ -227,7 +227,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
-              <OrderTypeField order={order} />
+              <OrderTypeField order={order} isTwapOrder={!!twapOrder} />
             </styledEl.Field>
 
             {/*TODO: add a link to explorer when it will support TWAP orders*/}
