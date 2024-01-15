@@ -4,7 +4,7 @@ on:
   # build when pushing to main/develop, or create a release
   push:
     branches: [main, develop]
-    tags: [v*]
+    tags: [cowswap-v*, explorer-v*]
   workflow_dispatch: # Manually trigger it via UI/CLI/API
     inputs:
       app:
@@ -29,9 +29,9 @@ jobs:
       app: ALL
 
   vercel-pre-prod:
-    # Deploys to Vercel staging and barn environments
+    # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags')
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     strategy:
