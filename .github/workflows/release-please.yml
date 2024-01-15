@@ -13,10 +13,11 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3.7.10
+      - uses: google-github-actions/release-please-action@v4.0.2
         name: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_AUTH }}
+          include-component-in-tag: true
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           default-branch: main
