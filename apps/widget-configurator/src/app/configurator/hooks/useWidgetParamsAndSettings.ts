@@ -44,7 +44,7 @@ export function useWidgetParamsAndSettings(
       height: '640px',
       provider,
       chainId,
-      tokenLists: tokenLists.filter((list) => list.enabled).map((list) => ({ url: list.url })),
+      tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
       env: getEnv(),
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
