@@ -10,12 +10,8 @@ import { useSetAtom } from 'jotai'
 import { useRemoveList } from '../../hooks/lists/useRemoveList'
 import { getFulfilledResults } from '../TokensListsUpdater/helpers'
 
-interface TokenList {
-  url: string
-}
-
 export interface CustomTokensListsUpdaterProps {
-  tokenLists?: TokenList[]
+  tokenLists?: string[]
   appCode?: string
 }
 
@@ -33,7 +29,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
 
   useEffect(() => {
-    const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.url.toLowerCase()) } : undefined
+    const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.toLowerCase()) } : undefined
 
     setEnvironment({ widgetAppCode: appCode, ...selectedLists })
   }, [setEnvironment, appCode, tokenLists])
@@ -43,7 +39,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
     if (!tokenLists?.length) return undefined
 
     return tokenLists.filter((list) => {
-      const listUrl = list.url.toLowerCase()
+      const listUrl = list.toLowerCase()
 
       const listExists = allTokensLists.find((list) => list.source.toLowerCase() === listUrl)
 
@@ -57,7 +53,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
       if (!listsToImport) return null
 
       return Promise.allSettled(
-        listsToImport.map(({ url }) => {
+        listsToImport.map((url) => {
           return fetchTokenList({ source: url }).catch((error) => {
             console.error('Failed to fetch token list: ' + url, error)
 
@@ -87,7 +83,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
   useEffect(() => {
     if (!appCode || !tokenLists?.length) return
 
-    const enabledTokenListsUrls = tokenLists.map((list) => list.url.toLowerCase())
+    const enabledTokenListsUrls = tokenLists.map((list) => list.toLowerCase())
 
     // Find all lists that are added for this widget and are not in the provided token lists
     const listsToRemove = allTokensLists.filter((list) => {
