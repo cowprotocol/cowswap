@@ -38,7 +38,6 @@ import {
 
 import Activity from 'modules/account/containers/Transaction'
 
-import { UNSUPPORTED_WALLET_TEXT } from 'common/containers/WalletUnsupportedNetworkBanner'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
@@ -63,6 +62,7 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useUnsupportedNetworksText } from '../../../../common/hooks/useUnsupportedNetworksText'
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
@@ -158,6 +158,8 @@ export function AccountDetails({
   const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
+  const unsupportedNetworksText = useUnsupportedNetworksText()
+
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -246,7 +248,7 @@ export function AccountDetails({
       </InfoCard>
 
       {isChainIdUnsupported ? (
-        <UnsupportedWalletBox>{UNSUPPORTED_WALLET_TEXT}</UnsupportedWalletBox>
+        <UnsupportedWalletBox>{unsupportedNetworksText}</UnsupportedWalletBox>
       ) : (
         <>
           <SurplusCard />
