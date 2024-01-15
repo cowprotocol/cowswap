@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect, useMemo } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 
@@ -38,7 +38,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
   // Add native token balance to the store as well
   useEffect(() => {
-    const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
+    const nativeToken = NATIVE_CURRENCIES[chainId]
     const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
 
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))

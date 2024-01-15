@@ -1,11 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import {
-  L2_DEADLINE_FROM_NOW,
-  NATIVE_CURRENCY_BUY_TOKEN,
-  SupportedLocale,
-  TokenWithLogo,
-} from '@cowprotocol/common-const'
+import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
 import { calculateValidTo, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent } from '@uniswap/sdk-core'
@@ -191,9 +186,7 @@ export function useSelectedWallet(): string | undefined {
 }
 
 export function serializeToken(token: Currency | TokenWithLogo): SerializedToken {
-  const address = getIsNativeToken(token)
-    ? NATIVE_CURRENCY_BUY_TOKEN[token.chainId as SupportedChainId].address
-    : token.address
+  const address = getIsNativeToken(token) ? NATIVE_CURRENCIES[token.chainId as SupportedChainId].address : token.address
 
   return {
     address,

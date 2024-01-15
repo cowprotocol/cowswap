@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { DEFAULT_NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -37,7 +37,7 @@ export function ExpiredOrdersUpdater(): null {
         // - Owned by the current connected account
         // - Not yet refunded
         const orderWithoutRefund = expiredRef.current.filter(({ owner, refundHash, sellToken }) => {
-          const isEthFlowOrder = sellToken === NATIVE_CURRENCY_BUY_ADDRESS
+          const isEthFlowOrder = sellToken === DEFAULT_NATIVE_CURRENCY_ADDRESS
 
           return isEthFlowOrder && owner.toLowerCase() === lowerCaseAccount && !refundHash
         })

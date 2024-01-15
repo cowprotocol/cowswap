@@ -1,4 +1,4 @@
-import { USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -107,7 +107,7 @@ export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
     case ClaimType.Investor:
       return USDC[chainId]
     case ClaimType.UserOption:
-      return NATIVE_CURRENCY_BUY_TOKEN[chainId]
+      return NATIVE_CURRENCIES[chainId]
     case ClaimType.Advisor:
     case ClaimType.Airdrop:
     case ClaimType.Team:
