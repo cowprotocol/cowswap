@@ -10,7 +10,8 @@
     "baseUrl": "src",
     "noImplicitAny": false,
     "paths": {
-      "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"]
+      "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
+      "@cowprotocol/assets": ["../../../libs/assets/src/index.ts"]
     }
   },
   "files": [],
