@@ -28,6 +28,13 @@ jobs:
       env_name: dev
       app: ALL
 
+  vercel-pre-prod-tag:
+    name: Print github ref
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print ref
+        run: echo github.ref
+
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
