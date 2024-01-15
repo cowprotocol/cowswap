@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print ref
-        run: echo github.ref
+        run: echo ${{ github.ref }}
 
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
