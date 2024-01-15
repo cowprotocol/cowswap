@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { COLOURS } from 'styles'
 import { media } from 'theme/styles/media'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
-
-const { fadedGreyishWhiteOpacity, white, gnosisChainColor, goerliColor, sepoliaColor } = COLOURS
+import { NavLink } from 'react-router-dom'
 
 export const SelectorContainer = styled.div`
   display: flex;
@@ -25,12 +23,12 @@ export const OptionsContainer = styled.div<{ width: number }>`
   left: 15px;
   top: 54px;
   background: ${({ theme }): string => theme.bg1};
-  border: ${(): string => `1px solid ${fadedGreyishWhiteOpacity}`};
+  border: 1px solid rgba(141, 141, 169, 0.3);
   box-sizing: border-box;
   border-radius: 6px;
 `
 
-export const Option = styled.div`
+export const Option = styled(NavLink)<{ color: string }>`
   display: flex;
   flex: 1;
   font-weight: 800;
@@ -39,39 +37,35 @@ export const Option = styled.div`
   align-items: center;
   letter-spacing: 0.02em;
   padding: 12px 16px;
+  text-decoration: none;
+
   &:hover {
     backdrop-filter: contrast(0.9);
+    text-decoration: none;
+
     .name {
-      color: ${(): string => white};
+      color: ${({ theme }): string => theme.white};
     }
   }
+
   .name {
     color: ${({ theme }): string => theme.grey};
+
     &.selected {
-      color: ${(): string => white};
+      color: ${({ theme }): string => theme.white};
     }
   }
+
   .dot {
     width: 8px;
     height: 8px;
     border-radius: 100%;
     margin-right: 9px;
-    &.görli {
-      background: ${(): string => goerliColor};
-    }
-    &.sepolia {
-      background: ${(): string => sepoliaColor};
-    }
-    &.gnosischain {
-      background: ${(): string => gnosisChainColor};
-    }
-    &.ethereum {
-      background: ${({ theme }): string => theme.blue4};
-    }
+    background: ${({ color }) => color};
   }
 `
 
-export const NetworkLabel = styled.span`
+export const NetworkLabel = styled.span<{ color: string }>`
   border-radius: 0.6rem;
   display: flex;
   margin: 0 0.5rem;
@@ -82,25 +76,8 @@ export const NetworkLabel = styled.span`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
 
-  &.görli {
-    background: ${(): string => goerliColor};
-    color: ${({ theme }): string => theme.black};
-  }
-
-  &.ethereum {
-    background: ${({ theme }): string => theme.blue4};
-    color: ${({ theme }): string => theme.textSecondary1};
-  }
-
-  &.gnosischain {
-    background: rgba(7, 121, 91, 1);
-    color: white;
-  }
-
-  &.sepolia {
-    background: rgb(136, 51, 196);
-    color: white;
-  }
+  background: ${({ color }) => color};
+  color: ${({ theme }): string => theme.white};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`

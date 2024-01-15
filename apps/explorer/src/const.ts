@@ -153,8 +153,6 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '100': XDAI,
 }
 
-export const NO_REDIRECT_HOME_ROUTES: Array<string> = ['/address']
-
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'
 export const DEFAULT_IPFS_READ_URI = process.env.REACT_APP_IPFS_READ_URI || 'https://cloudflare-ipfs.com/ipfs'
 export const IPFS_INVALID_APP_IDS = [

@@ -7,7 +7,7 @@ import { FlexWrap } from '../pages/styled'
 import { useMediaBreakpoint } from '../../hooks/useMediaBreakPoint'
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
-import { CHAIN_ID_TO_URL_PREFIX } from '../../consts/network'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 
 export const Header: React.FC = () => {
   const isMobile = useMediaBreakpoint(['xs', 'sm'])
@@ -28,7 +28,7 @@ export const Header: React.FC = () => {
     return null
   }
 
-  const prefixNetwork = CHAIN_ID_TO_URL_PREFIX[networkId]
+  const prefixNetwork = CHAIN_INFO[networkId].urlAlias
 
   return (
     <GenericHeader

@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { useLocation } from 'react-router-dom'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
-import { replaceURL } from 'utils/url'
-import { NO_REDIRECT_HOME_ROUTES } from 'const'
-import { cleanNetworkName } from 'utils'
-import { NETWORK_OPTIONS } from '../../consts/network'
+import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 type networkSelectorProps = {
   networkId: number
@@ -14,9 +10,8 @@ type networkSelectorProps = {
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
-  const navigate = useNavigate()
-  const location = useLocation()
-  const name = NETWORK_OPTIONS.find((network) => network.id === networkId)?.name.toLowerCase()
+  const currentNetwork = getChainInfo(networkId)
+  const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -41,25 +36,25 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
     }
   }, [open])
 
-  const redirectToNetwork = (newNetwork: string, currentNetwork: number): void => {
-    const shouldNotRedirectHome = NO_REDIRECT_HOME_ROUTES.some((r: string) => location.pathname.includes(r))
-
-    navigate(shouldNotRedirectHome ? replaceURL(location.pathname, newNetwork, currentNetwork) : `/${newNetwork}`)
-  }
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>
       {' '}
-      <NetworkLabel className={cleanNetworkName(name)}>{name}</NetworkLabel>
+      <NetworkLabel color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
-          {NETWORK_OPTIONS.map((network) => (
-            <Option onClick={(): void => redirectToNetwork(network.url, networkId)} key={network.id}>
-              <div className={`dot ${cleanNetworkName(network.name)} `} />
-              <div className={`name ${network.id === networkId && 'selected'}`}>{network.name}</div>
-              {network.id === networkId && <StyledFAIcon icon={faCheck} />}
-            </Option>
-          ))}
+          {Object.keys(CHAIN_INFO).map((_itemNetworkId) => {
+            const itemNetworkId = +_itemNetworkId as unknown as SupportedChainId
+            const network = CHAIN_INFO[itemNetworkId]
+
+            return (
+              <Option to={network.urlAlias} color={network.color} key={itemNetworkId}>
+                <div className="dot" />
+                <div className={`name ${itemNetworkId === networkId && 'selected'}`}>{network.label}</div>
+                {itemNetworkId === networkId && <StyledFAIcon icon={faCheck} />}
+              </Option>
+            )
+          })}
         </OptionsContainer>
       )}
     </SelectorContainer>

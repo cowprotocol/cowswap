@@ -2,9 +2,10 @@ import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
 import { Network } from 'types'
-import { CHAIN_ID_TO_URL_PREFIX, NETWORK_PREFIXES } from '../../consts/network'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { NETWORKS_PREFIXES } from './const'
 
-const NETWORK_PATH_MATCH_REGEX = new RegExp(`/(${NETWORK_PREFIXES})?/?(.*)`)
+const NETWORK_PATH_MATCH_REGEX = new RegExp(`/(${NETWORKS_PREFIXES})?/?(.*)`)
 
 /**
  * Decompose URL pathname like /gc/orders/123
@@ -29,7 +30,7 @@ export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | 
   }
 
   const { networkId } = props
-  const prefix = CHAIN_ID_TO_URL_PREFIX[networkId]
+  const prefix = CHAIN_INFO[networkId].urlAlias
 
   const prefixPath = prefix ? `/${prefix}` : ''
   const newPath = prefixPath + '/' + pathnameSuffix
