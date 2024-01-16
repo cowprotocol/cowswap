@@ -1,49 +1,43 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { utmAtom } from './state'
 import { UtmParams } from './types'
 
-const UTM_SOURCE_PARAM = 'utm_source'
-const UTM_MEDIUM_PARAM = 'utm_medium'
-const UTM_CAMPAIGN_PARAM = 'utm_campaign'
-const UTM_CONTENT_PARAM = 'utm_content'
-const UTM_TERM_PARAM = 'utm_term'
+const UTM_SOURCE_PARAMS: UtmParams = {
+  utmSource: 'utm_source',
+  utmMedium: 'utm_medium',
+  utmCampaign: 'utm_campaign',
+  utmContent: 'utm_content',
+  utmTerm: 'utm_term',
+}
 
-const ALL_UTM_PARAMS = [UTM_SOURCE_PARAM, UTM_MEDIUM_PARAM, UTM_CAMPAIGN_PARAM, UTM_CONTENT_PARAM, UTM_TERM_PARAM]
+const ALL_UTM_PARAMS = Object.values(UTM_SOURCE_PARAMS)
 
 function getUtmParams(searchParams: URLSearchParams): UtmParams {
-  const utmSource = searchParams.get(UTM_SOURCE_PARAM) || undefined
-  const utmMedium = searchParams.get(UTM_MEDIUM_PARAM) || undefined
-  const utmCampaign = searchParams.get(UTM_CAMPAIGN_PARAM) || undefined
-  const utmContent = searchParams.get(UTM_CONTENT_PARAM) || undefined
-  const utmTerm = searchParams.get(UTM_TERM_PARAM) || undefined
+  return Object.keys(UTM_SOURCE_PARAMS).reduce<UtmParams>((acc, _key) => {
+    const key = _key as keyof UtmParams
 
-  return {
-    utmSource,
-    utmMedium,
-    utmCampaign,
-    utmContent,
-    utmTerm,
-  }
+    acc[key] = searchParams.get(UTM_SOURCE_PARAMS[key] as string) || undefined
+
+    return acc
+  }, {})
 }
 
 export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
-function cleanUpParams(searchParams: URLSearchParams): boolean {
-  let cleanedParams = false
+function cleanUpParams(searchParams: URLSearchParams): URLSearchParams {
   ALL_UTM_PARAMS.forEach((param) => {
     if (searchParams.has(param)) {
       searchParams.delete(param)
-      cleanedParams = true
     }
   })
 
-  return cleanedParams
+  return searchParams
 }
 
 export function useInitializeUtm(): void {
@@ -53,25 +47,23 @@ export function useInitializeUtm(): void {
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
 
-  useEffect(
+  useLayoutEffect(
     () => {
       const hasQueryParamsOutOfHashbang = !search && window.location.search
       const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
-      if (utm.utmSource || utm.utmMedium || utm.utmCampaign || utm.utmContent || utm.utmTerm) {
+
+      if (Object.values(utm).filter(Boolean).length > 0) {
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
       }
 
-      // Clear params from URL and redirect
-      const cleanedParams = cleanUpParams(searchParams)
-      if (cleanedParams) {
-        const newSearch = searchParams.toString()
-        if (hasQueryParamsOutOfHashbang) {
-          window.location.replace(newSearch ? `${pathname}?${newSearch}` : '/')
-        } else {
-          navigate({ pathname, search: newSearch }, { replace: true })
-        }
+      const newSearch = cleanUpParams(searchParams).toString()
+
+      if (hasQueryParamsOutOfHashbang) {
+        window.location.replace(newSearch ? `/#${window.location.pathname}?${newSearch}` : '/')
+      } else {
+        navigate({ pathname, search: newSearch }, { replace: true })
       }
     },
     // No dependencies: It only needs to be initialized once
