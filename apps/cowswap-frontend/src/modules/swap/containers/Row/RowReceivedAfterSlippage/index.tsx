@@ -12,10 +12,16 @@ import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/typings'
 export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
   trade: TradeGp
   allowedSlippage: Percent
+  withoutFee?: boolean
 }
 
-export function RowReceivedAfterSlippage({ trade, allowedSlippage, showHelpers }: RowReceivedAfterSlippageProps) {
-  const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+export function RowReceivedAfterSlippage({
+  trade,
+  allowedSlippage,
+  showHelpers,
+  withoutFee,
+}: RowReceivedAfterSlippageProps) {
+  const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage, withoutFee)
 
   const props = useMemo(
     () => ({
