@@ -112,14 +112,16 @@ export const ExpertModeIndicator = styled.div`
 `
 
 export const SettingsIcon = styled(SettingsIconRaw)`
-  height: 20px;
-  width: 20px;
+  --size: var(${UI.ICON_SIZE_NORMAL});
+  height: var(--size);
+  width: var(--size);
   color: inherit;
   opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
 
   &:hover {
     opacity: 1;
+    transform: rotate(180deg);
   }
 
   > path,
