@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { usePathSuffix } from '../../state/network'
 
 type networkSelectorProps = {
   networkId: number
@@ -13,6 +14,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   const currentNetwork = getChainInfo(networkId)
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
+  const pathSuffix = usePathSuffix()
 
   useEffect(() => {
     const closeOpenSelector = (e: MouseEvent | KeyboardEvent): void => {
@@ -47,8 +49,14 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
             const itemNetworkId = +_itemNetworkId as unknown as SupportedChainId
             const network = CHAIN_INFO[itemNetworkId]
 
+            /**
+             * When path starts with 'address' we want to keep the same path
+             * It allows users to check their account in multiple networks without needing to search for it again
+             */
+            const url = pathSuffix?.startsWith('address') ? `${network.urlAlias}/${pathSuffix}` : network.urlAlias
+
             return (
-              <Option to={network.urlAlias} color={network.color} key={itemNetworkId}>
+              <Option to={url} color={network.color} key={itemNetworkId}>
                 <div className="dot" />
                 <div className={`name ${itemNetworkId === networkId && 'selected'}`}>{network.label}</div>
                 {itemNetworkId === networkId && <StyledFAIcon icon={faCheck} />}
