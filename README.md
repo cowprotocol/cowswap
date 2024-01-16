@@ -13,7 +13,7 @@ It allows you to buy and sell tokens using gasless orders that are settled peer-
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
 | Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
-| Twitter               | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
+| X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
