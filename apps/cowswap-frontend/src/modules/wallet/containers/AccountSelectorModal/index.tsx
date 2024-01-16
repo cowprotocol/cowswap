@@ -2,7 +2,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
@@ -35,7 +35,7 @@ export function AccountSelectorModal() {
   const { connector } = useWeb3React()
   const addSnackbar = useAddSnackbar()
 
-  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId]
+  const nativeToken = NATIVE_CURRENCIES[chainId]
 
   const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
 

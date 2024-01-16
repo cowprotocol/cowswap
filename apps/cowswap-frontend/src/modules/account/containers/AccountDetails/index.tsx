@@ -1,5 +1,6 @@
 import { Fragment, useMemo } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import {
   getEtherscanLink,
   getExplorerLabel,
@@ -7,7 +8,6 @@ import {
   getExplorerAddressLink,
   isMobile,
 } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
@@ -65,11 +65,6 @@ import { SurplusCard } from './SurplusCard'
 import { useUnsupportedNetworksText } from '../../../../common/hooks/useUnsupportedNetworksText'
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
-
-export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
-  [ChainId.GOERLI]: 'Görli',
-  [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
-}
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -181,7 +176,7 @@ export function AccountDetails({
     toggleWalletModal()
   }
 
-  const networkLabel = NETWORK_LABELS[chainId]
+  const networkLabel = CHAIN_INFO[chainId].label
   const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
 
   return (
@@ -209,9 +204,7 @@ export function AccountDetails({
 
             <WalletActions>
               {' '}
-              {networkLabel && !isChainIdUnsupported && (
-                <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>
-              )}{' '}
+              {!isChainIdUnsupported && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>}{' '}
               {formatConnectorName()}
             </WalletActions>
           </AccountControl>

@@ -1,4 +1,5 @@
 import { UI } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -17,4 +18,15 @@ export const MenuBadge = styled.div`
   letter-spacing: 0.2px;
   font-weight: 600;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  text-decoration: none;
+`
+
+export const StyledExternalLink = styled(ExternalLink)`
+  &&:hover {
+    text-decoration: none;
+  }
+
+  &:hover > span {
+    text-decoration: underline;
+  }
 `

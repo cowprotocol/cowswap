@@ -15,8 +15,8 @@ import { environmentName } from '../utils/env'
 import { version } from '../../package.json'
 import { GlobalStyle, MainWrapper } from './styled'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
-import { NETWORK_OPTIONS } from '../consts/network'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
+import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -101,7 +101,7 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
-const networkPrefixes = NETWORK_OPTIONS.map((option) => option.url)
+const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 
 /** App content */
 

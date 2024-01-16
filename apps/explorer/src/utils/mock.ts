@@ -1,6 +1,7 @@
 import { TxOptionalParams } from 'types'
-import { wait } from './time'
 import { RECEIPT } from '../test/data'
+
+const wait = process.env.NODE_ENV === 'test' ? noop : waitImpl
 
 export async function waitAndSendReceipt(params: {
   waitTime?: number
@@ -13,4 +14,14 @@ export async function waitAndSendReceipt(params: {
     txOptionalParams.onSentTransaction(RECEIPT.transactionHash)
   }
   return wait(waitTime)
+}
+
+async function noop(_milliseconds = 0): Promise<void> {}
+
+async function waitImpl(milliseconds = 2500): Promise<void> {
+  return new Promise((resolve): void => {
+    setTimeout((): void => {
+      resolve()
+    }, milliseconds)
+  })
 }
