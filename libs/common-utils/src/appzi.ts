@@ -50,6 +50,7 @@ type AppziCustomSettings = {
   explorerUrl?: string
   env?: string
   chainId?: number
+  orderType?: string
 }
 
 type AppziSettings = {

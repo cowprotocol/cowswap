@@ -65,5 +65,11 @@ function _triggerNps(
     return
   }
 
-  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
+  openNpsAppziSometimes({
+    ...npsParams,
+    secondsSinceOpen: timeSinceInSeconds(openSince),
+    explorerUrl,
+    chainId,
+    orderType: uiOrderType,
+  })
 }
