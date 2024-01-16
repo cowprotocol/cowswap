@@ -289,6 +289,7 @@ export const Wrapper = styled(WrapperTemplate)`
       padding: 0;
       li {
         list-style: none;
+        line-height: normal;
         color: ${({ theme }): string => theme.red1};
         font-size: 1.3rem;
       }
