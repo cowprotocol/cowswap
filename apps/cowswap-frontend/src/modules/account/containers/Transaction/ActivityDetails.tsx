@@ -19,6 +19,7 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { Icon } from 'common/pure/Icon'
+import { IconType } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
@@ -33,7 +34,6 @@ import {
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
-  IconType,
   StyledFiatAmount,
   Summary,
   SummaryInner,
@@ -335,8 +335,8 @@ export function ActivityDetails(props: {
                 <SummaryInnerRow>
                   <b>Recipient:</b>
                   <i>
-                    {isCustomRecipientWarningBannerVisible && (
-                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                    {!isCustomRecipientWarningBannerVisible && (
+                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
                     )}
                     <ExternalLink
                       href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}

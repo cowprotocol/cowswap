@@ -84,6 +84,13 @@ export const Field = styled.div`
 
   > div {
     display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  > div > a {
+    display: flex;
+    margin: auto 0;
   }
 `
 
