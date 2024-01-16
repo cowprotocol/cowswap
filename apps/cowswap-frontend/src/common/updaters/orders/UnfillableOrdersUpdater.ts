@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { DEFAULT_NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
@@ -239,7 +239,7 @@ async function _getOrderPrice(
     quoteToken = order.sellToken
   }
 
-  const isEthFlow = order.sellToken === DEFAULT_NATIVE_CURRENCY_ADDRESS
+  const isEthFlow = order.sellToken === NATIVE_CURRENCY_ADDRESS
   if (isEthFlow) {
     console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
   }

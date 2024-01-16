@@ -6,10 +6,12 @@ import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { DEFAULT_FAVOURITE_TOKENS } from '../../const/defaultFavouriteTokens'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
   'favouriteTokensAtom:v1',
-  DEFAULT_FAVOURITE_TOKENS
+  DEFAULT_FAVOURITE_TOKENS,
+  getJotaiMergerStorage()
 )
 
 export const favouriteTokensListAtom = atom((get) => {

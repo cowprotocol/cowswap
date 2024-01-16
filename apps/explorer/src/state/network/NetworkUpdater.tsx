@@ -11,7 +11,7 @@ import { NETWORKS_PREFIXES } from './const'
 
 const MAINNET_PREFIX = CHAIN_INFO[SupportedChainId.MAINNET].urlAlias
 const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_INFO).map((key) => {
-  const chainId = +key as unknown as SupportedChainId
+  const chainId = +key as SupportedChainId
 
   return [chainId, CHAIN_INFO[chainId].urlAlias]
 })
