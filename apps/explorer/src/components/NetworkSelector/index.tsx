@@ -9,6 +9,8 @@ type networkSelectorProps = {
   networkId: number
 }
 
+const ROUTES_WITH_PRESERVED_PATH = ['address']
+
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
   const currentNetwork = getChainInfo(networkId)
@@ -53,7 +55,8 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
              * When path starts with 'address' we want to keep the same path
              * It allows users to check their account in multiple networks without needing to search for it again
              */
-            const url = pathSuffix?.startsWith('address') ? `${network.urlAlias}/${pathSuffix}` : network.urlAlias
+            const shouldPreservePath = ROUTES_WITH_PRESERVED_PATH.some((route) => pathSuffix?.startsWith(route))
+            const url = shouldPreservePath ? `${network.urlAlias}/${pathSuffix || ''}` : network.urlAlias
 
             return (
               <Option to={url} color={network.color} key={itemNetworkId}>
