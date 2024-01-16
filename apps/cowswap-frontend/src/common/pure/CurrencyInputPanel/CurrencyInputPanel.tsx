@@ -124,7 +124,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     />
   )
 
-  const priceImpactParams = useMemo(() => {
+  const priceImpactParams: typeof _priceImpactParams = useMemo(() => {
+    if (!_priceImpactParams) return undefined
+
     return {
       ..._priceImpactParams,
       // Don't show price impact loading state when only one currency is set
