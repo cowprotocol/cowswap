@@ -1,6 +1,6 @@
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 
@@ -19,7 +19,7 @@ export function getIsNativeToken(chainIdOrTokenParams: SupportedChainId | Curren
 
   if (!tokenId) return false
 
-  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId as SupportedChainId]
+  const nativeToken = NATIVE_CURRENCIES[chainId as SupportedChainId]
 
   return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
 }

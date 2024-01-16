@@ -1,5 +1,5 @@
 import { COW } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -32,7 +32,7 @@ describe('isOrderCancellable', () => {
 
   it("When an order's status is CREATING, then the order is cancellable", () => {
     const order = {
-      inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+      inputToken: NATIVE_CURRENCIES[1],
       status: OrderStatus.CREATING, // <- CREATING
       isCancelling: false,
       cancellationHash: undefined,
@@ -44,7 +44,7 @@ describe('isOrderCancellable', () => {
 
   it("When an order's status is PENDING, then the order is cancellable", () => {
     const order = {
-      inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+      inputToken: NATIVE_CURRENCIES[1],
       status: OrderStatus.PENDING, // <- PENDING
       isCancelling: false,
       cancellationHash: undefined,
@@ -63,7 +63,7 @@ describe('isOrderCancellable', () => {
       OrderStatus.EXPIRED,
     ].forEach((status) => {
       const order = {
-        inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+        inputToken: NATIVE_CURRENCIES[1],
         status, // <----
         isCancelling: false,
         cancellationHash: undefined,

@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCY } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
@@ -69,7 +69,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       if (!chainId || !trade) return
 
       callbacks.dismiss()
-      onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+      onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
       openSwapConfirmModal(trade)
     }
 
@@ -95,7 +95,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       if (!chainId || !trade) return
 
       callbacks.dismiss()
-      onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+      onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
       callbacks.directSwap()
     }
 

@@ -1,4 +1,4 @@
-import { DEFAULT_PRECISION, LONG_PRECISION, WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
+import { DEFAULT_PRECISION, LONG_PRECISION, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { parseUnits } from '@ethersproject/units'

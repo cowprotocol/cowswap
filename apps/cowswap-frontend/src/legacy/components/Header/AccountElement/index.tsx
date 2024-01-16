@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -23,7 +23,7 @@ export function AccountElement({ className, isWidgetMode, pendingActivities }: A
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
-  const nativeToken = NATIVE_CURRENCY_BUY_TOKEN[chainId].symbol
+  const nativeToken = NATIVE_CURRENCIES[chainId].symbol
 
   return (
     <Wrapper className={className} active={!!account} onClick={() => account && toggleAccountModal()}>

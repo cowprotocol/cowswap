@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { formatSymbol } from '@cowprotocol/common-utils'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -119,5 +119,5 @@ function didRefundFail(order: Order): boolean | undefined {
 
 // TODO: move this somewhere else?
 export function getIsEthFlowOrder(inputTokenAddress: string): boolean {
-  return inputTokenAddress === NATIVE_CURRENCY_BUY_ADDRESS
+  return inputTokenAddress === NATIVE_CURRENCY_ADDRESS
 }

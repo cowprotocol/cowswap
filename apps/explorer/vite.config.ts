@@ -10,6 +10,7 @@ import { version as APP_VERSION } from './package.json'
 import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json'
 import { version as DEX_JS_VERSION } from '@gnosis.pm/dex-js/package.json'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import macrosPlugin from 'vite-plugin-babel-macros'
 
 const CONFIG = loadConfig()
 
@@ -62,6 +63,7 @@ export default defineConfig(({ mode }) => {
       viteTsConfigPaths({
         root: '../../',
       }),
+      macrosPlugin(),
       dynamicImport({
         filter(id) {
           if (id.includes('/node_modules/@cowprotocol')) {

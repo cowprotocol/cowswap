@@ -1,4 +1,4 @@
-import { COW, NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { COW, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -99,7 +99,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   it('When is ETH-flow order, then should call eth-flow contract', async () => {
     const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
 
-    await result.current({ ...orderMock, inputToken: NATIVE_CURRENCY_BUY_TOKEN[chainId] })
+    await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
 
     expect(ethFlowInvalidationMock).toHaveBeenCalledTimes(1)
     expect(ethFlowInvalidationMock.mock.calls[0]).toMatchSnapshot()

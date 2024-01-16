@@ -6,13 +6,15 @@ import { setNetwork } from './actions'
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CHAIN_ID_TO_URL_PREFIX, NETWORK_PREFIXES } from '../../consts/network'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { NETWORK_PREFIXES } from './const'
 
-const MAINNET_PREFIX = CHAIN_ID_TO_URL_PREFIX[SupportedChainId.MAINNET]
-const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_ID_TO_URL_PREFIX).map((key) => [
-  +key, // SupportedChainId is a number enum
-  CHAIN_ID_TO_URL_PREFIX[key],
-])
+const MAINNET_PREFIX = CHAIN_INFO[SupportedChainId.MAINNET].urlAlias
+const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_INFO).map((key) => {
+  const chainId = +key
+
+  return [chainId, CHAIN_INFO[chainId].urlAlias]
+})
 const NETWORK_ID_BY_PREFIX: Map<string, SupportedChainId> = new Map(
   NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key])
 )
