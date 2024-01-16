@@ -2,17 +2,17 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenWithLogo } from './types'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 
-export const DEFAULT_NATIVE_CURRENCY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+export const NATIVE_CURRENCY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 const DEFAULT_NATIVE_DECIMALS = 18
-const ETH_MAINNET_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-const ETH_LOGO_URL = cowprotocolTokenLogoUrl(ETH_MAINNET_ADDRESS.toLowerCase(), SupportedChainId.MAINNET)
+const WETH9_MAINNET_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+const ETH_LOGO_URL = cowprotocolTokenLogoUrl(WETH9_MAINNET_ADDRESS.toLowerCase(), SupportedChainId.MAINNET)
 
 export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: new TokenWithLogo(
     ETH_LOGO_URL,
     SupportedChainId.MAINNET,
-    ETH_MAINNET_ADDRESS,
+    WETH9_MAINNET_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'WETH',
     'Wrapped Ether'
@@ -47,7 +47,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: new TokenWithLogo(
     undefined,
     SupportedChainId.MAINNET,
-    DEFAULT_NATIVE_CURRENCY_ADDRESS,
+    NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
     'Ether'
@@ -55,7 +55,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.GOERLI]: new TokenWithLogo(
     undefined,
     SupportedChainId.GOERLI,
-    DEFAULT_NATIVE_CURRENCY_ADDRESS,
+    NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
     'Ether'
@@ -63,7 +63,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.SEPOLIA]: new TokenWithLogo(
     undefined,
     SupportedChainId.SEPOLIA,
-    DEFAULT_NATIVE_CURRENCY_ADDRESS,
+    NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
     'Ether'
@@ -71,7 +71,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.GNOSIS_CHAIN]: new TokenWithLogo(
     undefined,
     SupportedChainId.GNOSIS_CHAIN,
-    DEFAULT_NATIVE_CURRENCY_ADDRESS,
+    NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'xDAI',
     'xDAI'

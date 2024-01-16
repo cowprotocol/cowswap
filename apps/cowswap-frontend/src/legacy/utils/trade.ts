@@ -1,4 +1,4 @@
-import { RADIX_DECIMAL, DEFAULT_NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { isAddress, shortenAddress, formatTokenAmount, formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
@@ -132,7 +132,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     quoteId,
     order: {
       sellToken: sellTokenAddress,
-      buyToken: getIsNativeToken(buyToken) ? DEFAULT_NATIVE_CURRENCY_ADDRESS : buyToken.address,
+      buyToken: getIsNativeToken(buyToken) ? NATIVE_CURRENCY_ADDRESS : buyToken.address,
       sellAmount,
       buyAmount,
       validTo,

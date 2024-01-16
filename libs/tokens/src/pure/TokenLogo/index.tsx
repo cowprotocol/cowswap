@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { cowprotocolTokenLogoUrl, DEFAULT_NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
@@ -46,9 +46,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
     // TODO: get rid of Currency usage and remove type casting
     if (token) {
       if (token instanceof NativeCurrency) {
-        return [
-          cowprotocolTokenLogoUrl(DEFAULT_NATIVE_CURRENCY_ADDRESS.toLowerCase(), token.chainId as SupportedChainId),
-        ]
+        return [cowprotocolTokenLogoUrl(NATIVE_CURRENCY_ADDRESS.toLowerCase(), token.chainId as SupportedChainId)]
       }
 
       return getTokenLogoUrls(token as TokenWithLogo)
