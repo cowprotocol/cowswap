@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a transaction is sent Then should change an order status, set a tx hash to order and add the transaction to store 1`] = `
+[
+  {
+    "hash": "0xcfwj23g4fwe111",
+    "onChainCancellation": {
+      "orderId": "xx1",
+      "sellTokenSymbol": "COW",
+    },
+  },
+]
+`;
+
+exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a transaction is sent Then should change an order status, set a tx hash to order and add the transaction to store 2`] = `
+[
+  {
+    "chainId": 1,
+    "id": "xx1",
+  },
+]
+`;
+
+exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a transaction is sent Then should change an order status, set a tx hash to order and add the transaction to store 3`] = `
+[
+  {
+    "chainId": 1,
+    "hash": "0xcfwj23g4fwe111",
+    "id": "xx1",
+  },
+]
+`;
+
+exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When is ETH-flow order, then should call eth-flow contract 1`] = `
+[
+  {
+    "appData": "0x001",
+    "buyAmount": "2",
+    "buyToken": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+    "feeAmount": undefined,
+    "partiallyFillable": false,
+    "quoteId": 0,
+    "receiver": "0x0000000000000000000000000000000000000000",
+    "sellAmount": "1",
+    "validTo": "34245345432",
+  },
+  {
+    "gasLimit": {
+      "hex": "0x78",
+      "type": "BigNumber",
+    },
+  },
+]
+`;
+
+exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When is NOT ETH-flow order, then should call settlement contract 1`] = `
+[
+  "xx1",
+  {
+    "gasLimit": {
+      "hex": "0xf0",
+      "type": "BigNumber",
+    },
+  },
+]
+`;

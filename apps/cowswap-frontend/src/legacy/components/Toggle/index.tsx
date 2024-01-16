@@ -1,0 +1,114 @@
+import { useState } from 'react'
+
+import { UI } from '@cowprotocol/ui'
+
+import { darken } from 'color2k'
+import styled, { keyframes } from 'styled-components/macro'
+import { WithClassName } from 'types'
+
+const turnOnToggle = keyframes`
+  from {
+    margin-left: 0;
+    margin-right: 2.2em;
+  }
+  to {
+    margin-left: 2.2em;
+    margin-right: 0;
+  }
+`
+
+const turnOffToggle = keyframes`
+  from {
+    margin-left: 2.2em;
+    margin-right: 0;
+  }
+  to {
+    margin-left: 0;
+    margin-right: 2.2em;
+  }
+`
+
+const ToggleElementHoverStyle = (hasBgColor: boolean, theme: any, isActive?: boolean) =>
+  hasBgColor
+    ? {
+        opacity: '0.8',
+      }
+    : {
+        background: isActive ? darken(theme.primary1, 0.05) : darken(theme.bg4, 0.05),
+        color: isActive ? theme.white : theme.text3,
+      }
+
+export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string; isInitialToggleLoad?: boolean }>`
+  animation: 0.1s
+    ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
+    ease-in;
+  background: ${({ bgColor, isActive }) =>
+    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
+  border-radius: 50%;
+  height: 24px;
+  :hover {
+    ${({ bgColor, theme, isActive }) => ToggleElementHoverStyle(!!bgColor, theme, isActive)}
+  }
+  margin-left: ${({ isActive }) => (isActive ? '2.2em' : '0em')};
+  margin-right: ${({ isActive }) => (!isActive ? '2.2em' : '0em')};
+  width: 24px;
+`
+
+const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
+  align-items: center;
+  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  outline: none;
+  padding: 0.4rem 0.4rem;
+  width: fit-content;
+
+  ${ToggleElement} {
+    color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
+    border: none;
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+    background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
+
+    &:hover {
+      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`)};
+    }
+  }
+
+  &.disabled {
+    cursor: default;
+
+    ${ToggleElement} {
+      opacity: 0.5;
+
+      &:hover {
+        border: 2px solid transparent;
+      }
+    }
+  }
+`
+
+export interface ToggleProps extends WithClassName {
+  id?: string
+  bgColor?: string
+  isActive: boolean
+  toggle: () => void
+  isDisabled?: boolean // Mod
+}
+
+export function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
+  const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
+
+  const switchToggle = () => {
+    toggle()
+    if (!isDisabled && isInitialToggleLoad) setIsInitialToggleLoad(false)
+  }
+
+  return (
+    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className}>
+      <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
+    </Wrapper>
+  )
+}

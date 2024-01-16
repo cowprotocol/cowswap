@@ -1,0 +1,96 @@
+{
+  "name": "cowswap-frontend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/cowswap-frontend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["i18n"],
+      "options": {
+        "outputPath": "build/cowswap"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "cowswap-frontend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "cowswap-frontend:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "cowswap-frontend:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "cowswap-frontend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "cowswap-frontend:build:development"
+        },
+        "production": {
+          "buildTarget": "cowswap-frontend:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "passWithNoTests": true,
+        "jestConfig": "apps/cowswap-frontend/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "cowswap-frontend:build"
+      }
+    },
+
+    "i18n": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["i18n:extract"],
+      "options": {
+        "command": "npx lingui compile"
+      },
+      "inputs": ["{projectRoot}/src/locales/*.po"],
+      "outputs": ["{projectRoot}/src/locales/*.js"]
+    },
+    "i18n:extract": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
+      },
+      "inputs": ["{workspaceRoot}/apps/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"],
+      "outputs": ["{projectRoot}/src/locales/*.po"]
+    }
+  },
+  "tags": []
+}

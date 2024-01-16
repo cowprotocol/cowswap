@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`extensibleFallbackSetupTxs - service to generate transactions for ExtensibleFallback setup Should create a bundle of two transactions: setFallbackHandler and setDomainVerifier 1`] = `
+[
+  {
+    "data": "0xf08a03230000000000000000000000002f55e8b20d0b9fefa187aa7d00b6cbe563605bf5",
+    "operation": 0,
+    "to": "0xA12D770028d7072b80BAEb6A1df962cccfd1dddd",
+    "value": "0",
+  },
+  {
+    "data": "0x3365582ca5b986c2f5845d520bcb903639360b147735589732066cea24a3a59678025c94000000000000000000000000fdafc9d1902f4e0b84f65f49f244b32b31013b74",
+    "operation": 0,
+    "to": "0xA12D770028d7072b80BAEb6A1df962cccfd1dddd",
+    "value": "0",
+  },
+]
+`;

@@ -17,7 +17,7 @@ Overall architecture of the project
 
 ### Trading modules
 
-- [trade](../src/modules/trade/docs/trade-module.md)
+- [trade](../apps/cowswap-frontend/src/modules/trade/docs/trade-module.md)
 - swap
 - limitOrder
 - twap
@@ -40,9 +40,9 @@ Overall architecture of the project
 
 ### appData
 
-- [appData](../src/modules/appData/appData-module.md)
+- [appData](../apps/cowswap-frontend/src/modules/appData/appData-module.md)
 - ~affiliate~ (not used right now)
-- [utm](../src/modules/utm/utm-module.md)
+- [utm](../apps/cowswap-frontend/src/modules/utm/utm-module.md)
 
 ### Token modules
 

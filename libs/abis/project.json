@@ -1,0 +1,49 @@
+{
+  "name": "abis",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/abis/src",
+  "projectType": "library",
+  "targets": {
+    "abis": {
+      "executor": "nx:noop",
+      "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy"]
+    },
+    "abi:ethflow": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/ethflow \"./libs/abis/node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\""
+      }
+    },
+    "abi:custom": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/custom './libs/abis/src/abis/**/*.json'"
+      }
+    },
+    "abis-legacy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/legacy './libs/abis/src/abis-legacy/**/*.json'"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/abis"
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs abis {args.tag} {args.otp}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/abis/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

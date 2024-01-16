@@ -1,0 +1,154 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 1`] = `
+{
+  "amount": CurrencyAmount {
+    "currency": TokenWithLogo {
+      "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+      "chainId": 1,
+      "decimals": 18,
+      "isNative": false,
+      "isToken": true,
+      "logoURI": undefined,
+      "name": "CoW Protocol Token",
+      "symbol": "COW",
+    },
+    "decimalScale": JSBI [
+      660865024,
+      931322574,
+    ],
+    "denominator": JSBI [
+      1,
+    ],
+    "numerator": JSBI [],
+  },
+  "defaultValue": "0",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 2`] = `
+{
+  "amount": null,
+  "defaultValue": "0",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When selling, if the fee is bigger than the traded amount Then amountBeforeFees should be zero 3`] = `
+{
+  "amount": CurrencyAmount {
+    "currency": TokenWithLogo {
+      "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+      "chainId": 1,
+      "decimals": 18,
+      "isNative": false,
+      "isToken": true,
+      "logoURI": undefined,
+      "name": "CoW Protocol Token",
+      "symbol": "COW",
+    },
+    "decimalScale": JSBI [
+      660865024,
+      931322574,
+    ],
+    "denominator": JSBI [
+      1,
+    ],
+    "numerator": JSBI [
+      908853248,
+      646484075,
+      2,
+    ],
+  },
+  "defaultValue": "0",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 1`] = `
+{
+  "amount": CurrencyAmount {
+    "currency": TokenWithLogo {
+      "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+      "chainId": 1,
+      "decimals": 18,
+      "isNative": false,
+      "isToken": true,
+      "logoURI": undefined,
+      "name": "CoW Protocol Token",
+      "symbol": "COW",
+    },
+    "decimalScale": JSBI [
+      660865024,
+      931322574,
+    ],
+    "denominator": JSBI [
+      1,
+    ],
+    "numerator": JSBI [
+      933756928,
+      902409669,
+      216,
+    ],
+  },
+  "defaultValue": "0",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 2`] = `
+{
+  "amount": CurrencyAmount {
+    "currency": TokenWithLogo {
+      "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+      "chainId": 1,
+      "decimals": 18,
+      "isNative": false,
+      "isToken": true,
+      "logoURI": undefined,
+      "name": "CoW Protocol Token",
+      "symbol": "COW",
+    },
+    "decimalScale": JSBI [
+      660865024,
+      931322574,
+    ],
+    "denominator": JSBI [
+      1,
+    ],
+    "numerator": JSBI [
+      24903680,
+      255925594,
+      214,
+    ],
+  },
+  "defaultValue": "0",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 3`] = `
+{
+  "amount": CurrencyAmount {
+    "currency": TokenWithLogo {
+      "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
+      "chainId": 1,
+      "decimals": 18,
+      "isNative": false,
+      "isToken": true,
+      "logoURI": undefined,
+      "name": "CoW Protocol Token",
+      "symbol": "COW",
+    },
+    "decimalScale": JSBI [
+      660865024,
+      931322574,
+    ],
+    "denominator": JSBI [
+      1,
+    ],
+    "numerator": JSBI [
+      908853248,
+      646484075,
+      2,
+    ],
+  },
+  "defaultValue": "0",
+}
+`;

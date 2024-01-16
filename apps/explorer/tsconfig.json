@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "types": ["node", "vite/client"],
+    "baseUrl": "src",
+    "noImplicitAny": false,
+    "paths": {
+      "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
+      "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
+      "@cowprotocol/assets": ["../../../libs/assets/src/index.ts"]
+    }
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

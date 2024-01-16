@@ -1,0 +1,51 @@
+import { useSetAtom } from 'jotai'
+
+import { TradeAmounts } from 'common/types'
+
+import {
+  setCloseTradeConfirmAtom,
+  setErrorTradeConfirmAtom,
+  setOpenTradeConfirmAtom,
+  setPendingTradeConfirmAtom,
+  setPermitSignatureRequestedTradeConfirmAtom,
+  setTxHashTradeConfirmAtom,
+} from '../state/tradeConfirmStateAtom'
+
+export interface TradeConfirmActions {
+  onSign(pendingTrade: TradeAmounts): void
+  onError(error: string): void
+  onSuccess(transactionHash: string): void
+  onOpen(): void
+  requestPermitSignature(pendingTrade: TradeAmounts): void
+  onDismiss(): void
+}
+
+export function useTradeConfirmActions(): TradeConfirmActions {
+  const setOpenTradeConfirm = useSetAtom(setOpenTradeConfirmAtom)
+  const setCloseTradeConfirm = useSetAtom(setCloseTradeConfirmAtom)
+  const setErrorTradeConfirm = useSetAtom(setErrorTradeConfirmAtom)
+  const setPendingTradeConfirm = useSetAtom(setPendingTradeConfirmAtom)
+  const setTxHashTradeConfirm = useSetAtom(setTxHashTradeConfirmAtom)
+  const setPermitSignatureRequested = useSetAtom(setPermitSignatureRequestedTradeConfirmAtom)
+
+  return {
+    onSign(pendingTrade: TradeAmounts) {
+      setPendingTradeConfirm(pendingTrade)
+    },
+    onError(error: string) {
+      setErrorTradeConfirm(error)
+    },
+    onSuccess(transactionHash: string) {
+      setTxHashTradeConfirm(transactionHash)
+    },
+    onOpen() {
+      setOpenTradeConfirm()
+    },
+    requestPermitSignature(pendingTrade: TradeAmounts) {
+      setPermitSignatureRequested(pendingTrade)
+    },
+    onDismiss() {
+      setCloseTradeConfirm()
+    },
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "fixturesDir": "cosmos",
+  "fixtureFileSuffix": "cosmos",
+  "watchDirs": ["src"],
+  "port": 5001,
+  "exportPath": "../../build/cosmos",
+  "publicUrl": "./",
+  "plugins": ["react-cosmos-plugin-vite"],
+  "vite": {
+    "configPath": "./vite.config.ts"
+  }
+}
