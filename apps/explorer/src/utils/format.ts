@@ -4,21 +4,14 @@ import { arrayify } from 'ethers/lib/utils'
 
 import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 
-import {
-  BATCH_TIME_IN_MS,
-  DEFAULT_DECIMALS,
-  MINIMUM_ATOM_VALUE,
-  ONE_BIG_NUMBER,
-  ONE_HUNDRED_BIG_NUMBER,
-  TEN_BIG_NUMBER,
-} from 'const'
+import { DEFAULT_DECIMALS, MINIMUM_ATOM_VALUE, ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER } from 'const'
 import {
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   MIDDLE_PRECISION_DECIMALS,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../explorer/const'
-import { batchIdToDate, FormatAmountPrecision } from 'utils'
+import { FormatAmountPrecision } from 'utils'
 
 export {
   formatSmart,
@@ -73,34 +66,6 @@ export function sanitizeNegativeAndMakeMultipleOf(value?: string | number | null
   return typeof value === 'number' || (typeof value === 'string' && Number(value) >= 0)
     ? makeMultipleOf(5, value).toString()
     : defaultValue
-}
-
-export function checkDateOrValidBatchTime(dateOrBatch: Date | string | number | null): string | null {
-  // early null return
-  if (!dateOrBatch || dateOrBatch === '0') return null
-
-  const dateParsed = Date.parse(new Date(dateOrBatch).toString())
-  // check if parsable date
-  // if NaN - continue
-  // if is actual number, is date
-  if (!isNaN(dateParsed) && dateParsed > Date.now()) return dateParsed.toString()
-
-  // check if passed in date = number, and/or converting to number !isNaN
-  if (typeof dateOrBatch === 'number' || !isNaN(+dateOrBatch)) {
-    // lower than batchId threshold, return null
-    if (+dateOrBatch < Math.floor(Date.now() / BATCH_TIME_IN_MS)) return null
-
-    // above batch threshold but below Date.now() - try as batchId
-    if (+dateOrBatch < Date.now()) {
-      const batchIdAsDate = batchIdToDate(+dateOrBatch).getTime()
-
-      return batchIdAsDate > Date.now() ? batchIdAsDate.toString() : null
-    }
-  }
-
-  if (isNaN(dateParsed)) return null
-
-  return dateOrBatch.toString()
 }
 
 export function validatePositiveConstructor(message: string) {
