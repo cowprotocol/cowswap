@@ -1683,8 +1683,8 @@ export const SuccessBanner = styled.div<{ type: string }>`
   `};
 
   > svg {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 28px;
     object-fit: contain;
     stroke: none;
     fill: ${({ type, theme }) =>
