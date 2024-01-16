@@ -30,7 +30,7 @@ export function useTradeUsdAmounts(
 ): TradeUSDAmounts {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
-  const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts ? true : areAmountsReady)
+  const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts || areAmountsReady)
 
   return {
     inputAmount: useUsdAmount(isTradeReady ? inputAmount : null, inputCurrency),
