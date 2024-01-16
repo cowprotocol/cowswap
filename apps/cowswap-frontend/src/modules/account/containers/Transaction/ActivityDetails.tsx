@@ -204,10 +204,20 @@ export function ActivityDetails(props: {
   let isOrderFulfilled = false
 
   if (order) {
-    const { inputToken, sellAmountBeforeFee, outputToken, buyAmount, validTo, kind, fulfillmentTime } = order
+    const {
+      inputToken,
+      sellAmount,
+      feeAmount: feeAmountRaw,
+      outputToken,
+      buyAmount,
+      validTo,
+      kind,
+      fulfillmentTime,
+    } = order
 
-    const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmountBeforeFee.toString())
+    const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
     const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
+    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
@@ -234,7 +244,7 @@ export function ActivityDetails(props: {
 
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
-      from: <TokenAmount amount={inputAmount} tokenSymbol={inputAmount.currency} />,
+      from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
       to: <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />,
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
