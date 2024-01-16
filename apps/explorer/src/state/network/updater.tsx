@@ -3,9 +3,9 @@ import { Navigate, useLocation } from 'react-router-dom'
 
 import { Network } from 'types'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { NETWORKS_PREFIXES } from './const'
+import { NETWORK_PREFIXES } from './const'
 
-const NETWORK_PATH_MATCH_REGEX = new RegExp(`/(${NETWORKS_PREFIXES})?/?(.*)`)
+const NETWORK_PATH_MATCH_REGEX = new RegExp(`/(${NETWORK_PREFIXES})?/?(.*)`)
 
 /**
  * Decompose URL pathname like /gc/orders/123
