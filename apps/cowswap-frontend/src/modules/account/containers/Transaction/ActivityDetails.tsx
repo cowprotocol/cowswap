@@ -335,7 +335,7 @@ export function ActivityDetails(props: {
                 <SummaryInnerRow>
                   <b>Recipient:</b>
                   <i>
-                    {!isCustomRecipientWarningBannerVisible && (
+                    {isCustomRecipientWarningBannerVisible && (
                       <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
                     )}
                     <ExternalLink
