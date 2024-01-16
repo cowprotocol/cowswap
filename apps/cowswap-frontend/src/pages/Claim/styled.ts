@@ -1683,8 +1683,9 @@ export const SuccessBanner = styled.div<{ type: string }>`
   `};
 
   > svg {
-    width: 42px;
-    height: 42px;
+    --size: var(${UI.ICON_SIZE_NORMAL});
+    width: var(--size);
+    height: var(--size);
     object-fit: contain;
     stroke: none;
     fill: ${({ type, theme }) =>
