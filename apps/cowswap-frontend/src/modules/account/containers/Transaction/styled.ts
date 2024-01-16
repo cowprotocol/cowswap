@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { StyledSVG, FiatAmount, RowFixed } from '@cowprotocol/ui'
+import { FiatAmount, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -34,52 +34,6 @@ export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-`
-
-export const IconType = styled.div`
-  flex: 0 0 36px;
-  height: 36px;
-  width: 36px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-`};
-
-  &::before {
-    content: '';
-    display: block;
-    background: ${({ color }) => color};
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: inherit;
-    width: inherit;
-    border-radius: 36px;
-    opacity: 0.1;
-  }
-  svg {
-    display: flex;
-    margin: auto;
-  }
-  svg > path {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    margin: auto;
-    display: block;
-    fill: ${({ color }) => color};
-  }
-  // Loader
-  ${StyledSVG} {
-    > path {
-      fill: transparent;
-      stroke: ${({ color }) => color};
-    }
-  }
 `
 
 export const Summary = styled.div`
@@ -383,13 +337,6 @@ export const TransactionState = styled(OldTransactionState).attrs(
   ${RowFixed} {
     width: 100%;
   }
-`
-
-export const CancellationSummary = styled.span`
-  padding: 12px;
-  margin: 0;
-  border-radius: 6px;
-  background: var(${UI.COLOR_PAPER});
 `
 
 export const TransactionInnerDetail = styled.div`
