@@ -69,6 +69,7 @@ export const List = styled.ul`
         border-radius: 10px;
         font-size: 9px;
         font-weight: bold;
+        text-decoration: none;
       }
     }
   }
