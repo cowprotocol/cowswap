@@ -80,6 +80,7 @@ const Settings = styled(SettingsMod)`
     > path,
     > circle {
       transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
+      stroke: currentColor;
     }
   }
 
