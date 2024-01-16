@@ -1,22 +1,11 @@
-import { getChainInfo } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-export const UNSUPPORTED_WALLET_TEXT = (
-  <Trans>
-    Please connect your wallet to one of our supported networks:
-    <br />
-    {ALL_SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label)
-      .filter(Boolean)
-      .join(', ')}
-  </Trans>
-)
+import { useUnsupportedNetworksText } from '../../hooks/useUnsupportedNetworksText'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -43,6 +32,7 @@ const StyledAlertCircle = styled(AlertCircle)`
 
 export function WalletUnsupportedNetworkBanner() {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const unsupportedNetworksText = useUnsupportedNetworksText()
 
   return (
     <>
@@ -51,7 +41,7 @@ export function WalletUnsupportedNetworkBanner() {
           <div>
             <StyledAlertCircle size={24} />
           </div>
-          <div>{UNSUPPORTED_WALLET_TEXT}</div>
+          <div>{unsupportedNetworksText}</div>
         </Wrapper>
       )}
     </>
