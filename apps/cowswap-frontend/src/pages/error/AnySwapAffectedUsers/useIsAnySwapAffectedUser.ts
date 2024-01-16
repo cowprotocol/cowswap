@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'

@@ -1,5 +1,5 @@
 import { Erc20, Weth } from '@cowprotocol/abis'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -201,7 +201,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
   const isGnosisSafeWallet = !!gnosisSafeInfo
 
   const buyToken = getIsNativeToken(trade.outputAmount.currency)
-    ? NATIVE_CURRENCY_BUY_TOKEN[chainId as SupportedChainId]
+    ? NATIVE_CURRENCIES[chainId as SupportedChainId]
     : trade.outputAmount.currency
   const marketLabel = [sellToken?.symbol, buyToken.symbol].join(',')
 
