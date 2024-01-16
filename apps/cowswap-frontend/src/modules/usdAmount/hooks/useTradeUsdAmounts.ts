@@ -25,10 +25,12 @@ export function useTradeUsdAmounts(
   inputAmount: Nullish<CurrencyAmount<Currency>>,
   outputAmount: Nullish<CurrencyAmount<Currency>>,
   inputCurrency?: Nullish<TokenWithLogo>,
-  outputCurrency?: Nullish<TokenWithLogo>
+  outputCurrency?: Nullish<TokenWithLogo>,
+  dontWaitBothAmounts?: boolean
 ): TradeUSDAmounts {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const isTradeReady = !isWrapOrUnwrap && !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
+  const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
+  const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts ? true : areAmountsReady)
 
   return {
     inputAmount: useUsdAmount(isTradeReady ? inputAmount : null, inputCurrency),

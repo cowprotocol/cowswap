@@ -27,7 +27,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency, true)
 
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount

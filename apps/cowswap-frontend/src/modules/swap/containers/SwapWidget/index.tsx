@@ -33,10 +33,9 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
-import { useUsdAmount } from 'modules/usdAmount'
+import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -110,14 +109,15 @@ export function SwapWidget() {
 
   const isSellTrade = independentField === Field.INPUT
 
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { value: inputUsdValue } = useUsdAmount(
-    isWrapOrUnwrap ? null : trade?.inputAmountWithoutFee || parsedAmounts.INPUT,
-    inputToken
-  )
-  const { value: outputUsdValue } = useUsdAmount(
-    isWrapOrUnwrap ? null : trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
-    outputToken
+  const {
+    inputAmount: { value: inputUsdValue },
+    outputAmount: { value: outputUsdValue },
+  } = useTradeUsdAmounts(
+    trade?.inputAmountWithoutFee || parsedAmounts.INPUT,
+    trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
+    inputToken,
+    outputToken,
+    true
   )
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
