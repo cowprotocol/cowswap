@@ -12,8 +12,6 @@ export function PriceImpactUpdater() {
 
   useSafeEffect(() => {
     if (!priceImpactState) {
-      updatePriceImpact({ loading: false, priceImpact: undefined })
-
       return
     }
 

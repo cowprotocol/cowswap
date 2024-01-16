@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -30,6 +30,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
+  bothCurrenciesSet: boolean
   isChainIdUnsupported: boolean
   disabled?: boolean
   inputDisabled?: boolean
@@ -52,7 +53,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     areCurrenciesLoading,
     currencyInfo,
     className,
-    priceImpactParams,
+    priceImpactParams: _priceImpactParams,
+    bothCurrenciesSet,
     showSetMax = false,
     maxBalance,
     inputDisabled = false,
@@ -121,6 +123,14 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       $loading={areCurrenciesLoading}
     />
   )
+
+  const priceImpactParams = useMemo(() => {
+    return {
+      ..._priceImpactParams,
+      // Don't show price impact loading state when only one currency is set
+      loading: bothCurrenciesSet ? _priceImpactParams?.loading : false,
+    }
+  }, [_priceImpactParams, bothCurrenciesSet])
 
   return (
     <styledEl.OuterWrapper>
