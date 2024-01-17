@@ -19,6 +19,7 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchPresignOrderAction = isAnyOf(OrderActions.preSignOrders)
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
+const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   if (isBatchFulfillOrderAction(action)) {
@@ -60,6 +61,18 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     // Only for limit orders
     if (uiOrderType === UiOrderType.LIMIT) {
       _triggerNps(store, chainId, order.id, { created: true }, order)
+    }
+  } else if (isBatchCancelOrderAction(action)) {
+    const {
+      chainId,
+      ids: [id],
+    } = action.payload
+
+    const uiOrderType = getUiOrderTypeFromStore(store, chainId, id)
+
+    // Only for limit orders
+    if (uiOrderType === UiOrderType.LIMIT) {
+      _triggerNps(store, chainId, id, { cancelled: true })
     }
   }
 

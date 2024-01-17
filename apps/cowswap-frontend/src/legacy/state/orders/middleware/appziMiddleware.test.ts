@@ -214,4 +214,36 @@ describe('appziMiddleware', () => {
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(0)
     })
   })
+  describe('batch cancel orders', () => {
+    beforeEach(() => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
+      when(actionMock.type).thenReturn('order/cancelOrdersBatch')
+
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
+    })
+
+    it('should not open appzi when SWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi when TWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should open appzi when LIMIT', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+  })
 })

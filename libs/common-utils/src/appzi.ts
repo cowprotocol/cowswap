@@ -47,6 +47,7 @@ type AppziCustomSettings = {
   expired?: true
   traded?: true
   created?: true
+  cancelled?: true
   // extra contextual data for statistics/debugging
   explorerUrl?: string
   env?: string
