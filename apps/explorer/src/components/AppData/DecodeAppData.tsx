@@ -145,9 +145,9 @@ const DecodeAppData = (props: Props): JSX.Element => {
           //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
           appData
         )}
-        <a className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
+        <button className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
           {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-        </a>
+        </button>
       </div>
       <div className={`hidden-content ${appDataError && 'error'}`}>{renderAppData()}</div>
     </AppDataWrapper>

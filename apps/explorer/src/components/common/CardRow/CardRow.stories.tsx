@@ -1,6 +1,5 @@
-import React from 'react'
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
@@ -23,7 +22,7 @@ const Template: Story<CardRowProps> = (args) => (
       </Card>
       <Card>
         <CardContent
-          icon1={<img src={QuestionIcon} />}
+          icon1={<img alt="Question icon" src={QuestionIcon} />}
           variant="3row"
           label1="24h Transactions"
           value1="194"
