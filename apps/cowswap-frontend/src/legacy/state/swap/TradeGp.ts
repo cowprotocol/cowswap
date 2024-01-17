@@ -55,12 +55,12 @@ export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
   return trade.outputAmount.multiply(ONE_FRACTION.subtract(pct))
 }
 
-export function _maximumAmountIn(pct: Percent, trade: TradeGp, withoutFee?: boolean) {
+export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_INPUT) {
     return trade.inputAmount
   }
 
-  return (withoutFee ? trade.inputAmountWithoutFee : trade.inputAmountWithFee).multiply(ONE_FRACTION.add(pct))
+  return trade.inputAmount.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
@@ -143,7 +143,7 @@ export default class TradeGp {
    * Get the maximum amount in that can be spent via this trade for the given slippage tolerance
    * @param slippageTolerance tolerance of unfavorable slippage from the execution price of this trade
    */
-  public maximumAmountIn(slippageTolerance: Percent, withoutFee?: boolean): CurrencyAmount<Currency> {
-    return _maximumAmountIn(slippageTolerance, this, withoutFee)
+  public maximumAmountIn(slippageTolerance: Percent): CurrencyAmount<Currency> {
+    return _maximumAmountIn(slippageTolerance, this)
   }
 }

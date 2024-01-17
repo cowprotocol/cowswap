@@ -11,7 +11,6 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
@@ -77,9 +76,7 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
-  const { swapZeroFee } = useFeatureFlags()
-
-  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage, swapZeroFee)
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const buttonText = useButtonText(slippageAdjustedSellAmount)
 
   const modalBottom = useCallback(() => {
