@@ -60,7 +60,7 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
     return trade.inputAmount
   }
 
-  return trade.inputAmount.multiply(ONE_FRACTION.add(pct))
+  return trade.inputAmountWithFee.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
