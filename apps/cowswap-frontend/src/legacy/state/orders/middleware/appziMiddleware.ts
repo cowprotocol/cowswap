@@ -52,16 +52,14 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   } else if (isPendingOrderAction(action)) {
     // For EOA orders, shows NPS feedback (or attempts to) when the order is placed
-    const {
-      chainId,
-      order: { id },
-    } = action.payload
+    const { chainId, order } = action.payload
 
-    const uiOrderType = getUiOrderTypeFromStore(store, chainId, id)
+    // The whole order obj is part of the payload, use it directly
+    const uiOrderType = getUiOrderType(order)
 
     // Only for limit orders
     if (uiOrderType === UiOrderType.LIMIT) {
-      _triggerNps(store, chainId, id, { created: true })
+      _triggerNps(store, chainId, order.id, { created: true }, order)
     }
   }
 
@@ -72,10 +70,10 @@ function _triggerNps(
   store: MiddlewareAPI<Dispatch<AnyAction>>,
   chainId: ChainId,
   orderId: string,
-  npsParams: Parameters<typeof openNpsAppziSometimes>[0]
+  npsParams: Parameters<typeof openNpsAppziSometimes>[0],
+  _order?: OrderActions.SerializedOrder | undefined
 ) {
-  const orders = store.getState().orders[chainId]
-  const order = getOrderByIdFromState(orders, orderId)?.order
+  const order = _order || getOrderByIdFromState(store.getState().orders[chainId], orderId)?.order
   const openSince = order?.openSince
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 

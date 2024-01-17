@@ -200,11 +200,14 @@ describe('appziMiddleware', () => {
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
 
-    it('should open appzi when LIMIT is hidden', () => {
+    it('should not open appzi when LIMIT is hidden', () => {
       getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
-      getOrderByOrderIdFromStateMock.mockReturnValue({
-        order: { ...BASE_ORDER.order, isHidden: true },
-      } as any)
+      when(actionMock.payload).thenReturn({
+        chainId: 1,
+        ...{
+          order: { ...BASE_ORDER.order, isHidden: true },
+        },
+      })
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
