@@ -112,7 +112,13 @@ export function SwapWidget() {
   const {
     inputAmount: { value: inputUsdValue },
     outputAmount: { value: outputUsdValue },
-  } = useTradeUsdAmounts(trade?.inputAmountWithoutFee, trade?.outputAmountWithoutFee)
+  } = useTradeUsdAmounts(
+    trade?.inputAmountWithoutFee || parsedAmounts.INPUT,
+    trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
+    inputToken,
+    outputToken,
+    true
+  )
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
