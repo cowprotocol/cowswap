@@ -17,6 +17,8 @@ import { getOrderByIdFromState } from '../helpers'
 
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
+const isBatchPresignOrderAction = isAnyOf(OrderActions.preSignOrders)
+const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   if (isBatchFulfillOrderAction(action)) {
@@ -35,6 +37,32 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } = action.payload
 
     _triggerNps(store, chainId, id, { expired: true })
+  } else if (isBatchPresignOrderAction(action)) {
+    // For SC wallet orders, shows NPS feedback (or attempts to) only when the order was pre-signed
+    const {
+      chainId,
+      ids: [id],
+    } = action.payload
+
+    const uiOrderType = getUiOrderTypeFromStore(store, chainId, id)
+
+    // Only for limit orders
+    if (uiOrderType === UiOrderType.LIMIT) {
+      _triggerNps(store, chainId, id, { created: true })
+    }
+  } else if (isPendingOrderAction(action)) {
+    // For EOA orders, shows NPS feedback (or attempts to) when the order is placed
+    const {
+      chainId,
+      order: { id },
+    } = action.payload
+
+    const uiOrderType = getUiOrderTypeFromStore(store, chainId, id)
+
+    // Only for limit orders
+    if (uiOrderType === UiOrderType.LIMIT) {
+      _triggerNps(store, chainId, id, { created: true })
+    }
   }
 
   return next(action)
@@ -58,10 +86,10 @@ function _triggerNps(
   const isLimitOrderRecentlyTraded =
     uiOrderType === UiOrderType.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
 
-  // Do not show NPS if the order is hidden and expired
-  const isHiddenAndExpired = order?.isHidden && npsParams?.expired
+  // Do not show NPS if the order is hidden
+  const isHidden = order?.isHidden
 
-  if (isHiddenAndExpired || isLimitOrderRecentlyTraded) {
+  if (isHidden || isLimitOrderRecentlyTraded) {
     return
   }
 
@@ -72,4 +100,10 @@ function _triggerNps(
     chainId,
     orderType: uiOrderType,
   })
+}
+
+function getUiOrderTypeFromStore(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: any, id: any) {
+  const orders = store.getState().orders[chainId]
+  const order = getOrderByIdFromState(orders, id)?.order
+  return order && getUiOrderType(order)
 }
