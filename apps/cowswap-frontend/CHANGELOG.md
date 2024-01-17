@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-17)
+
+
+### Features
+
+* **explorer:** update project and migrate to vite ([#3579](https://github.com/cowprotocol/cowswap/issues/3579)) ([3056162](https://github.com/cowprotocol/cowswap/commit/30561629f872612e85d64757004d9400f1600781))
+* **fee=0:** classify order types ([#3559](https://github.com/cowprotocol/cowswap/issues/3559)) ([a2f8def](https://github.com/cowprotocol/cowswap/commit/a2f8def2f203301885e4548b49f73336abbabe21))
+* **limit:** max limit order deadline ([#3567](https://github.com/cowprotocol/cowswap/issues/3567)) ([1428596](https://github.com/cowprotocol/cowswap/commit/1428596de28027ea36edbb8a912e7d27750b70d3))
+* **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
+* sell eth warning for limit/twap ([#3573](https://github.com/cowprotocol/cowswap/issues/3573)) ([ff14c4b](https://github.com/cowprotocol/cowswap/commit/ff14c4b40a4b356a11b4b746d3240c2660dc0060))
+* **surplus:** update surplus percentage calculation ([#3548](https://github.com/cowprotocol/cowswap/issues/3548)) ([3d6dc3d](https://github.com/cowprotocol/cowswap/commit/3d6dc3da1927b9debcbb0458991f18a90c749ca8))
+* **twap:** unlimited twap deadline ([#3568](https://github.com/cowprotocol/cowswap/issues/3568)) ([378977c](https://github.com/cowprotocol/cowswap/commit/378977cf0a4d71f165d968d5b665ad6bb524ba67))
+* update docs/learn.cow.fi URLs ([#3611](https://github.com/cowprotocol/cowswap/issues/3611)) ([af0ff6b](https://github.com/cowprotocol/cowswap/commit/af0ff6b71de422e43aab987287f780d26a17ac73))
+* **widget:** custom token lists in widget ([#3390](https://github.com/cowprotocol/cowswap/issues/3390)) ([7eabe06](https://github.com/cowprotocol/cowswap/commit/7eabe06d043703718d742809791eda555dff5058))
+
+
+### Bug Fixes
+
+* disable Christmas theme ([#3582](https://github.com/cowprotocol/cowswap/issues/3582)) ([94643fb](https://github.com/cowprotocol/cowswap/commit/94643fb3ca77aea37b772d823cc48665b441eeaa))
+* display cow token logo in header ([#3608](https://github.com/cowprotocol/cowswap/issues/3608)) ([f374960](https://github.com/cowprotocol/cowswap/commit/f3749601f0105f815ca32d744bb68568be3f7f84))
+* don't crash when permittable tokens atom doesn't contain new network ([#3603](https://github.com/cowprotocol/cowswap/issues/3603)) ([ac517e8](https://github.com/cowprotocol/cowswap/commit/ac517e8656e6c0a42d3b3e4eb25318d5bc4c69db))
+* don't display Sepolia in supported list when it is off ([#3650](https://github.com/cowprotocol/cowswap/issues/3650)) ([1b97ef5](https://github.com/cowprotocol/cowswap/commit/1b97ef5ed7071b3f83f0dda1c7ea060180fb44d0))
+* **limit:** show price impact warning for Safe App when bundling ([#3571](https://github.com/cowprotocol/cowswap/issues/3571)) ([98a11e7](https://github.com/cowprotocol/cowswap/commit/98a11e7f9d41442db9c2ced08430813afce85572))
+* merge localStorage state with initial state to prevent empty states ([#3604](https://github.com/cowprotocol/cowswap/issues/3604)) ([9cd4bf5](https://github.com/cowprotocol/cowswap/commit/9cd4bf53807e307c213c547c762907b71bb5b343))
+* **permit:** report wrong permit to sentry for limit and swap flows ([#3565](https://github.com/cowprotocol/cowswap/issues/3565)) ([7067919](https://github.com/cowprotocol/cowswap/commit/706791978ca2e3412ceb33b5a1ff1ed878dd7f84))
+* **swap:** disable eth flow selling on buy orders ([#3574](https://github.com/cowprotocol/cowswap/issues/3574)) ([17f484b](https://github.com/cowprotocol/cowswap/commit/17f484b4162f0a25f655b49902cf4a33b468db33))
+* **swap:** fix swap out of market ([#3576](https://github.com/cowprotocol/cowswap/issues/3576)) ([878e99f](https://github.com/cowprotocol/cowswap/commit/878e99f1cb0079c37ff5b163f31fd1dda578f6c9))
+* **token-search:** fix token search results ([#3607](https://github.com/cowprotocol/cowswap/issues/3607)) ([955d93f](https://github.com/cowprotocol/cowswap/commit/955d93fd2fce614ff6eb85b358f72ba6c77a1f51))
+
 ## [1.54.2](https://github.com/cowprotocol/cowswap/compare/v1.54.1...v1.54.2) (2024-01-08)
 
 
