@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.2.1...widget-lib-v0.3.0) (2024-01-15)
+## [0.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.2.1...widget-lib-v0.3.0) (2024-01-17)
 
 
 ### Features

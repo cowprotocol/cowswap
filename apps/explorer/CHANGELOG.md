@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.27.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.26.0...explorer-v2.27.0) (2024-01-15)
+## [2.27.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.26.0...explorer-v2.27.0) (2024-01-17)
 
 
 ### Features
