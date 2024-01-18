@@ -1,11 +1,10 @@
-import { useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { twapConversionAnalytics } from '@cowprotocol/analytics'
 import { getCowSoundSend } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, useSafeAppsSdk } from '@cowprotocol/wallet'
+import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -19,6 +18,7 @@ import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
@@ -54,6 +54,7 @@ export function useCreateTwapOrder() {
 
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+  const { swapZeroFee } = useFeatureFlags()
 
   return useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
@@ -122,6 +123,7 @@ export function useCreateTwapOrder() {
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
           feeAmount: undefined,
+          featureFlags: { swapZeroFee },
         })
         getCowSoundSend().play()
         dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
@@ -151,10 +153,11 @@ export function useCreateTwapOrder() {
       twapOrder,
       confirmPriceImpactWithoutFee,
       priceImpact,
-      uploadAppData,
       tradeConfirmActions,
       addTwapOrderToList,
       recipient,
+      swapZeroFee,
+      uploadAppData,
       updateAdvancedOrdersState,
     ]
   )
