@@ -61,9 +61,19 @@ const Table = styled(SimpleTable)`
         color: ${({ theme }): string => theme.textPrimary1};
       }
 
-      a.showMoreAnchor {
+      button.showMoreAnchor {
         font-size: 1.2rem;
         margin-top: 0.5rem;
+        border: none;
+        background: none;
+        color: ${({ theme }): string => theme.textActive1};
+        align-self: flex-start;
+        padding: 0;
+
+        :hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
     }
   }
