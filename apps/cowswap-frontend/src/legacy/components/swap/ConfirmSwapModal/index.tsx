@@ -126,7 +126,6 @@ export function ConfirmSwapModal({
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
       operationType={ConfirmOperationType.ORDER_SIGN}
-      tradeAmounts={tradeAmounts}
       swapConfirmState={swapConfirmState}
     />
   )
