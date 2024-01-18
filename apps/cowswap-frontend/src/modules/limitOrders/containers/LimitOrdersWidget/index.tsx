@@ -253,15 +253,16 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         params={params}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
-      />
-      {tradeContext && (
-        <LimitOrdersConfirmModal
-          tradeContext={tradeContext}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
-      )}
+      >
+        {tradeContext && (
+          <LimitOrdersConfirmModal
+            tradeContext={tradeContext}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        )}
+      </TradeWidget>
       {isUnlocked && <InfoBanner />}
     </>
   )

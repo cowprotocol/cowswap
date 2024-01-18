@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
@@ -30,6 +31,7 @@ import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
+import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -72,12 +74,22 @@ export interface TradeWidgetProps {
   actions: TradeWidgetActions
   params: TradeWidgetParams
   disableOutput?: boolean
+  children?: ReactNode
 }
 
 export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
-  const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
+  const {
+    id,
+    slots,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    actions,
+    params,
+    disableOutput,
+    children: confirmModal,
+  } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent, updaters } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
@@ -101,6 +113,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const priorityTokenAddresses = usePriorityTokenAddresses()
+  const { isOpen } = useAtomValue(tradeConfirmStateAtom)
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -150,67 +163,74 @@ export function TradeWidget(props: TradeWidgetProps) {
       {updaters}
 
       <styledEl.Container id={id}>
-        <styledEl.ContainerBox>
-          <styledEl.Header>
-            <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-            {isInjectedWidgetMode && (
-              <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
-            )}
-            {!lockScreen && settingsWidget}
-          </styledEl.Header>
-
-          {lockScreen ? (
-            lockScreen
-          ) : (
-            <>
-              <div>
-                <CurrencyInputPanel
-                  id="input-currency-input"
-                  currencyInfo={inputCurrencyInfo}
-                  showSetMax={showSetMax}
-                  maxBalance={maxBalance}
-                  topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
-                  {...currencyInputCommonProps}
-                />
-              </div>
-              {!isWrapOrUnwrap && middleContent}
-              <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
-                <CurrencyArrowSeparator
-                  isCollapsed={compactView}
-                  hasSeparatorLine={!compactView}
-                  border={!compactView}
-                  onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                  withRecipient={!isWrapOrUnwrap && showRecipient}
-                  isLoading={isTradePriceUpdating}
-                />
-              </styledEl.CurrencySeparatorBox>
-              <div>
-                <CurrencyInputPanel
-                  id="output-currency-input"
-                  inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
-                  inputTooltip={
-                    isEoaEthFlow
-                      ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                      : undefined
-                  }
-                  currencyInfo={
-                    isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                  }
-                  priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
-                  topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
-                  {...currencyInputCommonProps}
-                />
-              </div>
-              {!isWrapOrUnwrap && showRecipient && (
-                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
+        {!isOpen && (
+          <styledEl.ContainerBox>
+            <styledEl.Header>
+              <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
+              {isInjectedWidgetMode && (
+                <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
               )}
+              {!lockScreen && settingsWidget}
+            </styledEl.Header>
 
-              {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
-            </>
-          )}
+            {lockScreen ? (
+              lockScreen
+            ) : (
+              <>
+                <div>
+                  <CurrencyInputPanel
+                    id="input-currency-input"
+                    currencyInfo={inputCurrencyInfo}
+                    showSetMax={showSetMax}
+                    maxBalance={maxBalance}
+                    topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
+                    {...currencyInputCommonProps}
+                  />
+                </div>
+                {!isWrapOrUnwrap && middleContent}
+                <styledEl.CurrencySeparatorBox
+                  compactView={compactView}
+                  withRecipient={!isWrapOrUnwrap && showRecipient}
+                >
+                  <CurrencyArrowSeparator
+                    isCollapsed={compactView}
+                    hasSeparatorLine={!compactView}
+                    border={!compactView}
+                    onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                    withRecipient={!isWrapOrUnwrap && showRecipient}
+                    isLoading={isTradePriceUpdating}
+                  />
+                </styledEl.CurrencySeparatorBox>
+                <div>
+                  <CurrencyInputPanel
+                    id="output-currency-input"
+                    inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
+                    inputTooltip={
+                      isEoaEthFlow
+                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        : undefined
+                    }
+                    currencyInfo={
+                      isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
+                    }
+                    priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
+                    topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                    {...currencyInputCommonProps}
+                  />
+                </div>
+                {!isWrapOrUnwrap && showRecipient && (
+                  <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
+                )}
 
-          {isInjectedWidgetMode && <PoweredFooter />}
-        </styledEl.ContainerBox>
+                {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
+              </>
+            )}
+
+            {isInjectedWidgetMode && <PoweredFooter />}
+          </styledEl.ContainerBox>
+        )}
+
+        {confirmModal}
       </styledEl.Container>
     </styledEl.Container>
   )

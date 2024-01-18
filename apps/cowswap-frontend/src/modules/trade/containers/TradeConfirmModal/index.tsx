@@ -1,13 +1,15 @@
 import { useAtomValue } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+
+import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { PermitModal } from 'common/containers/PermitModal'
-import { CowModal, NewCowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
@@ -16,6 +18,12 @@ import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+
+const Container = styled.div`
+  background: var(${UI.COLOR_PAPER});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+`
 
 type CustomSubmittedContent = (order: Order | undefined, onDismiss: () => void) => JSX.Element
 
@@ -33,12 +41,10 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { onDismiss } = useTradeConfirmActions()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  if (!account) return null
-
-  const Modal = permitSignatureState ? NewCowModal : CowModal
+  if (!account || !isOpen) return null
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Container>
       <InnerComponent
         chainId={chainId}
         account={account}
@@ -53,7 +59,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
       >
         {children}
       </InnerComponent>
-    </Modal>
+    </Container>
   )
 }
 

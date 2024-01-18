@@ -11,6 +11,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
@@ -18,11 +19,7 @@ import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-interface TwapConfirmModalProps {
-  fallbackHandlerIsNotSet: boolean
-}
-
-export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalProps) {
+export function TwapConfirmModal() {
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -46,6 +43,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   const isConfirmDisabled = !!localFormValidation
 
   const priceImpact = useTradePriceImpact()
+  const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,

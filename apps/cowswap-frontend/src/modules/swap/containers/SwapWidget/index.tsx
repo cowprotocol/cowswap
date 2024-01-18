@@ -300,15 +300,16 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
-        />
-        <ConfirmSwapModalSetup
-          chainId={chainId}
-          doTrade={swapButtonContext.handleSwap}
-          priceImpact={priceImpactParams}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-          tradeRatesProps={tradeRatesProps}
-        />
+        >
+          <ConfirmSwapModalSetup
+            chainId={chainId}
+            doTrade={swapButtonContext.handleSwap}
+            priceImpact={priceImpactParams}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+            tradeRatesProps={tradeRatesProps}
+          />
+        </TradeWidget>
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
