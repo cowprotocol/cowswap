@@ -307,6 +307,7 @@ export function SwapWidget() {
           priceImpact={priceImpactParams}
           inputCurrencyInfo={inputCurrencyPreviewInfo}
           outputCurrencyInfo={outputCurrencyPreviewInfo}
+          tradeRatesProps={tradeRatesProps}
         />
         <NetworkAlert />
       </TradeWidgetContainer>

@@ -13,16 +13,19 @@ import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'mo
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
+import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
+
 export interface ConfirmSwapModalSetupProps {
   chainId: SupportedChainId
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
+  tradeRatesProps: TradeRatesProps
   doTrade(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact } = props
+  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps } = props
 
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -53,7 +56,8 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText="Confirm Swap"
       >
-        <>{/*TODO: RR add price, amounts, and fee info*/}</>
+        {/*TODO: RR add new component*/}
+        <TradeRates {...tradeRatesProps} />
       </TradeConfirmation>
     </TradeConfirmModal>
   )
