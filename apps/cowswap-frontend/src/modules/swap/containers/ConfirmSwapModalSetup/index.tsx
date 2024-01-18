@@ -1,12 +1,20 @@
 import React from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo } from '@cowprotocol/wallet'
+
+import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
+import { Order } from 'legacy/state/orders/actions'
 
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 export interface ConfirmSwapModalSetupProps {
+  chainId: SupportedChainId
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -14,12 +22,27 @@ export interface ConfirmSwapModalSetupProps {
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact } = props
+  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact } = props
 
+  const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
 
+  const submittedContent = (order?: Order, onDismiss: () => void) => {
+    const activity = createActivityDescriptor(undefined, order)
+    const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
+
+    return (
+      <TransactionSubmittedContent
+        chainId={chainId}
+        hash={order?.id}
+        onDismiss={onDismiss}
+        activityDerivedState={activityDerivedState}
+      />
+    )
+  }
+
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal submittedContent={submittedContent}>
       <TradeConfirmation
         title="Confirm Swap"
         inputCurrencyInfo={inputCurrencyInfo}

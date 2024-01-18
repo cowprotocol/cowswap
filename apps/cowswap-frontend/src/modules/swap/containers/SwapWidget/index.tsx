@@ -302,6 +302,7 @@ export function SwapWidget() {
           outputCurrencyInfo={outputCurrencyInfo}
         />
         <ConfirmSwapModalSetup
+          chainId={chainId}
           doTrade={swapButtonContext.handleSwap}
           priceImpact={priceImpactParams}
           inputCurrencyInfo={inputCurrencyPreviewInfo}
