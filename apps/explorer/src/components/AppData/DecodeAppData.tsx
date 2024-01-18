@@ -8,6 +8,7 @@ import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { appDataHexToCid, fetchDocFromAppDataHex } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 import { decodeFullAppData } from 'utils/decodeFullAppData'
+import styled from 'styled-components'
 
 type Props = {
   appData: string
@@ -145,13 +146,28 @@ const DecodeAppData = (props: Props): JSX.Element => {
           //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
           appData
         )}
-        <button className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
+        <ShowMoreButton className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
           {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-        </button>
+        </ShowMoreButton>
       </div>
       <div className={`hidden-content ${appDataError && 'error'}`}>{renderAppData()}</div>
     </AppDataWrapper>
   )
 }
+
+const ShowMoreButton = styled.button`
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  border: none;
+  background: none;
+  color: ${({ theme }): string => theme.textActive1};
+  align-self: flex-start;
+  padding: 0;
+
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`
 
 export default DecodeAppData
