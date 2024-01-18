@@ -17,6 +17,7 @@ export interface SwapConfirmManager {
   permitSigned(): void
 }
 
+// TODO: RR remove
 export function useSwapConfirmManager(): SwapConfirmManager {
   const setSwapConfirmState = useSetAtom(swapConfirmAtom)
   const [isExpertMode] = useExpertModeManager()
@@ -42,6 +43,7 @@ export function useSwapConfirmManager(): SwapConfirmManager {
         console.debug('[Swap confirm state] openSwapConfirmModal: ', state)
         setSwapConfirmState(state)
       },
+      // TODO: RR remove
       acceptRateUpdates(tradeToConfirm: TradeGp) {
         setSwapConfirmState((prev) => {
           const state = { ...prev, tradeToConfirm }

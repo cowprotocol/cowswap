@@ -11,6 +11,7 @@ export interface SwapConfirmState {
   permitSignatureState: undefined | 'requested' | 'signed'
 }
 
+// TODO: RR remove
 export const swapConfirmAtom = atom<SwapConfirmState>({
   showConfirm: false,
   tradeToConfirm: undefined,

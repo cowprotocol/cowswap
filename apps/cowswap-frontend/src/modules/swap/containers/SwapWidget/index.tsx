@@ -14,7 +14,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -51,6 +50,7 @@ import {
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
+import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
   SwapButtonState.ApproveAndSwap,
@@ -142,6 +142,20 @@ export function SwapWidget() {
     receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 
+  const inputCurrencyPreviewInfo = {
+    amount: inputCurrencyInfo.amount,
+    fiatAmount: inputCurrencyInfo.fiatAmount,
+    balance: inputCurrencyInfo.balance,
+    label: isSellTrade ? 'You sell' : 'You sell at most',
+  }
+
+  const outputCurrencyPreviewInfo = {
+    amount: outputCurrencyInfo.amount,
+    fiatAmount: outputCurrencyInfo.fiatAmount,
+    balance: outputCurrencyInfo.balance,
+    label: isSellTrade ? 'You receive at least' : 'You receive exactly',
+  }
+
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]
@@ -176,15 +190,6 @@ export function SwapWidget() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
-  const confirmSwapProps: ConfirmSwapModalSetupProps = {
-    trade,
-    recipient,
-    allowedSlippage,
-    handleSwap: swapButtonContext.handleSwap,
-    priceImpact: priceImpactParams.priceImpact,
-    rateInfoParams,
-  }
-
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
     onDismiss: dismissNativeWrapModal,
@@ -196,7 +201,6 @@ export function SwapWidget() {
   const swapModalsProps: SwapModalsProps = {
     showNativeWrapModal,
     showCowSubsidyModal,
-    confirmSwapProps,
     ethFlowProps,
   }
 
@@ -296,6 +300,12 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
+        />
+        <ConfirmSwapModalSetup
+          doTrade={swapButtonContext.handleSwap}
+          priceImpact={priceImpactParams}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
         <NetworkAlert />
       </TradeWidgetContainer>

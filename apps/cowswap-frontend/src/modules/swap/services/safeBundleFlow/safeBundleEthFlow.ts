@@ -34,12 +34,12 @@ export async function safeBundleEthFlow(
     spender,
     context,
     callbacks,
-    swapConfirmManager,
     dispatch,
     orderParams,
     settlementContract,
     safeAppsSdk,
     swapFlowAnalyticsContext,
+    tradeConfirmActions,
   } = input
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
@@ -124,13 +124,13 @@ export async function safeBundleEthFlow(
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
-    swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }

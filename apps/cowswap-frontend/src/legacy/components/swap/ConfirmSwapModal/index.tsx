@@ -35,6 +35,7 @@ type ConfirmSwapModalProps = {
   rateInfoParams: RateInfoParams
 }
 
+// TODO: RR remove
 export function ConfirmSwapModal({
   trade,
   swapConfirmState,
