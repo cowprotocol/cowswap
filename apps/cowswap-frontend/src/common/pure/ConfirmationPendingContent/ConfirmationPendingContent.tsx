@@ -3,9 +3,10 @@ import { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
 
+import { BackButton } from 'modules/trade/pure/BackButton'
+
 import { Wrapper } from './styled'
 import { UpperSection } from './styled'
-import { CloseIconWrapper } from './styled'
 import { WalletIcon } from './styled'
 import { LowerSection } from './styled'
 import { StepsWrapper } from './styled'
@@ -35,7 +36,7 @@ export function ConfirmationPendingContent({
   return (
     <Wrapper>
       <UpperSection>
-        <CloseIconWrapper onClick={onDismiss} />
+        <BackButton onClick={onDismiss} />
         <WalletIcon>{statusIcon}</WalletIcon>
         <span>{title}</span>
       </UpperSection>

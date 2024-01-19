@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai/index'
 import React, { ReactNode, useEffect } from 'react'
 
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
@@ -33,6 +34,7 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 import { selectTokenWidgetAtom } from '../../../tokensList/state/selectTokenWidgetAtom'
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -115,8 +117,10 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const priorityTokenAddresses = usePriorityTokenAddresses()
+
   const { isOpen: isTradeReviewOpen } = useAtomValue(tradeConfirmStateAtom)
   const { open: isTokenSelectOpen } = useAtomValue(selectTokenWidgetAtom)
+  const [{ isOpen: isWrapNativeOpen }] = useAtom(wrapNativeStateAtom)
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -151,7 +155,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
-  const isNextWidgetOpen = isTradeReviewOpen || isTokenSelectOpen
+  const isNextWidgetOpen = isTradeReviewOpen || isTokenSelectOpen || isWrapNativeOpen
 
   return (
     <>
@@ -161,7 +165,6 @@ export function TradeWidget(props: TradeWidgetProps) {
 
         {!disableQuotePolling && <TradeQuoteUpdater />}
         <TradeWidgetModals />
-        <WrapNativeModal />
         <PriceImpactUpdater />
         <TradeFormValidationUpdater isExpertMode={isExpertMode} />
         <CommonTradeUpdater />
@@ -171,6 +174,7 @@ export function TradeWidget(props: TradeWidgetProps) {
         <styledEl.Container>
           {isTradeReviewOpen && confirmModal}
           {isTokenSelectOpen && <SelectTokenWidget />}
+          {isWrapNativeOpen && <WrapNativeModal />}
 
           {!isNextWidgetOpen && (
             <>

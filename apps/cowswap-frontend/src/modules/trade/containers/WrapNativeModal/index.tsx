@@ -7,13 +7,12 @@ import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { CowModal } from 'common/pure/Modal'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'
 
 export function WrapNativeModal() {
-  const [{ isOpen }, setWrapNativeState] = useAtom(wrapNativeStateAtom)
+  const [, setWrapNativeState] = useAtom(wrapNativeStateAtom)
 
   const derivedState = useDerivedTradeState()
   const walletAddress = useWalletDisplayedAddress()
@@ -49,16 +48,14 @@ export function WrapNativeModal() {
   const operationLabel = isNativeIn ? 'wrapping' : 'unwrapping'
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={handleDismiss}>
-      <ConfirmationPendingContent
-        onDismiss={handleDismiss}
-        statusIcon={statusIcon}
-        title={title}
-        description={description}
-        operationSubmittedMessage={`The ${operationLabel} is submitted.`}
-        walletAddress={walletAddress}
-        operationLabel={operationLabel}
-      />
-    </CowModal>
+    <ConfirmationPendingContent
+      onDismiss={handleDismiss}
+      statusIcon={statusIcon}
+      title={title}
+      description={description}
+      operationSubmittedMessage={`The ${operationLabel} is submitted.`}
+      walletAddress={walletAddress}
+      operationLabel={operationLabel}
+    />
   )
 }
