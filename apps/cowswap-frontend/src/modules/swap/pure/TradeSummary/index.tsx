@@ -17,11 +17,10 @@ const Wrapper = styled.div``
 export interface TradeSummaryContentProps extends TradeSummaryProps {
   fee: CurrencyAmount<Token> | null
   allowsOffchainSigning: boolean
-  withoutFee?: boolean
 }
 
 export function TradeSummaryContent(props: TradeSummaryContentProps) {
-  const { showFee, trade, fee: feeFiatValue, allowsOffchainSigning, showHelpers, allowedSlippage, withoutFee } = props
+  const { showFee, trade, fee: feeFiatValue, allowsOffchainSigning, showHelpers, allowedSlippage } = props
   return (
     <Wrapper>
       <AutoColumn gap="2px">
@@ -42,12 +41,7 @@ export function TradeSummaryContent(props: TradeSummaryContentProps) {
         <RowDeadline />
 
         {/* Min/Max received */}
-        <RowReceivedAfterSlippage
-          trade={trade}
-          showHelpers={showHelpers}
-          allowedSlippage={allowedSlippage}
-          withoutFee={withoutFee}
-        />
+        <RowReceivedAfterSlippage trade={trade} showHelpers={showHelpers} allowedSlippage={allowedSlippage} />
       </AutoColumn>
     </Wrapper>
   )

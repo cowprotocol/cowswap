@@ -6,7 +6,8 @@ import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -25,7 +26,6 @@ import { useIsExpertMode } from 'legacy/state/user/hooks'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useSwapSlippage } from './useSwapSlippage'
@@ -272,14 +272,12 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     [inputCurrencyBalance, outputCurrencyBalance]
   )
 
-  const { swapZeroFee } = useFeatureFlags()
-
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
   // TODO: check whether we want to enable auto slippage tolerance
   // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
   const allowedSlippage = useSwapSlippage()
-  const slippageAdjustedSellAmount = v2Trade?.maximumAmountIn(allowedSlippage, swapZeroFee) || null
+  const slippageAdjustedSellAmount = v2Trade?.maximumAmountIn(allowedSlippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined

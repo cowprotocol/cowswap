@@ -21,14 +21,14 @@ function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmou
     if (kind === OrderKind.SELL) {
       return trade.inputAmount
     } else {
-      return trade.inputAmountWithoutFee.multiply(slippageCoeff) // add slippage
+      return trade.inputAmountWithFee.multiply(slippageCoeff) // add slippage
     }
   }
 
   if (kind === OrderKind.SELL) {
     return trade.inputAmountWithFee
   } else {
-    return trade.inputAmountWithFee.multiply(slippageCoeff) // add slippage
+    return trade.inputAmountWithoutFee.multiply(slippageCoeff) // add slippage
   }
 }
 
