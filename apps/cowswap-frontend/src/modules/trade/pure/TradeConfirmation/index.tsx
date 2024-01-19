@@ -6,7 +6,6 @@ import { Trans } from '@lingui/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
@@ -54,21 +53,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
-        <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-        <styledEl.CurrencySeparatorBox withRecipient={false}>
-          <CurrencyArrowSeparator
-            withRecipient={false}
-            isCollapsed={false}
-            isLoading={false}
-            hasSeparatorLine={true}
-            onSwitchTokens={() => null}
+        <styledEl.AmountsPreviewContainer>
+          <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
+          <div>
+            <styledEl.AmountsSeparator />
+          </div>
+          <CurrencyAmountPreview
+            id="output-currency-preview"
+            currencyInfo={outputCurrencyInfo}
+            priceImpactParams={priceImpact}
           />
-        </styledEl.CurrencySeparatorBox>
-        <CurrencyAmountPreview
-          id="output-currency-preview"
-          currencyInfo={outputCurrencyInfo}
-          priceImpactParams={priceImpact}
-        />
+        </styledEl.AmountsPreviewContainer>
         {children}
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>

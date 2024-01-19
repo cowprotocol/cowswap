@@ -1,5 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
+import { ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const WidgetWrapper = styled.div`
@@ -12,11 +13,23 @@ export const WidgetWrapper = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
+export const AmountsPreviewContainer = styled.div`
   display: flex;
+  width: 100%;
+  align-items: center;
   justify-content: space-between;
-  margin: 0;
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
+`
+
+export const AmountsSeparator = styled(ArrowRight)`
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border-radius: 50%;
+  border: 4px solid var(${UI.COLOR_PAPER});
+  width: 38px;
+  height: 38px;
+  padding: 4px;
+  margin: 0 -16px;
+  position: relative;
+  z-index: 1;
 `
 
 export const ContentWrapper = styled.div`
