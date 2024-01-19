@@ -35,6 +35,7 @@ export function ExternalLink({
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }): JSX.Element {
   return (
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
     <a
       target={target}
       rel={rel}
