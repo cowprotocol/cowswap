@@ -24,7 +24,6 @@ export const Separator = styled.div`
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   padding: 20px 20px 0 20px;
   margin-bottom: 15px;
 

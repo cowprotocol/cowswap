@@ -5,7 +5,6 @@ import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CloseIcon } from 'legacy/theme'
 
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
@@ -13,6 +12,7 @@ import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/Currency
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { BackButton } from '../BackButton'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
@@ -48,10 +48,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const isButtonDisabled = isConfirmDisabled || isPriceChanged
 
   return (
-    <styledEl.WidgetWrapper>
+    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
+        <BackButton size={20} onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
-        <CloseIcon onClick={onDismiss} />
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />

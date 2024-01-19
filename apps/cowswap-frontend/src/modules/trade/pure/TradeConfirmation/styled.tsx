@@ -31,7 +31,6 @@ export const ContentWrapper = styled.div`
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   position: sticky;
   background: var(${UI.COLOR_PAPER});

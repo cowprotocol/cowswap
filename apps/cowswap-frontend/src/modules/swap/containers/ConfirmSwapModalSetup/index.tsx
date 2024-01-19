@@ -47,7 +47,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   return (
     <TradeConfirmModal submittedContent={submittedContent}>
       <TradeConfirmation
-        title="Confirm Swap"
+        title="Review order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

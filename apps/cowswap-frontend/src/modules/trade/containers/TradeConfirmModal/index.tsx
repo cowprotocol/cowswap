@@ -37,11 +37,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { isOpen, permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const { onDismiss } = useTradeConfirmActions()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  if (!account || !isOpen) return null
+  if (!account) return null
 
   return (
     <Container>
