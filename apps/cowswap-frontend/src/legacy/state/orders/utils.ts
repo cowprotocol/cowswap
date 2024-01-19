@@ -1,6 +1,6 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
-import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -52,6 +52,10 @@ export function isOrderFulfilled(
 export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated' | 'status'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
   return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
+}
+
+export function isTwapOrderCancelled(order: EnrichedOrder): boolean {
+  return order.status === OrderStatus.CANCELLED
 }
 
 /**
