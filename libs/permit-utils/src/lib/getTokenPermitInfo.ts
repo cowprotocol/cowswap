@@ -1,7 +1,6 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
@@ -171,7 +170,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
 type BaseParams = {
   tokenAddress: string
   tokenName: string
-  chainId: SupportedChainId
+  chainId: number
   walletAddress: string
   spender: string
   eip2612PermitUtils: Eip2612PermitUtils
