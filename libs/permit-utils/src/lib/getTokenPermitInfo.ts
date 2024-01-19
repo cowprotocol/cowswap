@@ -8,6 +8,7 @@ import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getTokenName } from '../utils/getTokenName'
 
@@ -46,17 +47,26 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 }
 
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { spender, tokenAddress, tokenName: _tokenName, chainId, provider } = params
+  const { spender, tokenAddress, chainId, provider } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
   const owner = PERMIT_SIGNER.address
 
-  // TODO: potentially remove the need for the name input
-  let tokenName = _tokenName
+  let domain: Eip712Domain | undefined = undefined
+  // Try to get eip712domain, which contains most of the info we'll need here
+  try {
+    domain = await getEip712Domain(tokenAddress, chainId, provider)
+  } catch (e) {
+    console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`, e)
+  }
+
+  let tokenName = domain?.name
 
   try {
-    tokenName = await getTokenName(tokenAddress, chainId, provider)
+    if (!tokenName) {
+      tokenName = await getTokenName(tokenAddress, chainId, provider)
+    }
   } catch (e) {
     if (/ETIMEDOUT/.test(e) && !tokenName) {
       // Network issue or another temporary failure, return error
@@ -91,9 +101,9 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     return { error: e.message || e.toString() }
   }
 
-  let version: string | undefined = undefined
+  let version: string | undefined = domain?.version
 
-  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress)) {
+  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress) && version === undefined) {
     // If the token does not outright fails when calling with the `version` value
     // returned by the contract, fetch it.
 
