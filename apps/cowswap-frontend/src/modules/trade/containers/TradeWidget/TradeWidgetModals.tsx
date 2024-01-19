@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { AutoImportTokens, SelectTokenWidget } from 'modules/tokensList'
+import { AutoImportTokens } from 'modules/tokensList'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
@@ -19,7 +19,6 @@ export function TradeWidgetModals() {
       <AutoImportTokens inputToken={rawState?.inputCurrencyId} outputToken={rawState?.outputCurrencyId} />
       {shouldZeroApprove && <ZeroApprovalModal />}
       <TradeApproveModal />
-      <SelectTokenWidget />
     </>
   )
 }

@@ -8,7 +8,6 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
@@ -25,6 +24,7 @@ import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { InfoBanner } from '../../pure/InfoBanner'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
@@ -227,6 +227,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </styledEl.TradeButtonBox>
       </>
     ),
+    outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
   const disablePriceImpact =
@@ -263,7 +264,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           />
         )}
       </TradeWidget>
-      {isUnlocked && <InfoBanner />}
     </>
   )
 }, limitOrdersPropsChecker)

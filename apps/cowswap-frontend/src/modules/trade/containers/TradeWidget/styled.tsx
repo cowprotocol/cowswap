@@ -8,6 +8,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
   margin: 0 auto;
+  position: relative;
 `
 
 export const ContainerBox = styled.div`
@@ -30,6 +31,10 @@ export const Header = styled.div`
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0')};
   margin: 0;
   color: inherit;
+`
+
+export const OuterContentWrapper = styled.div`
+  margin-top: 10px;
 `
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`

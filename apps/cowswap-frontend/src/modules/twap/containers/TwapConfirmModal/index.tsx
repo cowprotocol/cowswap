@@ -72,7 +72,7 @@ export function TwapConfirmModal() {
   return (
     <TradeConfirmModal>
       <TradeConfirmation
-        title="Review TWAP order"
+        title="Review order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
