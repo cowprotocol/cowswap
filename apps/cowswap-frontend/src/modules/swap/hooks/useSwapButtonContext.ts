@@ -31,11 +31,11 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useApproveState } from 'common/hooks/useApproveState'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
+import { useSafeMemo } from '../../../common/hooks/useSafeMemo'
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
 import { logSwapParams } from '../helpers/logSwapParams'
 

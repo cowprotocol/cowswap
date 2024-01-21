@@ -75,9 +75,8 @@ export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined
 ] {
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
-  const { swapZeroFee } = useFeatureFlags()
 
-  const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage, swapZeroFee)
+  const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
   return [INPUT, OUTPUT]
 }
