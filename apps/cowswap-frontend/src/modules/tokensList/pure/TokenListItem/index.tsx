@@ -41,7 +41,7 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo token={token} />
       <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-      <span>{balanceAmount && <TokenAmount amount={balanceAmount} />}</span>
+      <styledEl.TokenBalance>{balanceAmount && <TokenAmount amount={balanceAmount} />}</styledEl.TokenBalance>
     </styledEl.TokenItem>
   )
 }

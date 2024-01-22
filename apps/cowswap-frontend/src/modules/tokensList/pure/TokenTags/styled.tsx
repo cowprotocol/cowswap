@@ -7,6 +7,13 @@ export const TagContainer = styled.div`
   justify-content: flex-end;
   flex-flow: row wrap;
   color: inherit;
+  flex: 1 1 auto;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    order: 3;
+    flex: 1 1 100%;
+    gap: 4px;
+  `}
 `
 
 export const Tag = styled.div<{ tag?: { id: string } }>`
@@ -33,6 +40,10 @@ export const Tag = styled.div<{ tag?: { id: string } }>`
   white-space: nowrap;
   justify-self: flex-end;
   margin: 0 4px 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0;
+  `}
 
   > img,
   > svg {

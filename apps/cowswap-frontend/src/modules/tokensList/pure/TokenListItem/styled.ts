@@ -11,6 +11,7 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  gap: 8px;
   align-items: center;
   width: 100%;
   background: none;
@@ -23,6 +24,12 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
   margin-bottom: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 14px;
+    padding: 10px 15px;
+    flex-flow: row wrap;
+  `}
 
   &:last-child {
     margin-bottom: 0;
@@ -41,4 +48,10 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
       left: 0;
       width: 100%;
     `}
+`
+
+export const TokenBalance = styled.span`
+  flex: 0 1 auto;
+  display: flex;
+  justify-content: flex-end;
 `
