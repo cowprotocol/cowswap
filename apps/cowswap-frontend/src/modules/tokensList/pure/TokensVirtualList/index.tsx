@@ -71,9 +71,6 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
             return <styledEl.LoadingRows key={virtualRow.key}>{threeDivs()}</styledEl.LoadingRows>
           }
 
-          console.log('virtualRow=========')
-          console.log(virtualRow)
-
           return (
             <TokenListItem
               key={virtualRow.key}
