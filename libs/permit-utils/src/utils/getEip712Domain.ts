@@ -68,14 +68,4 @@ function buildBasicDomain(domain: Required<Omit<Eip5267Return, 'extensions'>>): 
     }
     return acc
   }, {})
-
-  // const result: Eip712Domain = {}
-  //
-  // for (const [i, field] of FIELD_NAMES.entries()) {
-  //   if (fields & (1 << i)) {
-  //     result[field as keyof Eip712Domain] = domain[field as keyof Omit<Eip5267Return, 'extensions'>]
-  //   }
-  // }
-  //
-  // return result
 }
