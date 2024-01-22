@@ -1,4 +1,4 @@
-export { PERMIT_SIGNER } from './const'
+export { PERMIT_SIGNER, DEFAULT_MIN_GAS_LIMIT } from './const'
 
 export { checkIsCallDataAValidPermit } from './lib/checkIsCallDataAValidPermit'
 export { generatePermitHook } from './lib/generatePermitHook'

@@ -54,4 +54,5 @@ export type GetTokenPermitInfoParams = {
   tokenAddress: string
   chainId: number
   provider: JsonRpcProvider
+  minGasLimit?: number | undefined
 }

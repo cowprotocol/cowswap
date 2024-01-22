@@ -4,7 +4,7 @@ import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-sign
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
-import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
+import { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
@@ -46,7 +46,7 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 }
 
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { spender, tokenAddress, chainId, provider } = params
+  const { spender, tokenAddress, chainId, provider, minGasLimit } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
@@ -125,6 +125,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     tokenName,
     walletAddress: owner,
     version,
+    minGasLimit,
   }
 
   try {
@@ -176,6 +177,7 @@ type BaseParams = {
   eip2612PermitUtils: Eip2612PermitUtils
   nonce: number
   version: string | undefined
+  minGasLimit?: number | undefined
 }
 
 type EstimateParams = BaseParams & {
@@ -184,7 +186,15 @@ type EstimateParams = BaseParams & {
 }
 
 async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
-  const { provider, chainId, walletAddress, tokenAddress, tokenName, type, version } = params
+  const {
+    provider,
+    walletAddress,
+    tokenAddress,
+    tokenName,
+    type,
+    version,
+    minGasLimit = DEFAULT_MIN_GAS_LIMIT,
+  } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
 
@@ -202,7 +212,7 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
 
   const gasLimit = estimatedGas.toNumber()
 
-  return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
+  return gasLimit > minGasLimit
     ? {
         type,
         version,

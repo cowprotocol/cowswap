@@ -8,15 +8,7 @@ const PERMIT_PK = '0x4dae303b820e9878cafeb0f84edcc015e8a81b1bff510e824e4fc27544e
 
 export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 
-const DEFAULT_GAS_LIMIT = 55_000
-
-// NOTE: intentionally hard coding the chainIds as numbers to NOT depend on cow-sdk
-export const PERMIT_GAS_LIMIT_MIN: Record<number, number> = {
-  1: DEFAULT_GAS_LIMIT,
-  100: DEFAULT_GAS_LIMIT,
-  11155111: DEFAULT_GAS_LIMIT,
-  5: 36_000,
-}
+export const DEFAULT_MIN_GAS_LIMIT = 55_000
 
 export const DEFAULT_PERMIT_GAS_LIMIT = '80000'
 
