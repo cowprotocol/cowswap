@@ -102,7 +102,8 @@ export function TradeWidget(props: TradeWidgetProps) {
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const priorityTokenAddresses = usePriorityTokenAddresses()
 
-  const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
+  const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
+  const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
 
   const canSellAllNative = isSafeWallet
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
@@ -114,7 +115,8 @@ export function TradeWidget(props: TradeWidgetProps) {
   const currencyInputCommonProps = {
     isChainIdUnsupported,
     chainId,
-    areCurrenciesLoading: currenciesLoadingInProgress,
+    areCurrenciesLoading,
+    bothCurrenciesSet,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,

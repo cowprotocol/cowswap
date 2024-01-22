@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-15)
+## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-17)
 
 
 ### Features

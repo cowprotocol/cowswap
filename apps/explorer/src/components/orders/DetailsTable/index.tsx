@@ -60,11 +60,6 @@ const Table = styled(SimpleTable)`
       &:last-of-type {
         color: ${({ theme }): string => theme.textPrimary1};
       }
-
-      a.showMoreAnchor {
-        font-size: 1.2rem;
-        margin-top: 0.5rem;
-      }
     }
   }
 `

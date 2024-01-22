@@ -1,9 +1,8 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { withGlobalContext } from '../hooks/useGlobalState'
-import Console from '../Console'
-import { rootReducer, INITIAL_STATE } from './state'
+import { INITIAL_STATE, rootReducer } from './state'
 
 import { GenericLayout } from '../components/layout'
 import { Header } from './layout/Header'
@@ -149,7 +148,6 @@ export const ExplorerApp: React.FC = () => {
             <Route path="*" element={<AppContent />} />
           </Routes>
         </Router>
-        {process.env.NODE_ENV === 'development' && <Console />}
       </MainWrapper>
     </>
   )

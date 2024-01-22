@@ -1,8 +1,9 @@
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from '@cowprotocol/common-utils'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
+
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { appziMiddleware } from './appziMiddleware'
 
@@ -16,26 +17,25 @@ jest.mock('../helpers', () => {
     getOrderByIdFromState: jest.fn(),
   }
 })
+jest.mock('utils/orderUtils/getUiOrderType', () => {
+  return {
+    ...jest.requireActual('utils/orderUtils/getUiOrderType'),
+    getUiOrderType: jest.fn(),
+  }
+})
 
 const isOrderInPendingTooLongMock = jest.mocked(isOrderInPendingTooLong)
 const openNpsAppziSometimesMock = jest.mocked(openNpsAppziSometimes)
 const getOrderByOrderIdFromStateMock = jest.mocked(getOrderByIdFromState)
+const getUiOrderTypeMock = jest.mocked(getUiOrderType)
 
 const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
-const BASE_MARKET_ORDER = {
+const BASE_ORDER = {
   order: {
     id: '0x1',
-    class: OrderClass.MARKET,
-  },
-}
-
-const BASE_LIMIT_ORDER = {
-  order: {
-    id: '0x1',
-    class: OrderClass.LIMIT,
   },
 }
 
@@ -54,13 +54,13 @@ describe('appziMiddleware', () => {
 
   describe('batch fulfill', () => {
     beforeEach(() => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [{ id: '0x1' }] })
+      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [BASE_ORDER.order] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
     })
 
     it('should open appzi if market order', () => {
-      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_MARKET_ORDER as any)
-
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
@@ -68,7 +68,7 @@ describe('appziMiddleware', () => {
 
     it('should not open appzi if limit order is pending too long', () => {
       isOrderInPendingTooLongMock.mockReturnValue(true)
-      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
@@ -76,39 +76,39 @@ describe('appziMiddleware', () => {
     })
     it('should open appzi if limit order is not pending too long', () => {
       isOrderInPendingTooLongMock.mockReturnValue(false)
-      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
 
-    it('should open appzi if order is hidden', () => {
+    it('should not open appzi if order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
-        order: { ...BASE_MARKET_ORDER.order, isHidden: true },
+        order: { ...BASE_ORDER.order, isHidden: true },
       } as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
     })
   })
   describe('batch expire', () => {
     beforeEach(() => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ids: ['0x1'] })
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
       when(actionMock.type).thenReturn('order/expireOrdersBatch')
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
     })
 
     it('should open appzi if market order', () => {
-      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_MARKET_ORDER as any)
-
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
 
     it('should open appzi if limit order', () => {
-      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
@@ -117,7 +117,7 @@ describe('appziMiddleware', () => {
 
     it('should not open appzi if market order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
-        order: { ...BASE_MARKET_ORDER.order, isHidden: true },
+        order: { ...BASE_ORDER.order, isHidden: true },
       } as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -127,12 +127,123 @@ describe('appziMiddleware', () => {
 
     it('should not open appzi if limit order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
-        order: { ...BASE_LIMIT_ORDER.order, isHidden: true },
+        order: { ...BASE_ORDER.order, isHidden: true },
       } as any)
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+  })
+  describe('batch presign', () => {
+    beforeEach(() => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
+      when(actionMock.type).thenReturn('order/presignOrders')
+
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
+    })
+
+    it('should not open appzi when SWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi when TWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should open appzi when LIMIT', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+  })
+  describe('add pending order', () => {
+    beforeEach(() => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ...BASE_ORDER })
+      when(actionMock.type).thenReturn('order/addPendingOrder')
+
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
+    })
+
+    it('should not open appzi when SWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi when TWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should open appzi when LIMIT', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not open appzi when LIMIT is hidden', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+      when(actionMock.payload).thenReturn({
+        chainId: 1,
+        ...{
+          order: { ...BASE_ORDER.order, isHidden: true },
+        },
+      })
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(0)
+    })
+  })
+  describe('batch cancel orders', () => {
+    beforeEach(() => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
+      when(actionMock.type).thenReturn('order/cancelOrdersBatch')
+
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
+    })
+
+    it('should not open appzi when SWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi when TWAP', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should open appzi when LIMIT', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
   })
 })

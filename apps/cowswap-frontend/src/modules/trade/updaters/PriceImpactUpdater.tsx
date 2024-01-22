@@ -11,7 +11,9 @@ export function PriceImpactUpdater() {
   const priceImpactState = useFiatValuePriceImpact()
 
   useSafeEffect(() => {
-    if (!priceImpactState) return
+    if (!priceImpactState) {
+      return
+    }
 
     const { isLoading, priceImpact } = priceImpactState
 

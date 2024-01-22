@@ -1,5 +1,5 @@
-import { RADIX_DECIMAL, NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { isAddress, shortenAddress, formatTokenAmount, formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
+import { formatSymbol, formatTokenAmount, getIsNativeToken, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -57,10 +57,26 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
 export function getOrderSubmitSummary(
   params: Pick<
     PostOrderParams,
-    'kind' | 'account' | 'inputAmount' | 'outputAmount' | 'recipient' | 'recipientAddressOrName' | 'feeAmount'
+    | 'kind'
+    | 'account'
+    | 'inputAmount'
+    | 'outputAmount'
+    | 'recipient'
+    | 'recipientAddressOrName'
+    | 'feeAmount'
+    | 'featureFlags'
   >
 ): string {
-  const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
+  const {
+    kind,
+    account,
+    inputAmount,
+    outputAmount,
+    recipient,
+    recipientAddressOrName,
+    feeAmount,
+    featureFlags: { swapZeroFee },
+  } = params
 
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
@@ -71,7 +87,8 @@ export function getOrderSubmitSummary(
   ]
   const inputSymbol = formatSymbol(sellToken.symbol)
   const outputSymbol = formatSymbol(buyToken.symbol)
-  const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
+  // this already contains the fee in the fee amount when fee=0
+  const inputAmountValue = formatTokenAmount(feeAmount && !swapZeroFee ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
   const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
