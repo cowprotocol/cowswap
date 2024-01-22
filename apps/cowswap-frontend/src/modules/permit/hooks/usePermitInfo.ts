@@ -55,7 +55,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled ? token : undefined
+    isPermitEnabled && !isNative ? token : undefined
   )
 
   const spender = GP_VAULT_RELAYER[chainId]
