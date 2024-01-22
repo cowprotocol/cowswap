@@ -57,7 +57,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   try {
     domain = await getEip712Domain(tokenAddress, chainId, provider)
   } catch (e) {
-    console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`, e)
+    console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`)
   }
 
   let tokenName = domain?.name
