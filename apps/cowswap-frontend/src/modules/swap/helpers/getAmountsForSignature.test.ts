@@ -73,7 +73,7 @@ describe('getAmountsForSignature()', () => {
     })
 
     /**
-     * Sell amount calculated as: (inputAmount + fee) + slippage
+     * Sell amount calculated as: (inputAmount) + slippage
      * Output amount is just what user entered
      */
     it('Buy order', () => {
@@ -86,8 +86,8 @@ describe('getAmountsForSignature()', () => {
         kind: OrderKind.BUY,
       })
 
-      // inputAmount = (3012 + 8) + 5% = 3171.000000
-      expect(result.inputAmount.toFixed()).toEqual('3171.000000')
+      // inputAmount = (3012) + 5% = 3,162.6
+      expect(result.inputAmount.toFixed()).toEqual('3162.600000')
       // Output amount the same, because this is buy order
       expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
     })
@@ -119,7 +119,7 @@ describe('getAmountsForSignature()', () => {
     })
 
     /**
-     * Sell amount calculated as: inputAmount + slippage
+     * Sell amount calculated as: (inputAmount + fee) + slippage
      * Output amount is just what user entered
      */
     it('Buy order', () => {
@@ -132,8 +132,8 @@ describe('getAmountsForSignature()', () => {
         kind: OrderKind.BUY,
       })
 
-      // inputAmount = 3012 + 5% = 3162.600000
-      expect(result.inputAmount.toFixed()).toEqual('3162.600000')
+      // inputAmount = (3012 + 8) + 5% = 3,171
+      expect(result.inputAmount.toFixed()).toEqual('3171.000000')
 
       // Output amount the same, because this is buy order
       expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')

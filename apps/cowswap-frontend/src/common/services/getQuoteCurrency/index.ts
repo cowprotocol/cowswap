@@ -1,5 +1,5 @@
 import { DAI, USDC_MAINNET, USDC_SEPOLIA, USDT } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -14,7 +14,7 @@ const STABLE_COINS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI]
     .map((token) => token.address.toLowerCase())
     // XDAI and WXDAI are stable-coins
-    .concat(NATIVE_CURRENCY_BUY_ADDRESS),
+    .concat(NATIVE_CURRENCY_ADDRESS),
   [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
   [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
 }
@@ -53,11 +53,9 @@ export function getQuoteCurrencyByStableCoin(
 
   const stableCoins = STABLE_COINS[chainId]
 
-  const inputAddress = getIsNativeToken(inputCurrency)
-    ? NATIVE_CURRENCY_BUY_ADDRESS
-    : inputCurrency.address.toLowerCase()
+  const inputAddress = getIsNativeToken(inputCurrency) ? NATIVE_CURRENCY_ADDRESS : inputCurrency.address.toLowerCase()
   const outputAddress = getIsNativeToken(outputCurrency)
-    ? NATIVE_CURRENCY_BUY_ADDRESS
+    ? NATIVE_CURRENCY_ADDRESS
     : outputCurrency.address.toLowerCase()
 
   const isInputStableCoin = stableCoins.includes(inputAddress)

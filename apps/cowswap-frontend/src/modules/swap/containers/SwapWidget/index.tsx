@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCY_BUY_TOKEN, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -91,7 +91,7 @@ export function SwapWidget() {
   const inputToken = useMemo(() => {
     if (!currencies.INPUT) return currencies.INPUT
 
-    if (currencies.INPUT.isNative) return NATIVE_CURRENCY_BUY_TOKEN[chainId]
+    if (currencies.INPUT.isNative) return NATIVE_CURRENCIES[chainId]
 
     return TokenWithLogo.fromToken(currencies.INPUT)
   }, [chainId, currencies.INPUT])
@@ -99,7 +99,7 @@ export function SwapWidget() {
   const outputToken = useMemo(() => {
     if (!currencies.OUTPUT) return currencies.OUTPUT
 
-    if (currencies.OUTPUT.isNative) return NATIVE_CURRENCY_BUY_TOKEN[chainId]
+    if (currencies.OUTPUT.isNative) return NATIVE_CURRENCIES[chainId]
 
     return TokenWithLogo.fromToken(currencies.OUTPUT)
   }, [chainId, currencies.OUTPUT])
@@ -112,7 +112,13 @@ export function SwapWidget() {
   const {
     inputAmount: { value: inputUsdValue },
     outputAmount: { value: outputUsdValue },
-  } = useTradeUsdAmounts(trade?.inputAmountWithoutFee, trade?.outputAmountWithoutFee)
+  } = useTradeUsdAmounts(
+    trade?.inputAmountWithoutFee || parsedAmounts.INPUT,
+    trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
+    inputToken,
+    outputToken,
+    true
+  )
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer

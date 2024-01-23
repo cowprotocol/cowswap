@@ -1,6 +1,5 @@
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { ExternalLink as ExternalLinkComponent } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -23,7 +22,7 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { RoutesValues } from 'common/constants/routes'
 
-import { MenuBadge } from './styled'
+import { MenuBadge, StyledExternalLink } from './styled'
 
 import { MAIN_MENU } from '../../constants/mainMenu'
 
@@ -69,11 +68,11 @@ function Link({ link, context }: InternalExternalLinkProps) {
 
   if (isExternal) {
     return (
-      <ExternalLinkComponent href={url} onClickOptional={handleMobileMenuOnClick}>
+      <StyledExternalLink href={url} onClickOptional={handleMobileMenuOnClick}>
         {menuImage}
-        {title}
+        <span>{title}</span>
         {badge && <MenuBadge>{badge}</MenuBadge>}
-      </ExternalLinkComponent>
+      </StyledExternalLink>
     )
   }
 

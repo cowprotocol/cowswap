@@ -9,6 +9,11 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { warningSeverity } from 'legacy/utils/prices'
 
+const LoaderStyled = styled(Loader)`
+  margin-left: 4px;
+  vertical-align: bottom;
+`
+
 export interface PriceImpactIndicatorProps {
   priceImpactParams?: PriceImpact
 }
@@ -40,7 +45,7 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
           </MouseoverTooltip>
         </PriceImpactWrapper>
       ) : null}
-      {priceImpactLoading && <Loader size="14px" />}
+      {priceImpactLoading && <LoaderStyled size="14px" />}
     </span>
   )
 }

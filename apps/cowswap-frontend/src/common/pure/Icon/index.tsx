@@ -43,6 +43,7 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
   border-radius: ${({ borderRadius }) => borderRadius};
   background-color: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
   padding: ${({ padding }) => padding};
+  color: ${({ color = UI.COLOR_TEXT }) => `var(${color})`};
 
   > svg {
     object-fit: contain;
@@ -53,10 +54,11 @@ const Wrapper = styled.div<Omit<IconProps, 'image'>>`
     display: flex;
     align-items: center;
     justify-content: center;
+    fill: currentColor;
   }
 
   > svg > path {
-    fill: ${({ color = UI.COLOR_TEXT }) => `var(${color})`};
+    fill: currentColor;
   }
 `
 

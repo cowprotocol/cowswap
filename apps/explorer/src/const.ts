@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { BATCH_TIME, TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
+import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export {
@@ -18,10 +18,7 @@ export {
   ALLOWANCE_FOR_ENABLED_TOKEN,
 } from '@gnosis.pm/dex-js'
 
-export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
-
-export const CHAIN_CALLS_RATE_LIMIT = 0 // ms between blockchain calls, 0 = disabled
 
 export const ZERO_BIG_NUMBER = new BigNumber(0)
 export const ONE_BIG_NUMBER = new BigNumber(1)
@@ -39,8 +36,6 @@ export const ORDER_FILLED_FACTOR = new BN(10000) // 0.01%
 // Similar to the ORDER_FILLED_FACTOR, but for the explorer, and using a different calculation
 // Order is considered `filled` when less than FILLED_ORDER_EPSILON is left
 export const FILLED_ORDER_EPSILON = new BigNumber('0.0001') // == 0.01%
-
-export const BATCH_SUBMISSION_CLOSE_TIME = 4 // in minutes
 
 export const APP_NAME = 'CoW Protocol'
 
@@ -110,9 +105,6 @@ export const MEDIA = {
 export const INFURA_ID = process.env.INFURA_ID || 'e941376b017d4dada26dc7891456fa3b'
 export const ETH_NODE_URL = process.env.ETH_NODE_URL || 'wss://mainnet.infura.io/ws/v3/' + INFURA_ID
 
-const LIQUIDITY_TOKEN_LIST_VALUES = process.env.LIQUIDITY_TOKEN_LIST || 'USDT,TUSD,USDC,PAX,GUSD,DAI,sUSD'
-export const LIQUIDITY_TOKEN_LIST = new Set(LIQUIDITY_TOKEN_LIST_VALUES.split(',').map((symbol) => symbol.trim()))
-
 export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const WETH_ADDRESS_GOERLI = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
 export const WETH_ADDRESS_SEPOLIA = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
@@ -126,12 +118,6 @@ export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI_ADDRESS_XDAI,
   [SupportedChainId.SEPOLIA]: WETH_ADDRESS_SEPOLIA,
 }
-
-export const ORDER_BOOK_HOPS_MAX = 30
-
-/** ERROR CODES **/
-// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1474.md
-export const LIMIT_EXCEEDED_ERROR_CODE = -32005
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
@@ -152,8 +138,6 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '5': ETH,
   '100': XDAI,
 }
-
-export const NO_REDIRECT_HOME_ROUTES: Array<string> = ['/address']
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'
 export const DEFAULT_IPFS_READ_URI = process.env.REACT_APP_IPFS_READ_URI || 'https://cloudflare-ipfs.com/ipfs'

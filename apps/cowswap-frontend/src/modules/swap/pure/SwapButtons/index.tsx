@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
@@ -72,8 +72,8 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
   [SwapButtonState.TransferToSmartContract]: (props: SwapButtonsContext) => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>
-        Buying {NATIVE_CURRENCY_BUY_TOKEN[(props.chainId as SupportedChainId) || SupportedChainId.MAINNET].symbol} with
-        smart contract wallets is not currently supported
+        Buying {NATIVE_CURRENCIES[(props.chainId as SupportedChainId) || SupportedChainId.MAINNET].symbol} with smart
+        contract wallets is not currently supported
       </Trans>
     </GreyCard>
   ),

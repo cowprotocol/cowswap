@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
-import { NATIVE_CURRENCY_BUY_TOKEN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -30,6 +30,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
+  bothCurrenciesSet: boolean
   isChainIdUnsupported: boolean
   disabled?: boolean
   inputDisabled?: boolean
@@ -52,7 +53,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     areCurrenciesLoading,
     currencyInfo,
     className,
-    priceImpactParams,
+    priceImpactParams: _priceImpactParams,
+    bothCurrenciesSet,
     showSetMax = false,
     maxBalance,
     inputDisabled = false,
@@ -108,7 +110,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   const selectedTokenAddress = currency
     ? getIsNativeToken(currency)
-      ? NATIVE_CURRENCY_BUY_TOKEN[currency.chainId as SupportedChainId].address
+      ? NATIVE_CURRENCIES[currency.chainId as SupportedChainId].address
       : currency.address
     : undefined
 
@@ -121,6 +123,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       $loading={areCurrenciesLoading}
     />
   )
+
+  const priceImpactParams: typeof _priceImpactParams = useMemo(() => {
+    if (!_priceImpactParams) return undefined
+
+    return {
+      ..._priceImpactParams,
+      // Don't show price impact loading state when only one currency is set
+      loading: bothCurrenciesSet ? _priceImpactParams?.loading : false,
+    }
+  }, [_priceImpactParams, bothCurrenciesSet])
 
   return (
     <styledEl.OuterWrapper>
