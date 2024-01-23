@@ -92,7 +92,7 @@ const Step = styled.div<StepProps>`
         : stepState === 'finished'
         ? `var(${stateStyles['finished'].dotBackground})`
         : `var(${UI.COLOR_TEXT_OPACITY_25})`};
-    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-radius: var(${UI.BORDER_RADIUS_LARGE});
   }
 
   &&:last-child {

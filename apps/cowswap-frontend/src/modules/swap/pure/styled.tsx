@@ -12,6 +12,7 @@ export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   minHeight: 24,
 }))`
   gap: 0;
+  font-size: inherit;
 
   > .price-container {
     display: flex;

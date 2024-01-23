@@ -9,6 +9,7 @@ import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
 
@@ -45,8 +46,21 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showRowDeadline = !!trade
 
   return (
-    <styledEl.Box>
-      {showPrice && <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />}
+    <TradeDetailsAccordion
+      rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+      feeSummary={
+        showTradeBasicDetails && (
+          <TradeBasicDetails
+            allowedSlippage={userAllowedSlippage}
+            isExpertMode={isExpertMode}
+            allowsOffchainSigning={allowsOffchainSigning}
+            trade={trade}
+            fee={fee}
+            fiatFeeOnly={true}
+          />
+        )
+      }
+    >
       {/* SLIPPAGE & FEE */}
       {showTradeBasicDetails && (
         <TradeBasicDetails
@@ -73,6 +87,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
         </div>
       </styledEl.Row>
       */}
-    </styledEl.Box>
+    </TradeDetailsAccordion>
   )
 }, genericPropsChecker)

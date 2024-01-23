@@ -34,7 +34,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   box-shadow: var(${UI.BOX_SHADOW_2});
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   padding: 6px;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   max-width: 190px;

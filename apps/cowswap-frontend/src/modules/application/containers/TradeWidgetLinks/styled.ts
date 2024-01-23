@@ -70,7 +70,7 @@ export const Link = styled(NavLink)`
 
 export const Wrapper = styled.div`
   background: transparent;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   padding: 0;
   display: flex;
   flex-flow: row wrap;
@@ -93,7 +93,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     text-align: left;
     font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '14px')};
     font-weight: ${({ theme }) => (theme.isInjectedWidgetMode ? '600' : '500')};
-    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-radius: var(${UI.BORDER_RADIUS_LARGE});
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '7px' : '5px 10px')};
     background: transparent;
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -138,5 +138,5 @@ export const SelectMenu = styled.div`
   padding: 16px;
   gap: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
   background: var(${UI.COLOR_PAPER});
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
 `

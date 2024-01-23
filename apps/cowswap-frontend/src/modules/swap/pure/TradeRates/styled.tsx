@@ -7,10 +7,6 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { RateInfo } from 'common/pure/RateInfo'
 
-export const Box = styled.div`
-  margin: 6px 8px;
-`
-
 export const Row = styled.div`
   display: flex;
   justify-content: space-between;

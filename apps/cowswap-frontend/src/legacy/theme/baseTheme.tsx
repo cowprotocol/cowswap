@@ -505,7 +505,8 @@ export const UniThemedGlobalStyle = css`
     // Base
     ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
-    ${UI.BORDER_RADIUS_NORMAL}: 24px;
+    ${UI.BORDER_RADIUS_NORMAL}: 16px;
+    ${UI.BORDER_RADIUS_LARGE}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
 
     // Icons
@@ -513,6 +514,7 @@ export const UniThemedGlobalStyle = css`
     ${UI.ICON_SIZE_NORMAL}: 20px;
     ${UI.ICON_SIZE_SMALL}: 16px;
     ${UI.ICON_SIZE_XSMALL}: 14px;
+    ${UI.ICON_SIZE_TINY}: 10px;
     ${UI.ICON_COLOR_NORMAL}: ${({ theme }) => theme.text};
 
     // Text
@@ -536,6 +538,7 @@ export const UniThemedGlobalStyle = css`
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
+    ${UI.ANIMATION_DURATION_SLOW}: 0.2s;
   }
 
   body {

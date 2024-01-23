@@ -44,6 +44,8 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   trade?: TradeGp
   fee?: CurrencyAmount<Currency>
   feeFiatValue: CurrencyAmount<Token> | null
+  showFiatOnly?: boolean
+  showLabel?: boolean
   allowsOffchainSigning: boolean
 }
 
@@ -57,7 +59,15 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
+export function RowFee({
+  trade,
+  fee,
+  feeFiatValue,
+  showFiatOnly = false,
+  showLabel = true,
+  allowsOffchainSigning,
+  showHelpers,
+}: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -81,6 +91,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     // TODO: delegate formatting to the view layer
     const smartFeeFiatValue = formatFiatAmount(feeFiatValue)
     const smartFeeTokenValue = formatTokenAmount(displayFee)
+
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
       isEoaEthFlow ? ' + gas' : ''
     }`
@@ -88,20 +99,30 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeToken = isValidNonZeroAmount(smartFeeTokenValue)
       ? feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
-    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
-    const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
-    const includeGasMessage = allowsOffchainSigning && !isEoaEthFlow ? ' (incl. gas costs)' : ''
+    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? `(≈$${smartFeeFiatValue})` : ''
 
     return {
       showHelpers,
-      feeToken,
-      feeUsd,
-      fullDisplayFee,
+      feeToken: showFiatOnly && isValidNonZeroAmount(smartFeeFiatValue) ? `≈$${smartFeeFiatValue}` : feeToken,
+      feeUsd: showFiatOnly ? undefined : feeUsd,
+      fullDisplayFee: FractionUtils.fractionLikeToExactString(displayFee) || '-',
       feeCurrencySymbol,
-      includeGasMessage,
+      includeGasMessage: allowsOffchainSigning && !isEoaEthFlow ? ' (incl. gas costs)' : '',
       tooltip,
+      showLabel,
+      showFiatOnly,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
+  }, [
+    allowsOffchainSigning,
+    fee,
+    feeFiatValue,
+    showFiatOnly,
+    showLabel,
+    isEoaEthFlow,
+    realizedFee,
+    showHelpers,
+    tooltip,
+  ])
 
   return <RowFeeContent {...props} />
 }

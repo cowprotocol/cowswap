@@ -249,7 +249,7 @@ const FortuneContent = styled.div`
 
 const StyledExternalLink = styled(ExternalLink)`
   background: var(${UI.COLOR_PAPER_DARKER});
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
 `
 
 const HeaderElement = styled.div`

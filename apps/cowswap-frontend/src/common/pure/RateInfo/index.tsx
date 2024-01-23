@@ -44,7 +44,7 @@ const Wrapper = styled.div<{ stylized: boolean }>`
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: 14px;
+  font-size: inherit;
   font-weight: 400;
 `
 
@@ -113,7 +113,10 @@ const InvertIcon = styled.div`
 `
 
 export const RateWrapper = styled.button`
-  display: inline;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-flow: row wrap;
   background: none;
   border: 0;
   outline: none;
@@ -121,7 +124,7 @@ export const RateWrapper = styled.button`
   padding: 0;
   cursor: pointer;
   color: inherit;
-  font-size: 13px;
+  font-size: inherit;
   letter-spacing: -0.1px;
   text-align: right;
   font-weight: 500;

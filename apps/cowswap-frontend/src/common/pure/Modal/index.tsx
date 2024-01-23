@@ -93,7 +93,7 @@ export const CowModal = styled(Modal)<{
   border?: string
   padding?: string
 }>`
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   color: var(${UI.COLOR_TEXT_PAPER});
 
   > [data-reach-dialog-content] {
@@ -107,7 +107,7 @@ export const CowModal = styled(Modal)<{
     transition: max-width 0.4s ease;
     background-color: var(${UI.COLOR_PAPER});
     overflow: hidden;
-    border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-radius: var(${UI.BORDER_RADIUS_LARGE});
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100vh;

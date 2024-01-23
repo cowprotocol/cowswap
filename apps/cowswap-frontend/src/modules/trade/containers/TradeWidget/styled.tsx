@@ -17,7 +17,7 @@ export const ContainerBox = styled.div`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
   position: relative;

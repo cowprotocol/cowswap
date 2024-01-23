@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   width: 90%;
   height: 120px;
   background: var(${UI.COLOR_PAPER});
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   display: flex;
   align-items: center;
   justify-content: center;

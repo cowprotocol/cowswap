@@ -24,14 +24,14 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
   margin: auto;
   overflow-y: auto;
   background: var(${UI.COLOR_PAPER});
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   box-shadow: var(${UI.BOX_SHADOW});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
     border-radius: 0;
-    border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
-    border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
+    border-top-left-radius: var(${UI.BORDER_RADIUS_LARGE});
+    border-top-right-radius: var(${UI.BORDER_RADIUS_LARGE});
     box-shadow: none;
   `}
 

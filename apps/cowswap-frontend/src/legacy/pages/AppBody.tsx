@@ -14,7 +14,7 @@ export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   background: ${({ theme }) => theme.bg0};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   margin-top: 1rem;
   margin-left: auto;
   margin-right: auto;

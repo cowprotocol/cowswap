@@ -21,7 +21,7 @@ const OrdersBox = styled.div`
   background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
   color: inherit;
   border: none;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: var(${UI.BORDER_RADIUS_LARGE});
   box-shadow: none;
   position: relative;
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
