@@ -86,7 +86,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
-export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
+export const PENDING_ORDERS_BUFFER = ms`1m` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
 export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
