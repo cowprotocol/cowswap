@@ -146,14 +146,14 @@ export function SwapWidget() {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: isSellTrade ? 'You sell' : 'You sell at most',
+    label: isSellTrade ? 'Sell amount' : 'Expected sell amount',
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: isSellTrade ? 'You receive at least' : 'You receive exactly',
+    label: isSellTrade ? 'Receive (before fees)' : 'Buy amount',
   }
 
   const buyingFiatAmount = useMemo(

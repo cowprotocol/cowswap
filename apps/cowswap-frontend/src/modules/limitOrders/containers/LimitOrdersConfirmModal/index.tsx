@@ -65,7 +65,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   return (
     <TradeConfirmModal>
       <TradeConfirmation
-        title="Review order"
+        title="Review Limit Order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

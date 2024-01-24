@@ -12,6 +12,7 @@ const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
 export const TextWrapper = styled(Text)``
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
+  flex-flow: row wrap;
   min-height: 24px;
   gap: 3px;
   color: inherit;
@@ -49,4 +50,16 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     background-color: ${({ theme }) => theme.bg3};
     color: inherit;
   }
+
+  // dividerBottom true?
+  ${({ dividerBottom }) =>
+    dividerBottom &&
+    `
+   &::after {
+    content: '';
+    border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    display: flex;
+    width: 100%;
+    margin: 10px 0;
+  `}
 `

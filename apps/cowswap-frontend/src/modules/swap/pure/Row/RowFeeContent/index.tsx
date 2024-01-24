@@ -9,7 +9,6 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { FiatRate } from 'common/pure/RateInfo'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
-  includeGasMessage: string
   tooltip: string
   feeToken: string
   feeUsd?: string
@@ -19,16 +18,7 @@ export interface RowFeeContentProps extends RowWithShowHelpersProps {
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
-  const {
-    showHelpers,
-    includeGasMessage,
-    tooltip,
-    feeToken,
-    feeUsd,
-    fullDisplayFee,
-    feeCurrencySymbol,
-    styleProps = {},
-  } = props
+  const { showHelpers, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, styleProps = {} } = props
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
@@ -36,7 +26,6 @@ export function RowFeeContent(props: RowFeeContentProps) {
           <FeatureGuard featureFlag="swapZeroFee" defaultContent="Fees">
             Est. fees
           </FeatureGuard>
-          {includeGasMessage}
         </TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} wrap>

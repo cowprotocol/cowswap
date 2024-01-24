@@ -47,7 +47,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   return (
     <TradeConfirmModal submittedContent={submittedContent}>
       <TradeConfirmation
-        title="Review order"
+        title="Review Swap"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
@@ -57,7 +57,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         buttonText="Confirm Swap"
       >
         {/*TODO: RR add new component*/}
-        <TradeRates {...tradeRatesProps} />
+        <TradeRates {...tradeRatesProps} isReviewSwap={true} />
       </TradeConfirmation>
     </TradeConfirmModal>
   )

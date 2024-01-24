@@ -43,10 +43,8 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
       </div>
       <styledEl.Amount>
         <TokenAmount amount={amount} tokenSymbol={currency} />
-      </styledEl.Amount>
-      <div>
         <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} />
-      </div>
+      </styledEl.Amount>
     </styledEl.Container>
   )
 }

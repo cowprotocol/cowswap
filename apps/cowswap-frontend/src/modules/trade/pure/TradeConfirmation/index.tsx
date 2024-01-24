@@ -51,13 +51,18 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
       <styledEl.Header>
         <BackButton size={20} onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+
+        {/* TODO: Calculate quote expiration time */}
+        <styledEl.QuoteCountdown>
+          Quote expires in <b>20s</b>
+        </styledEl.QuoteCountdown>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
           <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-          <div>
+          <styledEl.SeparatorWrapper>
             <styledEl.AmountsSeparator />
-          </div>
+          </styledEl.SeparatorWrapper>
           <CurrencyAmountPreview
             id="output-currency-preview"
             currencyInfo={outputCurrencyInfo}

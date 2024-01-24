@@ -11,12 +11,21 @@ export const Container = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 `
 
 export const Amount = styled.div`
   font-size: 15px;
   font-weight: 600;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 6px;
+
+  // Targets FiatValue
+  > div {
+    font-weight: 500;
+    font-size: 13px;
+  }
 `
 
 export const TokenLogoWrapper = styled.div`
