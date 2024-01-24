@@ -58,10 +58,10 @@ export async function safeBundleApprovalFlow(
     })
 
     // make sure no pre-approval hooks are included, just as a safety measure
-    if (appDataContainsHooks(input.orderParams.appData.fullAppData)) {
-      reportAppDataWithHooks(input.orderParams)
+    if (appDataContainsHooks(orderParams.appData.fullAppData)) {
+      reportAppDataWithHooks(orderParams)
       // wipe out the hooks
-      input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, undefined)
+      orderParams.appData = await updateHooksOnAppData(orderParams.appData, undefined)
     }
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
