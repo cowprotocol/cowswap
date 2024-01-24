@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 
 import { PermitHookData } from '@cowprotocol/permit-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
@@ -33,6 +34,9 @@ export function AppDataHooksUpdater(): null {
   const permitData = usePermitDataIfNotAllowance()
   const permitDataPrev = useRef<PermitHookData | undefined>(undefined)
   const hasTradeInfo = !!v2Trade
+  // This is already covered up the dependency chain, but it still slips through some times
+  // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   useEffect(() => {
     if (
@@ -46,7 +50,7 @@ export function AppDataHooksUpdater(): null {
       preInteractionHooks: permitData ? [permitData] : undefined,
     })
 
-    if (hooks) {
+    if (!isSmartContractWallet && hooks) {
       // Update the hooks
       console.log('[AppDataHooksUpdater]: Set hooks', hooks)
       updateAppDataHooks(hooks)
@@ -57,7 +61,7 @@ export function AppDataHooksUpdater(): null {
       updateAppDataHooks(undefined)
       permitDataPrev.current = undefined
     }
-  }, [updateAppDataHooks, permitData, hasTradeInfo])
+  }, [updateAppDataHooks, permitData, hasTradeInfo, isSmartContractWallet])
 
   return null
 }
