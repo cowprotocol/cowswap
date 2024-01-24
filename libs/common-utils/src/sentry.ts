@@ -7,3 +7,11 @@ export function reportPermitWithDefaultSigner(params: Record<any, any>): void {
     contexts: { params },
   })
 }
+
+export function reportAppDataWithHooks(params: Record<any, any>): void {
+  // report to sentry if we ever use hooks in the app data
+  Sentry.captureException('Hooks are present in the app data for a SC order', {
+    tags: { errorType: 'appDataWithHooks' },
+    contexts: { params },
+  })
+}
