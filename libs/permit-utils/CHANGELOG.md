@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.0...permit-utils-v0.1.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* **permit:** replace permit signer account ([#3691](https://github.com/cowprotocol/cowswap/issues/3691)) ([3ae286f](https://github.com/cowprotocol/cowswap/commit/3ae286f7e0f239a2843ce2a30138d23eceb1577f))
+
 ## [0.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.0.2...permit-utils-v0.1.0) (2024-01-17)
 
 

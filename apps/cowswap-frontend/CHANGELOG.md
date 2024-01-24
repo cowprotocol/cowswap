@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.56.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.0...cowswap-v1.56.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* minimum change just to cowswap app to trigger the release ([#3693](https://github.com/cowprotocol/cowswap/issues/3693)) ([8103980](https://github.com/cowprotocol/cowswap/commit/8103980a28261d4a014948565dafd20b4f6a8aad))
+
 ## [1.56.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.55.0...cowswap-v1.56.0) (2024-01-23)
 
 
