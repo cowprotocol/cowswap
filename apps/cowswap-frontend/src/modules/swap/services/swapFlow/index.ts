@@ -1,4 +1,4 @@
-import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { getIsNativeToken, reportAppDataWithHooks, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -6,7 +6,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { updateHooksOnAppData } from 'modules/appData'
 import { handlePermit } from 'modules/permit'
+import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -41,6 +43,16 @@ export async function swapFlow(
 
     if (appDataContainsPermitSigner(input.orderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(input.orderParams)
+    } else if (
+      // Last resort in case of a race condition
+      // It should not have a permit in the first place if it's selling native
+      // But there are several cases where it has
+      getIsNativeToken(input.context.trade.inputAmount.currency) &&
+      appDataContainsHooks(input.orderParams.appData.fullAppData)
+    ) {
+      reportAppDataWithHooks(input.orderParams)
+      // wipe out the hooks
+      input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, undefined)
     }
 
     input.swapConfirmManager.permitSigned()
