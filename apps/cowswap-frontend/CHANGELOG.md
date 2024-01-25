@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.57.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.57.0...cowswap-v1.57.1) (2024-01-25)
+
+
+### Bug Fixes
+
+* fix label for fee0 ([#3714](https://github.com/cowprotocol/cowswap/issues/3714)) ([4a5c9a3](https://github.com/cowprotocol/cowswap/commit/4a5c9a35ee6d57047353b8a3aa9bb341357d3607))
+
 ## [1.57.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.1...cowswap-v1.57.0) (2024-01-25)
 
 
