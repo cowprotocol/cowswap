@@ -33,8 +33,8 @@ function useCheckIsSmartContract(): boolean | undefined {
   return data
 }
 
-export function useIsSmartContractWallet(): boolean {
-  const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean>(false)
+export function useIsSmartContractWallet(): boolean | undefined {
+  const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean | undefined>(undefined)
 
   const { account } = useWalletInfo()
 
@@ -47,7 +47,7 @@ export function useIsSmartContractWallet(): boolean {
     if (!account) {
       setIsSmartContractWallet(false)
     } else {
-      setIsSmartContractWallet(Boolean(isSafeWallet || isAmbireWallet || isArgentWallet || isSmartContract))
+      setIsSmartContractWallet(isSafeWallet || isAmbireWallet || isArgentWallet || isSmartContract)
     }
   }, [account, isAmbireWallet, isArgentWallet, isSafeWallet, isSmartContract])
 

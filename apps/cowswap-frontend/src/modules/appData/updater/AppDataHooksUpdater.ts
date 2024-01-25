@@ -12,7 +12,7 @@ import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 
-function usePermitDataIfNotAllowance(): PermitHookData | undefined {
+function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined {
   const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
 
   // Remove permitData if the user has enough allowance for the current trade
@@ -32,7 +32,7 @@ function usePermitDataIfNotAllowance(): PermitHookData | undefined {
 export function AppDataHooksUpdater(): null {
   const { v2Trade } = useDerivedSwapInfo()
   const updateAppDataHooks = useUpdateAppDataHooks()
-  const permitData = usePermitDataIfNotAllowance()
+  const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
   const permitDataPrev = useRef<PermitHookData | undefined>(undefined)
   const hasTradeInfo = !!v2Trade
   // This is already covered up the dependency chain, but it still slips through some times
@@ -44,6 +44,7 @@ export function AppDataHooksUpdater(): null {
   useEffect(() => {
     if (
       !hasTradeInfo || // If there's no trade info, wait until we have one to update the hooks (i.e. missing quote)
+      isSmartContractWallet === undefined || // We don't know what type of wallet it is, wait until it's defined
       JSON.stringify(permitDataPrev.current) === JSON.stringify(permitData) // Or if the permit data has not changed
     ) {
       return undefined
