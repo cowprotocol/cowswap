@@ -47,6 +47,7 @@ export async function safeBundleFlow(
     class: orderClass,
   } = params.postOrderParams
 
+  // TODO: remove once we figure out what's adding this to appData in the first place
   if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
     reportAppDataWithHooks(params.postOrderParams)
     // wipe out the hooks

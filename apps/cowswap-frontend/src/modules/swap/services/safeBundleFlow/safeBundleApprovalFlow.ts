@@ -57,6 +57,7 @@ export async function safeBundleApprovalFlow(
       amountToApprove: context.trade.inputAmount,
     })
 
+    // TODO: remove once we figure out what's adding this to appData in the first place
     // make sure no pre-approval hooks are included, just as a safety measure
     if (appDataContainsHooks(orderParams.appData.fullAppData)) {
       reportAppDataWithHooks(orderParams)

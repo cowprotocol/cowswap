@@ -78,6 +78,7 @@ export async function safeBundleEthFlow(
       })
     }
 
+    // TODO: remove once we figure out what's adding this to appData in the first place
     if (appDataContainsHooks(orderParams.appData.fullAppData)) {
       reportAppDataWithHooks(orderParams)
       // wipe out the hooks

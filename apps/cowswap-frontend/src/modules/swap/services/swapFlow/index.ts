@@ -44,6 +44,7 @@ export async function swapFlow(
     if (appDataContainsPermitSigner(input.orderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(input.orderParams)
     } else if (
+      // TODO: remove once we figure out what's adding this to appData in the first place
       // Last resort in case of a race condition
       // It should not have a permit in the first place if it's selling native
       // But there are several cases where it has

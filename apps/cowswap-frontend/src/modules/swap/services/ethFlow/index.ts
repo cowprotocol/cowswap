@@ -37,6 +37,7 @@ export async function ethFlow(
     return undefined
   }
 
+  // TODO: remove once we figure out what's adding this to appData in the first place
   if (appDataContainsHooks(orderParamsOriginal.appData.fullAppData)) {
     reportAppDataWithHooks(orderParamsOriginal)
     // wipe out the hooks
