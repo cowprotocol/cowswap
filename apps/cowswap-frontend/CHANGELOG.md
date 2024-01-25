@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.57.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.1...cowswap-v1.57.0) (2024-01-25)
+
+
+### Features
+
+* **feeZero:** deliver fee zero only to 10% of users ([#3614](https://github.com/cowprotocol/cowswap/issues/3614)) ([5c6c312](https://github.com/cowprotocol/cowswap/commit/5c6c312cc07030d30e85080a30dfd384b20dba20))
+
+
+### Bug Fixes
+
+* **permit:** invalidate static and user permit cache ([#3713](https://github.com/cowprotocol/cowswap/issues/3713)) ([2e6504a](https://github.com/cowprotocol/cowswap/commit/2e6504aaa6092bb33b53ee9666d8cafebae62d22))
+
 ## [1.56.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.0...cowswap-v1.56.1) (2024-01-24)
 
 
