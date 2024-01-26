@@ -5,6 +5,7 @@ import styled from 'styled-components/macro'
 export const Container = styled.div`
   padding: 24px 12px;
   width: 100%;
+  height: 100%;
   border-radius: 24px;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 14px;

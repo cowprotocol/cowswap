@@ -55,3 +55,22 @@ export const TransactionText = styled.span`
     font-style: normal;
   }
 `
+
+export const EqualSign = styled.div<{ size?: number }>`
+  --size: ${({ size }) => `${size ? size : 14}px`};
+  padding: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background: var(${UI.COLOR_PAPER_DARKER});
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    object-fit: contain;
+  }
+`

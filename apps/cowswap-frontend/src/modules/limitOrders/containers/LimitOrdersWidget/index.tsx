@@ -92,7 +92,7 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSellOrder ? 'You sell' : 'You sell at most',
+    label: isSellOrder ? 'Sell amount' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: orderKind === OrderKind.SELL,
@@ -102,7 +102,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSellOrder ? 'You receive at least' : 'You receive exactly',
+    label: isSellOrder ? 'Receive at least' : 'You receive exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: orderKind === OrderKind.BUY,

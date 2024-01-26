@@ -18,7 +18,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   color: inherit;
 
   ${RowFixed} {
-    gap: 3px;
+    gap: 4px;
     min-width: 200px;
   }
 
@@ -50,16 +50,4 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     background-color: ${({ theme }) => theme.bg3};
     color: inherit;
   }
-
-  // dividerBottom true?
-  ${({ dividerBottom }) =>
-    dividerBottom &&
-    `
-   &::after {
-    content: '';
-    border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKER});
-    display: flex;
-    width: 100%;
-    margin: 10px 0;
-  `}
 `

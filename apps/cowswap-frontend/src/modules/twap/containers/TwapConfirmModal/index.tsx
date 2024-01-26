@@ -5,6 +5,7 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -88,7 +89,7 @@ export function TwapConfirmModal() {
             isInvertedState={isInvertedState}
             slippage={slippage}
             additionalProps={{
-              priceLabel: 'Price (incl. fee)',
+              priceLabel: 'Rate (incl. fee)',
               slippageLabel: 'Price protection',
               slippageTooltip: (
                 <>
@@ -114,6 +115,7 @@ export function TwapConfirmModal() {
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
             }}
           />
+          <DividerHorizontal />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
             partDuration={partDuration}

@@ -22,6 +22,7 @@ export const PrimaryWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 16px;
+  width: 100%;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
   margin: 0 auto;
   color: inherit;

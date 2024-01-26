@@ -13,8 +13,9 @@ import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceive
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { LowerSectionWrapper } from 'modules/swap/pure/styled'
+import { LowerSectionWrapper, EqualSign } from 'modules/swap/pure/styled'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { useUsdAmount } from 'modules/usdAmount'
 
 interface TradeBasicDetailsProp extends BoxProps {
@@ -55,16 +56,24 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
       />
 
       {/* TODO: Add Expected to receive */}
+      {/* TODO: Also add Expected Sell Amount for BUY orders */}
       {isReviewSwap && (
-        <StyledRowBetween dividerBottom>
-          <RowFixed>
-            <SVG src={EqualIcon} title="= expected to receive" />{' '}
+        <>
+          <StyledRowBetween>
+            <RowFixed>
+              <EqualSign>
+                <SVG src={EqualIcon} title="= expected to receive" />
+              </EqualSign>{' '}
+              <TextWrapper>
+                <b>Expected to receive</b>
+              </TextWrapper>
+            </RowFixed>
             <TextWrapper>
-              <b>Expected to receive</b>
+              <span style={{ background: 'yellow' }}>- AMOUNT HERE -</span>
             </TextWrapper>
-          </RowFixed>
-          <TextWrapper>- AMOUNT HERE -</TextWrapper>
-        </StyledRowBetween>
+          </StyledRowBetween>
+          <DividerHorizontal />
+        </>
       )}
 
       {/* Slippage */}
@@ -74,15 +83,20 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
       )}
 
       {/* TODO: Add Minimum receive */}
+      {/* TODO: Also add minimum sell amount for BUY orders  */}
       {isReviewSwap && (
         <StyledRowBetween>
           <RowFixed>
-            <SVG src={EqualIcon} title="= expected to receive" />{' '}
+            <EqualSign>
+              <SVG src={EqualIcon} title="= expected to receive" />
+            </EqualSign>{' '}
             <TextWrapper>
               <b>Minimum receive</b>
             </TextWrapper>
           </RowFixed>
-          <TextWrapper>- AMOUNT HERE -</TextWrapper>
+          <TextWrapper>
+            <span style={{ background: 'yellow' }}>- AMOUNT HERE -</span>
+          </TextWrapper>
         </StyledRowBetween>
       )}
     </LowerSectionWrapper>

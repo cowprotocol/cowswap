@@ -14,7 +14,7 @@ import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 const Wrapper = styled.div`
-  padding: 10px;
+  padding: 0 10px 10px;
   font-size: 13px;
 
   > b {
@@ -49,7 +49,9 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
   return (
     <Wrapper>
-      <b>TWAP order split in {numberOfPartsValue} equal parts</b>
+      <span>
+        TWAP order split in <b>{numberOfPartsValue} equal parts</b>
+      </span>
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow

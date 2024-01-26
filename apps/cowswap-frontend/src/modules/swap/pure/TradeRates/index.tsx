@@ -62,6 +62,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
           isReviewSwap={isReviewSwap}
         />
       )}
+
       {/* TRANSACTION DEADLINE */}
       {showRowDeadline && <RowDeadline />}
 
