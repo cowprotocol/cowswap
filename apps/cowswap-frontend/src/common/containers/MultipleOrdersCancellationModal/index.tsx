@@ -6,14 +6,15 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
-import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+
+import { PendingTransactionModal } from '../PendingTransactionModal'
+import { PENDING_TX_DESCRIPTIONS, PENDING_TX_NAMES, PENDING_TX_TITLES } from '../PendingTransactionModal/const'
 
 interface Props {
   isOpen: boolean
@@ -81,11 +82,11 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <LegacyConfirmationPendingContent
-          chainId={chainId}
+        <PendingTransactionModal
+          title={PENDING_TX_TITLES.MULTIPLE_CANCEL(ordersCount)}
+          description={PENDING_TX_DESCRIPTIONS.CANCEL_ORDER}
+          operationName={PENDING_TX_NAMES.CANCELLATION}
           onDismiss={onDismiss}
-          pendingText={<>Cancelling {ordersCount} orders</>}
-          operationType={ConfirmOperationType.ORDER_CANCEL}
         />
       </Modal>
     )
