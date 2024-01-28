@@ -17,10 +17,11 @@ interface ConfirmationPendingContentProps {
   statusIcon: ReactNode
   title: string | ReactNode
   description: string | ReactNode
-  operationSubmittedMessage: string
-  operationLabel: string
+  operationSubmittedMessage?: string
+  operationLabel?: string
   walletNameLabel?: string
   walletAddress?: string
+  CustomBody?: ReactNode
 }
 
 export function ConfirmationPendingContent({
@@ -32,6 +33,7 @@ export function ConfirmationPendingContent({
   operationLabel,
   walletNameLabel = 'wallet',
   walletAddress,
+  CustomBody,
 }: ConfirmationPendingContentProps) {
   return (
     <Wrapper>
@@ -45,25 +47,27 @@ export function ConfirmationPendingContent({
           <span>{description}</span>
         </h3>
 
-        <StepsWrapper>
-          <div>
-            <StepsIconWrapper>
-              <UserCheck />
-            </StepsIconWrapper>
-            <p>
-              <Trans>
-                Sign the {operationLabel} with your {walletNameLabel}. {walletAddress && <span>{walletAddress}</span>}
-              </Trans>
-            </p>
-          </div>
-          <hr />
-          <div>
-            <StepsIconWrapper>
-              <CheckCircle />
-            </StepsIconWrapper>
-            <p>{operationSubmittedMessage}</p>
-          </div>
-        </StepsWrapper>
+        {CustomBody || (
+          <StepsWrapper>
+            <div>
+              <StepsIconWrapper>
+                <UserCheck />
+              </StepsIconWrapper>
+              <p>
+                <Trans>
+                  Sign the {operationLabel} with your {walletNameLabel}. {walletAddress && <span>{walletAddress}</span>}
+                </Trans>
+              </p>
+            </div>
+            <hr />
+            <div>
+              <StepsIconWrapper>
+                <CheckCircle />
+              </StepsIconWrapper>
+              <p>{operationSubmittedMessage}</p>
+            </div>
+          </StepsWrapper>
+        )}
       </LowerSection>
     </Wrapper>
   )

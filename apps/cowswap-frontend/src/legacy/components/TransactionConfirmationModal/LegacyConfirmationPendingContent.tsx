@@ -1,11 +1,8 @@
 import React, { ReactNode, useMemo } from 'react'
 
-import alertImage from '@cowprotocol/assets/cow-swap/alert-circle.svg'
-import checkImage from '@cowprotocol/assets/cow-swap/check.svg'
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
 import {
   getWeb3ReactConnection,
   useGnosisSafeInfo,
@@ -17,27 +14,13 @@ import {
 import { useWeb3React } from '@web3-react/core'
 
 import { t, Trans } from '@lingui/macro'
-import { CheckCircle, UserCheck } from 'react-feather'
-import SVG from 'react-inlinesvg'
 
 import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 
-import {
-  ApproveComparison,
-  ApproveFooter,
-  ApproveWrapper,
-  CloseIconWrapper,
-  CompareItem,
-  ItemList,
-  LowerSection,
-  StepsIconWrapper,
-  StepsWrapper,
-  UpperSection,
-  WalletIcon,
-  Wrapper,
-} from './styled'
+import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
+import { MetamaskApproveBanner } from 'common/pure/MetamaskApproveBanner'
 
 import { ConfirmOperationType } from '../../state/types'
 
@@ -115,6 +98,15 @@ function getWalletNameLabel(walletType: WalletType): string {
   }
 }
 
+function useIsMetaMaskDesktop(): boolean {
+  const { connector } = useWeb3React()
+  const connectionType = getWeb3ReactConnection(connector)
+  const isMetaMask = getIsMetaMask()
+  const isNotMobile = useMediaQuery(MediumAndUp)
+
+  return isMetaMask && isNotMobile && connectionType === injectedConnection
+}
+
 // TODO: replace by common/pure/ConfirmationPendingContent
 export function LegacyConfirmationPendingContent({
   onDismiss,
@@ -143,119 +135,41 @@ export function LegacyConfirmationPendingContent({
     }
   }, [gnosisSafeInfo, isSmartContractWallet])
 
-  const connectionType = getWeb3ReactConnection(connector)
   const walletNameLabel = getWalletNameLabel(walletType)
   const operationMessage = getOperationMessage(operationType, chainId)
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
-  const isMetaMask = getIsMetaMask()
-  const isNotMobile = useMediaQuery(MediumAndUp)
-  const isApproveMetaMaskDesktop =
-    operationType === ConfirmOperationType.APPROVE_TOKEN &&
-    isMetaMask &&
-    isNotMobile &&
-    connectionType === injectedConnection
+
+  const isApproveMetaMaskDesktop = useIsMetaMaskDesktop() && operationType === ConfirmOperationType.APPROVE_TOKEN
+
+  const statusIcon = getStatusIcon(connector, walletDetails, 56)
+  const description = isApproveMetaMaskDesktop ? (
+    <>
+      Review and select the ideal <br /> spending cap in your wallet
+    </>
+  ) : (
+    <>
+      <span>{operationMessage} </span>
+      <br />
+      <span>
+        <Trans>Follow these steps:</Trans>
+      </span>
+    </>
+  )
+
+  const CustomBody = isApproveMetaMaskDesktop ? <MetamaskApproveBanner /> : null
 
   return (
-    <Wrapper>
-      <UpperSection>
-        <CloseIconWrapper onClick={onDismiss} />
-
-        <WalletIcon>{getStatusIcon(connector, walletDetails, 56)}</WalletIcon>
-        <span>{pendingText}</span>
-      </UpperSection>
-
-      {/* Only shown for APPROVE_TOKEN operation */}
-      {isApproveMetaMaskDesktop && (
-        <ApproveWrapper>
-          <h3>
-            Review and select the ideal <br /> spending cap in your wallet
-          </h3>
-          <ApproveComparison>
-            <CompareItem>
-              <h5>'Max'</h5>
-              <ItemList listIconAlert>
-                <li>
-                  <SVG src={alertImage} /> Approval on each order
-                </li>
-                <li>
-                  <SVG src={alertImage} /> Pay gas on every trade
-                </li>
-              </ItemList>
-            </CompareItem>
-            <CompareItem highlight recommended>
-              <h5>'Use default'</h5>
-              <ItemList>
-                <li>
-                  <SVG src={checkImage} /> Only approve once
-                </li>
-                <li>
-                  <SVG src={checkImage} /> Save on future gas fees
-                </li>
-              </ItemList>
-            </CompareItem>
-          </ApproveComparison>
-
-          <ApproveFooter>
-            <h6>No matter your choice, enjoy these benefits:</h6>
-            <ul>
-              <li>
-                <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
-              </li>
-              <li>
-                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
-                <ExternalLink
-                  href="https://github.com/cowprotocol/contracts/tree/main/audits"
-                  target={'_blank'}
-                  rel={'noopener'}
-                >
-                  audits
-                </ExternalLink>
-              </li>
-              <li>
-                <SVG src={checkImage} /> Over 2 years of successful trading with billions in volume
-              </li>
-              <li>
-                <SVG src={checkImage} /> Adjust your spending cap anytime
-              </li>
-            </ul>
-          </ApproveFooter>
-        </ApproveWrapper>
-      )}
-
-      {/* Not shown for APPROVE_TOKEN operation */}
-      {!isApproveMetaMaskDesktop && (
-        <LowerSection>
-          <h3>
-            <span>{operationMessage} </span>
-            <br />
-            <span>
-              <Trans>Follow these steps:</Trans>
-            </span>
-          </h3>
-
-          <StepsWrapper>
-            <div>
-              <StepsIconWrapper>
-                <UserCheck />
-              </StepsIconWrapper>
-              <p>
-                <Trans>
-                  Sign the {operationLabel} with your {walletNameLabel}{' '}
-                  {account && <span>({ensName || shortenAddress(account)})</span>}
-                </Trans>
-              </p>
-            </div>
-            <hr />
-            <div>
-              <StepsIconWrapper>
-                <CheckCircle />
-              </StepsIconWrapper>
-              <p>{operationSubmittedMessage}</p>
-            </div>
-          </StepsWrapper>
-        </LowerSection>
-      )}
-    </Wrapper>
+    <ConfirmationPendingContent
+      onDismiss={onDismiss}
+      statusIcon={statusIcon}
+      title={pendingText}
+      description={description}
+      operationLabel={operationLabel}
+      walletNameLabel={walletNameLabel}
+      walletAddress={ensName || shortenAddress(account)}
+      operationSubmittedMessage={operationSubmittedMessage}
+      CustomBody={CustomBody}
+    />
   )
 }
