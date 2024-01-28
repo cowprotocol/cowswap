@@ -12,6 +12,8 @@ import {
   addPendingOrder,
   cancelOrdersBatch,
   clearOrders,
+  clearOrdersStorage,
+  CONFIRMED_STATES,
   CREATING_STATES,
   deleteOrders,
   expireOrdersBatch,
@@ -28,8 +30,6 @@ import {
   updateLastCheckedBlock,
   updateOrder,
   updatePresignGnosisSafeTx,
-  clearOrdersStorage,
-  CONFIRMED_STATES,
 } from './actions'
 import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
@@ -280,10 +280,10 @@ export default createReducer(initialState, (builder) =>
       const { chainId, orders } = action.payload
 
       orders.forEach((newOrder) => {
-        const { id, status } = newOrder
+        const { id, status: newStatus } = newOrder
 
         // sanity check, is the status set?
-        if (!status) {
+        if (!newStatus) {
           console.error(`addOrUpdateOrders:: Status not set for order ${id}`)
           return
         }
@@ -306,6 +306,8 @@ export default createReducer(initialState, (builder) =>
           return
         }
 
+        const { status, isCancelling } = reClassifyOrder(newOrder, orderObj)
+
         // merge existing and new order objects
         const order = orderObj
           ? {
@@ -314,8 +316,8 @@ export default createReducer(initialState, (builder) =>
               creationTime: newOrder.creationTime,
               composableCowInfo: newOrder.composableCowInfo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
-              isCancelling: newOrder.isCancelling,
-              class: newOrder.class,
+              isCancelling: isCancelling,
+              class: orderObj.order.class || newOrder.class, // should never replace existing order class
               openSince: newOrder.openSince || orderObj.order.openSince,
               status,
             }
@@ -522,3 +524,17 @@ export default createReducer(initialState, (builder) =>
       })
     })
 )
+
+function reClassifyOrder(
+  newOrder: SerializedOrder,
+  existingOrder: OrderObject | undefined
+): { status: OrderStatus; isCancelling: boolean | undefined } {
+  // Onchain cancellations are considered final
+  // Still, the order classification at apps/cowswap-frontend/src/legacy/state/orders/utils.ts can't tell
+  // what type of cancellation it was as it doesn't have the local store context
+  // Here we do, so we can tell whether it should be fully cancelled or still pending
+  if (existingOrder?.order.status === OrderStatus.CANCELLED) {
+    return { status: existingOrder.order.status, isCancelling: false }
+  }
+  return { status: newOrder.status, isCancelling: newOrder.isCancelling }
+}
