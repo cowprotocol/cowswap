@@ -23,13 +23,14 @@ import styled from 'styled-components/macro'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
 import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'
+
+import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { IS_TESTING_ENV } from '../const'
 import {

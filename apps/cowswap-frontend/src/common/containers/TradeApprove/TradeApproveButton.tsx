@@ -23,7 +23,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   const currency = amountToApprove.currency
 
-  const approvalState = useApproveState(amountToApprove)
+  const { state: approvalState } = useApproveState(amountToApprove)
   const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
   const zeroApprove = useZeroApprove(amountToApprove.currency)

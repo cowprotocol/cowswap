@@ -12,19 +12,14 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { ApprovalState } from 'common/hooks/useApproveState'
+
 import { ConfirmOperationType } from '../../state/types'
 
 import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
-
-export enum ApprovalState {
-  UNKNOWN = 'UNKNOWN',
-  NOT_APPROVED = 'NOT_APPROVED',
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-}
 
 export interface ApproveCallbackParams {
   openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) => void
