@@ -8,12 +8,18 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+export enum ApprovalState {
+  UNKNOWN = 'UNKNOWN',
+  NOT_APPROVED = 'NOT_APPROVED',
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+}
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined

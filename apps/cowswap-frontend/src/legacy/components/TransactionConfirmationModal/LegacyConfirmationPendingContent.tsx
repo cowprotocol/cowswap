@@ -67,8 +67,6 @@ function getOperationLabel(operationType: ConfirmOperationType): string {
       return t`token approval`
     case ConfirmOperationType.REVOKE_APPROVE_TOKEN:
       return t`revoking token approval`
-    case ConfirmOperationType.ORDER_SIGN:
-      return t`order`
     case ConfirmOperationType.ORDER_CANCEL:
       return t`cancellation`
     case ConfirmOperationType.CONVERT_VCOW:
@@ -107,33 +105,32 @@ function useIsMetaMaskDesktop(): boolean {
   return isMetaMask && isNotMobile && connectionType === injectedConnection
 }
 
-// TODO: replace by common/pure/ConfirmationPendingContent
+// TODO: replace by common/containers/PendingTransactionModal
 export function LegacyConfirmationPendingContent({
   onDismiss,
   pendingText,
   operationType,
-  chainId,
 }: {
   onDismiss: () => void
   pendingText: ReactNode
   operationType: ConfirmOperationType
-  chainId: number
 }) {
   const { connector } = useWeb3React()
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const walletDetails = useWalletDetails()
   const { ensName, isSmartContractWallet } = walletDetails
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const isGnosisSafe = !!gnosisSafeInfo
 
   const walletType = useMemo((): WalletType => {
-    if (gnosisSafeInfo) {
+    if (isGnosisSafe) {
       return WalletType.SAFE
     } else if (isSmartContractWallet) {
       return WalletType.SC
     } else {
       return WalletType.EOA
     }
-  }, [gnosisSafeInfo, isSmartContractWallet])
+  }, [isGnosisSafe, isSmartContractWallet])
 
   const walletNameLabel = getWalletNameLabel(walletType)
   const operationMessage = getOperationMessage(operationType, chainId)

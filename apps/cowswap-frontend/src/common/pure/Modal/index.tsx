@@ -149,8 +149,3 @@ export const CowModal = styled(Modal)<{
     }
   }
 `
-
-export const NewCowModal = styled(Modal)`
-  width: 100vw;
-  height: 100vh;
-`

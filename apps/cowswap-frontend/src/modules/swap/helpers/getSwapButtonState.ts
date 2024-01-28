@@ -1,10 +1,11 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { QuoteError } from 'legacy/state/price/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
+
+import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { AmountsForSignature } from './getAmountsForSignature'
 

@@ -21,7 +21,7 @@ const defaultProps = {
   hash: txHash,
   pendingText: <div>pendingText</div>,
   currencyToAdd: COW[SupportedChainId.MAINNET],
-  operationType: ConfirmOperationType.ORDER_SIGN,
+  operationType: ConfirmOperationType.APPROVE_TOKEN,
   inline: false,
 }
 

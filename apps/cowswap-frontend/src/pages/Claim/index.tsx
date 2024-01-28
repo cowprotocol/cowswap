@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import Confetti from 'legacy/components/Confetti'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useTransactionConfirmationModal } from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback } from 'legacy/state/claim/hooks'

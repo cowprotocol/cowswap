@@ -21,7 +21,7 @@ import { Link } from 'react-router-dom'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useTransactionConfirmationModal } from 'legacy/hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { ConfirmOperationType } from 'legacy/state/types'

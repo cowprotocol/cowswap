@@ -6,7 +6,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { ConfirmOperationType } from '../state/types'
 
-export default function useTransactionConfirmationModal(
+export function useTransactionConfirmationModal(
   defaultOperationType: ConfirmOperationType = ConfirmOperationType.WRAP_ETHER
 ) {
   const [operationType, setOperationType] = useState<ConfirmOperationType>(defaultOperationType)
