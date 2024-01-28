@@ -6,12 +6,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useModalState } from './useModalState'
 
 import { MediumAndUp, useMediaQuery } from '../../legacy/hooks/useMediaQuery'
-import { PendingTransactionModal } from '../containers/PendingTransactionModal'
-import {
-  PENDING_TX_DESCRIPTIONS,
-  PENDING_TX_NAMES,
-  PENDING_TX_TITLES,
-} from '../containers/PendingTransactionModal/const'
+import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
 import { MetamaskApproveBanner } from '../pure/MetamaskApproveBanner'
 
 function useIsMetaMaskDesktop(): boolean {
@@ -30,11 +25,15 @@ export function usePendingApprovalModal() {
   const isMetaMaskDesktop = useIsMetaMaskDesktop()
 
   const Modal = (
-    <PendingTransactionModal
-      title={PENDING_TX_TITLES.APPROVE(context || '')}
-      description={PENDING_TX_DESCRIPTIONS.APPROVE}
-      operationName={PENDING_TX_NAMES.APPROVE}
+    <ConfirmationPendingContent
       onDismiss={closeModal}
+      title={
+        <>
+          Approving <strong>{context}</strong> for trading
+        </>
+      }
+      description="Approving token"
+      operationLabel="token approval"
       CustomBody={isMetaMaskDesktop ? <MetamaskApproveBanner /> : undefined}
       CustomDescription={
         isMetaMaskDesktop ? (

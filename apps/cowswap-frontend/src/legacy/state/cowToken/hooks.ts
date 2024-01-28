@@ -9,13 +9,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
 
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'common/constants/common'
+
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
-import { APPROVE_GAS_LIMIT_DEFAULT } from '../../hooks/useApproveCallback/useApproveCallbackMod'
 import { useTransactionAdder } from '../enhancedTransactions/hooks'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { AppState } from '../index'
-import { ConfirmOperationType } from '../types'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -27,7 +27,7 @@ type VCowData = {
 }
 
 interface SwapVCowCallbackParams {
-  openModal: (message: string, operationType: ConfirmOperationType) => void
+  openModal: (message: string) => void
   closeModal: () => void
 }
 
@@ -131,7 +131,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
     })
 
     const summary = `Convert vCOW to COW`
-    openModal(summary, ConfirmOperationType.CONVERT_VCOW)
+    openModal(summary)
 
     return vCowContract
       .swapAll({ from: account, gasLimit: estimatedGas })

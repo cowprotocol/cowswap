@@ -92,7 +92,8 @@ connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
-    document.getElementById('swap-skeleton').style.display = 'none'
+    const skeleton = document.getElementById('swap-skeleton')
+    if (skeleton) skeleton.style.display = 'none'
   }, [])
 
   return (

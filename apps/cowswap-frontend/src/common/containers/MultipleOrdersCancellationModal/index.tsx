@@ -13,8 +13,7 @@ import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellat
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
-import { PendingTransactionModal } from '../PendingTransactionModal'
-import { PENDING_TX_DESCRIPTIONS, PENDING_TX_NAMES, PENDING_TX_TITLES } from '../PendingTransactionModal/const'
+import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
 
 interface Props {
   isOpen: boolean
@@ -82,11 +81,11 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <PendingTransactionModal
-          title={PENDING_TX_TITLES.MULTIPLE_CANCEL(ordersCount)}
-          description={PENDING_TX_DESCRIPTIONS.CANCEL_ORDER}
-          operationName={PENDING_TX_NAMES.CANCELLATION}
+        <ConfirmationPendingContent
           onDismiss={onDismiss}
+          title={<>Cancelling {ordersCount} orders</>}
+          description="Canceling your order"
+          operationLabel="cancellation"
         />
       </Modal>
     )

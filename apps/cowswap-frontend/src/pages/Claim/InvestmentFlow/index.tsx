@@ -26,7 +26,6 @@ import {
 import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 import { InvestClaim } from 'legacy/state/claim/reducer'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from 'legacy/state/claim/types'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
@@ -72,7 +71,7 @@ const FAQ_DATA = (chainId: number | undefined) => [
 
 export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims' | 'claims' | 'isAirdropOnly'> & {
   modalCbs: {
-    openModal: (message: string, operationType: ConfirmOperationType) => void
+    openModal: (message?: string) => void
     closeModal: () => void
   }
 }

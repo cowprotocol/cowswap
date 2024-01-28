@@ -8,7 +8,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import Confetti from 'legacy/components/Confetti'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { useTransactionConfirmationModal } from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback } from 'legacy/state/claim/hooks'
@@ -16,8 +15,9 @@ import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimInput } from 'legacy/state/claim/hooks/types'
 import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
 import ClaimsOnOtherChainsUpdater from 'legacy/state/claim/updater'
-import { ConfirmOperationType } from 'legacy/state/types'
 
+import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
+import { CowModal } from 'common/pure/Modal'
 import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
 
 import CanUserClaimMessage from './CanUserClaimMessage'
@@ -217,10 +217,10 @@ export default function Claim() {
     }
   }, [account, claimStatus, previousAccount, handleAccountChange])
 
-  // Transaction confirmation modal
-  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    ConfirmOperationType.APPROVE_TOKEN
-  )
+  const {
+    state: { isModalOpen: isApproveModalOpen, openModal: openApproveModal, closeModal: closeApproveModal },
+    Modal: PendingApprovalModal,
+  } = usePendingApprovalModal()
 
   return (
     <PageWrapper>
@@ -235,7 +235,9 @@ export default function Claim() {
         ) : (
           <>
             {/* Approve confirmation modal */}
-            <TransactionConfirmationModal />
+            <CowModal isOpen={isApproveModalOpen} onDismiss={closeApproveModal}>
+              {PendingApprovalModal}
+            </CowModal>
             {/* Error modal */}
             <ErrorModal />
             {/* If claim is confirmed > trigger confetti effect */}
@@ -265,7 +267,7 @@ export default function Claim() {
               isAirdropOnly={isAirdropOnly}
               claims={userClaimData}
               hasClaims={hasClaims}
-              modalCbs={{ openModal, closeModal }}
+              modalCbs={{ openModal: openApproveModal, closeModal: closeApproveModal }}
             />
 
             <FooterNavButtons

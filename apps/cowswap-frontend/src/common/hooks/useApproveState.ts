@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -27,9 +26,12 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
+export function useApproveState(
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
+  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>
+): {
   state: ApprovalState
-  currentAllowance: BigNumber | undefined
+  currentAllowance: Nullish<CurrencyAmount<Currency>>
 } {
   const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
@@ -37,7 +39,15 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   const allowances = useTokensAllowances()
   const pendingApproval = useHasPendingApproval(tokenAddress, spender)
 
-  const currentAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
+  const tokenAllowance = useMemo(() => {
+    const tokenRawAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
+
+    if (!token || !tokenRawAllowance) return undefined
+
+    return CurrencyAmount.fromRawAmount(token, tokenRawAllowance.toHexString())
+  }, [allowances, token, tokenAddress])
+
+  const currentAllowance = amountToCheckAgainstAllowance || tokenAllowance
 
   const approvalStateBase = useSafeMemo(() => {
     if (!amountToApprove || !currentAllowance) {
@@ -46,7 +56,7 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
 
     const amountToApproveString = amountToApprove.quotient.toString()
 
-    if (currentAllowance.gte(amountToApproveString)) {
+    if (currentAllowance.greaterThan(amountToApproveString)) {
       return ApprovalState.APPROVED
     }
 
@@ -54,7 +64,7 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
       return ApprovalState.PENDING
     }
 
-    if (currentAllowance.lt(amountToApproveString)) {
+    if (currentAllowance.lessThan(amountToApproveString)) {
       return ApprovalState.NOT_APPROVED
     }
 
@@ -73,9 +83,12 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
  *
  * Solution: we check the prev approval state and also check if the allowance has been updated
  */
-function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance?: BigNumber): ApprovalState {
+function useAuxApprovalState(
+  approvalStateBase: ApprovalState,
+  currentAllowance?: CurrencyAmount<Currency>
+): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
-  const currentAllowanceString = currentAllowance?.toHexString()
+  const currentAllowanceString = currentAllowance?.quotient.toString(16)
   const previousAllowanceString = usePrevious(currentAllowanceString)
   // Has allowance actually updated?
   const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString

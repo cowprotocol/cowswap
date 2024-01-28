@@ -3,9 +3,7 @@ import { useCallback } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
-import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
-import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
@@ -15,8 +13,6 @@ export function WrapNativeModal() {
   const [, setWrapNativeState] = useAtom(wrapNativeStateAtom)
 
   const derivedState = useDerivedTradeState()
-  const walletAddress = useWalletDisplayedAddress()
-  const statusIcon = useWalletStatusIcon()
 
   const { inputCurrencyAmount, outputCurrency } = derivedState.state || {}
 
@@ -27,35 +23,25 @@ export function WrapNativeModal() {
   const inputCurrency = inputCurrencyAmount?.currency
   const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
-  const title = isNativeIn ? (
+  const operationLabel = isNativeIn ? 'Wrapping' : 'Unwrapping'
+
+  const title = (
     <span>
-      Wrapping <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
-      <TokenSymbol token={outputCurrency} />
-    </span>
-  ) : (
-    <span>
-      Unwrapping <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
+      {operationLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
       <TokenSymbol token={outputCurrency} />
     </span>
   )
-
-  const description = (
-    <span>
-      Unwrapping <TokenSymbol token={inputCurrency} /> <br /> Follow these steps:
-    </span>
-  )
-
-  const operationLabel = isNativeIn ? 'wrapping' : 'unwrapping'
 
   return (
     <ConfirmationPendingContent
       onDismiss={handleDismiss}
-      statusIcon={statusIcon}
       title={title}
-      description={description}
-      operationSubmittedMessage={`The ${operationLabel} is submitted.`}
-      walletAddress={walletAddress}
-      operationLabel={operationLabel}
+      description={
+        <>
+          {operationLabel} <TokenSymbol token={inputCurrency} />
+        </>
+      }
+      operationLabel={operationLabel.toLowerCase()}
     />
   )
 }

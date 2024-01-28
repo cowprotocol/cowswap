@@ -20,7 +20,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
-import { ModalState } from 'common/hooks/useModalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -41,8 +40,8 @@ type DataRowParams = {
   tokenData: TokenWithLogo
   index: number
   balance?: CurrencyAmount<Token> | undefined
-  openApproveModal: ModalState['openModal']
-  closeApproveModal: ModalState['closeModal']
+  openApproveModal: (tokenSymbol?: string) => void
+  closeApproveModal: () => void
   toggleWalletModal: () => void
 }
 
@@ -107,10 +106,6 @@ export const TokensTableRow = ({
     closeApproveModal,
   ])
 
-  const approvedAmount = useMemo(() => {
-    return currentAllowance ? CurrencyAmount.fromRawAmount(tokenData, currentAllowance.toHexString()) : null
-  }, [tokenData, currentAllowance])
-
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
   // This is so we only create fiat value request if there is a balance
@@ -130,7 +125,7 @@ export const TokensTableRow = ({
     }
 
     if (approvalState === ApprovalState.NOT_APPROVED) {
-      if (!approvedAmount || approvedAmount.equalTo(0)) {
+      if (!currentAllowance || currentAllowance.equalTo(0)) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }
 
@@ -140,7 +135,7 @@ export const TokensTableRow = ({
           <ApproveLabel color={theme.green1}>
             Approved:{' '}
             <strong>
-              <TokenAmount amount={approvedAmount} />
+              <TokenAmount amount={currentAllowance} />
             </strong>
           </ApproveLabel>
         </CustomLimit>
@@ -148,7 +143,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [approvedAmount, handleApprove, approvalState, theme.green1])
+  }, [currentAllowance, handleApprove, approvalState, theme.green1])
 
   return (
     <>
