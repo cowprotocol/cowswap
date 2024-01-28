@@ -27,7 +27,10 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): ApprovalState {
+export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
+  state: ApprovalState
+  currentAllowance: BigNumber | undefined
+} {
   const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address?.toLowerCase()
@@ -58,7 +61,9 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
     return ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, pendingApproval])
 
-  return useAuxApprovalState(approvalStateBase, currentAllowance)
+  const state = useAuxApprovalState(approvalStateBase, currentAllowance)
+
+  return { state, currentAllowance }
 }
 
 /**
