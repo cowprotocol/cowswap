@@ -21,13 +21,12 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
-import { ZeroApprovalModal } from 'modules/zeroApproval'
+import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { tradeApproveStateAtom } from 'common/containers/TradeApprove/tradeApproveStateAtom'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useModalState } from 'common/hooks/useModalState'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
@@ -136,7 +135,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     rawState?.outputCurrencyId
   )
 
-  const zeroApprovalModalState = useModalState<void>()
+  const zeroApprovalModalState = useZeroApproveModalState()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -205,7 +204,7 @@ export function TradeWidget(props: TradeWidgetProps) {
               onImport={importTokenCallback}
             />
           )}
-          <ZeroApprovalModal modalState={zeroApprovalModalState} />
+          {zeroApprovalModalState.isModalOpen && <ZeroApprovalModal onDismiss={zeroApprovalModalState.closeModal} />}
 
           {!isNextWidgetOpen && (
             <>

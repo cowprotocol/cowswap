@@ -1,34 +1,19 @@
-import { useEffect } from 'react'
-
-import { ModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 import { useZeroApprovalState } from '../../hooks/useZeroApprovalState'
 
 interface ZeroApprovalModalProps {
-  modalState: ModalState<void>
+  onDismiss(): void
 }
 
-export function ZeroApprovalModal({ modalState }: ZeroApprovalModalProps) {
-  const { isApproving, currency } = useZeroApprovalState()
-  const { isModalOpen, openModal, closeModal } = modalState
+export function ZeroApprovalModal({ onDismiss }: ZeroApprovalModalProps) {
+  const { currency } = useZeroApprovalState()
 
   const symbol = currency?.symbol?.toUpperCase() ?? 'Unknown Currency' // This should never happen.
 
-  useEffect(() => {
-    if (isApproving) {
-      openModal()
-    } else {
-      closeModal()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isApproving])
-
-  if (!isModalOpen) return null
-
   return (
     <ConfirmationPendingContent
-      onDismiss={closeModal}
+      onDismiss={onDismiss}
       title={
         <>
           Reset <strong>{symbol}</strong> allowance

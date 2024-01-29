@@ -2,4 +2,5 @@ export { shouldZeroApprove, useShouldZeroApprove } from './hooks/useShouldZeroAp
 export { useNeedsZeroApproval } from './hooks/useNeedsZeroApproval'
 export { useZeroApprovalState } from './hooks/useZeroApprovalState'
 export { useZeroApprove } from './hooks/useZeroApprove'
+export { useZeroApproveModalState } from './hooks/useZeroApproveModalState'
 export { ZeroApprovalModal } from './containers/ZeroApprovalModal'

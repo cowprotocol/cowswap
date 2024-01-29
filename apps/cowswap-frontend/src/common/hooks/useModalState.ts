@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface ModalState<T> {
   isModalOpen: boolean
@@ -7,7 +7,7 @@ export interface ModalState<T> {
   context?: T
 }
 
-export function useModalState<T>(): ModalState<T> {
+export function useModalState<T>(trigger?: boolean): ModalState<T> {
   const [context, setContext] = useState<T | undefined>(undefined)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -19,6 +19,17 @@ export function useModalState<T>(): ModalState<T> {
     setIsModalOpen(false)
     setContext(undefined)
   }
+
+  useEffect(() => {
+    if (trigger === undefined) return
+
+    if (trigger) {
+      openModal()
+    } else {
+      closeModal()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger])
 
   return { isModalOpen, context, openModal, closeModal }
 }

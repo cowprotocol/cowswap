@@ -29,9 +29,10 @@ export async function shouldZeroApprove({
   spender,
   amountToApprove,
   isBundle,
-}: ShouldZeroApproveParams) {
+}: ShouldZeroApproveParams): Promise<boolean> {
   const shouldApprove =
     isBundle || approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+
   if (!tokenContract || !spender || !amountToApprove || !shouldApprove) {
     return false
   }
