@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
+import { ModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 
-import { ModalState } from '../../hooks/useModalState'
+import { useZeroApprovalState } from '../../hooks/useZeroApprovalState'
 
 interface ZeroApprovalModalProps {
   modalState: ModalState<void>
