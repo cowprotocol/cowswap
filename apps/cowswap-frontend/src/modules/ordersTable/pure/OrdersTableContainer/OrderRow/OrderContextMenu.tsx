@@ -72,7 +72,7 @@ export interface OrderContextMenuProps {
 
 export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
   return (
-    <Menu>
+    <Menu style={{ zIndex: 100 }}>
       <ContextMenuButton>
         <MoreVertical />
       </ContextMenuButton>
