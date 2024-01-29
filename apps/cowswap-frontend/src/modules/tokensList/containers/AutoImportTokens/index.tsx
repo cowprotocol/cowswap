@@ -34,7 +34,6 @@ export function AutoImportTokens({ modalState, inputToken, outputToken }: AutoIm
     } else {
       closeModal()
     }
-    // openModal is a callback so we don't want to trigger this effect when it changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensToImportCount])
 

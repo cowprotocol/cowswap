@@ -1,44 +1,41 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
-import { CowModal } from 'common/pure/Modal'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 
+import { ModalState } from '../../hooks/useModalState'
+
 interface ZeroApprovalModalProps {
-  onDismiss?: () => void
+  modalState: ModalState<void>
 }
 
-export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalProps) {
+export function ZeroApprovalModal({ modalState }: ZeroApprovalModalProps) {
   const { isApproving, currency } = useZeroApprovalState()
-  const [hasUserClosedModal, setHasUserClosedModal] = useState(false)
-
-  const shouldShow = isApproving && !hasUserClosedModal
-
-  const handleDismiss = useCallback(() => {
-    setHasUserClosedModal(true)
-    onDismiss()
-  }, [onDismiss])
-
-  useEffect(() => {
-    if (!isApproving && hasUserClosedModal) {
-      setHasUserClosedModal(false)
-    }
-  }, [isApproving, hasUserClosedModal])
+  const { isModalOpen, openModal, closeModal } = modalState
 
   const symbol = currency?.symbol?.toUpperCase() ?? 'Unknown Currency' // This should never happen.
 
+  useEffect(() => {
+    if (isApproving) {
+      openModal()
+    } else {
+      closeModal()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isApproving])
+
+  if (!isModalOpen) return null
+
   return (
-    <CowModal isOpen={shouldShow} onDismiss={handleDismiss}>
-      <ConfirmationPendingContent
-        onDismiss={handleDismiss}
-        title={
-          <>
-            Reset <strong>{symbol}</strong> allowance
-          </>
-        }
-        description={`Reset ${symbol} allowance to 0 before setting new spending cap`}
-        operationLabel="token approval"
-      />
-    </CowModal>
+    <ConfirmationPendingContent
+      onDismiss={closeModal}
+      title={
+        <>
+          Reset <strong>{symbol}</strong> allowance
+        </>
+      }
+      description={`Reset ${symbol} allowance to 0 before setting new spending cap`}
+      operationLabel="token approval"
+    />
   )
 }
