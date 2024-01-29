@@ -43,6 +43,7 @@ export const ContextMenuList = styled(MenuList)`
   min-width: 240px;
   margin: 10px 0;
   padding: 16px;
+  z-index: 100;
 `
 
 export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
@@ -72,7 +73,7 @@ export interface OrderContextMenuProps {
 
 export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
   return (
-    <Menu style={{ zIndex: 100 }}>
+    <Menu>
       <ContextMenuButton>
         <MoreVertical />
       </ContextMenuButton>
