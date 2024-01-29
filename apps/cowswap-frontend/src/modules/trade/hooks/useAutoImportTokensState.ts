@@ -1,30 +1,30 @@
 import { useEffect, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { useAddUserToken, useSearchNonExistentToken } from '@cowprotocol/tokens'
+import { useSearchNonExistentToken } from '@cowprotocol/tokens'
 
 import { Nullish } from 'types'
 
-import { ModalState } from 'common/hooks/useModalState'
+import { ModalState, useModalState } from 'common/hooks/useModalState'
 
-import { ImportTokenModal } from '../../pure/ImportTokenModal'
-
-export interface AutoImportTokensProps {
+interface AutoImportTokensState {
+  tokensToImport: Array<TokenWithLogo>
   modalState: ModalState<void>
-  inputToken: Nullish<string>
-  outputToken: Nullish<string>
 }
-
-export function AutoImportTokens({ modalState, inputToken, outputToken }: AutoImportTokensProps) {
-  const { isModalOpen, openModal, closeModal } = modalState
-
-  const importTokenCallback = useAddUserToken()
+export function useAutoImportTokensState(
+  inputToken: Nullish<string>,
+  outputToken: Nullish<string>
+): AutoImportTokensState {
+  const modalState = useModalState<void>()
   const foundInputToken = useSearchNonExistentToken(inputToken || null)
   const foundOutputToken = useSearchNonExistentToken(outputToken || null)
 
   const tokensToImport = useMemo(() => {
     return [foundInputToken, foundOutputToken].filter(isTruthy)
   }, [foundInputToken, foundOutputToken])
+
+  const { openModal, closeModal } = modalState
 
   const tokensToImportCount = tokensToImport.length
 
@@ -37,11 +37,5 @@ export function AutoImportTokens({ modalState, inputToken, outputToken }: AutoIm
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensToImportCount])
 
-  return (
-    <>
-      {isModalOpen && (
-        <ImportTokenModal tokens={tokensToImport} onDismiss={closeModal} onImport={importTokenCallback} />
-      )}
-    </>
-  )
+  return { tokensToImport, modalState }
 }

@@ -5,6 +5,7 @@ import React, { ReactNode, useEffect } from 'react'
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
 import { maxAmountSpend } from '@cowprotocol/common-utils'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useAddUserToken } from '@cowprotocol/tokens'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -14,7 +15,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
-import { AutoImportTokens, SelectTokenWidget, useOpenTokenSelectWidget } from 'modules/tokensList'
+import { SelectTokenWidget, useOpenTokenSelectWidget, ImportTokenModal } from 'modules/tokensList'
 import { selectTokenWidgetAtom } from 'modules/tokensList/state/selectTokenWidgetAtom'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
@@ -35,6 +36,7 @@ import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
 
+import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useTradeState } from '../../hooks/useTradeState'
 import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
@@ -122,13 +124,18 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const priorityTokenAddresses = usePriorityTokenAddresses()
+  const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen } = useAtomValue(tradeConfirmStateAtom)
   const { open: isTokenSelectOpen } = useAtomValue(selectTokenWidgetAtom)
   const [{ isOpen: isWrapNativeOpen }] = useAtom(wrapNativeStateAtom)
   const [{ approveInProgress, currency: approvingCurrency }] = useAtom(tradeApproveStateAtom)
 
-  const autoImportModalState = useModalState<void>()
+  const { tokensToImport, modalState: autoImportModalState } = useAutoImportTokensState(
+    rawState?.inputCurrencyId,
+    rawState?.outputCurrencyId
+  )
+
   const zeroApprovalModalState = useModalState<void>()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
@@ -191,11 +198,13 @@ export function TradeWidget(props: TradeWidgetProps) {
           {isWrapNativeOpen && <WrapNativeModal />}
           {approveInProgress && <TradeApproveModal currency={approvingCurrency} />}
           {/*TODO: define priority*/}
-          <AutoImportTokens
-            modalState={autoImportModalState}
-            inputToken={rawState?.inputCurrencyId}
-            outputToken={rawState?.outputCurrencyId}
-          />
+          {autoImportModalState.isModalOpen && (
+            <ImportTokenModal
+              tokens={tokensToImport}
+              onDismiss={autoImportModalState.closeModal}
+              onImport={importTokenCallback}
+            />
+          )}
           <ZeroApprovalModal modalState={zeroApprovalModalState} />
 
           {!isNextWidgetOpen && (
