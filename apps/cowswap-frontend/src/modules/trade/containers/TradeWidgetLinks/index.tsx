@@ -10,13 +10,14 @@ import { matchPath, useLocation } from 'react-router-dom'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
-import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import * as styledEl from './styled'
+
+import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
+import { parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
   route: RoutesValues

@@ -1,13 +1,7 @@
 import { ZeroApprovalModal } from './ZeroApprovalModal'
 
-const modalState = {
-  isModalOpen: true,
-  openModal: () => {},
-  closeModal: () => {},
-}
-
 const Fixtures = {
-  default: <ZeroApprovalModal modalState={modalState} />,
+  default: <ZeroApprovalModal onDismiss={() => console.log('onDismiss')} />,
 }
 
 export default Fixtures
