@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
 
 export const TokenItem = styled.button`
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   justify-content: space-between;
   gap: 8px;
   align-items: center;
@@ -28,7 +28,7 @@ export const TokenItem = styled.button`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 14px;
     padding: 10px 15px;
-    flex-flow: row wrap;
+    justify-content: flex-end;
   `}
 
   &:last-child {
@@ -42,7 +42,11 @@ export const TokenItem = styled.button`
 `
 
 export const TokenBalance = styled.span`
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   display: flex;
   justify-content: flex-end;
+
+  > span {
+    text-align: right;
+  }
 `

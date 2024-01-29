@@ -7,13 +7,9 @@ export const TagContainer = styled.div`
   justify-content: flex-end;
   flex-flow: row wrap;
   color: inherit;
-  flex: 1 1 auto;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    order: 3;
-    flex: 1 1 100%;
-    gap: 4px;
-  `}
+  flex: 0 1 auto;
+  gap: 4px;
+  margin: 0 0 0 auto;
 `
 
 export const Tag = styled.div<{ tag?: { id: string } }>`

@@ -47,8 +47,8 @@ export function TokenListItem(props: TokenListItemProps) {
       onClick={() => onSelectToken(token)}
     >
       <TokenInfo token={token} />
-      <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
       <styledEl.TokenBalance>{balanceAmount && <TokenAmount amount={balanceAmount} />}</styledEl.TokenBalance>
+      <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
     </styledEl.TokenItem>
   )
 }
