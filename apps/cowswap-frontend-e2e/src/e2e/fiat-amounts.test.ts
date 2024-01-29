@@ -12,7 +12,7 @@ function parseFiatAmountText(text: string): number {
 
 describe('Fiat amounts', () => {
   beforeEach(() => {
-    cy.visit('/#/5/swap/WETH/COW')
+    cy.visit('/#/11155111/swap/WETH/COW')
   })
 
   it('Should change fiat amount after changing currency amount', () => {

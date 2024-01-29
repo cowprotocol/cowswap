@@ -15,7 +15,6 @@ export interface CoinGeckoUsdQuote {
 export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
-  [SupportedChainId.GOERLI]: null,
   [SupportedChainId.SEPOLIA]: null,
 }
 

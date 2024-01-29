@@ -3,7 +3,7 @@ const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 describe('Swap (mod)', () => {
   beforeEach(() => {
-    cy.visit('/#/5/swap')
+    cy.visit('/#/11155111/swap')
   })
 
   it('starts with wrapped native selected', () => {

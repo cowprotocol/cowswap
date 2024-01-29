@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   mainnet: SupportedChainId.MAINNET,
   gnosis_chain: SupportedChainId.GNOSIS_CHAIN,
-  goerli: SupportedChainId.GOERLI,
+  sepolia: SupportedChainId.SEPOLIA,
 }
 
 export function getCurrentChainIdFromUrl(): SupportedChainId {

@@ -1,4 +1,4 @@
-import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -13,10 +13,10 @@ const accountsList = [
 ]
 
 const balances = {
-  '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5': CurrencyAmount.fromRawAmount(WETH_GOERLI, 10_000_000),
-  '0x4675c7e5baafbffbca748158becba61ef3b0a263': CurrencyAmount.fromRawAmount(WETH_GOERLI, 20_000_000),
-  '0x8e501693b6197d85fd26b93bbf5c0911f79f0979': CurrencyAmount.fromRawAmount(WETH_GOERLI, 30_000_000),
-  '0xefcce23bfbef24cc4fb2dcb2bbc4f6f83c6bda98': CurrencyAmount.fromRawAmount(WETH_GOERLI, 40_000_000),
+  '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5': CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000),
+  '0x4675c7e5baafbffbca748158becba61ef3b0a263': CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 20_000_000),
+  '0x8e501693b6197d85fd26b93bbf5c0911f79f0979': CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 30_000_000),
+  '0xefcce23bfbef24cc4fb2dcb2bbc4f6f83c6bda98': CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 40_000_000),
 }
 
 const Wrapper = styled.div`

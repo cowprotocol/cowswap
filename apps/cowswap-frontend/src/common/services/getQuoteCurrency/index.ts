@@ -1,7 +1,13 @@
-import { DAI, USDC_MAINNET, USDC_SEPOLIA, USDT } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
-import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from '@cowprotocol/common-const'
+import {
+  DAI,
+  NATIVE_CURRENCY_ADDRESS,
+  USDC_GNOSIS_CHAIN,
+  USDC_MAINNET,
+  USDC_SEPOLIA,
+  USDT,
+  USDT_GNOSIS_CHAIN,
+  WXDAI,
+} from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -15,7 +21,6 @@ const STABLE_COINS: Record<SupportedChainId, string[]> = {
     .map((token) => token.address.toLowerCase())
     // XDAI and WXDAI are stable-coins
     .concat(NATIVE_CURRENCY_ADDRESS),
-  [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
   [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
 }
 
