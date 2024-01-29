@@ -28,6 +28,7 @@ const OrdersBox = styled.div`
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
+  margin: 0 0 76px;
 `
 
 const Content = styled.div`
@@ -39,7 +40,7 @@ const Content = styled.div`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   color: inherit;
   min-height: 490px;
-  padding: 0 0 24px;
+  padding: 0;
 
   > span {
     --size: 130px;
