@@ -10,8 +10,8 @@ import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
+import { useShouldZeroApprove } from 'modules/zeroApproval'
 
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
   BannerOrientation,
   BundleTxApprovalBanner,

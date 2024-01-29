@@ -7,9 +7,9 @@ import { Nullish } from 'types'
 
 import { CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useNeedsZeroApproval } from 'common/hooks/useNeedsZeroApproval'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export interface TwapOrderCreationContext {
