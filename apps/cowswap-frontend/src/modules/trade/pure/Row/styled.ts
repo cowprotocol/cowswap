@@ -11,12 +11,10 @@ export const DividerHorizontal = styled.hr`
 `
 
 export const TimelineDot = styled.div`
-  --size: 9px;
+  --size: 10px;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-  border: 1px solid var(${UI.COLOR_PAPER});
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +29,18 @@ export const TimelineDot = styled.div`
     left: 0;
     margin: auto;
     width: 1px;
-    height: 100%;
-    background: var(${UI.COLOR_PAPER_DARKER});
+    height: calc(100% + 14px);
+    background: var(${UI.COLOR_PAPER_DARKEST});
+    z-index: 0;
+  }
+
+  &::after {
+    content: ' ';
+    background: var(${UI.COLOR_PAPER_DARKEST});
+    border: 1px solid var(${UI.COLOR_PAPER});
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    z-index: 1;
   }
 `

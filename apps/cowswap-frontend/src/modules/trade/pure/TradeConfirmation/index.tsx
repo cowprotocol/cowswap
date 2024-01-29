@@ -52,7 +52,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <BackButton size={20} onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        {/* TODO: Calculate quote expiration time */}
+        {/* TODO: Here we show a countdown before the front-end fetches a new quote */}
         <styledEl.QuoteCountdown>
           Quote expires in <b>20s</b>
         </styledEl.QuoteCountdown>

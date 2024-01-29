@@ -7,6 +7,7 @@ import { CornerDownRight } from 'react-feather'
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import { TextWrapper } from 'modules/swap/pure/Row/styled'
+import { TimelineDot } from 'modules/trade/pure/Row/styled'
 
 import { Content, Row, Wrapper } from './styled'
 
@@ -16,14 +17,16 @@ export type ConfirmDetailsItemProps = {
   tooltip?: ReactNode
   withArrow?: boolean
   fiatAmount?: string
+  withTimelineDot?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const { children, label, tooltip, withArrow = true } = props
+  const { children, label, tooltip, withArrow = false, withTimelineDot = false } = props
 
   return (
     <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
+      {withTimelineDot && <TimelineDot />}
 
       {label ? (
         <Row>
