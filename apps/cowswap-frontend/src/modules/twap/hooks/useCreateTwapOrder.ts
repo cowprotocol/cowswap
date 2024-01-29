@@ -115,7 +115,12 @@ export function useCreateTwapOrder() {
 
         addTwapOrderToList(orderItem)
 
+        const orderClass = OrderClass.LIMIT
+
         const summary = getOrderSubmitSummary({
+          fullAppData: appDataInfo.fullAppData,
+          composableCowInfo: { id: orderId },
+          class: orderClass,
           recipient: recipient || account,
           kind: OrderKind.SELL,
           recipientAddressOrName: recipient || account,
@@ -126,7 +131,7 @@ export function useCreateTwapOrder() {
           featureFlags: { swapZeroFee },
         })
         getCowSoundSend().play()
-        dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
+        dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, orderClass, 'composable-order')
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })

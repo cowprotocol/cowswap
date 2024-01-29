@@ -13,6 +13,8 @@ import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
+import { useSwapZeroFee } from '../../hooks/featureFlags/useSwapZeroFee'
+
 /**
  * Updater for cancelled orders.
  *
@@ -29,7 +31,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
  */
 export function CancelledOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-
+  const swapZeroFee = useSwapZeroFee()
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
 
@@ -79,7 +81,7 @@ export function CancelledOrdersUpdater(): null {
 
         // Iterate over pending orders fetching operator order data, async
         const unfilteredOrdersData = await Promise.all(
-          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId, { swapZeroFee }))
         )
 
         // Group resolved promises by status
@@ -116,7 +118,7 @@ export function CancelledOrdersUpdater(): null {
         // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
       }
     },
-    [addOrderToSurplusQueue, fulfillOrdersBatch]
+    [addOrderToSurplusQueue, fulfillOrdersBatch, swapZeroFee]
   )
 
   useEffect(() => {

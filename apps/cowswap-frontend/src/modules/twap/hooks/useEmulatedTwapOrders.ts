@@ -9,6 +9,7 @@ import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useSwapZeroFee } from '../../../common/hooks/featureFlags/useSwapZeroFee'
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
@@ -27,6 +28,7 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
   // Update emulated twap orders every 5 seconds to recalculate expired state
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
+  const swapZeroFee = useSwapZeroFee()
 
   const accountLowerCase = account?.toLowerCase()
 
@@ -40,11 +42,11 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
+      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress, { swapZeroFee })
 
       if (storeOrder) acc.push(storeOrder)
 
       return acc
     }, [])
-  }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
+  }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher, swapZeroFee])
 }

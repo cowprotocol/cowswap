@@ -22,6 +22,8 @@ import { AppDataInfo } from 'modules/appData'
 import { getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 
+import { getUiOrderType, UiOrderType } from '../../utils/orderUtils/getUiOrderType'
+
 export type PostOrderParams = {
   account: string
   chainId: ChainId
@@ -54,6 +56,12 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
   orderCreationHash?: string
 }
 
+const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
+  [UiOrderType.SWAP]: 'Swap',
+  [UiOrderType.LIMIT]: 'Limit',
+  [UiOrderType.TWAP]: 'TWAP',
+}
+
 export function getOrderSubmitSummary(
   params: Pick<
     PostOrderParams,
@@ -65,7 +73,8 @@ export function getOrderSubmitSummary(
     | 'recipientAddressOrName'
     | 'feeAmount'
     | 'featureFlags'
-  >
+  > &
+    Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>
 ): string {
   const {
     kind,
@@ -91,7 +100,10 @@ export function getOrderSubmitSummary(
   const inputAmountValue = formatTokenAmount(feeAmount && !swapZeroFee ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
+  const uiOrderType = getUiOrderType(params)
+  const uiOrderTypeLabel = ORDER_UI_TYPE_LABELS[uiOrderType]
+
+  const base = `${uiOrderTypeLabel} ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base

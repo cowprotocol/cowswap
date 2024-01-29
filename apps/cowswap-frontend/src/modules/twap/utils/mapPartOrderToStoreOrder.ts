@@ -16,7 +16,10 @@ export function mapPartOrderToStoreOrder(
   enrichedOrder: EnrichedOrder,
   isVirtualPart: boolean,
   parent: TwapOrderItem,
-  tokensByAddress: TokensByAddress
+  tokensByAddress: TokensByAddress,
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
 ): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
@@ -44,7 +47,7 @@ export function mapPartOrderToStoreOrder(
     isCancelling,
   }
 
-  const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
+  const summary = computeOrderSummary({ featureFlags, orderFromStore: storeOrder, orderFromApi: enrichedOrder })
 
   storeOrder.summary = summary || ''
 

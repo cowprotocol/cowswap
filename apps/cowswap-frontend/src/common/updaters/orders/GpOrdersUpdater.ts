@@ -18,6 +18,8 @@ import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { computeOrderSummary } from './utils'
 
+import { useSwapZeroFee } from '../../hooks/featureFlags/useSwapZeroFee'
+
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   cancelled: OrderStatus.CANCELLED,
@@ -32,7 +34,10 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 function _transformGpOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
-  allTokens: TokensByAddress
+  allTokens: TokensByAddress,
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
 ): Order | undefined {
   const {
     uid: id,
@@ -93,7 +98,7 @@ function _transformGpOrderToStoreOrder(
 
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
-  storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
+  storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order, featureFlags }) || ''
 
   // EthFlow adjustments
   // It can happen that EthFlow cancellation is identified in the app before the API is aware
@@ -115,9 +120,16 @@ function _getInputToken(
   return isEthFlow ? NATIVE_CURRENCIES[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
 }
 
-function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
+function _filterOrders(
+  orders: EnrichedOrder[],
+  tokens: TokensByAddress,
+  chainId: ChainId,
+  featureFlags: {
+    swapZeroFee: boolean | undefined
+  }
+): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
+    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens, featureFlags)
     if (storeOrder) {
       acc.push(storeOrder)
     }
@@ -139,6 +151,7 @@ function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId
 export function GpOrdersUpdater(): null {
   const clearOrderStorage = useClearOrdersStorage()
 
+  const swapZeroFee = useSwapZeroFee()
   const { account, chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
@@ -166,7 +179,7 @@ export function GpOrdersUpdater(): null {
 
         // Build store order objects, for all orders which we found both input/output tokens
         // Don't add order for those we didn't
-        const orders = _filterOrders(gpOrders, reallyAllTokens, chainId)
+        const orders = _filterOrders(gpOrders, reallyAllTokens, chainId, { swapZeroFee })
         console.debug(`GpOrdersUpdater::will add/update ${orders.length} out of ${gpOrders.length}`)
 
         // Add orders to redux state
@@ -175,7 +188,7 @@ export function GpOrdersUpdater(): null {
         console.error(`GpOrdersUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, gpOrders, getTokensForOrdersList]
+    [addOrUpdateOrders, gpOrders, getTokensForOrdersList, swapZeroFee]
   )
 
   useEffect(() => {
