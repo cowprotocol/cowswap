@@ -1,21 +1,22 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
 import { useAddUserToken, useSearchNonExistentToken } from '@cowprotocol/tokens'
 
 import { Nullish } from 'types'
 
-import { CowModal } from 'common/pure/Modal'
+import { ModalState } from 'common/hooks/useModalState'
 
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 
 export interface AutoImportTokensProps {
+  modalState: ModalState<void>
   inputToken: Nullish<string>
   outputToken: Nullish<string>
 }
 
-export function AutoImportTokens({ inputToken, outputToken }: AutoImportTokensProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+export function AutoImportTokens({ modalState, inputToken, outputToken }: AutoImportTokensProps) {
+  const { isModalOpen, openModal, closeModal } = modalState
 
   const importTokenCallback = useAddUserToken()
   const foundInputToken = useSearchNonExistentToken(inputToken || null)
@@ -27,19 +28,21 @@ export function AutoImportTokens({ inputToken, outputToken }: AutoImportTokensPr
 
   const tokensToImportCount = tokensToImport.length
 
-  const onDismiss = () => setIsModalOpen(false)
-
   useEffect(() => {
     if (tokensToImportCount > 0) {
-      setIsModalOpen(true)
+      openModal()
+    } else {
+      closeModal()
     }
+    // openModal is a callback so we don't want to trigger this effect when it changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensToImportCount])
 
-  if (tokensToImportCount === 0) return null
-
   return (
-    <CowModal isOpen={isModalOpen} onDismiss={onDismiss}>
-      <ImportTokenModal tokens={tokensToImport} onDismiss={onDismiss} onImport={importTokenCallback} />
-    </CowModal>
+    <>
+      {isModalOpen && (
+        <ImportTokenModal tokens={tokensToImport} onDismiss={closeModal} onImport={importTokenCallback} />
+      )}
+    </>
   )
 }

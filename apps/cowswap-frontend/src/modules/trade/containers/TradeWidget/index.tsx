@@ -14,7 +14,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
-import { SelectTokenWidget, useOpenTokenSelectWidget } from 'modules/tokensList'
+import { AutoImportTokens, SelectTokenWidget, useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddressUpdater'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
@@ -24,6 +24,7 @@ import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { tradeApproveStateAtom } from 'common/containers/TradeApprove/tradeApproveStateAtom'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useModalState } from 'common/hooks/useModalState'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
@@ -35,6 +36,7 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 
 import { selectTokenWidgetAtom } from '../../../tokensList/state/selectTokenWidgetAtom'
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
+import { useTradeState } from '../../hooks/useTradeState'
 import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
@@ -112,6 +114,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     disablePriceImpact,
   } = params
 
+  const { state: rawState } = useTradeState()
   const { chainId, account } = useWalletInfo()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -124,6 +127,8 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { open: isTokenSelectOpen } = useAtomValue(selectTokenWidgetAtom)
   const [{ isOpen: isWrapNativeOpen }] = useAtom(wrapNativeStateAtom)
   const [{ approveInProgress, currency: approvingCurrency }] = useAtom(tradeApproveStateAtom)
+
+  const autoImportModalState = useModalState<void>()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -158,7 +163,8 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
-  const isNextWidgetOpen = isTradeReviewOpen || isTokenSelectOpen || isWrapNativeOpen || approveInProgress
+  const isNextWidgetOpen =
+    isTradeReviewOpen || isTokenSelectOpen || isWrapNativeOpen || approveInProgress || autoImportModalState.isModalOpen
 
   return (
     <>
@@ -179,6 +185,12 @@ export function TradeWidget(props: TradeWidgetProps) {
           {isTokenSelectOpen && <SelectTokenWidget />}
           {isWrapNativeOpen && <WrapNativeModal />}
           {approveInProgress && <TradeApproveModal currency={approvingCurrency} />}
+          {/*TODO: define priority*/}
+          <AutoImportTokens
+            modalState={autoImportModalState}
+            inputToken={rawState?.inputCurrencyId}
+            outputToken={rawState?.outputCurrencyId}
+          />
 
           {!isNextWidgetOpen && (
             <>
