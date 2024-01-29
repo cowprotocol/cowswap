@@ -3,13 +3,10 @@ import { useAtomValue } from 'jotai'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import { useDispatch } from 'react-redux'
-
-import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -31,7 +28,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const state = useLimitOrdersDerivedState()
   const settlementContract = useGP2SettlementContract()
-  const dispatch = useDispatch<AppDispatch>()
+  const addSnackbar = useAddSnackbar()
   const appData = useAppData()
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
@@ -76,7 +73,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     settlementContract,
     allowsOffchainSigning,
     isGnosisSafeWallet,
-    dispatch,
+    addSnackbar,
     provider,
     rateImpact,
     permitInfo: !enoughAllowance ? permitInfo : undefined,

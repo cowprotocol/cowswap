@@ -1,9 +1,9 @@
 import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SnackbarItem } from '@cowprotocol/snackbars'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
-import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
@@ -14,7 +14,7 @@ export interface TradeFlowContext {
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
-  dispatch: AppDispatch
+  addSnackbar: (item: SnackbarItem) => void
   rateImpact: number
   provider: Web3Provider
   allowsOffchainSigning: boolean
