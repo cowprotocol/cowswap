@@ -1,13 +1,13 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   border-top: 1px solid var(${UI.COLOR_BORDER});
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
 
-export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
+export const TokenItem = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -39,15 +39,6 @@ export const TokenItem = styled.button<{ $isVirtual?: boolean }>`
     background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PAPER_DARKER})`};
     color: inherit;
   }
-
-  ${({ $isVirtual }) =>
-    $isVirtual &&
-    css`
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-    `}
 `
 
 export const TokenBalance = styled.span`

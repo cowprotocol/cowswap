@@ -15,13 +15,23 @@ export interface TokenListItemProps {
   selectedToken?: string
   balance: BigNumber | undefined
   onSelectToken(token: TokenWithLogo): void
+  measureElement?: (node: Element | null) => void
   virtualRow?: VirtualItem
   isUnsupported: boolean
   isPermitCompatible: boolean
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { token, selectedToken, balance, onSelectToken, virtualRow, isUnsupported, isPermitCompatible } = props
+  const {
+    token,
+    selectedToken,
+    balance,
+    onSelectToken,
+    virtualRow,
+    isUnsupported,
+    isPermitCompatible,
+    measureElement,
+  } = props
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
@@ -30,14 +40,11 @@ export function TokenListItem(props: TokenListItemProps) {
   return (
     <styledEl.TokenItem
       key={token.address}
+      data-index={virtualRow?.index}
+      ref={measureElement}
       data-address={token.address.toLowerCase()}
       disabled={isTokenSelected}
       onClick={() => onSelectToken(token)}
-      $isVirtual={!!virtualRow}
-      style={{
-        height: virtualRow ? `${virtualRow.size}px` : undefined,
-        transform: virtualRow ? `translateY(${virtualRow.start}px)` : undefined,
-      }}
     >
       <TokenInfo token={token} />
       <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
