@@ -39,7 +39,7 @@ const Content = styled.div`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   color: inherit;
   min-height: 490px;
-  padding: 0;
+  padding: 0 0 24px;
 
   > span {
     --size: 130px;
