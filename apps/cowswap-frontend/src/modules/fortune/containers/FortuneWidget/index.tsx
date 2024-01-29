@@ -68,7 +68,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     box-shadow: 0px 0px 50px 30px ${({ theme }) => (theme.darkMode ? theme.blueDark2 : theme.blueLight1)};
     z-index: -1;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       box-shadow: none;
     `}
   }
