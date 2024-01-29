@@ -1,20 +1,17 @@
 import { useAtom } from 'jotai'
 import React from 'react'
 
+import { Currency } from '@uniswap/sdk-core'
+
 import { tradeApproveStateAtom } from './tradeApproveStateAtom'
 
 import { usePendingApprovalModal } from '../../hooks/usePendingApprovalModal'
-import { CowModal } from '../../pure/Modal'
 
-export function TradeApproveModal() {
-  const [{ approveInProgress, currency }, setState] = useAtom(tradeApproveStateAtom)
-  const { Modal: PendingApprovalModal } = usePendingApprovalModal()
-
+export function TradeApproveModal({ currency }: { currency: Currency | undefined }) {
+  const currencySymbol = currency?.symbol
+  const [, setState] = useAtom(tradeApproveStateAtom)
   const onDismiss = () => setState({ currency, approveInProgress: false })
+  const { Modal: PendingApprovalModal } = usePendingApprovalModal(currencySymbol, onDismiss)
 
-  return (
-    <CowModal isOpen={approveInProgress} onDismiss={onDismiss}>
-      {PendingApprovalModal}
-    </CowModal>
-  )
+  return <>{PendingApprovalModal}</>
 }

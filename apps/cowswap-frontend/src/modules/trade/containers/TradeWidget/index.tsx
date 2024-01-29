@@ -20,6 +20,8 @@ import { RecipientAddressUpdater } from 'modules/trade/updaters/RecipientAddress
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
+import { TradeApproveModal } from 'common/containers/TradeApprove'
+import { tradeApproveStateAtom } from 'common/containers/TradeApprove/tradeApproveStateAtom'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -121,6 +123,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { isOpen: isTradeReviewOpen } = useAtomValue(tradeConfirmStateAtom)
   const { open: isTokenSelectOpen } = useAtomValue(selectTokenWidgetAtom)
   const [{ isOpen: isWrapNativeOpen }] = useAtom(wrapNativeStateAtom)
+  const [{ approveInProgress, currency: approvingCurrency }] = useAtom(tradeApproveStateAtom)
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -155,7 +158,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
-  const isNextWidgetOpen = isTradeReviewOpen || isTokenSelectOpen || isWrapNativeOpen
+  const isNextWidgetOpen = isTradeReviewOpen || isTokenSelectOpen || isWrapNativeOpen || approveInProgress
 
   return (
     <>
@@ -175,6 +178,7 @@ export function TradeWidget(props: TradeWidgetProps) {
           {isTradeReviewOpen && confirmModal}
           {isTokenSelectOpen && <SelectTokenWidget />}
           {isWrapNativeOpen && <WrapNativeModal />}
+          {approveInProgress && <TradeApproveModal currency={approvingCurrency} />}
 
           {!isNextWidgetOpen && (
             <>

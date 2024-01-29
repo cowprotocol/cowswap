@@ -18,18 +18,23 @@ function useIsMetaMaskDesktop(): boolean {
   return isMetaMask && isNotMobile && connectionType === injectedConnection
 }
 
-export function usePendingApprovalModal() {
+export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () => void) {
   const state = useModalState<string>()
   const { closeModal, context } = state
 
   const isMetaMaskDesktop = useIsMetaMaskDesktop()
 
+  const onDismissCallback = () => {
+    closeModal()
+    onDismiss?.()
+  }
+
   const Modal = (
     <ConfirmationPendingContent
-      onDismiss={closeModal}
+      onDismiss={onDismissCallback}
       title={
         <>
-          Approving <strong>{context}</strong> for trading
+          Approving <strong>{currencySymbol || context}</strong> for trading
         </>
       }
       description="Approving token"
