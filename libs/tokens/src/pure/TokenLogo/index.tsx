@@ -7,7 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -15,7 +15,7 @@ import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
-export const TokenLogoWrapper = styled.div<{ size?: number }>`
+export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
   display: inline-block;
   background: var(${UI.COLOR_PAPER});
   border-radius: ${({ size }) => size}px;
@@ -30,6 +30,23 @@ export const TokenLogoWrapper = styled.div<{ size?: number }>`
     border-radius: ${({ size }) => size}px;
     object-fit: contain;
   }
+
+  ${({ theme, sizeMobile }) => theme.mediaWidth.upToSmall`
+    ${
+      sizeMobile
+        ? css`
+            border-radius: ${sizeMobile}px;
+            width: ${sizeMobile}px;
+            height: ${sizeMobile}px;
+
+            > img,
+            > svg {
+              border-radius: ${sizeMobile}px;
+            }
+          `
+        : ''
+    }
+  `}
 `
 
 export interface TokenLogoProps {
@@ -37,9 +54,10 @@ export interface TokenLogoProps {
   logoURI?: string
   className?: string
   size?: number
+  sizeMobile?: number
 }
 
-export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoProps) {
+export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: TokenLogoProps) {
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
 
   const urls = useMemo(() => {
@@ -64,7 +82,7 @@ export function TokenLogo({ logoURI, token, className, size = 36 }: TokenLogoPro
   }
 
   return (
-    <TokenLogoWrapper className={className} size={size}>
+    <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
       {!currentUrl ? <Slash size={size} /> : <img alt="token logo" src={currentUrl} onError={onError} />}
     </TokenLogoWrapper>
   )
