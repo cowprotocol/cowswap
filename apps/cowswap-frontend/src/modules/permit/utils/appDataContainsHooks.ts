@@ -10,7 +10,7 @@ export function appDataContainsHooks(fullAppData: string | undefined): boolean {
 
     return !!appData.metadata?.hooks
   } catch (e) {
-    // Does not match the schema, use a regex
-    return /"hooks"/.test(fullAppData)
+    // Does not match the schema, assume there are no valid hooks
+    return false
   }
 }
