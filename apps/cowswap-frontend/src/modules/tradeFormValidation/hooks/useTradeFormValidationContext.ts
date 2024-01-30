@@ -35,7 +35,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
-  const isZeroBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
+  const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
   const commonContext = {
     account,
@@ -48,7 +48,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     approvalState,
     tradeQuote,
     isPermitSupported,
-    isZeroBalanceOrderAllowed,
+    isInsufficientBalanceOrderAllowed,
   }
 
   return useMemo(() => {
