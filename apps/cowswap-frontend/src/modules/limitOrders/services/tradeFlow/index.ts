@@ -14,11 +14,10 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 import { handlePermit } from 'modules/permit'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { PendingOrderNotification } from 'common/pure/PendingOrderNotification'
 
 export async function tradeFlow(
   params: TradeFlowContext,
@@ -36,7 +35,7 @@ export async function tradeFlow(
     chainId,
     allowsOffchainSigning,
     settlementContract,
-    addSnackbar,
+    dispatch,
     isGnosisSafeWallet,
     generatePermitHook,
   } = params
@@ -86,23 +85,18 @@ export async function tradeFlow(
       signer: provider.getSigner(),
       validTo,
     })
-
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
-
-    if (allowsOffchainSigning) {
-      addSnackbar({
-        id: 'pending-limit-order',
-        icon: 'success',
-        content: (
-          <PendingOrderNotification
-            orderId={orderId}
-            kind={postOrderParams.kind}
-            inputAmount={postOrderParams.inputAmount}
-            outputAmount={postOrderParams.outputAmount}
-          />
-        ),
-      })
-    }
+    addPendingOrderStep(
+      {
+        id: orderId,
+        chainId: chainId,
+        order: {
+          ...order,
+          isHidden: !allowsOffchainSigning,
+        },
+      },
+      dispatch
+    )
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: presign order (optional)')
     const presignTx = await (allowsOffchainSigning
