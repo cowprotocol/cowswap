@@ -37,7 +37,6 @@ import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
-import { useSwapZeroFee } from '../../hooks/featureFlags/useSwapZeroFee'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
@@ -153,9 +152,6 @@ interface UpdateOrdersParams {
   triggerTotalSurplusUpdate: (() => void) | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeInfo: GetSafeInfo
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
 }
 
 async function _updateOrders({
@@ -172,7 +168,6 @@ async function _updateOrders({
   triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeInfo,
-  featureFlags,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -187,7 +182,7 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId, featureFlags))
+    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
@@ -283,7 +278,6 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 export function PendingOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
-  const swapZeroFee = useSwapZeroFee()
 
   const pending = useCombinedPendingOrders({ chainId, account })
   // TODO: Implement using SWR or retry/cancellable promises
@@ -348,7 +342,6 @@ export function PendingOrdersUpdater(): null {
           triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
           getSafeInfo,
-          featureFlags: { swapZeroFee },
         }).finally(() => {
           isUpdating.current = false
           // console.debug(`[PendingOrdersUpdater] Updated orders in ${Date.now() - startTime}ms`)
@@ -366,7 +359,6 @@ export function PendingOrdersUpdater(): null {
       triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeInfo,
-      swapZeroFee,
     ]
   )
 

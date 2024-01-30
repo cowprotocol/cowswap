@@ -12,7 +12,6 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
-import { useSwapZeroFee } from '../../../common/hooks/featureFlags/useSwapZeroFee'
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
@@ -39,7 +38,6 @@ export function CreatedInOrderBookOrdersUpdater() {
   const twapOrders = useAtomValue(twapOrdersAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
-  const swapZeroFee = useSwapZeroFee()
 
   const twapPartOrdersMap = useMemo(() => {
     return twapPartOrdersList.reduce<{ [id: string]: TwapPartOrderItem }>((acc, val) => {
@@ -70,11 +68,11 @@ export function CreatedInOrderBookOrdersUpdater() {
 
       return ordersInfo
         .map(({ item, parent, order }) => {
-          return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens, { swapZeroFee })
+          return mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens)
         })
         .filter(isTruthy)
     },
-    [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders, swapZeroFee],
+    [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
     []
   )
 

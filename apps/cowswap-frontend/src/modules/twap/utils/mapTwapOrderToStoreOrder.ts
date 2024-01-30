@@ -17,13 +17,7 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelling]: OrderStatus.PENDING,
 }
 
-export function mapTwapOrderToStoreOrder(
-  order: TwapOrderItem,
-  tokensByAddress: TokensByAddress,
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
-): Order | null {
+export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order | null {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
   const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
@@ -47,7 +41,7 @@ export function mapTwapOrderToStoreOrder(
     isCancelling: order.status === TwapOrderStatus.Cancelling,
   }
 
-  const summary = computeOrderSummary({ featureFlags, orderFromStore: storeOrder, orderFromApi: enrichedOrder })
+  const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
 
   storeOrder.summary = summary || ''
 
