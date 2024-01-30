@@ -20,6 +20,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     tradeQuote,
     account,
     isPermitSupported,
+    isZeroBalanceOrderAllowed,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
@@ -80,12 +81,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!inputCurrencyBalance) {
-    return TradeFormValidation.BalancesNotLoaded
-  }
+  if (!isZeroBalanceOrderAllowed) {
+    if (!inputCurrencyBalance) {
+      return TradeFormValidation.BalancesNotLoaded
+    }
 
-  if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-    return TradeFormValidation.BalanceInsufficient
+    if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      return TradeFormValidation.BalanceInsufficient
+    }
   }
 
   if (isWrapUnwrap) {
