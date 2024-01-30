@@ -1,13 +1,19 @@
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { SnackbarPopup } from '@cowprotocol/snackbars'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect, useValue } from 'react-cosmos/client'
+import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PendingOrderNotification } from './index'
+
+const SuccessIcon = styled(CheckCircle)`
+  color: ${({ theme }) => theme.green1};
+`
 
 const orderId =
   '0x62baf4be8adec4766d26a2169999cc170c3ead90ae11a28d658e6d75edc05b185b0abe214ab7875562adee331deff0fe1912fe42644d2bb7'
@@ -35,14 +41,21 @@ function Custom({ orderType }: { orderType: UiOrderType }) {
 
   return (
     <Wrapper>
-      <PendingOrderNotification
-        orderId={orderId}
-        kind={kind}
-        receiver={receiver}
-        orderType={orderType}
-        inputAmount={inputAmount}
-        outputAmount={outputAmount}
-      />
+      <SnackbarPopup
+        id="PendingOrderNotification"
+        icon={<SuccessIcon size={24} />}
+        duration={100_000}
+        onExpire={() => console.log('expire')}
+      >
+        <PendingOrderNotification
+          orderId={orderId}
+          kind={kind}
+          receiver={receiver}
+          orderType={orderType}
+          inputAmount={inputAmount}
+          outputAmount={outputAmount}
+        />
+      </SnackbarPopup>
     </Wrapper>
   )
 }
