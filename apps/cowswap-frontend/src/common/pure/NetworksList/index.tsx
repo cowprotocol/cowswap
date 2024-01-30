@@ -8,21 +8,16 @@ import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
 
 export interface NetworksListProps {
-  isSepoliaEnabled: boolean
   currentChainId: SupportedChainId | null
   onSelectChain(targetChainId: SupportedChainId): void
 }
 
 export function NetworksList(props: NetworksListProps) {
-  const { currentChainId, onSelectChain, isSepoliaEnabled } = props
-
-  const networksToDisplay = isSepoliaEnabled
-    ? ALL_SUPPORTED_CHAIN_IDS
-    : ALL_SUPPORTED_CHAIN_IDS.filter((chainId) => chainId !== SupportedChainId.SEPOLIA)
+  const { currentChainId, onSelectChain } = props
 
   return (
     <>
-      {networksToDisplay.map((targetChainId: SupportedChainId) => {
+      {ALL_SUPPORTED_CHAIN_IDS.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logoUrl, bridge, explorer, explorerTitle, helpCenterUrl } = info
 
