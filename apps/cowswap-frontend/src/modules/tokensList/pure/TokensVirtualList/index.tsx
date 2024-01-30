@@ -57,33 +57,36 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
   }, [allTokens, balances])
 
-  const { getVirtualItems } = virtualizer
+  const items = virtualizer.getVirtualItems()
 
   return (
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
-      <styledEl.TokensInner ref={wrapperRef} style={{ height: `${virtualizer.getTotalSize()}px` }}>
-        {getVirtualItems().map((virtualRow) => {
-          const token = sortedTokens[virtualRow.index]
-          const addressLowerCase = token.address.toLowerCase()
-          const balance = balances ? balances[token.address.toLowerCase()] : undefined
+      <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
+        <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
+          {items.map((virtualRow) => {
+            const token = sortedTokens[virtualRow.index]
+            const addressLowerCase = token.address.toLowerCase()
+            const balance = balances ? balances[token.address.toLowerCase()] : undefined
 
-          if (balancesLoading) {
-            return <styledEl.LoadingRows key={virtualRow.key}>{threeDivs()}</styledEl.LoadingRows>
-          }
+            if (balancesLoading) {
+              return <styledEl.LoadingRows key={virtualRow.key}>{threeDivs()}</styledEl.LoadingRows>
+            }
 
-          return (
-            <TokenListItem
-              key={virtualRow.key}
-              virtualRow={virtualRow}
-              token={token}
-              isUnsupported={!!unsupportedTokens[addressLowerCase]}
-              isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
-              selectedToken={selectedToken}
-              balance={balance}
-              onSelectToken={onSelectToken}
-            />
-          )
-        })}
+            return (
+              <TokenListItem
+                key={virtualRow.key}
+                virtualRow={virtualRow}
+                measureElement={virtualizer.measureElement}
+                token={token}
+                isUnsupported={!!unsupportedTokens[addressLowerCase]}
+                isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
+                selectedToken={selectedToken}
+                balance={balance}
+                onSelectToken={onSelectToken}
+              />
+            )
+          })}
+        </styledEl.TokensScroller>
       </styledEl.TokensInner>
     </CommonListContainer>
   )
