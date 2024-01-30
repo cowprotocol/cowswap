@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'
@@ -26,9 +26,11 @@ export function Identicon({ account: customAccount, size = 16 }: IdenticonProps)
     setAvatarError(true)
   }, [])
 
-  useEffect(() => {
-    const shouldShowJazzicon = !avatar || !fetchable || avatarError
+  const shouldShowJazzicon = useMemo(() => {
+    return !avatar || !fetchable || avatarError
+  }, [avatar, fetchable, avatarError])
 
+  useEffect(() => {
     if (shouldShowJazzicon && ref.current) {
       // Clear the current contents of the div
       ref.current.innerHTML = ''
@@ -42,9 +44,7 @@ export function Identicon({ account: customAccount, size = 16 }: IdenticonProps)
     return () => {
       setAvatarError(false)
     }
-  }, [account, size, avatar, fetchable, avatarError, handleError])
-
-  const shouldShowJazzicon = !avatar || !fetchable || avatarError
+  }, [shouldShowJazzicon, account, size, handleError])
 
   return shouldShowJazzicon ? (
     <div ref={ref} style={{ height: size, width: size }} />
