@@ -7,6 +7,13 @@ export const TokensInner = styled.div`
   position: relative;
 `
 
+export const TokensScroller = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+`
+
 export const LoadingRows = styled(BaseLoadingRows)`
   grid-column-gap: 0.5em;
   grid-template-columns: repeat(12, 1fr);
