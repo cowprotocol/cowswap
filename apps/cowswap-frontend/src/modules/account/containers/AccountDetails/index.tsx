@@ -122,7 +122,7 @@ export function getStatusIcon(
         <img
           src={walletDetails.icon}
           alt={`${walletDetails?.walletName || 'wallet'} logo`}
-          onError={() => setImageLoadError && setImageLoadError(true)} // Use setImageLoadError here
+          onError={() => setImageLoadError && setImageLoadError(true)}
         />
       </IconWrapper>
     )
