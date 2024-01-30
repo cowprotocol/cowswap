@@ -1,13 +1,13 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
-import { DEFAULT_PERMIT_VALUE, PERMIT_GAS_LIMIT_MIN, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
+import { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER, TOKENS_TO_SKIP_VERSION } from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getTokenName } from '../utils/getTokenName'
 
@@ -46,17 +46,26 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 }
 
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { spender, tokenAddress, tokenName: _tokenName, chainId, provider } = params
+  const { spender, tokenAddress, chainId, provider, minGasLimit } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
   const owner = PERMIT_SIGNER.address
 
-  // TODO: potentially remove the need for the name input
-  let tokenName = _tokenName
+  let domain: Eip712Domain | undefined = undefined
+  // Try to get eip712domain, which contains most of the info we'll need here
+  try {
+    domain = await getEip712Domain(tokenAddress, chainId, provider)
+  } catch (e) {
+    console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`)
+  }
+
+  let tokenName = domain?.name
 
   try {
-    tokenName = await getTokenName(tokenAddress, chainId, provider)
+    if (!tokenName) {
+      tokenName = await getTokenName(tokenAddress, chainId, provider)
+    }
   } catch (e) {
     if (/ETIMEDOUT/.test(e) && !tokenName) {
       // Network issue or another temporary failure, return error
@@ -91,9 +100,9 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     return { error: e.message || e.toString() }
   }
 
-  let version: string | undefined = undefined
+  let version: string | undefined = domain?.version
 
-  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress)) {
+  if (!TOKENS_TO_SKIP_VERSION.has(tokenAddress) && version === undefined) {
     // If the token does not outright fails when calling with the `version` value
     // returned by the contract, fetch it.
 
@@ -116,6 +125,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     tokenName,
     walletAddress: owner,
     version,
+    minGasLimit,
   }
 
   try {
@@ -161,12 +171,13 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
 type BaseParams = {
   tokenAddress: string
   tokenName: string
-  chainId: SupportedChainId
+  chainId: number
   walletAddress: string
   spender: string
   eip2612PermitUtils: Eip2612PermitUtils
   nonce: number
   version: string | undefined
+  minGasLimit?: number | undefined
 }
 
 type EstimateParams = BaseParams & {
@@ -175,7 +186,15 @@ type EstimateParams = BaseParams & {
 }
 
 async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
-  const { provider, chainId, walletAddress, tokenAddress, tokenName, type, version } = params
+  const {
+    provider,
+    walletAddress,
+    tokenAddress,
+    tokenName,
+    type,
+    version,
+    minGasLimit = DEFAULT_MIN_GAS_LIMIT,
+  } = params
 
   const getCallDataFn = type === 'eip-2612' ? getEip2612CallData : getDaiLikeCallData
 
@@ -193,7 +212,7 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
 
   const gasLimit = estimatedGas.toNumber()
 
-  return gasLimit > PERMIT_GAS_LIMIT_MIN[chainId]
+  return gasLimit > minGasLimit
     ? {
         type,
         version,
