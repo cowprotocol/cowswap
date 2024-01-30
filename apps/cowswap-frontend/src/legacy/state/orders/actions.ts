@@ -136,6 +136,7 @@ export interface SerializedOrder extends BaseOrder {
 export interface AddPendingOrderParams {
   id: UID
   chainId: ChainId
+  order: SerializedOrder
 }
 export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
