@@ -25,5 +25,5 @@ export function usePreGeneratedPermitInfo(): {
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} }
   )
 
-  return { allPermitInfo: {}, isLoading }
+  return { allPermitInfo: data, isLoading }
 }
