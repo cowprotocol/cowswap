@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Fragment, useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
@@ -80,8 +81,29 @@ export function renderActivities(activities: ActivityDescriptors[]) {
   )
 }
 
-export function getStatusIcon(connector: Connector, walletDetails?: WalletDetails, size?: number) {
+export function getStatusIcon(
+  connector: Connector,
+  walletDetails?: WalletDetails,
+  size?: number,
+  imageLoadError?: boolean,
+  setImageLoadError?: (error: boolean) => void
+) {
   const connectionType = getWeb3ReactConnection(connector)
+
+  // Check for image load error
+  if (imageLoadError) {
+    const icon = getConnectionIcon(connectionType.type)
+
+    if (icon === 'Identicon') {
+      return <Identicon size={size} />
+    }
+
+    return (
+      <IconWrapper size={16}>
+        <img src={icon} alt={`${connectionType.type} logo`} />
+      </IconWrapper>
+    )
+  }
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
@@ -97,7 +119,11 @@ export function getStatusIcon(connector: Connector, walletDetails?: WalletDetail
   if (walletDetails?.icon) {
     return (
       <IconWrapper size={16}>
-        <img src={walletDetails.icon} alt={`${walletDetails?.walletName || 'wallet'} logo`} />
+        <img
+          src={walletDetails.icon}
+          alt={`${walletDetails?.walletName || 'wallet'} logo`}
+          onError={() => setImageLoadError && setImageLoadError(true)} // Use setImageLoadError here
+        />
       </IconWrapper>
     )
   }
@@ -155,6 +181,9 @@ export function AccountDetails({
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
+  // State to track if the original image has failed to load
+  const [imageLoadError, setImageLoadError] = useState(false)
+
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -193,7 +222,8 @@ export function AccountDetails({
                   }
                 }}
               >
-                {getStatusIcon(connector, walletDetails, 24)}
+                {getStatusIcon(connector, walletDetails, 24, imageLoadError, setImageLoadError)}
+
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
                 )}
