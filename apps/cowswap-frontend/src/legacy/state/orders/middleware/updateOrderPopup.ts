@@ -14,10 +14,14 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
   const orders = store.getState().orders[chainId]
   const orderObject = getOrderByIdFromState(orders, order.id)
 
-  pendingOrderPopup(store, {
-    id: order.id,
-    chainId: payload.chainId,
-  })
+  pendingOrderPopup(
+    store,
+    {
+      id: order.id,
+      chainId: payload.chainId,
+    },
+    true
+  )
 
   if (orderObject) {
     orderAnalytics('Posted', orderObject.order.class, 'Presign')

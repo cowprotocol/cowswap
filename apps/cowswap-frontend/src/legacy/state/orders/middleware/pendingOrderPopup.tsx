@@ -13,7 +13,11 @@ import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'
 import { getOrderByIdFromState } from '../helpers'
 
-export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payload: AddPendingOrderParams) {
+export function pendingOrderPopup(
+  store: MiddlewareAPI<Dispatch, AppState>,
+  payload: AddPendingOrderParams,
+  skipAnalytics?: boolean
+) {
   const { id, chainId } = payload
 
   // use current state to lookup orders' data
@@ -38,6 +42,8 @@ export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payl
     outputAmount,
     uiOrderType: getUiOrderType(order),
   })
+
+  if (skipAnalytics) return
 
   if (orderCreationHash) {
     // EthFlow Order
