@@ -6,14 +6,14 @@ import { Connector } from '@web3-react/types'
 
 import { IconWrapper } from './styled'
 
-interface StatusIconProps {
+interface AccountIconProps {
   connector: Connector
   walletDetails?: WalletDetails
   size?: number
   account?: string
 }
 
-export const StatusIcon = ({ connector, walletDetails, size = 16, account }: StatusIconProps) => {
+export const AccountIcon = ({ connector, walletDetails, size = 16, account }: AccountIconProps) => {
   const [imageLoadError, setImageLoadError] = useState(false)
   const connectionType = getWeb3ReactConnection(connector)
   const iconURL = walletDetails?.icon || getConnectionIcon(connectionType.type)

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 

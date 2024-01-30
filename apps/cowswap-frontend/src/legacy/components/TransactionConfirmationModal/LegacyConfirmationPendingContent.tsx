@@ -22,7 +22,7 @@ import SVG from 'react-inlinesvg'
 
 import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { StatusIcon } from 'modules/account/containers/AccountDetails/StatusIcon'
+import { AccountIcon } from 'modules/account/containers/AccountDetails/AccountIcon'
 
 import {
   ApproveComparison,
@@ -162,7 +162,7 @@ export function LegacyConfirmationPendingContent({
         <CloseIconWrapper onClick={onDismiss} />
 
         <WalletIcon>
-          <StatusIcon connector={connector} walletDetails={walletDetails} size={56} />
+          <AccountIcon connector={connector} walletDetails={walletDetails} size={56} />
         </WalletIcon>
         <span>{pendingText}</span>
       </UpperSection>

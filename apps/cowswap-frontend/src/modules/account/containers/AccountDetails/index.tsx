@@ -35,7 +35,7 @@ import Activity from 'modules/account/containers/Transaction'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { StatusIcon } from './StatusIcon'
+import { AccountIcon } from './AccountIcon'
 import {
   AccountControl,
   AccountGroupingRow,
@@ -153,7 +153,7 @@ export function AccountDetails({
                   }
                 }}
               >
-                <StatusIcon connector={connector} walletDetails={walletDetails} size={24} account={account} />
+                <AccountIcon connector={connector} walletDetails={walletDetails} size={24} account={account} />
 
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>

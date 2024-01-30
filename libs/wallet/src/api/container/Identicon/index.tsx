@@ -1,9 +1,17 @@
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
-
+import styled from 'styled-components/macro'
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'
 import { useENSAvatar } from '@cowprotocol/ens'
 import jazzicon from '@metamask/jazzicon'
+
+const JazzIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`
 
 export interface IdenticonProps {
   size?: number
@@ -47,7 +55,7 @@ export function Identicon({ account: customAccount, size = 16 }: IdenticonProps)
   }, [shouldShowJazzicon, account, size, handleError])
 
   return shouldShowJazzicon ? (
-    <div ref={ref} style={{ height: size, width: size }} />
+    <JazzIconWrapper ref={ref} />
   ) : (
     <IdenticonPure avatar={avatar} size={size} showAvatar={fetchable} onErrorFetchAvatar={handleError} />
   )
