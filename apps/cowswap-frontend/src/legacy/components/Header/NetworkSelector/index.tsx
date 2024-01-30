@@ -2,20 +2,19 @@ import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
-import { useWalletInfo, getIsTallyWallet, useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
-import { transparentize, darken } from 'color2k'
+import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
@@ -167,7 +166,6 @@ export function NetworkSelector() {
   const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
-  const { isSepoliaEnabled } = useFeatureFlags()
 
   const onSelectChain = useOnSelectNetwork()
 
@@ -206,11 +204,7 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList
-              isSepoliaEnabled={isSepoliaEnabled}
-              currentChainId={isChainIdUnsupported ? null : chainId}
-              onSelectChain={onSelectChain}
-            />
+            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}
