@@ -1,6 +1,10 @@
+import { useSetAtom } from 'jotai'
+import { useEffect } from 'react'
+
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { SnackbarPopup } from '@cowprotocol/snackbars'
+import { GnosisSafeInfo, gnosisSafeInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect, useValue } from 'react-cosmos/client'
@@ -15,7 +19,7 @@ const SuccessIcon = styled(CheckCircle)`
   color: ${({ theme }) => theme.green1};
 `
 
-const orderId =
+const defaultOrderId =
   '0x62baf4be8adec4766d26a2169999cc170c3ead90ae11a28d658e6d75edc05b185b0abe214ab7875562adee331deff0fe1912fe42644d2bb7'
 
 const Wrapper = styled.div`
@@ -23,7 +27,9 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `
 
-function Custom({ orderType }: { orderType: UiOrderType }) {
+function Custom({ orderType, orderId }: { orderType: UiOrderType; orderId: string }) {
+  const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+
   const [kind] = useSelect('kind', {
     options: [OrderKind.SELL, OrderKind.BUY],
     defaultValue: OrderKind.SELL,
@@ -38,6 +44,14 @@ function Custom({ orderType }: { orderType: UiOrderType }) {
     parseFloat(inputAmountRaw) * 10 ** USDC_MAINNET.decimals
   )
   const outputAmount = CurrencyAmount.fromRawAmount(WBTC, parseFloat(outputAmountRaw) * 10 ** WBTC.decimals)
+
+  useEffect(() => {
+    if (orderType === UiOrderType.TWAP) {
+      setGnosisSafeInfo({} as unknown as GnosisSafeInfo)
+    } else {
+      setGnosisSafeInfo(undefined)
+    }
+  }, [orderType, setGnosisSafeInfo])
 
   return (
     <Wrapper>
@@ -61,9 +75,11 @@ function Custom({ orderType }: { orderType: UiOrderType }) {
 }
 
 const Fixtures = {
-  swap: <Custom orderType={UiOrderType.SWAP} />,
-  limit: <Custom orderType={UiOrderType.LIMIT} />,
-  twap: <Custom orderType={UiOrderType.TWAP} />,
+  swap: <Custom orderType={UiOrderType.SWAP} orderId={defaultOrderId} />,
+  limit: <Custom orderType={UiOrderType.LIMIT} orderId={defaultOrderId} />,
+  twap: (
+    <Custom orderType={UiOrderType.TWAP} orderId="0xc554e6c5612af4796c3c5cd817cea13f012f0807c9ce5e18cdf51e911701eeff" />
+  ),
 }
 
 export default Fixtures
