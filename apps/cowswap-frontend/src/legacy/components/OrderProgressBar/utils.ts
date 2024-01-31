@@ -5,7 +5,6 @@ const EXPECTED_EXECUTION_TIME_PERCENTAGE = 75
 export const EXPECTED_EXECUTION_TIME: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 120,
   [SupportedChainId.GNOSIS_CHAIN]: 50,
-  [SupportedChainId.GOERLI]: 50,
   [SupportedChainId.SEPOLIA]: 50,
 }
 
@@ -23,8 +22,7 @@ function getPercentageLogarithmic(seconds: number, expirationInSeconds: number, 
 }
 
 function getPercentageLinear(seconds: number, chainId: SupportedChainId) {
-  const percentage = (EXPECTED_EXECUTION_TIME_PERCENTAGE * seconds) / EXPECTED_EXECUTION_TIME[chainId]
-  return percentage
+  return (EXPECTED_EXECUTION_TIME_PERCENTAGE * seconds) / EXPECTED_EXECUTION_TIME[chainId]
 }
 
 export function getPercentage(seconds: number, expirationInSeconds: number, chainId: SupportedChainId) {

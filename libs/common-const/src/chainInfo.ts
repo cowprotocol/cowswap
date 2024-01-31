@@ -2,7 +2,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { COW_PROTOCOL_LINK } from './common'
 
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
-import GoerliLogo from '@cowprotocol/assets/cow-swap/network-goerli-logo.svg'
 import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -37,18 +36,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     logoUrl: EthereumLogo,
     color: '#62688F',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
-  },
-  [SupportedChainId.GOERLI]: {
-    docs: 'https://docs.cow.fi',
-    explorer: 'https://goerli.etherscan.io',
-    infoLink: COW_PROTOCOL_LINK,
-    label: 'Görli',
-    name: 'goerli',
-    explorerTitle: 'Etherscan',
-    urlAlias: 'goerli',
-    logoUrl: GoerliLogo,
-    color: '#2F99F2',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GOERLI],
   },
   [SupportedChainId.SEPOLIA]: {
     docs: 'https://docs.cow.fi',

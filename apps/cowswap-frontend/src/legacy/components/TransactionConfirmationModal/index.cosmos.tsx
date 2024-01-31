@@ -14,7 +14,7 @@ import { SerializedToken } from '../../state/user/types'
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()
 
 const defaultProps = {
-  chainId: 5,
+  chainId: 1,
   onDismiss() {
     console.log('Dismiss')
   },
@@ -45,7 +45,7 @@ const Fixtures = {
 cowSwapStore.dispatch(
   addPendingOrder({
     id: txHash,
-    chainId: 5,
+    chainId: 1,
     order: {
       inputToken: COW[SupportedChainId.MAINNET] as SerializedToken,
       outputToken: GNO[SupportedChainId.MAINNET] as SerializedToken,

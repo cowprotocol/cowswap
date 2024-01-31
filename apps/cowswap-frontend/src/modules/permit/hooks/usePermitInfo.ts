@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -23,12 +23,7 @@ import { IsTokenPermittableResult } from '../types'
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
-export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: DEFAULT_MIN_GAS_LIMIT,
-  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_MIN_GAS_LIMIT,
-  [SupportedChainId.SEPOLIA]: DEFAULT_MIN_GAS_LIMIT,
-  [SupportedChainId.GOERLI]: 36_000,
-}
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
 
 /**
  * Check whether the token is permittable, and returns the permit info for it

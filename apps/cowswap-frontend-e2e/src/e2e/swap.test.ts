@@ -3,7 +3,7 @@
 // GP doesn't use ETH, so we need to test for this
 
 const CHAIN_ID = 5
-const USDC = '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
+const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
 
 function acceptFeesExceedWarning() {

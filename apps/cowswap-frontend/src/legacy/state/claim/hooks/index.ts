@@ -53,8 +53,8 @@ import { EnhancedUserClaimData } from '../types'
 
 // Base amount = 1 VCOW
 const ONE_VCOW = CurrencyAmount.fromRawAmount(
-  V_COW[SupportedChainId.GOERLI],
-  parseUnits('1', V_COW[SupportedChainId.GOERLI].decimals).toString()
+  V_COW[SupportedChainId.GNOSIS_CHAIN],
+  parseUnits('1', V_COW[SupportedChainId.GNOSIS_CHAIN].decimals).toString()
 )
 
 // Constants regarding investment time windows

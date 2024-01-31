@@ -1,26 +1,26 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createReducer, current } from '@reduxjs/toolkit'
 
 import {
+  ClaimStatus,
+  initInvestFlowData,
+  resetClaimUi,
   setActiveClaimAccount,
   setActiveClaimAccountENS,
-  setClaimStatus,
   setClaimedAmount,
+  setClaimsCount,
+  setClaimStatus,
+  setEstimatedGas,
   setInputAddress,
   setInvestFlowStep,
   setIsInvestFlowActive,
-  initInvestFlowData,
-  updateInvestAmount,
   setIsSearchUsed,
+  setIsTouched,
   setSelected,
   setSelectedAll,
-  resetClaimUi,
-  ClaimStatus,
+  updateInvestAmount,
   updateInvestError,
-  setEstimatedGas,
-  setIsTouched,
-  setClaimsCount,
 } from './actions'
 
 export type ClaimInfo = {
@@ -35,12 +35,7 @@ const DEFAULT_CLAIM_INFO: ClaimInfo = {
 
 type ClaimInfoPerChain = Record<SupportedChainId, ClaimInfo>
 
-const DEFAULT_CLAIM_INFO_PER_CHAIN: ClaimInfoPerChain = {
-  [SupportedChainId.MAINNET]: { ...DEFAULT_CLAIM_INFO },
-  [SupportedChainId.GNOSIS_CHAIN]: { ...DEFAULT_CLAIM_INFO },
-  [SupportedChainId.GOERLI]: { ...DEFAULT_CLAIM_INFO },
-  [SupportedChainId.SEPOLIA]: { ...DEFAULT_CLAIM_INFO },
-}
+const DEFAULT_CLAIM_INFO_PER_CHAIN: ClaimInfoPerChain = mapSupportedNetworks({ ...DEFAULT_CLAIM_INFO })
 
 type ClaimInfoPerAccount = Record<string, ClaimInfoPerChain>
 

@@ -11,7 +11,7 @@ const currency = COW[SupportedChainId.MAINNET]
 const balance = CurrencyAmount.fromRawAmount(currency, 250 * 10 ** 18)
 
 export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceImpactParams: PriceImpact } = {
-  chainId: 5,
+  chainId: 100,
   id: 'currency-panel',
   areCurrenciesLoading: false,
   bothCurrenciesSet: true,

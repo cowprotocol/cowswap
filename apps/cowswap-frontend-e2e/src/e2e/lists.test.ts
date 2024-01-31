@@ -1,6 +1,6 @@
 describe('Lists', () => {
   beforeEach(() => {
-    cy.visit('/#/5/swap/')
+    cy.visit('/#/11155111/swap/')
   })
 
   it('change list', () => {

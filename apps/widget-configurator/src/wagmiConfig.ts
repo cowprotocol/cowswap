@@ -1,5 +1,5 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
-import { gnosis, goerli, mainnet } from 'wagmi/chains'
+import { gnosis, mainnet, sepolia } from 'wagmi/chains'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
@@ -13,7 +13,7 @@ const metadata = {
   icons: ['https://swap.cow.fi/favicon.png'],
 }
 
-const chains = [mainnet, gnosis, goerli]
+const chains = [mainnet, gnosis, sepolia]
 
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 

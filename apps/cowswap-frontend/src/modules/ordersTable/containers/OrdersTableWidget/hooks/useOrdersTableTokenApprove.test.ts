@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { WETH_SEPOLIA } from '@cowprotocol/common-const'
 
 import { renderHook } from '@testing-library/react-hooks'
 
@@ -25,7 +25,7 @@ describe('useOrdersTableTokenApprove()', () => {
       const callback = useOrdersTableTokenApprove()
 
       useEffect(() => {
-        callback(WETH_GOERLI)
+        callback(WETH_SEPOLIA)
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
     })
