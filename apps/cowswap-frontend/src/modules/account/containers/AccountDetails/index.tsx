@@ -8,24 +8,19 @@ import {
   getExplorerAddressLink,
   isMobile,
 } from '@cowprotocol/common-utils'
-import { MouseoverTooltip } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   useWalletInfo,
-  WalletDetails,
-  getConnectionIcon,
   getConnectionName,
   getIsCoinbaseWallet,
   getIsMetaMask,
-  Identicon,
   useWalletDetails,
   useIsWalletConnect,
   getWeb3ReactConnection,
   getIsHardWareWallet,
 } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
 
 import { Trans } from '@lingui/macro'
 
@@ -40,11 +35,11 @@ import Activity from 'modules/account/containers/Transaction'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { AccountIcon } from './AccountIcon'
 import {
   AccountControl,
   AccountGroupingRow,
   AddressLink,
-  IconWrapper,
   InfoCard,
   LowerSection,
   NetworkCard,
@@ -77,41 +72,6 @@ export function renderActivities(activities: ActivityDescriptors[]) {
         return <Activity key={activity.id} activity={activity} />
       })}
     </TransactionListWrapper>
-  )
-}
-
-export function getStatusIcon(connector: Connector, walletDetails?: WalletDetails, size?: number) {
-  const connectionType = getWeb3ReactConnection(connector)
-
-  if (walletDetails && !walletDetails.isSupportedWallet) {
-    /* eslint-disable jsx-a11y/accessible-emoji */
-    return (
-      <MouseoverTooltip text="This wallet is not yet supported">
-        <IconWrapper role="img" aria-label="Warning sign. Wallet not supported">
-          ⚠️
-        </IconWrapper>
-      </MouseoverTooltip>
-    )
-    /* eslint-enable jsx-a11y/accessible-emoji */
-  }
-  if (walletDetails?.icon) {
-    return (
-      <IconWrapper size={16}>
-        <img src={walletDetails.icon} alt={`${walletDetails?.walletName || 'wallet'} logo`} />
-      </IconWrapper>
-    )
-  }
-
-  const icon = getConnectionIcon(connectionType.type)
-
-  if (icon === 'Identicon') {
-    return <Identicon size={size} />
-  }
-
-  return (
-    <IconWrapper size={16}>
-      <img src={icon} alt={`${connectionType.type} logo`} />
-    </IconWrapper>
   )
 }
 
@@ -193,7 +153,8 @@ export function AccountDetails({
                   }
                 }}
               >
-                {getStatusIcon(connector, walletDetails, 24)}
+                <AccountIcon connector={connector} walletDetails={walletDetails} size={24} account={account} />
+
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
                 )}
