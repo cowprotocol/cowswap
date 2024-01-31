@@ -1,9 +1,9 @@
-const CHAIN_ID = 5
+const CHAIN_ID = 11155111
 const SELL_TOKEN = 'WETH'
-const BUY_TOKEN = 'DAI'
+const BUY_TOKEN = 'COW'
 
 function unlock() {
-  cy.get('#unlock-limit-orders-btn').click()
+  cy.get('#unlock-limit-orders-btn', { timeout: 10000 }).click()
 }
 
 function navigate(path = '', unlockLimitOrders = true) {
