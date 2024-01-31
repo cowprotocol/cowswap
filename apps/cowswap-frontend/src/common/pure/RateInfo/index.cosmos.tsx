@@ -1,16 +1,16 @@
-import { COW, GNO, DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from '@cowprotocol/common-const'
+import { COW, GNO, USDC_SEPOLIA, WETH_GNOSIS_CHAIN, WETH_SEPOLIA, WXDAI } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { RateInfoParams, RateInfo } from './index'
+import { RateInfo, RateInfoParams } from './index'
 
-const inputCurrency = WETH_GOERLI
-const outputCurrency = DAI_GOERLI
-const GNO_GOERLI = GNO[SupportedChainId.GOERLI]
-const COW_GOERLI = COW[SupportedChainId.GOERLI]
+const inputCurrency = WETH_GNOSIS_CHAIN
+const outputCurrency = WXDAI
+const GNO_SEPOLIA = GNO[SupportedChainId.GNOSIS_CHAIN]
+const COW_SEPOLIA = COW[SupportedChainId.GNOSIS_CHAIN]
 
 const rateInfoParams = {
   chainId: 5,
@@ -30,7 +30,7 @@ function buildRateInfoParams(
   const outputCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, outputAmount * 10 ** outputToken.decimals)
 
   return {
-    chainId: 5,
+    chainId: 100,
     inputCurrencyAmount,
     outputCurrencyAmount,
     activeRateFiatAmount: null,
@@ -55,17 +55,17 @@ function SmartQuoteSelection() {
     {
       title: 'When one of tokens is stable-coin, then another token is quote',
       examples: [
-        buildRateInfoParams(DAI_GOERLI, GNO_GOERLI, 2000, 100),
-        buildRateInfoParams(GNO_GOERLI, DAI_GOERLI, 2000, 100),
-        buildRateInfoParams(USDT_GOERLI, WETH_GOERLI, 6704, 12),
-        buildRateInfoParams(WETH_GOERLI, USDT_GOERLI, 100, 6433),
+        buildRateInfoParams(USDC_SEPOLIA, GNO_SEPOLIA, 2000, 100),
+        buildRateInfoParams(GNO_SEPOLIA, USDC_SEPOLIA, 2000, 100),
+        buildRateInfoParams(USDC_SEPOLIA, WETH_SEPOLIA, 6704, 12),
+        buildRateInfoParams(WETH_SEPOLIA, USDC_SEPOLIA, 100, 6433),
       ],
     },
     {
       title: 'For other cases the quote is a token that has the smallest amount',
       examples: [
-        buildRateInfoParams(COW_GOERLI, GNO_GOERLI, 12, 652),
-        buildRateInfoParams(GNO_GOERLI, COW_GOERLI, 2, 4220),
+        buildRateInfoParams(COW_SEPOLIA, GNO_SEPOLIA, 12, 652),
+        buildRateInfoParams(GNO_SEPOLIA, COW_SEPOLIA, 2, 4220),
       ],
     },
   ]

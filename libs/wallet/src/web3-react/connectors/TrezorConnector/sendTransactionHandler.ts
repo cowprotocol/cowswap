@@ -1,4 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { serialize } from '@ethersproject/transactions'
 
@@ -7,9 +6,6 @@ import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type { TrezorConnect } from '@trezor/connect-web'
 import { gasPriceAtom, jotaiStore } from '@cowprotocol/core'
-
-// TODO: use API or Oracle for gas price
-const DEFAULT_GOERLI_GAS_PRICE = 40 * 10 ** 9 // 40 GWEI
 
 export async function sendTransactionHandler(
   params: [{ to: string; value: string | undefined; data: string | undefined }],
@@ -22,7 +18,7 @@ export async function sendTransactionHandler(
 
   const originalTx = params[0]
   const estimation = await provider.estimateGas(originalTx)
-  const gasPrice = chainId === SupportedChainId.GOERLI ? DEFAULT_GOERLI_GAS_PRICE : jotaiStore.get(gasPriceAtom)?.fast
+  const gasPrice = jotaiStore.get(gasPriceAtom)?.fast
 
   const transaction: EthereumTransaction = {
     to: originalTx.to,

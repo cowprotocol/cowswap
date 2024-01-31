@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { COW, ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { COW, WETH_SEPOLIA, ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -23,8 +23,8 @@ jest.mock('common/hooks/useGetMarketDimension')
 const getQuoteMock = jest.spyOn(orderBookApi, 'getQuote')
 const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBalanceAndAllowance')
 
-const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_GOERLI, 10_000_000)
-const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[5], 2_000_000)
+const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000)
+const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 2_000_000)
 
 const walletInfoMock: WalletInfo = {
   chainId: 1,

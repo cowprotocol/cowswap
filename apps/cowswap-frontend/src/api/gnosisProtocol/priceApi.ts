@@ -12,7 +12,6 @@ const STRATEGY_URL = STRATEGY_URL_BASE + ENV_BASE + '/strategies'
 const STRATEGY_API_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: STRATEGY_URL + '/strategy-1.json',
   [SupportedChainId.GNOSIS_CHAIN]: STRATEGY_URL + '/strategy-100.json',
-  [SupportedChainId.GOERLI]: STRATEGY_URL + '/strategy-5.json',
   [SupportedChainId.SEPOLIA]: STRATEGY_URL + '/strategy-11155111.json',
 }
 

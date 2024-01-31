@@ -1,4 +1,4 @@
-import { USDC_GOERLI, WETH_GOERLI } from '@cowprotocol/common-const'
+import { USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
@@ -11,9 +11,9 @@ describe('calculateExecutionPrice', () => {
 
     it('When fee is zero then the result must be just output / input', () => {
       const amount = calculateExecutionPrice({
-        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(6000, USDC_GOERLI.decimals)),
-        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
-        feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(0, USDC_GOERLI.decimals)),
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(6000, USDC_SEPOLIA.decimals)),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, rawToTokenAmount(3, WETH_SEPOLIA.decimals)),
+        feeAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(0, USDC_SEPOLIA.decimals)),
         marketRate: marketPrice,
         orderKind: OrderKind.SELL,
       })
@@ -26,9 +26,9 @@ describe('calculateExecutionPrice', () => {
 
     it('The fee must be subtracted from the execution price', () => {
       const amount = calculateExecutionPrice({
-        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(6000, USDC_GOERLI.decimals)),
-        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
-        feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(250, USDC_GOERLI.decimals)),
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(6000, USDC_SEPOLIA.decimals)),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, rawToTokenAmount(3, WETH_SEPOLIA.decimals)),
+        feeAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(250, USDC_SEPOLIA.decimals)),
         marketRate: marketPrice,
         orderKind: OrderKind.SELL,
       })
@@ -45,9 +45,12 @@ describe('calculateExecutionPrice', () => {
 
     it('Then execution price should be marketPrice', () => {
       const amount = calculateExecutionPrice({
-        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(6000, USDC_GOERLI.decimals)),
-        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(30000, WETH_GOERLI.decimals)),
-        feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(250, USDC_GOERLI.decimals)),
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(6000, USDC_SEPOLIA.decimals)),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(
+          WETH_SEPOLIA,
+          rawToTokenAmount(30000, WETH_SEPOLIA.decimals)
+        ),
+        feeAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(250, USDC_SEPOLIA.decimals)),
         marketRate: marketPrice,
         orderKind: OrderKind.SELL,
       })
@@ -66,8 +69,8 @@ describe('calculateExecutionPrice', () => {
 
 describe('convertAmountToCurrency', () => {
   it('Original and target amounts should be represented the same as strings', () => {
-    const amount = CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(421, WETH_GOERLI.decimals))
-    const converted = convertAmountToCurrency(amount, USDC_GOERLI)
+    const amount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, rawToTokenAmount(421, WETH_SEPOLIA.decimals))
+    const converted = convertAmountToCurrency(amount, USDC_SEPOLIA)
 
     expect(amount.toExact()).toBe('421')
     expect(converted.toExact()).toBe('421')

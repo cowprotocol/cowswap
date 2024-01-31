@@ -51,17 +51,6 @@
       "source": "t2crtokens.eth"
     }
   ],
-  "5": [
-    {
-      "priority": 1,
-      "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json"
-    },
-    {
-      "priority": 2,
-      "source": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json"
-    }
-  ],
   "100": [
     {
       "priority": 1,

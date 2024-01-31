@@ -1,4 +1,4 @@
-import { USDC, GNO, ZERO_PERCENT, ONE_HUNDRED_PERCENT, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { GNO, NATIVE_CURRENCIES, ONE_HUNDRED_PERCENT, USDC, ZERO_PERCENT } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -86,8 +86,8 @@ function _repoNetworkIdMapping(id: SupportedChainId): string {
       return 'mainnet'
     case SupportedChainId.GNOSIS_CHAIN:
       return 'gnosis-chain'
-    case SupportedChainId.GOERLI:
-      return 'goerli'
+    case SupportedChainId.SEPOLIA:
+      return 'sepolia'
     default:
       throw new Error('Network not supported')
   }
