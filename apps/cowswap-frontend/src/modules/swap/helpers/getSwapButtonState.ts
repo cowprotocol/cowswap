@@ -52,7 +52,7 @@ export interface SwapButtonStateParams {
   swapCallbackError: string | null
   trade: TradeGp | undefined | null
   isNativeIn: boolean
-  isSmartContractWallet: boolean
+  isSmartContractWallet: boolean | undefined
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
@@ -128,7 +128,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    if (getEthFlowEnabled(input.isSmartContractWallet)) {
+    if (getEthFlowEnabled(input.isSmartContractWallet === true)) {
       return input.isExpertMode ? SwapButtonState.ExpertModeEthFlowSwap : SwapButtonState.RegularEthFlowSwap
     } else if (input.isBundlingSupported) {
       return input.isExpertMode ? SwapButtonState.ExpertWrapAndSwap : SwapButtonState.WrapAndSwap
