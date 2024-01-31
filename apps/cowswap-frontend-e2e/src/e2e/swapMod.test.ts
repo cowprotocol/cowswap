@@ -1,4 +1,4 @@
-const GNO = '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532'
+const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 describe('Swap (mod)', () => {
@@ -60,9 +60,9 @@ describe('Swap (mod)', () => {
       .should('have.value', '0.0')
   })
 
-  it('can find GNO and swap Native for GNO', () => {
+  it('can find COW and swap Native for COW', () => {
     cy.swapEnterInputAmount(ETH, '0.5', true)
-    cy.swapSelectOutput(GNO)
+    cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button > button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
