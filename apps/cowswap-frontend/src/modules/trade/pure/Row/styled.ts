@@ -19,6 +19,7 @@ export const TimelineDot = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
+  margin-right: 6px;
 
   &::before {
     content: ' ';

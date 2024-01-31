@@ -114,7 +114,7 @@ export function TwapConfirmModal() {
                   your TWAP will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
                 </>
               ),
-              minReceivedLabel: 'Min received',
+              minReceivedLabel: 'Minimum receive',
               minReceivedTooltip:
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
             }}

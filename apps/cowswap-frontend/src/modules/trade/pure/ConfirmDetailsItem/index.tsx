@@ -3,10 +3,10 @@ import { ReactNode } from 'react'
 import { RowFixed } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
+import { Text } from 'rebass'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
-import { TextWrapper } from 'modules/swap/pure/Row/styled'
 import { TimelineDot } from 'modules/trade/pure/Row/styled'
 
 import { Content, Row, Wrapper } from './styled'
@@ -18,6 +18,7 @@ export type ConfirmDetailsItemProps = {
   withArrow?: boolean
   fiatAmount?: string
   withTimelineDot?: boolean
+  highlighted?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
@@ -31,7 +32,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
       {label ? (
         <Row>
           <RowFixed>
-            {label && <TextWrapper>{label}</TextWrapper>}
+            {label && <Text>{label}</Text>}
             {tooltip && <InfoIcon content={tooltip} />}
           </RowFixed>
 

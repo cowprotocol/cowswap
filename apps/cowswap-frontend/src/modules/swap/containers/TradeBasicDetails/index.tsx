@@ -15,10 +15,9 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { useUsdAmount } from 'modules/usdAmount'
-
-import { ReceiveAmountTitle } from './ReceiveAmountTitle'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
