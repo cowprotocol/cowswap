@@ -12,12 +12,13 @@ const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
 export const TextWrapper = styled(Text)``
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
+  flex-flow: row wrap;
   min-height: 24px;
   gap: 3px;
   color: inherit;
 
   ${RowFixed} {
-    gap: 3px;
+    gap: 4px;
     min-width: 200px;
   }
 

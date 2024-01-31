@@ -64,6 +64,7 @@ interface DerivedSwapInfo {
   parsedAmount: CurrencyAmount<Currency> | undefined
   // TODO: remove duplications of the value (v2Trade?.maximumAmountIn(allowedSlippage))
   slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
+  quoteValidTo: number | undefined
   inputError?: string
   v2Trade: TradeGp | undefined
   allowedSlippage: Percent
@@ -320,6 +321,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     return inputError
   }, [account, slippageAdjustedSellAmount, currencies, currencyBalances, inputCurrency, parsedAmount, to]) // mod
 
+  const quoteValidTo = quote?.validTo
+
   return useMemo(
     () => {
       return {
@@ -331,6 +334,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         v2Trade: v2Trade || undefined, // mod
         allowedSlippage,
         slippageAdjustedSellAmount: slippageAdjustedSellAmount,
+        quoteValidTo,
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -343,6 +347,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       JSON.stringify(v2Trade),
       slippageAdjustedSellAmount,
+      quoteValidTo,
     ] // mod
   )
 }

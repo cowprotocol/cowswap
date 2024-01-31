@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 import { BackButton } from '@cowprotocol/ui'
 
@@ -22,6 +23,7 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: JSX.Element | string
+  quoteValidTo?: number
   buttonText?: React.ReactNode
   children?: JSX.Element
 }
@@ -35,6 +37,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     isConfirmDisabled,
     priceImpact,
     title,
+    quoteValidTo,
     buttonText = 'Confirm',
     children,
   } = props
@@ -46,18 +49,24 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const isButtonDisabled = isConfirmDisabled || isPriceChanged
 
+  const quoteExpirationTimeAgo = useTimeAgo((quoteValidTo || 0) * 1000, 1000)
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+
+        <styledEl.QuoteCountdown>
+          Quote expires <b>{quoteExpirationTimeAgo}</b>
+        </styledEl.QuoteCountdown>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
           <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-          <div>
+          <styledEl.SeparatorWrapper>
             <styledEl.AmountsSeparator />
-          </div>
+          </styledEl.SeparatorWrapper>
           <CurrencyAmountPreview
             id="output-currency-preview"
             currencyInfo={outputCurrencyInfo}

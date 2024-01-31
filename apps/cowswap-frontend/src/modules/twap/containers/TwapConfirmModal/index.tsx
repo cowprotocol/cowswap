@@ -5,6 +5,8 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -34,7 +36,7 @@ export function TwapConfirmModal() {
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
-
+  const tradeQuote = useTradeQuote()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
@@ -69,10 +71,12 @@ export function TwapConfirmModal() {
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
+  const quoteValidTo = tradeQuote.response?.quote.validTo
+
   return (
     <TradeConfirmModal>
       <TradeConfirmation
-        title="Review order"
+        title="Review TWAP order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
@@ -80,6 +84,7 @@ export function TwapConfirmModal() {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
+        quoteValidTo={quoteValidTo}
       >
         <>
           <TradeBasicConfirmDetails
@@ -88,7 +93,7 @@ export function TwapConfirmModal() {
             isInvertedState={isInvertedState}
             slippage={slippage}
             additionalProps={{
-              priceLabel: 'Price (incl. fee)',
+              priceLabel: 'Rate (incl. fee)',
               slippageLabel: 'Price protection',
               slippageTooltip: (
                 <>
@@ -114,6 +119,7 @@ export function TwapConfirmModal() {
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
             }}
           />
+          <DividerHorizontal />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
             partDuration={partDuration}
