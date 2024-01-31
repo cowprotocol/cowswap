@@ -21,12 +21,13 @@ export interface ConfirmSwapModalSetupProps {
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   tradeRatesProps: TradeRatesProps
-  quoteValidTo: number | undefined
+  refreshInterval: number
   doTrade(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, quoteValidTo } = props
+  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
+    props
 
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -49,7 +50,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     <TradeConfirmModal submittedContent={submittedContent}>
       <TradeConfirmation
         title="Review Swap"
-        quoteValidTo={quoteValidTo}
+        refreshInterval={refreshInterval}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

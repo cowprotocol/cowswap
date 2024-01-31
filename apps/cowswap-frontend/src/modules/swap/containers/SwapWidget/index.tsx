@@ -39,6 +39,7 @@ import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
@@ -66,7 +67,6 @@ export function SwapWidget() {
     currencies,
     currenciesIds,
     v2Trade: trade,
-    quoteValidTo,
   } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
@@ -309,7 +309,7 @@ export function SwapWidget() {
             inputCurrencyInfo={inputCurrencyPreviewInfo}
             outputCurrencyInfo={outputCurrencyPreviewInfo}
             tradeRatesProps={tradeRatesProps}
-            quoteValidTo={quoteValidTo}
+            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
           />
         </TradeWidget>
         <NetworkAlert />

@@ -6,7 +6,7 @@ import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradeP
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -36,7 +36,6 @@ export function TwapConfirmModal() {
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
-  const tradeQuote = useTradeQuote()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
@@ -71,8 +70,6 @@ export function TwapConfirmModal() {
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
-  const quoteValidTo = tradeQuote.response?.quote.validTo
-
   return (
     <TradeConfirmModal>
       <TradeConfirmation
@@ -84,7 +81,7 @@ export function TwapConfirmModal() {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
-        quoteValidTo={quoteValidTo}
+        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         <>
           <TradeBasicConfirmDetails

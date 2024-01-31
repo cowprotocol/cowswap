@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
 import { BackButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import ms from 'ms.macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -15,6 +15,8 @@ import * as styledEl from './styled'
 
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
+const ONE_SEC = ms`1s`
+
 export interface TradeConfirmationProps {
   onConfirm(): void
   onDismiss(): void
@@ -23,7 +25,7 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: JSX.Element | string
-  quoteValidTo?: number
+  refreshInterval: number
   buttonText?: React.ReactNode
   children?: JSX.Element
 }
@@ -37,7 +39,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     isConfirmDisabled,
     priceImpact,
     title,
-    quoteValidTo,
+    refreshInterval,
     buttonText = 'Confirm',
     children,
   } = props
@@ -49,7 +51,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const isButtonDisabled = isConfirmDisabled || isPriceChanged
 
-  const quoteExpirationTimeAgo = useTimeAgo((quoteValidTo || 0) * 1000, 1000)
+  const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newValue = nextUpdateAt - ONE_SEC
+
+      setNextUpdateAt(newValue <= 0 ? refreshInterval : newValue)
+    }, ONE_SEC)
+
+    return () => clearInterval(interval)
+  }, [nextUpdateAt, refreshInterval])
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
@@ -58,7 +70,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.QuoteCountdown>
-          Quote expires <b>{quoteExpirationTimeAgo}</b>
+          Quote refresh in <b>{Math.ceil(nextUpdateAt / 1000)} sec</b>
         </styledEl.QuoteCountdown>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
