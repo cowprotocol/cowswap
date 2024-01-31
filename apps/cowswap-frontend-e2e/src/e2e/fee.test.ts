@@ -1,16 +1,15 @@
 import { GetQuoteResponse } from '@cowprotocol/contracts'
-import { WETH9 as WETH } from '@uniswap/sdk-core'
 
 import { parseUnits } from 'ethers/lib/utils'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const FOUR_HOURS = 3600 * 4 * 1000
-const DEFAULT_SELL_TOKEN = WETH[11155111]
+const DEFAULT_SELL_TOKEN = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14' // WETH
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.fi/xdai/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/sepolia/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,
@@ -53,11 +52,11 @@ function _assertFeeData(fee: GetQuoteResponse): void {
 describe('Fee endpoint', () => {
   it('Returns the expected info', () => {
     const params = {
-      sellToken: DEFAULT_SELL_TOKEN.address,
+      sellToken: DEFAULT_SELL_TOKEN,
       buyToken: USDC,
-      sellAmountBeforeFee: parseUnits('0.1', DEFAULT_SELL_TOKEN.decimals).toString(),
+      sellAmountBeforeFee: parseUnits('0.1', 18).toString(),
       kind: 'sell',
-      fromDecimals: DEFAULT_SELL_TOKEN.decimals,
+      fromDecimals: 18,
       toDecimals: 6,
       // BASE PARAMS
       ...baseParams,
@@ -97,7 +96,7 @@ describe('Fee: Complex fetch and persist fee', () => {
     // and goes AFK
     cy.visit('/#/11155111/swap')
     cy.swapSelectOutput(COW)
-    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
+    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
     // set the Cypress clock to now (default is UNIX 0)
     cy.clock(Date.now(), ['Date'])
@@ -141,7 +140,7 @@ describe('Fee: simple checks it exists', () => {
     // WHEN: Select COW token as output and sells 0.1 WETH
     cy.visit('/#/11155111/swap')
     cy.swapSelectOutput(COW)
-    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
+    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
     // THEN: The fee for selling WETH for COW is fetched from api endpoint
     cy.wait('@feeRequest').its('response.body').should(_assertFeeData)

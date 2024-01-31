@@ -33,7 +33,7 @@ describe('Search', () => {
 
   it('should be able to find a token by its address without 0x at the start', () => {
     cy.get('.open-currency-select-button').first().click()
-    cy.get('#token-search-input').type('dc31ee1784292379fbb2964b3b9c4124d8f89c60')
+    cy.get('#token-search-input').type('0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
     cy.get('#currency-list').should('not.contain.text', 'GNO')
   })
@@ -61,8 +61,8 @@ describe('Search', () => {
 
   it('should show import when token is unknown to us', () => {
     cy.get('.open-currency-select-button').first().click()
-    cy.get('#token-search-input').type('0x82f418D75F836385092eB8EaBf1608cd4b91961c')
-    cy.get('#currency-import').contains('stETH')
+    cy.get('#token-search-input').type('0x779877A7B0D9E8603169DdbD7836e478b4624789')
+    cy.get('#currency-import').contains('LINK')
     cy.get('#currency-import').contains('Import')
   })
 })
