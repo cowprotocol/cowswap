@@ -1,9 +1,9 @@
-import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
-import { RowFixed } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import React from 'react'
 
-import SVG from 'react-inlinesvg'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
+import { RowFixed, TokenAmount } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
+
 import { BoxProps } from 'rebass'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -13,10 +13,12 @@ import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceive
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { LowerSectionWrapper, EqualSign } from 'modules/swap/pure/styled'
+import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { useUsdAmount } from 'modules/usdAmount'
+
+import { ReceiveAmountTitle } from './ReceiveAmountTitle'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -39,10 +41,16 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
+
   const showRowSlippage =
-    (isEoaEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
+    (isReviewSwap ||
+      isEoaEthFlow ||
+      isExpertMode ||
+      !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
     !isWrapOrUnwrap
-  const showRowReceivedAfterSlippage = isExpertMode && trade
+
+  const showRowReceivedAfterSlippage = (isReviewSwap || isExpertMode) && trade
 
   return (
     <LowerSectionWrapper {...boxProps}>
@@ -55,21 +63,22 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
         feeFiatValue={feeFiatValue}
       />
 
-      {/* TODO: Add Expected to receive */}
-      {/* TODO: Also add Expected Sell Amount for BUY orders */}
       {isReviewSwap && (
         <>
           <StyledRowBetween>
             <RowFixed>
-              <EqualSign>
-                <SVG src={EqualIcon} title="= expected to receive" />
-              </EqualSign>{' '}
-              <TextWrapper>
-                <b>Expected to receive</b>
-              </TextWrapper>
+              <ReceiveAmountTitle>{isExactIn ? 'Expected to receive' : 'Expected to sell'}</ReceiveAmountTitle>
             </RowFixed>
             <TextWrapper>
-              <span style={{ background: 'yellow' }}>- AMOUNT HERE -</span>
+              {trade && (
+                <b>
+                  <TokenAmount
+                    amount={isExactIn ? trade?.outputAmount : trade.inputAmountWithFee}
+                    tokenSymbol={isExactIn ? trade?.outputAmount.currency : trade.inputAmount.currency}
+                    defaultValue="0"
+                  />
+                </b>
+              )}
             </TextWrapper>
           </StyledRowBetween>
           <DividerHorizontal />
@@ -78,26 +87,19 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
       {/* Slippage */}
       {showRowSlippage && <RowSlippage allowedSlippage={allowedSlippagePercent} />}
-      {showRowReceivedAfterSlippage && (
-        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
-      )}
 
-      {/* TODO: Add Minimum receive */}
-      {/* TODO: Also add minimum sell amount for BUY orders  */}
-      {isReviewSwap && (
-        <StyledRowBetween>
-          <RowFixed>
-            <EqualSign>
-              <SVG src={EqualIcon} title="= expected to receive" />
-            </EqualSign>{' '}
-            <TextWrapper>
-              <b>Minimum receive</b>
-            </TextWrapper>
-          </RowFixed>
-          <TextWrapper>
-            <span style={{ background: 'yellow' }}>- AMOUNT HERE -</span>
-          </TextWrapper>
-        </StyledRowBetween>
+      {/*Minimum receive*/}
+      {showRowReceivedAfterSlippage && (
+        <RowReceivedAfterSlippage
+          trade={trade}
+          allowedSlippage={allowedSlippagePercent}
+          highlightAmount={isReviewSwap}
+          showHelpers={true}
+        >
+          {isReviewSwap ? (
+            <ReceiveAmountTitle>{isExactIn ? 'Minimum receive' : 'Maximum sent'}</ReceiveAmountTitle>
+          ) : null}
+        </RowReceivedAfterSlippage>
       )}
     </LowerSectionWrapper>
   )
