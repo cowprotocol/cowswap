@@ -59,7 +59,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText="Confirm Swap"
       >
-        {/*TODO: RR add new component*/}
         <TradeRates {...tradeRatesProps} isReviewSwap={true} />
       </TradeConfirmation>
     </TradeConfirmModal>
