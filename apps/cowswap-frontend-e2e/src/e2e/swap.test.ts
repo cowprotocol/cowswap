@@ -2,9 +2,9 @@
 // Main differences summarised:
 // GP doesn't use ETH, so we need to test for this
 
-const CHAIN_ID = 5
+const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
-const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
+const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 
 function acceptFeesExceedWarning() {
   cy.get('#swap-button > button').should('contain.text', 'Swap')
@@ -23,7 +23,7 @@ describe('Swap (custom)', () => {
 
     // input amounts
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
+    cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
@@ -44,7 +44,7 @@ describe('Swap (custom)', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`)
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
+    cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 400 })
 
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
@@ -55,7 +55,7 @@ describe('Swap (custom)', () => {
 
   describe('url params', () => {
     const SELL_TOKEN = 'WETH'
-    const BUY_TOKEN = 'DAI'
+    const BUY_TOKEN = 'COW'
 
     it('should accept sellAmount url param', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5`)
