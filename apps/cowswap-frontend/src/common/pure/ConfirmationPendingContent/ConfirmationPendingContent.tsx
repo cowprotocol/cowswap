@@ -1,11 +1,10 @@
 import React, { ReactNode } from 'react'
 
+import { BackButton } from '@cowprotocol/ui'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
-
-import { BackButton } from 'modules/trade/pure/BackButton'
 
 import { Wrapper } from './styled'
 import { UpperSection } from './styled'

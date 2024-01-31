@@ -3,12 +3,11 @@ import React, { useState } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { UnsupportedTokensState } from '@cowprotocol/tokens'
+import { BackButton } from '@cowprotocol/ui'
 
 import { Edit } from 'react-feather'
 
 import { PermitCompatibleTokens } from 'modules/permit'
-// TODO: Move to ui lib
-import { BackButton } from 'modules/trade/pure/BackButton'
 
 import * as styledEl from './styled'
 
@@ -59,7 +58,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <BackButton size={20} onClick={onDismiss} />
+        <BackButton onClick={onDismiss} />
         <h3>Select a token</h3>
       </styledEl.Header>
       <styledEl.Row>

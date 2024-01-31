@@ -23,7 +23,7 @@ interface BackButtonProps {
 }
 
 export function BackButton(props: BackButtonProps) {
-  const { className, size, onClick } = props
+  const { className, size = 22, onClick } = props
 
   // Close on Escape press
   useEffect(() => {
