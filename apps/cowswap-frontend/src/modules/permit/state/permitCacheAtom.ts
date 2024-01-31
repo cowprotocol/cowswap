@@ -14,14 +14,14 @@ import {
  * Should never change once it has been created.
  * Used exclusively for quote requests
  */
-export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v1', {})
+export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v2', {})
 
 /**
  * Atom that stores permit data for user permit requests.
  * Should be updated whenever the permit nonce is updated.
  * Used exclusively for order requests
  */
-export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v0', {})
+export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v1', {})
 
 /**
  * Atom to add/update permit cache data

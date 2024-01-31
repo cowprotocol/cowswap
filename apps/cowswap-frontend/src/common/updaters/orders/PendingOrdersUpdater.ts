@@ -267,6 +267,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
         secondsSinceOpen: timeSinceInSeconds(openSince),
         explorerUrl,
         chainId,
+        orderType: getUiOrderType(order),
       })
       // Break the loop, don't need to show more than once
       break

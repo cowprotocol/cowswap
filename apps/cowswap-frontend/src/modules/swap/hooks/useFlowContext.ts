@@ -28,7 +28,7 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
@@ -88,7 +88,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade } = useDerivedSwapInfo()
-  const { swapZeroFee } = useFeatureFlags()
+  const swapZeroFee = useSwapZeroFee()
 
   const appData = useAppData()
   const closeModals = useCloseModals()

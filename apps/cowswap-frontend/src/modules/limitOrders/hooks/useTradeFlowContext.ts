@@ -20,7 +20,7 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
@@ -37,7 +37,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
-  const { swapZeroFee } = useFeatureFlags()
+  const swapZeroFee = useSwapZeroFee()
 
   const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({

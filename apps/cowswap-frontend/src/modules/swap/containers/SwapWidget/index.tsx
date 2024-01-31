@@ -35,9 +35,9 @@ import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
+import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

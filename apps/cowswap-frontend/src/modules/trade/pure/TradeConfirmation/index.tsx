@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
+import { BackButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
@@ -11,7 +12,6 @@ import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/Currency
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
-import { BackButton } from '../BackButton'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
@@ -49,7 +49,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
-        <BackButton size={20} onClick={onDismiss} />
+        <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         {/* TODO: Here we show a countdown before the front-end fetches a new quote */}

@@ -13,8 +13,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 

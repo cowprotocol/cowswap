@@ -22,14 +22,15 @@ import styled from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
-import { useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { EnhancedUserClaimData } from 'legacy/state/claim/types'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
+
+import { ApprovalState } from 'common/hooks/useApproveState'
+
+import { useApproveCallbackFromClaim } from './hooks/useApproveCallbackFromClaim'
 
 import { IS_TESTING_ENV } from '../const'
 import {
@@ -86,18 +87,14 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 
+  // TODO: TEST IT!
   // Approve hooks
   const {
     approvalState: approveState,
     approve: approveCallback,
     revokeApprove: revokeApprovalCallback, // CURRENTLY TEST ONLY (not on prod, barn or ens)
-    isPendingApproval: isPendingRevoke, // CURRENTLY TEST ONLY (not on prod, barn or ens)
-  } = useApproveCallbackFromClaim({
-    openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) =>
-      openModal(message, operationType),
-    closeModals: closeModal,
-    claim,
-  })
+  } = useApproveCallbackFromClaim(claim)
+  const isPendingRevoke = approveState === ApprovalState.PENDING
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
@@ -180,14 +177,16 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     try {
       setApproving(true)
       const summary = `Approve ${token?.symbol || 'token'} for investing in vCOW`
-      await approveCallback({ modalMessage: summary, transactionSummary: summary })
+      openModal(token?.symbol)
+      await approveCallback(summary)
     } catch (error: any) {
       console.error('[InvestOption]: Issue approving.', error)
       handleSetError(getProviderErrorMessage(error))
     } finally {
+      closeModal()
       setApproving(false)
     }
-  }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
+  }, [openModal, closeModal, approveCallback, handleCloseError, handleSetError, token?.symbol])
 
   // CURRENTLY TEST ONLY (not on prod, barn or ens)
   const handleRevokeApproval = useCallback(async () => {
@@ -199,17 +198,16 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     try {
       setApproving(true)
       const summary = `Revoke ${token?.symbol || 'token'} approval for vCOW contract`
-      await revokeApprovalCallback({
-        modalMessage: summary,
-        transactionSummary: summary,
-      })
+      openModal(token?.symbol)
+      await revokeApprovalCallback(summary)
     } catch (error: any) {
       console.error('[InvestOption]: Issue revoking approval.', error)
       handleSetError(getProviderErrorMessage(error))
     } finally {
+      closeModal()
       setApproving(false)
     }
-  }, [handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol])
+  }, [openModal, closeModal, handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol])
 
   const vCowAmount = useMemo(
     () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,

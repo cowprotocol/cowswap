@@ -1,4 +1,6 @@
-import { ButtonPrimary } from '@cowprotocol/ui'
+import React from 'react'
+
+import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -41,18 +43,22 @@ const AlertIcon = styled(AlertTriangle)`
 export interface TransactionErrorContentProps {
   message: JSX.Element | string
   onDismiss(): void
+  mode?: 'screen' | 'modal'
 }
 
 export function TransactionErrorContent(props: TransactionErrorContentProps) {
-  const { message, onDismiss } = props
+  const { message, onDismiss, mode } = props
+
+  const isScreenMode = mode === 'screen'
 
   return (
     <Wrapper>
       <Header>
+        {isScreenMode && <BackButton onClick={onDismiss} />}
         <span>
           <Trans>Error</Trans>
         </span>
-        <CloseIcon onClick={onDismiss} />
+        {isScreenMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
       </Header>
       <Body>
         <AlertIcon size={64} />

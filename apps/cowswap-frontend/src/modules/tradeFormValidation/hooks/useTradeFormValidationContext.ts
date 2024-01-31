@@ -20,7 +20,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
-  const approvalState = useApproveState(slippageAdjustedSellAmount)
+  const { state: approvalState } = useApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
