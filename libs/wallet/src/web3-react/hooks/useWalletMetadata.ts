@@ -7,6 +7,7 @@ import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 import { useGnosisSafeInfo } from '../../api/hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -97,7 +98,14 @@ export function useIsSafeApp(): boolean {
 
   // Will only be a SafeApp if within an iframe
   // Which means, window.parent is different than window
-  return window?.parent !== window
+  const isIframe = window?.parent !== window
+  if (!isIframe) {
+    return false
+  }
+
+  // For now, let's consider that if we are in Widget mode, then is not a Safe App, this allows Gnosis Safe to use the Widget
+  // TODO: Support Safe Apps in Widget mode
+  return !isInjectedWidget()
 }
 
 /**
