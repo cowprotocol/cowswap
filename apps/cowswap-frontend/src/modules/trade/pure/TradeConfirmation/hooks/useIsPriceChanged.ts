@@ -18,7 +18,9 @@ export function useIsPriceChanged(inputAmount: string | undefined, outputAmount:
   useEffect(() => {
     if (!initialAmounts.current) return
 
-    if (inputAmount !== initialAmounts.current.inputAmount || outputAmount !== initialAmounts.current.outputAmount) {
+    const { inputAmount: initialInputAmount, outputAmount: initialOutputAmount } = initialAmounts.current
+
+    if (inputAmount !== initialInputAmount || outputAmount !== initialOutputAmount) {
       setIsPriceChanged(true)
     }
   }, [inputAmount, outputAmount])

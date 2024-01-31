@@ -66,6 +66,7 @@ export function SwapWidget() {
     currencies,
     currenciesIds,
     v2Trade: trade,
+    quoteValidTo,
   } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
@@ -308,6 +309,7 @@ export function SwapWidget() {
             inputCurrencyInfo={inputCurrencyPreviewInfo}
             outputCurrencyInfo={outputCurrencyPreviewInfo}
             tradeRatesProps={tradeRatesProps}
+            quoteValidTo={quoteValidTo}
           />
         </TradeWidget>
         <NetworkAlert />
