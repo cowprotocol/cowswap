@@ -29,6 +29,7 @@ import { PoweredFooter } from 'common/pure/PoweredFooter'
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
+import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
@@ -101,6 +102,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const priorityTokenAddresses = usePriorityTokenAddresses()
+  const tradeStateFromUrl = useTradeStateFromUrl()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -124,10 +126,12 @@ export function TradeWidget(props: TradeWidgetProps) {
   }
 
   /**
-   * Reset recipient value only once at App start
+   * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    onChangeRecipient(null)
+    if (!tradeStateFromUrl.recipient) {
+      onChangeRecipient(null)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
