@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
 
-import { UI } from '@cowprotocol/ui'
-
 import { ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
+import { UI } from '../../enum'
 
 const BackIcon = styled(ArrowLeft)<{ onClick: () => void }>`
   cursor: pointer;
