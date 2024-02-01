@@ -31,7 +31,6 @@ export async function swapFlow(
       trade: { inputAmount, outputAmount },
     },
   } = input
-  // TODO: RR check
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
