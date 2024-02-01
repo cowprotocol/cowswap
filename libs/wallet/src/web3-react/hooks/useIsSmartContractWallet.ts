@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
 import { useAsyncMemo } from 'use-async-memo'
 import { useWalletInfo } from '../../api/hooks'
-import { useWalletMetaData } from './useWalletMetadata'
+import { useIsSafeWallet, useWalletMetaData } from './useWalletMetadata'
 import { getIsAmbireWallet } from '../../api/utils/connection'
 import { Contract } from '@ethersproject/contracts'
 import { getProviderOrSigner } from '@cowprotocol/common-utils'
@@ -33,22 +33,23 @@ function useCheckIsSmartContract(): boolean | undefined {
   return data
 }
 
-export function useIsSmartContractWallet(): boolean {
-  const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean>(false)
+export function useIsSmartContractWallet(): boolean | undefined {
+  const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean | undefined>(undefined)
 
   const { account } = useWalletInfo()
 
   const isArgentWallet = useIsArgentWallet()
   const isSmartContract = useCheckIsSmartContract()
   const isAmbireWallet = useIsAmbireWallet()
+  const isSafeWallet = useIsSafeWallet()
 
   useEffect(() => {
     if (!account) {
       setIsSmartContractWallet(false)
     } else {
-      setIsSmartContractWallet(Boolean(isAmbireWallet || isArgentWallet || isSmartContract))
+      setIsSmartContractWallet(isSafeWallet || isAmbireWallet || isArgentWallet || isSmartContract)
     }
-  }, [account, isAmbireWallet, isArgentWallet, isSmartContract])
+  }, [account, isAmbireWallet, isArgentWallet, isSafeWallet, isSmartContract])
 
   return isSmartContractWallet
 }

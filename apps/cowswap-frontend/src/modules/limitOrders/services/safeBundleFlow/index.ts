@@ -1,3 +1,4 @@
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -5,6 +6,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { updateHooksOnAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -12,6 +14,7 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
+import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -42,6 +45,13 @@ export async function safeBundleFlow(
     inputAmount,
     class: orderClass,
   } = params.postOrderParams
+
+  // TODO: remove once we figure out what's adding this to appData in the first place
+  if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
+    reportAppDataWithHooks(params.postOrderParams)
+    // wipe out the hooks
+    params.postOrderParams.appData = await updateHooksOnAppData(params.postOrderParams.appData, undefined)
+  }
 
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,

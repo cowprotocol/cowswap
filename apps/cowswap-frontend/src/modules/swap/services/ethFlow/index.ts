@@ -1,7 +1,10 @@
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { updateHooksOnAppData } from 'modules/appData'
+import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -37,6 +40,13 @@ export async function ethFlow(
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return undefined
+  }
+
+  // TODO: remove once we figure out what's adding this to appData in the first place
+  if (appDataContainsHooks(orderParamsOriginal.appData.fullAppData)) {
+    reportAppDataWithHooks(orderParamsOriginal)
+    // wipe out the hooks
+    orderParamsOriginal.appData = await updateHooksOnAppData(orderParamsOriginal.appData, undefined)
   }
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
