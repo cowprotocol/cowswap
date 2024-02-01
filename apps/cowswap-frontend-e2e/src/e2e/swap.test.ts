@@ -26,7 +26,7 @@ describe('Swap (custom)', () => {
     cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button').should('contain.text', 'Swap').click()
-    cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
+    cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
   it('can swap ETH for USDC', () => {
@@ -36,7 +36,7 @@ describe('Swap (custom)', () => {
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.get('#swap-button > button').should('contain.text', 'Swap').should('be.enabled').click()
-    cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
+    cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
   // ETH should be tradable but show Switch to Weth
