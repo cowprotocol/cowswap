@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { QuoteCountdownWrapper } from './styled'
 
 interface CountdownComponentProps {

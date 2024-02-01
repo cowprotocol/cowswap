@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 

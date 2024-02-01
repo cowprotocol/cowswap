@@ -10,11 +10,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
+import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
-import { QuoteCountdown } from './CountDown'
 
 const ONE_SEC = ms`1s`
 

@@ -5,10 +5,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { Content } from 'modules/trade/pure/ConfirmDetailsItem/styled'
+
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
-
-import { Content } from 'modules/trade/pure/ConfirmDetailsItem/styled'
 
 export type ReviewOrderAmountRowProps = {
   amount: Nullish<CurrencyAmount<Currency>>
