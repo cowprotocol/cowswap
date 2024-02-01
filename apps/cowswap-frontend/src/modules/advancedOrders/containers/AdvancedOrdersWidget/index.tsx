@@ -41,9 +41,10 @@ export type AdvancedOrdersWidgetParams = {
 export type AdvancedOrdersWidgetProps = PropsWithChildren<{
   updaters?: ReactNode
   params: AdvancedOrdersWidgetParams
+  confirmContent: JSX.Element
 }>
 
-export function AdvancedOrdersWidget({ children, updaters, params }: AdvancedOrdersWidgetProps) {
+export function AdvancedOrdersWidget({ children, updaters, params, confirmContent }: AdvancedOrdersWidgetProps) {
   const { disablePriceImpact } = params
 
   const {
@@ -124,7 +125,9 @@ export function AdvancedOrdersWidget({ children, updaters, params }: AdvancedOrd
         params={tradeWidgetParams}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
-      />
+      >
+        {confirmContent}
+      </TradeWidget>
     </>
   )
 }

@@ -5,12 +5,15 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
+import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
@@ -18,11 +21,7 @@ import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-interface TwapConfirmModalProps {
-  fallbackHandlerIsNotSet: boolean
-}
-
-export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalProps) {
+export function TwapConfirmModal() {
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -37,7 +36,6 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
-
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
@@ -46,6 +44,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   const isConfirmDisabled = !!localFormValidation
 
   const priceImpact = useTradePriceImpact()
+  const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -82,6 +81,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
+        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         <>
           <TradeBasicConfirmDetails
@@ -90,7 +90,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             isInvertedState={isInvertedState}
             slippage={slippage}
             additionalProps={{
-              priceLabel: 'Price (incl. fee)',
+              priceLabel: 'Rate (incl. fee)',
               slippageLabel: 'Price protection',
               slippageTooltip: (
                 <>
@@ -111,11 +111,12 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
                   your TWAP will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
                 </>
               ),
-              minReceivedLabel: 'Min received',
+              minReceivedLabel: 'Minimum receive',
               minReceivedTooltip:
                 'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
             }}
           />
+          <DividerHorizontal />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
             partDuration={partDuration}

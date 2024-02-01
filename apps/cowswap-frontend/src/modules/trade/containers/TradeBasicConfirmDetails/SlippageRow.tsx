@@ -11,7 +11,7 @@ export type SlippageRowProps = {
 
 export function SlippageRow({ slippage, slippageLabel, slippageTooltip }: SlippageRowProps) {
   return (
-    <ConfirmDetailsItem>
+    <ConfirmDetailsItem withTimelineDot={true}>
       <RowSlippage
         allowedSlippage={slippage}
         showSettingOnClick={false}

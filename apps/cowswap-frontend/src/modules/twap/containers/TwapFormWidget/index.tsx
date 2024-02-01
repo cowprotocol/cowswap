@@ -38,7 +38,6 @@ import {
 } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
-import { TwapConfirmModal } from '../TwapConfirmModal'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
@@ -104,8 +103,6 @@ export function TwapFormWidget() {
 
   return (
     <>
-      <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
-
       {!isWrapOrUnwrap && (
         <styledEl.Row>
           <styledEl.StyledRateInfo

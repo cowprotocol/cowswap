@@ -16,6 +16,7 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSe
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -65,7 +66,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   return (
     <TradeConfirmModal>
       <TradeConfirmation
-        title="Review limit order"
+        title="Review Limit Order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
@@ -73,6 +74,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={buttonText}
+        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         <>
           <LimitOrdersDetails
