@@ -1,48 +1,66 @@
-import { useAtomValue } from 'jotai'
-import { useCallback } from 'react'
+import React from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 
-import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
-import TradeGp from 'legacy/state/swap/TradeGp'
+import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
+import { Order } from 'legacy/state/orders/actions'
 
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
-import { RateInfoParams } from 'common/pure/RateInfo'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
+
+import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
 
 export interface ConfirmSwapModalSetupProps {
-  trade: TradeGp | undefined
-  recipient: string | null
-  allowedSlippage: Percent
-  handleSwap: HandleSwapCallback
-  priceImpact?: Percent
-  rateInfoParams: RateInfoParams
+  chainId: SupportedChainId
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
+  priceImpact: PriceImpact
+  tradeRatesProps: TradeRatesProps
+  refreshInterval: number
+  doTrade(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, rateInfoParams } = props
+  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
+    props
 
-  const swapConfirmState = useAtomValue(swapConfirmAtom)
-  const { acceptRateUpdates, closeSwapConfirm } = useSwapConfirmManager()
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const tradeConfirmActions = useTradeConfirmActions()
 
-  const handleAcceptChanges = useCallback(() => {
-    trade && acceptRateUpdates(trade)
-  }, [acceptRateUpdates, trade])
+  const submittedContent = (order: Order | undefined, onDismiss: () => void) => {
+    const activity = createActivityDescriptor(undefined, order)
+    const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
 
-  // TODO: use TradeConfirmModal
+    return (
+      <TransactionSubmittedContent
+        chainId={chainId}
+        hash={order?.id}
+        onDismiss={onDismiss}
+        activityDerivedState={activityDerivedState}
+      />
+    )
+  }
+
   return (
-    <ConfirmSwapModal
-      rateInfoParams={rateInfoParams}
-      swapConfirmState={swapConfirmState}
-      trade={trade}
-      onAcceptChanges={handleAcceptChanges}
-      recipient={recipient}
-      allowedSlippage={allowedSlippage}
-      priceImpact={priceImpact}
-      onConfirm={handleSwap}
-      onDismiss={closeSwapConfirm}
-    />
+    <TradeConfirmModal submittedContent={submittedContent}>
+      <TradeConfirmation
+        title="Review Swap"
+        refreshInterval={refreshInterval}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        onConfirm={doTrade}
+        onDismiss={tradeConfirmActions.onDismiss}
+        isConfirmDisabled={false}
+        priceImpact={priceImpact}
+        buttonText="Confirm Swap"
+      >
+        <TradeRates {...tradeRatesProps} isReviewSwap={true} />
+      </TradeConfirmation>
+    </TradeConfirmModal>
   )
 }

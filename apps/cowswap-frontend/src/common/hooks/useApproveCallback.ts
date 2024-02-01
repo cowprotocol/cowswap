@@ -9,8 +9,9 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { APPROVE_GAS_LIMIT_DEFAULT } from '../constants/common'
 
 export async function estimateApprove(
   tokenContract: Erc20,

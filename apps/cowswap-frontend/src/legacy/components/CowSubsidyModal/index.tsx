@@ -7,7 +7,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Text } from 'rebass'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { CowModal } from 'common/pure/Modal'
@@ -43,7 +42,7 @@ export default function CowSubsidyModal({
   isOpen,
   onDismiss,
   ...restProps
-}: Pick<ConfirmationModalProps, 'isOpen'> & Omit<ConfirmationModalContentProps, 'title' | 'topContent'>) {
+}: { isOpen: boolean } & Omit<ConfirmationModalContentProps, 'title' | 'topContent'>) {
   const { account, chainId } = useWalletInfo()
 
   const { subsidy, balance } = useCowBalanceAndSubsidy()

@@ -55,7 +55,7 @@ export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, on
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
       <ActionButton onClick={onDismiss}>
-        <Trans>Close</Trans>
+        <Trans>Continue</Trans>
       </ActionButton>
     </Wrapper>
   )

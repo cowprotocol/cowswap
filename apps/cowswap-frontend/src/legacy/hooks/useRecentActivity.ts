@@ -120,7 +120,7 @@ type UseActivityDescriptionParams = {
   ids: string[]
 }
 
-function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order): ActivityDescriptors | null {
+export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order): ActivityDescriptors | null {
   if (!tx && !order) return null
 
   let activity: EnhancedTransactionDetails | Order, type: ActivityType

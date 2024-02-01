@@ -20,9 +20,9 @@ export async function ethFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void> {
   const {
+    tradeConfirmActions,
     swapFlowAnalyticsContext,
     context,
-    swapConfirmManager,
     contract,
     callbacks,
     appDataInfo,
@@ -31,6 +31,11 @@ export async function ethFlow(
     checkEthFlowOrderExists,
     addInFlightOrderId,
   } = ethFlowContext
+  const {
+    trade: { inputAmount, outputAmount },
+  } = context
+  // TODO: RR check
+  const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -47,7 +52,7 @@ export async function ethFlow(
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   // TODO: check if we need own eth flow analytics or more generic
   tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
-  swapConfirmManager.sendTransaction(context.trade)
+  tradeConfirmActions.onSign(tradeAmounts)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
   const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, checkEthFlowOrderExists)
@@ -76,7 +81,7 @@ export async function ethFlow(
     callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
-    swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
@@ -84,6 +89,6 @@ export async function ethFlow(
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }

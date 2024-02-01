@@ -40,22 +40,10 @@ export interface MetaTxPopupContent {
 export type WarningPopupContent = { warning: string }
 
 export enum ApplicationModal {
-  ADDRESS_CLAIM,
-  BLOCKED_ACCOUNT,
-  DELEGATE,
-  CLAIM_POPUP,
-  MENU,
   NETWORK_SELECTOR,
-  POOL_OVERVIEW_OPTIONS,
-  PRIVACY_POLICY,
-  SELF_CLAIM,
   SETTINGS,
-  VOTE,
   WALLET,
-  QUEUE,
-  EXECUTE,
   // -----------------      MOD: CowSwap specific modals      --------------------
-  TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
   COW_SUBSIDY,
   CANCELLATION,

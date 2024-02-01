@@ -35,38 +35,6 @@ export function useToggleSettingsMenu(): () => void {
   return useToggleModal(ApplicationModal.SETTINGS)
 }
 
-export function useShowClaimPopup(): boolean {
-  return useModalIsOpen(ApplicationModal.CLAIM_POPUP)
-}
-
-export function useToggleShowClaimPopup(): () => void {
-  return useToggleModal(ApplicationModal.CLAIM_POPUP)
-}
-
-export function useToggleSelfClaimModal(): () => void {
-  return useToggleModal(ApplicationModal.SELF_CLAIM)
-}
-
-export function useToggleDelegateModal(): () => void {
-  return useToggleModal(ApplicationModal.DELEGATE)
-}
-
-export function useToggleVoteModal(): () => void {
-  return useToggleModal(ApplicationModal.VOTE)
-}
-
-export function useToggleQueueModal(): () => void {
-  return useToggleModal(ApplicationModal.QUEUE)
-}
-
-export function useToggleExecuteModal(): () => void {
-  return useToggleModal(ApplicationModal.EXECUTE)
-}
-
-export function useTogglePrivacyPolicy(): () => void {
-  return useToggleModal(ApplicationModal.PRIVACY_POLICY)
-}
-
 /**
  * @deprecated use @cowprotocol/snackbars instead
  */
@@ -86,10 +54,6 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useAppSelector((state: AppState) => state.application.popupList)
   return useMemo(() => list.filter((item) => item.show), [list])
-}
-
-export function useToggleTransactionConfirmation(): () => void {
-  return useToggleModal(ApplicationModal.TRANSACTION_CONFIRMATION)
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

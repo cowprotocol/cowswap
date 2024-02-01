@@ -3,12 +3,10 @@ import { useSetAtom } from 'jotai'
 
 export type OrdersToDisplayModal = {
   orderIds: string[]
-  isConfirmationModalOpen: boolean
 }
 
 const initialState: OrdersToDisplayModal = {
   orderIds: [],
-  isConfirmationModalOpen: false,
 }
 
 const surplusModalAtom = atom<OrdersToDisplayModal>(initialState)
@@ -17,10 +15,11 @@ export const addSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
   set(surplusModalAtom, () => {
     const state = get(surplusModalAtom)
 
+    // TODO: TEST IT!
     // If the confirmation modal is open, we don't want to add the order to the queue
-    if (state.isConfirmationModalOpen) {
-      return state
-    }
+    // if (state.isConfirmationModalOpen) {
+    //   return state
+    // }
 
     state.orderIds.push(orderId)
 
@@ -38,35 +37,17 @@ export const removeSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
   })
 )
 
-export const setIsConfirmationModalOpenAtom = atom(null, (get, set, isOpen: boolean) =>
-  set(surplusModalAtom, () => {
-    const state = get(surplusModalAtom)
-
-    if (state.isConfirmationModalOpen === isOpen) {
-      // Nothing changed, avoid re-rendering
-      return state
-    }
-
-    return {
-      ...state,
-      isConfirmationModalOpen: isOpen,
-    }
-  })
-)
-
 export const orderIdForSurplusModalAtom = atom<string | undefined>((get) => {
   const state = get(surplusModalAtom)
 
-  if (state.orderIds.length === 0 || state.isConfirmationModalOpen) {
+  // TODO: TEST IT!
+  // if (state.orderIds.length === 0 || state.isConfirmationModalOpen) {
+  if (state.orderIds.length === 0) {
     return undefined
   }
 
   return state.orderIds[0]
 })
-
-export function useSetIsConfirmationModalOpen() {
-  return useSetAtom(setIsConfirmationModalOpenAtom)
-}
 
 export function useAddOrderToSurplusQueue() {
   return useSetAtom(addSurplusOrderAtom)

@@ -17,7 +17,6 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { fetchClaim } from './claimData'
 
@@ -79,7 +78,7 @@ export const useCowFromLockedGnoBalances = () => {
 }
 
 interface ClaimCallbackParams {
-  openModal: (message: string, operationType: ConfirmOperationType) => void
+  openModal: (message: string) => void
   closeModal: () => void
   isFirstClaim: boolean
 }
@@ -114,7 +113,7 @@ export function useClaimCowFromLockedGnoCallback({
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
     const claimPromise = isFirstClaim ? merkleDrop.claim(index, amount, proof) : tokenDistro.claim()
     const summary = 'Claim vested COW'
-    openModal(summary, ConfirmOperationType.CLAIM_VESTED_COW)
+    openModal(summary)
 
     return claimPromise
       .then((tx) => {

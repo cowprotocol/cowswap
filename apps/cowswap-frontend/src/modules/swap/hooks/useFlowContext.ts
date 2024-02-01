@@ -24,8 +24,8 @@ import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
+import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
@@ -58,7 +58,6 @@ interface BaseFlowContextSetup {
   deadline: number
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
-  swapConfirmManager: SwapConfirmManager
   flowType: FlowType
   closeModals: () => void
   uploadAppData: (update: UploadAppDataParams) => void
@@ -68,6 +67,7 @@ interface BaseFlowContextSetup {
   featureFlags: {
     swapZeroFee: boolean | undefined
   }
+  tradeConfirmActions: TradeConfirmActions
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -95,12 +95,12 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const uploadAppData = useUploadAppData()
   const addOrderCallback = useAddPendingOrder()
   const dispatch = useDispatch<AppDispatch>()
+  const tradeConfirmActions = useTradeConfirmActions()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const recipientAddressOrName = recipient || ensRecipientAddress
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
-  const swapConfirmManager = useSwapConfirmManager()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
 
@@ -127,7 +127,6 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     deadline,
     ensRecipientAddress,
     allowsOffchainSigning,
-    swapConfirmManager,
     uploadAppData,
     flowType,
     closeModals,
@@ -135,6 +134,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     dispatch,
     allowedSlippage,
     featureFlags: { swapZeroFee },
+    tradeConfirmActions,
   }
 }
 
@@ -174,7 +174,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     deadline,
     ensRecipientAddress,
     allowsOffchainSigning,
-    swapConfirmManager,
     closeModals,
     addOrderCallback,
     uploadAppData,
@@ -183,6 +182,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     sellTokenContract,
     featureFlags,
     allowedSlippage,
+    tradeConfirmActions,
   } = baseProps
 
   if (
@@ -266,9 +266,9 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     },
     dispatch,
     swapFlowAnalyticsContext,
-    swapConfirmManager,
     orderParams,
     appDataInfo: appData,
     sellTokenContract,
+    tradeConfirmActions,
   }
 }
