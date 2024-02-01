@@ -28,7 +28,7 @@ export interface WalletInfo {
 
 export interface WalletDetails {
   // Account details
-  isSmartContractWallet: boolean
+  isSmartContractWallet: boolean | undefined
   ensName?: string
 
   // Provider details

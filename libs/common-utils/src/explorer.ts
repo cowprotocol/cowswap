@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 
-import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
+import { isBarn, isDev, isLocal, isPr, isStaging } from './environments'
 
 function _getExplorerUrlByEnvironment() {
   let baseUrl: string | undefined
@@ -17,7 +17,6 @@ function _getExplorerUrlByEnvironment() {
 
   return {
     [ChainId.MAINNET]: baseUrl,
-    [ChainId.GOERLI]: `${baseUrl}/goerli`,
     [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
   }

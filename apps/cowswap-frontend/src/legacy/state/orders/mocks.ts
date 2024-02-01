@@ -2,7 +2,7 @@ import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { Order, OrderStatus, SerializedOrder, addPendingOrder, AddPendingOrderParams } from './actions'
+import { addPendingOrder, AddPendingOrderParams, Order, OrderStatus, SerializedOrder } from './actions'
 
 import { cowSwapStore } from '../index'
 import { serializeToken } from '../user/hooks'
@@ -84,7 +84,7 @@ export const mockOrderDispatches = {
     const id = generateOrderId(orderN)
     const actionParams: AddPendingOrderParams = {
       id,
-      chainId: 5,
+      chainId: 1,
       order: {
         id,
         owner: '123',

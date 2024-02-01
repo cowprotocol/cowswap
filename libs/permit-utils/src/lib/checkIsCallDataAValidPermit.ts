@@ -1,7 +1,6 @@
 import { DAI_PERMIT_SELECTOR, Eip2612PermitUtils, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 
 import { PermitInfo } from '../types'
-import { fixTokenName } from '../utils/fixTokenName'
 
 export async function checkIsCallDataAValidPermit(
   owner: string,
@@ -23,7 +22,7 @@ export async function checkIsCallDataAValidPermit(
     throw new Error(`No token name for ${tokenAddress}`)
   }
 
-  const params = { chainId, tokenName: fixTokenName(tokenName), tokenAddress, callData, version }
+  const params = { chainId, tokenName, tokenAddress, callData, version }
 
   let recoverPermitOwnerPromise: Promise<string> | undefined = undefined
 

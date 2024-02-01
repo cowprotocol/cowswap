@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
 
-import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
+import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from 'react'
 
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
@@ -91,6 +91,11 @@ const { connector, hooks } = injectedConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {
+  useEffect(() => {
+    const skeleton = document.getElementById('swap-skeleton')
+    if (skeleton) skeleton.style.display = 'none'
+  }, [])
+
   return (
     <StrictMode>
       <FixedGlobalStyle />

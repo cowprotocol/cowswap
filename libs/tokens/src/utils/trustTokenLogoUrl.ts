@@ -3,7 +3,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 const chainIdToName: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
-  [SupportedChainId.GOERLI]: 'ethereum',
   [SupportedChainId.SEPOLIA]: 'ethereum',
 }
 

@@ -1,6 +1,6 @@
 import { COW, GNO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -26,7 +26,7 @@ const trade = new TradeGp({
   quoteId: 10000,
 })
 const rateInfoParams: RateInfoParams = {
-  chainId: 5,
+  chainId: 1,
   inputCurrencyAmount: null,
   outputCurrencyAmount: null,
   activeRateFiatAmount: null,
