@@ -1,5 +1,6 @@
 export * from './containers/TradeWidget'
 export * from './containers/TradeConfirmModal'
+export { TradeWidgetLinks } from './containers/TradeWidgetLinks'
 export * from './pure/TradeConfirmation'
 export * from './hooks/useTradeConfirmActions'
 export * from './hooks/useTradeTypeInfo'

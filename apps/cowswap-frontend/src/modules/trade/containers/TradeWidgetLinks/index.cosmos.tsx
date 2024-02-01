@@ -2,7 +2,7 @@ import { BadgeType } from '@cowprotocol/ui'
 
 import { Widget } from 'modules/application/pure/Widget'
 
-import { TradeWidgetLinks } from '.'
+import { TradeWidgetLinks } from './index'
 
 type BadgeInfo = {
   text: string

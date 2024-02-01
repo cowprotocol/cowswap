@@ -14,6 +14,7 @@ const Fixtures = {
       onDismiss={() => void 0}
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
+      refreshInterval={10_000}
     >
       <span>Trade confirmation</span>
     </TradeConfirmation>

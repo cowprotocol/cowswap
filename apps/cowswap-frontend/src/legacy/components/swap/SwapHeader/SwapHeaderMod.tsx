@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import SettingsTab from 'legacy/components/Settings'
 
-import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
+import { TradeWidgetLinks } from 'modules/trade'
 
 const StyledSwapHeader = styled.div`
   width: 100%;
