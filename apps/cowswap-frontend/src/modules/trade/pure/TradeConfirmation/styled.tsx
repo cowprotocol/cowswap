@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { ArrowRight } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const WidgetWrapper = styled.div`
   width: 100%;
@@ -16,7 +16,7 @@ export const WidgetWrapper = styled.div`
 export const AmountsPreviewContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  gap: 6px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
@@ -49,7 +49,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   font-size: 14px;
   padding: 0 10px 10px;
 `
@@ -63,7 +63,7 @@ export const Header = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  padding: 16px;
+  padding: 14px 16px;
   z-index: 20;
   margin: 0;
 `
@@ -73,13 +73,24 @@ export const ConfirmHeaderTitle = styled.h3`
   font-size: 16px;
 `
 
-export const QuoteCountdown = styled.div`
+export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
   margin: 0 0 0 auto;
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  animation: ${({ blink }) => (blink ? `blinkOut 1s ease-out forwards` : 'none')};
 
   > b {
     color: var(${UI.COLOR_TEXT});
     font-weight: normal;
+  }
+
+  @keyframes blinkOut {
+    0%,
+    25% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 `

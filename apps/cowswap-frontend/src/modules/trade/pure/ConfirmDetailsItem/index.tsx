@@ -9,11 +9,12 @@ import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import { TimelineDot } from 'modules/trade/pure/Row/styled'
 
-import { Content, Row, Wrapper } from './styled'
+import { Content, Row, Wrapper, Label } from './styled'
 
 export type ConfirmDetailsItemProps = {
   children: ReactNode
   label?: ReactNode
+  labelOpacity?: boolean
   tooltip?: ReactNode
   withArrow?: boolean
   fiatAmount?: string
@@ -22,17 +23,16 @@ export type ConfirmDetailsItemProps = {
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const { children, label, tooltip, withArrow = false, withTimelineDot = false } = props
+  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
 
   return (
     <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot />}
-
       {label ? (
         <Row>
           <RowFixed>
-            {label && <Text>{label}</Text>}
+            {label && <Label>{label}</Label>}
             {tooltip && <InfoIcon content={tooltip} />}
           </RowFixed>
 

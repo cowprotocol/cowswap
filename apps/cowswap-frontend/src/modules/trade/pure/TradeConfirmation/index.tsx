@@ -14,6 +14,7 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
+import { QuoteCountdown } from './CountDown'
 
 const ONE_SEC = ms`1s`
 
@@ -69,9 +70,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        <styledEl.QuoteCountdown>
-          Quote refresh in <b>{Math.ceil(nextUpdateAt / 1000)} sec</b>
-        </styledEl.QuoteCountdown>
+        <QuoteCountdown nextUpdateAt={nextUpdateAt} />
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>

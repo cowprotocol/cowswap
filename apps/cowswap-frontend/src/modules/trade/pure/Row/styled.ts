@@ -7,11 +7,11 @@ export const DividerHorizontal = styled.hr`
   border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKER});
   display: flex;
   width: 100%;
-  margin: 10px 0;
+  margin: 0;
 `
 
 export const TimelineDot = styled.div`
-  --size: 10px;
+  --size: 13px;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
@@ -19,7 +19,7 @@ export const TimelineDot = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-right: 6px;
+  margin: 0 0 0 1px;
 
   &::before {
     content: ' ';
@@ -31,14 +31,14 @@ export const TimelineDot = styled.div`
     margin: auto;
     width: 1px;
     height: calc(100% + 14px);
-    background: var(${UI.COLOR_PAPER_DARKEST});
+    background: var(${UI.COLOR_PAPER_DARKER});
     z-index: 0;
   }
 
   &::after {
     content: ' ';
-    background: var(${UI.COLOR_PAPER_DARKEST});
-    border: 1px solid var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER_DARKER});
+    border: 3px solid var(${UI.COLOR_PAPER});
     width: var(--size);
     height: var(--size);
     border-radius: var(--size);
