@@ -80,7 +80,6 @@ export const Label = styled.span<{ labelOpacity?: boolean }>`
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
-  opacity: 0.7;
 
   &:hover {
     opacity: 1;

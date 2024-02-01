@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { RowFixed } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
-import { Text } from 'rebass'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
 
@@ -32,7 +31,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
       {label ? (
         <Row>
           <RowFixed>
-            {label && <Label>{label}</Label>}
+            {label && <Label labelOpacity={labelOpacity}>{label}</Label>}
             {tooltip && <InfoIcon content={tooltip} />}
           </RowFixed>
 
