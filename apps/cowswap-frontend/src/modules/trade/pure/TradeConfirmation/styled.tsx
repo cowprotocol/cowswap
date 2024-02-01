@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { ArrowRight } from 'react-feather'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 export const WidgetWrapper = styled.div`
   width: 100%;
