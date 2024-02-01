@@ -6,8 +6,6 @@ import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-import { CloseIcon } from 'legacy/theme'
-
 export const Wrapper = styled.div`
   width: 100%;
   padding: 0;
@@ -16,6 +14,7 @@ export const Wrapper = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   height: inherit;
+
   strong {
     font-weight: 600;
   }
@@ -42,19 +41,6 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px 0;
   z-index: 20;
-`
-
-export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
-  display: flex;
-  margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  height: 28px;
-  width: 28px;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export const WalletIcon = styled.div`
@@ -200,9 +186,10 @@ export const UpperSection = styled.div`
 export const LowerSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px;
-  margin: 16px auto;
+  padding: 32px 16px;
   color: inherit;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 0 0 16px 16px;
 
   > h3 {
     text-align: center;
