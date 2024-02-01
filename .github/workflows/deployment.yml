@@ -15,6 +15,8 @@ on:
           - COWSWAP
           - EXPLORER
           - ALL
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
 
@@ -31,7 +33,7 @@ jobs:
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
-    if: startsWith(github.ref, 'refs/tags')
+#    if: startsWith(github.ref, 'refs/tags')
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     strategy:
@@ -39,7 +41,8 @@ jobs:
         env_name: [barn, staging] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
-      app: ${{ startsWith(github.ref, 'refs/tags/explorer') && 'EXPLORER' || 'COWSWAP' }}
+#      app: ${{ startsWith(github.ref, 'refs/tags/explorer') && 'EXPLORER' || 'COWSWAP' }}
+      app: 'EXPLORER'
 
   vercel-prod:
     # Deploys to Vercel prod environment
