@@ -1,4 +1,4 @@
-import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect } from 'react-cosmos/client'
@@ -9,7 +9,7 @@ import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 
 import { SwapButtons, SwapButtonsContext } from './index'
 
-const currency = WETH_GOERLI
+const currency = WETH_SEPOLIA
 const amount = 200000000
 
 const swapButtonsContext: SwapButtonsContext = {
@@ -18,7 +18,7 @@ const swapButtonsContext: SwapButtonsContext = {
   },
   swapButtonState: SwapButtonState.RegularSwap,
   chainId: 1,
-  wrappedToken: WETH_GOERLI,
+  wrappedToken: WETH_SEPOLIA,
   handleSwap: () => void 0,
   inputAmount: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   onWrapOrUnwrap: null,

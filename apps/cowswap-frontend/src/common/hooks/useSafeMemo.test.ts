@@ -6,12 +6,13 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useSafeMemo } from './useSafeMemo'
+
 function createInputCurrency() {
-  return new Token(ChainId.GOERLI, '0xe583769738b6dd4e7caf8451050d1948be717679', 6, 'USDT', 'Tether USD')
+  return new Token(ChainId.SEPOLIA, '0xbe72E441BF55620febc26715db68d3494213D8Cb', 6, 'USDC', 'USDC')
 }
 
 function createOutputCurrency() {
-  return new Token(ChainId.GOERLI, '0xca063a2ab07491ee991dcecb456d1265f842b568', 8, 'WBTC', 'Wrapped BTC')
+  return new Token(ChainId.SEPOLIA, '0xd3f3d46FeBCD4CdAa2B83799b7A5CdcB69d135De', 18, 'GNO', 'GNO')
 }
 
 function createInputAmount() {

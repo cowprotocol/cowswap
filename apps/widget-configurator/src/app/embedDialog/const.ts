@@ -7,7 +7,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   width: 'Width in pixels (or 100% to use all available space)',
   provider:
     'Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com',
-  chainId: '1 (Mainnet), 5 (Goerli), 100 (Gnosis)',
+  chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
   theme: 'light/dark or provide your own color palette',
   tradeType: 'swap, limit or advanced',

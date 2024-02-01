@@ -28,6 +28,7 @@ const OrdersBox = styled.div`
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
   min-height: 200px;
   width: 100%;
+  margin: 0 0 76px;
 `
 
 const Content = styled.div`

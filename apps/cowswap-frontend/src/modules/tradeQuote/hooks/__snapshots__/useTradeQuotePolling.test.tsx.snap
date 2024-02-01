@@ -4,14 +4,14 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddres
 {
   "appData": "0x93782141af03a1e83fd03bd86bd8de09f12030aa078e49abe02ad0b15c565d1b",
   "appDataHash": undefined,
-  "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
+  "buyToken": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
   "from": "0x0000000000000000000000000000000000000000",
   "kind": "sell",
   "partiallyFillable": false,
   "priceQuality": "optimal",
   "receiver": "0x0000000000000000000000000000000000000000",
   "sellAmountBeforeFee": "10000000",
-  "sellToken": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+  "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
   "validTo": undefined,
 }
 `;
@@ -20,14 +20,14 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
 {
   "appData": "0x93782141af03a1e83fd03bd86bd8de09f12030aa078e49abe02ad0b15c565d1b",
   "appDataHash": undefined,
-  "buyToken": "0x91056D4A53E1faa1A84306D4deAEc71085394bC8",
+  "buyToken": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
   "from": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
   "kind": "sell",
   "partiallyFillable": false,
   "priceQuality": "optimal",
   "receiver": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
   "sellAmountBeforeFee": "10000000",
-  "sellToken": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+  "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
   "validTo": undefined,
 }
 `;

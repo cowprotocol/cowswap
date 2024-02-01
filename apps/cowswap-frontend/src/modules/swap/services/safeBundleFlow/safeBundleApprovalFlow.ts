@@ -1,3 +1,4 @@
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -5,9 +6,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
+import { updateHooksOnAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
+import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -53,6 +56,14 @@ export async function safeBundleApprovalFlow(
       spender,
       amountToApprove: context.trade.inputAmount,
     })
+
+    // TODO: remove once we figure out what's adding this to appData in the first place
+    // make sure no pre-approval hooks are included, just as a safety measure
+    if (appDataContainsHooks(orderParams.appData.fullAppData)) {
+      reportAppDataWithHooks(orderParams)
+      // wipe out the hooks
+      orderParams.appData = await updateHooksOnAppData(orderParams.appData, undefined)
+    }
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
     const { id: orderId, order } = await signAndPostOrder(orderParams).finally(() => {

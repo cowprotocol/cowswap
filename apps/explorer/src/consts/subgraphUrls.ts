@@ -10,6 +10,5 @@ function getSubgraphUrl(chainId: SupportedChainId, suffix: string): string | nul
 export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
   [SupportedChainId.GNOSIS_CHAIN]: getSubgraphUrl(SupportedChainId.GNOSIS_CHAIN, 'GNOSIS_CHAIN'),
-  [SupportedChainId.GOERLI]: getSubgraphUrl(SupportedChainId.GOERLI, 'GOERLI'),
   [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
 }

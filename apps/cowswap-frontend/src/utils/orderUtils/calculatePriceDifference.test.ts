@@ -1,14 +1,15 @@
-import { ZERO_FRACTION } from '@cowprotocol/common-const'
-import { DAI_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
-import { buildPriceFromCurrencyAmounts, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { GNO, USDC_SEPOLIA, ZERO_FRACTION } from '@cowprotocol/common-const'
+import { buildPriceFromCurrencyAmounts, FractionUtils, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
 
+const GNO_SEPOLIA = GNO[SupportedChainId.SEPOLIA]
+
 function buildPrice(daiAmount: string, usdcAmount: string): Price<Currency, Currency> {
-  const quoteAmount = tryParseCurrencyAmount(daiAmount, DAI_GOERLI)
-  const baseAmount = tryParseCurrencyAmount(usdcAmount, USDC_GOERLI)
+  const quoteAmount = tryParseCurrencyAmount(daiAmount, GNO_SEPOLIA)
+  const baseAmount = tryParseCurrencyAmount(usdcAmount, USDC_SEPOLIA)
 
   return buildPriceFromCurrencyAmounts(baseAmount, quoteAmount)
 }
@@ -131,7 +132,7 @@ describe('Not Inverted Price', () => {
     test('-100% price difference (target price is Zero)', () => {
       const params: CalculatePriceDifferenceParams = {
         referencePrice: buildPrice('1', '1'),
-        targetPrice: FractionUtils.toPrice(ZERO_FRACTION, USDC_GOERLI, DAI_GOERLI), // zero
+        targetPrice: FractionUtils.toPrice(ZERO_FRACTION, USDC_SEPOLIA, GNO_SEPOLIA), // zero
         isInverted: false,
       }
 

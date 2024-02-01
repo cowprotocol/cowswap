@@ -7,6 +7,7 @@ import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 import { useGnosisSafeInfo } from '../../api/hooks'
+import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -90,8 +91,10 @@ export function useWalletMetaData(): WalletMetaData {
  */
 export function useIsSafeApp(): boolean {
   const isSafeWallet = useIsSafeWallet()
+  const sdk = useSafeAppsSdk()
 
-  if (!isSafeWallet) {
+  // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
+  if (!isSafeWallet || !sdk) {
     return false
   }
 

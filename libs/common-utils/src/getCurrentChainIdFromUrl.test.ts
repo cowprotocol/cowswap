@@ -6,13 +6,13 @@ describe('getCurrentChainIdFromUrl()', () => {
   it('When chainId presents in the url path, then it should taken as chainId', () => {
     Object.defineProperty(window, 'location', {
       value: {
-        hash: '#/5/WETH',
+        hash: '#/11155111/WETH',
       },
       writable: true,
     })
     const chainId = getCurrentChainIdFromUrl()
 
-    expect(chainId).toBe(SupportedChainId.GOERLI)
+    expect(chainId).toBe(SupportedChainId.SEPOLIA)
   })
 
   it('When chainId from the url path is not valid, then should take mainnet as default', () => {

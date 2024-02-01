@@ -25,14 +25,6 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     'WXDAI',
     'Wrapped XDAI'
   ),
-  [SupportedChainId.GOERLI]: new TokenWithLogo(
-    ETH_LOGO_URL,
-    SupportedChainId.GOERLI,
-    '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-    DEFAULT_NATIVE_DECIMALS,
-    'WETH',
-    'Wrapped Görli Ether'
-  ),
   [SupportedChainId.SEPOLIA]: new TokenWithLogo(
     ETH_LOGO_URL,
     SupportedChainId.SEPOLIA,
@@ -47,14 +39,6 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: new TokenWithLogo(
     undefined,
     SupportedChainId.MAINNET,
-    NATIVE_CURRENCY_ADDRESS,
-    DEFAULT_NATIVE_DECIMALS,
-    'ETH',
-    'Ether'
-  ),
-  [SupportedChainId.GOERLI]: new TokenWithLogo(
-    undefined,
-    SupportedChainId.GOERLI,
     NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
@@ -80,5 +64,4 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
 
 export const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 export const WXDAI = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
-export const WETH_GOERLI = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GOERLI]
 export const WETH_SEPOLIA = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]

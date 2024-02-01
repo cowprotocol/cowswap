@@ -8,7 +8,7 @@ export function useIsEoaEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
 
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isEnabled = getEthFlowEnabled(isSmartContractWallet)
+  const isEnabled = getEthFlowEnabled(isSmartContractWallet === true)
 
   return isEnabled && isSwapEth
 }

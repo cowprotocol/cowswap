@@ -1,12 +1,11 @@
-import { COW, DAI, GNO, USDC } from '@cowprotocol/common-const'
-import { WETH_GOERLI } from '@cowprotocol/common-const'
-import { OrderKind, OrderClass } from '@cowprotocol/cow-sdk'
+import { COW, DAI, GNO, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
-const chainId = 5
+const chainId = 100
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'
 
 export const ordersMock: ParsedOrder[] = [
@@ -16,10 +15,10 @@ export const ordersMock: ParsedOrder[] = [
     summary: '',
     status: OrderStatus.PENDING,
     creationTime: '2022-11-11T13:15:13.551Z',
-    inputToken: WETH_GOERLI,
+    inputToken: WETH_GNOSIS_CHAIN,
     outputToken: GNO[chainId],
     receiver: '',
-    sellToken: WETH_GOERLI.address,
+    sellToken: WETH_GNOSIS_CHAIN.address,
     buyToken: GNO[chainId].address,
     sellAmount: '5000300000000000',
     buyAmount: '23000000000000',

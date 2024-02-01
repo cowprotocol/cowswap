@@ -15,7 +15,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { imagesAnimationDelay, animationDelay, crossFade, fadeInOut, presentationTime } from './utils'
+import { animationDelay, crossFade, fadeInOut, imagesAnimationDelay, presentationTime } from './utils'
 
 export const Wrapper = styled.div<{ logosLength: number }>`
   display: flex;
@@ -61,7 +61,6 @@ const ETH_AMM_LOGOS = [SushiImage, OneInchImage, ParaSwapImage, UniswapImage, Cu
 
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
   [SupportedChainId.MAINNET]: ETH_AMM_LOGOS,
-  [SupportedChainId.GOERLI]: ETH_AMM_LOGOS,
   [SupportedChainId.SEPOLIA]: ETH_AMM_LOGOS,
   [SupportedChainId.GNOSIS_CHAIN]: [
     SushiImage,
