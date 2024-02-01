@@ -5,7 +5,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
+import { ApprovalState } from 'common/hooks/useApproveState'
+
+import { ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
 
 import { ClaimType } from '../../state/claim/hooks/types'
 import { EnhancedUserClaimData } from '../../state/claim/types'
