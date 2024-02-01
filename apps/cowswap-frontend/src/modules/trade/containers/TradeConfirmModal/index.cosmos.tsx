@@ -24,7 +24,6 @@ const tradeAmounts: TradeAmounts = {
 
 const confirmationState: TradeConfirmationProps = {
   title: 'Review order',
-  refreshInterval: 10,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,

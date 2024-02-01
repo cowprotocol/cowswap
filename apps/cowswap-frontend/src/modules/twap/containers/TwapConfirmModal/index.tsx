@@ -74,7 +74,6 @@ export function TwapConfirmModal() {
     <TradeConfirmModal>
       <TradeConfirmation
         title="Review TWAP order"
-        refreshInterval={10}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
