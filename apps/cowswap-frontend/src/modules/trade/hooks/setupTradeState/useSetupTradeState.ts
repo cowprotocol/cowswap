@@ -176,10 +176,13 @@ export function useSetupTradeState(): void {
     } else {
       if (isFirstLoad && isWalletConnected) {
         setIsFirstLoad(false)
-        urlChainId && switchNetworkInWallet(urlChainId)
-      } else {
-        tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+
+        if (urlChainId) {
+          switchNetworkInWallet(urlChainId)
+        }
       }
+
+      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
     }
 
     console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })
