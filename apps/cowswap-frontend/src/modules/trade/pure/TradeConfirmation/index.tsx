@@ -10,6 +10,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
+import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
@@ -72,9 +73,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         {nextUpdateAt !== undefined && (
-          <styledEl.QuoteCountdown>
-            Quote refresh in <b>{Math.ceil(nextUpdateAt / 1000)} sec</b>
-          </styledEl.QuoteCountdown>
+          <QuoteCountdown nextUpdateAt={nextUpdateAt} />
         )}
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">

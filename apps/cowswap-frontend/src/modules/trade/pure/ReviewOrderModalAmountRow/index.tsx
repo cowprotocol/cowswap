@@ -3,16 +3,12 @@ import { ReactNode } from 'react'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { Content } from 'modules/trade/pure/ConfirmDetailsItem/styled'
 
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
-
-const ReceiveAmountTitleStyled = styled(ReceiveAmountTitle)`
-  margin-left: -2px;
-  margin-top: 3px;
-`
 
 export type ReviewOrderAmountRowProps = {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -35,7 +31,7 @@ export function ReviewOrderModalAmountRow({
   highlighted = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
-    <>
+    <Content>
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
       {fiatAmount && (
@@ -44,15 +40,15 @@ export function ReviewOrderModalAmountRow({
           <FiatAmount amount={fiatAmount} />)
         </i>
       )}
-    </>
+    </Content>
   )
 
   return (
     <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
       {highlighted ? (
         <>
-          <ReceiveAmountTitleStyled>{label}</ReceiveAmountTitleStyled>
-          <strong>{Amount}</strong>
+          <ReceiveAmountTitle>{label}</ReceiveAmountTitle>
+          <span>{Amount}</span>
         </>
       ) : (
         Amount
