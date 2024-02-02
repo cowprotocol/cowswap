@@ -107,9 +107,10 @@ export function TradeWidget(props: TradeWidgetProps) {
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
 
-  const canSellAllNative = isSafeWallet
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
+  const hasRecipientInUrl = !!tradeStateFromUrl.recipient
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
+  const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
@@ -129,7 +130,7 @@ export function TradeWidget(props: TradeWidgetProps) {
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!tradeStateFromUrl.recipient) {
+    if (!hasRecipientInUrl) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,13 +179,13 @@ export function TradeWidget(props: TradeWidgetProps) {
                 />
               </div>
               {!isWrapOrUnwrap && middleContent}
-              <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
+              <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
                 <CurrencyArrowSeparator
                   isCollapsed={compactView}
                   hasSeparatorLine={!compactView}
                   border={!compactView}
                   onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                  withRecipient={!isWrapOrUnwrap && showRecipient}
+                  withRecipient={withRecipient}
                   isLoading={isTradePriceUpdating}
                 />
               </styledEl.CurrencySeparatorBox>
@@ -205,7 +206,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   {...currencyInputCommonProps}
                 />
               </div>
-              {!isWrapOrUnwrap && showRecipient && (
+              {withRecipient && (
                 <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
