@@ -42,7 +42,7 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
         </styledEl.TokenLogoWrapper>
       </div>
       <styledEl.Amount>
-        <TokenAmount amount={amount} tokenSymbol={currency} />
+        <TokenAmount className="token-amount-input" amount={amount} tokenSymbol={currency} />
         <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} />
       </styledEl.Amount>
     </styledEl.Container>
