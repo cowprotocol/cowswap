@@ -51,6 +51,9 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
+    strategy:
+      matrix:
+        app: ${{ inputs.app == 'ALL' && fromJSON('["COWSWAP","EXPLORER"]') || fromJSON(format('["{0}"]', inputs.app)) }}
     with:
       env_name: prod
-      app: ${{ inputs.app }}
+      app: ${{ matrix.app }}
