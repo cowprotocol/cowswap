@@ -7,6 +7,7 @@ import { useModalState } from './useModalState'
 
 import { MediumAndUp, useMediaQuery } from '../../legacy/hooks/useMediaQuery'
 import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
+import { ConfirmationPendingContentShell } from '../pure/ConfirmationPendingContent/ConfirmationPendingContentShell'
 import { MetamaskApproveBanner } from '../pure/MetamaskApproveBanner'
 
 function useIsMetaMaskDesktop(): boolean {
@@ -29,26 +30,34 @@ export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () 
     onDismiss?.()
   }
 
-  const Modal = (
+  const Title = (
+    <>
+      Approving <strong>{currencySymbol || context}</strong> for trading
+    </>
+  )
+
+  const Description = (
+    <>
+      Review and select the ideal <br /> spending cap in your wallet
+    </>
+  )
+
+  const MetamaskContent = (
+    <ConfirmationPendingContentShell title={Title} onDismiss={onDismissCallback} description={Description}>
+      <MetamaskApproveBanner />
+    </ConfirmationPendingContentShell>
+  )
+
+  const DefaultContent = (
     <ConfirmationPendingContent
       onDismiss={onDismissCallback}
-      title={
-        <>
-          Approving <strong>{currencySymbol || context}</strong> for trading
-        </>
-      }
+      title={Title}
       description="Approving token"
       operationLabel="token approval"
-      CustomBody={isMetaMaskDesktop ? <MetamaskApproveBanner /> : undefined}
-      CustomDescription={
-        isMetaMaskDesktop ? (
-          <>
-            Review and select the ideal <br /> spending cap in your wallet
-          </>
-        ) : undefined
-      }
     />
   )
+
+  const Modal = isMetaMaskDesktop ? MetamaskContent : DefaultContent
 
   return { Modal, state }
 }

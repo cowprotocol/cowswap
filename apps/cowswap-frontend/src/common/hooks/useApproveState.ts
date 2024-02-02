@@ -56,7 +56,7 @@ export function useApproveState(
 
     const amountToApproveString = amountToApprove.quotient.toString()
 
-    if (currentAllowance.greaterThan(amountToApproveString)) {
+    if (currentAllowance.greaterThan(amountToApproveString) || currentAllowance.equalTo(amountToApproveString)) {
       return ApprovalState.APPROVED
     }
 

@@ -343,8 +343,8 @@ export const TokenText = styled.div`
   `};
 `
 
-export const ApproveLabel = styled.span<{ color?: string }>`
-  color: ${({ color }) => color || 'inherit'};
+export const ApproveLabel = styled.span`
+  color: ${({ theme }) => theme.green1};
   font-weight: 500;
 `
 

@@ -39,5 +39,5 @@ export function BackButton(props: BackButtonProps) {
     }
   }, [onClick])
 
-  return <BackIcon size={size} className={className} onClick={onClick}></BackIcon>
+  return <BackIcon size={size} className={className} onClick={onClick} />
 }

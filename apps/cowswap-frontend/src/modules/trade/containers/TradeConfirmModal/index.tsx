@@ -1,5 +1,3 @@
-import { useAtomValue } from 'jotai'
-
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -17,7 +15,7 @@ import { TradeAmounts } from 'common/types'
 import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
-import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
 const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
@@ -37,7 +35,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
@@ -93,7 +91,7 @@ function InnerComponent(props: InnerComponentProps) {
   } = props
 
   if (error) {
-    return <TransactionErrorContent mode="screen" message={error} onDismiss={onDismiss} />
+    return <TransactionErrorContent isScreenMode={true} message={error} onDismiss={onDismiss} />
   }
 
   if (pendingTrade && permitSignatureState) {

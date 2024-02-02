@@ -1,4 +1,3 @@
-import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -7,10 +6,10 @@ import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
-import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'
+import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 
 export function WrapNativeModal() {
-  const [, setWrapNativeState] = useAtom(wrapNativeStateAtom)
+  const [, setWrapNativeState] = useWrapNativeScreenState()
 
   const derivedState = useDerivedTradeState()
 

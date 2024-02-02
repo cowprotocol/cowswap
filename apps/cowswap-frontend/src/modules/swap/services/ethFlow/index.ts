@@ -34,7 +34,6 @@ export async function ethFlow(
   const {
     trade: { inputAmount, outputAmount },
   } = context
-  // TODO: RR check
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')

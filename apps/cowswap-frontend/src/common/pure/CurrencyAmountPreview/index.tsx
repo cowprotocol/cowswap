@@ -28,13 +28,13 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 }
 
 export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
-  const { currencyInfo, className, priceImpactParams } = props
+  const { id, currencyInfo, className, priceImpactParams } = props
   const { fiatAmount, amount } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
 
   return (
-    <styledEl.Container className={className}>
+    <styledEl.Container id={id} className={className}>
       <div>{topLabel}</div>
       <div>
         <styledEl.TokenLogoWrapper>
@@ -42,7 +42,7 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
         </styledEl.TokenLogoWrapper>
       </div>
       <styledEl.Amount>
-        <TokenAmount amount={amount} tokenSymbol={currency} />
+        <TokenAmount className="token-amount-input" amount={amount} tokenSymbol={currency} />
         <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} />
       </styledEl.Amount>
     </styledEl.Container>

@@ -1,12 +1,11 @@
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { ListState } from '@cowprotocol/tokens'
 
-import { updateSelectTokenWidgetAtom } from '../state/selectTokenWidgetAtom'
+import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 export function useAddListImport() {
-  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
+  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   return useCallback(
     (listToImport: ListState) => {

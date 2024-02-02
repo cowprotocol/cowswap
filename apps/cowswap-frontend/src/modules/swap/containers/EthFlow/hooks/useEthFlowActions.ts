@@ -70,7 +70,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
 
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
-      // TODO: RR check
       openSwapConfirmModal()
     }
 

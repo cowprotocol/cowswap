@@ -8,6 +8,8 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
+
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
@@ -26,9 +28,9 @@ import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
-export const SWAP_QUOTE_CHECK_INTERVAL = 10000 // Every 10s
-const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
-const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
+export const SWAP_QUOTE_CHECK_INTERVAL = ms`10s` // Every 10s
+const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
+const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = ms`5s` // Prevents from sending the same request to often (max, every 5s)
 
 type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 

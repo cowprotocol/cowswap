@@ -121,7 +121,7 @@ export const TokensTableRow = ({
 
   const displayApproveContent = useMemo(() => {
     if (approvalState === ApprovalState.APPROVED) {
-      return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
+      return <ApproveLabel>Approved ✓</ApproveLabel>
     }
 
     if (approvalState === ApprovalState.NOT_APPROVED) {
@@ -132,7 +132,7 @@ export const TokensTableRow = ({
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove}>Approve all</TableButton>
-          <ApproveLabel color={theme.green1}>
+          <ApproveLabel>
             Approved:{' '}
             <strong>
               <TokenAmount amount={currentAllowance} />
@@ -143,7 +143,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [currentAllowance, handleApprove, approvalState, theme.green1])
+  }, [currentAllowance, handleApprove, approvalState])
 
   return (
     <>

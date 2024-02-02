@@ -26,7 +26,7 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: JSX.Element | string
-  refreshInterval: number
+  refreshInterval?: number
   buttonText?: React.ReactNode
   children?: JSX.Element
 }
@@ -55,6 +55,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
 
   useEffect(() => {
+    if (refreshInterval === undefined || nextUpdateAt === undefined) return
+
     const interval = setInterval(() => {
       const newValue = nextUpdateAt - ONE_SEC
 
@@ -70,7 +72,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        <QuoteCountdown nextUpdateAt={nextUpdateAt} />
+        {nextUpdateAt !== undefined && (
+          <QuoteCountdown nextUpdateAt={nextUpdateAt} />
+        )}
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
