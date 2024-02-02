@@ -5,7 +5,7 @@ import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import { FiatRate } from 'common/pure/RateInfo'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
@@ -18,15 +18,13 @@ export interface RowFeeContentProps extends RowWithShowHelpersProps {
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
+  const swapZeroFee = useSwapZeroFee()
   const { showHelpers, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, styleProps = {} } = props
+
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <TextWrapper>
-          <FeatureGuard featureFlag="swapZeroFee" defaultContent="Fees">
-            Est. fees
-          </FeatureGuard>
-        </TextWrapper>
+        <TextWrapper>{swapZeroFee ? 'Est. fees' : 'Fees'}</TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} wrap>
             <StyledInfoIcon size={16} />
