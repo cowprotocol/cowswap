@@ -13,8 +13,11 @@ export const QuoteCountdown = ({ nextUpdateAt }: CountdownComponentProps) => {
     if (Math.ceil(nextUpdateAt / 1000) <= 1) {
       setBlink(true)
       const timer = setTimeout(() => setBlink(false), 1000)
+
       return () => clearTimeout(timer)
     }
+
+    return
   }, [nextUpdateAt])
 
   return (
