@@ -33,6 +33,10 @@ const TWAPSplitTitle = styled.div`
   min-height: 24px;
   align-items: center;
   gap: 3px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0 0 10px;
+  `}
 `
 
 export type TwapConfirmDetailsProps = {

@@ -5,12 +5,13 @@ import { UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+
 const LONG_TEXT_LENGTH = 20
 
 const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
   align-items: center;
-  flex-flow: row wrap;
   justify-content: center;
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
@@ -43,13 +44,13 @@ export interface TradeFormPrimaryButtonProps {
   children: JSX.Element | string
   disabled?: boolean
   id?: string
-
   onClick?(): void
 }
 
 export function TradeFormBlankButton({ onClick, children, disabled, id }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
+  const isUpToMedium = useMediaQuery(upToMedium)
 
   useEffect(() => {
     if (!ref?.current) return
@@ -59,8 +60,19 @@ export function TradeFormBlankButton({ onClick, children, disabled, id }: TradeF
     setHasLongText(text.length > LONG_TEXT_LENGTH)
   }, [children])
 
+  // Combine local onClick logic with incoming onClick
+  const handleClick = () => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+
+    if (onClick) {
+      onClick()
+    }
+  }
+
   return (
-    <ActionButton ref={ref} id={id} onClick={onClick} disabled={disabled} hasLongText$={hasLongText}>
+    <ActionButton ref={ref} id={id} onClick={handleClick} disabled={disabled} hasLongText$={hasLongText}>
       <Trans>{children}</Trans>
     </ActionButton>
   )

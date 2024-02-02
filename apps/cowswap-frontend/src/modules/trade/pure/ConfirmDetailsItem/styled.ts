@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
-    flex-flow: row nowrap;
+    flex-flow: column wrap;
     align-items: flex-start;
     margin: 0 0 10px;
   `}

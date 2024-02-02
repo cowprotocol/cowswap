@@ -23,6 +23,10 @@ export const TimelineDot = styled.div`
   margin: 0 0 0 1px;
   opacity: 0.15;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+
   &::before {
     content: ' ';
     position: absolute;

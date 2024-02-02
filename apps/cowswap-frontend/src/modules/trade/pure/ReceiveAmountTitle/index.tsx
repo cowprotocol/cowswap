@@ -48,6 +48,7 @@ const Wrapper = styled.div`
   display: flex;
   gap: 6px;
   align-items: center;
+  white-space: nowrap;
 `
 
 interface ReceiveAmountTitleProps {
