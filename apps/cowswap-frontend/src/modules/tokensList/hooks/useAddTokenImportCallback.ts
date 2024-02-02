@@ -1,12 +1,11 @@
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
-import { updateSelectTokenWidgetAtom } from '../state/selectTokenWidgetAtom'
+import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 export function useAddTokenImportCallback() {
-  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
+  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   return useCallback(
     (tokenToImport: TokenWithLogo) => {

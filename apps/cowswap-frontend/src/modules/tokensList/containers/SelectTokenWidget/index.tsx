@@ -1,4 +1,3 @@
-import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
 import { addListAnalytics } from '@cowprotocol/analytics'
@@ -19,10 +18,11 @@ import styled from 'styled-components/macro'
 
 import { usePermitCompatibleTokens } from 'modules/permit'
 
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
+import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
-import { selectTokenWidgetAtom, updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const Wrapper = styled.div`
@@ -36,10 +36,10 @@ const Wrapper = styled.div`
 
 export function SelectTokenWidget() {
   const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
-    useAtomValue(selectTokenWidgetAtom)
+    useSelectTokenWidgetState()
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
-  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
+  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   const addCustomTokenLists = useAddList()
   const importTokenCallback = useAddUserToken()
