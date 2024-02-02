@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export interface ModalState<T> {
   isModalOpen: boolean
@@ -11,14 +11,15 @@ export function useModalState<T>(trigger?: boolean): ModalState<T> {
   const [context, setContext] = useState<T | undefined>(undefined)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const openModal = (context?: T) => {
+  const openModal = useCallback((context?: T) => {
     setIsModalOpen(true)
     setContext(context)
-  }
-  const closeModal = () => {
+  }, [])
+
+  const closeModal = useCallback(() => {
     setIsModalOpen(false)
     setContext(undefined)
-  }
+  }, [])
 
   useEffect(() => {
     if (trigger === undefined) return
@@ -28,8 +29,7 @@ export function useModalState<T>(trigger?: boolean): ModalState<T> {
     } else {
       closeModal()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger])
+  }, [trigger, openModal, closeModal])
 
   return { isModalOpen, context, openModal, closeModal }
 }
