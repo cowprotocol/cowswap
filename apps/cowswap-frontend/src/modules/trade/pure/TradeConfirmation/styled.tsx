@@ -37,7 +37,6 @@ export const SeparatorWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  // combine size and padding to define height using calc
   height: calc(var(--size) + var(--padding) * 2);
 `
 
