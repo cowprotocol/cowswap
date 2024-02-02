@@ -15,8 +15,6 @@ on:
           - COWSWAP
           - EXPLORER
           - ALL
-  pull_request:
-    types: [ opened, synchronize ]
 
 jobs:
 
