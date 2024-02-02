@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.59.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.58.0...cowswap-v1.59.0) (2024-02-02)
+
+
+### Features
+
+* increase AB testing for fee 0 to 30% of users ([#3770](https://github.com/cowprotocol/cowswap/issues/3770)) ([ecee36d](https://github.com/cowprotocol/cowswap/commit/ecee36d88dd3f4d5c143d8cd6e54f31342668a61))
+
+
+### Bug Fixes
+
+* do not touch fee=0 ethflow fees ([#3763](https://github.com/cowprotocol/cowswap/issues/3763)) ([0eabb20](https://github.com/cowprotocol/cowswap/commit/0eabb2049243b24d292a3c12c071fb4a4ec3acdb))
+
 ## [1.58.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.57.1...cowswap-v1.58.0) (2024-02-01)
 
 
