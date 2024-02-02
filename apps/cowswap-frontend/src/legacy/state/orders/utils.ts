@@ -51,9 +51,11 @@ export function isOrderFulfilled(
  */
 export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated' | 'status'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
-  return (
-    (order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER) || order.status === OrderStatus.CANCELLED
-  )
+  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
+}
+
+export function isTwapOrderCancelled(order: EnrichedOrder): boolean {
+  return order.status === OrderStatus.CANCELLED
 }
 
 /**

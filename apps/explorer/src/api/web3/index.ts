@@ -45,7 +45,6 @@ export function createWeb3Api(provider?: string): Web3 {
 const INFURA_NETWORK_NAME_MAP: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'Mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'xDai',
-  [SupportedChainId.GOERLI]: 'Goerli',
   [SupportedChainId.SEPOLIA]: 'Sepolia',
 }
 

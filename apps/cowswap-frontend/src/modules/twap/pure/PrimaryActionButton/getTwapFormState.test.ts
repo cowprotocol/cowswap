@@ -1,5 +1,5 @@
-import { COW } from '@cowprotocol/common-const'
-import { WETH_GOERLI } from '@cowprotocol/common-const'
+import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getTwapFormState, TwapFormState } from './getTwapFormState'
@@ -7,11 +7,11 @@ import { getTwapFormState, TwapFormState } from './getTwapFormState'
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
 
-const COW_GOERLI = COW[5]
+const COW_SEPOLIA = COW[SupportedChainId.SEPOLIA]
 
 const twapOrder: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, 10000000),
-  buyAmount: CurrencyAmount.fromRawAmount(COW_GOERLI, 10000000),
+  sellAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
+  buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 10000000),
   receiver: '0x00000000000000001',
   numOfParts: 1,
   startTime: 1000000,
@@ -27,7 +27,7 @@ describe('getTwapFormState()', () => {
         isSafeApp: true,
         verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
         twapOrder: { ...twapOrder },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_GOERLI, 10000000),
+        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
         chainId: 1,
         partTime: 1000000,
       })
@@ -39,8 +39,8 @@ describe('getTwapFormState()', () => {
       const result = getTwapFormState({
         isSafeApp: true,
         verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_GOERLI, 0) },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_GOERLI, 10000000),
+        twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
+        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
         chainId: 1,
         partTime: 1000000,
       })

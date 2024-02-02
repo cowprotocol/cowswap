@@ -1,6 +1,61 @@
 # Changelog
 
-## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-15)
+## [1.58.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.57.1...cowswap-v1.58.0) (2024-02-01)
+
+
+### Features
+
+* account icon improvements ([#3739](https://github.com/cowprotocol/cowswap/issues/3739)) ([9888fa1](https://github.com/cowprotocol/cowswap/commit/9888fa1dbdb2c72de3ffa13254fb1d401e1f9e4f))
+* add tag styling for tokenlist ([#3686](https://github.com/cowprotocol/cowswap/issues/3686)) ([d4d87a6](https://github.com/cowprotocol/cowswap/commit/d4d87a628eb4c41587071ce56e756a6253c7e77b))
+* remove goerli ([#3735](https://github.com/cowprotocol/cowswap/issues/3735)) ([2eaae50](https://github.com/cowprotocol/cowswap/commit/2eaae5063f1623d03328e4c2a0fb49c7799ff0a3))
+
+
+### Bug Fixes
+
+* cancelling status for SWAP/LIMIT ([#3681](https://github.com/cowprotocol/cowswap/issues/3681)) ([6eaf3fe](https://github.com/cowprotocol/cowswap/commit/6eaf3fe252f867c9ced50751553be28421164f16))
+* fix fortune cookie position ([#3732](https://github.com/cowprotocol/cowswap/issues/3732)) ([45a534e](https://github.com/cowprotocol/cowswap/commit/45a534e63535bf636551d3e898094ef06c2f32db))
+* **permit-utils:** aave permit ([#3684](https://github.com/cowprotocol/cowswap/issues/3684)) ([68566d8](https://github.com/cowprotocol/cowswap/commit/68566d882f0c0bebde93b8228645a59d76c2120d))
+* **permit:** presign ([#3698](https://github.com/cowprotocol/cowswap/issues/3698)) ([d1c8f65](https://github.com/cowprotocol/cowswap/commit/d1c8f652aa5f16d71221d29804fdc1de01472797))
+
+## [1.57.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.57.0...cowswap-v1.57.1) (2024-01-25)
+
+
+### Bug Fixes
+
+* fix label for fee0 ([#3714](https://github.com/cowprotocol/cowswap/issues/3714)) ([4a5c9a3](https://github.com/cowprotocol/cowswap/commit/4a5c9a35ee6d57047353b8a3aa9bb341357d3607))
+
+## [1.57.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.1...cowswap-v1.57.0) (2024-01-25)
+
+
+### Features
+
+* **feeZero:** deliver fee zero only to 10% of users ([#3614](https://github.com/cowprotocol/cowswap/issues/3614)) ([5c6c312](https://github.com/cowprotocol/cowswap/commit/5c6c312cc07030d30e85080a30dfd384b20dba20))
+
+
+### Bug Fixes
+
+* **permit:** invalidate static and user permit cache ([#3713](https://github.com/cowprotocol/cowswap/issues/3713)) ([2e6504a](https://github.com/cowprotocol/cowswap/commit/2e6504aaa6092bb33b53ee9666d8cafebae62d22))
+
+## [1.56.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.56.0...cowswap-v1.56.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* minimum change just to cowswap app to trigger the release ([#3693](https://github.com/cowprotocol/cowswap/issues/3693)) ([8103980](https://github.com/cowprotocol/cowswap/commit/8103980a28261d4a014948565dafd20b4f6a8aad))
+
+## [1.56.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.55.0...cowswap-v1.56.0) (2024-01-23)
+
+
+### Features
+
+* **appzi:** add appzi triggers for limit orders ([#3676](https://github.com/cowprotocol/cowswap/issues/3676)) ([c20ee4a](https://github.com/cowprotocol/cowswap/commit/c20ee4a70e53bc2889a37d48d61145e4e5a5ee46))
+
+
+### Bug Fixes
+
+* **fee=0:** buy order amounts again ([#3679](https://github.com/cowprotocol/cowswap/issues/3679)) ([72526eb](https://github.com/cowprotocol/cowswap/commit/72526eb96da007bf7242a0b6e763acf368a53edf))
+
+## [1.55.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.54.2...cowswap-v1.55.0) (2024-01-17)
 
 
 ### Features

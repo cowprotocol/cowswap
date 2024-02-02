@@ -6,14 +6,12 @@ const INFURA_KEY = process.env.REACT_APP_INFURA_KEY || '2af29cd5ac554ae3b8d991af
 const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_NETWORK_URL_1 || undefined,
   [SupportedChainId.GNOSIS_CHAIN]: process.env.REACT_APP_NETWORK_URL_100 || undefined,
-  [SupportedChainId.GOERLI]: process.env.REACT_APP_NETWORK_URL_5 || undefined,
   [SupportedChainId.SEPOLIA]: process.env.REACT_APP_NETWORK_URL_11155111 || undefined,
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
   [SupportedChainId.MAINNET]: { url: `https://mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.GNOSIS_CHAIN]: { url: `https://rpc.gnosis.gateway.fm`, usesInfura: false },
-  [SupportedChainId.GOERLI]: { url: `https://goerli.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
 }
 

@@ -24,8 +24,8 @@ describe.skip('buildWidgetUrl', () => {
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/?')
     })
     it('gnosis chain', () => {
-      const url = buildWidgetUrl({ chainId: 5, tradeType, env: defaultEnv })
-      expect(url).toEqual('https://swap.cow.fi/#/5/widget/swap/?')
+      const url = buildWidgetUrl({ chainId: 100, tradeType, env: defaultEnv })
+      expect(url).toEqual('https://swap.cow.fi/#/100/widget/swap/?')
     })
   })
 

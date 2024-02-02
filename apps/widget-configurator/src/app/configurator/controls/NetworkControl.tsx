@@ -15,7 +15,7 @@ export type NetworkOption = {
 export const NetworkOptions: NetworkOption[] = [
   { chainId: SupportedChainId.MAINNET, label: 'Ethereum' },
   { chainId: SupportedChainId.GNOSIS_CHAIN, label: 'Gnosis Chain' },
-  { chainId: SupportedChainId.GOERLI, label: 'Goerli' },
+  { chainId: SupportedChainId.SEPOLIA, label: 'Sepolia' },
 ]
 
 const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId

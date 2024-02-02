@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -23,6 +23,8 @@ import { IsTokenPermittableResult } from '../types'
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
+
 /**
  * Check whether the token is permittable, and returns the permit info for it
  * Tries to find it out from the pre-generated list
@@ -39,7 +41,6 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
-  const tokenName = token?.name
 
   // Avoid building permit info in the first place if order type is not supported
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
@@ -49,7 +50,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled ? token : undefined
+    isPermitEnabled && !isNative ? token : undefined
   )
 
   const spender = GP_VAULT_RELAYER[chainId]
@@ -70,7 +71,9 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
       return
     }
 
-    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, tokenName, chainId, provider }).then((result) => {
+    const minGasLimit = PERMIT_GAS_LIMIT_MIN[chainId]
+
+    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, chainId, provider, minGasLimit }).then((result) => {
       if ('error' in result) {
         // When error, we don't know. Log and don't cache.
         console.debug(
@@ -94,7 +97,6 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
     preGeneratedIsLoading,
     provider,
     spender,
-    tokenName,
   ])
 
   if (isNative) {

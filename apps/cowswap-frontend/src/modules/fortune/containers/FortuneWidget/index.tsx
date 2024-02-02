@@ -28,12 +28,12 @@ import {
 import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
-  --size: 75px;
+  --size: 64px;
   display: inline-block;
   position: fixed;
   z-index: 10;
-  right: 10px;
-  bottom: 94px;
+  right: 78px;
+  bottom: 30px;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
@@ -46,7 +46,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   line-height: 0;
   color: ${({ theme }) => theme.blue1};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     --size: 52px;
     left: 65px;
     right: initial;
@@ -68,7 +68,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     box-shadow: 0px 0px 50px 30px ${({ theme }) => (theme.darkMode ? theme.blueDark2 : theme.blueLight1)};
     z-index: -1;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       box-shadow: none;
     `}
   }

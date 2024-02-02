@@ -52,7 +52,7 @@ export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
 export type GetTokenPermitInfoParams = {
   spender: string
   tokenAddress: string
-  tokenName?: string | undefined
   chainId: number
   provider: JsonRpcProvider
+  minGasLimit?: number | undefined
 }

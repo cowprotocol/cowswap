@@ -100,9 +100,9 @@ export const customTokensMock: TokenWithLogo[] = [
 export const listsMock: ListState[] = [
   {
     source:
-      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapGoerli.json',
+      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
     list: {
-      name: 'CowSwap Goerli',
+      name: 'CowSwap Sepolia',
       logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
       tokens: [1, 2, 3, 4, 5, 6, 7] as any[],
       version: { major: 0, minor: 0, patch: 1 },

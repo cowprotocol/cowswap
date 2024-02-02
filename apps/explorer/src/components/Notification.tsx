@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationEllipsis, faExclamationTriangle, faCircleCheck } from './icons'
+import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
 import { BASE_COLOURS } from 'theme'
 import { media } from 'theme/styles/media'
 
@@ -103,7 +103,7 @@ export const Notification: React.FC<NotificationProps> = ({
         {appendMessage && (
           <>
             . Please&nbsp;
-            <a onClick={(): void => window.location.reload()}>{isError ? 'try again ' : 'refresh '}</a>
+            <button onClick={(): void => window.location.reload()}>{isError ? 'try again ' : 'refresh '}</button>
             {isError ? 'later.' : 'to get the latest.'}
           </>
         )}

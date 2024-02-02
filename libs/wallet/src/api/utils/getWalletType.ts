@@ -2,13 +2,13 @@ import { GnosisSafeInfo, WalletType } from '../types'
 
 interface GetWalletTypeParams {
   gnosisSafeInfo?: GnosisSafeInfo
-  isSmartContractWallet: boolean
+  isSmartContractWallet: boolean | undefined
 }
 
 export function getWalletType({ gnosisSafeInfo, isSmartContractWallet }: GetWalletTypeParams): WalletType {
   if (gnosisSafeInfo) {
     return WalletType.SAFE
-  } else if (isSmartContractWallet) {
+  } else if (isSmartContractWallet === true) {
     return WalletType.SC
   } else {
     return WalletType.EOA

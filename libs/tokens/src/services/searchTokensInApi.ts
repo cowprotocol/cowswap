@@ -3,11 +3,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 type Address = `0x${string}`
 
-type Chain = 'ARBITRUM' | 'ETHEREUM' | 'ETHEREUM_GOERLI' | 'OPTIMISM' | 'POLYGON' | 'CELO' | 'BNB' | 'UNKNOWN_CHAIN'
+type Chain = 'ARBITRUM' | 'ETHEREUM' | 'ETHEREUM_SEPOLIA' | 'OPTIMISM' | 'POLYGON' | 'CELO' | 'BNB' | 'UNKNOWN_CHAIN'
 
 const CHAIN_TO_CHAIN_ID: { [key: string]: SupportedChainId } = {
   ETHEREUM: SupportedChainId.MAINNET,
-  ETHEREUM_GOERLI: SupportedChainId.GOERLI,
+  ETHEREUM_SEPOLIA: SupportedChainId.SEPOLIA,
 }
 
 interface FetchTokensResult {

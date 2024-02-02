@@ -1,16 +1,15 @@
 import { GetQuoteResponse } from '@cowprotocol/contracts'
-import { WETH9 as WETH } from '@uniswap/sdk-core'
 
 import { parseUnits } from 'ethers/lib/utils'
 
-const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
-const USDC = '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
+const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
+const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const FOUR_HOURS = 3600 * 4 * 1000
-const DEFAULT_SELL_TOKEN = WETH[5]
+const DEFAULT_SELL_TOKEN = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14' // WETH
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.fi/goerli/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/sepolia/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,
@@ -25,8 +24,8 @@ const baseParams = {
 const mockQuoteResponse = {
   quote: {
     // arb props here..
-    sellToken: '0x6810e776880c02933d47db1b9fc05908e5386b96',
-    buyToken: '0x6810e776880c02933d47db1b9fc05908e5386b96',
+    sellToken: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
+    buyToken: '0xbe72E441BF55620febc26715db68d3494213D8Cb',
     receiver: '0x6810e776880c02933d47db1b9fc05908e5386b96',
     sellAmount: '1234567890',
     buyAmount: '1234567890',
@@ -53,11 +52,11 @@ function _assertFeeData(fee: GetQuoteResponse): void {
 describe('Fee endpoint', () => {
   it('Returns the expected info', () => {
     const params = {
-      sellToken: DEFAULT_SELL_TOKEN.address,
+      sellToken: DEFAULT_SELL_TOKEN,
       buyToken: USDC,
-      sellAmountBeforeFee: parseUnits('0.1', DEFAULT_SELL_TOKEN.decimals).toString(),
+      sellAmountBeforeFee: parseUnits('0.1', 18).toString(),
       kind: 'sell',
-      fromDecimals: DEFAULT_SELL_TOKEN.decimals,
+      fromDecimals: 18,
       toDecimals: 6,
       // BASE PARAMS
       ...baseParams,
@@ -93,11 +92,11 @@ describe('Fee: Complex fetch and persist fee', () => {
     // only override Date functions (default is to override all time based functions)
     cy.stubResponse({ method: 'POST', url: FEE_QUERY, alias: 'feeRequest', body: LATER_FEE })
 
-    // GIVEN: user visits app, selects 0.1 WETH as sell, DAI as buy
+    // GIVEN: user visits app, selects 0.1 WETH as sell, COW as buy
     // and goes AFK
-    cy.visit('/#/5/swap')
-    cy.swapSelectOutput(DAI)
-    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
+    cy.visit('/#/11155111/swap')
+    cy.swapSelectOutput(COW)
+    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
     // set the Cypress clock to now (default is UNIX 0)
     cy.clock(Date.now(), ['Date'])
@@ -138,24 +137,24 @@ describe('Fee: simple checks it exists', () => {
       body: QUOTE_RESP,
     })
     // GIVEN: A user loads the swap page
-    // WHEN: Select DAI token as output and sells 0.1 WETH
-    cy.visit('/#/5/swap')
-    cy.swapSelectOutput(DAI)
-    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
+    // WHEN: Select COW token as output and sells 0.1 WETH
+    cy.visit('/#/11155111/swap')
+    cy.swapSelectOutput(COW)
+    cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
-    // THEN: The fee for selling WETH for DAI is fetched from api endpoint
+    // THEN: The fee for selling WETH for COW is fetched from api endpoint
     cy.wait('@feeRequest').its('response.body').should(_assertFeeData)
   })
 })
 
 describe('Swap: Considering fee', () => {
   beforeEach(() => {
-    // GIVEN: an initial selection of WETH-DAI
-    cy.visit('/#/5/swap')
+    // GIVEN: an initial selection of WETH-COW
+    cy.visit('/#/11155111/swap')
   })
 
   it("Uses Uniswap price, if there's no tip", () => {
-    // GIVEN: Swap WETH-DAI
+    // GIVEN: Swap WETH-COW
     // TODO: Create command for easy setting up a case (setup current selection)
     //
     // GIVEN: No fee
@@ -167,7 +166,7 @@ describe('Swap: Considering fee', () => {
   })
 
   it("User can't trade when amount is smaller than minimumFee", () => {
-    // GIVEN: Swap WETH-DAI
+    // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount is smaller than minimumFee
     //
@@ -177,7 +176,7 @@ describe('Swap: Considering fee', () => {
   })
 
   it('User pays minimumFee for small trades', () => {
-    // GIVEN: Swap WETH-DAI
+    // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount is bigger than minimumFee, but trade is still small
     //
@@ -187,7 +186,7 @@ describe('Swap: Considering fee', () => {
   })
 
   it('User pays more than minimumFee for big trades', () => {
-    // GIVEN: Swap WETH-DAI
+    // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount * "fee factor" is bigger than minimumFee
     //

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitHookData } from '@cowprotocol/permit-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
@@ -10,7 +12,7 @@ import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 
-function usePermitDataIfNotAllowance(): PermitHookData | undefined {
+function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined {
   const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
 
   // Remove permitData if the user has enough allowance for the current trade
@@ -30,13 +32,19 @@ function usePermitDataIfNotAllowance(): PermitHookData | undefined {
 export function AppDataHooksUpdater(): null {
   const { v2Trade } = useDerivedSwapInfo()
   const updateAppDataHooks = useUpdateAppDataHooks()
-  const permitData = usePermitDataIfNotAllowance()
+  const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
   const permitDataPrev = useRef<PermitHookData | undefined>(undefined)
   const hasTradeInfo = !!v2Trade
+  // This is already covered up the dependency chain, but it still slips through some times
+  // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
+  const isSmartContractWallet = useIsSmartContractWallet()
+  // Remove hooks if the order is selling native. There's no need for approval
+  const isNativeSell = v2Trade?.inputAmount.currency ? getIsNativeToken(v2Trade?.inputAmount.currency) : false
 
   useEffect(() => {
     if (
       !hasTradeInfo || // If there's no trade info, wait until we have one to update the hooks (i.e. missing quote)
+      isSmartContractWallet === undefined || // We don't know what type of wallet it is, wait until it's defined
       JSON.stringify(permitDataPrev.current) === JSON.stringify(permitData) // Or if the permit data has not changed
     ) {
       return undefined
@@ -46,18 +54,18 @@ export function AppDataHooksUpdater(): null {
       preInteractionHooks: permitData ? [permitData] : undefined,
     })
 
-    if (hooks) {
+    if (!isSmartContractWallet && !isNativeSell && hooks) {
       // Update the hooks
       console.log('[AppDataHooksUpdater]: Set hooks', hooks)
       updateAppDataHooks(hooks)
       permitDataPrev.current = permitData
     } else {
-      // There was a hook data, but not any more. The hook needs to be removed
+      // There was a hook data, but not anymore. The hook needs to be removed
       console.log('[AppDataHooksUpdater] Clear hooks')
       updateAppDataHooks(undefined)
       permitDataPrev.current = undefined
     }
-  }, [updateAppDataHooks, permitData, hasTradeInfo])
+  }, [updateAppDataHooks, permitData, hasTradeInfo, isSmartContractWallet, isNativeSell])
 
   return null
 }

@@ -123,7 +123,7 @@ const tabItems = (
 
   const fillsTab = {
     id: TabView.FILLS,
-    tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
+    tab: filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>,
     content: (
       <FillsTableWithData
         order={order}

@@ -1,29 +1,29 @@
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { USDC_GNOSIS_CHAIN, DAI_GOERLI, USDC_GOERLI } from '@cowprotocol/common-const'
+import { USDC_GNOSIS_CHAIN, USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
 describe('Amounts formatting', () => {
-  const decimals = DAI_GOERLI.decimals
-  const getAmount = (value: string, decimalsShift: number, token = DAI_GOERLI) =>
+  const decimals = WETH_SEPOLIA.decimals
+  const getAmount = (value: string, decimalsShift: number, token = WETH_SEPOLIA) =>
     CurrencyAmount.fromRawAmount(token, value + '0'.repeat(token.decimals + decimalsShift))
 
   describe('Amounts', () => {
     it('Zero amount', () => {
-      const result = formatTokenAmount(getAmount('0', 0)) // 0 DAI
+      const result = formatTokenAmount(getAmount('0', 0)) // 0 WETH
 
       expect(result).toBe('0')
     })
 
     it('Extra small amount', () => {
-      const result = formatTokenAmount(getAmount('1', -decimals)) // 1e-18 DAI
+      const result = formatTokenAmount(getAmount('1', -decimals)) // 1e-18 WETH
 
       expect(result).toBe('< 0.000001')
     })
 
     it('Small amount', () => {
-      const result = formatTokenAmount(getAmount('1', -4)) // 1e-4 DAI
+      const result = formatTokenAmount(getAmount('1', -4)) // 1e-4 WETH
 
       expect(result).toBe('0.0001')
     })
@@ -59,7 +59,7 @@ describe('Amounts formatting', () => {
     })
 
     it('Format decimals up (when rounded up to zero, 6 decimals)', () => {
-      const result = formatTokenAmount(getAmount('1850999994', -6, USDC_GOERLI)) //1850.999994
+      const result = formatTokenAmount(getAmount('1850999994', -6, USDC_SEPOLIA)) //1850.999994
 
       expect(result).toBe('1,851')
     })

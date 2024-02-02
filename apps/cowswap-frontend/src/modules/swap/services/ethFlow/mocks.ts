@@ -9,8 +9,8 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { defaultEthFlowContext, EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-const native = NATIVE_CURRENCIES[SupportedChainId.GOERLI]
-const wrapped = WETH[SupportedChainId.GOERLI]
+const native = NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]
+const wrapped = WETH[SupportedChainId.SEPOLIA]
 const nativeInput = CurrencyAmount.fromRawAmount(native, 5.987654 * 10 ** 18)
 const nativeBalance = CurrencyAmount.fromRawAmount(native, 15.12123 * 10 ** 18)
 const wrappedBalance = CurrencyAmount.fromRawAmount(wrapped, 15.12123 * 10 ** 18)

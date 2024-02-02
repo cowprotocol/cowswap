@@ -31,16 +31,19 @@ export const IconWrapper = styled.div<{ size?: number }>`
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+  border-radius: ${({ size }) => (size ? size + 'px' : '32px')};
+  height: ${({ size }) => (size ? size + 'px' : '32px')};
+  width: ${({ size }) => (size ? size + 'px' : '32px')};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    align-items: flex-end;
+  `};
+
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '32px')};
     width: ${({ size }) => (size ? size + 'px' : '32px')};
   }
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    align-items: flex-end;
-  `};
-  border-radius: ${({ size }) => (size ? size + 'px' : '32px')};
-  overflow: hidden;
 `
 
 export const TransactionListWrapper = styled.div`

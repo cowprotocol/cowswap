@@ -1,4 +1,4 @@
-import { COW, WETH_GOERLI } from '@cowprotocol/common-const'
+import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -15,11 +15,11 @@ jest.mock('modules/permit')
 
 const APP_DATA_HASH = getAppData().appDataKeccak256
 
-const chainId = SupportedChainId.GOERLI
+const chainId = SupportedChainId.SEPOLIA
 
 const order: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(COW[SupportedChainId.GOERLI], 100_000_000_000),
-  buyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, 200_000),
+  sellAmount: CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 100_000_000_000),
+  buyAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 200_000),
   receiver: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
   numOfParts: 3,
   startTime: 1684764716,

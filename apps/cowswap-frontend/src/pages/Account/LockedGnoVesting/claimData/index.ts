@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import gnosisChainIndex from './gnosisChain.json'
-import goerliIndex from './goerli.json'
 import mainnetIndex from './mainnet.json'
 
 interface Claim {
@@ -13,14 +12,12 @@ interface Claim {
 const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
-  [SupportedChainId.GOERLI]: goerliIndex,
   [SupportedChainId.SEPOLIA]: [], // TODO SEPOLIA: check it
 }
 
 const chainNames: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
-  [SupportedChainId.GOERLI]: 'goerli',
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
 

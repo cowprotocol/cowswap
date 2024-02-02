@@ -6,6 +6,11 @@ export const Wrapper = styled.div`
   text-align: left;
   gap: 16px;
   font-weight: 500;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 10px;
+    flex: 1 1 auto;
+  `}
 `
 
 export const TokenName = styled.div`
