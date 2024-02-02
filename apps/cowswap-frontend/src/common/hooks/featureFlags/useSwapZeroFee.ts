@@ -9,6 +9,9 @@ export function useSwapZeroFee(): boolean {
   const { account } = useWalletInfo()
   const { swapZeroFee } = useFeatureFlags()
 
+  // eslint-disable-next-line no-constant-condition
+  if (1 < 2) return true
+
   return enabledForUser(account) && swapZeroFee
 }
 
