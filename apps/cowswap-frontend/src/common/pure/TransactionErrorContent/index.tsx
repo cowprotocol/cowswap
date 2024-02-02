@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -43,13 +41,11 @@ const AlertIcon = styled(AlertTriangle)`
 export interface TransactionErrorContentProps {
   message: JSX.Element | string
   onDismiss(): void
-  mode?: 'screen' | 'modal'
+  isScreenMode?: boolean
 }
 
 export function TransactionErrorContent(props: TransactionErrorContentProps) {
-  const { message, onDismiss, mode } = props
-
-  const isScreenMode = mode === 'screen'
+  const { message, onDismiss, isScreenMode } = props
 
   return (
     <Wrapper>
