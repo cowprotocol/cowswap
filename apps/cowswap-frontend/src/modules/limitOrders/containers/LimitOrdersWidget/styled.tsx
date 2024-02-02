@@ -23,6 +23,7 @@ export const FooterBox = styled.div`
 export const RateWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 151px;
+  grid-template-rows: max-content;
   gap: 6px;
   text-align: right;
   color: inherit;
@@ -44,6 +45,7 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+  grid-template-rows: max-content;
 `
 
 export const StyledOrderType = styled(OrderType)`

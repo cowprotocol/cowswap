@@ -10,6 +10,7 @@ const LONG_TEXT_LENGTH = 20
 const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
   align-items: center;
+  flex-flow: row wrap;
   justify-content: center;
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});

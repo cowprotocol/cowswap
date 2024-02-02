@@ -8,6 +8,7 @@ export const Wrapper = styled.div<{ totalSteps: number }>`
   width: 100%;
   display: grid;
   grid-template-columns: ${({ totalSteps }) => `repeat(${totalSteps}, 1fr)`};
+  grid-template-rows: max-content;
   margin: 12px 0 24px;
 `
 

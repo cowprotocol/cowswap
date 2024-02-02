@@ -28,6 +28,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
     grid-template-columns: 11rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1.36fr;
+    grid-template-rows: max-content;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -45,6 +46,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
     > tbody > tr {
       grid-template-columns: none;
+      grid-template-rows: max-content;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;

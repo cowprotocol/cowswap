@@ -39,6 +39,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content;
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
