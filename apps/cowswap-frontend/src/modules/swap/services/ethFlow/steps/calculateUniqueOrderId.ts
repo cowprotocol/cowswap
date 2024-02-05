@@ -16,11 +16,22 @@ export interface UniqueOrderIdResult {
   orderParams: PostOrderParams // most cases, will be the same as the ones in the parameter, but it might be modified to make the order unique
 }
 
-function incrementFee(params: PostOrderParams): PostOrderParams {
+function adjustAmounts(params: PostOrderParams, swapZeroFee: boolean): PostOrderParams {
   const nativeCurrency = params.feeAmount?.currency
+  const buyCurrency = params.outputAmount?.currency
 
-  if (!nativeCurrency) {
+  if (!nativeCurrency || !buyCurrency) {
     throw new Error('Missing currency for Eth Flow Fee') // Not a realistic case, just to make TS happy
+  }
+
+  if (swapZeroFee) {
+    // On fee=0, fee is, well, 0. Thus, we cannot shift amounts around and remain with the exact same price.
+    // Also, we don't want to touch the sell amount.
+    // If we move it down, the price might become "too good", if we move it up, the user might not have enough funds!
+    // Thus, we make the buy amount a tad bit worse by 1 wei.
+    // We can only hope this doesn't happen for an order buying 0 a decimals token 🤞
+    const oneBuyWei = CurrencyAmount.fromRawAmount(buyCurrency, 1)
+    return { ...params, outputAmount: params.outputAmount?.subtract(oneBuyWei) }
   }
 
   const oneWei = CurrencyAmount.fromRawAmount(nativeCurrency, 1)
@@ -34,7 +45,8 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  checkEthFlowOrderExists: EthFlowOrderExistsCallback
+  checkEthFlowOrderExists: EthFlowOrderExistsCallback,
+  swapZeroFee: boolean
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
@@ -64,7 +76,12 @@ export async function calculateUniqueOrderId(
     logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ❌ Collision detected: ' + orderId, logParams)
 
     // Recursive call, increment one fee until we get an unique order Id
-    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkEthFlowOrderExists)
+    return calculateUniqueOrderId(
+      adjustAmounts(orderParams, swapZeroFee),
+      ethFlowContract,
+      checkEthFlowOrderExists,
+      swapZeroFee
+    )
   }
 
   logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ✅ Order Id is Unique' + orderId, logParams)
