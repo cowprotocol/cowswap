@@ -28,33 +28,25 @@ export function WrapNativeModal() {
   const inputCurrency = inputCurrencyAmount?.currency
   const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
-  const title = isNativeIn ? (
-    <span>
-      Wrapping <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
-      <TokenSymbol token={outputCurrency} />
-    </span>
-  ) : (
-    <span>
-      Unwrapping <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
-      <TokenSymbol token={outputCurrency} />
-    </span>
-  )
-
-  const description = (
-    <span>
-      Unwrapping <TokenSymbol token={inputCurrency} /> <br /> Follow these steps:
-    </span>
-  )
-
-  const operationLabel = isNativeIn ? 'wrapping' : 'unwrapping'
+  const wrapUnwrapLabel = isNativeIn ? 'Wrapping' : 'Unwrapping'
+  const operationLabel = wrapUnwrapLabel.toLowerCase()
 
   return (
     <CowModal isOpen={isOpen} onDismiss={handleDismiss}>
       <ConfirmationPendingContent
         onDismiss={handleDismiss}
         statusIcon={statusIcon}
-        title={title}
-        description={description}
+        title={
+          <span>
+            {wrapUnwrapLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
+            <TokenSymbol token={outputCurrency} />
+          </span>
+        }
+        description={
+          <span>
+            {wrapUnwrapLabel} <TokenSymbol token={inputCurrency} /> <br /> Follow these steps:
+          </span>
+        }
         operationSubmittedMessage={`The ${operationLabel} is submitted.`}
         walletAddress={walletAddress}
         operationLabel={operationLabel}
