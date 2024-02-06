@@ -15,6 +15,7 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
+import { useSwapState } from '../../hooks/useSwapState'
 import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
 
 export interface ConfirmSwapModalSetupProps {
@@ -31,6 +32,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
     props
 
+  const { recipient } = useSwapState()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -60,6 +62,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         isConfirmDisabled={false}
         priceImpact={priceImpact}
         buttonText="Confirm Swap"
+        recipient={recipient}
       >
         <>
           <TradeRates {...tradeRatesProps} isReviewSwap={true} />

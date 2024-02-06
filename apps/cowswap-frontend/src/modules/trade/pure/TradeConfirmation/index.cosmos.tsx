@@ -15,6 +15,7 @@ const Fixtures = {
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
       refreshInterval={10_000}
+      recipient={null}
     >
       <span>Trade confirmation</span>
     </TradeConfirmation>

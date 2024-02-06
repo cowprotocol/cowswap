@@ -29,6 +29,7 @@ const confirmationState: TradeConfirmationProps = {
   priceImpact: priceImpactMock,
   isConfirmDisabled: false,
   refreshInterval: 10_000,
+  recipient: null,
   onConfirm() {
     console.log('onConfirm')
   },

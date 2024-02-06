@@ -29,6 +29,7 @@ export function TwapConfirmModal() {
     outputCurrencyAmount,
     outputCurrencyFiatAmount,
     outputCurrencyBalance,
+    recipient,
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -82,6 +83,7 @@ export function TwapConfirmModal() {
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
         refreshInterval={PRICE_UPDATE_INTERVAL}
+        recipient={recipient}
       >
         <>
           <TradeBasicConfirmDetails

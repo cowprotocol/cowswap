@@ -14,6 +14,7 @@ import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { CustomRecipientBanner } from '../CustomRecipientBanner'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -27,6 +28,7 @@ export interface TradeConfirmationProps {
   priceImpact: PriceImpact
   title: JSX.Element | string
   refreshInterval?: number
+  recipient: string | null
   buttonText?: React.ReactNode
   children?: JSX.Element
 }
@@ -43,6 +45,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     refreshInterval,
     buttonText = 'Confirm',
     children,
+    recipient,
   } = props
 
   const inputAmount = inputCurrencyInfo.amount?.toExact()
@@ -72,9 +75,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        {nextUpdateAt !== undefined && (
-          <QuoteCountdown nextUpdateAt={nextUpdateAt} />
-        )}
+        {nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
@@ -90,6 +91,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         </styledEl.AmountsPreviewContainer>
         {children}
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+        <CustomRecipientBanner recipient={recipient} />
         <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>

@@ -29,10 +29,11 @@ export interface LimitOrdersConfirmModalProps {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
+  recipient: string | null
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext, priceImpact } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext, priceImpact, recipient } = props
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -73,6 +74,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={buttonText}
+        recipient={recipient}
       >
         <>
           <LimitOrdersDetails
