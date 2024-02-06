@@ -316,7 +316,6 @@ export function SwapWidget() {
         )}
         <NetworkAlert />
       </TradeWidgetContainer>
-      )
     </>
   )
 }
