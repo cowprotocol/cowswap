@@ -28,7 +28,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
 
-  const { isOpen: isTradeReviewOpen, error: confirmError } = useTradeConfirmState()
+  const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
@@ -69,7 +69,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, account])
 
-  if (isTradeReviewOpen) {
+  if (isTradeReviewOpen || pendingTrade) {
     return confirmModal
   }
 
