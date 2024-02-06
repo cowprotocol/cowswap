@@ -4,6 +4,7 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 const ButtonWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;

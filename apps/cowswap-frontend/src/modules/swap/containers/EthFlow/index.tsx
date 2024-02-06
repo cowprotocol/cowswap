@@ -19,7 +19,6 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 import { useApproveState } from 'common/hooks/useApproveState'
-import { CowModal } from 'common/pure/Modal'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
@@ -34,7 +33,7 @@ export interface EthFlowProps {
   onDismiss: () => void
 }
 
-function EthFlow({
+export function EthFlowModal({
   nativeInput,
   onDismiss,
   wrapCallback,
@@ -104,13 +103,5 @@ function EthFlow({
       wrappingPreview={wrappingPreview}
       onDismiss={onDismiss}
     />
-  )
-}
-
-export function EthFlowModal(props: EthFlowProps) {
-  return (
-    <CowModal isOpen onDismiss={props.onDismiss}>
-      <EthFlow {...props} />
-    </CowModal>
   )
 }

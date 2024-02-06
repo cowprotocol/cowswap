@@ -74,7 +74,7 @@ export function PermitModal(props: PermitModalProps) {
 
   return (
     <NewModal {...rest} screenMode>
-      <NewModalContentTop paddingTop={90}>
+      <NewModalContentTop gap={24} paddingTop={90}>
         {icon}
         <span>
           <h3>{title}</h3>

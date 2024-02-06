@@ -1,9 +1,3 @@
-import { useCallback } from 'react'
-
-import styled from 'styled-components/macro'
-
-import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
-
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
 import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
@@ -15,6 +9,8 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
+import { NewModal, NewModalContentBottom, NewModalContentTop } from 'common/pure/NewModal'
+
 export interface EthFlowModalContentProps {
   state: EthFlowState
   isExpertMode: boolean
@@ -25,10 +21,6 @@ export interface EthFlowModalContentProps {
   onDismiss: () => void
 }
 
-const EthFlowModalLayout = styled(LegacyConfirmationModalContent)`
-  padding: 22px;
-`
-
 export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { ethFlowActions, state, isExpertMode, balanceChecks, onDismiss, wrappingPreview, ethFlowContext } = props
 
@@ -36,38 +28,27 @@ export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const wrappedSymbol = wrappingPreview.wrapped.symbol || ''
   const { title, descriptions, buttonText } = ethFlowConfigs[state]({ isExpertMode, nativeSymbol, wrappedSymbol })
 
-  const TopModalContent = useCallback(
-    () => (
-      <EthFlowModalTopContent
-        descriptions={descriptions}
-        state={state}
-        balanceChecks={balanceChecks}
-        nativeSymbol={nativeSymbol}
-      />
-    ),
-    [state, balanceChecks, descriptions, nativeSymbol]
-  )
-
-  const BottomModalContent = useCallback(() => {
-    const props = {
-      buttonText,
-      isExpertMode,
-      state,
-      ethFlowActions,
-      ethFlowContext,
-      wrappingPreview,
-    }
-
-    return <EthFlowModalBottomContent {...props} />
-  }, [isExpertMode, state, ethFlowActions, buttonText, wrappingPreview, ethFlowContext])
-
   return (
-    <EthFlowModalLayout
-      title={title}
-      titleSize={20}
-      onDismiss={onDismiss}
-      topContent={TopModalContent}
-      bottomContent={BottomModalContent}
-    />
+    <NewModal title={title} onDismiss={onDismiss} screenMode>
+      <NewModalContentTop gap={4}>
+        <EthFlowModalTopContent
+          descriptions={descriptions}
+          state={state}
+          balanceChecks={balanceChecks}
+          nativeSymbol={nativeSymbol}
+        />
+      </NewModalContentTop>
+
+      <NewModalContentBottom>
+        <EthFlowModalBottomContent
+          buttonText={buttonText}
+          isExpertMode={isExpertMode}
+          state={state}
+          ethFlowActions={ethFlowActions}
+          ethFlowContext={ethFlowContext}
+          wrappingPreview={wrappingPreview}
+        />
+      </NewModalContentBottom>
+    </NewModal>
   )
 }

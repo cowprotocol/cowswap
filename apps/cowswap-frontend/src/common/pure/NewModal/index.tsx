@@ -52,7 +52,7 @@ const Heading = styled.h2`
   width: 100%;
   height: auto;
   padding: 18px;
-  margin: 0;
+  margin: 0 24px;
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -83,7 +83,7 @@ const IconX = styled.div`
 
 const BackButtonStyled = styled(BackButton)`
   position: absolute;
-  top: 20px;
+  top: 18px;
   left: 10px;
 `
 
@@ -117,7 +117,7 @@ const NewModalContent = styled.div<{ paddingTop?: number }>`
   }
 `
 
-export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
+export const NewModalContentTop = styled.div<{ gap?: number; paddingTop?: number }>`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -125,7 +125,7 @@ export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
   width: 100%;
   margin: 0 0 auto;
   padding: ${({ paddingTop = 0 }) => `${paddingTop}px`} 0 0;
-  gap: 24px;
+  gap: ${({ gap = 0 }) => `${gap}px`};
 
   > span {
     gap: 6px;
@@ -154,7 +154,7 @@ export interface NewModalProps {
   screenMode?: boolean
 }
 
-export function NewModal({ maxWidth = 450, minHeight = 450, screenMode, title, children, onDismiss }: NewModalProps) {
+export function NewModal({ maxWidth = 450, minHeight = 350, screenMode, title, children, onDismiss }: NewModalProps) {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
