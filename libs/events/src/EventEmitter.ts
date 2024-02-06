@@ -11,6 +11,8 @@ export interface CowEventSubscription<T extends CowEvents> {
   listener: CowListener<T>
 }
 
+export type CowEventSubscriptions = CowEventSubscription<CowEvents>[]
+
 export interface CowEventEmitter {
   on<T extends CowEvents>(event: T, listener: CowListener<T>): void
   emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
