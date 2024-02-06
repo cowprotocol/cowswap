@@ -122,7 +122,7 @@ export const TokensTableRow = ({
   }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
-    if (isNativeToken) {
+    if (isNativeToken || !account) {
       return null
     }
 
@@ -149,7 +149,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [isNativeToken, currentAllowance, handleApprove, approvalState])
+  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState])
 
   return (
     <>
