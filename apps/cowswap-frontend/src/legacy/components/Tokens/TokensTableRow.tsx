@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
@@ -72,9 +72,11 @@ export const TokensTableRow = ({
   const { handleSetError, handleCloseError } = useErrorModal()
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-  const amountToApprove = CurrencyAmount.fromRawAmount(tokenData, MaxUint256)
+  const isNativeToken = getIsNativeToken(tokenData)
 
-  const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
+  const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
+
+  const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
   const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
@@ -120,6 +122,10 @@ export const TokensTableRow = ({
   }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
+    if (isNativeToken) {
+      return null
+    }
+
     if (approvalState === ApprovalState.APPROVED) {
       return <ApproveLabel>Approved ✓</ApproveLabel>
     }
@@ -143,7 +149,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [currentAllowance, handleApprove, approvalState])
+  }, [isNativeToken, currentAllowance, handleApprove, approvalState])
 
   return (
     <>
