@@ -103,6 +103,7 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
 
 /**
  * Sends appCode to the contentWindow of the widget.
+ *
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
@@ -135,5 +136,21 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
     }
 
     iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+  })
+}
+
+/**
+ * Subscribes to the cow events
+ *
+ * @param iframe - The HTMLIFrameElement of the widget.
+ * @param defaultHeight - Default height for the widget.
+ */
+function subscribeToCoWEvents(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
+  window.addEventListener('message', (event) => {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
+      return
+    }
+
+    console.log('Event received: ', event.data.eventName, event.data.payload)
   })
 }

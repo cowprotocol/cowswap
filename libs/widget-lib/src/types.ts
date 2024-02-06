@@ -1,5 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CowEventEmitter } from '@cowprotocol/events'
 
 export interface JsonRpcRequest {
   id: number
