@@ -8,6 +8,7 @@ import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
+import { useSetShowFollowPendingTxPopup } from '../../hooks/useSetShowFollowPendingTxPopup'
 import {
   handleFollowPendingTxPopupAtom,
   handleHidePopupPermanentlyAtom,
@@ -62,7 +63,7 @@ const useShowingPopupFirstTime = (orderId: string | undefined) => {
 }
 
 export const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
-  const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
+  const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
   const setHidePendingTxPopupPermanently = useSetAtom(handleHidePopupPermanentlyAtom)
   const isExpertMode = useIsExpertMode()
   const { lastPendingOrder, onClose } = useLastPendingOrder()
