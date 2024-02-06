@@ -18,7 +18,7 @@ export async function ethFlow(
   ethFlowContext: EthFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-): Promise<void> {
+): Promise<void | false> {
   const {
     tradeConfirmActions,
     swapFlowAnalyticsContext,
@@ -38,7 +38,7 @@ export async function ethFlow(
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return undefined
+    return false
   }
 
   // TODO: remove once we figure out what's adding this to appData in the first place

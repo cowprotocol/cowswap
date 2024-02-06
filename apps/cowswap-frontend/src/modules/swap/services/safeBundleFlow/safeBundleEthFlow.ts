@@ -24,11 +24,11 @@ export async function safeBundleEthFlow(
   input: SafeBundleEthFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-): Promise<void> {
+): Promise<void | false> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return
+    return false
   }
 
   const {

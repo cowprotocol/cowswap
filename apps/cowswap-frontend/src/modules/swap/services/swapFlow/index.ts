@@ -23,7 +23,7 @@ export async function swapFlow(
   input: SwapFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-) {
+): Promise<void | false> {
   const { tradeConfirmActions } = input
 
   const {
@@ -35,7 +35,7 @@ export async function swapFlow(
 
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return
+    return false
   }
 
   try {
