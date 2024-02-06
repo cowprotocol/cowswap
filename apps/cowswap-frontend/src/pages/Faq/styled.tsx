@@ -21,6 +21,7 @@ export const InternalLinkFaq = styled(StyledInternalLink)`
 export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 160px auto;
+  grid-template-rows: max-content;
   flex-direction: column;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

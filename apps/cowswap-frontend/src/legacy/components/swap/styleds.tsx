@@ -237,6 +237,7 @@ export const AuxInformationContainer = styled.div<{
       margin: 0;
       padding: 16px;
     `}
+
     > span {
       font-size: 18px;
       gap: 2px;

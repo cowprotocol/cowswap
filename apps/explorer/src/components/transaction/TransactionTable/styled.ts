@@ -24,6 +24,7 @@ export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
     }
     > tbody > tr {
       grid-template-columns: none;
+      grid-template-rows: max-content;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;

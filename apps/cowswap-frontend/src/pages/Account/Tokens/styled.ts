@@ -68,6 +68,7 @@ export const MenuItem = styled.div<{ active: boolean }>`
 export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 120px minmax(auto, 950px);
+  grid-template-rows: max-content;
   margin: 0;
   width: 100%;
   max-width: 100%;

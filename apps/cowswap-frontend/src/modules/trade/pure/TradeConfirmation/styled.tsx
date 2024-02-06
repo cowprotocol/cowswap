@@ -16,31 +16,37 @@ export const WidgetWrapper = styled.div`
 export const AmountsPreviewContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: max-content;
   gap: 6px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 `
 
 export const SeparatorWrapper = styled.div`
+  --size: 36px;
+  --padding: 4px;
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
+  bottom: 0;
   margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: calc(var(--size) + var(--padding) * 2);
 `
 
 export const AmountsSeparator = styled(ArrowRight)`
-  --size: 36px;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
   background: var(${UI.COLOR_PAPER_DARKER});
-  border: 4px solid var(${UI.COLOR_PAPER});
-  padding: 4px;
+  border: var(--padding) solid var(${UI.COLOR_PAPER});
+  padding: var(--padding);
   position: relative;
   z-index: 1;
 `

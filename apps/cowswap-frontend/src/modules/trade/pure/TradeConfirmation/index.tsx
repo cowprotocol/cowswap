@@ -6,6 +6,7 @@ import { BackButton } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
 
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
@@ -73,6 +74,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     window.scrollTo(0, 0)
   }, [])
 
+  const isUpToMedium = useMediaQuery(upToMedium)
+
+  // Combine local onClick logic with incoming onClick
+  const handleConfirmClick = () => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+
+    onConfirm()
+  }
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -96,7 +108,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {children}
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <CustomRecipientBanner recipient={recipient} />
-        <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+        <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
       </styledEl.ContentWrapper>
