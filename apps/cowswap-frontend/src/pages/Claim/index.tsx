@@ -220,7 +220,7 @@ export default function Claim() {
   const {
     state: { isModalOpen: isApproveModalOpen, openModal: openApproveModal, closeModal: closeApproveModal },
     Modal: PendingApprovalModal,
-  } = usePendingApprovalModal()
+  } = usePendingApprovalModal({ modalMode: true })
 
   return (
     <PageWrapper>

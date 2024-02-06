@@ -1,10 +1,7 @@
-import { RowBetween } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { BackButton, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
-import { Link } from 'react-router-dom'
-import styled, { css } from 'styled-components/macro'
+import { X } from 'react-feather'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -19,28 +16,6 @@ export const Wrapper = styled.div`
     font-weight: 600;
   }
   ${({ theme }) => theme.colorScrollbar};
-`
-
-export const Section = styled.div`
-  padding: 0 16px 16px;
-  align-items: center;
-  justify-content: flex-start;
-  display: flex;
-  flex-flow: column wrap;
-`
-
-export const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background: var(${UI.COLOR_PAPER});
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px 0;
-  z-index: 20;
 `
 
 export const WalletIcon = styled.div`
@@ -88,81 +63,14 @@ export const WalletIcon = styled.div`
   }
 `
 
-export const GPModalHeader = styled(RowBetween)`
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px 0;
-  background: var(${UI.COLOR_PAPER});
-  z-index: 20;
-`
-
-export const InternalLink = styled(Link)``
-
-export const StyledIcon = styled.img`
-  height: auto;
-  width: 20px;
-  max-height: 100%;
-  margin: 0 10px 0 0;
-`
-
-export const ExternalLinkCustom = styled(ExternalLink)`
-  margin: 12px auto 32px;
-`
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 12px 0 0;
-  width: 100%;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-direction: column;
-  `}
-`
-
-export const ButtonCustom = styled.button`
-  display: flex;
-  flex: 1 1 auto;
-  align-self: center;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  min-height: 52px;
-  border: 1px solid ${({ theme }) => theme.border2};
-  color: inherit;
-  background: transparent;
-  outline: 0;
-  padding: 8px 16px;
-  margin: 16px 0 0;
-  font-size: 14px;
-  line-height: 1;
-  font-weight: 500;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  cursor: pointer;
-
-  &:hover {
-    background: ${({ theme }) => theme.border2};
-  }
-
-  > a {
-    display: flex;
-    align-items: center;
-    color: inherit;
-    text-decoration: none;
-  }
-`
-
 export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px 16px 32px;
+  padding: 26px 16px 32px;
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px 16px 0 0;
   color: inherit;
+  position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     border-radius: 0;
@@ -351,178 +259,21 @@ export const StepsWrapper = styled.div`
   }
 `
 
-export const ApproveWrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
-  padding: 26px 16px 32px;
-  gap: 32px;
-  color: inherit;
+export const CloseIcon = styled(X)`
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: var(${UI.COLOR_TEXT});
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  > h3 {
-    font-size: 21px;
-    line-height: 1.2;
-    font-weight: 400;
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
-    color: inherit;
+  &:hover {
+    color: var(${UI.COLOR_PRIMARY});
   }
 `
 
-export const ApproveComparison = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 16px;
-  margin: 0 auto;
-  width: 100%;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: flex;
-    flex-flow: column wrap;
-    gap: 24px;
-  `};
-`
-
-export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boolean }>`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 32px 24px;
-  gap: 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  background: ${({ theme, highlight }) =>
-    highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
-  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT})`)};
-  position: relative;
-
-  &::before {
-    content: ${({ recommended }) => (recommended ? "'Recommended'" : 'none')};
-    position: absolute;
-    top: -7px;
-    left: 0;
-    right: 0;
-    width: fit-content;
-    border-radius: 12px;
-    display: block;
-    margin: 0 auto;
-    padding: 2px 6px;
-    text-transform: uppercase;
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    text-align: center;
-    background: ${({ theme }) => theme.text3};
-    color: ${({ theme }) => (theme.darkMode ? theme.blueDark1 : theme.white)};
-  }
-
-  > h5 {
-    font-size: 21px;
-    font-weight: ${({ highlight }) => (highlight ? 700 : 500)};
-    margin: 0;
-    padding: 0;
-  }
-`
-
-export const ItemList = styled.div<{ listIconAlert?: boolean }>`
-  margin: 0 auto;
-  padding: 0;
-  list-style: none;
-  font-size: inherit;
-  color: inherit;
-  gap: 6px;
-  display: flex;
-  flex-flow: column wrap;
-
-  > li {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  > li > svg {
-    --size: 12px;
-    display: inline-block;
-    width: var(--size);
-    height: var(--size);
-
-    ${({ listIconAlert }) =>
-      !listIconAlert &&
-      css`
-        > path:nth-child(1) {
-          fill: ${({ theme }) => theme.text3};
-          opacity: 1;
-        }
-
-        > path:nth-child(2) {
-          fill: ${({ theme }) => theme.text3};
-        }
-
-        > path:nth-child(3) {
-          fill: ${({ theme }) => theme.white};
-        }
-      `}
-
-    ${({ listIconAlert }) =>
-      listIconAlert &&
-      css`
-        > path {
-          fill: ${({ theme }) => transparentize(theme.text, 0.6)};
-        }
-      `}
-  }
-`
-
-export const ApproveFooter = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  font-size: 13px;
-  margin: 0 auto;
-
-  > h6 {
-    margin: 0 auto 16px;
-    width: 100%;
-    font-weight: 600;
-    font-size: 14px;
-    text-align: center;
-  }
-
-  > ul {
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    font-size: inherit;
-    color: var(${UI.COLOR_TEXT_OPACITY_25});
-    gap: 6px;
-    display: flex;
-    flex-flow: column wrap;
-  }
-
-  > ul > li {
-    display: flex;
-    align-items: center;
-  }
-
-  > ul > li > svg {
-    --size: 12px;
-    display: inline-block;
-    width: var(--size);
-    height: var(--size);
-    margin: 0 6px 0 0;
-
-    > path:nth-child(1) {
-      fill: ${({ theme }) => theme.text3};
-      opacity: 1;
-    }
-
-    > path:nth-child(2) {
-      fill: ${({ theme }) => theme.text3};
-    }
-
-    > path:nth-child(3) {
-      fill: ${({ theme }) => theme.white};
-    }
-  }
+export const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
 `

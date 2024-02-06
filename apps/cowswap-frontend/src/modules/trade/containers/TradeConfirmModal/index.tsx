@@ -91,7 +91,7 @@ function InnerComponent(props: InnerComponentProps) {
   } = props
 
   if (error) {
-    return <TransactionErrorContent isScreenMode={true} message={error} onDismiss={onDismiss} />
+    return <TransactionErrorContent isScreenMode message={error} onDismiss={onDismiss} />
   }
 
   if (pendingTrade && permitSignatureState) {

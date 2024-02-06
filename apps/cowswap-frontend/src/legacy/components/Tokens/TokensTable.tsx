@@ -99,7 +99,7 @@ export default function TokenTable({
   const {
     state: { isModalOpen: isApproveModalOpen, openModal: openApproveModal, closeModal: closeApproveModal },
     Modal: PendingApprovalModal,
-  } = usePendingApprovalModal()
+  } = usePendingApprovalModal({ modalMode: true })
 
   const sortedTokens = useMemo(() => {
     return tokensData

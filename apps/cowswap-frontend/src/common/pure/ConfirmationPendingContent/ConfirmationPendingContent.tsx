@@ -14,6 +14,7 @@ interface ConfirmationPendingContentProps {
   title: ReactNode
   description: ReactNode
   operationLabel: string
+  modalMode?: boolean
 }
 
 export function ConfirmationPendingContent({
@@ -21,6 +22,7 @@ export function ConfirmationPendingContent({
   description,
   operationLabel,
   onDismiss,
+  modalMode,
 }: ConfirmationPendingContentProps) {
   const walletAddress = useWalletDisplayedAddress()
 
@@ -30,6 +32,7 @@ export function ConfirmationPendingContent({
     <ConfirmationPendingContentShell
       title={title}
       onDismiss={onDismiss}
+      modalMode={modalMode}
       description={
         <>
           <span>{description} </span>

@@ -44,6 +44,7 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
     if (isPendingSignature) {
       return (
         <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
           title={
             <>

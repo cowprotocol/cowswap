@@ -10,6 +10,12 @@ import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
 import { ConfirmationPendingContentShell } from '../pure/ConfirmationPendingContent/ConfirmationPendingContentShell'
 import { MetamaskApproveBanner } from '../pure/MetamaskApproveBanner'
 
+interface PendingApprovalModalParams {
+  currencySymbol?: string
+  onDismiss?: () => void
+  modalMode?: boolean
+}
+
 function useIsMetaMaskDesktop(): boolean {
   const { connector } = useWeb3React()
   const connectionType = getWeb3ReactConnection(connector)
@@ -19,7 +25,9 @@ function useIsMetaMaskDesktop(): boolean {
   return isMetaMask && isNotMobile && connectionType === injectedConnection
 }
 
-export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () => void) {
+export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
+  const { currencySymbol, modalMode, onDismiss } = params || {}
+
   const state = useModalState<string>()
   const { closeModal, context } = state
 
@@ -50,6 +58,7 @@ export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () 
 
   const DefaultContent = (
     <ConfirmationPendingContent
+      modalMode={!!modalMode}
       onDismiss={onDismissCallback}
       title={Title}
       description="Approving token"

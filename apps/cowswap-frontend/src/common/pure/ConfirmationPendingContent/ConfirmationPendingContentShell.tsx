@@ -1,11 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { BackButton } from '@cowprotocol/ui'
-
-import { Wrapper } from './styled'
-import { UpperSection } from './styled'
-import { WalletIcon } from './styled'
-import { LowerSection } from './styled'
+import { Wrapper, CloseIcon, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
 
 import { useWalletStatusIcon } from '../../hooks/useWalletStatusIcon'
 
@@ -14,6 +9,7 @@ interface ConfirmationPendingContentShellProps {
   title: ReactNode
   description: ReactNode
   children: ReactNode
+  modalMode?: boolean
 }
 
 export function ConfirmationPendingContentShell({
@@ -21,15 +17,18 @@ export function ConfirmationPendingContentShell({
   onDismiss,
   description,
   children: body,
+  modalMode,
 }: ConfirmationPendingContentShellProps) {
   const statusIcon = useWalletStatusIcon()
 
   return (
     <Wrapper>
+      {modalMode}
       <UpperSection>
-        <BackButton onClick={onDismiss} />
+        {!modalMode && <BackButtonStyled onClick={onDismiss} />}
         <WalletIcon>{statusIcon}</WalletIcon>
         <span>{title}</span>
+        {modalMode && <CloseIcon onClick={onDismiss} />}
       </UpperSection>
       <LowerSection>
         <h3>

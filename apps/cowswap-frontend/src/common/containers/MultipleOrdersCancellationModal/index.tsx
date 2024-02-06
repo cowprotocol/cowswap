@@ -82,6 +82,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
         <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
           title={<>Cancelling {ordersCount} orders</>}
           description="Canceling your order"
