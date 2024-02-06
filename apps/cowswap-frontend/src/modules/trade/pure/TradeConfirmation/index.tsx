@@ -69,6 +69,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     return () => clearInterval(interval)
   }, [nextUpdateAt, refreshInterval])
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
