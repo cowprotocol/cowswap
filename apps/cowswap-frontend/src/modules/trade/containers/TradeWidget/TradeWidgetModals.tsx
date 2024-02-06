@@ -28,7 +28,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
 
-  const { isOpen: isTradeReviewOpen } = useTradeConfirmState()
+  const { isOpen: isTradeReviewOpen, error: confirmError } = useTradeConfirmState()
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
@@ -43,20 +43,29 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
 
-  const closeApproveModals = useCallback(() => {
-    updateTradeApproveState({ approveInProgress: false, error: undefined })
-  }, [updateTradeApproveState])
-
-  /**
-   * Close modals on chain/account change
-   */
-  useEffect(() => {
+  const resetAllScreens = useCallback(() => {
     closeTradeConfirm()
     closeZeroApprovalModal()
     closeAutoImportModal()
     updateSelectTokenWidgetState({ open: false })
     setWrapNativeScreenState({ isOpen: false })
-    closeApproveModals()
+    updateTradeApproveState({ approveInProgress: false, error: undefined })
+  }, [
+    closeTradeConfirm,
+    closeZeroApprovalModal,
+    closeAutoImportModal,
+    updateSelectTokenWidgetState,
+    setWrapNativeScreenState,
+    updateTradeApproveState,
+  ])
+
+  const error = approveError || confirmError
+
+  /**
+   * Close modals on chain/account change
+   */
+  useEffect(() => {
+    resetAllScreens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, account])
 
@@ -76,8 +85,8 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     return <WrapNativeModal />
   }
 
-  if (approveError) {
-    return <TransactionErrorContent isScreenMode message={approveError} onDismiss={closeApproveModals} />
+  if (error) {
+    return <TransactionErrorContent isScreenMode message={error} onDismiss={resetAllScreens} />
   }
 
   if (approveInProgress) {
