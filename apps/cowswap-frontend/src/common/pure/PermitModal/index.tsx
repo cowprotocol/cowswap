@@ -82,13 +82,17 @@ export function PermitModal(props: PermitModalProps) {
         </span>
       </NewModalContentTop>
 
-      <NewModalContentBottom>
-        <p>Sign (gas-free!) in your wallet...</p>
+      <NewModalContentBottom gap={24}>
+        <SignDescription>Sign (gas-free!) in your wallet...</SignDescription>
         <Stepper maxWidth={'75%'} steps={steps} />
       </NewModalContentBottom>
     </NewModal>
   )
 }
+
+const SignDescription = styled.p`
+  margin-top: 50px !important;
+`
 
 const ArrowRight = styled(SVG)`
   --size: 12px;
