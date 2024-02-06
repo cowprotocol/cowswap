@@ -3,12 +3,14 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 
+import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
@@ -59,7 +61,11 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText="Confirm Swap"
       >
-        <TradeRates {...tradeRatesProps} isReviewSwap={true} />
+        <>
+          <TradeRates {...tradeRatesProps} isReviewSwap={true} />
+          <HighFeeWarning trade={tradeRatesProps.trade} />
+          {!priceImpact.priceImpact && <NoImpactWarning isAccepted={true} withoutAccepting={true} />}
+        </>
       </TradeConfirmation>
     </TradeConfirmModal>
   )
