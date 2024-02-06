@@ -104,7 +104,7 @@ export const StyledMenuButton = styled.button`
 export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
   grid-template-columns: 1fr 120px;
-  //align-items: center;
+  grid-template-rows: max-content;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
@@ -120,14 +120,12 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    /*padding:  1rem;*/
     grid-template-columns: 1fr 1fr;
     position: relative;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     padding: 0.5rem 1rem;
-    /*grid-template-columns: 36px 1fr;*/
   `};
 `
 
@@ -199,6 +197,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   ${HeaderFrame} {
     padding: 16px;
     display: flex;
+    grid-template-rows: max-content;
 
     ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
       grid-template-columns: unset;

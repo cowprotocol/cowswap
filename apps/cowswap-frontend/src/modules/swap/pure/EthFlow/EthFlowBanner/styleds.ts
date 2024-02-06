@@ -21,6 +21,7 @@ export const ClosedBannerWrapper = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(3, auto);
+  grid-template-rows: max-content;
   align-items: center;
   font-weight: 500;
   margin: auto;
@@ -55,7 +56,7 @@ export const ClosedBannerWrapper = styled.div`
 
 export const BannerInnerWrapper = styled.div`
   display: grid;
-  grid-template-rows: auto;
+  grid-template-rows: max-content;
   align-items: center;
   justify-content: stretch;
   width: 100%;

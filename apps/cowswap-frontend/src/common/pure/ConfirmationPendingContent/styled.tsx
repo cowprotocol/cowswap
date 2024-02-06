@@ -373,6 +373,7 @@ export const ApproveWrapper = styled.div`
 export const ApproveComparison = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content;
   grid-gap: 16px;
   margin: 0 auto;
   width: 100%;

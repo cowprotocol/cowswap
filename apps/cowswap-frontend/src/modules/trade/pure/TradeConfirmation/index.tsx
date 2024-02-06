@@ -6,6 +6,7 @@ import { BackButton } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
 
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
@@ -66,15 +67,24 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     return () => clearInterval(interval)
   }, [nextUpdateAt, refreshInterval])
 
+  const isUpToMedium = useMediaQuery(upToMedium)
+
+  // Combine local onClick logic with incoming onClick
+  const handleConfirmClick = () => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+
+    onConfirm()
+  }
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        {nextUpdateAt !== undefined && (
-          <QuoteCountdown nextUpdateAt={nextUpdateAt} />
-        )}
+        {nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
@@ -90,7 +100,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         </styledEl.AmountsPreviewContainer>
         {children}
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
-        <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+        <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
       </styledEl.ContentWrapper>

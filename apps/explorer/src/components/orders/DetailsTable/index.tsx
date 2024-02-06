@@ -30,6 +30,7 @@ import { getUiOrderType } from 'utils/getUiOrderType'
 const Table = styled(SimpleTable)`
   > tbody > tr {
     grid-template-columns: 27rem auto;
+    grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
 
     ${media.mediumDown} {
