@@ -15,6 +15,7 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
+import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
 
@@ -35,6 +36,11 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { recipient } = useSwapState()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
+
+  const { allowedSlippage, trade } = tradeRatesProps
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
+
+  const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const submittedContent = (order: Order | undefined, onDismiss: () => void) => {
     const activity = createActivityDescriptor(undefined, order)
@@ -61,7 +67,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={false}
         priceImpact={priceImpact}
-        buttonText="Confirm Swap"
+        buttonText={buttonText}
         recipient={recipient}
       >
         <>

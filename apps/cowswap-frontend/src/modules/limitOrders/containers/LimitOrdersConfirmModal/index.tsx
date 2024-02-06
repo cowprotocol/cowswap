@@ -8,7 +8,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
@@ -17,6 +16,7 @@ import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
