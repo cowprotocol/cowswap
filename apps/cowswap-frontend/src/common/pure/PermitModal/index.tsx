@@ -73,7 +73,7 @@ export function PermitModal(props: PermitModalProps) {
   )
 
   return (
-    <NewModal {...rest}>
+    <NewModal {...rest} screenMode>
       <NewModalContentTop paddingTop={90}>
         {icon}
         <span>

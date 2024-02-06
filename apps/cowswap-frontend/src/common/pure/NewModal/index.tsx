@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { BackButton, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
@@ -81,6 +81,12 @@ const IconX = styled.div`
   }
 `
 
+const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 20px;
+  left: 10px;
+`
+
 const NewModalContent = styled.div<{ paddingTop?: number }>`
   display: flex;
   align-items: center;
@@ -145,16 +151,22 @@ export interface NewModalProps {
   title?: string
   onDismiss?: () => void
   children?: React.ReactNode
+  screenMode?: boolean
 }
 
-export function NewModal({ maxWidth = 450, minHeight = 450, title, children, onDismiss }: NewModalProps) {
+export function NewModal({ maxWidth = 450, minHeight = 450, screenMode, title, children, onDismiss }: NewModalProps) {
+  const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
+
   return (
     <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
       <ModalInner>
+        {screenMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && <Heading>{title}</Heading>}
-        <IconX onClick={() => onDismiss && onDismiss()}>
-          <SVG src={CLOSE_ICON} />
-        </IconX>
+        {!screenMode && (
+          <IconX onClick={onDismissCallback}>
+            <SVG src={CLOSE_ICON} />
+          </IconX>
+        )}
 
         <NewModalContent>{children}</NewModalContent>
       </ModalInner>
