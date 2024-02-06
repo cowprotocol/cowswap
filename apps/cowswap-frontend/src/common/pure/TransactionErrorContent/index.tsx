@@ -10,6 +10,8 @@ import { CloseIcon } from 'legacy/theme'
 const Wrapper = styled.div`
   width: 100%;
   padding: 15px;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 20px;
 `
 
 const Header = styled.div`
@@ -30,12 +32,17 @@ const Text = styled.div`
   color: var(${UI.COLOR_DANGER});
   font-weight: 500;
   font-size: 16px;
+  word-break: break-word;
 `
 
 const AlertIcon = styled(AlertTriangle)`
   color: var(${UI.COLOR_DANGER});
   stroke-width: 1.5;
   margin-bottom: 15px;
+`
+
+const BackButtonStyled = styled(BackButton)`
+  margin-right: -22px;
 `
 
 export interface TransactionErrorContentProps {
@@ -50,7 +57,7 @@ export function TransactionErrorContent(props: TransactionErrorContentProps) {
   return (
     <Wrapper>
       <Header>
-        {isScreenMode && <BackButton onClick={onDismiss} />}
+        {isScreenMode && <BackButtonStyled onClick={onDismiss} />}
         <span>
           <Trans>Error</Trans>
         </span>

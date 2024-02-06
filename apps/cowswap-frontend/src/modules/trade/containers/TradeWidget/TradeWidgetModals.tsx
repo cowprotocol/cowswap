@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useCallback, useEffect } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -14,6 +14,7 @@ import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApprova
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
 import { useUpdateTradeApproveState } from 'common/hooks/useUpdateTradeApproveState'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
@@ -30,7 +31,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const { isOpen: isTradeReviewOpen } = useTradeConfirmState()
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
-  const { approveInProgress, currency: approvingCurrency } = useTradeApproveState()
+  const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
 
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -42,6 +43,10 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
 
+  const closeApproveModals = useCallback(() => {
+    updateTradeApproveState({ approveInProgress: false, error: undefined })
+  }, [updateTradeApproveState])
+
   /**
    * Close modals on chain/account change
    */
@@ -51,7 +56,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     closeAutoImportModal()
     updateSelectTokenWidgetState({ open: false })
     setWrapNativeScreenState({ isOpen: false })
-    updateTradeApproveState({ approveInProgress: false })
+    closeApproveModals()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, account])
 
@@ -70,6 +75,11 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   if (isWrapNativeOpen) {
     return <WrapNativeModal />
   }
+
+  if (approveError) {
+    return <TransactionErrorContent isScreenMode message={approveError} onDismiss={closeApproveModals} />
+  }
+
   if (approveInProgress) {
     return <TradeApproveModal currency={approvingCurrency} />
   }
