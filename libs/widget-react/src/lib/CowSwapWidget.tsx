@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react'
 
 import { cowSwapWidget, CowSwapWidgetParams, EthereumProvider, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
-import type { CowEvents, CowEventSubscription } from '@cowprotocol/events'
+import type { CowEventSubscriptions } from '@cowprotocol/events'
 
 export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
+  events?: CowEventSubscriptions
   provider?: EthereumProvider
-  cowListeners: CowEventSubscription<CowEvents>[]
 }
 
 export function CowSwapWidget({ params, provider }: CowSwapWidgetProps) {
