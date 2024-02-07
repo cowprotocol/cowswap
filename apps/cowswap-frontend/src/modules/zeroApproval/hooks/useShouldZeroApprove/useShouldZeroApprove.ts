@@ -6,8 +6,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useApproveState } from 'common/hooks/useApproveState'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
+import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
 
@@ -18,13 +18,13 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const tokenContract = useTokenContract(token?.address)
-  const approvalState = useApproveState(amountToApprove) // ignore approval pending state
+  const approvalState = useApprovalStateForSpender(amountToApprove, spender, () => false) // ignore approval pending state
 
   useEffect(() => {
     let isStale = false
     ;(async () => {
       const result = await shouldZeroApproveFn({
-        approvalState: approvalState.state,
+        approvalState: approvalState.approvalState,
         amountToApprove,
         tokenContract,
         spender,
