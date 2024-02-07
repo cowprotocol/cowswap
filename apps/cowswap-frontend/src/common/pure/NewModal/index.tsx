@@ -51,8 +51,8 @@ const Heading = styled.h2`
   justify-content: space-between;
   width: 100%;
   height: auto;
-  padding: 18px;
-  margin: 0 24px;
+  margin: 0;
+  padding: 18px 40px;
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
