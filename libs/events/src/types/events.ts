@@ -10,7 +10,7 @@ export enum CowEvents {
 }
 
 // Define types for event payloads
-export interface EventPayloads {
+export interface CowEventPayloads {
   [CowEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
   [CowEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
   [CowEvents.ON_EXECUTED_ORDER]: OnExecutedOrderPayload
