@@ -23,15 +23,15 @@ export function useSwapConfirmButtonText(slippageAdjustedSellAmount: Nullish<Cur
           &nbsp;and Swap)
         </>
       )
-    } else if (isSafeApprovalBundle) {
+    }
+    if (isSafeApprovalBundle) {
       return (
         <>
           Confirm (Approve&nbsp;{<TokenSymbol token={sellCurrency && getWrappedToken(sellCurrency)} length={6} />}
           &nbsp;and Swap)
         </>
       )
-    } else {
-      return undefined
     }
+    return 'Confirm Swap'
   }, [isSafeApprovalBundle, isSafeEthFlowBundle, sellCurrency])
 }
