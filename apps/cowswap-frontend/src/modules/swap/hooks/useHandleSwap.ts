@@ -10,6 +10,7 @@ import { swapFlow } from 'modules/swap/services/swapFlow'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { useCowEventEmitter } from 'common/hooks/useCowEventEmitter'
 
 import { useEthFlowContext } from './useEthFlowContext'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
@@ -18,6 +19,7 @@ import { useSwapActionHandlers } from './useSwapState'
 
 export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()
+  const cowEventEmitter = useCowEventEmitter()
   const ethFlowContext = useEthFlowContext()
   const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
   const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
@@ -29,16 +31,26 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
 
     if (safeBundleApprovalFlowContext) {
       logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
-      await safeBundleApprovalFlow(safeBundleApprovalFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      await safeBundleApprovalFlow(
+        safeBundleApprovalFlowContext,
+        cowEventEmitter,
+        priceImpactParams,
+        confirmPriceImpactWithoutFee
+      )
     } else if (safeBundleEthFlowContext) {
       logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
-      await safeBundleEthFlow(safeBundleEthFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      await safeBundleEthFlow(
+        safeBundleEthFlowContext,
+        cowEventEmitter,
+        priceImpactParams,
+        confirmPriceImpactWithoutFee
+      )
     } else if (swapFlowContext) {
       logTradeFlow('SWAP FLOW', 'Start swap flow')
-      await swapFlow(swapFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      await swapFlow(swapFlowContext, cowEventEmitter, priceImpactParams, confirmPriceImpactWithoutFee)
     } else if (ethFlowContext) {
       logTradeFlow('ETH FLOW', 'Start eth flow')
-      await ethFlow(ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      await ethFlow(ethFlowContext, cowEventEmitter, priceImpactParams, confirmPriceImpactWithoutFee)
     }
 
     // Clean up form fields after successful swap
@@ -53,5 +65,6 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
     onUserInput,
     priceImpactParams,
     confirmPriceImpactWithoutFee,
+    cowEventEmitter,
   ])
 }

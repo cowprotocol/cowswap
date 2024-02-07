@@ -1,4 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -23,6 +24,7 @@ const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
 export async function safeBundleApprovalFlow(
   input: SafeBundleApprovalFlowContext,
+  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void> {
@@ -113,6 +115,7 @@ export async function safeBundleApprovalFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')
     partialOrderUpdate(
