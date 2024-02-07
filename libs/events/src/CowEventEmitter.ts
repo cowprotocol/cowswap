@@ -9,12 +9,12 @@ export type CowEventListener<T extends CowEvents> = T extends keyof CowEventPayl
 export type CowEventListeners = CowEventListener<CowEvents>[]
 
 export interface CowEventEmitter {
-  on<T extends CowEvents>(event: T, handler: CowEventHandler<T>): void
+  on<T extends CowEvents>(listener: CowEventListener<T>): void
   emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
   off<T extends CowEvents>(event: T, listenerToRemove: CowEventHandler<T>): void
 }
 
-export class CowEventEmitterImpl {
+export class CowEventEmitterImpl implements CowEventEmitter {
   private events: {
     [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
   }
