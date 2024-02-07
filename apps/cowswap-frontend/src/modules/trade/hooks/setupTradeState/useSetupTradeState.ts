@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
@@ -12,6 +13,8 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
+
+const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
@@ -177,7 +180,8 @@ export function useSetupTradeState(): void {
       if (isFirstLoad && isWalletConnected) {
         setIsFirstLoad(false)
 
-        if (urlChainId) {
+        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
+        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
           switchNetworkInWallet(urlChainId)
         }
       }
