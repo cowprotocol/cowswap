@@ -140,7 +140,7 @@ interface CowSwapWidgetConfig {
 
   /**
    * Disables showing the toast messages.
-   * Some UI might want to disable it and subscribe to 'onToastMessage' event to handle the toast messages itself.
+   * Some UI might want to disable it and subscribe to CowEvents.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.
    */
   disableToastMessages?: boolean
