@@ -5,7 +5,7 @@ import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
-import { InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
@@ -57,6 +57,7 @@ export function Updaters() {
       <SpotPricesUpdater />
       <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
+      <CowEventsUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <TokensListsUpdater chainId={chainId} />
