@@ -64,24 +64,23 @@ function Main() {
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
                     <WithLDProvider>
-                      <CowEventEmitterContext.Provider
-                        value={new CowEventEmitterImpl()}
-                      ></CowEventEmitterContext.Provider>
-                      <WalletUnsupportedNetworkBanner />
-                      <Updaters />
+                      <CowEventEmitterContext.Provider value={new CowEventEmitterImpl()}>
+                        <WalletUnsupportedNetworkBanner />
+                        <Updaters />
 
-                      {!isInjectedWidgetMode && (
-                        <>
-                          <FeatureGuard featureFlag="cowFortuneEnabled">
-                            <FortuneWidget />
-                          </FeatureGuard>
-                          <AppziButton />
-                        </>
-                      )}
+                        {!isInjectedWidgetMode && (
+                          <>
+                            <FeatureGuard featureFlag="cowFortuneEnabled">
+                              <FortuneWidget />
+                            </FeatureGuard>
+                            <AppziButton />
+                          </>
+                        )}
 
-                      <Popups />
-                      <SnackbarsWidget />
-                      <App />
+                        <Popups />
+                        <SnackbarsWidget />
+                        <App />
+                      </CowEventEmitterContext.Provider>
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
