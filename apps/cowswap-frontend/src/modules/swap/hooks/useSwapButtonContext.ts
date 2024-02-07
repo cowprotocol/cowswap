@@ -154,12 +154,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     handleSwap,
     hasEnoughWrappedBalanceForSwap,
     onWrapOrUnwrap: wrapCallback,
-    onEthFlow() {
-      openNativeWrapModal()
-    },
-    openSwapConfirm() {
-      tradeConfirmActions.onOpen()
-    },
+    onEthFlow: openNativeWrapModal,
+    openSwapConfirm: tradeConfirmActions.onOpen,
     toggleWalletModal,
     swapInputError,
     onCurrencySelection,

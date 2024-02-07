@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { useMemo } from 'react'
 
 import { TradeAmounts } from 'common/types'
 
@@ -28,24 +29,33 @@ export function useTradeConfirmActions(): TradeConfirmActions {
   const setTxHashTradeConfirm = useSetAtom(setTxHashTradeConfirmAtom)
   const setPermitSignatureRequested = useSetAtom(setPermitSignatureRequestedTradeConfirmAtom)
 
-  return {
-    onSign(pendingTrade: TradeAmounts) {
-      setPendingTradeConfirm(pendingTrade)
-    },
-    onError(error: string) {
-      setErrorTradeConfirm(error)
-    },
-    onSuccess(transactionHash: string) {
-      setTxHashTradeConfirm(transactionHash)
-    },
-    onOpen() {
-      setOpenTradeConfirm()
-    },
-    requestPermitSignature(pendingTrade: TradeAmounts) {
-      setPermitSignatureRequested(pendingTrade)
-    },
-    onDismiss() {
-      setCloseTradeConfirm()
-    },
-  }
+  return useMemo(() => {
+    return {
+      onSign(pendingTrade: TradeAmounts) {
+        setPendingTradeConfirm(pendingTrade)
+      },
+      onError(error: string) {
+        setErrorTradeConfirm(error)
+      },
+      onSuccess(transactionHash: string) {
+        setTxHashTradeConfirm(transactionHash)
+      },
+      onOpen() {
+        setOpenTradeConfirm()
+      },
+      requestPermitSignature(pendingTrade: TradeAmounts) {
+        setPermitSignatureRequested(pendingTrade)
+      },
+      onDismiss() {
+        setCloseTradeConfirm()
+      },
+    }
+  }, [
+    setPendingTradeConfirm,
+    setOpenTradeConfirm,
+    setCloseTradeConfirm,
+    setErrorTradeConfirm,
+    setTxHashTradeConfirm,
+    setPermitSignatureRequested,
+  ])
 }

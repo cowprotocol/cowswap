@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -177,8 +177,8 @@ export function SwapWidget() {
   const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
   const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 
-  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
-  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
+  const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
+  const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const swapButtonContext = useSwapButtonContext({
     feeWarningAccepted,
