@@ -7,8 +7,9 @@ import { NativeCurrency } from '@uniswap/sdk-core'
 import { Order } from 'legacy/state/orders/actions'
 import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
-import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
+
+import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -57,10 +58,10 @@ export async function signEthFlowOrderStep(
     .catch((error) => {
       logTradeFlowError(
         'ETH FLOW',
-        '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,
+        '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + GAS_LIMIT_DEFAULT,
         error
       )
-      return ETHFLOW_GAS_LIMIT_DEFAULT
+      return GAS_LIMIT_DEFAULT
     })
 
   const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
