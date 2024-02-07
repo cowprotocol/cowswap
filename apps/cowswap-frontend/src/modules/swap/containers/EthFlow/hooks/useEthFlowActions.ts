@@ -24,10 +24,10 @@ export interface EthFlowActionCallbacks {
 }
 
 export interface EthFlowActions {
-  expertModeFlow(): void
-  approve(): void
-  wrap(): void
-  swap(): void
+  expertModeFlow(): Promise<void>
+  approve(): Promise<void>
+  wrap(): Promise<void>
+  swap(): Promise<void>
   directSwap(): void
 }
 
@@ -65,7 +65,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
         })
     }
 
-    const swap = () => {
+    const swap = async () => {
       if (!chainId || !trade) return
 
       callbacks.dismiss()
@@ -88,7 +88,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     }
 
     const expertModeFlow = () => {
-      Promise.all([isApproveNeeded ? approve(false) : undefined, isWrapNeeded ? wrap(false) : undefined])
+      return Promise.all([isApproveNeeded ? approve(false) : undefined, isWrapNeeded ? wrap(false) : undefined]).then(
+        () => void 0
+      )
     }
 
     const directSwap = () => {
