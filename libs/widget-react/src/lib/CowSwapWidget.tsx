@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import {
   createCowSwapWidget,
@@ -9,43 +9,65 @@ import {
 import type { CowEventListeners } from '@cowprotocol/events'
 
 export interface CowSwapWidgetProps {
-  params: CowSwapWidgetParams
-  listeners?: CowEventListeners
+  params: Omit<CowSwapWidgetParams, 'provider'>
   provider?: EthereumProvider
+  listeners?: CowEventListeners
 }
 
 export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
-  const providerRef = useRef<EthereumProvider | null>()
-  const listenersRef = useRef<CowEventListeners | undefined>()
+  const paramsRef = useRef<Omit<CowSwapWidgetParams, 'provider'> | null>(null)
+  const providerRef = useRef<EthereumProvider | null>(provider ?? null)
+  const listenersRef = useRef<CowEventListeners | undefined>(listeners)
+
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    if (
+      !containerRef.current ||
+      paramsRef.current === params ||
+      JSON.stringify(paramsRef.current) === JSON.stringify(params)
+    )
+      return
+
+    paramsRef.current = params
 
     if (widgetHandlerRef.current === null) {
-      widgetHandlerRef.current = createCowSwapWidget(containerRef.current, params, listeners)
+      console.log('[WIDGET] Creating new widget', {
+        state: params,
+        listeners,
+        provider,
+      })
+      widgetHandlerRef.current = createCowSwapWidget(
+        containerRef.current,
+        { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
+        listeners
+      )
       listenersRef.current = listeners
     } else {
+      console.log('[WIDGET] Updating params', params)
       widgetHandlerRef.current.updateWidget(params)
     }
   }, [params])
 
   useEffect(() => {
-    if (!widgetHandlerRef.current || providerRef.current === listeners) return
+    if (
+      !widgetHandlerRef.current ||
+      providerRef.current === provider ||
+      (provider === undefined && providerRef.current === null)
+    )
+      return
 
+    console.log('[WIDGET] Update provider', providerRef.current, provider)
     widgetHandlerRef.current.updateProvider(provider)
   }, [provider])
 
   useEffect(() => {
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
 
+    console.log('[WIDGET] Update listeners', listenersRef.current, listeners)
     widgetHandlerRef.current.updateListeners(listeners)
   }, [listeners])
-
-  useEffect(() => {
-    providerRef.current = provider
-  }, [provider])
 
   return <div ref={containerRef}></div>
 }
