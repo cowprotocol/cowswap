@@ -9,8 +9,8 @@ export type CowEventListener<T extends CowEvents> = T extends keyof CowEventPayl
 export type CowEventListeners = CowEventListener<CowEvents>[]
 
 export interface CowEventEmitter {
-  on<T extends CowEvents>(listener: CowEventListener<T>): void
-  off<T extends CowEvents>(listener: CowEventListener<T>): void
+  on(listener: CowEventListener<CowEvents>): void
+  off(listener: CowEventListener<CowEvents>): void
   emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
 }
 
@@ -23,7 +23,7 @@ export class CowEventEmitterImpl implements CowEventEmitter {
     this.events = {}
   }
 
-  on<T extends CowEvents>(listener: CowEventListener<T>): void {
+  on(listener: CowEventListener<CowEvents>): void {
     const { event, handler } = listener
     if (!this.events[event]) {
       this.events[event] = []
@@ -31,7 +31,7 @@ export class CowEventEmitterImpl implements CowEventEmitter {
     this.events[event].push(handler)
   }
 
-  off<T extends CowEvents>(listener: CowEventListener<T>): void {
+  off(listener: CowEventListener<CowEvents>): void {
     const { event, handler } = listener
     if (this.events[event]) {
       this.events[event] = this.events[event].filter((listener) => listener !== handler)
@@ -40,9 +40,7 @@ export class CowEventEmitterImpl implements CowEventEmitter {
 
   emit<T extends keyof CowEventPayloads>(event: T, payload: CowEventPayloads[T]): void {
     if (this.events[event]) {
-      this.events[event].forEach((handler) => {
-        handler(payload)
-      })
+      this.events[event].forEach((handler) => handler(payload))
     }
   }
 }
