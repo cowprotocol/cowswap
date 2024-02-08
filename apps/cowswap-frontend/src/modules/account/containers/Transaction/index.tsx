@@ -78,7 +78,7 @@ export interface ActivityDerivedState {
   gnosisSafeInfo?: SafeInfoResponse
 }
 
-export default function Activity({ activity }: { activity: ActivityDescriptors }) {
+export function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWalletInfo()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents

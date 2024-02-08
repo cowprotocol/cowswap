@@ -31,7 +31,7 @@ import {
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
 
-import Activity from 'modules/account/containers/Transaction'
+import { Activity } from 'modules/account/containers/Transaction'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
