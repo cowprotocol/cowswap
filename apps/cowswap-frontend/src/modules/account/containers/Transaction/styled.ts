@@ -1,7 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { FiatAmount, RowFixed } from '@cowprotocol/ui'
-import { ExternalLink, StyledLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, FiatAmount, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -443,4 +441,8 @@ export const FiatWrapper = styled.span`
   margin-left: 5px;
   align-items: center;
   display: flex;
+`
+
+export const CopyToNewButton = styled(LinkStyledButton)`
+  text-decoration: underline;
 `

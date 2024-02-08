@@ -18,8 +18,7 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { Icon } from 'common/pure/Icon'
-import { IconType } from 'common/pure/Icon'
+import { Icon, IconType } from 'common/pure/Icon'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
@@ -32,6 +31,7 @@ import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
+  CopyToNewButton,
   CreationTimeText,
   FiatWrapper,
   StyledFiatAmount,
@@ -42,6 +42,8 @@ import {
   TransactionInnerDetail,
   TransactionState as ActivityLink,
 } from './styled'
+
+import { useCopyToNewSwap } from '../../hooks/useCopyToNewSwap'
 
 import { ActivityDerivedState } from './index'
 
@@ -178,6 +180,7 @@ export function ActivityDetails(props: {
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+  const copyToNew = useCopyToNewSwap(isSwap ? order : undefined)
 
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && isSwap
   const showCancellationModal = order ? getShowCancellationModal(order) : null
@@ -374,11 +377,14 @@ export function ActivityDetails(props: {
         </SummaryInner>
 
         {/* Status Details: icon, cancel, links */}
-        <StatusDetails
-          chainId={chainId}
-          showCancellationModal={showCancellationModal}
-          activityDerivedState={activityDerivedState}
-        />
+        <span>
+          <StatusDetails
+            chainId={chainId}
+            showCancellationModal={showCancellationModal}
+            activityDerivedState={activityDerivedState}
+          />
+          {copyToNew && <CopyToNewButton onClick={copyToNew}>Copy to new</CopyToNewButton>}
+        </span>
       </Summary>
 
       <EthFlowStepper order={order} />
