@@ -1,6 +1,11 @@
 import { useEffect, useRef } from 'react'
 
-import { cowSwapWidget, CowSwapWidgetParams, EthereumProvider, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
+import {
+  createCowSwapWidget,
+  CowSwapWidgetParams,
+  EthereumProvider,
+  CowSwapWidgetHandler,
+} from '@cowprotocol/widget-lib'
 import type { CowEventListeners } from '@cowprotocol/events'
 
 export interface CowSwapWidgetProps {
@@ -9,29 +14,38 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
 }
 
-export function CowSwapWidget({ params, provider }: CowSwapWidgetProps) {
+export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
   const providerRef = useRef<EthereumProvider | null>()
-  const iframeContainerRef = useRef<HTMLDivElement>(null)
-  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
+  const listenersRef = useRef<CowEventListeners | undefined>()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
   useEffect(() => {
-    if (!iframeContainerRef.current) return
+    if (!containerRef.current) return
 
-    // Re-initialize widget when provider is changed
-    if (provider && providerRef.current !== provider) {
-      updateWidgetRef.current = null
-    }
-
-    if (updateWidgetRef.current) {
-      updateWidgetRef.current(params)
+    if (widgetHandlerRef.current === null) {
+      widgetHandlerRef.current = createCowSwapWidget(containerRef.current, params, listeners)
+      listenersRef.current = listeners
     } else {
-      updateWidgetRef.current = cowSwapWidget(iframeContainerRef.current, params)
+      widgetHandlerRef.current.updateWidget(params)
     }
-  }, [provider, params])
+  }, [params])
+
+  useEffect(() => {
+    if (!widgetHandlerRef.current || providerRef.current === listeners) return
+
+    widgetHandlerRef.current.updateProvider(provider)
+  }, [provider])
+
+  useEffect(() => {
+    if (!widgetHandlerRef.current || listenersRef.current === listeners) return
+
+    widgetHandlerRef.current.updateListeners(listeners)
+  }, [listeners])
 
   useEffect(() => {
     providerRef.current = provider
   }, [provider])
 
-  return <div ref={iframeContainerRef}></div>
+  return <div ref={containerRef}></div>
 }
