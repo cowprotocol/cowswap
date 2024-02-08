@@ -9,4 +9,5 @@ export interface OrderActions {
   toggleOrderForCancellation(order: ParsedOrder): void
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
   approveOrderToken(token: Token): void
+  getCopyToNew(order: ParsedOrder): (() => void) | undefined
 }

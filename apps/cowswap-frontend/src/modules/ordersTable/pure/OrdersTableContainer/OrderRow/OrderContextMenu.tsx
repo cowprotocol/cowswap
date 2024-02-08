@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
-import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
+import { FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const ContextMenuButton = styled(MenuButton)`
@@ -69,9 +69,15 @@ export interface OrderContextMenuProps {
   openReceipt: () => void
   activityUrl: string | undefined
   showCancellationModal: (() => void) | null
+  copyToNew: (() => void) | undefined
 }
 
-export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
+export function OrderContextMenu({
+  openReceipt,
+  activityUrl,
+  showCancellationModal,
+  copyToNew,
+}: OrderContextMenuProps) {
   return (
     <Menu>
       <ContextMenuButton>
@@ -92,6 +98,12 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
           <ContextMenuItem $red onSelect={() => showCancellationModal()}>
             <Trash2 size={16} />
             <span>Cancel order</span>
+          </ContextMenuItem>
+        )}
+        {copyToNew && (
+          <ContextMenuItem onSelect={copyToNew}>
+            <Repeat size={16} />
+            <span>Copy to new</span>
           </ContextMenuItem>
         )}
       </ContextMenuList>

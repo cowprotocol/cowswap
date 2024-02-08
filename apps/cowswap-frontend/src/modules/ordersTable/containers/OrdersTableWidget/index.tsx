@@ -31,6 +31,7 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { BalancesAndAllowances } from '../../../tokens'
+import { useGetCopyToNewCallback } from '../../../trade/hooks/useCopyToNew'
 import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
 import { OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 
@@ -76,6 +77,7 @@ export function OrdersTableWidget({
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
   const ordersPermitStatus = useGetOrdersPermitStatus()
+  const getCopyToNew = useGetCopyToNewCallback()
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
@@ -144,6 +146,7 @@ export function OrdersTableWidget({
     toggleOrderForCancellation,
     toggleOrdersForCancellation,
     approveOrderToken,
+    getCopyToNew,
   }
 
   // Set page params initially once

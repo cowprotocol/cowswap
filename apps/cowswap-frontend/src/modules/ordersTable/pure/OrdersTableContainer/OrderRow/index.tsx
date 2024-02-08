@@ -174,6 +174,7 @@ export function OrderRow({
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
   const showCancellationModal = orderActions.getShowCancellationModal(order)
+  const copyToNew = orderActions.getCopyToNew(order)
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -384,6 +385,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
+          copyToNew={copyToNew}
         />
       </styledEl.CellElement>
     </TableRow>
