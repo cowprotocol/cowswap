@@ -1,9 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
-import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { FractionUtils } from '@cowprotocol/common-utils'
-import { getIntOrFloat } from '@cowprotocol/common-utils'
+import { FractionUtils, getIntOrFloat, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
 
@@ -30,6 +28,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const updateRate = useUpdateActiveRate()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
+  // TODO: how do we deal with buy orders?
   const cleanParams = useCallback(() => {
     const queryParams = new URLSearchParams(search)
 
