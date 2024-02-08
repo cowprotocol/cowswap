@@ -3,22 +3,22 @@ import { Fragment, useMemo } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import {
   getEtherscanLink,
-  getExplorerLabel,
-  shortenAddress,
   getExplorerAddressLink,
+  getExplorerLabel,
   isMobile,
+  shortenAddress,
 } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
-  useWalletInfo,
   getConnectionName,
   getIsCoinbaseWallet,
-  getIsMetaMask,
-  useWalletDetails,
-  useIsWalletConnect,
-  getWeb3ReactConnection,
   getIsHardWareWallet,
+  getIsMetaMask,
+  getWeb3ReactConnection,
+  useIsWalletConnect,
+  useWalletDetails,
+  useWalletInfo,
 } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -34,6 +34,7 @@ import {
 import { Activity } from 'modules/account/containers/Transaction'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import {
@@ -50,14 +51,13 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
-  WalletSelector,
   WalletSecondaryActions,
+  WalletSelector,
   WalletWrapper,
   Wrapper,
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useUnsupportedNetworksText } from '../../../../common/hooks/useUnsupportedNetworksText'
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
