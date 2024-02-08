@@ -18,7 +18,7 @@ import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 export function useAdvancedOrdersActions() {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
 
-  const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
 
@@ -33,10 +33,10 @@ export function useAdvancedOrdersActions() {
         field: Field.OUTPUT,
         currency,
       })
-      naviageOnCurrencySelection(field, currency)
+      navigateOnCurrencySelection(field, currency)
       updateQuoteState({ response: null })
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
+    [navigateOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
   )
 
   const onUserInput = useCallback(
