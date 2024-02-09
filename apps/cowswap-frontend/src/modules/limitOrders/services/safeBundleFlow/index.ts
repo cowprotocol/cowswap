@@ -1,5 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -29,7 +29,6 @@ export async function safeBundleFlow(
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
-  cowEventEmitter: CowEventEmitter,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforeTrade?: () => void
 ): Promise<string> {
@@ -68,8 +67,17 @@ export async function safeBundleFlow(
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
-  const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
-    params
+  const {
+    chainId,
+    postOrderParams,
+    provider,
+    erc20Contract,
+    spender,
+    dispatch,
+    settlementContract,
+    safeAppsSdk,
+    cowEventEmitter,
+  } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 

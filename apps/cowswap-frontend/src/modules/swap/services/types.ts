@@ -1,4 +1,5 @@
 import { CoWSwapEthFlow, Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
+import { CowEventEmitter } from '@cowprotocol/events'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -40,6 +41,7 @@ export interface BaseFlowContext {
   swapConfirmManager: SwapConfirmManager
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
+  cowEventEmitter: CowEventEmitter
 }
 
 export type SwapFlowContext = BaseFlowContext & {

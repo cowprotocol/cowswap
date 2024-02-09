@@ -4,6 +4,7 @@ import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
+import { CowEventEmitter } from '@cowprotocol/events'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -29,6 +30,7 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
+import { useCowEventEmitter } from 'common/hooks/useCowEventEmitter'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
@@ -47,6 +49,7 @@ interface BaseFlowContextSetup {
   account: string | undefined
   sellTokenContract: Erc20 | null
   provider: Web3Provider | undefined
+  cowEventEmitter: CowEventEmitter
   trade: TradeGp | undefined
   appData: AppDataInfo | null
   wethContract: Weth | null
@@ -83,6 +86,7 @@ export function useSwapAmountsWithSlippage(): [
 
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { provider } = useWeb3React()
+  const cowEventEmitter = useCowEventEmitter()
   const { account, chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -116,6 +120,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     account,
     sellTokenContract,
     provider,
+    cowEventEmitter,
     trade,
     appData,
     wethContract,
@@ -163,6 +168,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     chainId,
     account,
     provider,
+    cowEventEmitter,
     trade,
     appData,
     wethContract,
@@ -270,5 +276,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     orderParams,
     appDataInfo: appData,
     sellTokenContract,
+    cowEventEmitter,
   }
 }

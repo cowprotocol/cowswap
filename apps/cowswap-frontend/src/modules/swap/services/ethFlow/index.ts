@@ -1,5 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
+import { CowEvents } from '@cowprotocol/events'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -17,7 +17,6 @@ import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
 export async function ethFlow(
   ethFlowContext: EthFlowContext,
-  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void> {
@@ -33,6 +32,7 @@ export async function ethFlow(
     checkEthFlowOrderExists,
     addInFlightOrderId,
     swapZeroFee,
+    cowEventEmitter,
   } = ethFlowContext
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
