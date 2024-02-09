@@ -10,10 +10,10 @@ const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainCha
  *
  * Additionally, it will forward some special events from the wallet, to the iFrame window, for example connect/disconnect/chainChanged
  */
-export class IframeRpcManager {
+export class IframeRpcProviderBridge {
   /**
    * The Ethereum provider instance.
-   * When is null the JSON-RPC manager is disconnected from the Ethereum provider.
+   * When is null the JSON-RPC bridge is disconnected from the Ethereum provider.
    * */
   private ethereumProvider: EthereumProvider | null = null
 
@@ -21,14 +21,14 @@ export class IframeRpcManager {
   private requestWaitingForConnection: { [key: string]: JsonRpcRequest } = {}
 
   /**
-   * Creates an instance of JsonRpcManager.
-   * @param iframeWidow - The iFrame window that will post up general RPC messages and to which the IframeRpcManager will forward the RPC result.
+   * Creates an instance of IframeRpcProviderBridge.
+   * @param iframeWidow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
    *  Also it will receive some special RPC events coming from the wallet, like connect/chainChanged,accountChanged
    */
   constructor(private iframeWidow: Window) {}
 
   /**
-   * Disconnects the JSON-RPC manager from the Ethereum provider.
+   * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
   disconnect() {
     // If it was connected, unregister the forwarding events
