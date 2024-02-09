@@ -1,5 +1,5 @@
 import { CowEventListeners } from '@cowprotocol/events'
-import { IframeRpcManager } from './IframeRpcManager'
+import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
 import { CowSwapWidgetParams, EthereumProvider } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
@@ -61,8 +61,8 @@ export function createCowSwapWidget(
   sendAppCode(iframeWindow, params.appCode)
   applyDynamicHeight(iframe, params.height)
 
-  // 4. Wire up the iframeRpcManager with the provider (so RPC calls flow back and forth)
-  let iframeRpcManager = updateProvider(iframeWindow, null, provider)
+  // 4. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
   // 5. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
@@ -73,40 +73,40 @@ export function createCowSwapWidget(
     updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
-      iframeRpcManager = updateProvider(iframeWindow, iframeRpcManager, newProvider)
+      iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
     },
   }
 }
 
 /**
- * Update the provider for the iframeRpcManager.
+ * Update the provider for the iframeRpcProviderBridge.
  *
  * It will disconnect from the previous provider and connect to the new one.
  *
  * @param iframe iframe window
- * @param iframeRpcManager iframe RPC manager
+ * @param iframeRpcProviderBridge iframe RPC manager
  * @param newProvider new provider
  *
- * @returns the iframeRpcManager
+ * @returns the iframeRpcProviderBridge
  */
 function updateProvider(
   iframe: Window,
-  iframeRpcManager: IframeRpcManager | null,
+  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
   newProvider?: EthereumProvider
-): IframeRpcManager {
-  if (iframeRpcManager) {
+): IframeRpcProviderBridge {
+  if (iframeRpcProviderBridge) {
     // Disconnect and connect
-    iframeRpcManager.disconnect()
+    iframeRpcProviderBridge.disconnect()
   } else {
-    iframeRpcManager = new IframeRpcManager(iframe)
+    iframeRpcProviderBridge = new IframeRpcProviderBridge(iframe)
   }
 
   // Connect new provider
   if (newProvider) {
-    iframeRpcManager.onConnect(newProvider)
+    iframeRpcProviderBridge.onConnect(newProvider)
   }
 
-  return iframeRpcManager
+  return iframeRpcProviderBridge
 }
 
 /**
