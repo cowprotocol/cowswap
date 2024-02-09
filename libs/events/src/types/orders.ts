@@ -9,11 +9,11 @@ export interface OrderUidInChain {
 export type OnPostedOrderPayload = OrderUidInChain
 export type OnExecutedOrderPayload = OrderUidInChain
 
-export interface OnPostedEthFlowOrderPayload extends OrderUidInChain {
+export type OnPostedEthFlowOrderPayload = OrderUidInChain & {
   txHash: string
 }
 
-export interface OnRejectedOrderPayload extends OrderUidInChain {
+export type OnRejectedOrderPayload = OrderUidInChain & {
   reason: string
   errorCode?: number
   // TODO: Potentially add all order info here, but lets keep it minimal for now
