@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   createCowSwapWidget,
@@ -15,6 +15,7 @@ export interface CowSwapWidgetProps {
 }
 
 export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
+  const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<Omit<CowSwapWidgetParams, 'provider'> | null>(null)
   const providerRef = useRef<EthereumProvider | null>(provider ?? null)
   const listenersRef = useRef<CowEventListeners | undefined>(listeners)
@@ -22,31 +23,45 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
+  // Error handling
+  const tryOrHandleError = useCallback(
+    (action: string, actionThatMightFail: () => void) => {
+      try {
+        console.log(`[WIDGET] ${action}`)
+        actionThatMightFail()
+      } catch (error) {
+        const errorMessage = `Error ${action.toLowerCase()}`
+        console.error(`[WIDGET] ${errorMessage}`, error)
+        setError({ message: errorMessage, error })
+      }
+    },
+    [setError]
+  )
+
   useEffect(() => {
     if (
       !containerRef.current ||
       paramsRef.current === params ||
       JSON.stringify(paramsRef.current) === JSON.stringify(params)
-    )
+    ) {
       return
+    }
 
+    const container = containerRef.current
+    const handler = widgetHandlerRef.current
     paramsRef.current = params
 
-    if (widgetHandlerRef.current === null) {
-      console.log('[WIDGET] Creating new widget', {
-        state: params,
-        listeners,
-        provider,
+    if (handler === null) {
+      tryOrHandleError('Creating a new widget', () => {
+        widgetHandlerRef.current = createCowSwapWidget(
+          container,
+          { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
+          listeners
+        )
+        listenersRef.current = listeners
       })
-      widgetHandlerRef.current = createCowSwapWidget(
-        containerRef.current,
-        { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
-        listeners
-      )
-      listenersRef.current = listeners
     } else {
-      console.log('[WIDGET] Updating params', params)
-      widgetHandlerRef.current.updateWidget(params)
+      tryOrHandleError('Updating the widget', () => handler.updateWidget(params))
     }
   }, [params])
 
@@ -55,19 +70,29 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
       !widgetHandlerRef.current ||
       providerRef.current === provider ||
       (provider === undefined && providerRef.current === null)
-    )
+    ) {
       return
+    }
 
-    console.log('[WIDGET] Update provider', providerRef.current, provider)
-    widgetHandlerRef.current.updateProvider(provider)
+    const handler = widgetHandlerRef.current
+    tryOrHandleError('Updating the provider', () => handler.updateProvider(provider))
   }, [provider])
 
   useEffect(() => {
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
 
-    console.log('[WIDGET] Update listeners', listenersRef.current, listeners)
-    widgetHandlerRef.current.updateListeners(listeners)
+    const handler = widgetHandlerRef.current
+    tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
   }, [listeners])
+
+  if (error) {
+    return (
+      <div style={{ color: '#ff3a3a' }}>
+        {error.message}
+        {error.error.message && <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.75em' }}>{error.error.message}</pre>}
+      </div>
+    )
+  }
 
   return <div ref={containerRef}></div>
 }
