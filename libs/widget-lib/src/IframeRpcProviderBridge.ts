@@ -35,7 +35,7 @@ export class IframeRpcProviderBridge {
     if (this.ethereumProvider !== null) {
       const ethereumProvider = this.ethereumProvider
       EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-        ethereumProvider.on(event, this.onRpcEventForwardToIframe)
+        ethereumProvider.off(event, this.onRpcEventForwardToIframe)
       })
     }
 
