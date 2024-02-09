@@ -15,32 +15,32 @@ export interface CowEventEmitter {
 }
 
 export class CowEventEmitterImpl implements CowEventEmitter {
-  private events: {
+  private subscriptions: {
     [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
   }
 
   constructor() {
-    this.events = {}
+    this.subscriptions = {}
   }
 
   on(listener: CowEventListener<CowEvents>): void {
     const { event, handler } = listener
-    if (!this.events[event]) {
-      this.events[event] = []
+    if (!this.subscriptions[event]) {
+      this.subscriptions[event] = []
     }
-    this.events[event].push(handler)
+    this.subscriptions[event].push(handler)
   }
 
   off(listener: CowEventListener<CowEvents>): void {
     const { event, handler } = listener
-    if (this.events[event]) {
-      this.events[event] = this.events[event].filter((listener) => listener !== handler)
+    if (this.subscriptions[event]) {
+      this.subscriptions[event] = this.subscriptions[event].filter((listener) => listener !== handler)
     }
   }
 
   emit<T extends keyof CowEventPayloads>(event: T, payload: CowEventPayloads[T]): void {
-    if (this.events[event]) {
-      this.events[event].forEach((handler) => handler(payload))
+    if (this.subscriptions[event]) {
+      this.subscriptions[event].forEach((handler) => handler(payload))
     }
   }
 }
