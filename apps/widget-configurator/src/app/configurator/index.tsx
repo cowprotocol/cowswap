@@ -159,7 +159,7 @@ export function Configurator({ title }: { title: string }) {
     defaultColors: defaultPalette,
   }
 
-  const params = useWidgetParamsAndSettings(provider, state)
+  const params = useWidgetParamsAndSettings(state)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
