@@ -72,6 +72,7 @@ export const tradeContextMock: TradeFlowContext = {
   },
   rateImpact: 0,
   provider: {} as any,
+  cowEventEmitter: {} as any,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,
