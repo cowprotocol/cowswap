@@ -1,6 +1,6 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { CowEvents } from '@cowprotocol/events'
+import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -22,7 +22,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,
-  cowEventEmitter,
+  cowEventEmitter: CowEventEmitter,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
