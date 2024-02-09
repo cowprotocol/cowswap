@@ -14,7 +14,7 @@ export interface CowEventEmitter {
   emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
 }
 
-export class CowEventEmitterImpl implements CowEventEmitter {
+export class SimpleCowEventEmitter implements CowEventEmitter {
   private subscriptions: {
     [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
   }

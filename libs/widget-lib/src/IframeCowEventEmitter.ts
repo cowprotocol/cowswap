@@ -1,12 +1,12 @@
-import { CowEventEmitterImpl, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
 export class IframeCowEventEmitter {
   private listeners: CowEventListeners
-  private eventEmitter: CowEventEmitterImpl
+  private eventEmitter: SimpleCowEventEmitter
 
   constructor(listeners?: CowEventListeners) {
-    this.eventEmitter = new CowEventEmitterImpl()
+    this.eventEmitter = new SimpleCowEventEmitter()
     this.listeners = listeners ?? []
 
     // Subscribe to events

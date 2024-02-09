@@ -1,3 +1,3 @@
-import { CowEventEmitterImpl } from '@cowprotocol/events'
+import { SimpleCowEventEmitter } from '@cowprotocol/events'
 
-export const cowEventEmitter = new CowEventEmitterImpl()
+export const cowEventEmitter = new SimpleCowEventEmitter()
