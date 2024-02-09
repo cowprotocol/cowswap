@@ -74,7 +74,7 @@ export enum ApiErrorCodeDetails {
   OrderExpired = 'Order is expired.',
   OrderFullyExecuted = 'Order is already filled.',
   OrderNotFound = 'The order you are trying to cancel does not exist.',
-  QuoteNotFound = 'Quote expired. Please try again and sign your faster.',
+  QuoteNotFound = 'Quote expired. Please try again and sign the order faster.',
   SameBuyAndSellToken = 'Sell and buy token can not be the same.',
   SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee.',
   SellAmountOverflow = 'SellAmountOverflow',
