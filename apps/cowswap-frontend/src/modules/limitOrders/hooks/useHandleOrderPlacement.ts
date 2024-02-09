@@ -85,7 +85,7 @@ export function useHandleOrderPlacement(
         // Reset override after successful order placement
         setPartiallyFillableOverride(undefined)
       })
-      .catch((error: Error) => {
+      .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
 
         if (error instanceof OperatorError) {
