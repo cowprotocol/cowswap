@@ -11,7 +11,7 @@ export function getSwapErrorMessage(error: Error): string {
     const defaultErrorMessage = getProviderErrorMessage(error)
 
     if (isValidOperatorError(error)) {
-      return capitalizeFirstLetter(error.description) || defaultErrorMessage
+      return capitalizeFirstLetter(error.message) || defaultErrorMessage
     }
 
     return defaultErrorMessage
