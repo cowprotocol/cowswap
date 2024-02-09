@@ -39,11 +39,7 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
   )
 
   useEffect(() => {
-    if (
-      !containerRef.current ||
-      paramsRef.current === params ||
-      JSON.stringify(paramsRef.current) === JSON.stringify(params)
-    ) {
+    if (!containerRef.current || JSON.stringify(paramsRef.current) === JSON.stringify(params)) {
       return
     }
 
