@@ -31,14 +31,6 @@ export class IframeRpcProviderBridge {
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
   disconnect() {
-    // If it was connected, unregister the forwarding events
-    if (this.ethereumProvider !== null) {
-      const ethereumProvider = this.ethereumProvider
-      EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-        ethereumProvider.off(event, this.onRpcEventForwardToIframe)
-      })
-    }
-
     // Disconnect provider
     this.ethereumProvider = null
     window.removeEventListener('message', this.processRpcCallFromWindow)
