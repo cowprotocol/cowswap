@@ -88,7 +88,6 @@ export async function tradeFlow(
       signer: provider.getSigner(),
       validTo,
     })
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
@@ -122,6 +121,7 @@ export async function tradeFlow(
         dispatch
       )
     }
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
