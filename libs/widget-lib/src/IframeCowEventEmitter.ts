@@ -7,7 +7,7 @@ export class IframeCowEventEmitter {
 
   constructor(listeners?: CowEventListeners) {
     this.eventEmitter = new SimpleCowEventEmitter()
-    this.listeners = listeners ?? []
+    this.listeners = listeners || []
 
     // Subscribe to events
     this.updateListeners(listeners)
@@ -23,7 +23,7 @@ export class IframeCowEventEmitter {
     }
 
     // Subscribe to events
-    this.listeners = listeners ?? []
+    this.listeners = listeners || []
     for (const listener of this.listeners) {
       this.eventEmitter.on(listener as CowEventListener<CowEvents>)
     }
