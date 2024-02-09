@@ -52,24 +52,24 @@ const COW_LISTENERS: CowEventListeners = [
   {
     event: CowEvents.ON_TOAST_MESSAGE,
     handler: (event) => {
-      console.log('[TODO:remove] 🍞 Toast message', event.message, event.data)
+      console.info('[TODO:remove] 🍞 Toast message', event.message, event.data)
 
       // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
       if (event.messageType === ToastMessageType.SWAP_ETH_FLOW_SENT_TX) {
-        console.error('[TODO:remove] 🍞 Toast message: New eth flow order', event.data.tx)
+        console.info('[TODO:remove] 🍞 Toast message: New eth flow order', event.data.tx)
       }
 
       // ...or you can do handle them your way using the data:
       switch (event.messageType) {
         case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
-          console.error('[TODO:remove] 🍞 Toast message: New eth flow order. Tx: ', event.data.tx)
+          console.info('[TODO:remove] 🍞 Toast message: New eth flow order. Tx: ', event.data.tx)
           break
         case ToastMessageType.SWAP_POSTED_API:
-          console.warn('[TODO:remove] 🍞 Toast message: Posted order', event.data.orderUid)
+          console.info('[TODO:remove] 🍞 Toast message: Posted order', event.data.orderUid)
           break
         // ... and so on
         default:
-          console.error('[TODO:remove] 🍞 Toast message: Default', event.message)
+          console.info('[TODO:remove] 🍞 Toast message: Default', event.message)
       }
     },
   },
