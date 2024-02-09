@@ -1,5 +1,5 @@
-import { CowEventEmitterImpl, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
-import { JsonRpcManager } from './JsonRpcManager'
+import { CowEventListeners } from '@cowprotocol/events'
+import { IframeRpcManager } from './IframeRpcManager'
 import { CowSwapWidgetParams, EthereumProvider } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
@@ -41,49 +41,72 @@ export function createCowSwapWidget(
   listeners?: CowEventListeners
 ): CowSwapWidgetHandler {
   const { provider } = params
+
+  // 1. Create a brand new iframe
   const iframe = createIframe(params)
 
+  // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
   container.appendChild(iframe)
 
-  const { contentWindow } = iframe
+  const { contentWindow: iframeWindow } = iframe
+  if (!iframeWindow) {
+    console.error('Iframe does not contain a window', iframe)
+    throw new Error('Iframe does not contain a window!')
+  }
 
-  if (!contentWindow) throw new Error('Iframe does not contain a window!')
-
-  sendAppCode(contentWindow, params.appCode)
-
+  // 3. Post some initial messages to the iframe
+  //    - Send appCode
+  //    - Apply dynamic height adjustments
+  sendAppCode(iframeWindow, params.appCode)
   applyDynamicHeight(iframe, params.height)
 
-  let jsonRpcManager = updateProvider(contentWindow, null, provider)
+  // 4. Wire up the iframeRpcManager with the provider (so RPC calls flow back and forth)
+  let iframeRpcManager = updateProvider(iframeWindow, null, provider)
 
-  iframe.addEventListener('load', () => {
-    updateWidget(contentWindow, params)
-  })
+  // 5. Schedule the uploading of the params, once the iframe is loaded
+  iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
   const iFrameCowEventEmitter = new IframeCowEventEmitter(listeners)
 
+  // 6. Return the handler, so the widget, listeners, and provider can be updated
   return {
-    updateWidget: (newParams: CowSwapWidgetParams) => updateWidget(contentWindow, newParams),
+    updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
-      jsonRpcManager = updateProvider(contentWindow, jsonRpcManager, newProvider)
+      iframeRpcManager = updateProvider(iframeWindow, iframeRpcManager, newProvider)
     },
   }
 }
 
-function updateProvider(contentWindow: Window, jsonRpcManager: JsonRpcManager | null, newProvider?: EthereumProvider) {
-  if (jsonRpcManager) {
+/**
+ * Update the provider for the iframeRpcManager.
+ *
+ * It will disconnect from the previous provider and connect to the new one.
+ *
+ * @param iframe iframe window
+ * @param iframeRpcManager iframe RPC manager
+ * @param newProvider new provider
+ *
+ * @returns the iframeRpcManager
+ */
+function updateProvider(
+  iframe: Window,
+  iframeRpcManager: IframeRpcManager | null,
+  newProvider?: EthereumProvider
+): IframeRpcManager {
+  if (iframeRpcManager) {
     // Disconnect and connect
-    jsonRpcManager.disconnect()
+    iframeRpcManager.disconnect()
   } else {
-    jsonRpcManager = new JsonRpcManager(contentWindow)
+    iframeRpcManager = new IframeRpcManager(iframe)
   }
 
   // Connect new provider
   if (newProvider) {
-    jsonRpcManager.onConnect(newProvider)
+    iframeRpcManager.onConnect(newProvider)
   }
 
-  return jsonRpcManager
+  return iframeRpcManager
 }
 
 /**
@@ -109,7 +132,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
-function updateWidget(contentWindow: Window, params: CowSwapWidgetParams) {
+function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) {
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
@@ -167,34 +190,3 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
     iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
 }
-
-// /**
-//  * Subscribes to the cow events
-//  *
-//  * @param listeners - subscription to different events
-//  */
-// function subscribeToCoWEvents(listeners?: CowEventListeners): void {
-//   console.log('[TODO:remove] Subscribing to events', listeners?.length)
-//   if (!listeners) {
-//     return
-//   }
-
-//   // Create event emitter
-//   const eventEmitter = new CowEventEmitterImpl()
-
-//   // Subscribe to events
-//   for (const listener of listeners) {
-//     eventEmitter.on(listener as CowEventListener<CowEvents>)
-//   }
-
-//   window.addEventListener('message', (event) => {
-//     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
-//       return
-//     }
-//     console.debug(
-//       `[TODO:remove] Received message client side - Forward to eventEmitter ${event.data.eventName}`,
-//       event.data.payload
-//     )
-//     eventEmitter.emit(event.data.eventName, event.data.payload)
-//   })
-// }
