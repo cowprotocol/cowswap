@@ -156,9 +156,9 @@ interface CowSwapWidgetConfig {
   hideNetworkSelector: boolean
 
   /**
-   * Disables showing the recent history in the widget. Defaults to false.
+   * Hides the connect buttons, and the connected account button. Defaults to false.
    */
-  hideAccountButton?: boolean
+  hideConnectButton?: boolean
 
   /**
    * The theme of the widget UI.
