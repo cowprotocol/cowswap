@@ -162,7 +162,9 @@ export default class OperatorError extends Error {
 
     this.type = apiError.errorType
     this.description = apiError.description
-    this.message = ApiErrorCodeDetails[apiError.errorType]
+    const message = ApiErrorCodeDetails[apiError.errorType]
+    // In case we don't have a custom message, use the one provided by the backend in the description
+    this.message = message === this.type.toString() ? this.description : message
   }
 }
 
