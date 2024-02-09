@@ -91,7 +91,7 @@ export function useHandleOrderPlacement(
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message)
         } else {
-          tradeConfirmActions.onDismiss()
+          tradeConfirmActions.onError('Unknown error. Please try again.')
         }
       })
   }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
