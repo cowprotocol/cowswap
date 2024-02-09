@@ -29,7 +29,7 @@ export function CowEventsUpdater() {
     return () => {
       allHandlers.forEach((listener) => cowEventEmitter.off(listener as CowEventListener<CowEvents>))
     }
-  }, [])
+  }, [cowEventEmitter])
 
   return null
 }
