@@ -21,11 +21,13 @@ import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
+import { useCowEventEmitter } from 'common/hooks/useCowEventEmitter'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
+  const cowEventEmitter = useCowEventEmitter()
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -78,6 +80,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
+    cowEventEmitter,
     rateImpact,
     permitInfo: !enoughAllowance ? permitInfo : undefined,
     generatePermitHook,

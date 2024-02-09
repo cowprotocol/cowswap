@@ -1,6 +1,6 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -23,7 +23,6 @@ const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
 export async function safeBundleEthFlow(
   input: SafeBundleEthFlowContext,
-  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
@@ -45,6 +44,7 @@ export async function safeBundleEthFlow(
     safeAppsSdk,
     swapFlowAnalyticsContext,
     tradeConfirmActions,
+    cowEventEmitter,
   } = input
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)

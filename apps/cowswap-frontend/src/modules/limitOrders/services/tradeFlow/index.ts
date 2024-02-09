@@ -34,6 +34,7 @@ export async function tradeFlow(
     rateImpact,
     permitInfo,
     provider,
+    cowEventEmitter,
     chainId,
     allowsOffchainSigning,
     settlementContract,

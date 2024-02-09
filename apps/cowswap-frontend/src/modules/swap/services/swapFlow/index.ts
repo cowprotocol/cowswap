@@ -1,5 +1,5 @@
 import { getIsNativeToken, reportAppDataWithHooks, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
+import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -22,7 +22,6 @@ import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
   input: SwapFlowContext,
-  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
@@ -96,7 +95,7 @@ export async function swapFlow(
       ? Promise.resolve(null)
       : presignOrderStep(orderId, input.contract))
 
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: input.context.chainId })
+    input.cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: input.context.chainId })
 
     logTradeFlow('SWAP FLOW', 'STEP 6: unhide SC order (optional)')
     if (presignTx) {
