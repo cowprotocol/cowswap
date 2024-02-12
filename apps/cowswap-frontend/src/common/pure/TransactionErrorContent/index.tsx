@@ -48,20 +48,20 @@ const BackButtonStyled = styled(BackButton)`
 export interface TransactionErrorContentProps {
   message: JSX.Element | string
   onDismiss(): void
-  isScreenMode?: boolean
+  modalMode?: boolean
 }
 
 export function TransactionErrorContent(props: TransactionErrorContentProps) {
-  const { message, onDismiss, isScreenMode } = props
+  const { message, onDismiss, modalMode } = props
 
   return (
     <Wrapper>
       <Header>
-        {isScreenMode && <BackButtonStyled onClick={onDismiss} />}
+        {!modalMode && <BackButtonStyled onClick={onDismiss} />}
         <span>
           <Trans>Error</Trans>
         </span>
-        {isScreenMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
+        {!modalMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
       </Header>
       <Body>
         <AlertIcon size={64} />

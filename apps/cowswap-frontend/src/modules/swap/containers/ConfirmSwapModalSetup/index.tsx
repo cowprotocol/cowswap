@@ -75,7 +75,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         <>
           <TradeRates {...tradeRatesProps} isReviewSwap={true} />
           <HighFeeWarning trade={tradeRatesProps.trade} />
-          {!priceImpact.priceImpact && <NoImpactWarning isAccepted={true} withoutAccepting={true} />}
+          {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

@@ -27,7 +27,7 @@ const ArrowRight = styled(SVG)`
 const ModalFixtures = {
   'new modal + content top/bottom': (
     <Wrapper>
-      <NewModal>
+      <NewModal modalMode>
         <NewModalContentTop paddingTop={90}>
           <IconSpinner currency={MOCK_TOKEN} size={84} />
           <h3>
@@ -50,7 +50,7 @@ const ModalFixtures = {
   ),
   'new modal + content top/bottom 2': (
     <Wrapper>
-      <NewModal>
+      <NewModal modalMode>
         <NewModalContentTop paddingTop={90}>
           <IconSpinner image={IMAGE_ACCOUNT} size={84} />
           <span>
@@ -76,7 +76,9 @@ const ModalFixtures = {
   ),
   'new modal + heading title': (
     <Wrapper>
-      <NewModal title="Review transaction">- New Modal -</NewModal>
+      <NewModal modalMode title="Review transaction">
+        - New Modal -
+      </NewModal>
     </Wrapper>
   ),
 }

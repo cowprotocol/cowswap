@@ -151,18 +151,18 @@ export interface NewModalProps {
   title?: string
   onDismiss?: () => void
   children?: React.ReactNode
-  screenMode?: boolean
+  modalMode?: boolean
 }
 
-export function NewModal({ maxWidth = 450, minHeight = 350, screenMode, title, children, onDismiss }: NewModalProps) {
+export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, children, onDismiss }: NewModalProps) {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
     <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
       <ModalInner>
-        {screenMode && <BackButtonStyled onClick={onDismissCallback} />}
+        {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && <Heading>{title}</Heading>}
-        {!screenMode && (
+        {!modalMode && (
           <IconX onClick={onDismissCallback}>
             <SVG src={CLOSE_ICON} />
           </IconX>
