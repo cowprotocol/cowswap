@@ -77,6 +77,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           setContext({ isPendingSignature: true, error: null })
           // Actual cancellation is triggered here
           await cancelFn(order)
+          onDismiss()
           // When done, dismiss the modal
         } catch (e: any) {
           onDismiss()
