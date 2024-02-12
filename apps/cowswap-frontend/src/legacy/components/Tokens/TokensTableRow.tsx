@@ -122,7 +122,7 @@ export const TokensTableRow = ({
   }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
-    if (isNativeToken || !account) {
+    if (isNativeToken) {
       return null
     }
 
@@ -130,7 +130,7 @@ export const TokensTableRow = ({
       return <ApproveLabel>Approved ✓</ApproveLabel>
     }
 
-    if (approvalState === ApprovalState.NOT_APPROVED) {
+    if (!account || approvalState === ApprovalState.NOT_APPROVED) {
       if (!currentAllowance || currentAllowance.equalTo(0)) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }

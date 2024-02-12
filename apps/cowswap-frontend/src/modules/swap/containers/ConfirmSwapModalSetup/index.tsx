@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useGnosisSafeInfo } from '@cowprotocol/wallet'
+import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
@@ -35,6 +35,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
     props
 
+  const { account } = useWalletInfo()
   const { recipient } = useSwapState()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -62,6 +63,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
         title={CONFIRM_TITLE}
+        account={account}
         refreshInterval={refreshInterval}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
