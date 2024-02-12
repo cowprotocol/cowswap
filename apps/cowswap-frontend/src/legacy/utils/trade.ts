@@ -19,8 +19,9 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getTrades } from 'api/gnosisProtocol'
+import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
+import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 
 export type PostOrderParams = {
   account: string
@@ -233,7 +234,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
-  let signature: string | undefined
+  let signature = ''
 
   if (allowsOffchainSigning) {
     const signedOrderInfo = await OrderSigningUtils.signOrder(unsignedOrder, chainId, signer)
@@ -247,32 +248,34 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  // Call API
-  const orderId = await orderBookApi.sendOrder(
-    {
-      ...unsignedOrder,
-      from: account,
-      receiver,
-      signingScheme,
-      // Include the signature
-      signature,
-      quoteId,
-      appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-      appDataHash: appData.appDataKeccak256,
-    },
-    { chainId }
-  )
+  return await wrapErrorInOperatorError(async () => {
+    // Call API
+    const orderId = await orderBookApi.sendOrder(
+      {
+        ...unsignedOrder,
+        from: account,
+        receiver,
+        signingScheme,
+        // Include the signature
+        signature,
+        quoteId,
+        appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
+        appDataHash: appData.appDataKeccak256,
+      },
+      { chainId }
+    )
 
-  const pendingOrderParams: Order = mapUnsignedOrderToOrder({
-    unsignedOrder,
-    additionalParams: { ...params, orderId, summary, signature },
+    const pendingOrderParams: Order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: { ...params, orderId, summary, signature },
+    })
+
+    return {
+      chainId,
+      id: orderId,
+      order: pendingOrderParams,
+    }
   })
-
-  return {
-    chainId,
-    id: orderId,
-    order: pendingOrderParams,
-  }
 }
 
 type OrderCancellationParams = {
@@ -290,20 +293,34 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  await orderBookApi.sendSignedOrderCancellations(
-    {
-      orderUids: [orderId],
-      signature,
-      signingScheme,
-    },
-    { chainId }
-  )
+  await wrapErrorInOperatorError(async () => {
+    await orderBookApi.sendSignedOrderCancellations(
+      {
+        orderUids: [orderId],
+        signature,
+        signingScheme,
+      },
+      { chainId }
+    )
 
-  cancelPendingOrder({ chainId, id: orderId })
+    cancelPendingOrder({ chainId, id: orderId })
+  })
 }
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
   const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
 
   return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
+}
+
+async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn()
+  } catch (e) {
+    // In case it's an orderbook error, wrap it in an OperatorError
+    if (getIsOrderBookTypedError(e)) {
+      throw new OperatorError(e.body as ApiErrorObject)
+    }
+    throw e
+  }
 }
