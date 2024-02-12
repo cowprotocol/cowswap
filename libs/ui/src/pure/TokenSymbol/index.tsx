@@ -40,9 +40,9 @@ export function TokenSymbol(props: TokenSymbolProps) {
   )
 }
 
-export function getSymbol(props: Omit<TokenSymbolProps, 'className'>): string | null {
-  const aux = getAbbreviatedSymbol(props)
-  if (!aux) return null
+export function formatTokenSymbol(props: Omit<TokenSymbolProps, 'className'>): string | null {
+  const abbreviatedSymbol = getAbbreviatedSymbol(props)
+  if (!abbreviatedSymbol) return null
 
-  return aux.abbreviateSymbol || null
+  return abbreviatedSymbol.abbreviateSymbol || null
 }

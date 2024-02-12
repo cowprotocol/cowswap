@@ -3,7 +3,7 @@ import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/comm
 import { UI } from '../../enum'
 import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
-import { getSymbol as formatToken, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
+import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
@@ -72,7 +72,7 @@ export function formatTokenAmountWithSymbol(props: FormatTokenAmountWithSymbolPa
     return null
   }
 
-  const symbol = hideTokenSymbol || !tokenSymbol ? null : formatToken({ token: tokenSymbol })
+  const symbol = hideTokenSymbol || !tokenSymbol ? null : formatTokenSymbol({ token: tokenSymbol })
 
   const roundedAmount = round ? FractionUtils.round(amount) : amount
 
