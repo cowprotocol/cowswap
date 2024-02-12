@@ -20,7 +20,6 @@ export interface TradeFlowContext {
   provider: Web3Provider
   cowEventEmitter: CowEventEmitter
   allowsOffchainSigning: boolean
-  isGnosisSafeWallet: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
 }

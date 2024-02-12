@@ -38,10 +38,9 @@ export async function tradeFlow(
     allowsOffchainSigning,
     settlementContract,
     dispatch,
-    isGnosisSafeWallet,
     generatePermitHook,
   } = params
-  const { account, recipientAddressOrName, sellToken, buyToken, appData } = postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet } = postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
@@ -97,6 +96,7 @@ export async function tradeFlow(
           ...order,
           isHidden: !allowsOffchainSigning,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -113,9 +113,10 @@ export async function tradeFlow(
           chainId,
           order: {
             id: order.id,
-            presignGnosisSafeTxHash: isGnosisSafeWallet ? presignTx.hash : undefined,
+            presignGnosisSafeTxHash: isSafeWallet ? presignTx.hash : undefined,
             isHidden: false,
           },
+          isSafeWallet,
         },
         dispatch
       )

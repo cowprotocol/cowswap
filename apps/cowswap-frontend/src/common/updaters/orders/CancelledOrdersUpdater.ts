@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderFulfillmentData } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -28,6 +28,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
+  const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
 
   const cancelled = useCancelledOrders({ chainId })
@@ -41,7 +42,7 @@ export function CancelledOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string) => {
+    async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()
 
@@ -108,6 +109,7 @@ export function CancelledOrdersUpdater(): null {
           fulfillOrdersBatch({
             ordersData,
             chainId,
+            isSafeWallet,
           })
           ordersData.forEach(({ id }) => addOrderToSurplusQueue(id))
         }
@@ -124,10 +126,10 @@ export function CancelledOrdersUpdater(): null {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), MARKET_OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account, isSafeWallet), MARKET_OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [account, chainId, updateOrders])
+  }, [account, chainId, isSafeWallet, updateOrders])
 
   return null
 }

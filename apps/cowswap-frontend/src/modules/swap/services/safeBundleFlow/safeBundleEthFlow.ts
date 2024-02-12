@@ -92,6 +92,7 @@ export async function safeBundleEthFlow(
       callbacks.closeModals()
     })
 
+    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -101,6 +102,7 @@ export async function safeBundleEthFlow(
           // Initially as hidden, until we get a confirmation from the wallet it succeeded
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -131,6 +133,7 @@ export async function safeBundleEthFlow(
           // Unhide the order
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )

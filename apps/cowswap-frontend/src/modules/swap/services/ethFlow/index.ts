@@ -80,6 +80,7 @@ export async function ethFlow(
         id: orderId,
         chainId: context.chainId,
         order,
+        isSafeWallet: orderParams.isSafeWallet,
       },
       dispatch
     )
