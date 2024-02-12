@@ -136,6 +136,7 @@ export interface AddPendingOrderParams {
   id: UID
   chainId: ChainId
   order: SerializedOrder
+  isSafeWallet: boolean
 }
 export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
@@ -153,21 +154,25 @@ export interface OrderFulfillmentData {
 export interface AddOrUpdateOrdersParams {
   chainId: ChainId
   orders: SerializedOrder[]
+  isSafeWallet: boolean
 }
 
 export interface UpdateOrderParams {
   chainId: ChainId
   order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
+  isSafeWallet: boolean
 }
 
 export interface FulfillOrdersBatchParams {
   ordersData: OrderFulfillmentData[]
   chainId: ChainId
+  isSafeWallet: boolean
 }
 
 export interface BatchOrdersUpdateParams {
   ids: UID[]
   chainId: ChainId
+  isSafeWallet: boolean
 }
 
 export type PresignedOrdersParams = BatchOrdersUpdateParams

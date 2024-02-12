@@ -68,6 +68,7 @@ cowSwapStore.dispatch(
       signature: 'xxxxx',
       class: OrderClass.MARKET,
     },
+    isSafeWallet: false,
   })
 )
 

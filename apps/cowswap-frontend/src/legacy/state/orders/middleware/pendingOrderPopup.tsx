@@ -18,7 +18,7 @@ export function pendingOrderPopup(
   payload: AddPendingOrderParams,
   skipAnalytics?: boolean
 ) {
-  const { id, chainId } = payload
+  const { id, chainId, isSafeWallet } = payload
 
   // use current state to lookup orders' data
   const orders = store.getState().orders[chainId]
@@ -37,10 +37,12 @@ export function pendingOrderPopup(
 
   showPendingOrderNotification({
     ...order,
+    chainId,
     receiver,
     inputAmount,
     outputAmount,
     uiOrderType: getUiOrderType(order),
+    isSafeWallet,
   })
 
   if (skipAnalytics) return

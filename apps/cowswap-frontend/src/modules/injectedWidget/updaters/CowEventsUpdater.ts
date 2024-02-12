@@ -20,7 +20,7 @@ export function CowEventsUpdater() {
       return {
         event,
         handler: (payload: any) => {
-          console.debug('[CowEventsUpdater]: Forward event to iFrame', event, payload)
+          console.debug('[CowEventsUpdater] Forward event to iFrame', event, payload)
           forwardEventToIframe(event, payload)
         },
       }

@@ -21,6 +21,7 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
         id: order.id,
         chainId: payload.chainId,
         order: orderObject.order,
+        isSafeWallet: payload.isSafeWallet,
       },
       true
     )
