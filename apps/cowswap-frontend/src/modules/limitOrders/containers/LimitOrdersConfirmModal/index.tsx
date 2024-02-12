@@ -24,6 +24,8 @@ import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 
+const CONFIRM_TITLE = 'Limit Order'
+
 export interface LimitOrdersConfirmModalProps {
   tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -64,9 +66,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   )
 
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
-        title="Review Limit Order"
+        title={CONFIRM_TITLE}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

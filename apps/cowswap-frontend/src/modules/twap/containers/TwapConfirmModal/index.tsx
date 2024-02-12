@@ -21,6 +21,8 @@ import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
+const CONFIRM_TITLE = 'TWAP'
+
 export function TwapConfirmModal() {
   const {
     inputCurrencyAmount,
@@ -72,9 +74,9 @@ export function TwapConfirmModal() {
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
-        title="Review TWAP order"
+        title={CONFIRM_TITLE}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}

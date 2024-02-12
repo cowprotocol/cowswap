@@ -66,7 +66,7 @@ function Custom({ stateValue }: { stateValue: string }) {
   }, [updateWalletInfo])
 
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal title="Swap">
       <TradeConfirmation {...confirmationState} onDismiss={console.log}>
         <span>Some content</span>
       </TradeConfirmation>

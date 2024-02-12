@@ -19,6 +19,8 @@ import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
 
+const CONFIRM_TITLE = 'Swap'
+
 export interface ConfirmSwapModalSetupProps {
   chainId: SupportedChainId
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -57,9 +59,9 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   }
 
   return (
-    <TradeConfirmModal submittedContent={submittedContent}>
+    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
-        title="Review Swap"
+        title={CONFIRM_TITLE}
         refreshInterval={refreshInterval}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
