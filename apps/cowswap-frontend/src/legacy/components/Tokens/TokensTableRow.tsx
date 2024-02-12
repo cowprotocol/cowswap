@@ -110,6 +110,8 @@ export const TokensTableRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
+  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.quotient) : false
+
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
@@ -126,7 +128,7 @@ export const TokensTableRow = ({
       return null
     }
 
-    if (approvalState === ApprovalState.APPROVED) {
+    if (approvalState === ApprovalState.APPROVED || balanceLessThanAllowance) {
       return <ApproveLabel>Approved ✓</ApproveLabel>
     }
 
@@ -149,7 +151,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState])
+  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState, balanceLessThanAllowance])
 
   return (
     <>
