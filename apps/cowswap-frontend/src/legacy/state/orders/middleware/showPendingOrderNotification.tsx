@@ -11,7 +11,7 @@ import {
   PendingOrderNotification,
   PendingOrderNotificationProps,
   getPendingOrderNotificationToast,
-} from 'common/containers/PendingOrderNotification'
+} from 'common/pure/PendingOrderNotification'
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 interface PendingOrderNotificationParams {
