@@ -1,8 +1,8 @@
-import { CowEvents, CowEventPayloads } from './types'
+import { CowEvents, CowEventPayloadMap } from './types'
 
-export type CowEventHandler<T extends keyof CowEventPayloads> = (payload: CowEventPayloads[T]) => void
+export type CowEventHandler<T extends CowEvents> = (payload: CowEventPayloadMap[T]) => void
 
-export type CowEventListener<T extends CowEvents> = T extends keyof CowEventPayloads
+export type CowEventListener<T extends CowEvents> = T extends CowEvents
   ? { event: T; handler: CowEventHandler<T> }
   : never
 
@@ -11,7 +11,7 @@ export type CowEventListeners = CowEventListener<CowEvents>[]
 export interface CowEventEmitter {
   on(listener: CowEventListener<CowEvents>): void
   off(listener: CowEventListener<CowEvents>): void
-  emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
+  emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void
 }
 
 export class SimpleCowEventEmitter implements CowEventEmitter {
@@ -34,7 +34,7 @@ export class SimpleCowEventEmitter implements CowEventEmitter {
     }
   }
 
-  emit<T extends keyof CowEventPayloads>(event: T, payload: CowEventPayloads[T]): void {
+  emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void {
     if (this.subscriptions[event]) {
       this.subscriptions[event].forEach((handler) => handler(payload))
     }
