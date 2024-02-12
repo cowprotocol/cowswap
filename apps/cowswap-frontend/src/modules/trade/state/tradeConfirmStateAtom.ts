@@ -33,6 +33,7 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
     ...get(tradeConfirmStateAtom),
     isOpen: false,
     error: null,
+    pendingTrade: null,
     permitSignatureState: undefined,
   }))
 })
