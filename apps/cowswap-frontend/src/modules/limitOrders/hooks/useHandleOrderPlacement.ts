@@ -12,6 +12,7 @@ import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOr
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
@@ -91,7 +92,7 @@ export function useHandleOrderPlacement(
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message)
         } else {
-          tradeConfirmActions.onError('Unknown error. Please try again.')
+          tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
   }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
