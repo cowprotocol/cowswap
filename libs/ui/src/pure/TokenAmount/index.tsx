@@ -3,7 +3,7 @@ import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/comm
 import { UI } from '../../enum'
 import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
-import { getSymbol as formatToken, TokenName as TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
+import { getSymbol as formatToken, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
