@@ -16,10 +16,12 @@ export enum CowEvents {
 }
 
 // Define types for event payloads
-export interface CowEventPayloads {
+export interface CowEventPayloadMap {
   [CowEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
   [CowEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
   [CowEvents.ON_POSTED_ETH_FLOW_ORDER]: OnPostedEthFlowOrderPayload
   [CowEvents.ON_EXECUTED_ORDER]: OnExecutedOrderPayload
   [CowEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
 }
+
+export type CowEventPayloads = CowEventPayloadMap[CowEvents]
