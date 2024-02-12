@@ -234,7 +234,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
-  let signature: string | undefined
+  let signature = ''
 
   if (allowsOffchainSigning) {
     const signedOrderInfo = await OrderSigningUtils.signOrder(unsignedOrder, chainId, signer)
@@ -248,7 +248,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  try {
+  return await wrapErrorInOperatorError(async () => {
     // Call API
     const orderId = await orderBookApi.sendOrder(
       {
@@ -275,13 +275,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       id: orderId,
       order: pendingOrderParams,
     }
-  } catch (error) {
-    // In case it's an orderbook error, wrap it in an OperatorError
-    if (getIsOrderBookTypedError(error)) {
-      throw new OperatorError(error.body as ApiErrorObject)
-    }
-    throw error
-  }
+  })
 }
 
 type OrderCancellationParams = {
@@ -299,7 +293,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  try {
+  await wrapErrorInOperatorError(async () => {
     await orderBookApi.sendSignedOrderCancellations(
       {
         orderUids: [orderId],
@@ -310,6 +304,18 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
     )
 
     cancelPendingOrder({ chainId, id: orderId })
+  })
+}
+
+export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
+  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
+
+  return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
+}
+
+async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn()
   } catch (e) {
     // In case it's an orderbook error, wrap it in an OperatorError
     if (getIsOrderBookTypedError(e)) {
@@ -317,10 +323,4 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
     }
     throw e
   }
-}
-
-export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
-  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
-
-  return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
 }
