@@ -15,14 +15,16 @@ export function CowEventsUpdater() {
 
   // Setup listeners only once
   useEffect(() => {
-    // cowEventEmitter.on(CowEvents)
+    // Create all listeners
     const allHandlers: CowEventListeners = ALL_EVENTS.map((event) => {
       return {
         event,
-        handler: (payload: any) => forwardEventToIframe(event, payload),
+        handler: (payload: any) => {
+          console.debug('[CowEventsUpdater]: Forward event to iFrame', event, payload)
+          forwardEventToIframe(event, payload)
+        },
       }
     })
-
     allHandlers.forEach((listener) => cowEventEmitter.on(listener as CowEventListener<CowEvents>))
 
     // Cleanup: Remove all listeners
