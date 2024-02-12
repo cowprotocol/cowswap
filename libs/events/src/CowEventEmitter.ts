@@ -17,11 +17,7 @@ export interface CowEventEmitter {
 export class SimpleCowEventEmitter implements CowEventEmitter {
   private subscriptions: {
     [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
-  }
-
-  constructor() {
-    this.subscriptions = {}
-  }
+  } = {}
 
   on(listener: CowEventListener<CowEvents>): void {
     const { event, handler } = listener
