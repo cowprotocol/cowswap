@@ -42,7 +42,7 @@ export interface PendingOrderNotificationProps {
 }
 
 export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload | null {
-  const { orderId, kind, inputAmount, outputAmount, receiver, account } = props
+  const { orderId, kind, inputAmount, outputAmount, receiver, account, orderType } = props
 
   if (!account) return null
 
@@ -57,6 +57,8 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     tokenSymbol: outputAmount.currency,
   })
 
+  const messagePrefix = `${ORDER_TYPE_TITLES[orderType]} submitted: `
+
   const baseMessage = (() => {
     const isSellOrder = kind === OrderKind.SELL
 
@@ -67,9 +69,11 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     }
   })()
 
+  const message = toAddress && receiver ? `${baseMessage}. Receiver: ${toAddress}` : baseMessage
+
   return {
     messageType: ToastMessageType.SWAP_POSTED_API,
-    message: toAddress && receiver ? `${baseMessage}. Receiver: ${toAddress}` : baseMessage,
+    message: messagePrefix + message,
     data: {
       orderUid: orderId,
     },
