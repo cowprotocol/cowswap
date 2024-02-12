@@ -27,7 +27,15 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `
 
-function Custom({ orderType, orderId }: { orderType: UiOrderType; orderId: string }) {
+function Custom({
+  orderType,
+  orderId,
+  isSafeWallet: isSafeWalletParam = false,
+}: {
+  orderType: UiOrderType
+  orderId: string
+  isSafeWallet?: boolean
+}) {
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
 
   const [kind] = useSelect('kind', {
@@ -39,7 +47,7 @@ function Custom({ orderType, orderId }: { orderType: UiOrderType; orderId: strin
   const [receiver] = useValue('receiver', { defaultValue: '0xfb3c7eb936cAA12B5A884d612393969A557d4307' })
   const [inputAmountRaw] = useValue('inputAmount', { defaultValue: '500000' })
   const [outputAmountRaw] = useValue('outputAmount', { defaultValue: '1.2' })
-  const [isSafeWallet] = useValue('isSafeWallet', { defaultValue: false })
+  const [isSafeWallet] = useValue('isSafeWallet', { defaultValue: isSafeWalletParam })
 
   const inputAmount = CurrencyAmount.fromRawAmount(
     USDC_MAINNET,
@@ -84,6 +92,15 @@ const Fixtures = {
   limit: <Custom orderType={UiOrderType.LIMIT} orderId={defaultOrderId} />,
   twap: (
     <Custom orderType={UiOrderType.TWAP} orderId="0xc554e6c5612af4796c3c5cd817cea13f012f0807c9ce5e18cdf51e911701eeff" />
+  ),
+  swapSafe: <Custom orderType={UiOrderType.SWAP} orderId={defaultOrderId} isSafeWallet />,
+  limitSafe: <Custom orderType={UiOrderType.LIMIT} orderId={defaultOrderId} isSafeWallet />,
+  twapSafe: (
+    <Custom
+      orderType={UiOrderType.TWAP}
+      orderId="0xc554e6c5612af4796c3c5cd817cea13f012f0807c9ce5e18cdf51e911701eeff"
+      isSafeWallet
+    />
   ),
 }
 
