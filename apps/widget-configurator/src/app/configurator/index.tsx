@@ -52,41 +52,45 @@ const COW_LISTENERS: CowEventListeners = [
   {
     event: CowEvents.ON_TOAST_MESSAGE,
     handler: (event) => {
-      console.info('[TODO:remove] 🍞 Toast message', event.message, event.data)
-
       // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-      if (event.messageType === ToastMessageType.SWAP_ETH_FLOW_SENT_TX) {
-        console.info('[TODO:remove] 🍞 Toast message: New eth flow order', event.data.tx)
-      }
+      console.info('[TODO:remove][configurator:toast:simple] 🍞 Message: ', event.message)
+    },
+  },
 
-      // ...or you can do handle them your way using the data:
+  {
+    event: CowEvents.ON_TOAST_MESSAGE,
+    handler: (event) => {
+      // You cn implement a more complex way to handle toast messages
       switch (event.messageType) {
         case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
-          console.info('[TODO:remove] 🍞 Toast message: New eth flow order. Tx: ', event.data.tx)
+          console.info('[TODO:remove][configurator:toast:complex] 🍞 New eth flow order. Tx: ', event.data.tx)
           break
         case ToastMessageType.SWAP_POSTED_API:
-          console.info('[TODO:remove] 🍞 Toast message: Posted order', event.data.orderUid)
+          console.info('[TODO:remove][configurator:toast:complex] 🍞 Posted order', event.data.orderUid)
           break
         // ... and so on
         default:
-          console.info('[TODO:remove] 🍞 Toast message: Default', event.message)
+          console.info('[TODO:remove][configurator:toast:complex] 🍞 Default', event.message, event.data)
       }
     },
   },
 
   {
     event: CowEvents.ON_POSTED_ORDER,
-    handler: (event) => console.log('[TODO:remove] 💌 Posted order: ', event.orderUid),
+    handler: (event) => console.log('[TODO:remove][configurator:postedOrder] 💌 Posted order: ', event.orderUid),
   },
 
   {
     event: CowEvents.ON_CANCELLED_ORDER,
-    handler: (event) => console.log(`[TODO:remove] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
+    handler: (event) =>
+      console.log(
+        `[TODO:remove][configurator:cancelledOrder] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`
+      ),
   },
 
   {
     event: CowEvents.ON_EXECUTED_ORDER,
-    handler: (event) => console.log(`[TODO:remove] ✅ Executed order ${event.orderUid}`),
+    handler: (event) => console.log(`[TODO:remove][configurator:executedOrder] ✅ Executed order ${event.orderUid}`),
   },
 ]
 
