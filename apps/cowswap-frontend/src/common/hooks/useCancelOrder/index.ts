@@ -78,8 +78,8 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // Actual cancellation is triggered here
           await cancelFn(order)
           // When done, dismiss the modal
-          onDismiss()
         } catch (e: any) {
+          onDismiss()
           if (!isPendingSignature) return
 
           const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e)
