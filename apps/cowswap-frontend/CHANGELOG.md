@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.59.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.0...cowswap-v1.59.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* fix wrap/unwrap message ([#3781](https://github.com/cowprotocol/cowswap/issues/3781)) ([0003926](https://github.com/cowprotocol/cowswap/commit/0003926e6c883c9a373bd288ef4633debb42982e))
+* **limit:** placement error handling ([#3814](https://github.com/cowprotocol/cowswap/issues/3814)) ([decd0b5](https://github.com/cowprotocol/cowswap/commit/decd0b534ad531e78a027c557d7950fe59d9ec33))
+
 ## [1.59.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.58.0...cowswap-v1.59.0) (2024-02-02)
 
 
