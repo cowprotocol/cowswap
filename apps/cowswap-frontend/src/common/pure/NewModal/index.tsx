@@ -162,7 +162,7 @@ export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, ch
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && <Heading>{title}</Heading>}
-        {!modalMode && (
+        {modalMode && (
           <IconX onClick={onDismissCallback}>
             <SVG src={CLOSE_ICON} />
           </IconX>
