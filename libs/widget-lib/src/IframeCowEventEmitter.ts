@@ -33,10 +33,6 @@ export class IframeCowEventEmitter {
     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
       return
     }
-    console.debug(
-      `[TODO:remove] Received message client side - Forward to eventEmitter ${event.data.eventName}`,
-      event.data.payload
-    )
     this.eventEmitter.emit(event.data.eventName, event.data.payload)
   }
 }
