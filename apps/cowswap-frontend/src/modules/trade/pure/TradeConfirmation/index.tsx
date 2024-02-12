@@ -111,9 +111,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         </styledEl.AmountsPreviewContainer>
         {children}
         {/*Banners*/}
-        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         <CustomRecipientBanner recipient={recipient} />
+        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
