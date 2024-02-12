@@ -77,6 +77,7 @@ export async function safeBundleFlow(
     safeAppsSdk,
     cowEventEmitter,
   } = params
+  const { isSafeWallet } = postOrderParams
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
@@ -106,6 +107,7 @@ export async function safeBundleFlow(
           ...order,
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -152,6 +154,7 @@ export async function safeBundleFlow(
           presignGnosisSafeTxHash: safeTx.safeTxHash,
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )

@@ -23,7 +23,7 @@ export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
 export interface TokenAmountProps {
   amount: Nullish<FractionLike>
   defaultValue?: string
-  tokenSymbol?: TokenNameAndSymbol
+  tokenSymbol?: Nullish<TokenNameAndSymbol>
   className?: string
   hideTokenSymbol?: boolean
   round?: boolean

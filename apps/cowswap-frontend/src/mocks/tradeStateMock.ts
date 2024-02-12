@@ -69,6 +69,7 @@ export const tradeContextMock: TradeFlowContext = {
     partiallyFillable: true,
     appData: getAppData(),
     featureFlags: { swapZeroFee: false },
+    isSafeWallet: false,
   },
   rateImpact: 0,
   provider: {} as any,
@@ -77,7 +78,6 @@ export const tradeContextMock: TradeFlowContext = {
   chainId: 1,
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
-  isGnosisSafeWallet: false,
 }
 
 export const priceImpactMock: PriceImpact = {

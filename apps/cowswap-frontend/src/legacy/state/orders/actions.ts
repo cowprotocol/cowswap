@@ -184,7 +184,7 @@ export interface UpdatePresignGnosisSafeTxParams {
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
-export type DeleteOrdersParams = BatchOrdersUpdateParams
+export type DeleteOrdersParams = Pick<BatchOrdersUpdateParams, 'ids' | 'chainId'>
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
 
