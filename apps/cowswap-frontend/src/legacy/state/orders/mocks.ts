@@ -120,6 +120,7 @@ export const mockOrderDispatches = {
         receiver: '123',
         class: OrderClass.MARKET,
       },
+      isSafeWallet: false,
     }
 
     cowSwapStore.dispatch(addPendingOrder(actionParams))

@@ -37,6 +37,7 @@ import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 export interface OrderObject {
   id: string
   order: SerializedOrder
+  isSafeWallet: boolean
 }
 
 type V2Order = Omit<OrderObject['order'], 'inputToken' | 'outputToken'>
@@ -173,14 +174,15 @@ function addOrderToState(
   chainId: ChainId,
   id: string,
   status: OrderTypeKeys,
-  order: SerializedOrder
+  order: SerializedOrder,
+  isSafeWallet: boolean
 ): void {
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
   // by creating a new object instead of trying to edit the existing one
   // Seems to be due to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
   // but only happened on Chrome
-  state[chainId][status] = { ...state[chainId][status], [id]: { order, id } }
+  state[chainId][status] = { ...state[chainId][status], [id]: { order, id, isSafeWallet } }
 }
 
 function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
@@ -195,7 +197,12 @@ function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: Serializ
   return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
 }
 
-function cancelOrderInState(state: Required<OrdersState>, chainId: ChainId, orderObject: OrderObject) {
+function cancelOrderInState(
+  state: Required<OrdersState>,
+  chainId: ChainId,
+  orderObject: OrderObject,
+  isSafeWallet: boolean
+) {
   const id = orderObject.id
 
   deleteOrderById(state, chainId, id)
@@ -203,7 +210,7 @@ function cancelOrderInState(state: Required<OrdersState>, chainId: ChainId, orde
   orderObject.order.status = OrderStatus.CANCELLED
   orderObject.order.isCancelling = false
 
-  addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
+  addOrderToState(state, chainId, id, 'cancelled', orderObject.order, isSafeWallet)
 }
 
 function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject | undefined) {
@@ -231,7 +238,7 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(addPendingOrder, (state, action) => {
       prefillState(state, action)
-      const { order, id, chainId } = action.payload
+      const { order, id, chainId, isSafeWallet } = action.payload
 
       order.openSince = CREATING_STATES.includes(order.status) ? undefined : Date.now()
 
@@ -239,16 +246,16 @@ export default createReducer(initialState, (builder) =>
         // EthFlow or PreSign orders have their respective buckets
         case OrderStatus.CREATING: // ethflow orders
         case OrderStatus.PRESIGNATURE_PENDING: // pre-sign orders
-          addOrderToState(state, chainId, id, order.status, order)
+          addOrderToState(state, chainId, id, order.status, order, isSafeWallet)
           break
         default:
           // Regular orders go into the pending bucket
-          addOrderToState(state, chainId, id, 'pending', order)
+          addOrderToState(state, chainId, id, 'pending', order, isSafeWallet)
       }
     })
     .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)
-      const { ids, chainId } = action.payload
+      const { ids, chainId, isSafeWallet } = action.payload
 
       const now = Date.now()
 
@@ -261,7 +268,7 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.status = OrderStatus.PENDING
           orderObject.order.openSince = now
 
-          addOrderToState(state, chainId, id, 'pending', orderObject.order)
+          addOrderToState(state, chainId, id, 'pending', orderObject.order, isSafeWallet)
         }
       })
     })
@@ -277,7 +284,7 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(addOrUpdateOrders, (state, action) => {
       prefillState(state, action)
-      const { chainId, orders } = action.payload
+      const { chainId, orders, isSafeWallet } = action.payload
 
       orders.forEach((newOrder) => {
         const { id, status: newStatus } = newOrder
@@ -324,7 +331,7 @@ export default createReducer(initialState, (builder) =>
           : { ...newOrder, validTo }
 
         // add order to respective state
-        addOrderToState(state, chainId, id, status, order)
+        addOrderToState(state, chainId, id, status, order, isSafeWallet)
       })
     })
     .addCase(updateOrder, (state, action) => {
@@ -340,7 +347,7 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ordersData, chainId } = action.payload
+      const { ordersData, chainId, isSafeWallet } = action.payload
 
       // if there are any newly fulfilled orders
       // update them
@@ -360,13 +367,13 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.apiAdditionalInfo = apiAdditionalInfo
 
-          addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
+          addOrderToState(state, chainId, id, 'fulfilled', orderObject.order, isSafeWallet)
         }
       })
     })
     .addCase(expireOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ids, chainId } = action.payload
+      const { ids, chainId, isSafeWallet } = action.payload
 
       // if there are any newly fulfilled orders
       // update them
@@ -379,13 +386,13 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.status = OrderStatus.EXPIRED
           orderObject.order.isCancelling = false
 
-          addOrderToState(state, chainId, id, 'expired', orderObject.order)
+          addOrderToState(state, chainId, id, 'expired', orderObject.order, isSafeWallet)
         }
       })
     })
     .addCase(invalidateOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ids, chainId } = action.payload
+      const { ids, chainId, isSafeWallet } = action.payload
 
       // if there are any newly fulfilled orders
       // update them
@@ -398,7 +405,7 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.status = OrderStatus.FAILED
           orderObject.order.isCancelling = false
 
-          addOrderToState(state, chainId, id, 'failed', orderObject.order)
+          addOrderToState(state, chainId, id, 'failed', orderObject.order, isSafeWallet)
         }
       })
     })
@@ -424,13 +431,13 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(cancelOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ids, chainId } = action.payload
+      const { ids, chainId, isSafeWallet } = action.payload
 
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
 
         if (orderObject) {
-          cancelOrderInState(state, chainId, orderObject)
+          cancelOrderInState(state, chainId, orderObject, isSafeWallet)
 
           if (getIsComposableCowParentOrder(orderObject.order)) {
             const allOrdersMap = flatOrdersStateNetwork(state[chainId])
@@ -442,7 +449,7 @@ export default createReducer(initialState, (builder) =>
             children.forEach((child) => {
               if (!child) return
 
-              cancelOrderInState(state, chainId, child)
+              cancelOrderInState(state, chainId, child, isSafeWallet)
             })
           }
         }
