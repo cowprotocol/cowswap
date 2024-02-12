@@ -63,7 +63,7 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     if (isSellOrder) {
       return `Sell ${inputAmountElement} for at least ${outputAmountElement}`
     } else {
-      return `Buy ${inputAmountElement} for at most ${outputAmountElement}`
+      return `Buy ${outputAmountElement} for at most ${inputAmountElement}`
     }
   })()
 
