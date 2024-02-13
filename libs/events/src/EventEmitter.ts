@@ -1,26 +1,39 @@
-import { EventNames, EventPayloads } from './types'
+import { CowEvents, EventPayloads as CowEventPayloads } from './types'
 
-export type Listener<T extends EventNames> = (payload: EventPayloads[T]) => void
+export type CowListener<T extends CowEvents> = (payload: CowEventPayloads[T]) => void
 
-interface Listeners {
-  [key: string]: Listener<any>[] // Use generic parameter for listener type
+interface CowListeners {
+  [key: string]: CowListener<any>[] // Use generic parameter for listener type
 }
 
-export class EventEmitter {
-  private events: Listeners
+export interface CowEventSubscription<T extends CowEvents> {
+  event: T
+  listener: CowListener<T>
+}
+
+export type CowEventSubscriptions = CowEventSubscription<CowEvents>[]
+
+export interface CowEventEmitter {
+  on<T extends CowEvents>(event: T, listener: CowListener<T>): void
+  emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void
+  off<T extends CowEvents>(event: T, listenerToRemove: CowListener<T>): void
+}
+
+export class CowEventEmitterImpl {
+  private events: CowListeners
 
   constructor() {
     this.events = {}
   }
 
-  on<T extends EventNames>(event: T, listener: Listener<T>): void {
+  on<T extends CowEvents>(event: T, listener: CowListener<T>): void {
     if (!this.events[event]) {
       this.events[event] = []
     }
     this.events[event].push(listener)
   }
 
-  emit<T extends EventNames>(event: T, payload: EventPayloads[T]): void {
+  emit<T extends CowEvents>(event: T, payload: CowEventPayloads[T]): void {
     if (this.events[event]) {
       this.events[event].forEach((listener) => {
         listener(payload)
@@ -28,7 +41,7 @@ export class EventEmitter {
     }
   }
 
-  off<T extends EventNames>(event: T, listenerToRemove: Listener<T>): void {
+  off<T extends CowEvents>(event: T, listenerToRemove: CowListener<T>): void {
     if (this.events[event]) {
       this.events[event] = this.events[event].filter((listener) => listener !== listenerToRemove)
     }

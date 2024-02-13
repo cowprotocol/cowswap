@@ -1,3 +1,4 @@
+import { CowEventEmitterImpl, CowEventSubscriptions } from '@cowprotocol/events'
 import { JsonRpcManager } from './JsonRpcManager'
 import { CowSwapWidgetParams } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
@@ -29,7 +30,11 @@ export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParams = {}): UpdateWidgetCallback {
+export function cowSwapWidget(
+  container: HTMLElement,
+  params: CowSwapWidgetParams = {},
+  events?: CowEventSubscriptions
+): UpdateWidgetCallback {
   const { provider } = params
   const iframe = createIframe(params)
 
@@ -53,6 +58,8 @@ export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParam
   iframe.addEventListener('load', () => {
     updateWidget(params, contentWindow)
   })
+
+  subscribeToCoWEvents(iframe, events)
 
   return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
 }
@@ -103,6 +110,7 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
 
 /**
  * Sends appCode to the contentWindow of the widget.
+ *
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
@@ -136,4 +144,30 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
 
     iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
+}
+
+/**
+ * Subscribes to the cow events
+ *
+ * @param events - subscription to different events
+ */
+function subscribeToCoWEvents(events?: CowEventSubscriptions): void {
+  if (!events) {
+    return
+  }
+
+  const eventEmitter = new CowEventEmitterImpl()
+
+  window.addEventListener('message', (event) => {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
+      return
+    }
+
+    console.debug(`[CoW event] ${event.data.eventName}`, event.data.payload)
+    eventEmitter.emit(event.data.eventName, event.data.payload)
+  })
+
+  for (const subscription of events) {
+    eventEmitter.on(subscription.event, subscription.listener)
+  }
 }
