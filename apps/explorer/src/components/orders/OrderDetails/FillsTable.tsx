@@ -25,7 +25,7 @@ import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { SurplusComponent } from 'components/common/SurplusComponent'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -269,7 +269,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
     return null
   }
   const surplus = surplusAmount && surplusPercentage ? { amount: surplusAmount, percentage: surplusPercentage } : null
-  const surplusToken = trade.kind === OrderKind.BUY ? sellToken : buyToken
+  const surplusToken = !trade.kind ? null : isSellOrder(trade.kind) ? buyToken : sellToken
 
   return (
     <tr key={txHash}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css, useTheme, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css, FlattenSimpleInterpolation, useTheme } from 'styled-components'
 
 import { Order } from 'api/operator'
 
@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 const Wrapper = styled(SurplusComponent)`
   display: flex;
@@ -32,7 +33,7 @@ type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: To
 function useGetSurplus(order: Order): OrderSurplus | null {
   const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
 
-  const surplusToken = kind === 'buy' ? sellToken : buyToken
+  const surplusToken = isSellOrder(kind) ? buyToken : sellToken
 
   // TODO: get USD estimation
   // const usdAmount = '55.555'

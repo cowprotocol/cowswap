@@ -21,6 +21,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
 import { SingleErc20State } from '../../../state/erc20'
 import { getChainInfo } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -151,13 +152,15 @@ function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
 }
 
 function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
-  if (transfer.kind === OrderKind.SELL) {
-    return TypeEdgeOnTx.sellEdge
-  } else if (transfer.kind === OrderKind.BUY) {
-    return TypeEdgeOnTx.buyEdge
+  if (!transfer.kind) {
+    return TypeEdgeOnTx.noKind
   }
 
-  return TypeEdgeOnTx.noKind
+  if (isSellOrder(transfer.kind)) {
+    return TypeEdgeOnTx.sellEdge
+  }
+
+  return TypeEdgeOnTx.buyEdge
 }
 
 function showTraderAddress(account: Account, address: string): Account {

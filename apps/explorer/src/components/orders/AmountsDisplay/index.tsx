@@ -1,6 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
-import { isNativeToken } from 'utils'
+import { formatSmartMaxPrecision, isNativeToken } from 'utils'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
@@ -10,13 +10,12 @@ import { Network } from 'types'
 
 import { useNetworkId } from 'state/network'
 
-import { formatSmartMaxPrecision } from 'utils'
-
 import { TokenDisplay } from 'components/common/TokenDisplay'
 
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
-import { RowContents, RowTitle, /*UsdAmount,*/ Wrapper } from './styled'
+import { RowContents, RowTitle, Wrapper } from './styled'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 type RowProps = {
   title: string
@@ -64,24 +63,18 @@ export function AmountsDisplay(props: Props): JSX.Element | null {
     return null
   }
 
-  const isBuyOrder = kind === 'buy'
+  const isSell = isSellOrder(kind)
 
   return (
     <Wrapper>
       <Row
         title="From"
-        titleSuffix={isBuyOrder ? 'at most' : ''}
+        titleSuffix={isSell ? '' : 'at most'}
         amount={sellAmount.plus(feeAmount)}
         erc20={sellToken}
         network={network}
       />
-      <Row
-        title="To"
-        titleSuffix={!isBuyOrder ? 'at least' : ''}
-        amount={buyAmount}
-        erc20={buyToken}
-        network={network}
-      />
+      <Row title="To" titleSuffix={isSell ? 'at least' : ''} amount={buyAmount} erc20={buyToken} network={network} />
     </Wrapper>
   )
 }
