@@ -11,6 +11,7 @@
     "noImplicitAny": false,
     "paths": {
       "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
+      "@cowprotocol/common-utils": ["../../../libs/common-utils/src/index.ts"],
       "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
       "@cowprotocol/assets": ["../../../libs/assets/src/index.ts"]
     }

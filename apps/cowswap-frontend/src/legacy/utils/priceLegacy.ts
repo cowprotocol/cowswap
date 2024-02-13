@@ -251,7 +251,7 @@ export async function getBestQuoteLegacy({
   // Get a new price quote
   let exchangeAmount
   let feeExceedsPrice = false
-  if (kind === 'sell') {
+  if (isSellOrder(kind)) {
     // Sell orders need to deduct the fee from the swapped amount
     // we need to check for 0/negative exchangeAmount should fee >= amount
     const { amount: fee } = await feePromise

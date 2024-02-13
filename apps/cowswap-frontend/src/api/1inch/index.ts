@@ -1,5 +1,4 @@
-import { getTokensFromMarket } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/contracts'
+import { getTokensFromMarket, isSellOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { PriceInformation } from 'types'
@@ -107,7 +106,7 @@ export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<Pri
   // Buy/sell token and side (sell/buy)
   const { sellToken, buyToken } = getTokensFromMarket({ baseToken, quoteToken, kind })
 
-  if (params.kind === OrderKind.BUY) {
+  if (!isSellOrder(params.kind)) {
     // API doesn't support buy orders
     console.debug(`[pricesApi:${API_NAME}] ${API_NAME} API don't support BUY Orders`, params)
     return null
