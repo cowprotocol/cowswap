@@ -88,9 +88,10 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     }
 
     const expertModeFlow = () => {
-      return Promise.all([isApproveNeeded ? approve(false) : undefined, isWrapNeeded ? wrap(false) : undefined]).then(
-        () => void 0
-      )
+      return Promise.all([
+        isApproveNeeded ? approve(false) : undefined, //
+        isWrapNeeded ? wrap(false) : undefined,
+      ]).then(() => void 0)
     }
 
     const directSwap = () => {
