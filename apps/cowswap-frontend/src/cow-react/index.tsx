@@ -10,6 +10,7 @@ import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { CowEventEmitterContext, CowEventEmitterImpl } from '@cowprotocol/events'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 
 import { LanguageProvider } from 'i18n'
@@ -63,21 +64,23 @@ function Main() {
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
                     <WithLDProvider>
-                      <WalletUnsupportedNetworkBanner />
-                      <Updaters />
+                      <CowEventEmitterContext.Provider value={new CowEventEmitterImpl()}>
+                        <WalletUnsupportedNetworkBanner />
+                        <Updaters />
 
-                      {!isInjectedWidgetMode && (
-                        <>
-                          <FeatureGuard featureFlag="cowFortuneEnabled">
-                            <FortuneWidget />
-                          </FeatureGuard>
-                          <AppziButton />
-                        </>
-                      )}
+                        {!isInjectedWidgetMode && (
+                          <>
+                            <FeatureGuard featureFlag="cowFortuneEnabled">
+                              <FortuneWidget />
+                            </FeatureGuard>
+                            <AppziButton />
+                          </>
+                        )}
 
-                      <Popups />
-                      <SnackbarsWidget />
-                      <App />
+                        <Popups />
+                        <SnackbarsWidget />
+                        <App />
+                      </CowEventEmitterContext.Provider>
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
