@@ -1,4 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -27,6 +28,7 @@ export async function safeBundleFlow(
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
+  cowEventEmitter: CowEventEmitter,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforeTrade?: () => void
 ): Promise<string> {
@@ -86,6 +88,7 @@ export async function safeBundleFlow(
       signer: provider.getSigner(),
       validTo,
     })
+
     logTradeFlow(LOG_PREFIX, 'STEP 4: add order, but hidden')
     addPendingOrderStep(
       {
@@ -130,6 +133,7 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(

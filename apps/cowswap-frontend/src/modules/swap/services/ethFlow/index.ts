@@ -1,4 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -16,6 +17,7 @@ import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
 export async function ethFlow(
   ethFlowContext: EthFlowContext,
+  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
@@ -69,6 +71,12 @@ export async function ethFlow(
         callbacks.closeModals()
       }
     )
+
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ETH_FLOW_ORDER, {
+      txHash: txReceipt.hash,
+      orderUid: order.id,
+      chainId: context.chainId,
+    })
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
