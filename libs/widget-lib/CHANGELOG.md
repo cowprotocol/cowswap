@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.3.0...widget-lib-v0.4.0) (2024-02-01)
+
+
+### Features
+
+* remove goerli ([#3735](https://github.com/cowprotocol/cowswap/issues/3735)) ([2eaae50](https://github.com/cowprotocol/cowswap/commit/2eaae5063f1623d03328e4c2a0fb49c7799ff0a3))
+
 ## [0.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.2.1...widget-lib-v0.3.0) (2024-01-17)
 
 
