@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
@@ -53,8 +53,8 @@ const AnimatedFader = animated(Fader)
 export interface SnackbarPopupProps {
   id: string
   duration: number
-  children: ReactElement
-  icon: ReactElement | undefined
+  children: ReactNode
+  icon: ReactNode | undefined
   onExpire(id: string): void
 }
 
