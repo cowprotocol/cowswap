@@ -1,5 +1,12 @@
 import { NATIVE_CURRENCY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
-import { formatSymbol, formatTokenAmount, getIsNativeToken, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import {
+  formatSymbol,
+  formatTokenAmount,
+  getIsNativeToken,
+  isAddress,
+  isSellOrder,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -83,10 +90,7 @@ export function getOrderSubmitSummary(
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
 
-  const [inputQuantifier, outputQuantifier] = [
-    kind === OrderKind.BUY ? 'at most ' : '',
-    kind === OrderKind.SELL ? 'at least ' : '',
-  ]
+  const [inputQuantifier, outputQuantifier] = isSellOrder(kind) ? ['', 'at least '] : ['at most ', '']
   const inputSymbol = formatSymbol(sellToken.symbol)
   const outputSymbol = formatSymbol(buyToken.symbol)
   // this already contains the fee in the fee amount when fee=0
@@ -135,7 +139,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
   }
 
-  const isSellTrade = kind === OrderKind.SELL
+  const isSellTrade = isSellOrder(kind)
 
   // fee adjusted input amount
   const sellAmount = (swapZeroFee && isSellTrade ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)

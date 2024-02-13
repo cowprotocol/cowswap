@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -28,7 +28,7 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
     outputToken.name
   )
 
-  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
+  const surplusToken = isSellOrder(order.kind) ? parsedOutputToken : parsedInputToken
 
   const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
   const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)

@@ -1,5 +1,5 @@
 import { PRICE_API_TIMEOUT_MS } from '@cowprotocol/common-const'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from '@cowprotocol/common-utils'
+import { getCanonicalMarket, isPromiseFulfilled, isSellOrder, withTimeout } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -47,7 +47,7 @@ interface GetBestPriceOptions {
 }
 
 type FilterWinningPriceParams = {
-  kind: string
+  kind: OrderKind
   amounts: string[]
   priceQuotes: LegacyPriceInformationWithSource[]
 } & GetBestPriceOptions
@@ -58,7 +58,7 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
   //        You want to get the maximum number of buy tokens
   //  - Use minimum "Buy orders":
   //        You want to spend the min number of sell tokens
-  const aggregationFunction = params.aggrOverride || params.kind === OrderKind.SELL ? 'max' : 'min'
+  const aggregationFunction = params.aggrOverride || isSellOrder(params.kind) ? 'max' : 'min'
   const amount = BigNumberJs[aggregationFunction](...params.amounts).toString(10)
   const token = params.priceQuotes[0].token
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
@@ -190,10 +190,7 @@ export function FeesUpdater(): null {
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
-    const amount = tryParseCurrencyAmount(
-      typedValue,
-      (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined
-    )
+    const amount = tryParseCurrencyAmount(typedValue, (isSellOrder(kind) ? sellCurrency : buyCurrency) ?? undefined)
     if (!amount) return
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS

@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useMemo } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
@@ -20,7 +20,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
-import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
@@ -72,7 +71,7 @@ export function LimitOrdersWidget() {
     orderKind,
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const isSellOrder = useIsSellOrder()
+  const isSell = isSellOrder(orderKind)
   const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
@@ -84,28 +83,28 @@ export function LimitOrdersWidget() {
 
   const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
-    () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
-    [orderKind, inputCurrencyAmount, outputCurrencyAmount]
+    () => (isSell ? inputCurrencyAmount : outputCurrencyAmount),
+    [isSell, inputCurrencyAmount, outputCurrencyAmount]
   )
 
   useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSellOrder ? 'Sell amount' : 'You sell at most',
+    label: isSell ? 'Sell amount' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
-    isIndependent: orderKind === OrderKind.SELL,
+    isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSellOrder ? 'Receive at least' : 'Buy exactly',
+    label: isSell ? 'Receive at least' : 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
-    isIndependent: orderKind === OrderKind.BUY,
+    isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -247,24 +246,22 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }
 
   return (
-    <>
-      <TradeWidget
-        slots={slots}
-        actions={widgetActions}
-        params={params}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-      >
-        {tradeContext && (
-          <LimitOrdersConfirmModal
-            recipient={recipient}
-            tradeContext={tradeContext}
-            priceImpact={priceImpact}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-          />
-        )}
-      </TradeWidget>
-    </>
+    <TradeWidget
+      slots={slots}
+      actions={widgetActions}
+      params={params}
+      inputCurrencyInfo={inputCurrencyInfo}
+      outputCurrencyInfo={outputCurrencyInfo}
+    >
+      {tradeContext && (
+        <LimitOrdersConfirmModal
+          recipient={recipient}
+          tradeContext={tradeContext}
+          priceImpact={priceImpact}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
+        />
+      )}
+    </TradeWidget>
   )
 }, limitOrdersPropsChecker)

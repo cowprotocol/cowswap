@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { PropsWithChildren, ReactNode } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
@@ -67,11 +67,13 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
 
   const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
 
+  const isSell = isSellOrder(orderKind)
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
     amount: inputCurrencyAmount,
-    isIndependent: orderKind === OrderKind.SELL,
+    isIndependent: isSell,
     receiveAmountInfo: null,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -80,7 +82,7 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
     field: Field.OUTPUT,
     currency: outputCurrency,
     amount: outputCurrencyAmount,
-    isIndependent: orderKind === OrderKind.BUY,
+    isIndependent: !isSell,
     receiveAmountInfo: null,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,

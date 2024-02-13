@@ -1,11 +1,18 @@
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { isBarn, isDev, isLocal, isPr, toErc20Address, toNativeBuyAddress } from '@cowprotocol/common-utils'
+import {
+  isBarn,
+  isDev,
+  isLocal,
+  isPr,
+  isSellOrder,
+  toErc20Address,
+  toNativeBuyAddress,
+} from '@cowprotocol/common-utils'
 import {
   Address,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
-  OrderKind,
   OrderQuoteRequest,
   OrderQuoteResponse,
   OrderQuoteSideKindBuy,
@@ -111,7 +118,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
   }
 
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),

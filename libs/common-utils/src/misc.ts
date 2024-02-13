@@ -1,6 +1,6 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+import { isSellOrder } from './isSellOrder'
 
 interface Market<T = string> {
   baseToken: T
@@ -85,7 +85,7 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
   // The used reasoning is:
   //    - If I sell apples, the quote is EUR (buy token)
   //    - If I buy apples, the quote is EUR (sell token)
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return {
       baseToken: sellToken,
       quoteToken: buyToken,
@@ -103,7 +103,7 @@ export function getTokensFromMarket<T>({
   baseToken,
   kind,
 }: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return {
       sellToken: baseToken,
       buyToken: quoteToken,
