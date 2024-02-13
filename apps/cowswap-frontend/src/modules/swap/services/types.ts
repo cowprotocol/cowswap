@@ -11,7 +11,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
-import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { TradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
@@ -37,9 +37,9 @@ export interface BaseFlowContext {
   sellTokenContract: Erc20 | null
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
-  swapConfirmManager: SwapConfirmManager
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
+  tradeConfirmActions: TradeConfirmActions
 }
 
 export type SwapFlowContext = BaseFlowContext & {

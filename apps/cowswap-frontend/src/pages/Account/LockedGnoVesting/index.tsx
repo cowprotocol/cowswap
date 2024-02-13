@@ -26,7 +26,6 @@ import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
@@ -41,7 +40,7 @@ enum ClaimStatus {
 }
 
 interface Props {
-  openModal: (message: string, operationType: ConfirmOperationType) => void
+  openModal: (message: string) => void
   closeModal: () => void
   vested: CurrencyAmount<Currency>
   allocated: CurrencyAmount<Currency>

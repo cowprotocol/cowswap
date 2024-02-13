@@ -36,12 +36,12 @@ export async function safeBundleApprovalFlow(
     spender,
     context,
     callbacks,
-    swapConfirmManager,
     dispatch,
     orderParams,
     settlementContract,
     safeAppsSdk,
     swapFlowAnalyticsContext,
+    tradeConfirmActions,
   } = input
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
@@ -128,13 +128,13 @@ export async function safeBundleApprovalFlow(
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: show UI of the successfully sent transaction')
-    swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }
