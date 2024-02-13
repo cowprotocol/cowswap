@@ -32,7 +32,7 @@ export interface SwapButtonsContext {
   onWrapOrUnwrap: WrapUnwrapCallback | null
   onEthFlow: () => void
   openSwapConfirm: () => void
-  toggleWalletModal: () => void
+  toggleWalletModal: (() => void) | null
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
@@ -98,7 +98,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonPrimary>
   ),
   [SwapButtonState.WalletIsNotConnected]: (props: SwapButtonsContext) => (
-    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={props.toggleWalletModal}>
+    <ButtonPrimary
+      buttonSize={ButtonSize.BIG}
+      onClick={props.toggleWalletModal || undefined}
+      disabled={!props.toggleWalletModal}
+    >
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),
