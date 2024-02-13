@@ -6,9 +6,11 @@ import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { CowEventEmitterContext } from '@cowprotocol/events'
 import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
+import { cowEventEmitter } from 'cowEventEmitter'
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'
@@ -105,6 +107,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
             <ThemedGlobalStyle />
             <LanguageProvider>
               <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
+                <CowEventEmitterContext.Provider value={cowEventEmitter}></CowEventEmitterContext.Provider>
                 <BlockNumberProvider>
                   <WalletUpdater />
                   <Wrapper>

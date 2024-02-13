@@ -13,7 +13,7 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
-import { withModalProvider } from 'utils/withModalProvider'
+import { WithModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 
@@ -95,25 +95,25 @@ describe('useHandleOrderPlacement', () => {
 
         updateLimitOrdersState({ recipient })
       },
-      { wrapper: withModalProvider }
+      { wrapper: WithModalProvider }
     )
 
     // Assert
     const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
-      wrapper: withModalProvider,
+      wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
 
     // Act
     const { result } = renderHook(
       () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-      { wrapper: withModalProvider }
+      { wrapper: WithModalProvider }
     )
     await result.current()
 
     // Assert
     const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
-      wrapper: withModalProvider,
+      wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
   })

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
@@ -11,6 +11,6 @@ const combinedReducers = combineReducers({
 const modalStore = configureStore({
   reducer: combinedReducers,
 })
-export const withModalProvider = ({ children }: { children?: ReactNode }) => {
+export const WithModalProvider = ({ children }: PropsWithChildren) => {
   return <Provider store={modalStore}>{children}</Provider>
 }

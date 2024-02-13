@@ -1,3 +1,5 @@
+import { PropsWithChildren } from 'react'
+
 import { COW, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,7 +13,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-import { WithMockedWeb3 } from '../../../test-utils'
+import { WithCowEventEmitter, WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1
 const settlementCancellationTxHash = '0xcfwj23g4fwe111'
@@ -63,6 +65,14 @@ const mockUseGP2SettlementContract = useGP2SettlementContract as jest.MockedFunc
 const ethFlowInvalidationMock = jest.fn()
 const settlementInvalidationMock = jest.fn()
 
+const WithProviders = ({ children }: PropsWithChildren) => {
+  return (
+    <WithMockedWeb3>
+      <WithCowEventEmitter>{children}</WithCowEventEmitter>
+    </WithMockedWeb3>
+  )
+}
+
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -97,7 +107,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is ETH-flow order, then should call eth-flow contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
+    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
     await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
 
@@ -107,7 +117,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is NOT ETH-flow order, then should call settlement contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
+    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
     await result.current({ ...orderMock, inputToken: COW[chainId] })
 
@@ -118,7 +128,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
 
   describe('When a transaction is sent', () => {
     it('Then should change an order status, set a tx hash to order and add the transaction to store', async () => {
-      const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
+      const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
       await result.current({ ...orderMock, inputToken: COW[chainId] })
 
