@@ -1,7 +1,8 @@
 import { CowEventEmitterImpl, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetParams } from './types'
+import { CowSwapWidgetParams, EthereumProvider } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 
 /**
  * Key for identifying the event associated with the CoW Swap Widget.
@@ -22,7 +23,11 @@ const HEIGHT_THRESHOLD = 20
 /**
  * Callback function signature for updating the CoW Swap Widget.
  */
-export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
+export interface CowSwapWidgetHandler {
+  updateWidget: (params: CowSwapWidgetParams, listeners?: CowEventListeners) => void
+  updateListeners: (newListeners?: CowEventListeners) => void
+  updateProvider: (newProvider?: EthereumProvider) => void
+}
 
 /**
  * Generates and injects a CoW Swap Widget into the provided container.
@@ -30,11 +35,11 @@ export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function cowSwapWidget(
+export function createCowSwapWidget(
   container: HTMLElement,
   params: CowSwapWidgetParams = {},
-  events?: CowEventListeners
-): UpdateWidgetCallback {
+  listeners?: CowEventListeners
+): CowSwapWidgetHandler {
   const { provider } = params
   const iframe = createIframe(params)
 
@@ -49,19 +54,36 @@ export function cowSwapWidget(
 
   applyDynamicHeight(iframe, params.height)
 
-  if (provider) {
-    const jsonRpcManager = new JsonRpcManager(contentWindow)
-
-    jsonRpcManager.onConnect(provider)
-  }
+  let jsonRpcManager = updateProvider(contentWindow, null, provider)
 
   iframe.addEventListener('load', () => {
-    updateWidget(params, contentWindow)
+    updateWidget(contentWindow, params)
   })
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(listeners)
 
-  subscribeToCoWEvents(events)
+  return {
+    updateWidget: (newParams: CowSwapWidgetParams) => updateWidget(contentWindow, newParams),
+    updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
+    updateProvider: (newProvider) => {
+      jsonRpcManager = updateProvider(contentWindow, jsonRpcManager, newProvider)
+    },
+  }
+}
 
-  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
+function updateProvider(contentWindow: Window, jsonRpcManager: JsonRpcManager | null, newProvider?: EthereumProvider) {
+  if (jsonRpcManager) {
+    // Disconnect and connect
+    jsonRpcManager.disconnect()
+  } else {
+    jsonRpcManager = new JsonRpcManager(contentWindow)
+  }
+
+  // Connect new provider
+  if (newProvider) {
+    jsonRpcManager.onConnect(newProvider)
+  }
+
+  return jsonRpcManager
 }
 
 /**
@@ -87,7 +109,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
-function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
+function updateWidget(contentWindow: Window, params: CowSwapWidgetParams) {
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
@@ -146,31 +168,33 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
   })
 }
 
-/**
- * Subscribes to the cow events
- *
- * @param listeners - subscription to different events
- */
-function subscribeToCoWEvents(listeners?: CowEventListeners): void {
-  if (!listeners) {
-    return
-  }
+// /**
+//  * Subscribes to the cow events
+//  *
+//  * @param listeners - subscription to different events
+//  */
+// function subscribeToCoWEvents(listeners?: CowEventListeners): void {
+//   console.log('[TODO:remove] Subscribing to events', listeners?.length)
+//   if (!listeners) {
+//     return
+//   }
 
-  // Create event emitter
-  const eventEmitter = new CowEventEmitterImpl()
+//   // Create event emitter
+//   const eventEmitter = new CowEventEmitterImpl()
 
-  // Subscribe to events
-  for (const listener of listeners) {
-    eventEmitter.on(listener as CowEventListener<CowEvents>)
-  }
+//   // Subscribe to events
+//   for (const listener of listeners) {
+//     eventEmitter.on(listener as CowEventListener<CowEvents>)
+//   }
 
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
-      return
-    }
-
-    console.debug(`[CoW event] ${event.data.eventName}`, event.data.payload)
-    eventEmitter
-    eventEmitter.emit(event.data.eventName, event.data.payload)
-  })
-}
+//   window.addEventListener('message', (event) => {
+//     if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
+//       return
+//     }
+//     console.debug(
+//       `[TODO:remove] Received message client side - Forward to eventEmitter ${event.data.eventName}`,
+//       event.data.payload
+//     )
+//     eventEmitter.emit(event.data.eventName, event.data.payload)
+//   })
+// }

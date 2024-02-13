@@ -1,37 +1,73 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { cowSwapWidget, CowSwapWidgetParams, EthereumProvider, UpdateWidgetCallback } from '@cowprotocol/widget-lib'
+import {
+  createCowSwapWidget,
+  CowSwapWidgetParams,
+  EthereumProvider,
+  CowSwapWidgetHandler,
+} from '@cowprotocol/widget-lib'
 import type { CowEventListeners } from '@cowprotocol/events'
 
 export interface CowSwapWidgetProps {
-  params: CowSwapWidgetParams
-  listeners?: CowEventListeners
+  params: Omit<CowSwapWidgetParams, 'provider'>
   provider?: EthereumProvider
+  listeners?: CowEventListeners
 }
 
-export function CowSwapWidget({ params, provider }: CowSwapWidgetProps) {
-  const providerRef = useRef<EthereumProvider | null>()
-  const iframeContainerRef = useRef<HTMLDivElement>(null)
-  const updateWidgetRef = useRef<UpdateWidgetCallback | null>(null)
+export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
+  const paramsRef = useRef<Omit<CowSwapWidgetParams, 'provider'> | null>(null)
+  const providerRef = useRef<EthereumProvider | null>(provider ?? null)
+  const listenersRef = useRef<CowEventListeners | undefined>(listeners)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
   useEffect(() => {
-    if (!iframeContainerRef.current) return
+    if (
+      !containerRef.current ||
+      paramsRef.current === params ||
+      JSON.stringify(paramsRef.current) === JSON.stringify(params)
+    )
+      return
 
-    // Re-initialize widget when provider is changed
-    if (provider && providerRef.current !== provider) {
-      updateWidgetRef.current = null
-    }
+    paramsRef.current = params
 
-    if (updateWidgetRef.current) {
-      updateWidgetRef.current(params)
+    if (widgetHandlerRef.current === null) {
+      console.log('[WIDGET] Creating new widget', {
+        state: params,
+        listeners,
+        provider,
+      })
+      widgetHandlerRef.current = createCowSwapWidget(
+        containerRef.current,
+        { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
+        listeners
+      )
+      listenersRef.current = listeners
     } else {
-      updateWidgetRef.current = cowSwapWidget(iframeContainerRef.current, params)
+      console.log('[WIDGET] Updating params', params)
+      widgetHandlerRef.current.updateWidget(params)
     }
-  }, [provider, params])
+  }, [params])
 
   useEffect(() => {
-    providerRef.current = provider
+    if (
+      !widgetHandlerRef.current ||
+      providerRef.current === provider ||
+      (provider === undefined && providerRef.current === null)
+    )
+      return
+
+    console.log('[WIDGET] Update provider', providerRef.current, provider)
+    widgetHandlerRef.current.updateProvider(provider)
   }, [provider])
 
-  return <div ref={iframeContainerRef}></div>
+  useEffect(() => {
+    if (!widgetHandlerRef.current || listenersRef.current === listeners) return
+
+    console.log('[WIDGET] Update listeners', listenersRef.current, listeners)
+    widgetHandlerRef.current.updateListeners(listeners)
+  }, [listeners])
+
+  return <div ref={containerRef}></div>
 }

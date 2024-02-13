@@ -12,7 +12,7 @@ export interface ToastMessagePayloads {
   }
 
   [ToastMessageType.SWAP_POSTED_API]: {
-    orderId: string
+    orderUid: string
     // TODO: Potentially add all order info here, but lets keep it minimal for now
   }
 
