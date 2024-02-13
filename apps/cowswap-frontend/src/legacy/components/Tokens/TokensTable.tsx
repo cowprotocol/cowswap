@@ -8,9 +8,10 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
+
+import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
+import { CowModal } from 'common/pure/Modal'
 
 import { balanceComparator, useTokenComparator } from './sorting'
 import {
@@ -95,9 +96,10 @@ export default function TokenTable({
 
   const { ErrorModal } = useErrorModal()
 
-  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    ConfirmOperationType.APPROVE_TOKEN
-  )
+  const {
+    state: { isModalOpen: isApproveModalOpen, openModal: openApproveModal, closeModal: closeApproveModal },
+    Modal: PendingApprovalModal,
+  } = usePendingApprovalModal({ modalMode: true })
 
   const sortedTokens = useMemo(() => {
     return tokensData
@@ -182,7 +184,9 @@ export default function TokenTable({
   return (
     <Wrapper id="tokens-table">
       <ErrorModal />
-      <TransactionConfirmationModal />
+      <CowModal isOpen={isApproveModalOpen} onDismiss={closeApproveModal}>
+        {PendingApprovalModal}
+      </CowModal>
 
       <>
         <Table ref={tableRef}>
@@ -210,8 +214,8 @@ export default function TokenTable({
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}
                       balance={balance}
-                      openTransactionConfirmationModal={openModal}
-                      closeModals={closeModal}
+                      openApproveModal={openApproveModal}
+                      closeApproveModal={closeApproveModal}
                       index={getTokenIndex(i)}
                       tokenData={data}
                     />

@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   justify-items: start;
   align-items: center;
   grid-template-columns: 11rem auto;
+  grid-template-rows: max-content;
   padding: 0;
 
   ${media.mobile} {

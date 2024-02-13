@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 
 import { delay } from '@cowprotocol/common-utils'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'
+
+import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { EthFlowActions } from './useEthFlowActions'
 

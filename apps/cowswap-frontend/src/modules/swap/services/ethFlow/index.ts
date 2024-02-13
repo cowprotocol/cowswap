@@ -18,11 +18,11 @@ export async function ethFlow(
   ethFlowContext: EthFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-): Promise<void> {
+): Promise<void | false> {
   const {
+    tradeConfirmActions,
     swapFlowAnalyticsContext,
     context,
-    swapConfirmManager,
     contract,
     callbacks,
     appDataInfo,
@@ -32,10 +32,14 @@ export async function ethFlow(
     addInFlightOrderId,
     swapZeroFee,
   } = ethFlowContext
+  const {
+    trade: { inputAmount, outputAmount },
+  } = context
+  const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return undefined
+    return false
   }
 
   // TODO: remove once we figure out what's adding this to appData in the first place
@@ -48,7 +52,7 @@ export async function ethFlow(
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   // TODO: check if we need own eth flow analytics or more generic
   tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
-  swapConfirmManager.sendTransaction(context.trade)
+  tradeConfirmActions.onSign(tradeAmounts)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
   const { orderId, orderParams } = await calculateUniqueOrderId(
@@ -82,7 +86,7 @@ export async function ethFlow(
     callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
-    swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
@@ -90,6 +94,6 @@ export async function ethFlow(
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }

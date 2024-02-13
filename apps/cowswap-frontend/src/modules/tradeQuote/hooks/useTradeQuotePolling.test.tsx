@@ -17,7 +17,7 @@ import { useTradeQuotePolling } from './useTradeQuotePolling'
 
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
-jest.mock('common/hooks/useShouldZeroApprove/useShouldZeroApprove')
+jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
 jest.mock('common/hooks/useGetMarketDimension')
 
 const getQuoteMock = jest.spyOn(orderBookApi, 'getQuote')

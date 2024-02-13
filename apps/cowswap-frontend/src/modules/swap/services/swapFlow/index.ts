@@ -23,15 +23,26 @@ export async function swapFlow(
   input: SwapFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-) {
+): Promise<void | false> {
+  const { tradeConfirmActions } = input
+
+  const {
+    context: {
+      trade: { inputAmount, outputAmount },
+    },
+  } = input
+  const tradeAmounts = { inputAmount, outputAmount }
+
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return
+    return false
   }
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(input.permitInfo)) input.swapConfirmManager.requestPermitSignature()
+    if (isSupportedPermitInfo(input.permitInfo)) {
+      tradeConfirmActions.requestPermitSignature(tradeAmounts)
+    }
 
     input.orderParams.appData = await handlePermit({
       appData: input.orderParams.appData,
@@ -56,11 +67,10 @@ export async function swapFlow(
       input.orderParams.appData = await updateHooksOnAppData(input.orderParams.appData, undefined)
     }
 
-    input.swapConfirmManager.permitSigned()
-
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
     tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)
-    input.swapConfirmManager.sendTransaction(input.context.trade)
+
+    tradeConfirmActions.onSign(tradeAmounts)
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
     const { id: orderId, order } = await signAndPostOrder(input.orderParams).finally(() => {
@@ -100,7 +110,7 @@ export async function swapFlow(
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
-    input.swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
     tradeFlowAnalytics.sign(input.swapFlowAnalyticsContext)
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
@@ -108,6 +118,6 @@ export async function swapFlow(
 
     tradeFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
 
-    input.swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }

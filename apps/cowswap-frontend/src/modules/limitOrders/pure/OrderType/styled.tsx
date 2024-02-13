@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
 export const LabelText = styled.span`
   color: inherit;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  font-size: inherit;
 `
 
 export const StyledSVG = styled(SVG)`
@@ -42,8 +43,9 @@ export const StyledMenuButton = styled(MenuButton)`
   align-items: center;
   background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
-  padding: 4px 10px;
+  padding: 2px 6px;
   border-radius: 8px;
+  font-size: inherit;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

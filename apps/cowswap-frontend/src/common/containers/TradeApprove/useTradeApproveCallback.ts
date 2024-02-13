@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { approvalAnalytics } from '@cowprotocol/analytics'
@@ -9,7 +8,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-import { updateTradeApproveStateAtom } from './tradeApproveStateAtom'
+import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -20,7 +19,7 @@ export interface TradeApproveCallback {
 }
 
 export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currency>): TradeApproveCallback {
-  const updateTradeApproveState = useSetAtom(updateTradeApproveStateAtom)
+  const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
   const currency = amountToApprove?.currency
   const symbol = currency?.symbol
@@ -51,6 +50,8 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
 
             approvalAnalytics('Error', symbol, errorCode)
           }
+
+          updateTradeApproveState({ error: typeof error === 'string' ? error : error.message || error.toString() })
 
           throw error
         })

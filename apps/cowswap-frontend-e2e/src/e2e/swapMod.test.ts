@@ -65,7 +65,7 @@ describe('Swap (mod)', () => {
     cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button > button').should('contain.text', 'Swap').click()
-    cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
+    cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
   it('add a recipient does not exist unless in expert mode', () => {

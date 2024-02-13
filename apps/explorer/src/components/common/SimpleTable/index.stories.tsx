@@ -70,6 +70,7 @@ const CustomSimpleTable = styled(SimpleTable)`
   > thead > tr,
   > tbody > tr {
     grid-template-columns: 5rem minmax(14rem, 1fr) repeat(5, 1fr) 7rem;
+    grid-template-rows: max-content;
   }
 `
 

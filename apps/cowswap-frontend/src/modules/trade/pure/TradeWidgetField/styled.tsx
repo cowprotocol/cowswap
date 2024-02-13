@@ -64,6 +64,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     css`
       display: grid;
       grid-template-columns: max-content auto;
+      grid-template-rows: max-content;
 
       ${({ theme }) => theme.mediaWidth.upToSmall`
       display: flex;

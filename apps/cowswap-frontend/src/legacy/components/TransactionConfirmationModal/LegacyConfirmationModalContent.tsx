@@ -14,6 +14,7 @@ export interface ConfirmationModalContentProps {
   bottomContent?: () => ReactNode | undefined
 }
 
+// @deprecated use common/pure/NewModal instead
 export function LegacyConfirmationModalContent({
   title,
   titleSize,

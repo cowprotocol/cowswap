@@ -21,13 +21,14 @@ import { Link } from 'react-router-dom'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useModalState } from 'common/hooks/useModalState'
+import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { HelpCircle } from 'common/pure/HelpCircle'
+import { CowModal } from 'common/pure/Modal'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   ExtLink,
@@ -96,9 +97,8 @@ export default function Profile() {
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
-  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    ConfirmOperationType.CONVERT_VCOW
-  )
+
+  const { isModalOpen, openModal, closeModal } = useModalState<string>()
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -205,7 +205,16 @@ export default function Profile() {
 
   return (
     <>
-      <TransactionConfirmationModal />
+      <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
+        <ConfirmationPendingContent
+          modalMode
+          onDismiss={closeModal}
+          title="Convert vCOW to COW"
+          description="Converting vCOW to COW"
+          operationLabel="vCOW conversion"
+        />
+      </CowModal>
+
       <ErrorModal />
 
       {isCardsLoading && !isProviderNetworkUnsupported ? (

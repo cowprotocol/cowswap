@@ -8,8 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
+import { useTradeConfirmActions } from 'modules/trade'
 
 import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
 
@@ -39,7 +39,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
   const { onCurrencySelection } = useSwapActionHandlers()
-  const { openSwapConfirmModal } = useSwapConfirmManager()
+  const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
 
   const {
     approve: { isNeeded: isApproveNeeded },
@@ -70,7 +70,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
 
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
-      openSwapConfirmModal(trade)
+      openSwapConfirmModal()
     }
 
     const approve = (useModals?: boolean) => {

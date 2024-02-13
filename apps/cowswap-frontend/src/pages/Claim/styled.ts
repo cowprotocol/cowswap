@@ -344,6 +344,7 @@ export const ClaimTable = styled.div`
     min-width: 100%;
     font-size: 16px;
     grid-template-columns: min-content auto auto 240px;
+    grid-template-rows: max-content;
 
     input[type='checkbox'] {
       ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -1007,6 +1008,7 @@ export const InvestContent = styled.div`
       min-width: 100%;
       font-size: 14px;
       grid-template-columns: repeat(3, auto);
+      grid-template-rows: max-content;
 
       ${({ theme }) => theme.mediaWidth.upToSmall`
         grid-template-columns: 1fr;
@@ -1399,6 +1401,7 @@ export const InvestSummary = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: max-content;
   font-size: 15px;
   gap: 16px 36px;
 
@@ -1713,6 +1716,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
 export const StepExplainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content;
   gap: 0 16px;
   margin: 0 0 24px;
 

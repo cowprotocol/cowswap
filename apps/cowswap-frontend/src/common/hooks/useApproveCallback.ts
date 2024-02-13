@@ -9,8 +9,9 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { GAS_LIMIT_DEFAULT } from '../constants/common'
 
 export async function estimateApprove(
   tokenContract: Erc20,
@@ -26,7 +27,8 @@ export async function estimateApprove(
       gasLimit: await tokenContract.estimateGas.approve(spender, MaxUint256),
     }
   } catch (e: any) {
-    // general fallback for tokens who restrict approval amounts
+    // Fallback: Attempt to set an approval for the maximum wallet balance (instead of the MaxUint256).
+    // Some tokens revert if you try to use more than what you have.
     try {
       const approveAmount = amountToApprove.quotient.toString()
 
@@ -37,13 +39,13 @@ export async function estimateApprove(
     } catch (error: any) {
       console.error(
         '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
-          APPROVE_GAS_LIMIT_DEFAULT.toString(),
+          GAS_LIMIT_DEFAULT.toString(),
         error
       )
 
       return {
         approveAmount: MaxUint256,
-        gasLimit: APPROVE_GAS_LIMIT_DEFAULT,
+        gasLimit: GAS_LIMIT_DEFAULT,
       }
     }
   }

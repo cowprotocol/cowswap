@@ -10,9 +10,14 @@ import styled, { css } from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
 
-import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
-
 import { AutoColumn } from '../Column'
+
+const FeeInformationTooltipWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+`
 
 export const Container = styled.div`
   max-width: 460px;
@@ -232,6 +237,7 @@ export const AuxInformationContainer = styled.div<{
       margin: 0;
       padding: 16px;
     `}
+
     > span {
       font-size: 18px;
       gap: 2px;

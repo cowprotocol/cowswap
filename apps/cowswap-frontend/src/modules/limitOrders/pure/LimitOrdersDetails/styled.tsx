@@ -28,6 +28,8 @@ export const DetailsRow = styled.div`
     opacity: 0.8;
     padding: 0;
     margin: 0;
+    text-align: left;
+    white-space: nowrap;
   }
 
   > div > span ${QuestionWrapper} {

@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Wrapper = styled.div`
-  padding: 10px;
+  padding: 0 6px;
   font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -16,6 +16,7 @@ export const Wrapper = styled.div`
 export const StyledRateInfo = styled(RateInfo)`
   margin: 0 auto;
   font-size: 13px;
+  min-height: 24px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;

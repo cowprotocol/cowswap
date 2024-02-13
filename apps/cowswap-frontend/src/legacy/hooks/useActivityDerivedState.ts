@@ -28,7 +28,7 @@ export function useActivityDerivedState({
   )
 }
 
-function getActivityDerivedState(props: {
+export function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
   gnosisSafeInfo?: SafeInfoResponse

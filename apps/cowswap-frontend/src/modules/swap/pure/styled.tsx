@@ -1,5 +1,4 @@
-import { RowBetween } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { RowBetween, UI } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'

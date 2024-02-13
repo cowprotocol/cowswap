@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useWETHContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -16,55 +15,51 @@ import {
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-
-import { wrapNativeStateAtom } from '../state/wrapNativeStateAtom'
+import { useWrapNativeScreenState } from './useWrapNativeScreenState'
 
 export function useWrapNativeFlow(): WrapUnwrapCallback {
   const derivedTradeState = useDerivedTradeState()
-  const wrapCallback = useWrapNativeCallback(derivedTradeState.state?.inputCurrencyAmount)
 
-  return useCallback(
-    (params?: WrapUnwrapCallbackParams) => {
-      if (!wrapCallback) return Promise.resolve(null)
-
-      return wrapCallback(params)
-    },
-    [wrapCallback]
-  )
+  return useWrapNativeCallback(derivedTradeState.state?.inputCurrencyAmount)
 }
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
   const { chainId } = useWalletInfo()
   const wethContract = useWETHContract()
   const addTransaction = useTransactionAdder()
-  const setWrapNativeState = useSetAtom(wrapNativeStateAtom)
+  const [, setWrapNativeState] = useWrapNativeScreenState()
 
-  if (!wethContract || !chainId || !amount) {
-    return null
-  }
+  return useMemo(() => {
+    if (!wethContract || !chainId || !amount) {
+      return null
+    }
 
-  return {
-    chainId,
-    wethContract,
-    amount,
-    addTransaction,
-    closeModals() {
-      setWrapNativeState({ isOpen: false })
-    },
-    openTransactionConfirmationModal() {
-      setWrapNativeState({ isOpen: true })
-    },
-  }
+    return {
+      chainId,
+      wethContract,
+      amount,
+      addTransaction,
+      closeModals() {
+        setWrapNativeState({ isOpen: false })
+      },
+      openTransactionConfirmationModal() {
+        setWrapNativeState({ isOpen: true })
+      },
+    }
+  }, [wethContract, chainId, amount, addTransaction, setWrapNativeState])
 }
 
-function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {
+function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback {
   const context = useWrapNativeContext(inputAmount)
 
-  if (!context) {
-    return null
-  }
+  return useCallback(
+    (params?: WrapUnwrapCallbackParams) => {
+      if (!context) {
+        return Promise.resolve(null)
+      }
 
-  return (params?: WrapUnwrapCallbackParams) => {
-    return wrapUnwrapCallback(context, params)
-  }
+      return wrapUnwrapCallback(context, params)
+    },
+    [context]
+  )
 }

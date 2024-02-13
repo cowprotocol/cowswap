@@ -34,6 +34,7 @@ export const CurrencyInputBox = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, auto);
+  grid-template-rows: max-content;
   word-break: break-all;
   gap: 16px;
   margin: 0;

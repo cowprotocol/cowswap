@@ -31,6 +31,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       width: calc(100% - 0.6rem);
       background: transparent;
       ${({ $numColumns }): string => ($numColumns ? `grid-template-columns: repeat(${$numColumns}, 1fr);` : '')}
+      grid-template-rows: max-content;
 
       > th {
         font-weight: var(--font-weight-normal);
@@ -96,8 +97,9 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
 
     align-items: center;
     ${({ $numColumns }): string => ($numColumns ? `grid-template-columns: repeat(${$numColumns}, 1fr);` : '')}
+    grid-template-rows: max-content;
 
-    > th, 
+    > th,
     > td {
       display: flex;
       align-items: center;

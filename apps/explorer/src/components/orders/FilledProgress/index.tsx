@@ -51,6 +51,7 @@ const TableHeading = styled.div`
   padding: 0 0 1rem;
   display: grid;
   grid-template-columns: minmax(min-content, auto) auto auto auto;
+  grid-template-rows: max-content;
   justify-content: flex-start;
   gap: 1.6rem;
 

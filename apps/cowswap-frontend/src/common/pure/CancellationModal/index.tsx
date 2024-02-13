@@ -1,15 +1,14 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
-
-import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
+
+import { ConfirmationPendingContent } from '../ConfirmationPendingContent'
 
 export type CancellationModalProps = {
   isOpen: boolean
@@ -39,23 +38,23 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
     }
 
     if (error !== null) {
-      return <TransactionErrorContent onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
+      return <TransactionErrorContent modalMode onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
     }
 
-    // TODO: use TradeConfirmModal
     if (isPendingSignature) {
       return (
-        <LegacyConfirmationPendingContent
-          chainId={chainId}
+        <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
-          pendingText={
+          title={
             <>
               Cancelling order with id {shortId}:
               <br />
               <em>{summary}</em>
             </>
           }
-          operationType={ConfirmOperationType.ORDER_CANCEL}
+          description="Canceling your order"
+          operationLabel="cancellation"
         />
       )
     } else {
