@@ -16,8 +16,11 @@ const DAI_MAINNET = new Token(
   'Dai Stablecoin'
 )
 
-const wethAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 1e18)
-const daiAmount = CurrencyAmount.fromRawAmount(DAI_MAINNET, 2000 * 1e18)
+const wethAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 1e18) // 1 WETH
+const daiAmount = CurrencyAmount.fromRawAmount(DAI_MAINNET, 2000 * 1e18) // 2000 DAI
+
+const wethAmountWithDecimals = CurrencyAmount.fromRawAmount(WETH_MAINNET, '1234567891112131410') // 1.23456789111213141 WETH
+const daiAmountWithDecimals = CurrencyAmount.fromRawAmount(DAI_MAINNET, '2123456789101112131415') // 2123.456789101112131415 DAI
 
 const resultCommon = {
   messageType: ToastMessageType.SWAP_POSTED_API,
@@ -55,7 +58,7 @@ describe('Swap orders ', () => {
   const baseParams = {
     orderType: UiOrderType.SWAP,
   }
-  it('Sell', () => {
+  it('Sell round amount', () => {
     // GIVEN: We just posted a Swap sell order selling 1 WETH for 2000 DAI (or more)
     const params = getTestParams({
       ...baseParams,
@@ -69,7 +72,23 @@ describe('Swap orders ', () => {
     assertMessage(toastMessage, 'Swap submitted: Sell 1 WETH for at least 2,000 DAI')
   })
 
-  it('Buy', () => {
+  it('Sell amounts with decimals', () => {
+    // GIVEN: We just posted a Swap sell order selling 1.23456789111213141 WETH for 2123.456789101112131415 DAI (or more)
+    const params = getTestParams({
+      ...baseParams,
+      kind: OrderKind.SELL,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'Swap submitted: Sell 1.2346 WETH for at least 2,123.4568 DAI')
+  })
+
+  it('Buy round amount', () => {
     // GIVEN: We just posted a Swap buy order buying 2000 DAI for 1 WETH (or less)
     const params = getTestParams({
       ...baseParams,
@@ -82,13 +101,29 @@ describe('Swap orders ', () => {
     // THEN: The message should be as expected
     assertMessage(toastMessage, 'Swap submitted: Buy 2,000 DAI for at most 1 WETH')
   })
+
+  it('Buy amounts with decimals', () => {
+    // GIVEN: We just posted a Swap buy order buying 2123.456789101112131415 DAI for 1.23456789111213141 WETH (or less)
+    const params = getTestParams({
+      ...baseParams,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+      kind: OrderKind.BUY,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'Swap submitted: Buy 2,123.4568 DAI for at most 1.2346 WETH')
+  })
 })
 
 describe('Limit Orders', () => {
   const baseParams = {
     orderType: UiOrderType.LIMIT,
   }
-  it('Sell', () => {
+  it('Sell round amount', () => {
     // GIVEN: We just posted a Limit sell order selling 1 WETH for 2000 DAI (or more)
     const params = getTestParams({
       ...baseParams,
@@ -102,7 +137,23 @@ describe('Limit Orders', () => {
     assertMessage(toastMessage, 'Limit order submitted: Sell 1 WETH for at least 2,000 DAI')
   })
 
-  it('Buy', () => {
+  it('Sell amounts with decimals', () => {
+    // GIVEN: We just posted a Limit sell order selling 1.23456789111213141 WETH for 2123.456789101112131415 DAI (or more)
+    const params = getTestParams({
+      ...baseParams,
+      kind: OrderKind.SELL,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'Limit order submitted: Sell 1.2346 WETH for at least 2,123.4568 DAI')
+  })
+
+  it('Buy round amounts', () => {
     // GIVEN: We just posted a Limit buy order buying 2000 DAI for 1 WETH (or less)
     const params = getTestParams({
       ...baseParams,
@@ -115,13 +166,29 @@ describe('Limit Orders', () => {
     // THEN: The message should be as expected
     assertMessage(toastMessage, 'Limit order submitted: Buy 2,000 DAI for at most 1 WETH')
   })
+
+  it('Buy amounts with decimals', () => {
+    // GIVEN: We just posted a Limit buy order buying 2123.456789101112131415 DAI for 1.23456789111213141 WETH (or less)
+    const params = getTestParams({
+      ...baseParams,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+      kind: OrderKind.BUY,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'Limit order submitted: Buy 2,123.4568 DAI for at most 1.2346 WETH')
+  })
 })
 
 describe('Twap Orders', () => {
   const baseParams = {
     orderType: UiOrderType.TWAP,
   }
-  it('Sell', () => {
+  it('Sell round amount', () => {
     // GIVEN: We just posted a TWAP sell order selling 1 WETH for 2000 DAI (or more)
     const params = getTestParams({
       ...baseParams,
@@ -135,7 +202,23 @@ describe('Twap Orders', () => {
     assertMessage(toastMessage, 'TWAP order submitted: Sell 1 WETH for at least 2,000 DAI')
   })
 
-  it('Buy', () => {
+  it('Sell amounts with decimals', () => {
+    // GIVEN: We just posted a TWAP sell order selling 1.23456789111213141 WETH for 2123.456789101112131415 DAI (or more)
+    const params = getTestParams({
+      ...baseParams,
+      kind: OrderKind.SELL,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'TWAP order submitted: Sell 1.2346 WETH for at least 2,123.4568 DAI')
+  })
+
+  it('Buy round amount', () => {
     // GIVEN: We just posted a TWAP buy order buying 2000 DAI for 1 WETH (or less)
     const params = getTestParams({
       ...baseParams,
@@ -147,5 +230,21 @@ describe('Twap Orders', () => {
 
     // THEN: The message should be as expected
     assertMessage(toastMessage, 'TWAP order submitted: Buy 2,000 DAI for at most 1 WETH')
+  })
+
+  it('Buy amounts with decimals', () => {
+    // GIVEN: We just posted a TWAP buy order buying 2123.456789101112131415 DAI for 1.23456789111213141 WETH (or less)
+    const params = getTestParams({
+      ...baseParams,
+      inputAmount: wethAmountWithDecimals,
+      outputAmount: daiAmountWithDecimals,
+      kind: OrderKind.BUY,
+    })
+
+    // WHEN: We get the toast message
+    const toastMessage = getPendingOrderNotificationToast(params)
+
+    // THEN: The message should be as expected
+    assertMessage(toastMessage, 'TWAP order submitted: Buy 2,123.4568 DAI for at most 1.2346 WETH')
   })
 })
