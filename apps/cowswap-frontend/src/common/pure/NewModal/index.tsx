@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { BackButton, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
@@ -51,8 +51,8 @@ const Heading = styled.h2`
   justify-content: space-between;
   width: 100%;
   height: auto;
-  padding: 18px;
   margin: 0;
+  padding: 18px 40px;
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -79,6 +79,12 @@ const IconX = styled.div`
   &:hover {
     opacity: 1;
   }
+`
+
+const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 18px;
+  left: 10px;
 `
 
 const NewModalContent = styled.div<{ paddingTop?: number }>`
@@ -111,7 +117,7 @@ const NewModalContent = styled.div<{ paddingTop?: number }>`
   }
 `
 
-export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
+export const NewModalContentTop = styled.div<{ gap?: number; paddingTop?: number }>`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -119,7 +125,7 @@ export const NewModalContentTop = styled.div<{ paddingTop?: number }>`
   width: 100%;
   margin: 0 0 auto;
   padding: ${({ paddingTop = 0 }) => `${paddingTop}px`} 0 0;
-  gap: 24px;
+  gap: ${({ gap = 0 }) => `${gap}px`};
 
   > span {
     gap: 6px;
@@ -145,16 +151,22 @@ export interface NewModalProps {
   title?: string
   onDismiss?: () => void
   children?: React.ReactNode
+  modalMode?: boolean
 }
 
-export function NewModal({ maxWidth = 450, minHeight = 450, title, children, onDismiss }: NewModalProps) {
+export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, children, onDismiss }: NewModalProps) {
+  const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
+
   return (
     <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
       <ModalInner>
+        {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && <Heading>{title}</Heading>}
-        <IconX onClick={() => onDismiss && onDismiss()}>
-          <SVG src={CLOSE_ICON} />
-        </IconX>
+        {modalMode && (
+          <IconX onClick={onDismissCallback}>
+            <SVG src={CLOSE_ICON} />
+          </IconX>
+        )}
 
         <NewModalContent>{children}</NewModalContent>
       </ModalInner>

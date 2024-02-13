@@ -20,6 +20,10 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   ${RowFixed} {
     gap: 4px;
     min-width: 150px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      min-width: max-content;
+    `}
   }
 
   ${TextWrapper} {

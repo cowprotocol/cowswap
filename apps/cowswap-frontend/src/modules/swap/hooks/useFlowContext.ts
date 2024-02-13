@@ -22,13 +22,13 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -14,7 +14,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { EthFlowProps } from 'modules/swap/containers/EthFlow'
+import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
@@ -177,8 +177,8 @@ export function SwapWidget() {
   const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
   const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 
-  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
-  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
+  const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
+  const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const swapButtonContext = useSwapButtonContext({
     feeWarningAccepted,
@@ -202,7 +202,6 @@ export function SwapWidget() {
   const swapModalsProps: SwapModalsProps = {
     showNativeWrapModal,
     showCowSubsidyModal,
-    ethFlowProps,
   }
 
   const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER.includes(
@@ -294,24 +293,27 @@ export function SwapWidget() {
     <>
       <SwapModals {...swapModalsProps} />
       <TradeWidgetContainer>
-        <TradeWidget
-          id="swap-page"
-          slots={slots}
-          actions={swapActions}
-          params={params}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-        >
-          <ConfirmSwapModalSetup
-            chainId={chainId}
-            doTrade={swapButtonContext.handleSwap}
-            priceImpact={priceImpactParams}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-            tradeRatesProps={tradeRatesProps}
-            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-          />
-        </TradeWidget>
+        {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+        {!showNativeWrapModal && (
+          <TradeWidget
+            id="swap-page"
+            slots={slots}
+            actions={swapActions}
+            params={params}
+            inputCurrencyInfo={inputCurrencyInfo}
+            outputCurrencyInfo={outputCurrencyInfo}
+          >
+            <ConfirmSwapModalSetup
+              chainId={chainId}
+              doTrade={swapButtonContext.handleSwap}
+              priceImpact={priceImpactParams}
+              inputCurrencyInfo={inputCurrencyPreviewInfo}
+              outputCurrencyInfo={outputCurrencyPreviewInfo}
+              tradeRatesProps={tradeRatesProps}
+              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
+            />
+          </TradeWidget>
+        )}
         <NetworkAlert />
       </TradeWidgetContainer>
     </>

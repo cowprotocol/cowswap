@@ -6,13 +6,17 @@ import { BackButton } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
 
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 
+import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { CustomRecipientBanner } from '../CustomRecipientBanner'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -20,12 +24,14 @@ const ONE_SEC = ms`1s`
 export interface TradeConfirmationProps {
   onConfirm(): void
   onDismiss(): void
+  account: string | undefined
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: JSX.Element | string
-  refreshInterval: number
+  refreshInterval?: number
+  recipient: string | null
   buttonText?: React.ReactNode
   children?: JSX.Element
 }
@@ -34,6 +40,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const {
     onConfirm,
     onDismiss,
+    account,
     inputCurrencyInfo,
     outputCurrencyInfo,
     isConfirmDisabled,
@@ -42,8 +49,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     refreshInterval,
     buttonText = 'Confirm',
     children,
+    recipient,
   } = props
 
+  const showRecipientWarning = recipient && account && recipient.toLowerCase() !== account.toLowerCase()
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
@@ -54,6 +63,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
 
   useEffect(() => {
+    if (refreshInterval === undefined || nextUpdateAt === undefined) return
+
     const interval = setInterval(() => {
       const newValue = nextUpdateAt - ONE_SEC
 
@@ -63,15 +74,28 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     return () => clearInterval(interval)
   }, [nextUpdateAt, refreshInterval])
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  const isUpToMedium = useMediaQuery(upToMedium)
+
+  // Combine local onClick logic with incoming onClick
+  const handleConfirmClick = () => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+
+    onConfirm()
+  }
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        <styledEl.QuoteCountdown>
-          Quote refresh in <b>{Math.ceil(nextUpdateAt / 1000)} sec</b>
-        </styledEl.QuoteCountdown>
+        {nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
@@ -86,8 +110,11 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
           />
         </styledEl.AmountsPreviewContainer>
         {children}
+        {/*Banners*/}
+        {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
+        <CustomRecipientBanner recipient={recipient} />
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
-        <ButtonPrimary onClick={onConfirm} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+        <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
       </styledEl.ContentWrapper>

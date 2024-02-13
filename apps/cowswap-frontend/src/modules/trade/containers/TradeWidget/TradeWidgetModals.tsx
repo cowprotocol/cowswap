@@ -1,28 +1,37 @@
-import { useAtom, useAtomValue } from 'jotai'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback, useEffect } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { ImportTokenModal, SelectTokenWidget, selectTokenWidgetAtom } from 'modules/tokensList'
+import {
+  ImportTokenModal,
+  SelectTokenWidget,
+  useSelectTokenWidgetState,
+  useUpdateSelectTokenWidgetState,
+} from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
-import { tradeApproveStateAtom } from 'common/containers/TradeApprove/tradeApproveStateAtom'
+import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
+import { useUpdateTradeApproveState } from 'common/hooks/useUpdateTradeApproveState'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
+import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
-import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
-import { wrapNativeStateAtom } from '../../state/wrapNativeStateAtom'
+import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
+  const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
 
-  const { isOpen: isTradeReviewOpen } = useAtomValue(tradeConfirmStateAtom)
-  const { open: isTokenSelectOpen } = useAtomValue(selectTokenWidgetAtom)
-  const [{ isOpen: isWrapNativeOpen }] = useAtom(wrapNativeStateAtom)
-  const [{ approveInProgress, currency: approvingCurrency }] = useAtom(tradeApproveStateAtom)
+  const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
+  const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
+  const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
+  const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
 
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -30,7 +39,37 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
 
-  if (isTradeReviewOpen) {
+  const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
+  const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
+  const updateTradeApproveState = useUpdateTradeApproveState()
+
+  const resetAllScreens = useCallback(() => {
+    closeTradeConfirm()
+    closeZeroApprovalModal()
+    closeAutoImportModal()
+    updateSelectTokenWidgetState({ open: false })
+    setWrapNativeScreenState({ isOpen: false })
+    updateTradeApproveState({ approveInProgress: false, error: undefined })
+  }, [
+    closeTradeConfirm,
+    closeZeroApprovalModal,
+    closeAutoImportModal,
+    updateSelectTokenWidgetState,
+    setWrapNativeScreenState,
+    updateTradeApproveState,
+  ])
+
+  const error = approveError || confirmError
+
+  /**
+   * Close modals on chain/account change
+   */
+  useEffect(() => {
+    resetAllScreens()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, account])
+
+  if (isTradeReviewOpen || pendingTrade) {
     return confirmModal
   }
 
@@ -45,6 +84,11 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   if (isWrapNativeOpen) {
     return <WrapNativeModal />
   }
+
+  if (error) {
+    return <TransactionErrorContent message={error} onDismiss={resetAllScreens} />
+  }
+
   if (approveInProgress) {
     return <TradeApproveModal currency={approvingCurrency} />
   }

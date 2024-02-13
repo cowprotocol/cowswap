@@ -207,6 +207,7 @@ export default function Profile() {
     <>
       <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
         <ConfirmationPendingContent
+          modalMode
           onDismiss={closeModal}
           title="Convert vCOW to COW"
           description="Converting vCOW to COW"

@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
@@ -16,6 +15,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(

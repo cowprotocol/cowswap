@@ -28,6 +28,7 @@ export function SurplusCard() {
     align-items: center;
     justify-content: center;
     grid-template-columns: 1fr;
+    grid-template-rows: max-content;
     gap: 24px;
     box-sizing: border-box;
     padding: 0;

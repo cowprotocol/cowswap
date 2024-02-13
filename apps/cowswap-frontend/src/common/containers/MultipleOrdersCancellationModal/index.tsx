@@ -73,7 +73,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <TransactionErrorContent onDismiss={dismissAll} message={errorMessage} />
+        <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
   }
@@ -82,6 +82,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
         <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
           title={<>Cancelling {ordersCount} orders</>}
           description="Canceling your order"

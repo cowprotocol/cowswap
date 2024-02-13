@@ -38,12 +38,13 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
     }
 
     if (error !== null) {
-      return <TransactionErrorContent onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
+      return <TransactionErrorContent modalMode onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
     }
 
     if (isPendingSignature) {
       return (
         <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
           title={
             <>

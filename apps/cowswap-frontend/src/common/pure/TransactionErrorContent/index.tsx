@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -12,6 +10,8 @@ import { CloseIcon } from 'legacy/theme'
 const Wrapper = styled.div`
   width: 100%;
   padding: 15px;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 20px;
 `
 
 const Header = styled.div`
@@ -32,6 +32,7 @@ const Text = styled.div`
   color: var(${UI.COLOR_DANGER});
   font-weight: 500;
   font-size: 16px;
+  word-break: break-word;
 `
 
 const AlertIcon = styled(AlertTriangle)`
@@ -40,25 +41,27 @@ const AlertIcon = styled(AlertTriangle)`
   margin-bottom: 15px;
 `
 
+const BackButtonStyled = styled(BackButton)`
+  margin-right: -22px;
+`
+
 export interface TransactionErrorContentProps {
   message: JSX.Element | string
   onDismiss(): void
-  mode?: 'screen' | 'modal'
+  modalMode?: boolean
 }
 
 export function TransactionErrorContent(props: TransactionErrorContentProps) {
-  const { message, onDismiss, mode } = props
-
-  const isScreenMode = mode === 'screen'
+  const { message, onDismiss, modalMode } = props
 
   return (
     <Wrapper>
       <Header>
-        {isScreenMode && <BackButton onClick={onDismiss} />}
+        {!modalMode && <BackButtonStyled onClick={onDismiss} />}
         <span>
           <Trans>Error</Trans>
         </span>
-        {isScreenMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
+        {!modalMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
       </Header>
       <Body>
         <AlertIcon size={64} />

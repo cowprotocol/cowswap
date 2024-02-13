@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
@@ -38,6 +38,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const { allowsOffchainSigning } = useWalletDetails()
   const openModal = useOpenModal(ApplicationModal.CANCELLATION)
   const closeModal = useCloseModal(ApplicationModal.CANCELLATION)
+  const { isPendingSignature } = useAtomValue(cancellationModalContextAtom)
   const setContext = useSetAtom(updateCancellationModalContextAtom)
   const resetContext = useResetAtom(cancellationModalContextAtom)
   const offChainOrderCancel = useOffChainCancelOrder()
@@ -76,10 +77,13 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           setContext({ isPendingSignature: true, error: null })
           // Actual cancellation is triggered here
           await cancelFn(order)
-          // When done, dismiss the modal
           onDismiss()
+          // When done, dismiss the modal
         } catch (e: any) {
-          const swapErrorMessage = getSwapErrorMessage(e)
+          onDismiss()
+          if (!isPendingSignature) return
+
+          const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })
@@ -120,6 +124,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       getOnChainTxInfo,
       gasPrices,
       nativeCurrency,
+      isPendingSignature,
     ]
   )
 }

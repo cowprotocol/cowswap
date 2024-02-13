@@ -7,7 +7,14 @@ import { useModalState } from './useModalState'
 
 import { MediumAndUp, useMediaQuery } from '../../legacy/hooks/useMediaQuery'
 import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
+import { ConfirmationPendingContentShell } from '../pure/ConfirmationPendingContent/ConfirmationPendingContentShell'
 import { MetamaskApproveBanner } from '../pure/MetamaskApproveBanner'
+
+interface PendingApprovalModalParams {
+  currencySymbol?: string
+  onDismiss?: () => void
+  modalMode?: boolean
+}
 
 function useIsMetaMaskDesktop(): boolean {
   const { connector } = useWeb3React()
@@ -18,7 +25,9 @@ function useIsMetaMaskDesktop(): boolean {
   return isMetaMask && isNotMobile && connectionType === injectedConnection
 }
 
-export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () => void) {
+export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
+  const { currencySymbol, modalMode, onDismiss } = params || {}
+
   const state = useModalState<string>()
   const { closeModal, context } = state
 
@@ -29,26 +38,40 @@ export function usePendingApprovalModal(currencySymbol?: string, onDismiss?: () 
     onDismiss?.()
   }
 
-  const Modal = (
-    <ConfirmationPendingContent
+  const Title = (
+    <>
+      Approving <strong>{currencySymbol || context}</strong> for trading
+    </>
+  )
+
+  const Description = (
+    <>
+      Review and select the ideal <br /> spending cap in your wallet
+    </>
+  )
+
+  const MetamaskContent = (
+    <ConfirmationPendingContentShell
+      modalMode={!!modalMode}
+      title={Title}
       onDismiss={onDismissCallback}
-      title={
-        <>
-          Approving <strong>{currencySymbol || context}</strong> for trading
-        </>
-      }
+      description={Description}
+    >
+      <MetamaskApproveBanner />
+    </ConfirmationPendingContentShell>
+  )
+
+  const DefaultContent = (
+    <ConfirmationPendingContent
+      modalMode={!!modalMode}
+      onDismiss={onDismissCallback}
+      title={Title}
       description="Approving token"
       operationLabel="token approval"
-      CustomBody={isMetaMaskDesktop ? <MetamaskApproveBanner /> : undefined}
-      CustomDescription={
-        isMetaMaskDesktop ? (
-          <>
-            Review and select the ideal <br /> spending cap in your wallet
-          </>
-        ) : undefined
-      }
     />
   )
+
+  const Modal = isMetaMaskDesktop ? MetamaskContent : DefaultContent
 
   return { Modal, state }
 }

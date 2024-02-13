@@ -404,6 +404,7 @@ export const LowerSectionSimple = styled(LowerSection)`
       // target the activity comp
       > div > ${ActivityDetailsText} > ${Summary} {
         grid-template-columns: auto auto;
+        grid-template-rows: max-content;
 
         > span {
           display: none;
@@ -478,6 +479,7 @@ export const SurplusCardWrapper = styled.div`
   align-items: center;
   justify-content: center;
   grid-template-columns: 1fr;
+  grid-template-rows: max-content;
   gap: 24px;
   box-sizing: border-box;
   padding: 0 24px;

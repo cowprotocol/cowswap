@@ -16,13 +16,31 @@ const EqualSign = styled.div<{ size?: number }>`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: transparent;
+  position: relative;
+  color: inherit;
+
+  &::before {
+    content: '';
+    background: var(${UI.COLOR_TEXT});
+    border-radius: var(--size);
+    opacity: 0.15;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 
   > svg {
     width: 100%;
     height: 100%;
     margin: auto;
     object-fit: contain;
+
+    > g {
+      fill: var(${UI.COLOR_TEXT});
+    }
   }
 `
 
@@ -30,6 +48,7 @@ const Wrapper = styled.div`
   display: flex;
   gap: 6px;
   align-items: center;
+  white-space: nowrap;
 `
 
 interface ReceiveAmountTitleProps {

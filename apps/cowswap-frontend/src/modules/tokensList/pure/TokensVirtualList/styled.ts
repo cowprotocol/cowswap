@@ -17,6 +17,7 @@ export const TokensScroller = styled.div`
 export const LoadingRows = styled(BaseLoadingRows)`
   grid-column-gap: 0.5em;
   grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: max-content;
   max-width: 960px;
   padding: 12px 20px;
 
