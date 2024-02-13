@@ -5,6 +5,7 @@ import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;

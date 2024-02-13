@@ -1,5 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
+import { ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const WidgetWrapper = styled.div`
@@ -12,11 +13,36 @@ export const WidgetWrapper = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
-  display: flex;
+export const AmountsPreviewContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  width: 100%;
+  align-items: center;
   justify-content: space-between;
-  margin: 0;
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
+`
+
+export const SeparatorWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`
+
+export const AmountsSeparator = styled(ArrowRight)`
+  --size: 36px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 4px solid var(${UI.COLOR_PAPER});
+  padding: 4px;
+  position: relative;
+  z-index: 1;
 `
 
 export const ContentWrapper = styled.div`
@@ -25,13 +51,12 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   gap: 6px;
   font-size: 14px;
-  padding: 0 10px 16px;
+  padding: 0 10px 10px;
 `
 
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   position: sticky;
   background: var(${UI.COLOR_PAPER});
@@ -45,5 +70,16 @@ export const Header = styled.div`
 
 export const ConfirmHeaderTitle = styled.h3`
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
+`
+
+export const QuoteCountdown = styled.div`
+  margin: 0 0 0 auto;
+  font-size: 14px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+  > b {
+    color: var(${UI.COLOR_TEXT});
+    font-weight: normal;
+  }
 `
