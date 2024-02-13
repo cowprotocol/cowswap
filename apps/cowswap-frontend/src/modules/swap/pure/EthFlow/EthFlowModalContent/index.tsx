@@ -29,7 +29,7 @@ export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { title, descriptions, buttonText } = ethFlowConfigs[state]({ isExpertMode, nativeSymbol, wrappedSymbol })
 
   return (
-    <NewModal title={title} onDismiss={onDismiss} screenMode>
+    <NewModal title={title} onDismiss={onDismiss}>
       <NewModalContentTop gap={4}>
         <EthFlowModalTopContent
           descriptions={descriptions}
