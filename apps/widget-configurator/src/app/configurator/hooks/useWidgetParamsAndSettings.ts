@@ -42,7 +42,6 @@ export function useWidgetParamsAndSettings(
       appCode: 'CoW Widget: Configurator',
       width: '450px',
       height: '640px',
-      provider,
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
       env: getEnv(),
