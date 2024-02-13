@@ -89,7 +89,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapUnwrapAmount = isNativeInSwap ? currencyAmountToTokenAmount(inputAmount) || undefined : inputAmount
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapNativeFlow()
-  const approvalState = useApproveState(slippageAdjustedSellAmount || null)
+  const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 

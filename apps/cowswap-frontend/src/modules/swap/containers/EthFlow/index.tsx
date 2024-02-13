@@ -45,7 +45,7 @@ function EthFlow({
   const isExpertMode = useIsExpertMode()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const approvalState = useApproveState(nativeInput || null)
+  const { state: approvalState } = useApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
