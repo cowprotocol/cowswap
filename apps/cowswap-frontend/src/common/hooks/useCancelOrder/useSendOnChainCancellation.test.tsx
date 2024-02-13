@@ -13,7 +13,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-import { WithCowEventEmitter, WithMockedWeb3 } from '../../../test-utils'
+import { WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1
 const settlementCancellationTxHash = '0xcfwj23g4fwe111'
@@ -66,11 +66,7 @@ const ethFlowInvalidationMock = jest.fn()
 const settlementInvalidationMock = jest.fn()
 
 const WithProviders = ({ children }: PropsWithChildren) => {
-  return (
-    <WithMockedWeb3>
-      <WithCowEventEmitter>{children}</WithCowEventEmitter>
-    </WithMockedWeb3>
-  )
+  return <WithMockedWeb3>{children}</WithMockedWeb3>
 }
 
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {

@@ -4,6 +4,8 @@ import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
+import { EVENT_EMITTER } from 'eventEmitter'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
@@ -33,7 +35,6 @@ export async function tradeFlow(
     rateImpact,
     permitInfo,
     provider,
-    cowEventEmitter,
     chainId,
     allowsOffchainSigning,
     settlementContract,
@@ -121,7 +122,7 @@ export async function tradeFlow(
         dispatch
       )
     }
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)

@@ -10,10 +10,8 @@ import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { CowEventEmitterContext } from '@cowprotocol/events'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 
-import { cowEventEmitter } from 'cowEventEmitter'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
@@ -65,23 +63,21 @@ function Main() {
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
                     <WithLDProvider>
-                      <CowEventEmitterContext.Provider value={cowEventEmitter}>
-                        <WalletUnsupportedNetworkBanner />
-                        <Updaters />
+                      <WalletUnsupportedNetworkBanner />
+                      <Updaters />
 
-                        {!isInjectedWidgetMode && (
-                          <>
-                            <FeatureGuard featureFlag="cowFortuneEnabled">
-                              <FortuneWidget />
-                            </FeatureGuard>
-                            <AppziButton />
-                          </>
-                        )}
+                      {!isInjectedWidgetMode && (
+                        <>
+                          <FeatureGuard featureFlag="cowFortuneEnabled">
+                            <FortuneWidget />
+                          </FeatureGuard>
+                          <AppziButton />
+                        </>
+                      )}
 
-                        <Popups />
-                        <SnackbarsWidget />
-                        <App />
-                      </CowEventEmitterContext.Provider>
+                      <Popups />
+                      <SnackbarsWidget />
+                      <App />
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
