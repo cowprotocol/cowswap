@@ -19,6 +19,7 @@ import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/type
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 
+import { useSetOrderToRecreate } from 'common/containers/RecreateOrderModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
@@ -136,10 +137,17 @@ export function OrdersTableWidget({
     [allOrders, cancelOrder]
   )
 
+  const setOrderToRecreate = useSetOrderToRecreate()
+  const getShowRecreateModal = useCallback(
+    (order: ParsedOrder) => () => setOrderToRecreate(order),
+    [setOrderToRecreate]
+  )
+
   const approveOrderToken = useOrdersTableTokenApprove()
 
   const orderActions: OrderActions = {
     getShowCancellationModal,
+    getShowRecreateModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
     toggleOrdersForCancellation,

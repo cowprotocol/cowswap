@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
@@ -173,7 +173,10 @@ export function OrderRow({
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
-  const showCancellationModal = orderActions.getShowCancellationModal(order)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const showCancellationModal = useMemo(() => orderActions.getShowCancellationModal(order), [order.id])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const showRecreateModal = useMemo(() => orderActions.getShowRecreateModal(order), [order.id])
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -384,6 +387,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
+          showRecreateModal={showRecreateModal}
         />
       </styledEl.CellElement>
     </TableRow>

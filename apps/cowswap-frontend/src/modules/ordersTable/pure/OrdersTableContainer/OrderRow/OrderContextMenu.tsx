@@ -70,9 +70,15 @@ export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
+  showRecreateModal: (() => void) | null
 }
 
-export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {
+export function OrderContextMenu({
+  openReceipt,
+  activityUrl,
+  showCancellationModal,
+  showRecreateModal,
+}: OrderContextMenuProps) {
   return (
     <Menu>
       <ContextMenuButton>
@@ -90,9 +96,15 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
           </ContextMenuLink>
         )}
         {showCancellationModal && (
-          <ContextMenuItem $red onSelect={() => showCancellationModal()}>
+          <ContextMenuItem $red onSelect={showCancellationModal}>
             <Trash2 size={16} />
             <span>Cancel order</span>
+          </ContextMenuItem>
+        )}
+        {showRecreateModal && (
+          <ContextMenuItem onSelect={showRecreateModal}>
+            <Trash2 size={16} />
+            <span>Recreate order</span>
           </ContextMenuItem>
         )}
       </ContextMenuList>

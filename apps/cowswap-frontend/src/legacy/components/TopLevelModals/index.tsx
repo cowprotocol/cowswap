@@ -6,6 +6,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { CancellationModal } from 'common/containers/CancellationModal'
 import { ConfirmationModal } from 'common/containers/ConfirmationModal'
 import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrdersCancellationModal'
+import { RecreateOrderModal } from 'common/containers/RecreateOrderModal'
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
 
@@ -29,6 +30,7 @@ export default function TopLevelModals() {
       />
       <CancellationModal isOpen={cancelModalOpen} onDismiss={onDismissCancellationModal || cancelModalToggle} />
       <MultipleOrdersCancellationModal isOpen={multipleCancelModalOpen} onDismiss={multipleCancelModalToggle} />
+      <RecreateOrderModal />
     </>
   )
 }
