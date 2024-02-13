@@ -73,7 +73,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <TransactionErrorContent onDismiss={dismissAll} message={errorMessage} />
+        <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
   }

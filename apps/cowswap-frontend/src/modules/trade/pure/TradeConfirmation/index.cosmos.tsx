@@ -8,6 +8,7 @@ const Fixtures = {
   default: (
     <TradeConfirmation
       title="Review order"
+      account={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
       onConfirm={() => void 0}

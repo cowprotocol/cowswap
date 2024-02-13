@@ -18,7 +18,6 @@ import {
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useTradePriceImpact } from 'modules/trade'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -26,10 +25,8 @@ import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import {
-  BannerOrientation,
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
-  CustomRecipientWarningBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
@@ -98,9 +95,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     isSafeViaWc &&
     primaryFormValidation === TradeFormValidation.ApproveRequired
 
-  const { state } = useDerivedTradeState()
-  const showRecipientWarning = isConfirmScreen && state?.recipient && account !== state.recipient
-
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
   const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken
 
@@ -111,7 +105,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
     shouldZeroApprove ||
-    showRecipientWarning ||
     showNativeSellWarning
 
   // Reset price impact flag when there is no price impact
@@ -138,7 +131,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
-      {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning

@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 import { RowFixed, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'

@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter, getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
-import { getIsOrderBookTypedError } from 'api/gnosisProtocol'
+import { isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
 
 export const USER_SWAP_REJECTED_ERROR = 'User rejected signing the order'
 
@@ -10,8 +10,8 @@ export function getSwapErrorMessage(error: Error): string {
   } else {
     const defaultErrorMessage = getProviderErrorMessage(error)
 
-    if (getIsOrderBookTypedError(error)) {
-      return capitalizeFirstLetter(error.body?.description) || defaultErrorMessage
+    if (isValidOperatorError(error)) {
+      return capitalizeFirstLetter(error.message) || defaultErrorMessage
     }
 
     return defaultErrorMessage

@@ -24,6 +24,7 @@ const tradeAmounts: TradeAmounts = {
 
 const confirmationState: TradeConfirmationProps = {
   title: 'Review order',
+  account: undefined,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,
@@ -66,7 +67,7 @@ function Custom({ stateValue }: { stateValue: string }) {
   }, [updateWalletInfo])
 
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal title="Swap">
       <TradeConfirmation {...confirmationState} onDismiss={console.log}>
         <span>Some content</span>
       </TradeConfirmation>
