@@ -6,7 +6,7 @@ import { useCowEventEmitter } from 'common/hooks/useCowEventEmitter'
 
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 
-const TARGET_ORIGIN = '*' // Change to CoW specific origin in production
+const TARGET_ORIGIN = '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
 
 const ALL_EVENTS = Object.values(CowEvents)
 
@@ -29,7 +29,7 @@ export function CowEventsUpdater() {
     return () => {
       allHandlers.forEach((listener) => cowEventEmitter.off(listener as CowEventListener<CowEvents>))
     }
-  }, [])
+  }, [cowEventEmitter])
 
   return null
 }

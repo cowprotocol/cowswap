@@ -1,7 +1,7 @@
 import { EthereumProvider, JsonRpcRequest } from './types'
 
 const JSON_PRC_V = '2.0'
-const TARGET_ORIGIN = '*'
+const TARGET_ORIGIN = '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 
 /**
@@ -104,7 +104,7 @@ export class IframeRpcProviderBridge {
   }
 
   private isRpcCall(event: MessageEvent) {
-    return event.data.jsonrpc === '2.0'
+    return event.data.jsonrpc === JSON_PRC_V
   }
 
   private onRpcEventForwardToIframe(params: unknown): void {

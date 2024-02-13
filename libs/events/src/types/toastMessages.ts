@@ -49,9 +49,19 @@ export interface BaseToastMessagePayload<T extends ToastMessageType> {
   data: ToastMessagePayloads[T]
 }
 
-export type OnToastMessagePayload =
-  | BaseToastMessagePayload<ToastMessageType.SWAP_ETH_FLOW_SENT_TX>
-  | BaseToastMessagePayload<ToastMessageType.SWAP_ORDER_CANCELLED>
-  | BaseToastMessagePayload<ToastMessageType.SWAP_POSTED_API>
-  | BaseToastMessagePayload<ToastMessageType.SWAP_SIGNING_ERROR>
-  | BaseToastMessagePayload<ToastMessageType.SWAP_TRADE_EXECUTED>
+/**
+ * The payload of the `onToastMessage` event.
+ *
+ * The type is:
+ *
+ * export type OnToastMessagePayload =
+ *     | BaseToastMessagePayload<ToastMessageType.SWAP_ETH_FLOW_SENT_TX>
+ *     | BaseToastMessagePayload<ToastMessageType.SWAP_ORDER_CANCELLED>
+ *     ... all other toast message types
+ *
+ * But is defined automatically using some TypeScript magic. To see how we got here, check:
+ *    https://github.com/cowprotocol/cowswap/pull/3813#discussion_r1484752100
+ */
+export type OnToastMessagePayload = {
+  [K in keyof typeof ToastMessageType]: BaseToastMessagePayload<(typeof ToastMessageType)[K]>
+}[keyof typeof ToastMessageType]

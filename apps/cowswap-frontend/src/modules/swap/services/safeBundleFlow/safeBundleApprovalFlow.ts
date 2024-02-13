@@ -1,5 +1,5 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -23,7 +23,6 @@ const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
 export async function safeBundleApprovalFlow(
   input: SafeBundleApprovalFlowContext,
-  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
@@ -44,6 +43,7 @@ export async function safeBundleApprovalFlow(
     safeAppsSdk,
     swapFlowAnalyticsContext,
     tradeConfirmActions,
+    cowEventEmitter,
   } = input
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)

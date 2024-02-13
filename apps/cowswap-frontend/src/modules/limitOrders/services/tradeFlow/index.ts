@@ -22,7 +22,6 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,
-  cowEventEmitter,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
@@ -34,6 +33,7 @@ export async function tradeFlow(
     rateImpact,
     permitInfo,
     provider,
+    cowEventEmitter,
     chainId,
     allowsOffchainSigning,
     settlementContract,
@@ -87,7 +87,6 @@ export async function tradeFlow(
       signer: provider.getSigner(),
       validTo,
     })
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
@@ -121,6 +120,7 @@ export async function tradeFlow(
         dispatch
       )
     }
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
