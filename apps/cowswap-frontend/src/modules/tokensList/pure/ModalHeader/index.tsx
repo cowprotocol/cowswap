@@ -1,6 +1,7 @@
 import { UI } from '@cowprotocol/ui'
+import { BackButton } from '@cowprotocol/ui'
 
-import { ArrowLeft, X } from 'react-feather'
+import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { IconButton } from '../commonElements'
@@ -27,9 +28,7 @@ export function ModalHeader({ children, className, onBack, onClose }: ModalHeade
     <Header className={className}>
       {onBack && (
         <div>
-          <IconButton onClick={onBack}>
-            <ArrowLeft />
-          </IconButton>
+          <BackButton onClick={onBack} />
         </div>
       )}
       <div>{children}</div>

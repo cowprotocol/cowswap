@@ -31,6 +31,7 @@ const Wrapper = styled.div`
   font-weight: 400;
   color: inherit;
   padding: 8px;
+  gap: 10px;
 `
 
 const ArrowDownRight = styled.div`

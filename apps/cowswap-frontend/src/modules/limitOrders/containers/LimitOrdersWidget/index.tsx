@@ -8,7 +8,6 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
@@ -25,6 +24,7 @@ import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { InfoBanner } from '../../pure/InfoBanner'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
@@ -92,7 +92,7 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSellOrder ? 'You sell' : 'You sell at most',
+    label: isSellOrder ? 'Sell amount' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: orderKind === OrderKind.SELL,
@@ -102,7 +102,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSellOrder ? 'You receive at least' : 'You receive exactly',
+    label: isSellOrder ? 'Receive at least' : 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: orderKind === OrderKind.BUY,
@@ -227,6 +227,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </styledEl.TradeButtonBox>
       </>
     ),
+    outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
   const disablePriceImpact =
@@ -253,16 +254,16 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         params={params}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
-      />
-      {tradeContext && (
-        <LimitOrdersConfirmModal
-          tradeContext={tradeContext}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
-      )}
-      {isUnlocked && <InfoBanner />}
+      >
+        {tradeContext && (
+          <LimitOrdersConfirmModal
+            tradeContext={tradeContext}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        )}
+      </TradeWidget>
     </>
   )
 }, limitOrdersPropsChecker)

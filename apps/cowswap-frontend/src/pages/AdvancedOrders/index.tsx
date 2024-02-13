@@ -5,7 +5,7 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { TwapFormWidget, TwapUpdaters, useAllEmulatedOrders } from 'modules/twap'
+import { TwapFormWidget, TwapUpdaters, useAllEmulatedOrders, TwapConfirmModal } from 'modules/twap'
 import { useTwapFormState } from 'modules/twap/hooks/useTwapFormState'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
@@ -30,7 +30,11 @@ export default function AdvancedOrdersPage() {
       <FillAdvancedOrdersDerivedStateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
-          <AdvancedOrdersWidget updaters={<TwapUpdaters />} params={advancedWidgetParams}>
+          <AdvancedOrdersWidget
+            updaters={<TwapUpdaters />}
+            confirmContent={<TwapConfirmModal />}
+            params={advancedWidgetParams}
+          >
             {/*TODO: conditionally display a widget for current advanced order type*/}
             <TwapFormWidget />
           </AdvancedOrdersWidget>

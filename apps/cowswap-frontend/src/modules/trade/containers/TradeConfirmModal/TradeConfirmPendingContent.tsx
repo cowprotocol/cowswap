@@ -3,9 +3,6 @@ import { TokenAmount } from '@cowprotocol/ui'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { TradeAmounts } from 'common/types'
 
-const description = `Almost there! \n Follow these steps:`
-const operationLabel = 'order'
-
 export function TradeConfirmPendingContent({
   pendingTrade,
   onDismiss,
@@ -26,8 +23,8 @@ export function TradeConfirmPendingContent({
     <ConfirmationPendingContent
       onDismiss={onDismiss}
       title={title}
-      description={description}
-      operationLabel={operationLabel}
+      description="Almost there!"
+      operationLabel="order"
     />
   )
 }

@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { UnsupportedTokensState } from '@cowprotocol/tokens'
+import { BackButton } from '@cowprotocol/ui'
 
-import { Edit, X } from 'react-feather'
+import { Edit } from 'react-feather'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
@@ -12,7 +13,6 @@ import * as styledEl from './styled'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
-import { IconButton } from '../commonElements'
 import { FavouriteTokensList } from '../FavouriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -58,10 +58,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
+        <BackButton onClick={onDismiss} />
         <h3>Select a token</h3>
-        <IconButton onClick={onDismiss}>
-          <X />
-        </IconButton>
       </styledEl.Header>
       <styledEl.Row>
         <styledEl.SearchInput
