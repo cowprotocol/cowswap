@@ -3,6 +3,8 @@ import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { EVENT_EMITTER } from 'cowEventEmitter'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
@@ -67,17 +69,8 @@ export async function safeBundleFlow(
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
-  const {
-    chainId,
-    postOrderParams,
-    provider,
-    erc20Contract,
-    spender,
-    dispatch,
-    settlementContract,
-    safeAppsSdk,
-    cowEventEmitter,
-  } = params
+  const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
+    params
   const { isSafeWallet } = postOrderParams
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -144,7 +137,7 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(

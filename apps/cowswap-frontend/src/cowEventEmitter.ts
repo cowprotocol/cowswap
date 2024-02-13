@@ -1,3 +1,3 @@
 import { SimpleCowEventEmitter } from '@cowprotocol/events'
 
-export const cowEventEmitter = new SimpleCowEventEmitter()
+export const EVENT_EMITTER = Object.freeze(new SimpleCowEventEmitter())

@@ -7,7 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react-hooks'
 import { orderBookApi } from 'cowSdk'
-import { JotaiTestProvider, WithCowEventEmitter, WithMockedWeb3 } from 'test-utils'
+import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import * as tokensModule from 'modules/tokens'
@@ -51,9 +51,7 @@ const Wrapper =
   ({ children }: { children: ReactNode }) =>
     (
       <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-        <WithCowEventEmitter>
-          <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
-        </WithCowEventEmitter>
+        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
       </WithMockedWeb3>
     )
 

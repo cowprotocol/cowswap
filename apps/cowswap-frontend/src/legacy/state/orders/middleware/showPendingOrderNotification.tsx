@@ -4,7 +4,7 @@ import { CowEvents } from '@cowprotocol/events'
 import { addSnackbarAtom } from '@cowprotocol/snackbars'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { cowEventEmitter } from 'cowEventEmitter'
+import { EVENT_EMITTER } from 'cowEventEmitter'
 import { Nullish } from 'types'
 
 import {
@@ -66,7 +66,7 @@ export function showPendingOrderNotification(params: PendingOrderNotificationPar
 
     const toastMessage = getPendingOrderNotificationToast(pendingOrderNotificationMessage)
     if (toastMessage) {
-      cowEventEmitter.emit(CowEvents.ON_TOAST_MESSAGE, toastMessage)
+      EVENT_EMITTER.emit(CowEvents.ON_TOAST_MESSAGE, toastMessage)
     }
   }
 }

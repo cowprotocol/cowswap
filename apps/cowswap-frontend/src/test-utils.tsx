@@ -4,14 +4,12 @@ import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { CowEventEmitterContext } from '@cowprotocol/events'
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
-import { cowEventEmitter } from 'cowEventEmitter'
 import { LocationDescriptorObject } from 'history'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
@@ -80,10 +78,6 @@ export function WithMockedWeb3({ children, location }: { children?: ReactNode; l
       </Provider>
     </MemoryRouter>
   )
-}
-
-export function WithCowEventEmitter({ children }: { children?: ReactNode }) {
-  return <CowEventEmitterContext.Provider value={cowEventEmitter}>{children}</CowEventEmitterContext.Provider>
 }
 
 const HydrateAtoms = ({
