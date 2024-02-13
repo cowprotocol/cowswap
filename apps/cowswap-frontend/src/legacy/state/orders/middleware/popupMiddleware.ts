@@ -31,6 +31,11 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   if (isPendingOrderAction(action)) {
     pendingOrderPopup(store, action.payload)
+
+    // cowEventEmitter.emit(CowEvents.ON_TOAST_MESSAGE, {
+    //   messageType: ToastMessageType.SWAP_POSTED_API,
+    //   message: 'Swap Posted',
+    // })
   } else if (isUpdateOrderAction(action)) {
     updateOrderPopup(store, action.payload)
   } else if (isBatchOrderAction(action)) {

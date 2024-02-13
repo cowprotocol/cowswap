@@ -374,7 +374,7 @@ export function getRemainderAmount(kind: OrderKind, order: Order): string {
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
 
-export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispatch: AppDispatch): void {
+export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrderParams, dispatch: AppDispatch): void {
   const params: UpdateOrderParamsAction = {
     chainId,
     order: {
@@ -382,6 +382,7 @@ export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispat
       ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
       ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
     } as UpdateOrderParamsAction['order'],
+    isSafeWallet,
   }
   dispatch(updateOrder(params))
 }

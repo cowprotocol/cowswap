@@ -71,6 +71,7 @@ export async function safeBundleApprovalFlow(
       callbacks.closeModals()
     })
 
+    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -79,6 +80,7 @@ export async function safeBundleApprovalFlow(
           ...order,
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -125,6 +127,7 @@ export async function safeBundleApprovalFlow(
           presignGnosisSafeTxHash: safeTx.safeTxHash,
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )

@@ -204,7 +204,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     return null
   }
 
-  const isGnosisSafeWallet = !!gnosisSafeInfo
+  const isSafeWallet = !!gnosisSafeInfo
 
   const buyToken = getIsNativeToken(trade.outputAmount.currency)
     ? NATIVE_CURRENCIES[chainId as SupportedChainId]
@@ -251,6 +251,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     appData,
     quoteId: trade.quoteId,
     featureFlags,
+    isSafeWallet,
   }
 
   return {
@@ -263,7 +264,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     },
     flags: {
       allowsOffchainSigning,
-      isGnosisSafeWallet,
     },
     callbacks: {
       closeModals,

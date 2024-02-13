@@ -45,6 +45,7 @@ export type PostOrderParams = {
     swapZeroFee: boolean | undefined
   }
   quoteId?: number
+  isSafeWallet: boolean
 }
 
 export type UnsignedOrderAdditionalParams = PostOrderParams & {
@@ -227,7 +228,7 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
 }
 
 export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const { chainId, account, signer, allowsOffchainSigning, appData } = params
+  const { chainId, account, signer, allowsOffchainSigning, appData, isSafeWallet } = params
 
   // Prepare order
   const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
@@ -274,6 +275,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       chainId,
       id: orderId,
       order: pendingOrderParams,
+      isSafeWallet,
     }
   })
 }
