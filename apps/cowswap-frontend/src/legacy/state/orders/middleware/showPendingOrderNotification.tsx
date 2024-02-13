@@ -4,7 +4,7 @@ import { CowEvents } from '@cowprotocol/events'
 import { addSnackbarAtom } from '@cowprotocol/snackbars'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { EVENT_EMITTER } from 'cowEventEmitter'
+import { EVENT_EMITTER } from 'eventEmitter'
 import { Nullish } from 'types'
 
 import {

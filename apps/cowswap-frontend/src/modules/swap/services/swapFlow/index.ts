@@ -3,7 +3,7 @@ import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-import { EVENT_EMITTER } from 'cowEventEmitter'
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'

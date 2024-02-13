@@ -2,7 +2,7 @@ import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { CowEvents } from '@cowprotocol/events'
 import { Percent } from '@uniswap/sdk-core'
 
-import { EVENT_EMITTER } from 'cowEventEmitter'
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 

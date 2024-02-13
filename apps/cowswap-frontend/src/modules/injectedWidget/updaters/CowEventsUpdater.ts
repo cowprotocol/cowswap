@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
 
-import { EVENT_EMITTER } from 'cowEventEmitter'
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 
