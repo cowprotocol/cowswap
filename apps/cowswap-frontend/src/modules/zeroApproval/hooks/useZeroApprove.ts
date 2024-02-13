@@ -8,13 +8,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
+import { useApproveCallback } from 'common/hooks/useApproveCallback'
+import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { pollUntil } from 'common/utils/pollUntil'
 
-import { useApproveCallback } from './useApproveCallback'
-import { useSafeApiKit } from './useSafeApiKit'
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
-
-import { zeroApprovalState } from '../state/useZeroApprovalState'
+import { zeroApprovalState } from '../state/zeroApprovalState'
 
 async function waitForSafeTransactionExecution({
   safeApiKit,

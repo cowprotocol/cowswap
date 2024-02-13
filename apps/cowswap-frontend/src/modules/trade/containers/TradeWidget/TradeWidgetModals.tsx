@@ -1,23 +1,23 @@
 import React from 'react'
 
 import { AutoImportTokens, SelectTokenWidget } from 'modules/tokensList'
+import { ZeroApprovalModal, useZeroApproveModalState } from 'modules/zeroApproval'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
-import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { CowModal } from 'common/pure/Modal'
 
-import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useTradeState } from '../../hooks/useTradeState'
 
 export function TradeWidgetModals() {
   const { state: rawState } = useTradeState()
-  const { state } = useDerivedTradeState()
-  const shouldZeroApprove = useShouldZeroApprove(state?.slippageAdjustedSellAmount)
+  const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
 
   return (
     <>
       <AutoImportTokens inputToken={rawState?.inputCurrencyId} outputToken={rawState?.outputCurrencyId} />
-      {shouldZeroApprove && <ZeroApprovalModal />}
+      <CowModal onDismiss={closeZeroApprovalModal} isOpen={isZeroApprovalModalOpen}>
+        <ZeroApprovalModal onDismiss={closeZeroApprovalModal} />
+      </CowModal>
       <TradeApproveModal />
       <SelectTokenWidget />
     </>

@@ -22,9 +22,9 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
   BannerOrientation,
   BundleTxApprovalBanner,
