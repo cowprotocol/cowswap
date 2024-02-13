@@ -1,25 +1,23 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { twapConversionAnalytics } from '@cowprotocol/analytics'
+import { orderAnalytics, twapConversionAnalytics } from '@cowprotocol/analytics'
 import { getCowSoundSend } from '@cowprotocol/common-utils'
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { cowSwapStore } from 'legacy/state'
-import { dispatchPresignedOrderPosted } from 'legacy/state/orders/middleware/updateOrderPopup'
-import { getOrderSubmitSummary } from 'legacy/utils/trade'
+import { showPendingOrderNotification } from 'legacy/state/orders/middleware/showPendingOrderNotification'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -40,7 +38,7 @@ export function useCreateTwapOrder() {
   const twapOrder = useAtomValue(twapOrderAtom)
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
 
-  const { inputCurrencyAmount, outputCurrencyAmount, recipient } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
   const safeAppsSdk = useSafeAppsSdk()
@@ -54,7 +52,6 @@ export function useCreateTwapOrder() {
 
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const { swapZeroFee } = useFeatureFlags()
 
   return useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
@@ -115,18 +112,19 @@ export function useCreateTwapOrder() {
 
         addTwapOrderToList(orderItem)
 
-        const summary = getOrderSubmitSummary({
-          recipient: recipient || account,
+        getCowSoundSend().play()
+
+        showPendingOrderNotification({
+          id: safeTxHash,
           kind: OrderKind.SELL,
-          recipientAddressOrName: recipient || account,
-          account,
+          receiver: twapOrder.receiver,
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
-          feeAmount: undefined,
-          featureFlags: { swapZeroFee },
+          owner: account,
+          uiOrderType: UiOrderType.TWAP,
         })
-        getCowSoundSend().play()
-        dispatchPresignedOrderPosted(cowSwapStore, safeTxHash, summary, OrderClass.LIMIT, 'composable-order')
+
+        orderAnalytics('Posted', 'TWAP', 'Presign')
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
@@ -155,8 +153,6 @@ export function useCreateTwapOrder() {
       priceImpact,
       tradeConfirmActions,
       addTwapOrderToList,
-      recipient,
-      swapZeroFee,
       uploadAppData,
       updateAdvancedOrdersState,
     ]
