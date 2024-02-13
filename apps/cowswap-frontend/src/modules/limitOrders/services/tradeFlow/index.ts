@@ -1,5 +1,6 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -21,6 +22,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,
+  cowEventEmitter,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
@@ -85,6 +87,8 @@ export async function tradeFlow(
       signer: provider.getSigner(),
       validTo,
     })
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
       {

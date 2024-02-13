@@ -15,6 +15,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { useCowEventEmitter } from 'common/hooks/useCowEventEmitter'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
@@ -24,6 +25,7 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions
 ): () => Promise<void> {
+  const cowEventEmitter = useCowEventEmitter()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
@@ -54,6 +56,7 @@ export function useHandleOrderPlacement(
         safeBundleFlowContext,
         priceImpact,
         settingsState,
+        cowEventEmitter,
         confirmPriceImpactWithoutFee,
         beforeTrade
       )
@@ -64,7 +67,15 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforePermit, beforeTrade)
+    return tradeFlow(
+      tradeContext,
+      cowEventEmitter,
+      priceImpact,
+      settingsState,
+      confirmPriceImpactWithoutFee,
+      beforePermit,
+      beforeTrade
+    )
   }, [
     beforePermit,
     beforeTrade,
@@ -75,6 +86,7 @@ export function useHandleOrderPlacement(
     safeBundleFlowContext,
     settingsState,
     tradeContext,
+    cowEventEmitter,
   ])
 
   return useCallback(() => {

@@ -1,5 +1,6 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEventEmitter, CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -22,6 +23,7 @@ const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
 export async function safeBundleEthFlow(
   input: SafeBundleEthFlowContext,
+  cowEventEmitter: CowEventEmitter,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
@@ -116,6 +118,7 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
     const safeTx = await safeAppsSdk.txs.send({ txs })
+    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(
