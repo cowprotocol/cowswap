@@ -170,6 +170,9 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    const isAppFirstLoadWithoutWallet =
+      providerChainId === prevProviderChainId && providerChainId === urlChainId && !isWalletConnected
+
     if (providerChainId === urlChainId) return
     if (!providerChainId || providerChainId === prevProviderChainId) return
 
@@ -177,6 +180,7 @@ export function useSetupTradeState(): void {
       setRememberedUrlState(null)
       tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
     } else {
+      // When app loaded with connected wallet
       if (isFirstLoad && isWalletConnected) {
         setIsFirstLoad(false)
 
@@ -187,6 +191,11 @@ export function useSetupTradeState(): void {
       }
 
       tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+    }
+
+    // When app loaded with no connected wallet
+    if (isAppFirstLoadWithoutWallet) {
+      setIsFirstLoad(false)
     }
 
     console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })
