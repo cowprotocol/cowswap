@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
+import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
@@ -46,6 +47,48 @@ const DEFAULT_STATE = {
   sellAmount: 100000,
   buyAmount: 0,
 }
+
+const COW_LISTENERS: CowEventListeners = [
+  {
+    event: CowEvents.ON_TOAST_MESSAGE,
+    handler: (event) => {
+      console.log('[configurator] 🍞 Toast message', event.message, event.data)
+
+      // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
+      if (event.messageType === ToastMessageType.SWAP_ETH_FLOW_SENT_TX) {
+        console.error('[configurator] 🍞 Toast message: New eth flow order', event.data.tx)
+      }
+
+      // ...or you can do handle them your way using the data:
+      switch (event.messageType) {
+        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
+          console.error('[configurator] 🍞 Toast message: New eth flow order. Tx: ', event.data.tx)
+          break
+        case ToastMessageType.SWAP_POSTED_API:
+          console.warn('[configurator] 🍞 Toast message: Posted order', event.data.orderUid)
+          break
+        // ... and so on
+        default:
+          console.error('[configurator] 🍞 Toast message: Default', event.message)
+      }
+    },
+  },
+
+  {
+    event: CowEvents.ON_POSTED_ORDER,
+    handler: (event) => console.log('[configurator] ✉️ Posted order: ', event.orderUid),
+  },
+
+  {
+    event: CowEvents.ON_REJECTED_ORDER,
+    handler: (event) => console.log(`[configurator] ❌ Posted order ${event.orderUid}. Reason: ${event.reason}`),
+  },
+
+  {
+    event: CowEvents.ON_EXECUTED_ORDER,
+    handler: (event) => console.log(`[configurator] ✅ Executed order ${event.orderUid}`),
+  },
+]
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
@@ -221,7 +264,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget provider={provider} params={params} />
+            <CowSwapWidget provider={provider} params={params} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>
