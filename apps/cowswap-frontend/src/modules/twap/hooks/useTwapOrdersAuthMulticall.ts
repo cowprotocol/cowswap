@@ -20,7 +20,7 @@ export function useTwapOrdersAuthMulticall(
     return ordersInfo.map(({ id }) => [safeAddress, id])
   }, [safeAddress, ordersInfo])
 
-  const results = useSingleContractMultipleData<boolean>(
+  const { data: loadedResults, isLoading } = useSingleContractMultipleData<[boolean]>(
     composableCowContract,
     'singleOrders',
     input,
@@ -29,15 +29,13 @@ export function useTwapOrdersAuthMulticall(
   )
 
   return useMemo(() => {
-    const loadedResults = results.data
-
     if (ordersInfo.length === 0) return EMPTY_AUTH_RESULT
 
-    if (results.isLoading || !loadedResults || loadedResults.length !== ordersInfo.length) return null
+    if (isLoading || !loadedResults || loadedResults.length !== ordersInfo.length) return null
 
     return ordersInfo.reduce((acc, val, index) => {
-      acc[val.id] = loadedResults[index]
+      acc[val.id] = loadedResults[index]?.[0]
       return acc
     }, {} as TwapOrdersAuthResult)
-  }, [ordersInfo, results])
+  }, [ordersInfo, loadedResults, isLoading])
 }

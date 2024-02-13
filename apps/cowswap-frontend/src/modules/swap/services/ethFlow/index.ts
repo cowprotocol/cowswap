@@ -30,6 +30,7 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     checkEthFlowOrderExists,
     addInFlightOrderId,
+    swapZeroFee,
   } = ethFlowContext
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
@@ -50,7 +51,12 @@ export async function ethFlow(
   swapConfirmManager.sendTransaction(context.trade)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, checkEthFlowOrderExists)
+  const { orderId, orderParams } = await calculateUniqueOrderId(
+    orderParamsOriginal,
+    contract,
+    checkEthFlowOrderExists,
+    swapZeroFee
+  )
 
   try {
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')

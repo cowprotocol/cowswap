@@ -90,21 +90,9 @@ const ETH_FLOW_AUX_QUOTE_PARAMS = {
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
-  const {
-    amount,
-    kind,
-    userAddress,
-    receiver,
-    validTo,
-    sellToken,
-    buyToken,
-    chainId,
-    priceQuality,
-    isEthFlow,
-    appData,
-    appDataHash,
-  } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
+  const { appData, appDataHash } = _getAppDataQuoteParams(params)
 
   const baseParams = {
     sellToken: toErc20Address(sellToken, chainId),
@@ -112,7 +100,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
-    appData: appData || getAppData().appDataKeccak256,
+    appData,
     appDataHash,
     validTo,
     partiallyFillable: false,
@@ -137,6 +125,23 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
       ...baseParams,
     }
   }
+}
+
+function _getAppDataQuoteParams(params: FeeQuoteParams) {
+  if (params.appData) {
+    // AppData is set, use what we have
+    return params
+  }
+
+  const fallbackAppData = getAppData()
+
+  // When appData is not set, fallback to a fullAppData doc.
+  // Otherwise if we set only the hash, the backend might not know what the appDataHash corresponds to
+  const appData = fallbackAppData.fullAppData
+  // Always overwrite appDataHash when appData is not set to avoid a hash without the corresponding fullAppData
+  const appDataHash = fallbackAppData.appDataKeccak256
+
+  return { appData, appDataHash }
 }
 
 export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteResponse> {
