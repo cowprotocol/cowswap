@@ -1,7 +1,6 @@
 import { PropsWithChildren } from 'react'
 
 import { renderHook } from '@testing-library/react-hooks'
-import { WithCowEventEmitter } from 'test-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -50,11 +49,7 @@ const priceImpactMock: PriceImpact = {
 }
 
 const WithProviders = ({ children }: PropsWithChildren) => {
-  return (
-    <WithModalProvider>
-      <WithCowEventEmitter>{children}</WithCowEventEmitter>
-    </WithModalProvider>
-  )
+  return <WithModalProvider>{children}</WithModalProvider>
 }
 
 describe('useHandleSwapCallback', () => {

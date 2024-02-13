@@ -2,6 +2,8 @@ import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { CowEvents } from '@cowprotocol/events'
 import { Percent } from '@uniswap/sdk-core'
 
+import { EVENT_EMITTER } from 'cowEventEmitter'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { updateHooksOnAppData } from 'modules/appData'
@@ -32,7 +34,6 @@ export async function ethFlow(
     checkEthFlowOrderExists,
     addInFlightOrderId,
     swapZeroFee,
-    cowEventEmitter,
   } = ethFlowContext
   const {
     trade: { inputAmount, outputAmount },
@@ -72,7 +73,7 @@ export async function ethFlow(
       }
     )
 
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ETH_FLOW_ORDER, {
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ETH_FLOW_ORDER, {
       txHash: txReceipt.hash,
       orderUid: order.id,
       chainId: context.chainId,

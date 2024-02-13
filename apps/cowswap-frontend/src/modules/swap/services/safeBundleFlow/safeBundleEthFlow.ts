@@ -4,6 +4,8 @@ import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { EVENT_EMITTER } from 'cowEventEmitter'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
@@ -44,7 +46,6 @@ export async function safeBundleEthFlow(
     safeAppsSdk,
     swapFlowAnalyticsContext,
     tradeConfirmActions,
-    cowEventEmitter,
   } = input
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
@@ -120,7 +121,7 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
     const safeTx = await safeAppsSdk.txs.send({ txs })
-    cowEventEmitter.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(
