@@ -1,4 +1,4 @@
-import { getTokensFromMarket } from '@cowprotocol/common-utils'
+import { getTokensFromMarket, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
@@ -128,7 +128,7 @@ export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<Mat
 
   // Buy/sell token and side (sell/buy)
   const { sellToken, buyToken } = getTokensFromMarket({ baseToken, quoteToken, kind })
-  const swapSide = kind === OrderKind.BUY ? 'buyAmount' : 'sellAmount'
+  const swapSide = isSellOrder(kind) ? 'sellAmount' : 'buyAmount'
 
   const response = await _get(
     chainId,
@@ -148,9 +148,9 @@ export function toPriceInformation(priceRaw: MatchaPriceQuote | null, kind: Orde
 
   const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress } = priceRaw
 
-  if (kind === OrderKind.BUY) {
-    return { amount: sellAmount, token: sellTokenAddress }
-  } else {
+  if (isSellOrder(kind)) {
     return { amount: buyAmount, token: buyTokenAddress }
+  } else {
+    return { amount: sellAmount, token: sellTokenAddress }
   }
 }

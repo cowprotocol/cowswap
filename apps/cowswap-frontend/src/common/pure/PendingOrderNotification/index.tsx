@@ -1,4 +1,4 @@
-import { isAddress, isCowOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
 import { TokenAmount, formatTokenAmountWithSymbol } from '@cowprotocol/ui'
@@ -85,7 +85,7 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
 
   if (!account) return null
 
-  const isSellOrder = kind === OrderKind.SELL
+  const isSell = isSellOrder(kind)
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
 
   const inputAmountElement = <TokenAmount amount={inputAmount} tokenSymbol={inputAmount.currency} />
@@ -104,7 +104,7 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
     <>
       <strong>{ORDER_TYPE_TITLES[orderType]} submitted</strong>
       <br />
-      {isSellOrder ? (
+      {isSell ? (
         <>
           Sell {inputAmountElement} for at least {outputAmountElement}
         </>

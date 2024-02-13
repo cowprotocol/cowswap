@@ -1,5 +1,6 @@
 // Util functions that only pertain to/deal with operator API related stuff
 import { ZERO_BIG_NUMBER } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -151,9 +152,9 @@ export function getOrderSurplus(order: Order): Surplus {
     return ZERO_SURPLUS
   }
 
-  if (kind === 'buy') {
-    return getBuySurplus(order)
-  } else {
+  if (isSellOrder(kind)) {
     return getSellSurplus(order)
+  } else {
+    return getBuySurplus(order)
   }
 }

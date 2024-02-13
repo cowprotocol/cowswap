@@ -2,14 +2,15 @@ import { useCallback } from 'react'
 
 import { isOnline } from '@cowprotocol/common-hooks'
 import {
-  CancelableResult,
-  onlyResolvesLast,
-  getPromiseFulfilledValue,
-  isPromiseFulfilled,
   calculateValidTo,
+  CancelableResult,
+  getPromiseFulfilledValue,
   getQuoteUnsupportedToken,
+  isPromiseFulfilled,
+  isSellOrder,
+  onlyResolvesLast,
 } from '@cowprotocol/common-utils'
-import { PriceQuality, OrderKind } from '@cowprotocol/cow-sdk'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken, useIsUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
@@ -20,6 +21,7 @@ import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/state/price/type
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
+import { logSwapParams } from 'modules/swap/helpers/logSwapParams'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { ApiErrorCodes, isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
@@ -28,8 +30,6 @@ import GpQuoteError, {
   GpQuoteErrorDetails,
   isValidQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
-
-import { logSwapParams } from '../../modules/swap/helpers/logSwapParams'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -187,8 +187,8 @@ export function useRefetchQuoteCallback() {
         }
 
         logSwapParams('quote', {
-          sellAmount: quoteData.kind === OrderKind.SELL ? quoteData.amount : price.value.amount,
-          buyAmount: quoteData.kind === OrderKind.BUY ? quoteData.amount : price.value.amount,
+          sellAmount: isSellOrder(quoteData.kind) ? quoteData.amount : price.value.amount,
+          buyAmount: !isSellOrder(quoteData.kind) ? quoteData.amount : price.value.amount,
           feeAmount: fee.value.amount,
           sellDecimals: quoteData.fromDecimals,
           buyDecimals: quoteData.toDecimals,

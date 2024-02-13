@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
@@ -27,7 +27,7 @@ export function getFilledAmounts(order: ParsedOrder) {
 
   // TODO: set types, move calculations logic to a function
   let filledAmountWithFee, swappedAmountWithFee
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     action = 'sold'
 
     mainToken = inputToken

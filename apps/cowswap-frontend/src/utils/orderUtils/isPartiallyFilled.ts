@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -17,7 +17,7 @@ export function isPartiallyFilled(order: Order): boolean {
 
   const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
 
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return +executedSellAmountBeforeFees > 0
   } else {
     return +executedBuyAmount > 0
