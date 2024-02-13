@@ -27,29 +27,23 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
   return useCallback(async () => {
     if (!swapFlowContext && !ethFlowContext && !safeBundleApprovalFlowContext && !safeBundleEthFlowContext) return
 
-    if (safeBundleApprovalFlowContext) {
-      logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
-      await safeBundleApprovalFlow(
-        safeBundleApprovalFlowContext,
-        cowEventEmitter,
-        priceImpactParams,
-        confirmPriceImpactWithoutFee
-      )
-    } else if (safeBundleEthFlowContext) {
-      logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
-      await safeBundleEthFlow(
-        safeBundleEthFlowContext,
-        cowEventEmitter,
-        priceImpactParams,
-        confirmPriceImpactWithoutFee
-      )
-    } else if (swapFlowContext) {
-      logTradeFlow('SWAP FLOW', 'Start swap flow')
-      await swapFlow(swapFlowContext, cowEventEmitter, priceImpactParams, confirmPriceImpactWithoutFee)
-    } else if (ethFlowContext) {
-      logTradeFlow('ETH FLOW', 'Start eth flow')
-      await ethFlow(ethFlowContext, cowEventEmitter, priceImpactParams, confirmPriceImpactWithoutFee)
-    }
+    const tradeResult = await (async () => {
+      if (safeBundleApprovalFlowContext) {
+        logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
+        return safeBundleApprovalFlow(safeBundleApprovalFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      } else if (safeBundleEthFlowContext) {
+        logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
+        return safeBundleEthFlow(safeBundleEthFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      } else if (swapFlowContext) {
+        logTradeFlow('SWAP FLOW', 'Start swap flow')
+        return swapFlow(swapFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      } else if (ethFlowContext) {
+        logTradeFlow('ETH FLOW', 'Start eth flow')
+        return ethFlow(ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      }
+    })()
+
+    const isPriceImpactDeclined = tradeResult === false
 
     // Clean up form fields after successful swap
     if (!isPriceImpactDeclined) {

@@ -22,7 +22,6 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,
-  cowEventEmitter,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
