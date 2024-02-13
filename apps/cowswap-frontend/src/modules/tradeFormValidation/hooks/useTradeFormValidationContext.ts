@@ -30,7 +30,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
 
-  const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
+  const isSafeReadonlyUser = !!gnosisSafeInfo?.isReadOnly
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
