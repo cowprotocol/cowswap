@@ -3,8 +3,8 @@ name: Deployment
 on:
   # build when pushing to main/develop, or create a release
   push:
-    branches: [main, develop]
-    tags: [cowswap-v*, explorer-v*]
+    branches: [ main, develop ]
+    tags: [ cowswap-v*, explorer-v* ]
   workflow_dispatch: # Manually trigger it via UI/CLI/API
     inputs:
       app:
@@ -24,9 +24,12 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
+    strategy:
+      matrix:
+        app: [ EXPLORER, COWSWAP ]
     with:
       env_name: dev
-      app: ALL
+      app: ${{ matrix.app }}
 
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
@@ -36,10 +39,11 @@ jobs:
     secrets: inherit
     strategy:
       matrix:
-        env_name: [barn, staging] # deploys both in parallel
+        env_name: [ barn, staging ] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
-      app: ALL
+      # Pick app according to published tag
+      app: ${{ startsWith(github.ref, 'refs/tags/explorer') && 'EXPLORER' || 'COWSWAP' }}
 
   vercel-prod:
     # Deploys to Vercel prod environment
@@ -47,6 +51,9 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
+    strategy:
+      matrix:
+        app: ${{ inputs.app == 'ALL' && fromJSON('["COWSWAP","EXPLORER"]') || fromJSON(format('["{0}"]', inputs.app)) }}
     with:
       env_name: prod
-      app: ${{ inputs.app }}
+      app: ${{ matrix.app }}

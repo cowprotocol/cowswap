@@ -49,7 +49,7 @@ const AlertIcon = styled(AlertCircle)`
   color: ${({ theme }) => theme.danger};
 `
 
-const DEFAULT_DURATION = ms`6s`
+const DEFAULT_DURATION = ms`8s`
 
 const icons: Record<IconType, ReactElement | undefined> = {
   success: <SuccessIcon size={24} />,
