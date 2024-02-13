@@ -94,19 +94,19 @@ function updateProvider(
   iframeRpcProviderBridge: IframeRpcProviderBridge | null,
   newProvider?: EthereumProvider
 ): IframeRpcProviderBridge {
+  // Disconnect from the previous provider bridge
   if (iframeRpcProviderBridge) {
-    // Disconnect and connect
     iframeRpcProviderBridge.disconnect()
-  } else {
-    iframeRpcProviderBridge = new IframeRpcProviderBridge(iframe)
   }
 
-  // Connect new provider
+  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe)
+
+  // Connect to the new provider
   if (newProvider) {
-    iframeRpcProviderBridge.onConnect(newProvider)
+    providerBridge.onConnect(newProvider)
   }
 
-  return iframeRpcProviderBridge
+  return providerBridge
 }
 
 /**

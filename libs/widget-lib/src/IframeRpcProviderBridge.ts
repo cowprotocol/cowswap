@@ -87,7 +87,7 @@ export class IframeRpcProviderBridge {
   }
 
   private processRpcCallFromWindow = (event: MessageEvent): void => {
-    if (!this.isRpcCall(event)) {
+    if (!isRpcCall(event)) {
       return
     }
 
@@ -101,10 +101,6 @@ export class IframeRpcProviderBridge {
 
     // Delegate the rpc call
     this.processRequest(event.data)
-  }
-
-  private isRpcCall(event: MessageEvent) {
-    return event.data.jsonrpc === JSON_PRC_V
   }
 
   private onRpcEventForwardToIframe(params: unknown): void {
@@ -123,4 +119,8 @@ export class IframeRpcProviderBridge {
       TARGET_ORIGIN
     )
   }
+}
+
+function isRpcCall(event: MessageEvent) {
+  return event.data.jsonrpc === JSON_PRC_V
 }
