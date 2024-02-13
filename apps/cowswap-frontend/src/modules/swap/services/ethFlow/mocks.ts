@@ -34,9 +34,9 @@ const ethFlowActionsMock: EthFlowActions = {
     console.log('ETH FLOW: EXPERT MODE FLOW')
     return Promise.resolve(undefined)
   },
-  swap(): void {
+  swap(): Promise<void> {
     console.log('ETH FLOW: SWAP')
-    return
+    return Promise.resolve(undefined)
   },
   directSwap(): void {
     console.log('ETH FLOW: DIRECT SWAP')

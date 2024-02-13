@@ -12,7 +12,11 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
-import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
+import {
+  BannerOrientation,
+  BundleTxApprovalBanner,
+  CustomRecipientWarningBanner,
+} from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 import {
@@ -80,6 +84,10 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     updateTwapOrdersSettings({ isPriceImpactAccepted: !isPriceImpactAccepted })
   }, [updateTwapOrdersSettings, isPriceImpactAccepted])
 
+  const { account } = useWalletInfo()
+
+  const showRecipientWarning = isConfirmationModal && twapOrder?.receiver && twapOrder.receiver !== account
+
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
@@ -103,6 +111,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           acceptCallback={() => setIsPriceImpactAccepted()}
         />
       )}
+
+      {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
 
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
