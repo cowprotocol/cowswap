@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useGnosisSafeInfo } from '@cowprotocol/wallet'
+import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
@@ -19,6 +19,8 @@ import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
 
+const CONFIRM_TITLE = 'Swap'
+
 export interface ConfirmSwapModalSetupProps {
   chainId: SupportedChainId
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -33,6 +35,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
     props
 
+  const { account } = useWalletInfo()
   const { recipient } = useSwapState()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -57,9 +60,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   }
 
   return (
-    <TradeConfirmModal submittedContent={submittedContent}>
+    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
-        title="Review Swap"
+        title={CONFIRM_TITLE}
+        account={account}
         refreshInterval={refreshInterval}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
@@ -73,7 +77,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         <>
           <TradeRates {...tradeRatesProps} isReviewSwap={true} />
           <HighFeeWarning trade={tradeRatesProps.trade} />
-          {!priceImpact.priceImpact && <NoImpactWarning isAccepted={true} withoutAccepting={true} />}
+          {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

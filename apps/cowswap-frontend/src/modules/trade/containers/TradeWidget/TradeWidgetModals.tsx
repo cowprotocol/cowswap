@@ -86,7 +86,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   }
 
   if (error) {
-    return <TransactionErrorContent isScreenMode message={error} onDismiss={resetAllScreens} />
+    return <TransactionErrorContent message={error} onDismiss={resetAllScreens} />
   }
 
   if (approveInProgress) {

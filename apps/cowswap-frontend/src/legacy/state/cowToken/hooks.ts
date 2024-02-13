@@ -9,7 +9,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
 
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
@@ -123,10 +123,10 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
       return vCowContract.estimateGas.swapAll().catch((error) => {
         console.log(
           '[useSwapVCowCallback] Error estimating gas for swapAll. Using default gas limit ' +
-            APPROVE_GAS_LIMIT_DEFAULT.toString(),
+            GAS_LIMIT_DEFAULT.toString(),
           error
         )
-        return APPROVE_GAS_LIMIT_DEFAULT
+        return GAS_LIMIT_DEFAULT
       })
     })
 

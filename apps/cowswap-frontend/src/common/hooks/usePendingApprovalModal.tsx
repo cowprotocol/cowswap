@@ -51,7 +51,12 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
   )
 
   const MetamaskContent = (
-    <ConfirmationPendingContentShell title={Title} onDismiss={onDismissCallback} description={Description}>
+    <ConfirmationPendingContentShell
+      modalMode={!!modalMode}
+      title={Title}
+      onDismiss={onDismissCallback}
+      description={Description}
+    >
       <MetamaskApproveBanner />
     </ConfirmationPendingContentShell>
   )

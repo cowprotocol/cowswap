@@ -32,7 +32,7 @@ export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
 
   const price = usdPrices[currencyAddress]
 
-  if (price && price.currency.chainId !== currency?.chainId) return null
+  if (!price || price.currency.chainId !== currency?.chainId) return null
 
-  return price || null
+  return price
 }

@@ -16,7 +16,7 @@ export type PermitModalProps = NewModalProps & {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
   step: 'approve' | 'submit'
-  orderType: 'Swap' | 'Limit Order'
+  orderType: string
   icon?: React.ReactNode
 }
 
@@ -73,7 +73,7 @@ export function PermitModal(props: PermitModalProps) {
   )
 
   return (
-    <NewModal {...rest} screenMode>
+    <NewModal {...rest}>
       <NewModalContentTop gap={24} paddingTop={90}>
         {icon}
         <span>

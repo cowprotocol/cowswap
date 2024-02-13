@@ -30,11 +30,12 @@ type CustomSubmittedContent = (order: Order | undefined, onDismiss: () => void) 
 
 export interface TradeConfirmModalProps {
   children: JSX.Element
+  title: string
   submittedContent?: CustomSubmittedContent
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
-  const { children, submittedContent } = props
+  const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
@@ -57,6 +58,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         chainId={chainId}
         account={account}
         error={error}
+        title={title}
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
         onDismiss={dismissConfirmation}
@@ -75,6 +77,7 @@ type InnerComponentProps = {
   children: JSX.Element
   chainId: SupportedChainId
   account: string
+  title: string
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
@@ -93,6 +96,7 @@ function InnerComponent(props: InnerComponentProps) {
     error,
     isSafeWallet,
     onDismiss,
+    title,
     pendingTrade,
     permitSignatureState,
     transactionHash,
@@ -101,7 +105,7 @@ function InnerComponent(props: InnerComponentProps) {
   } = props
 
   if (error) {
-    return <TransactionErrorContent isScreenMode message={error} onDismiss={onDismiss} />
+    return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
 
   if (pendingTrade && permitSignatureState) {
@@ -114,7 +118,7 @@ function InnerComponent(props: InnerComponentProps) {
         outputAmount={pendingTrade.outputAmount}
         step={step}
         onDismiss={onDismiss}
-        orderType={'Limit Order'}
+        orderType={title}
       />
     )
   }

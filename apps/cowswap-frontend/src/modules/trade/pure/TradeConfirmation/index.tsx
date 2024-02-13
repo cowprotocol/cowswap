@@ -10,6 +10,7 @@ import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
@@ -23,6 +24,7 @@ const ONE_SEC = ms`1s`
 export interface TradeConfirmationProps {
   onConfirm(): void
   onDismiss(): void
+  account: string | undefined
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
@@ -38,6 +40,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const {
     onConfirm,
     onDismiss,
+    account,
     inputCurrencyInfo,
     outputCurrencyInfo,
     isConfirmDisabled,
@@ -49,6 +52,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     recipient,
   } = props
 
+  const showRecipientWarning = recipient && account && recipient.toLowerCase() !== account.toLowerCase()
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
@@ -106,8 +110,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
           />
         </styledEl.AmountsPreviewContainer>
         {children}
-        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+        {/*Banners*/}
+        {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         <CustomRecipientBanner recipient={recipient} />
+        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           <Trans>{buttonText}</Trans>
         </ButtonPrimary>
