@@ -1,3 +1,4 @@
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
