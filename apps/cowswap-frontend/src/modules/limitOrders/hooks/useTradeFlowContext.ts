@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
@@ -28,8 +28,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const gnosisSafeInfo = useGnosisSafeInfo()
   const state = useLimitOrdersDerivedState()
+  const isSafeWallet = useIsSafeWallet()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
@@ -62,7 +62,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     return null
   }
 
-  const isSafeWallet = !!gnosisSafeInfo
   const recipientAddressOrName = state.recipient || state.recipientAddress
   const recipient = state.recipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
