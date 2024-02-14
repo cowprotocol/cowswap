@@ -19,10 +19,10 @@ import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/type
 import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 
-import { useSetOrderToRecreate } from 'common/containers/RecreateOrderModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useSetOrderToRecreate } from 'common/state/recreateOrder'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
