@@ -172,10 +172,9 @@ export function useSetupTradeState(): void {
    */
   useEffect(() => {
     // When wallet provider is loaded and chainId matches to the URL chainId
-    const isAppFirstLoad =
-      providerChainId === prevProviderChainId && providerChainId === urlChainId && isWalletConnected
+    const isProviderChainIdMatchesUrl = providerChainId === urlChainId
 
-    if (isAppFirstLoad) {
+    if (isProviderChainIdMatchesUrl) {
       setIsFirstLoad(false)
     }
 
