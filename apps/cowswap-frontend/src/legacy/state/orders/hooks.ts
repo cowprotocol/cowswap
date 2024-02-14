@@ -6,12 +6,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+
 import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   addOrUpdateOrders,
   AddOrUpdateOrdersParams,
-  addPendingOrder,
   cancelOrdersBatch,
   clearOrdersStorage,
   expireOrdersBatch,
@@ -21,7 +22,6 @@ import {
   OrderStatus,
   preSignOrders,
   requestOrderCancellation,
-  SerializedOrder,
   SetIsOrderRefundedBatch,
   setIsOrderRefundedBatch,
   setIsOrderUnfillable,
@@ -56,10 +56,7 @@ export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrd
 
 export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
   order: Order
-}
-
-interface AddPendingOrderParams extends GetRemoveOrderParams {
-  order: SerializedOrder
+  isSafeWallet: boolean
 }
 
 interface GetRemoveOrderParams {
@@ -78,6 +75,7 @@ type SetOrderCancellationHashParams = CancelOrderParams & { hash: string }
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: SupportedChainId
+  isSafeWallet: boolean
 }
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
@@ -349,18 +347,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (addOrderParams: AddUnserialisedPendingOrderParams) => {
-      const serialisedSellToken = serializeToken(addOrderParams.order.inputToken)
-      const serialisedBuyToken = serializeToken(addOrderParams.order.outputToken)
-      const order: SerializedOrder = {
-        ...addOrderParams.order,
-        inputToken: serialisedSellToken,
-        outputToken: serialisedBuyToken,
-      }
-      const params: AddPendingOrderParams = {
-        ...addOrderParams,
-        order,
-      }
-      return dispatch(addPendingOrder(params))
+      addPendingOrderStep(addOrderParams, dispatch)
     },
     [dispatch]
   )
@@ -369,6 +356,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
 export type UpdateOrderParams = {
   chainId: SupportedChainId
   order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
+  isSafeWallet: boolean
 }
 
 export type UpdateOrderCallback = (params: UpdateOrderParams) => void

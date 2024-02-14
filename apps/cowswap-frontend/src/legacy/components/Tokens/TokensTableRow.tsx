@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
-import { usePrevious, useTheme } from '@cowprotocol/common-hooks'
-import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
@@ -14,11 +14,12 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
+import { useApproveCallback } from 'common/hooks/useApproveCallback'
+import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -35,15 +36,12 @@ import {
   TokenText,
 } from './styled'
 
-import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback/useApproveCallbackMod'
-import { ConfirmOperationType } from '../../state/types'
-
 type DataRowParams = {
   tokenData: TokenWithLogo
   index: number
   balance?: CurrencyAmount<Token> | undefined
-  closeModals: () => void
-  openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) => void
+  openApproveModal: (tokenSymbol?: string) => void
+  closeApproveModal: () => void
   toggleWalletModal: () => void
 }
 
@@ -51,8 +49,8 @@ export const TokensTableRow = ({
   tokenData,
   index,
   balance,
-  closeModals,
-  openTransactionConfirmationModal,
+  closeApproveModal,
+  openApproveModal,
   toggleWalletModal,
 }: DataRowParams) => {
   const { account, chainId = ChainId.MAINNET } = useWalletInfo()
@@ -71,28 +69,15 @@ export const TokensTableRow = ({
     [areThereTokensWithSameSymbol, chainId]
   )
 
-  // allowance
-  const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-  const currentAllowance = useTokenAllowance(tokenData, account ?? undefined, spender)
-
-  // approve
-  const [approving, setApproving] = useState(false)
-
   const { handleSetError, handleCloseError } = useErrorModal()
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-  const amountToApprove = CurrencyAmount.fromRawAmount(tokenData, MaxUint256)
-  const amountToCheckAgainstAllowance = currentAllowance?.equalTo(0) ? undefined : balance
+  const isNativeToken = getIsNativeToken(tokenData)
 
-  const { approvalState, approve } = useApproveCallback({
-    openTransactionConfirmationModal,
-    closeModals,
-    spender: vaultRelayer,
-    amountToApprove,
-    amountToCheckAgainstAllowance,
-  })
+  const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
 
-  const prevApprovalState = usePrevious(approvalState)
+  const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
+  const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
     handleCloseError()
@@ -104,23 +89,28 @@ export const TokensTableRow = ({
 
     // TODO: make a separate hook out of this and add GA
     try {
-      setApproving(true)
-      const summary = `Approve ${tokenData?.symbol || 'token'}`
-      await approve({ modalMessage: summary, transactionSummary: summary })
+      openApproveModal(tokenData?.symbol)
+      await approveCallback(`Approve ${tokenData?.symbol || 'token'}`)
     } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
     } finally {
-      setApproving(false)
+      closeApproveModal()
     }
-  }, [account, approve, handleCloseError, handleSetError, toggleWalletModal, tokenData?.symbol])
-
-  const isApproved = approvalState === ApprovalState.APPROVED
-  const isPendingOnchainApprove = approvalState === ApprovalState.PENDING
-  const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
+  }, [
+    account,
+    approveCallback,
+    handleCloseError,
+    handleSetError,
+    toggleWalletModal,
+    tokenData?.symbol,
+    openApproveModal,
+    closeApproveModal,
+  ])
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
-  const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
+
+  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.quotient) : false
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -134,13 +124,23 @@ export const TokensTableRow = ({
   }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
-    if (isPendingApprove) {
-      return <CardsSpinner />
-    } else if (!isApproved && !hasNoAllowance) {
+    if (isNativeToken) {
+      return null
+    }
+
+    if (approvalState === ApprovalState.APPROVED || balanceLessThanAllowance) {
+      return <ApproveLabel>Approved ✓</ApproveLabel>
+    }
+
+    if (!account || approvalState === ApprovalState.NOT_APPROVED) {
+      if (!currentAllowance || currentAllowance.equalTo(0)) {
+        return <TableButton onClick={handleApprove}>Approve</TableButton>
+      }
+
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove}>Approve all</TableButton>
-          <ApproveLabel color={theme.green1}>
+          <ApproveLabel>
             Approved:{' '}
             <strong>
               <TokenAmount amount={currentAllowance} />
@@ -148,20 +148,10 @@ export const TokensTableRow = ({
           </ApproveLabel>
         </CustomLimit>
       )
-    } else if (!isApproved || hasNoAllowance) {
-      return <TableButton onClick={handleApprove}>Approve</TableButton>
-    } else {
-      return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1])
 
-  useEffect(() => {
-    if (approvalState === ApprovalState.PENDING) {
-      setApproving(true)
-    } else if (prevApprovalState === ApprovalState.PENDING && approvalState === ApprovalState.NOT_APPROVED) {
-      setApproving(false)
-    }
-  }, [approvalState, prevApprovalState, approving])
+    return <CardsSpinner />
+  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState, balanceLessThanAllowance])
 
   return (
     <>

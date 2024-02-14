@@ -41,7 +41,6 @@ const defaultProps: RowFeeProps & RowFeeContentProps = {
   },
   showHelpers: true,
   allowsOffchainSigning: true,
-  includeGasMessage: '(incl. gas cost)',
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',
 }
 

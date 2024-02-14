@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const fixtures = {
   default: (
     <Wrapper>
-      <TransactionErrorContent message={'User rejected transaction'} onDismiss={console.log} />
+      <TransactionErrorContent modalMode message={'User rejected transaction'} onDismiss={console.log} />
     </Wrapper>
   ),
 }

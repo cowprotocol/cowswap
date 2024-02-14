@@ -4,10 +4,9 @@ import { sendEvent } from '@cowprotocol/analytics'
 import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { FiatAmount, TokenAmount, SymbolElement } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -172,7 +171,7 @@ export function SurplusModal(props: SurplusModalProps) {
     return null
   }
 
-  const surplusMsg = `You ${order.kind === OrderKind.SELL ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD} an extra`
+  const surplusMsg = `You ${isSellOrder(order.kind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD} an extra`
 
   return (
     <Wrapper>
@@ -212,7 +211,7 @@ export function SurplusModal(props: SurplusModalProps) {
 }
 
 function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = orderKind === OrderKind.SELL ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
+  const actionWord = isSellOrder(orderKind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
     `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`

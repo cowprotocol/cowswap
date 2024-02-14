@@ -58,26 +58,27 @@ export const updateConfirmationModalContextAtom = atom(
 )
 
 export function useConfirmationRequest({
-  onEnable: onEnableParam = () => {},
-  onDismiss: onDismissParam = () => {},
+  onEnable: onEnableParam,
+  onDismiss: onDismissParam,
 }: Partial<Pick<ConfirmationModalContext, 'onEnable' | 'onDismiss'>>) {
   const openModal = useOpenModal(ApplicationModal.CONFIRMATION)
   const closeModal = useCloseModal(ApplicationModal.CONFIRMATION)
   const setContext = useSetAtom(updateConfirmationModalContextAtom)
   const resetContext = useResetAtom(confirmationModalContextAtom)
-  const triggerConfirmation = useCallback(
+
+  return useCallback(
     (params: TriggerConfirmationParams): Promise<boolean> => {
       return new Promise((resolve) => {
         const onDismiss = () => {
           closeModal()
-          onDismissParam()
+          onDismissParam?.()
           resetContext()
           resolve(false)
         }
 
         const onEnable = () => {
           closeModal()
-          onEnableParam()
+          onEnableParam?.()
           resetContext()
           resolve(true)
         }
@@ -92,6 +93,4 @@ export function useConfirmationRequest({
     },
     [setContext, openModal, closeModal, onDismissParam, resetContext, onEnableParam]
   )
-
-  return triggerConfirmation
 }

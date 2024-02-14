@@ -34,14 +34,12 @@ describe('Limit orders', () => {
 
     getInputToken().type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').should('be.enabled').clear().type(rate.toString(), { force: true })
+    getOutputToken().should('have.value', outputAmount.toString())
+
     cy.get('#do-trade-button').click()
 
-    getOutputToken().should('have.value', outputAmount.toString())
-    cy.get('#trade-confirmation #input-currency-preview .token-amount-input').should(
-      'contain.text',
-      inputAmount.toString()
-    )
-    cy.get('#trade-confirmation #output-currency-preview .token-amount-input').should('contain.text', '200B')
+    cy.get('#input-currency-preview .token-amount-input').should('contain.text', inputAmount.toString())
+    cy.get('#output-currency-preview .token-amount-input').should('contain.text', '200B')
   })
 
   describe('url params', () => {

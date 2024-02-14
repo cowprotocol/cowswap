@@ -16,7 +16,7 @@ export type PermitModalProps = NewModalProps & {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
   step: 'approve' | 'submit'
-  orderType: 'Swap' | 'Limit Order'
+  orderType: string
   icon?: React.ReactNode
 }
 
@@ -74,7 +74,7 @@ export function PermitModal(props: PermitModalProps) {
 
   return (
     <NewModal {...rest}>
-      <NewModalContentTop paddingTop={90}>
+      <NewModalContentTop gap={24} paddingTop={90}>
         {icon}
         <span>
           <h3>{title}</h3>
@@ -82,13 +82,17 @@ export function PermitModal(props: PermitModalProps) {
         </span>
       </NewModalContentTop>
 
-      <NewModalContentBottom>
-        <p>Sign (gas-free!) in your wallet...</p>
+      <NewModalContentBottom gap={24}>
+        <SignDescription>Sign (gas-free!) in your wallet...</SignDescription>
         <Stepper maxWidth={'75%'} steps={steps} />
       </NewModalContentBottom>
     </NewModal>
   )
 }
+
+const SignDescription = styled.p`
+  margin-top: 50px !important;
+`
 
 const ArrowRight = styled(SVG)`
   --size: 12px;

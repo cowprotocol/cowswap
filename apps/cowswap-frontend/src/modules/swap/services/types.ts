@@ -11,7 +11,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
-import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { TradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
@@ -27,7 +27,6 @@ export interface BaseFlowContext {
   }
   flags: {
     allowsOffchainSigning: boolean
-    isGnosisSafeWallet: boolean
   }
   callbacks: {
     closeModals: () => void
@@ -37,9 +36,9 @@ export interface BaseFlowContext {
   sellTokenContract: Erc20 | null
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
-  swapConfirmManager: SwapConfirmManager
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
+  tradeConfirmActions: TradeConfirmActions
 }
 
 export type SwapFlowContext = BaseFlowContext & {
@@ -53,6 +52,7 @@ export type EthFlowContext = BaseFlowContext & {
   addTransaction: ReturnType<typeof useTransactionAdder>
   checkEthFlowOrderExists: EthFlowOrderExistsCallback
   addInFlightOrderId: (orderId: string) => void
+  swapZeroFee: boolean
 }
 
 export type BaseSafeFlowContext = BaseFlowContext & {

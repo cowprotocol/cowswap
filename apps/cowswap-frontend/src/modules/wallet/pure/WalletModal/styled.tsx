@@ -66,6 +66,7 @@ export const OptionGrid = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: max-content;
   color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

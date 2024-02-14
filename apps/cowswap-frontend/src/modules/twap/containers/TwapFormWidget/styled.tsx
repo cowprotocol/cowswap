@@ -33,6 +33,7 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+  grid-template-rows: max-content;
 `
 
 export const StyledPriceProtection = styled.div`

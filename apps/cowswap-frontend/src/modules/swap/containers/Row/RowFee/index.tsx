@@ -90,7 +90,6 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
     const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
-    const includeGasMessage = allowsOffchainSigning && !isEoaEthFlow ? ' (incl. gas costs)' : ''
 
     return {
       showHelpers,
@@ -98,10 +97,9 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
-      includeGasMessage,
       tooltip,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
+  }, [fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
 
   return <RowFeeContent {...props} />
 }

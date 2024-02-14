@@ -3,7 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useFeatureFlags } from './useFeatureFlags'
 
 // Expose the feature to XX% of users
-const PERCENTAGE_OF_USERS_WITH_FLAG = 10 // XX% of users
+const PERCENTAGE_OF_USERS_WITH_FLAG = 30 // XX% of users
 
 export function useSwapZeroFee(): boolean {
   const { account } = useWalletInfo()

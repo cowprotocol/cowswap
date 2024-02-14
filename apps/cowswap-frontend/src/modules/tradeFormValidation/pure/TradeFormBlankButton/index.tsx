@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Loader, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import ms from 'ms.macro'
 import styled from 'styled-components/macro'
 
+import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+
+const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
 
 const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   background: var(${UI.COLOR_PRIMARY});
@@ -41,14 +46,18 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 export interface TradeFormPrimaryButtonProps {
   children: JSX.Element | string
   disabled?: boolean
+  loading?: boolean
   id?: string
-
   onClick?(): void
 }
 
-export function TradeFormBlankButton({ onClick, children, disabled, id }: TradeFormPrimaryButtonProps) {
+export function TradeFormBlankButton({ onClick, children, disabled, loading, id }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
+  const [justClicked, setJustClicked] = useState(false)
+  const isUpToMedium = useMediaQuery(upToMedium)
+
+  const showLoader = justClicked || loading
 
   useEffect(() => {
     if (!ref?.current) return
@@ -58,9 +67,30 @@ export function TradeFormBlankButton({ onClick, children, disabled, id }: TradeF
     setHasLongText(text.length > LONG_TEXT_LENGTH)
   }, [children])
 
+  // Combine local onClick logic with incoming onClick
+  const handleClick = () => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+
+    if (onClick) {
+      onClick()
+      setJustClicked(true)
+    }
+  }
+
+  useEffect(() => {
+    // Disable button for a short time after click
+    if (justClicked) {
+      setTimeout(() => {
+        setJustClicked(false)
+      }, JUST_CLICKED_TIMEOUT)
+    }
+  }, [justClicked])
+
   return (
-    <ActionButton ref={ref} id={id} onClick={onClick} disabled={disabled} hasLongText$={hasLongText}>
-      <Trans>{children}</Trans>
+    <ActionButton ref={ref} id={id} onClick={handleClick} disabled={showLoader || disabled} hasLongText$={hasLongText}>
+      {showLoader ? <Loader size="24px" /> : <Trans>{children}</Trans>}
     </ActionButton>
   )
 }

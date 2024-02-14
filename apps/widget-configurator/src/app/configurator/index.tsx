@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
+import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
@@ -46,6 +47,50 @@ const DEFAULT_STATE = {
   sellAmount: 100000,
   buyAmount: 0,
 }
+
+const COW_LISTENERS: CowEventListeners = [
+  {
+    event: CowEvents.ON_TOAST_MESSAGE,
+    handler: (event) => {
+      // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
+      console.info('[configurator:ON_TOAST_MESSAGE:simple] 🍞 Message:', event.message)
+    },
+  },
+
+  {
+    event: CowEvents.ON_TOAST_MESSAGE,
+    handler: (event) => {
+      // You cn implement a more complex way to handle toast messages
+      switch (event.messageType) {
+        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
+          break
+        case ToastMessageType.SWAP_POSTED_API:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
+          break
+        // ... and so on
+        default:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Default', event.message, event.data)
+      }
+    },
+  },
+
+  {
+    event: CowEvents.ON_POSTED_ORDER,
+    handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
+  },
+
+  {
+    event: CowEvents.ON_CANCELLED_ORDER,
+    handler: (event) =>
+      console.log(`[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
+  },
+
+  {
+    event: CowEvents.ON_EXECUTED_ORDER,
+    handler: (event) => console.log(`[configurator:ON_EXECUTED_ORDER] ✅ Executed order ${event.orderUid}`),
+  },
+]
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
@@ -212,7 +257,7 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        {params && (
+        {params && provider && (
           <>
             <EmbedDialog
               params={params}
@@ -221,7 +266,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget provider={provider} params={params} />
+            <CowSwapWidget provider={provider} params={params} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>

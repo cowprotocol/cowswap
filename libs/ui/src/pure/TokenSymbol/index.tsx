@@ -3,13 +3,16 @@ import { Currency } from '@uniswap/sdk-core'
 import { Nullish } from '../../types'
 import { formatSymbol } from '@cowprotocol/common-utils'
 
+export type TokenNameAndSymbol = Pick<Currency, 'symbol' | 'name'>
+
 export type TokenSymbolProps = {
-  token: Nullish<Pick<Currency, 'symbol' | 'name'>>
+  token: Nullish<TokenNameAndSymbol>
   length?: number
   className?: string
 }
 
-export function TokenSymbol({ token, length, className }: TokenSymbolProps) {
+function getAbbreviatedSymbol(props: Omit<TokenSymbolProps, 'className'>) {
+  const { token, length } = props
   const { symbol, name } = token || {}
 
   if (!symbol && !name) return null
@@ -18,9 +21,28 @@ export function TokenSymbol({ token, length, className }: TokenSymbolProps) {
   const abbreviateSymbol = formatSymbol(fullSymbol, length)
   const title = fullSymbol === abbreviateSymbol ? undefined : fullSymbol
 
+  return {
+    abbreviateSymbol,
+    title,
+  }
+}
+
+export function TokenSymbol(props: TokenSymbolProps) {
+  const abbreviatedSymbol = getAbbreviatedSymbol(props)
+  if (!abbreviatedSymbol) return null
+
+  const { abbreviateSymbol, title } = abbreviatedSymbol
+
   return (
-    <span className={className} title={title}>
+    <span className={props.className} title={title}>
       {abbreviateSymbol}
     </span>
   )
+}
+
+export function formatTokenSymbol(props: Omit<TokenSymbolProps, 'className'>): string | null {
+  const abbreviatedSymbol = getAbbreviatedSymbol(props)
+  if (!abbreviatedSymbol) return null
+
+  return abbreviatedSymbol.abbreviateSymbol || null
 }

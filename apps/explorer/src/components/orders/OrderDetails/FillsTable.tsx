@@ -25,7 +25,7 @@ import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { SurplusComponent } from 'components/common/SurplusComponent'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -71,6 +71,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
     grid-template-columns: 3fr 3fr 3fr 3fr 3.5fr 3fr;
+    grid-template-rows: max-content;
   }
 
   > tbody > tr > td:nth-child(8),
@@ -101,6 +102,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 
     > tbody > tr {
       grid-template-columns: none;
+      grid-template-rows: max-content;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;
@@ -267,7 +269,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
     return null
   }
   const surplus = surplusAmount && surplusPercentage ? { amount: surplusAmount, percentage: surplusPercentage } : null
-  const surplusToken = trade.kind === OrderKind.BUY ? sellToken : buyToken
+  const surplusToken = !trade.kind ? null : isSellOrder(trade.kind) ? buyToken : sellToken
 
   return (
     <tr key={txHash}>

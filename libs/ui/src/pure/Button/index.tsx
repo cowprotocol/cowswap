@@ -30,6 +30,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   min-height: 58px;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
+  flex-flow: row wrap;
   /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,

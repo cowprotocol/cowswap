@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
@@ -12,9 +11,11 @@ import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOr
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
@@ -85,13 +86,13 @@ export function useHandleOrderPlacement(
         // Reset override after successful order placement
         setPartiallyFillableOverride(undefined)
       })
-      .catch((error: Error) => {
+      .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
 
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message)
         } else {
-          tradeConfirmActions.onDismiss()
+          tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
   }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])

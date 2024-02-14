@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
-import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
@@ -46,7 +46,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   )
 
   const onSwitchTokens = useSwitchTokensPlaces({
-    orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
+    orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
   })
 
   const onChangeRecipient = useCallback(

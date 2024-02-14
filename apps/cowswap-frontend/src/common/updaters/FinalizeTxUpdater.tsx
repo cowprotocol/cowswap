@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 
@@ -57,6 +57,7 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
 interface CheckEthereumTransactions {
   chainId: SupportedChainId
   account: string | undefined
+  isSafeWallet: boolean
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
   getReceipt: GetReceipt
@@ -139,7 +140,7 @@ function finalizeEthFlowTx(
   hash: string
 ): void {
   const { orderId, subType } = ethFlowInfo
-  const { chainId, dispatch, addPopup, nativeCurrencySymbol } = params
+  const { chainId, isSafeWallet, dispatch, addPopup, nativeCurrencySymbol } = params
 
   // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
   setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
@@ -148,7 +149,7 @@ function finalizeEthFlowTx(
     if (receipt.status !== 1) {
       // If creation failed:
       // 1. Mark order as invalid
-      dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+      dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
       // 2. Show failure tx pop-up
       addPopup(
         {
@@ -175,15 +176,18 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, dispatch, addPopup, cancelOrdersBatch } = params
+  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
-    cancelOrdersBatch({ chainId, ids: [orderId] })
+    cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
-    partialOrderUpdate({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }, dispatch)
+    partialOrderUpdate(
+      { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
+      dispatch
+    )
     // 2. Show failure tx pop-up
     addPopup(
       {
@@ -271,6 +275,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 export function FinalizeTxUpdater(): null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 
@@ -299,6 +304,7 @@ export function FinalizeTxUpdater(): null {
     const promiseCancellations = checkEthereumTransactions({
       transactions,
       chainId,
+      isSafeWallet,
       lastBlockNumber,
       getReceipt,
       getSafeInfo,
@@ -318,6 +324,7 @@ export function FinalizeTxUpdater(): null {
   }, [
     chainId,
     account,
+    isSafeWallet,
     provider,
     transactions,
     lastBlockNumber,

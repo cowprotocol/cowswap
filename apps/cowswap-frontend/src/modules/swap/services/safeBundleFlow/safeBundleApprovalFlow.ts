@@ -1,6 +1,9 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -16,8 +19,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
@@ -25,11 +27,11 @@ export async function safeBundleApprovalFlow(
   input: SafeBundleApprovalFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-): Promise<void> {
+): Promise<void | false> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
-    return
+    return false
   }
 
   const {
@@ -37,12 +39,12 @@ export async function safeBundleApprovalFlow(
     spender,
     context,
     callbacks,
-    swapConfirmManager,
     dispatch,
     orderParams,
     settlementContract,
     safeAppsSdk,
     swapFlowAnalyticsContext,
+    tradeConfirmActions,
   } = input
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
@@ -70,6 +72,7 @@ export async function safeBundleApprovalFlow(
       callbacks.closeModals()
     })
 
+    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -78,6 +81,7 @@ export async function safeBundleApprovalFlow(
           ...order,
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -113,6 +117,7 @@ export async function safeBundleApprovalFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')
     partialOrderUpdate(
@@ -123,19 +128,20 @@ export async function safeBundleApprovalFlow(
           presignGnosisSafeTxHash: safeTx.safeTxHash,
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: show UI of the successfully sent transaction')
-    swapConfirmManager.transactionSent(orderId)
+    tradeConfirmActions.onSuccess(orderId)
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    swapConfirmManager.setSwapError(swapErrorMessage)
+    tradeConfirmActions.onError(swapErrorMessage)
   }
 }

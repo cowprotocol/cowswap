@@ -441,6 +441,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
 export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
+  grid-template-rows: max-content;
   align-items: center;
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;

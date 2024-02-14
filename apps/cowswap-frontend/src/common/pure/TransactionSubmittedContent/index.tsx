@@ -3,6 +3,7 @@ import React from 'react'
 import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Link } from 'react-router-dom'
@@ -72,7 +73,7 @@ export function TransactionSubmittedContent({
     <styledEl.Wrapper>
       <styledEl.Section>
         <styledEl.Header>
-          <styledEl.CloseIconWrapper onClick={onDismiss} />
+          <BackButton onClick={onDismiss} />
         </styledEl.Header>
         {(showSurplus && <SurplusModal order={order} />) || (
           <>

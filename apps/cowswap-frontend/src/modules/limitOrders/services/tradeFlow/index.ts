@@ -1,7 +1,10 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
+
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -36,10 +39,9 @@ export async function tradeFlow(
     allowsOffchainSigning,
     settlementContract,
     dispatch,
-    isGnosisSafeWallet,
     generatePermitHook,
   } = params
-  const { account, recipientAddressOrName, sellToken, buyToken, appData } = postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet } = postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
@@ -85,6 +87,7 @@ export async function tradeFlow(
       signer: provider.getSigner(),
       validTo,
     })
+
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
       {
@@ -94,6 +97,7 @@ export async function tradeFlow(
           ...order,
           isHidden: !allowsOffchainSigning,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -110,13 +114,15 @@ export async function tradeFlow(
           chainId,
           order: {
             id: order.id,
-            presignGnosisSafeTxHash: isGnosisSafeWallet ? presignTx.hash : undefined,
+            presignGnosisSafeTxHash: isSafeWallet ? presignTx.hash : undefined,
             isHidden: false,
           },
+          isSafeWallet,
         },
         dispatch
       )
     }
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)

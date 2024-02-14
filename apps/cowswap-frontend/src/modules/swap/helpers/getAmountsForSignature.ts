@@ -1,4 +1,5 @@
 import { ONE_FRACTION } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
@@ -17,15 +18,17 @@ function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmou
   const { trade, allowedSlippage, kind, featureFlags } = params
   const slippageCoeff = ONE_FRACTION.add(allowedSlippage)
 
+  const isSell = isSellOrder(kind)
+
   if (featureFlags.swapZeroFee) {
-    if (kind === OrderKind.SELL) {
+    if (isSell) {
       return trade.inputAmount
     } else {
       return trade.inputAmountWithFee.multiply(slippageCoeff) // add slippage
     }
   }
 
-  if (kind === OrderKind.SELL) {
+  if (isSell) {
     return trade.inputAmountWithFee
   } else {
     return trade.inputAmountWithoutFee.multiply(slippageCoeff) // add slippage
@@ -37,7 +40,7 @@ function outputAmountForSignature(params: AmountForSignatureParams): CurrencyAmo
   const slippageCoeff = ONE_FRACTION.subtract(allowedSlippage)
 
   if (featureFlags.swapZeroFee) {
-    if (kind === OrderKind.SELL) {
+    if (isSellOrder(kind)) {
       return trade.outputAmount.multiply(slippageCoeff) // subtract slippage
     } else {
       return trade.outputAmountWithoutFee

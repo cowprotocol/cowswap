@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -29,6 +29,8 @@ export function useUpdateActiveRate(): UpdateRateCallback {
 
       updateRateState(update)
 
+      const isSell = isSellOrder(orderKind)
+
       if (activeRate) {
         // Don't update amounts when rate is set from URL. See useSetupLimitOrderAmountsFromUrl()
         if (currentIsRateFromUrl || isRateFromUrl) {
@@ -37,14 +39,14 @@ export function useUpdateActiveRate(): UpdateRateCallback {
 
         updateCurrencyAmount({
           activeRate,
-          amount: orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount,
+          amount: isSell ? inputCurrencyAmount : outputCurrencyAmount,
           orderKind,
         })
       }
 
       // Clear input/output amount based on the orderKind, when there is no active rate
       if (activeRate === null) {
-        if (orderKind === OrderKind.SELL) {
+        if (isSell) {
           updateLimitOrdersState({ outputCurrencyAmount: null })
         } else {
           updateLimitOrdersState({ inputCurrencyAmount: null })
@@ -52,13 +54,13 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       }
     },
     [
-      orderKind,
+      updateRateState,
+      currentIsRateFromUrl,
+      updateCurrencyAmount,
       inputCurrencyAmount,
       outputCurrencyAmount,
-      updateCurrencyAmount,
-      updateRateState,
+      orderKind,
       updateLimitOrdersState,
-      currentIsRateFromUrl,
     ]
   )
 }

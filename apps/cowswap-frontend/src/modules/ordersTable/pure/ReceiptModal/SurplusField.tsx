@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +14,7 @@ export function SurplusField({ order }: Props) {
   const { kind, inputToken, outputToken } = order
   const { surplusAmount, surplusPercentage } = order.executionData
 
-  const surplusToken = kind === OrderKind.SELL ? outputToken : inputToken
+  const surplusToken = isSellOrder(kind) ? outputToken : inputToken
 
   if (!surplusToken || !surplusAmount || surplusAmount?.isZero()) {
     return <styledEl.Value>-</styledEl.Value>

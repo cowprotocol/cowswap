@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -10,11 +9,11 @@ import { Loader } from '@cowprotocol/ui'
 import * as styledEl from './styled'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
+import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { CommonListContainer } from '../../pure/commonElements'
 import { ImportTokenItem } from '../../pure/ImportTokenItem'
 import { TokenListItem } from '../../pure/TokenListItem'
 import { TokenSourceTitle } from '../../pure/TokenSourceTitle'
-import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 import { SelectTokenContext } from '../../types'
 
 const SEARCH_RESULTS_LIMIT = 10
@@ -36,7 +35,7 @@ export function TokenSearchResults({
 
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
-  const updateSelectTokenWidget = useSetAtom(updateSelectTokenWidgetAtom)
+  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   const addTokenImportCallback = useAddTokenImportCallback()
 

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
@@ -12,6 +13,8 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
+
+const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
@@ -26,12 +29,26 @@ export function useSetupTradeState(): void {
   // We must change chainId in provider, and only then change the trade state
   // Since the network chaning process takes some time, we have to remember the state from URL
   const [rememberedUrlState, setRememberedUrlState] = useState<TradeRawState | null>(null)
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const isWalletConnected = !!account
   const urlChainId = tradeStateFromUrl.chainId
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
   const currentChainId = !urlChainId ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
+
+  const switchNetworkInWallet = useCallback(
+    (targetChainId: SupportedChainId) => {
+      switchChain(connector, targetChainId).catch((error: Error) => {
+        // We are ignoring Gnosis safe context error
+        // Because it's a normal situation when we are not in Gnosis safe App
+        if (error.name === 'NoSafeContext') return
+
+        console.error('Network switching error: ', error)
+      })
+    },
+    [connector]
+  )
 
   /**
    * On URL parameter changes
@@ -137,13 +154,7 @@ export function useSetupTradeState(): void {
 
     const targetChainId = rememberedUrlState?.chainId || currentChainId
 
-    switchChain(connector, targetChainId).catch((error: Error) => {
-      // We are ignoring Gnosis safe context error
-      // Because it's a normal situation when we are not in Gnosis safe App
-      if (error.name === 'NoSafeContext') return
-
-      console.error('Network switching error: ', error)
-    })
+    switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { connector, urlChainId })
     // Triggering only when chainId in URL is changes, connector is changed or rememberedUrlState is changed
@@ -154,10 +165,14 @@ export function useSetupTradeState(): void {
    * On chainId in provider changes
    *
    * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
-   * 2. Navigate to the new chainId with default tokens
-   * 3. If the URL state was remembered, then put it into URL
+   * 2. If the URL state was remembered, then put it into URL
+   * 3. If it's the first load and wallet is connected, then switch network in the wallet to the chainId from URL
+   * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    const isAppFirstLoadWithoutWallet =
+      providerChainId === prevProviderChainId && providerChainId === urlChainId && !isWalletConnected
+
     if (providerChainId === urlChainId) return
     if (!providerChainId || providerChainId === prevProviderChainId) return
 
@@ -165,7 +180,22 @@ export function useSetupTradeState(): void {
       setRememberedUrlState(null)
       tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
     } else {
+      // When app loaded with connected wallet
+      if (isFirstLoad && isWalletConnected) {
+        setIsFirstLoad(false)
+
+        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
+        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
+          switchNetworkInWallet(urlChainId)
+        }
+      }
+
       tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+    }
+
+    // When app loaded with no connected wallet
+    if (isAppFirstLoadWithoutWallet) {
+      setIsFirstLoad(false)
     }
 
     console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })

@@ -1,6 +1,8 @@
-import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetParams } from './types'
+import { CowEventListeners } from '@cowprotocol/events'
+import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
+import { CowSwapWidgetParams, EthereumProvider } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 
 /**
  * Key for identifying the event associated with the CoW Swap Widget.
@@ -21,7 +23,11 @@ const HEIGHT_THRESHOLD = 20
 /**
  * Callback function signature for updating the CoW Swap Widget.
  */
-export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
+export interface CowSwapWidgetHandler {
+  updateWidget: (params: CowSwapWidgetParams, listeners?: CowEventListeners) => void
+  updateListeners: (newListeners?: CowEventListeners) => void
+  updateProvider: (newProvider?: EthereumProvider) => void
+}
 
 /**
  * Generates and injects a CoW Swap Widget into the provided container.
@@ -29,32 +35,78 @@ export type UpdateWidgetCallback = (params: CowSwapWidgetParams) => void
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function cowSwapWidget(container: HTMLElement, params: CowSwapWidgetParams = {}): UpdateWidgetCallback {
+export function createCowSwapWidget(
+  container: HTMLElement,
+  params: CowSwapWidgetParams = {},
+  listeners?: CowEventListeners
+): CowSwapWidgetHandler {
   const { provider } = params
+
+  // 1. Create a brand new iframe
   const iframe = createIframe(params)
 
+  // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
   container.appendChild(iframe)
 
-  const { contentWindow } = iframe
-
-  if (!contentWindow) throw new Error('Iframe does not contain a window!')
-
-  sendAppCode(contentWindow, params.appCode)
-
-  applyDynamicHeight(iframe, params.height)
-
-  if (provider) {
-    const jsonRpcManager = new JsonRpcManager(contentWindow)
-
-    jsonRpcManager.onConnect(provider)
+  const { contentWindow: iframeWindow } = iframe
+  if (!iframeWindow) {
+    console.error('Iframe does not contain a window', iframe)
+    throw new Error('Iframe does not contain a window!')
   }
 
-  iframe.addEventListener('load', () => {
-    updateWidget(params, contentWindow)
-  })
+  // 3. Post some initial messages to the iframe
+  //    - Send appCode
+  //    - Apply dynamic height adjustments
+  sendAppCode(iframeWindow, params.appCode)
+  applyDynamicHeight(iframe, params.height)
 
-  return (newParams: CowSwapWidgetParams) => updateWidget(newParams, contentWindow)
+  // 4. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
+
+  // 5. Schedule the uploading of the params, once the iframe is loaded
+  iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(listeners)
+
+  // 6. Return the handler, so the widget, listeners, and provider can be updated
+  return {
+    updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
+    updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
+    updateProvider: (newProvider) => {
+      iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
+    },
+  }
+}
+
+/**
+ * Update the provider for the iframeRpcProviderBridge.
+ *
+ * It will disconnect from the previous provider and connect to the new one.
+ *
+ * @param iframe iframe window
+ * @param iframeRpcProviderBridge iframe RPC manager
+ * @param newProvider new provider
+ *
+ * @returns the iframeRpcProviderBridge
+ */
+function updateProvider(
+  iframe: Window,
+  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
+  newProvider?: EthereumProvider
+): IframeRpcProviderBridge {
+  // Disconnect from the previous provider bridge
+  if (iframeRpcProviderBridge) {
+    iframeRpcProviderBridge.disconnect()
+  }
+
+  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe)
+
+  // Connect to the new provider
+  if (newProvider) {
+    providerBridge.onConnect(newProvider)
+  }
+
+  return providerBridge
 }
 
 /**
@@ -80,7 +132,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
-function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
+function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) {
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
@@ -103,6 +155,7 @@ function updateWidget(params: CowSwapWidgetParams, contentWindow: Window) {
 
 /**
  * Sends appCode to the contentWindow of the widget.
+ *
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */

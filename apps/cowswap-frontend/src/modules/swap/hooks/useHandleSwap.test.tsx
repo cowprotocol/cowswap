@@ -1,3 +1,5 @@
+import { PropsWithChildren } from 'react'
+
 import { renderHook } from '@testing-library/react-hooks'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -8,7 +10,7 @@ import { ethFlow } from 'modules/swap/services/ethFlow'
 import { safeBundleApprovalFlow, safeBundleEthFlow } from 'modules/swap/services/safeBundleFlow'
 import { swapFlow } from 'modules/swap/services/swapFlow'
 
-import { withModalProvider } from 'utils/withModalProvider'
+import { WithModalProvider } from 'utils/withModalProvider'
 
 import { useEthFlowContext } from './useEthFlowContext'
 import { useHandleSwap } from './useHandleSwap'
@@ -45,6 +47,11 @@ const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
   loading: false,
 }
+
+const WithProviders = ({ children }: PropsWithChildren) => {
+  return <WithModalProvider>{children}</WithModalProvider>
+}
+
 describe('useHandleSwapCallback', () => {
   let onUserInput: jest.Mock
   let onChangeRecipient: jest.Mock
@@ -66,7 +73,7 @@ describe('useHandleSwapCallback', () => {
   })
 
   it('When a swap happened, then the recipient value should be deleted', async () => {
-    const { result } = renderHook(() => useHandleSwap(priceImpactMock), { wrapper: withModalProvider })
+    const { result } = renderHook(() => useHandleSwap(priceImpactMock), { wrapper: WithProviders })
 
     await result.current()
 

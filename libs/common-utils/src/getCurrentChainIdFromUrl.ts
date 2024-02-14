@@ -7,6 +7,10 @@ const chainNameToIdMap: { [key: string]: SupportedChainId } = {
 }
 
 export function getCurrentChainIdFromUrl(): SupportedChainId {
+  return getRawCurrentChainIdFromUrl() || SupportedChainId.MAINNET
+}
+
+export function getRawCurrentChainIdFromUrl(): SupportedChainId | null {
   // Trying to get chainId from URL (#/100/swap)
   // eslint-disable-next-line no-restricted-globals
   const { location } = window
@@ -18,5 +22,5 @@ export function getCurrentChainIdFromUrl(): SupportedChainId {
 
   if (chainId && chainId in SupportedChainId) return chainId
 
-  return SupportedChainId.MAINNET
+  return null
 }

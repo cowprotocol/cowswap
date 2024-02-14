@@ -1,17 +1,22 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+
+import { Trans } from '@lingui/macro'
 
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import SimpleAccountDetails from 'modules/account/containers/SimpleAccountDetails'
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-
-import { ActionButton } from './ActionButton'
+import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
 import { EthFlowState } from '../../../services/ethFlow/types'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
-function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {
+async function runEthFlowAction(
+  state: EthFlowState,
+  ethFlowActions: EthFlowActions,
+  isExpertMode: boolean
+): Promise<void> {
   if (state === EthFlowState.WrapAndApproveFailed) {
     return ethFlowActions.expertModeFlow()
   }
@@ -27,6 +32,7 @@ function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, i
   if ([EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient].includes(state)) {
     return ethFlowActions.approve()
   }
+
   return
 }
 
@@ -54,9 +60,15 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
   ].includes(state)
   const showButton = !isExpertMode || isFailedState || state === EthFlowState.SwapReady
   const showWrapPreview = isExpertMode || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
+  const [isActionInProgress, setIsActionInProgress] = useState(false)
 
-  const onClick = useCallback(() => {
-    runEthFlowAction(state, ethFlowActions, isExpertMode)
+  const onClick = useCallback(async () => {
+    setIsActionInProgress(true)
+    try {
+      await runEthFlowAction(state, ethFlowActions, isExpertMode)
+    } finally {
+      setIsActionInProgress(false)
+    }
   }, [state, ethFlowActions, isExpertMode])
 
   const showLoader = useMemo(() => {
@@ -77,7 +89,11 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     <>
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
-      {showButton && <ActionButton onClick={onClick} label={buttonText} showLoader={showLoader} />}
+      {showButton && (
+        <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+          <Trans>{buttonText}</Trans>
+        </TradeFormBlankButton>
+      )}
     </>
   )
 }
