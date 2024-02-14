@@ -1,6 +1,7 @@
-import { atom, Getter, PrimitiveAtom, Setter, WritableAtom } from 'jotai'
+import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -35,10 +36,7 @@ const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   getJotaiIsolatedStorage()
 )
 
-const regularUpdateRawStateAtom = atom(
-  null,
-  updaterAtomSetterFactory<typeof regularRawStateAtom, LimitOrdersRawState>(regularRawStateAtom)
-)
+const { updateAtom: regularUpdateRawStateAtom } = atomWithPartialUpdate(regularRawStateAtom)
 
 const regularDerivedStateAtom = atom<LimitOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
@@ -49,10 +47,7 @@ const regularDerivedStateAtom = atom<LimitOrdersDerivedState>({
 
 const alternativeRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersState(null))
 
-const alternativeUpdateRawStateAtom = atom(
-  null,
-  updaterAtomSetterFactory<typeof alternativeRawStateAtom, LimitOrdersRawState>(alternativeRawStateAtom)
-)
+const { updateAtom: alternativeUpdateRawStateAtom } = atomWithPartialUpdate(alternativeRawStateAtom)
 
 const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
@@ -61,57 +56,37 @@ const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
 
 // Pick atom according to type of form displayed
 
-export const limitOrdersRawStateAtom = readWriteAtomFactory<
-  LimitOrdersRawState,
-  typeof regularRawStateAtom,
-  typeof alternativeRawStateAtom
->(regularRawStateAtom, alternativeRawStateAtom)
+export const limitOrdersRawStateAtom = readWriteAtomFactory<LimitOrdersRawState>(
+  regularRawStateAtom,
+  alternativeRawStateAtom
+)
 
 export const updateLimitOrdersRawStateAtom = atom(
   null,
   atomSetterFactory<
     null, // pass null to indicate there is no getter
-    LimitOrdersRawState,
-    typeof regularUpdateRawStateAtom,
-    typeof alternativeUpdateRawStateAtom
+    LimitOrdersRawState
   >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
 )
 
-export const limitOrdersDerivedStateAtom = readWriteAtomFactory<
-  LimitOrdersDerivedState,
-  typeof regularDerivedStateAtom,
-  typeof alternativeDerivedStateAtom
->(regularDerivedStateAtom, alternativeDerivedStateAtom)
-
-type SetStateAction<Value> = Value | ((prev: Value) => Value)
-// ExtractAtomValue
+export const limitOrdersDerivedStateAtom = readWriteAtomFactory<LimitOrdersDerivedState>(
+  regularDerivedStateAtom,
+  alternativeDerivedStateAtom
+)
 
 // utils
-function updaterAtomSetterFactory<
-  AtomType extends WritableAtom<AtomWriterParamType, [value: AtomWriterParamType], void>,
-  AtomWriterParamType extends object
->(primitiveAtom: AtomType) {
-  return (get: Getter, set: Setter, nextState: Partial<AtomWriterParamType>) => {
-    const prevState = get(primitiveAtom)
-    set(primitiveAtom, { ...prevState, ...nextState })
-  }
-}
 
-function atomGetterFactory<
-  AtomType,
-  RegularAtom extends PrimitiveAtom<AtomType>,
-  AlternativeAtom extends PrimitiveAtom<AtomType>
->(regular: RegularAtom, alternative: AlternativeAtom) {
+function atomGetterFactory<AtomValue>(regular: PrimitiveAtom<AtomValue>, alternative: PrimitiveAtom<AtomValue>) {
   return (get: Getter) => get(get(isAlternativeOrderModalVisibleAtom) ? alternative : regular)
 }
 
-function atomSetterFactory<
-  AtomGetterType,
-  AtomWriterParamType,
-  RegularAtom extends WritableAtom<AtomGetterType, [value: AtomWriterParamType], void>,
-  AlternativeAtom extends WritableAtom<AtomGetterType, [value: AtomWriterParamType], void>
->(regular: RegularAtom, alternative: AlternativeAtom) {
-  return (get: Getter, set: Setter, value: AtomWriterParamType) => {
+type WritableWithOptionalSetterValue<GetterValue, SetterValue> = WritableAtom<GetterValue, [value: SetterValue], void>
+
+function atomSetterFactory<AtomGetterValue, AtomWriterParamValue>(
+  regular: WritableWithOptionalSetterValue<AtomGetterValue, AtomWriterParamValue>,
+  alternative: WritableWithOptionalSetterValue<AtomGetterValue, AtomWriterParamValue>
+) {
+  return (get: Getter, set: Setter, value: AtomWriterParamValue) => {
     if (get(isAlternativeOrderModalVisibleAtom)) {
       set(alternative, value)
     } else {
@@ -120,13 +95,12 @@ function atomSetterFactory<
   }
 }
 
-function readWriteAtomFactory<
-  AtomType,
-  RegularAtom extends WritableAtom<AtomType, [SetStateAction<AtomType>], void>,
-  AlternativeAtom extends WritableAtom<AtomType, [SetStateAction<AtomType>], void>
->(regular: RegularAtom, alternative: AlternativeAtom) {
+function readWriteAtomFactory<AtomType>(
+  regular: WritableWithOptionalSetterValue<AtomType, SetStateAction<AtomType>>,
+  alternative: WritableWithOptionalSetterValue<AtomType, SetStateAction<AtomType>>
+) {
   return atom(
-    atomGetterFactory<AtomType, RegularAtom, AlternativeAtom>(regular, alternative),
-    atomSetterFactory<AtomType, AtomType, RegularAtom, AlternativeAtom>(regular, alternative)
+    atomGetterFactory<AtomType>(regular, alternative),
+    atomSetterFactory<AtomType, AtomType>(regular, alternative)
   )
 }
