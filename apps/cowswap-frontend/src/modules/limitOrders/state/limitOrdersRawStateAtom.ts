@@ -29,73 +29,70 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
 
 // Regular form state
 
-const regularLimitOrdersRawStateAtom = atomWithStorage<LimitOrdersRawState>(
+const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   getJotaiIsolatedStorage()
 )
 
-const regularUpdateLimitOrdersRawStateAtom = atom(
+const regularUpdateRawStateAtom = atom(
   null,
-  updaterAtomFactory<typeof regularLimitOrdersRawStateAtom, LimitOrdersRawState>(regularLimitOrdersRawStateAtom)
+  updaterAtomFactory<typeof regularRawStateAtom, LimitOrdersRawState>(regularRawStateAtom)
 )
 
-const regularLimitOrdersDerivedStateAtom = atom<LimitOrdersDerivedState>({
+const regularDerivedStateAtom = atom<LimitOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
   isUnlocked: true,
 })
 
 // Alternative state for recreating/editing existing orders
 
-const alternativeLimitOrdersRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersState(null))
+const alternativeRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersState(null))
 
-const alternativeUpdateLimitOrdersRawStateAtom = atom(
+const alternativeUpdateRawStateAtom = atom(
   null,
-  updaterAtomFactory<typeof alternativeLimitOrdersRawStateAtom, LimitOrdersRawState>(alternativeLimitOrdersRawStateAtom)
+  updaterAtomFactory<typeof alternativeRawStateAtom, LimitOrdersRawState>(alternativeRawStateAtom)
 )
 
-const alternativeLimitOrdersDerivedStateAtom = atom<LimitOrdersDerivedState>({
+const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
   isUnlocked: true,
 })
 
-// Pick atom according to type of form user
+// Pick atom according to type of form displayed
 
 export const limitOrdersRawStateAtom = atom(
-  readFactory<LimitOrdersRawState, typeof regularLimitOrdersRawStateAtom, typeof alternativeLimitOrdersRawStateAtom>(
-    regularLimitOrdersRawStateAtom,
-    alternativeLimitOrdersRawStateAtom
+  readFactory<LimitOrdersRawState, typeof regularRawStateAtom, typeof alternativeRawStateAtom>(
+    regularRawStateAtom,
+    alternativeRawStateAtom
   ),
-  writeFactory<
-    LimitOrdersRawState,
-    LimitOrdersRawState,
-    typeof regularLimitOrdersRawStateAtom,
-    typeof alternativeLimitOrdersRawStateAtom
-  >(regularLimitOrdersRawStateAtom, alternativeLimitOrdersRawStateAtom)
+  writeFactory<LimitOrdersRawState, LimitOrdersRawState, typeof regularRawStateAtom, typeof alternativeRawStateAtom>(
+    regularRawStateAtom,
+    alternativeRawStateAtom
+  )
 )
 
 export const updateLimitOrdersRawStateAtom = atom(
   null,
   writeFactory<
-    null,
+    null, // pass null to indicate there is no getter
     LimitOrdersRawState,
-    typeof regularUpdateLimitOrdersRawStateAtom,
-    typeof alternativeUpdateLimitOrdersRawStateAtom
-  >(regularUpdateLimitOrdersRawStateAtom, alternativeUpdateLimitOrdersRawStateAtom)
+    typeof regularUpdateRawStateAtom,
+    typeof alternativeUpdateRawStateAtom
+  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
 )
 
 export const limitOrdersDerivedStateAtom = atom(
-  readFactory<
-    LimitOrdersDerivedState,
-    typeof regularLimitOrdersDerivedStateAtom,
-    typeof alternativeLimitOrdersDerivedStateAtom
-  >(regularLimitOrdersDerivedStateAtom, alternativeLimitOrdersDerivedStateAtom),
+  readFactory<LimitOrdersDerivedState, typeof regularDerivedStateAtom, typeof alternativeDerivedStateAtom>(
+    regularDerivedStateAtom,
+    alternativeDerivedStateAtom
+  ),
   writeFactory<
     LimitOrdersDerivedState,
     LimitOrdersDerivedState,
-    typeof regularLimitOrdersDerivedStateAtom,
-    typeof alternativeLimitOrdersDerivedStateAtom
-  >(regularLimitOrdersDerivedStateAtom, alternativeLimitOrdersDerivedStateAtom)
+    typeof regularDerivedStateAtom,
+    typeof alternativeDerivedStateAtom
+  >(regularDerivedStateAtom, alternativeDerivedStateAtom)
 )
 
 // utils
