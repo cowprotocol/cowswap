@@ -1,6 +1,9 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -69,6 +72,7 @@ export async function safeBundleApprovalFlow(
       callbacks.closeModals()
     })
 
+    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -77,6 +81,7 @@ export async function safeBundleApprovalFlow(
           ...order,
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -112,6 +117,7 @@ export async function safeBundleApprovalFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')
     partialOrderUpdate(
@@ -122,6 +128,7 @@ export async function safeBundleApprovalFlow(
           presignGnosisSafeTxHash: safeTx.safeTxHash,
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )

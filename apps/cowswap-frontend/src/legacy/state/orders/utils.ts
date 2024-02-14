@@ -1,5 +1,5 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
+import { buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
@@ -34,7 +34,7 @@ export function isOrderFulfilled(
 ): boolean {
   const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
 
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return sellAmount === executedSellAmountBeforeFees
   } else {
     return buyAmount === executedBuyAmount
@@ -177,7 +177,7 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
   // We get the remainder as the order might have already been partially filled
   const remainingAmount = getRemainderAmount(order.kind, order)
 
-  if (order.kind === OrderKind.SELL) {
+  if (isSellOrder(order.kind)) {
     return new Price(
       order.inputToken,
       order.outputToken,
@@ -338,7 +338,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: st
 
   const surplusAmount = JSBI.BigInt(surplusAmountBigNumber.decimalPlaces(0).toString())
 
-  if (order.kind === OrderKind.SELL) {
+  if (isSellOrder(order.kind)) {
     const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
 
     return { sellAmount: sellRemainder, buyAmount }
@@ -361,7 +361,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: st
 export function getRemainderAmount(kind: OrderKind, order: Order): string {
   const { sellAmountBeforeFee, buyAmount, apiAdditionalInfo } = order
 
-  const fullAmount = kind === OrderKind.SELL ? sellAmountBeforeFee.toString() : buyAmount.toString()
+  const fullAmount = isSellOrder(kind) ? sellAmountBeforeFee.toString() : buyAmount.toString()
 
   if (!apiAdditionalInfo) {
     return fullAmount
@@ -369,12 +369,12 @@ export function getRemainderAmount(kind: OrderKind, order: Order): string {
 
   const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
 
-  const executedAmount = JSBI.BigInt((kind === OrderKind.SELL ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
+  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
 
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
 
-export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispatch: AppDispatch): void {
+export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrderParams, dispatch: AppDispatch): void {
   const params: UpdateOrderParamsAction = {
     chainId,
     order: {
@@ -382,6 +382,7 @@ export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispat
       ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
       ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
     } as UpdateOrderParamsAction['order'],
+    isSafeWallet,
   }
   dispatch(updateOrder(params))
 }

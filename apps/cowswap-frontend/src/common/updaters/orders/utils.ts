@@ -1,6 +1,5 @@
-import { formatSymbol, formatTokenAmount, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
+import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -51,8 +50,10 @@ export function computeOrderSummary({
           stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken))
       const outputAmount = stringToCurrency(isFulfilled ? executedBuyAmount : buyAmount, outputToken)
 
-      const inputPrefix = !isFulfilled && kind === OrderKind.BUY ? 'at most ' : ''
-      const outputPrefix = !isFulfilled && kind === OrderKind.SELL ? 'at least ' : ''
+      const isSell = isSellOrder(kind)
+
+      const inputPrefix = !isFulfilled && !isSell ? 'at most ' : ''
+      const outputPrefix = !isFulfilled && isSell ? 'at least ' : ''
 
       summary = `Swap ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(
         inputAmount.currency.symbol

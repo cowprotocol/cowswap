@@ -99,7 +99,6 @@ function checkTradeFlowContext(a: TradeFlowContext | null, b: TradeFlowContext |
     a.settlementContract === b.settlementContract &&
     a.chainId === b.chainId &&
     a.dispatch === b.dispatch &&
-    a.allowsOffchainSigning === b.allowsOffchainSigning &&
-    a.isGnosisSafeWallet === b.isGnosisSafeWallet
+    a.allowsOffchainSigning === b.allowsOffchainSigning
   )
 }

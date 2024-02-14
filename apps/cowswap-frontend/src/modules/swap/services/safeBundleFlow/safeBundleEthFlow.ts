@@ -1,7 +1,10 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -90,6 +93,7 @@ export async function safeBundleEthFlow(
       callbacks.closeModals()
     })
 
+    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -99,6 +103,7 @@ export async function safeBundleEthFlow(
           // Initially as hidden, until we get a confirmation from the wallet it succeeded
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -116,6 +121,7 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
     const safeTx = await safeAppsSdk.txs.send({ txs })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(
@@ -128,6 +134,7 @@ export async function safeBundleEthFlow(
           // Unhide the order
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )

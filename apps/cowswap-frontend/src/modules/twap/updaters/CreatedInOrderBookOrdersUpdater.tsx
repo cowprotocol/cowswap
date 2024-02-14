@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAsyncMemo } from 'use-async-memo'
 
@@ -32,6 +32,7 @@ const isVirtualPart = false
  */
 export function CreatedInOrderBookOrdersUpdater() {
   const { chainId } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
   const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
@@ -88,8 +89,8 @@ export function CreatedInOrderBookOrdersUpdater() {
     }, {})
 
     updatePartOrders(createdInOrderBookOrders)
-    addOrUpdateOrders({ orders: partOrdersFromProd, chainId })
-  }, [chainId, partOrdersFromProd, addOrUpdateOrders, updatePartOrders])
+    addOrUpdateOrders({ orders: partOrdersFromProd, chainId, isSafeWallet })
+  }, [chainId, partOrdersFromProd, addOrUpdateOrders, updatePartOrders, isSafeWallet])
 
   return null
 }

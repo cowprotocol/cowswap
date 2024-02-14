@@ -115,6 +115,7 @@ export function useCreateTwapOrder() {
         getCowSoundSend().play()
 
         showPendingOrderNotification({
+          chainId,
           id: safeTxHash,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
@@ -122,6 +123,7 @@ export function useCreateTwapOrder() {
           outputAmount: twapOrder.buyAmount,
           owner: account,
           uiOrderType: UiOrderType.TWAP,
+          isSafeWallet: true, // TWAP is always a safe wallet
         })
 
         orderAnalytics('Posted', 'TWAP', 'Presign')

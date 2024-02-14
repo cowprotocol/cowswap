@@ -61,7 +61,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     return null
   }
 
-  const isGnosisSafeWallet = !!gnosisSafeInfo
+  const isSafeWallet = !!gnosisSafeInfo
   const recipientAddressOrName = state.recipient || state.recipientAddress
   const recipient = state.recipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
@@ -75,7 +75,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     chainId,
     settlementContract,
     allowsOffchainSigning,
-    isGnosisSafeWallet,
     dispatch,
     provider,
     rateImpact,
@@ -101,6 +100,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       featureFlags: {
         swapZeroFee,
       },
+      isSafeWallet,
     },
   }
 }

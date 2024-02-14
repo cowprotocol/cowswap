@@ -56,6 +56,7 @@ export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrd
 
 export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
   order: Order
+  isSafeWallet: boolean
 }
 
 interface GetRemoveOrderParams {
@@ -74,6 +75,7 @@ type SetOrderCancellationHashParams = CancelOrderParams & { hash: string }
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: SupportedChainId
+  isSafeWallet: boolean
 }
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
@@ -354,6 +356,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
 export type UpdateOrderParams = {
   chainId: SupportedChainId
   order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
+  isSafeWallet: boolean
 }
 
 export type UpdateOrderCallback = (params: UpdateOrderParams) => void

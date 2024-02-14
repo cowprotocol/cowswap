@@ -6,7 +6,8 @@ import { safeTokenName } from 'utils'
 import { ProgressBar } from 'components/common/ProgressBar'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { TokenAmount } from 'components/token/TokenAmount'
-import { SurplusComponent, Percentage, Amount } from 'components/common/SurplusComponent'
+import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 export type Props = {
   order: Order
@@ -182,7 +183,7 @@ export function FilledProgress(props: Props): JSX.Element {
   } = props
 
   const touched = filledPercentage.gt(0)
-  const isSell = kind === 'sell'
+  const isSell = isSellOrder(kind)
 
   const mainToken = (isSell ? sellToken : buyToken) || null
   const mainAddress = isSell ? sellTokenAddress : buyTokenAddress

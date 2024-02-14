@@ -1,10 +1,10 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
+import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
+import { createReducer, current, PayloadAction } from '@reduxjs/toolkit'
 import { FeeInformation, PriceInformation } from 'types'
 
-import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
+import { getNewQuote, QuoteError, refreshQuote, setQuoteError, updateQuote } from './actions'
 import { LegacyFeeQuoteParams } from './types'
 
 import { PrefillStateRequired } from '../orders/reducer'
@@ -63,7 +63,7 @@ function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
     // The price estimation is given in:
     //    - sell tokens (for buy orders)
     //    - buy tokens (for sell orders)
-    token: kind === OrderKind.BUY ? sellToken : buyToken,
+    token: isSellOrder(kind) ? buyToken : sellToken,
   }
 }
 

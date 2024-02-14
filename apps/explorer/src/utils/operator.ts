@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
@@ -10,17 +10,18 @@ import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 function isOrderFilled(order: RawOrder): boolean {
   const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
   let amount, executedAmount
 
-  if (kind === 'buy') {
-    amount = new BigNumber(buyAmount)
-    executedAmount = new BigNumber(executedBuyAmount)
-  } else {
+  if (isSellOrder(kind)) {
     amount = new BigNumber(sellAmount)
     executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
+  } else {
+    amount = new BigNumber(buyAmount)
+    executedAmount = new BigNumber(executedBuyAmount)
   }
 
   const minimumAmount = amount.multipliedBy(ONE_BIG_NUMBER.minus(FILLED_ORDER_EPSILON))
@@ -36,10 +37,10 @@ function isOrderPartiallyFilled(order: RawOrder): boolean {
   if (isOrderFilled(order)) {
     return false
   }
-  if (order.kind === 'buy') {
-    return order.executedBuyAmount !== '0'
-  } else {
+  if (isSellOrder(order.kind)) {
     return order.executedSellAmount !== '0'
+  } else {
+    return order.executedBuyAmount !== '0'
   }
 }
 
@@ -89,12 +90,12 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   const { kind, executedBuyAmount, buyAmount, executedSellAmount, sellAmount, executedFeeAmount } = order
   let executedAmount, totalAmount
 
-  if (kind === 'buy') {
-    executedAmount = new BigNumber(executedBuyAmount)
-    totalAmount = new BigNumber(buyAmount)
-  } else {
+  if (isSellOrder(kind)) {
     executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
     totalAmount = new BigNumber(sellAmount)
+  } else {
+    executedAmount = new BigNumber(executedBuyAmount)
+    totalAmount = new BigNumber(buyAmount)
   }
 
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
@@ -230,10 +231,10 @@ export function getOrderSurplus(order: RawOrder): Surplus {
     return ZERO_SURPLUS
   }
 
-  if (kind === 'buy') {
-    return getBuySurplus(order)
-  } else {
+  if (isSellOrder(kind)) {
     return getSellSurplus(order)
+  } else {
+    return getBuySurplus(order)
   }
 }
 
@@ -449,7 +450,7 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
     executedBuyAmount: rawTrade.buyAmount,
   }
 
-  const surplus = order.kind === OrderKind.SELL ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
+  const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
 
   return surplus || ZERO_SURPLUS
 }

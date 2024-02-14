@@ -27,7 +27,6 @@ export interface BaseFlowContext {
   }
   flags: {
     allowsOffchainSigning: boolean
-    isGnosisSafeWallet: boolean
   }
   callbacks: {
     closeModals: () => void

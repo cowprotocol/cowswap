@@ -18,7 +18,6 @@ export interface TradeFlowContext {
   rateImpact: number
   provider: Web3Provider
   allowsOffchainSigning: boolean
-  isGnosisSafeWallet: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
 }

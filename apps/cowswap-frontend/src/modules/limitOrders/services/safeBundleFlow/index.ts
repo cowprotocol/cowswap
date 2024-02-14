@@ -1,6 +1,9 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { CowEvents } from '@cowprotocol/events'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -67,6 +70,7 @@ export async function safeBundleFlow(
 
   const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
     params
+  const { isSafeWallet } = postOrderParams
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
@@ -86,6 +90,7 @@ export async function safeBundleFlow(
       signer: provider.getSigner(),
       validTo,
     })
+
     logTradeFlow(LOG_PREFIX, 'STEP 4: add order, but hidden')
     addPendingOrderStep(
       {
@@ -95,6 +100,7 @@ export async function safeBundleFlow(
           ...order,
           isHidden: true,
         },
+        isSafeWallet,
       },
       dispatch
     )
@@ -130,6 +136,7 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(
@@ -140,6 +147,7 @@ export async function safeBundleFlow(
           presignGnosisSafeTxHash: safeTx.safeTxHash,
           isHidden: false,
         },
+        isSafeWallet,
       },
       dispatch
     )
