@@ -4,6 +4,7 @@ import { atomWithPartialUpdate, getCurrentChainIdFromUrl } from '@cowprotocol/co
 
 interface TokensModuleEnvironment {
   chainId: SupportedChainId
+  useUniswapListOnly?: boolean
   widgetAppCode?: string
   selectedLists?: string[]
 }

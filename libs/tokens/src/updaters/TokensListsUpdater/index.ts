@@ -67,5 +67,20 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
     upsertLists(chainId, listsStates)
   }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating, updateLastUpdateTime])
 
+  // Check if a user is from US and use Uniswap list, because of the SEC regulations
+  useEffect(() => {
+    fetch('https://api.country.is')
+      .then((res) => res.json())
+      .then(({ country }) => {
+        const isUsUser = country === 'US'
+
+        if (isUsUser) {
+          setEnvironment({ useUniswapListOnly: true })
+          updateLastUpdateTime({ [chainId]: 0 })
+        }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return null
 }
