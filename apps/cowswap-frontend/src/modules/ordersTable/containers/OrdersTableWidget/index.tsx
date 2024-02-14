@@ -22,7 +22,7 @@ import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { useSetOrderToRecreate } from 'common/state/recreateOrder'
+import { useSetAlternativeOrder } from 'common/state/alternativeOrder'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -137,7 +137,7 @@ export function OrdersTableWidget({
     [allOrders, cancelOrder]
   )
 
-  const setOrderToRecreate = useSetOrderToRecreate()
+  const setOrderToRecreate = useSetAlternativeOrder()
   const getShowRecreateModal = useCallback(
     (order: ParsedOrder) => () => setOrderToRecreate(order),
     [setOrderToRecreate]

@@ -2,15 +2,15 @@ import { useCallback } from 'react'
 
 import { RecreateOrderModal as Pure } from 'common/pure/RecreateOrderModal'
 import {
-  useGetOrderToRecreate,
-  useIsRecreateOrderModalVisible,
-  useUpdateRecreateOrderModalVisible,
-} from 'common/state/recreateOrder'
+  useGetAlternativeOrder,
+  useIsAlternativeOrderModalVisible,
+  useUpdateAlternativeOrderModalVisible,
+} from 'common/state/alternativeOrder'
 
 export function RecreateOrderModal() {
-  const isRecreateOrderModalVisible = useIsRecreateOrderModalVisible()
-  const orderToRecreate = useGetOrderToRecreate()
-  const updateRecreateOrderModalVisible = useUpdateRecreateOrderModalVisible()
+  const isRecreateOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const orderToRecreate = useGetAlternativeOrder()
+  const updateRecreateOrderModalVisible = useUpdateAlternativeOrderModalVisible()
 
   const onDismiss = useCallback(() => updateRecreateOrderModalVisible(false), [updateRecreateOrderModalVisible])
 
