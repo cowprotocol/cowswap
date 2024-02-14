@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
@@ -101,16 +101,14 @@ export function TwapFormWidget() {
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
-  const onSlippageInput = useCallback(
-    (value: number | null) => updateSettingsState({ slippageValue: value }),
-    [updateSettingsState]
-  )
-  const onNumOfPartsInput = useCallback(
-    (value: number | null) => {
-      updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
-    },
-    [updateSettingsState]
-  )
+  const { onSlippageInput, onNumOfPartsInput } = useMemo(() => {
+    return {
+      onSlippageInput: (value: number | null) => updateSettingsState({ slippageValue: value }),
+      onNumOfPartsInput: (value: number | null) => {
+        updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+      },
+    }
+  }, [updateSettingsState])
 
   return (
     <>
