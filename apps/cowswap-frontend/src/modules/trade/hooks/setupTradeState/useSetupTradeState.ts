@@ -50,6 +50,27 @@ export function useSetupTradeState(): void {
     [connector]
   )
 
+  const onProviderNetworkChanges = useCallback(() => {
+    if (rememberedUrlState) {
+      setRememberedUrlState(null)
+      tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
+    } else {
+      // When app loaded with connected wallet
+      if (isFirstLoad && isWalletConnected) {
+        setIsFirstLoad(false)
+
+        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
+        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
+          switchNetworkInWallet(urlChainId)
+        }
+      }
+
+      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+    }
+    // Triggering only when chainId was changed in the provider
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providerChainId, prevProviderChainId])
+
   /**
    * On URL parameter changes
    *
@@ -150,6 +171,14 @@ export function useSetupTradeState(): void {
    * 3. When the URL state is remembered, then set it's chainId to the provider
    */
   useEffect(() => {
+    // When wallet provider is loaded and chainId matches to the URL chainId
+    const isAppFirstLoad =
+      providerChainId === prevProviderChainId && providerChainId === urlChainId && isWalletConnected
+
+    if (isAppFirstLoad) {
+      setIsFirstLoad(false)
+    }
+
     if (!providerChainId || providerChainId === currentChainId) return
 
     const targetChainId = rememberedUrlState?.chainId || currentChainId
@@ -170,38 +199,16 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
-    const isAppFirstLoadWithoutWallet =
-      providerChainId === prevProviderChainId && providerChainId === urlChainId && !isWalletConnected
+    // When wallet provider is not loaded yet, or chainId has not changed
+    const shouldSkip = !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
 
-    if (providerChainId === urlChainId) return
-    if (!providerChainId || providerChainId === prevProviderChainId) return
+    if (shouldSkip) return
 
-    if (rememberedUrlState) {
-      setRememberedUrlState(null)
-      tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
-    } else {
-      // When app loaded with connected wallet
-      if (isFirstLoad && isWalletConnected) {
-        setIsFirstLoad(false)
-
-        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
-        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
-          switchNetworkInWallet(urlChainId)
-        }
-      }
-
-      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
-    }
-
-    // When app loaded with no connected wallet
-    if (isAppFirstLoadWithoutWallet) {
-      setIsFirstLoad(false)
-    }
+    onProviderNetworkChanges()
 
     console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })
-    // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerChainId, prevProviderChainId])
+  }, [onProviderNetworkChanges])
 
   /**
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
