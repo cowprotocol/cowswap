@@ -68,7 +68,7 @@ export const updateLimitOrdersRawStateAtom = atom(
   null,
   atomSetterFactory<
     null, // pass null to indicate there is no getter
-    LimitOrdersRawState
+    Partial<LimitOrdersRawState>
   >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
 )
 
