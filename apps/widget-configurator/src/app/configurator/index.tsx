@@ -257,7 +257,7 @@ export function Configurator({ title }: { title: string }) {
       </Drawer>
 
       <Box sx={ContentStyled}>
-        {params && provider && (
+        {params && (
           <>
             <EmbedDialog
               params={params}
