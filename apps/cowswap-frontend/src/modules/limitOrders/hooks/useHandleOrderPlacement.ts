@@ -1,15 +1,15 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
@@ -27,7 +27,7 @@ export function useHandleOrderPlacement(
   tradeConfirmActions: TradeConfirmActions
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)

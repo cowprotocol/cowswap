@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -22,9 +22,9 @@ import * as styledEl from './styled'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
-import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -166,7 +166,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const isPartiallyFillable = settingsState.partialFillsEnabled
 
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,

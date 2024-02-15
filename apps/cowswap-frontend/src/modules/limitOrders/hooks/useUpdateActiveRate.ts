@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
@@ -17,7 +17,7 @@ export interface UpdateRateCallback {
 export function useUpdateActiveRate(): UpdateRateCallback {
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()
   const rateState = useAtomValue(limitRateAtom)
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useSetAtom(updateLimitRateAtom)
 

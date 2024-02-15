@@ -1,5 +1,3 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-
 import { useIsBundlingSupported } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react-hooks'
@@ -16,9 +14,9 @@ import { TradeAmounts } from 'common/types'
 import { WithModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { TradeConfirmActions } from '../../trade'
-import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
 jest.mock('modules/limitOrders/services/tradeFlow')
@@ -91,7 +89,7 @@ describe('useHandleOrderPlacement', () => {
     // Arrange
     renderHook(
       () => {
-        const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+        const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
         updateLimitOrdersState({ recipient })
       },
@@ -99,7 +97,7 @@ describe('useHandleOrderPlacement', () => {
     )
 
     // Assert
-    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
+    const { result: limitOrdersStateResultBefore } = renderHook(() => useLimitOrdersRawState(), {
       wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
@@ -112,7 +110,7 @@ describe('useHandleOrderPlacement', () => {
     await result.current()
 
     // Assert
-    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
+    const { result: limitOrdersStateResultAfter } = renderHook(() => useLimitOrdersRawState(), {
       wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
