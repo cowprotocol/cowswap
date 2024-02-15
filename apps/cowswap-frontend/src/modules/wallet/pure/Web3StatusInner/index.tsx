@@ -16,7 +16,7 @@ export interface Web3StatusInnerProps {
   chainId?: number
   pendingCount: number
   error?: string
-  connectWallet: () => void
+  connectWallet: (() => void) | null
   connectionType: ConnectionType
   ensName?: string | null
 }
@@ -26,7 +26,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
 
   const hasPendingTransactions = !!pendingCount
 
-  if (!chainId) {
+  if (!chainId || !connectWallet) {
     return null
   }
 

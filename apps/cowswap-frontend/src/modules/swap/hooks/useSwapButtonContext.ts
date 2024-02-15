@@ -17,7 +17,6 @@ import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/
 import { Field } from 'legacy/state/types'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
@@ -50,7 +49,6 @@ export interface SwapButtonInput {
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal, priceImpactParams } = input
 
-  const injectedWidgetParams = useInjectedWidgetParams()
   const { account, chainId } = useWalletInfo()
   const { isSupportedWallet } = useWalletDetails()
   const {
@@ -158,7 +156,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     onWrapOrUnwrap: wrapCallback,
     onEthFlow: openNativeWrapModal,
     openSwapConfirm: tradeConfirmActions.onOpen,
-    toggleWalletModal: injectedWidgetParams.hideConnectButton ? null : toggleWalletModal,
+    toggleWalletModal,
     swapInputError,
     onCurrencySelection,
   }
