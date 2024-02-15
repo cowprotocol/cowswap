@@ -48,6 +48,9 @@ export const listsStatesMapAtom = atom((get) => {
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]
+
+    if (!list) return acc
+
     const isDefaultList = !list.widgetAppCode
     const sourceLowerCased = source.toLowerCase()
 
