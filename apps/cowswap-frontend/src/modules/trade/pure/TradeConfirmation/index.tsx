@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonSize, ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { BackButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -16,6 +16,7 @@ import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CustomRecipientBanner } from '../CustomRecipientBanner'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
@@ -56,9 +57,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
+  const { pendingTrade } = useTradeConfirmState()
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
 
-  const isButtonDisabled = isConfirmDisabled || isPriceChanged
+  const isButtonDisabled = isConfirmDisabled || isPriceChanged || !!pendingTrade
 
   const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
 
@@ -115,7 +117,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <CustomRecipientBanner recipient={recipient} />
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          <Trans>{buttonText}</Trans>
+          {pendingTrade ? <Loader /> : <Trans>{buttonText}</Trans>}
         </ButtonPrimary>
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
