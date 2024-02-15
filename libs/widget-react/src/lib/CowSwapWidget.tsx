@@ -70,6 +70,9 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
       return
     }
 
+    // Update provider
+    providerRef.current = provider || null
+
     // TODO: Fix this https://github.com/cowprotocol/cowswap/issues/3810#issue-2127257473 (in meantime forcing full refresh as before)
     // const handler = widgetHandlerRef.current
     // tryOrHandleError('Updating the provider', () => handler.updateProvider(provider))
