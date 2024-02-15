@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
@@ -32,7 +32,7 @@ export interface SwapButtonsContext {
   onWrapOrUnwrap: WrapUnwrapCallback | null
   onEthFlow: Command
   openSwapConfirm: Command
-  toggleWalletModal: Nullable<Command>
+  toggleWalletModal: Command | null
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void

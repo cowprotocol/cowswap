@@ -1,4 +1,4 @@
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -67,6 +67,6 @@ export interface TradeFormButtonContext {
 
   doTrade(): void
   confirmTrade(): void
-  connectWallet: Nullable<Command>
+  connectWallet: Command | null
   wrapNativeFlow(): void
 }

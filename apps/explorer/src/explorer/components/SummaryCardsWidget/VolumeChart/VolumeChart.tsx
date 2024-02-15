@@ -28,7 +28,7 @@ import { numberFormatter } from '../utils'
 import { useNetworkId } from '../../../../state/network'
 import { usePrevious } from '../../../../hooks/usePrevious'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 const DEFAULT_CHART_HEIGHT = 214 // px
 

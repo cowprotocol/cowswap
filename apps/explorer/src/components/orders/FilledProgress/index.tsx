@@ -9,7 +9,7 @@ import { TokenAmount } from 'components/token/TokenAmount'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 export type Props = {
   order: Order

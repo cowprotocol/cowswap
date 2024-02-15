@@ -3,7 +3,7 @@ import { ElementDefinition, LayoutOptions } from 'cytoscape'
 import { Network } from '../../../types'
 import { SingleErc20State } from '../../../state/erc20'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
@@ -152,7 +152,7 @@ interface UpdateOrdersParams {
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   addOrderToSurplusQueue: (orderId: string) => void
-  triggerTotalSurplusUpdate: Nullable<Command>
+  triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeInfo: GetSafeInfo
 }

@@ -6,7 +6,7 @@ import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 function MenuImage(props: MenuImageProps): JSX.Element | null {
   const { title, iconSVG, icon } = props

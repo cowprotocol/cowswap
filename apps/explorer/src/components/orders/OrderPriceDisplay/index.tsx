@@ -12,7 +12,7 @@ import {
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../../../explorer/const'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 const Wrapper = styled.span`
   display: flex;

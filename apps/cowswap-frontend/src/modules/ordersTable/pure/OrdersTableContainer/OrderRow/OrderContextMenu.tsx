@@ -1,4 +1,4 @@
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
@@ -69,7 +69,7 @@ export const ContextMenuLink = styled(ContextMenuItem)``
 export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
-  showCancellationModal: Nullable<Command>
+  showCancellationModal: Command | null
 }
 
 export function OrderContextMenu({ openReceipt, activityUrl, showCancellationModal }: OrderContextMenuProps) {

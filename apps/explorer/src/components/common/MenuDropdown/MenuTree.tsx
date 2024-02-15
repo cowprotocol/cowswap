@@ -6,7 +6,7 @@ import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types
 import DropDown from '.'
 import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem

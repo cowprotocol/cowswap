@@ -19,5 +19,4 @@ export class TokenWithLogo extends Token {
   }
 }
 
-export type Nullable<T> = T | null
 export type Command = () => void

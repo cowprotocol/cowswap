@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
@@ -30,7 +30,7 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
-export function useToggleWalletModal(): Nullable<Command> {
+export function useToggleWalletModal(): Command | null {
   const { active } = useWalletInfo()
   const { hideConnectButton } = useInjectedWidgetParams()
 

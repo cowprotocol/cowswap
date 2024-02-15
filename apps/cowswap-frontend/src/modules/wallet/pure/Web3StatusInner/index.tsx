@@ -1,4 +1,4 @@
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
@@ -17,7 +17,7 @@ export interface Web3StatusInnerProps {
   chainId?: number
   pendingCount: number
   error?: string
-  connectWallet: Nullable<Command>
+  connectWallet: Command | null
   connectionType: ConnectionType
   ensName?: string | null
 }

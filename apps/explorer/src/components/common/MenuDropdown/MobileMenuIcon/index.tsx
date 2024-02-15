@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { media } from 'theme/styles/media'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;

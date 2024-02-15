@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Nullable, Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 
 export interface TableState {
   pageSize: number
