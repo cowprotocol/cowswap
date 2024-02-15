@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useState } from 'react'
 
 import { useFetchFile } from '@cowprotocol/common-hooks'
+import { Loader } from '@cowprotocol/ui'
 
 import ReactMarkdown, { Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -23,19 +24,22 @@ interface MarkdownParams extends WithClassName {
 
 export function MarkdownPage({ contentFile, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(contentFile)
-  const [contentHeadings, setContentHeadings] = useState<ContentHeading[]>([])
+  const [contentHeadings, setContentHeadings] = useState<ContentHeading[] | null>(null)
 
   const ref = useCallback((node: HTMLDivElement) => {
     if (node !== null) {
       setContentHeadings(deriveHeading(node, 'h2'))
+    } else {
+      setContentHeadings([])
     }
   }, [])
 
   return (
     <PageWithToC longList={true}>
+      {contentHeadings === null && <Loader />}
       <SideMenu longList={true}>
         <ul>
-          {contentHeadings.map(({ id, title }) => {
+          {contentHeadings?.map(({ id, title }) => {
             return (
               <li>
                 <LinkScrollable href={'#' + id}>{title}</LinkScrollable>
