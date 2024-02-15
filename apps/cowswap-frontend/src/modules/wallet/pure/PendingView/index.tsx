@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/common-const'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -54,15 +55,14 @@ const WalletError = styled.div`
   background: ${({ theme }) => transparentize(theme.disabled, 0.7)};
   margin: -15px 0 20px 0;
 `
-
 export function PendingView({
   error,
   tryConnection,
   openOptions,
 }: {
   error: string | undefined
-  tryConnection: () => void
-  openOptions: () => void
+  tryConnection: Command
+  openOptions: Command
 }) {
   return (
     <PendingSection>

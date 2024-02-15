@@ -1,12 +1,13 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 
 import { ArrowLeft, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
 
-export const CloseIcon = styled(X)<{ onClick: () => void }>`
+export const CloseIcon = styled(X)<{ onClick: Command }>`
   cursor: pointer;
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;

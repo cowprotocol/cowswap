@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/common-const'
+
 export interface WithClassName {
   className?: string
 }
@@ -10,9 +12,8 @@ export interface Market<T = string> {
   baseToken: T
   quoteToken: T
 }
-
 export interface WithCancel {
-  cancel: () => void
+  cancel: Command
 }
 
 export interface RetryResult<T> extends WithCancel {

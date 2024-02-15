@@ -12,6 +12,8 @@ import {
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../../../explorer/const'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
@@ -43,7 +45,7 @@ export type Props = {
   sellAmount: string | BigNumber
   sellToken: TokenErc20
   isPriceInverted?: boolean
-  invertPrice?: () => void
+  invertPrice?: Command
   showInvertButton?: boolean
 }
 

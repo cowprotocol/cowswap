@@ -1,4 +1,5 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
@@ -44,7 +45,7 @@ export const getNonNativeSlippageTooltip = () => (
 )
 
 export interface RowSlippageContentProps extends RowSlippageProps {
-  toggleSettings: () => void
+  toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]

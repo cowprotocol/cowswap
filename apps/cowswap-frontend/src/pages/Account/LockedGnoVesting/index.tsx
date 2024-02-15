@@ -8,6 +8,7 @@ import {
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import {
   formatDateWithTimezone,
@@ -41,7 +42,7 @@ enum ClaimStatus {
 
 interface Props {
   openModal: (message: string) => void
-  closeModal: () => void
+  closeModal: Command
   vested: CurrencyAmount<Currency>
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>

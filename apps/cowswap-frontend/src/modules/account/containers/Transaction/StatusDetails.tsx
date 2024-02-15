@@ -3,6 +3,7 @@ import OrderCheckImage from '@cowprotocol/assets/cow-swap/order-check.svg'
 import OrderExpiredImage from '@cowprotocol/assets/cow-swap/order-expired.svg'
 import OrderOpenImage from '@cowprotocol/assets/cow-swap/order-open.svg'
 import PresignaturePendingImage from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import { Nullable, Command } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 
@@ -50,7 +51,7 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
 export type StatusDetailsProps = {
   chainId: number
   activityDerivedState: ActivityDerivedState
-  showCancellationModal: (() => void) | null
+  showCancellationModal: Nullable<Command>
 }
 
 export function StatusDetails(props: StatusDetailsProps) {

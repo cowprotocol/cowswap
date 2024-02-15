@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 export interface TableState {
   pageSize: number
   pageOffset: number
@@ -15,8 +17,8 @@ export interface TableOptions {
 export interface TableStateSetters {
   setPageOffset: (pageOffset: number) => void
   setPageSize: (pageSize: number) => void
-  handleNextPage: () => void
-  handlePreviousPage: () => void
+  handleNextPage: Command
+  handlePreviousPage: Command
 }
 
 type TableStateAndSetters = TableStateSetters & {

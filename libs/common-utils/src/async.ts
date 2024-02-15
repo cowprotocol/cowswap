@@ -4,9 +4,11 @@
 //    https://github.com/slorber/awesome-imperative-promise
 // Main difference, is that cancel resolves the promise with a cancelled flag to true
 
+import { Command } from '@cowprotocol/common-const'
+
 export type ResolveCallback<T> = (value: CancelableResult<T>) => void
 export type RejectCallback = (reason?: any) => void
-export type CancelCallback = () => void
+export type CancelCallback = Command
 
 export type ImperativePromise<T> = {
   promise: Promise<CancelableResult<T>>

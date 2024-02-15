@@ -1,5 +1,6 @@
 import { Erc20, Weth } from '@cowprotocol/abis'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -41,7 +42,6 @@ export enum FlowType {
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
-
 interface BaseFlowContextSetup {
   chainId: SupportedChainId
   account: string | undefined
@@ -59,7 +59,7 @@ interface BaseFlowContextSetup {
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
   flowType: FlowType
-  closeModals: () => void
+  closeModals: Command
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch

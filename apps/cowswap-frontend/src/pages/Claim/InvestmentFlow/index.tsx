@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
 import RoundArrow from '@cowprotocol/assets/cow-swap/round-arrow.svg'
+import { Command } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -72,7 +73,7 @@ const FAQ_DATA = (chainId: number | undefined) => [
 export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims' | 'claims' | 'isAirdropOnly'> & {
   modalCbs: {
     openModal: (message?: string) => void
-    closeModal: () => void
+    closeModal: Command
   }
 }
 

@@ -28,6 +28,8 @@ import { numberFormatter } from '../utils'
 import { useNetworkId } from '../../../../state/network'
 import { usePrevious } from '../../../../hooks/usePrevious'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 const DEFAULT_CHART_HEIGHT = 214 // px
 
 export interface VolumeDataResponse {
@@ -50,7 +52,7 @@ export function PeriodButton({
   isLoading,
   children,
   onClick,
-}: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: () => void }>): JSX.Element {
+}: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: Command }>): JSX.Element {
   return (
     <WrapperPeriodButton active={active} onClick={onClick}>
       {isLoading && active ? <Spinner spin size="1x" /> : children}

@@ -4,6 +4,8 @@ import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 
+import { Command } from '@cowprotocol/common-const'
+
 export const TooltipContainer = styled.div`
   max-width: 320px;
   padding: 4px 6px;
@@ -17,7 +19,7 @@ export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverCon
 
 interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
   content: ReactNode
-  onOpen?: () => void
+  onOpen?: Command
   // whether to wrap the content in a `TooltipContainer`
   wrap?: boolean
   disableHover?: boolean // disable the hover and content display

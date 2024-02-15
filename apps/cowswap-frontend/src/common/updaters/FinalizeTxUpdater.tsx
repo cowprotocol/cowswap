@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
+import { Command } from '@cowprotocol/common-const'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -69,8 +70,6 @@ interface CheckEthereumTransactions {
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
 }
-
-type Cancel = () => void
 
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
@@ -201,8 +200,7 @@ function finalizeOnChainCancellation(
     )
   }
 }
-
-function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
+function checkEthereumTransactions(params: CheckEthereumTransactions): Command[] {
   const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch } = params
 
   return transactions.map((transaction) => {

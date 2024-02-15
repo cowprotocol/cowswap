@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
+import { Nullable, Command } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
@@ -19,18 +20,17 @@ export function useModalIsOpen(modal: ApplicationModal): boolean {
   return openModal === modal
 }
 
-export function useToggleModal(modal: ApplicationModal): () => void {
+export function useToggleModal(modal: ApplicationModal): Command {
   const isOpen = useModalIsOpen(modal)
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(isOpen ? null : modal)), [dispatch, modal, isOpen])
 }
 
-export function useCloseModal(_modal: ApplicationModal): () => void {
+export function useCloseModal(_modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
-
-export function useToggleWalletModal(): (() => void) | null {
+export function useToggleWalletModal(): Nullable<Command> {
   const { active } = useWalletInfo()
   const { hideConnectButton } = useInjectedWidgetParams()
 
@@ -45,7 +45,7 @@ export function useToggleWalletModal(): (() => void) | null {
   }, [hideConnectButton, active, toggleWalletModal])
 }
 
-export function useToggleSettingsMenu(): () => void {
+export function useToggleSettingsMenu(): Command {
   return useToggleModal(ApplicationModal.SETTINGS)
 }
 
@@ -71,16 +71,15 @@ export function useActivePopups(): AppState['application']['popupList'] {
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced
-export function useOpenModal(modal: ApplicationModal): () => void {
+export function useOpenModal(modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(modal)), [dispatch, modal])
 }
 
-export function useCloseModals(): () => void {
+export function useCloseModals(): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
-
 /**
  * @deprecated use @cowprotocol/snackbars instead
  */

@@ -13,6 +13,8 @@ import {
 } from './styled'
 import useOnClickOutside from '../../../../hooks/useOnClickOutside'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 export enum DropdownPosition {
   center,
   left,
@@ -56,7 +58,7 @@ export interface DropdownProps extends DOMAttributes<HTMLDivElement> {
   dropdownButtonContentOpened?: React.ReactNode | string
   dropdownDirection?: DropdownDirection | undefined
   dropdownPosition?: DropdownPosition | undefined
-  callback?: () => void
+  callback?: Command
 }
 
 type CssString = FlattenSimpleInterpolation | string

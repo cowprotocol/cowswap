@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { V_COW } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { useVCowContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { BigNumber } from '@ethersproject/bignumber'
@@ -25,10 +26,9 @@ type VCowData = {
   unvested: CurrencyAmount<Currency> | undefined | null
   vested: CurrencyAmount<Currency> | undefined | null
 }
-
 interface SwapVCowCallbackParams {
   openModal: (message: string) => void
-  closeModal: () => void
+  closeModal: Command
 }
 
 /**

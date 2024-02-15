@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/common-const'
+
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
@@ -22,15 +24,14 @@ const Description = styled.p`
 const Warning = styled.strong`
   color: inherit;
 `
-
 export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
   description?: string
   warning?: string
   callToAction?: string
-  onDismiss: () => void
-  onEnable: () => void
+  onDismiss: Command
+  onEnable: Command
   confirmWord: string
   action: string
   skipInput?: boolean

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import styled from 'styled-components/macro'
+import { Command } from '@cowprotocol/common-const'
 
 export const StyledIdenticon = styled.div`
   height: 1rem;
@@ -30,7 +31,7 @@ export interface IdenticonProps {
   iconRef?: React.RefObject<HTMLDivElement>
   avatar: string | null
   showAvatar: boolean
-  onErrorFetchAvatar: () => void
+  onErrorFetchAvatar: Command
 }
 
 export function Identicon({ size = 16, iconRef, onErrorFetchAvatar, avatar, showAvatar }: IdenticonProps) {

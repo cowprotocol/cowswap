@@ -1,6 +1,7 @@
 import { Fragment, useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { Nullable, Command } from '@cowprotocol/common-const'
 import {
   getEtherscanLink,
   getExplorerLabel,
@@ -80,9 +81,9 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: (() => void) | null
-  toggleAccountSelectorModal: () => void
-  handleCloseOrdersPanel: () => void
+  toggleWalletModal: Nullable<Command>
+  toggleAccountSelectorModal: Command
+  handleCloseOrdersPanel: Command
 }
 
 export function AccountDetails({

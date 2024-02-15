@@ -1,8 +1,9 @@
+import { Command } from '@cowprotocol/common-const'
 import { ButtonSize, ButtonError } from '@cowprotocol/ui'
 
 export interface SwapButtonProps {
   disabled: boolean
-  onClick: () => void
+  onClick: Command
   children?: React.ReactNode
 }
 

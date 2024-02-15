@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { BackButton, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
@@ -149,7 +150,7 @@ export interface NewModalProps {
   maxWidth?: number
   minHeight?: number
   title?: string
-  onDismiss?: () => void
+  onDismiss?: Command
   children?: React.ReactNode
   modalMode?: boolean
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { BadgeType } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
@@ -23,7 +24,7 @@ interface MenuItemConfig {
   route: RoutesValues
   label: string
   featureGuard?: string
-  onClick?: () => void
+  onClick?: Command
   badgeText?: string
   badgeType?: BadgeType
 }
@@ -135,7 +136,7 @@ const MenuItem = ({
   isActive: boolean
   badgeText?: string
   badgeType?: BadgeType
-  onClick: () => void
+  onClick: Command
   isDropdownVisible: boolean
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>

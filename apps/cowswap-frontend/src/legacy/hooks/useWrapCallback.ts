@@ -1,5 +1,6 @@
 import { wrapAnalytics } from '@cowprotocol/analytics'
 import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
@@ -30,14 +31,13 @@ export interface WrapDescription {
   operationMessage: string
   summary: string
 }
-
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
-  closeModals: () => void
-  openTransactionConfirmationModal: () => void
+  closeModals: Command
+  openTransactionConfirmationModal: Command
 }
 
 export async function wrapUnwrapCallback(

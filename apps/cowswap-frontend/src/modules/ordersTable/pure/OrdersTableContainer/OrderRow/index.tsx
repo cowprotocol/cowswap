@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -91,8 +92,7 @@ function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {
     </styledEl.WarningParagraph>
   )
 }
-
-function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: () => void }) {
+function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: Command }) {
   const { symbol, isScheduled } = params
 
   return (
@@ -146,7 +146,7 @@ export interface OrderRowProps {
   isRowSelected: boolean
   isChild?: boolean
   orderParams: OrderParams
-  onClick: () => void
+  onClick: Command
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element

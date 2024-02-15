@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/common-const'
+
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
 import { RoutesValues } from 'common/constants/routes'
@@ -80,10 +82,9 @@ export interface DropDownItem {
 }
 
 export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem | ParametrizedLink | CustomItem
-
 export interface MainMenuContext {
   darkMode: boolean
-  toggleDarkMode: () => void
-  handleMobileMenuOnClick: () => void
+  toggleDarkMode: Command
+  handleMobileMenuOnClick: Command
   tradeContext: TradeUrlParams
 }

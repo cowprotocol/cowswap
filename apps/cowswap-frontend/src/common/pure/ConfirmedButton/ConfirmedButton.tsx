@@ -1,5 +1,6 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { ButtonError } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -27,10 +28,9 @@ const Input = styled.input`
     border: 1px solid var(${UI.COLOR_PRIMARY});
   }
 `
-
 interface ConfirmedButtonProps {
   className?: string
-  onConfirm: () => void
+  onConfirm: Command
   children?: ReactNode
   action: string
   confirmWord: string

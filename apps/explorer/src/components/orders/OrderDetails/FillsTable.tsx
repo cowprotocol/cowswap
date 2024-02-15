@@ -27,6 +27,8 @@ import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
     > tr > th:first-child {
@@ -214,7 +216,7 @@ export type Props = StyledUserDetailsTableProps & {
   order: Order | null
   tableState: TableState
   isPriceInverted: boolean
-  invertPrice: () => void
+  invertPrice: Command
 }
 
 interface RowProps {

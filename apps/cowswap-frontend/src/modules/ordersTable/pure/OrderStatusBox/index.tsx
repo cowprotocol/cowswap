@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/common-const'
+
 import styled from 'styled-components/macro'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -47,9 +49,8 @@ export type OrderStatusBoxProps = {
   order: ParsedOrder
   widthAuto?: boolean
   withWarning?: boolean
-  onClick?: () => void
+  onClick?: Command
 }
-
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
   return (

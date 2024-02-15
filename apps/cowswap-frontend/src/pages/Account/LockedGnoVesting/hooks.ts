@@ -8,6 +8,7 @@ import {
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/common-const'
 import { useContract } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -79,7 +80,7 @@ export const useCowFromLockedGnoBalances = () => {
 
 interface ClaimCallbackParams {
   openModal: (message: string) => void
-  closeModal: () => void
+  closeModal: Command
   isFirstClaim: boolean
 }
 export function useClaimCowFromLockedGnoCallback({

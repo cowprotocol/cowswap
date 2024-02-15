@@ -18,3 +18,6 @@ export class TokenWithLogo extends Token {
     super(chainId, address, decimals, symbol, name, bypassChecksum)
   }
 }
+
+export type Nullable<T> = T | null
+export type Command = () => void

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Order, getOrder, GetOrderParams } from 'api/operator'
 
 import { getShortOrderId, transformOrder } from 'utils'
+import { Command } from '@cowprotocol/common-const'
 
 import { useNetworkId } from 'state/network'
 
@@ -20,7 +21,7 @@ type UseOrderResult = {
   error?: UiError
   isLoading: boolean
   errorOrderPresentInNetworkId: Network | null
-  forceUpdate?: () => void
+  forceUpdate?: Command
 }
 
 function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<SingleOrder>> {
@@ -51,7 +52,7 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
       try {
         const { order: rawOrder, errorOrderPresentInNetworkId: errorOrderPresentInNetworkIdRaw } = await _getOrder(
           networkId,
-          orderId,
+          orderId
         )
         console.log({ rawOrder, errorOrderPresentInNetworkIdRaw })
         if (rawOrder) {

@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/common-const'
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -604,7 +605,7 @@ export const WalletIconWrapper = styled.div`
 
 interface WalletSelectorProps {
   isHardWareWallet?: boolean
-  onClick?: () => void
+  onClick?: Command
 }
 
 export const WalletSelector = styled.div<WalletSelectorProps>`

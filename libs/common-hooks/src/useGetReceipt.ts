@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
+import { Command } from '@cowprotocol/common-const'
 
 import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -11,7 +12,7 @@ const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}
 
 interface RetryResult<T> {
   promise: Promise<T>
-  cancel: () => void
+  cancel: Command
 }
 
 export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>

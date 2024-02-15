@@ -1,10 +1,8 @@
 import { RefObject, useEffect, useRef } from 'react'
+import { Command } from '@cowprotocol/common-const'
 
-export function useOnClickOutside<T extends HTMLElement>(
-  node: RefObject<T | undefined>,
-  handler: undefined | (() => void)
-) {
-  const handlerRef = useRef<undefined | (() => void)>(handler)
+export function useOnClickOutside<T extends HTMLElement>(node: RefObject<T | undefined>, handler: Command | undefined) {
+  const handlerRef = useRef<Command | undefined>(handler)
   useEffect(() => {
     handlerRef.current = handler
   }, [handler])

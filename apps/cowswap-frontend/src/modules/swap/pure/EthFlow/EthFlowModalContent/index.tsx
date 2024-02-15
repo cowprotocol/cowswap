@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/common-const'
+
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
 import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
@@ -18,9 +20,8 @@ export interface EthFlowModalContentProps {
   ethFlowActions: EthFlowActions
   balanceChecks: BalanceChecks
   wrappingPreview: WrappingPreviewProps
-  onDismiss: () => void
+  onDismiss: Command
 }
-
 export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { ethFlowActions, state, isExpertMode, balanceChecks, onDismiss, wrappingPreview, ethFlowContext } = props
 

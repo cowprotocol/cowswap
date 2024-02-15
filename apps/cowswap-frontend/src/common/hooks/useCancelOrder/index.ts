@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -21,7 +22,7 @@ import { cancellationModalContextAtom, CancellationType, updateCancellationModal
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-export type UseCancelOrderReturn = (() => void) | null
+export type UseCancelOrderReturn = Nullable<Command>
 
 /**
  *

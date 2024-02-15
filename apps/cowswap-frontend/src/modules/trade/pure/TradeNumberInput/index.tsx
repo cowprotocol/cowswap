@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import { Command } from '@cowprotocol/common-const'
 
 import BigNumberJs from 'bignumber.js'
 import SVG from 'react-inlinesvg'
@@ -33,8 +34,8 @@ export interface TradeNumberInputProps extends TradeWidgetFieldProps {
 }
 
 type InputArrowsProps = {
-  onClickUp: () => void
-  onClickDown: () => void
+  onClickUp: Command
+  onClickDown: Command
 }
 
 export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {

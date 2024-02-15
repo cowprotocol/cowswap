@@ -1,7 +1,9 @@
+import { Command } from '@cowprotocol/common-const'
+
 import { LinkStyledButton } from 'legacy/theme'
 
 export type CancelButtonProps = {
-  onClick: () => void
+  onClick: Command
 }
 
 export function CancelButton({ onClick }: CancelButtonProps) {

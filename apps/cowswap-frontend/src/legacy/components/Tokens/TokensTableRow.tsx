@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
+import { GP_VAULT_RELAYER, Nullable, TokenWithLogo, Command } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -41,8 +41,8 @@ type DataRowParams = {
   index: number
   balance?: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
-  closeApproveModal: () => void
-  toggleWalletModal: (() => void) | null
+  closeApproveModal: Command
+  toggleWalletModal: Nullable<Command>
 }
 
 export const TokensTableRow = ({

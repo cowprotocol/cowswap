@@ -6,6 +6,8 @@ import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 function MenuImage(props: MenuImageProps): JSX.Element | null {
   const { title, iconSVG, icon } = props
 
@@ -20,7 +22,7 @@ function MenuImage(props: MenuImageProps): JSX.Element | null {
 
 interface InternalExternalLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   link: MenuLink
-  handleMobileMenuOnClick?: () => void
+  handleMobileMenuOnClick?: Command
 }
 
 export default function InternalExternalMenuLink({

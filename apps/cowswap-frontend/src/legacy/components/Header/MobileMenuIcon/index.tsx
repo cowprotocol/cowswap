@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
@@ -60,13 +61,12 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
       }
     `};
 `
-
 interface IconProps {
   isMobileMenuOpen: boolean
   width?: number
   height?: number
   lineSize?: number
-  onClick?: () => void
+  onClick?: Command
 }
 
 export default function MobileMenuIcon(params: IconProps) {

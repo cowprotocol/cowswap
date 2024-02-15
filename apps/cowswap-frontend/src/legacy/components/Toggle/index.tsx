@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'
@@ -89,12 +90,11 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
     }
   }
 `
-
 export interface ToggleProps extends WithClassName {
   id?: string
   bgColor?: string
   isActive: boolean
-  toggle: () => void
+  toggle: Command
   isDisabled?: boolean // Mod
 }
 

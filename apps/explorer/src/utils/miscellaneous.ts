@@ -6,6 +6,8 @@ import { Network, Unpromise } from 'types'
 import { AssertionError } from 'assert'
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 const toChecksumAddress = Web3.utils.toChecksumAddress
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
@@ -25,7 +27,7 @@ let debugEnabled = process.env.NODE_ENV === 'development'
 
 declare global {
   interface Window {
-    toggleDebug: () => void
+    toggleDebug: Command
   }
 }
 

@@ -4,6 +4,7 @@ import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
 import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
 import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
 import TSIcon from '@cowprotocol/assets/cow-swap/ts.svg'
+import { Command } from '@cowprotocol/common-const'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import { Tab } from '@mui/material'
@@ -83,7 +84,7 @@ export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
   defaultPalette: ColorPalette
   open: boolean
-  handleClose: () => void
+  handleClose: Command
 }
 
 export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps) {

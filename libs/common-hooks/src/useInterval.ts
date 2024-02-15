@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Command } from '@cowprotocol/common-const'
 
 /**
  * Invokes callback repeatedly over an interval defined by the delay
@@ -6,8 +7,8 @@ import { useEffect, useRef } from 'react'
  * @param delay if null, the callback will not be invoked
  * @param leading if true, the callback will be invoked immediately (on the leading edge); otherwise, it will be invoked after delay
  */
-export function useInterval(callback: () => void, delay: null | number, leading = true) {
-  const savedCallback = useRef<() => void>()
+export function useInterval(callback: Command, delay: null | number, leading = true) {
+  const savedCallback = useRef<Command>()
 
   // Remember the latest callback.
   useEffect(() => {

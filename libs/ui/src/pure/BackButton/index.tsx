@@ -3,8 +3,9 @@ import { useEffect } from 'react'
 import { ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 import { UI } from '../../enum'
+import { Command } from '@cowprotocol/common-const'
 
-const BackIcon = styled(ArrowLeft)<{ onClick: () => void }>`
+const BackIcon = styled(ArrowLeft)<{ onClick: Command }>`
   cursor: pointer;
   opacity: 1;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;

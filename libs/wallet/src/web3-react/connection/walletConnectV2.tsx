@@ -10,6 +10,7 @@ import { Web3ReactStore } from '@web3-react/types'
 import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
 
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
+import { Command } from '@cowprotocol/common-const'
 
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
@@ -86,7 +87,7 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
     return customProvider
   }
 
-  let onActivate: (() => void) | undefined
+  let onActivate: Command | undefined
 
   const proxyConnector = new Proxy(
     {},

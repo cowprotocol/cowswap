@@ -2,6 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
+
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
@@ -17,7 +19,7 @@ import {
   handleCloseOrderPopupAtom,
 } from '../../state/followPendingTxPopupAtom'
 
-export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {
+export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: Command } {
   const setShowFollowPendingTxPopup = useSetAtom(handleFollowPendingTxPopupAtom)
   const setLastOrderClosed = useSetAtom(handleCloseOrderPopupAtom)
   const lastPendingOrder = useRecentActivityLastPendingOrder()
@@ -34,7 +36,7 @@ export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose
 export function useCloseFollowTxPopupIfNotPendingOrder() {
   const showingPopup = useAtomValue(showFollowTxPopupAtom)
   const { lastPendingOrder, onClose } = useLastPendingOrder()
-  const onCloseRef = useRef<() => void>()
+  const onCloseRef = useRef<Command>()
 
   useEffect(() => {
     if (lastPendingOrder && showingPopup) {

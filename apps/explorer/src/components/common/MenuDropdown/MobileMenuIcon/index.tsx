@@ -2,6 +2,8 @@ import React from 'react'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { media } from 'theme/styles/media'
 
+import { Nullable, Command } from '@cowprotocol/common-const'
+
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;
   display: flex;
@@ -67,7 +69,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
 `
 interface IconProps {
   isMobileMenuOpen: boolean
-  onClick?: () => void
+  onClick?: Command
 }
 
 export default function MobileMenuIcon(params: IconProps): JSX.Element {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -14,11 +15,10 @@ type CustomDeadline = { hours: number; minutes: number }
 
 interface CustomDeadlineSelectorProps {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
   customDeadline: CustomDeadline
   selectCustomDeadline(deadline: CustomDeadline): void
 }
-
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline

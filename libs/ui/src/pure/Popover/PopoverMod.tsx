@@ -4,6 +4,7 @@ import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components'
+import { Command } from '@cowprotocol/common-const'
 
 import { PopoverContainerProps } from './index'
 
@@ -78,8 +79,8 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
 
 // TODO: reuse hook from @cowprotocol/common-hooks
 // Currently it's not possible because of dependency inversion
-function useInterval(callback: () => void, delay: null | number, leading = true) {
-  const savedCallback = useRef<() => void>()
+function useInterval(callback: Command, delay: null | number, leading = true) {
+  const savedCallback = useRef<Command>()
 
   // Remember the latest callback.
   useEffect(() => {

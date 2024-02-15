@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 export interface ModalState<T> {
   isModalOpen: boolean
   openModal: (context?: T) => void
-  closeModal: () => void
+  closeModal: Command
   context?: T
 }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { isMobile } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 
@@ -10,10 +11,9 @@ import styled from 'styled-components/macro'
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
 export * from './styled'
-
 interface ModalProps {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
   minHeight?: number | false
   maxHeight?: number
   initialFocusRef?: React.RefObject<any>

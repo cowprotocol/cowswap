@@ -3,6 +3,7 @@ import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { Order } from 'api/operator'
 
+import { Command } from '@cowprotocol/common-const'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
@@ -46,7 +47,7 @@ export type Props = StyledUserDetailsTableProps & {
 interface RowProps {
   order: Order
   isPriceInverted: boolean
-  invertLimitPrice: () => void
+  invertLimitPrice: Command
 }
 
 const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimitPrice }) => {

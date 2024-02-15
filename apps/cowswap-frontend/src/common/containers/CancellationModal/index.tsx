@@ -1,11 +1,13 @@
 import { useAtomValue } from 'jotai'
 
+import { Command } from '@cowprotocol/common-const'
+
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 
 export type CancellationModalProps = {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
 }
 
 export function CancellationModal(props: CancellationModalProps) {

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { Tooltip, TooltipProps } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
@@ -9,8 +10,8 @@ import { AutoColumn } from 'legacy/components/Column'
 import { StyledClose as IconClose } from 'legacy/components/Popups/styled'
 
 interface PopupContentProps {
-  onCheck: () => void
-  onClose: () => void
+  onCheck: Command
+  onClose: Command
 }
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 

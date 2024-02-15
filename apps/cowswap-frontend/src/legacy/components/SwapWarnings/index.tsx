@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
@@ -137,7 +138,7 @@ export type WarningProps = {
   trade?: TradeGp
   acceptedStatus?: boolean
   className?: string
-  acceptWarningCb?: () => void
+  acceptWarningCb?: Command
   hide?: boolean
 } & HighFeeContainerProps
 

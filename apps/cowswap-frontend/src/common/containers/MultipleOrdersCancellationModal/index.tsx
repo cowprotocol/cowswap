@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
+import { Command } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -14,10 +15,9 @@ import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
-
 interface Props {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
 }
 
 export function MultipleOrdersCancellationModal(props: Props) {
