@@ -11,7 +11,14 @@ export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string
     (tokenAddressOrSymbol: string | null | undefined) => {
       if (!tokenAddressOrSymbol || isAddress(tokenAddressOrSymbol)) return false
 
-      return tokensBySymbol[tokenAddressOrSymbol.toLowerCase()]?.length > 1
+      const tokens = tokensBySymbol[tokenAddressOrSymbol.toLowerCase()]
+      const hasDuplications = tokens?.length > 1
+
+      if (hasDuplications) {
+        console.debug('There are tokens with the same symbol:', tokens)
+      }
+
+      return hasDuplications
     },
     [tokensBySymbol]
   )
