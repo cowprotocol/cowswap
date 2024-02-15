@@ -2,7 +2,23 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
+export function SideMenu({
+  longList,
+  children,
+  className,
+}: {
+  longList?: boolean
+  className?: string
+  children: JSX.Element
+}) {
+  return (
+    <Wrapper longList={longList} className={className}>
+      <div>{children}</div>
+    </Wrapper>
+  )
+}
+
+const Wrapper = styled.div<{ longList?: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 16px;
@@ -16,13 +32,22 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   width: 100%;
   padding: 38px 0 0;
 
-  ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-  padding: 0;
-  margin: 0;
-  position: relative;
-`}
+  ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+    padding: 0;
+    margin: 0;
+    position: relative;
+  `}
 
-  > ul {
+  > div {
+    height: 90vh;
+    overflow-y: scroll;
+
+    ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+      height: auto;
+    `}
+  }
+
+  > div > ul {
     display: flex;
     flex-flow: column wrap;
     list-style: none;
@@ -30,45 +55,45 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     padding: 0;
     font-size: inherit;
 
-    ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
+    ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
     background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 16px;
     padding: 12px;
     margin: 0 0 24px;
-  `}
-  }
+    `}
 
-  > ul > li {
-    width: 100%;
-  }
+    > li {
+      width: 100%;
 
-  > ul > li > a {
-    margin: 4px 0;
-    padding: 12px;
-    border-radius: 6px;
-    width: 100%;
-    text-decoration: none;
-    color: inherit;
-    opacity: 0.65;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-    display: block;
+      > a {
+        margin: 4px 0;
+        padding: 12px;
+        border-radius: 6px;
+        width: 100%;
+        text-decoration: none;
+        color: inherit;
+        opacity: 0.65;
+        transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+        display: block;
 
-    ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-    margin: 0;
-  `}
+        ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+          margin: 0;
+        `}
 
-    &:hover,
-    &.active {
-      opacity: 1;
-    }
+        &:hover,
+        &.active {
+          opacity: 1;
+        }
 
-    &.active {
-      font-weight: 600;
+        &.active {
+          font-weight: 600;
 
-      ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-        background: var(${UI.COLOR_TEXT_OPACITY_10});
-        border-radius: 16px;
-      `}
+          ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+            background: var(${UI.COLOR_TEXT_OPACITY_10});
+            border-radius: 16px;
+          `}
+        }
+      }
     }
   }
 `

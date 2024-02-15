@@ -1,9 +1,11 @@
+import { PageWithToC } from 'legacy/components/PageWithToC'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { ExternalLinkFaq, Wrapper } from './styled'
+import { ExternalLinkFaq } from './styled'
 import ToC from './ToC'
 
 import { Footer } from '.'
@@ -13,7 +15,7 @@ export default function EthFlowFAQ() {
 
   return (
     <>
-      <Wrapper ref={faqRef}>
+      <PageWithToC ref={faqRef}>
         <PageTitle title="Selling Native tokens (ETH, xDAI) " />
         <FaqMenu />
         <Page>
@@ -343,7 +345,7 @@ export default function EthFlowFAQ() {
             <Footer />
           </Content>
         </Page>
-      </Wrapper>
+      </PageWithToC>
     </>
   )
 }
