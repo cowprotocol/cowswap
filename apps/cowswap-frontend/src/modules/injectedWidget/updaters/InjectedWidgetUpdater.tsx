@@ -53,10 +53,6 @@ export function InjectedWidgetUpdater() {
   const processEvent = useCallback(
     (method: string, data: any) => {
       switch (method) {
-        case WidgetMethodsListen.CONNECT_TO_PROVIDER:
-          console.log('CONNECT_TO_PROVIDER - TODO')
-          break
-
         case WidgetMethodsListen.UPDATE_PARAMS:
           if (prevData.current && deepEqual(prevData.current, data)) return
 

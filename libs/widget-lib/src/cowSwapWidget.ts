@@ -112,9 +112,6 @@ function updateProvider(
     providerBridge.onConnect(newProvider)
   }
 
-  // Tell app to connect to the provider
-  connectToProvider(iframe)
-
   return providerBridge
 }
 
@@ -155,16 +152,6 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
       provider: undefined,
     },
   })
-}
-
-/**
- * Instructs the widget, it should attempt a connection to the provider.
- *
- * @param params - New params for the widget.
- * @param contentWindow - Window object of the widget's iframe.
- */
-function connectToProvider(contentWindow: Window) {
-  postMessageToIframe(contentWindow, WidgetMethodsListen.CONNECT_TO_PROVIDER)
 }
 
 /**

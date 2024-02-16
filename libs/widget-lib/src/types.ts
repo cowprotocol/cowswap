@@ -215,7 +215,6 @@ export enum WidgetMethodsEmit {
 
 export enum WidgetMethodsListen {
   UPDATE_PARAMS = 'update',
-  CONNECT_TO_PROVIDER = 'connectToProvider',
   UPDATE_APP_DATA = 'metaData',
 }
 
@@ -227,7 +226,6 @@ export interface WidgetMethodsEmitPayloadMap {
 }
 
 export interface WidgetMethodsListenPayloadMap {
-  [WidgetMethodsListen.CONNECT_TO_PROVIDER]: void
   [WidgetMethodsListen.UPDATE_APP_DATA]: void
   [WidgetMethodsListen.UPDATE_PARAMS]: void
 }
