@@ -26,7 +26,7 @@ export function getDefaultLimitOrdersState(
     ...getDefaultTradeRawState(chainId),
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
-    orderKind: OrderKind.BUY,
+    orderKind: OrderKind.SELL,
     isUnlocked,
   }
 }
