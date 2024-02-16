@@ -4,10 +4,13 @@ import { useFetchFile } from '@cowprotocol/common-hooks'
 import { Loader } from '@cowprotocol/ui'
 
 import ReactMarkdown, { Components } from 'react-markdown'
+import { useLocation } from 'react-router'
 import remarkGfm from 'remark-gfm'
 import { WithClassName } from 'types'
 
 import { Page, Title, Content } from 'modules/application/pure/Page'
+
+import { scrollToElement } from 'common/utils/scrollToElement'
 
 import { BackToTopButton } from './BackToTopButton'
 import { markdownComponents } from './components'
@@ -25,14 +28,28 @@ interface MarkdownParams extends WithClassName {
 export function MarkdownPage({ contentFile, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(contentFile)
   const [contentHeadings, setContentHeadings] = useState<ContentHeading[] | null>(null)
+  const { hash } = useLocation()
 
-  const ref = useCallback((node: HTMLDivElement) => {
-    if (node !== null) {
-      setContentHeadings(deriveHeading(node, 'h2'))
-    } else {
-      setContentHeadings([])
-    }
-  }, [])
+  const ref = useCallback(
+    (node: HTMLDivElement) => {
+      if (node !== null) {
+        setContentHeadings(deriveHeading(node, 'h2'))
+
+        // Scroll to anchor if hash is present
+        // Timeout is needed to wait for the content to be rendered
+        setTimeout(() => {
+          const anchor = document.getElementById(hash.slice(1))
+
+          if (anchor) {
+            scrollToElement(anchor)
+          }
+        }, 100)
+      } else {
+        setContentHeadings([])
+      }
+    },
+    [hash]
+  )
 
   return (
     <PageWithToC longList={true}>

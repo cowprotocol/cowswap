@@ -2,7 +2,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import HashLink from 'legacy/components/HashLink'
 
-const SCROLL_OFFSET = 24
+import { scrollToElement } from 'common/utils/scrollToElement'
 
 export interface LinkRendererProps {
   href: string
@@ -26,13 +26,8 @@ export function Link(props: LinkRendererProps) {
 export function LinkScrollable(props: LinkRendererProps): JSX.Element {
   const { children, smooth = true, ...otherProps } = props
 
-  const scrollWithOffset = (el: HTMLElement) => {
-    const yCoordinate = el.getBoundingClientRect().top + window.pageYOffset
-    window.scrollTo({ top: yCoordinate - SCROLL_OFFSET, behavior: 'smooth' })
-  }
-
   return (
-    <Link smooth={smooth} {...otherProps} scroll={scrollWithOffset}>
+    <Link smooth={smooth} {...otherProps} scroll={scrollToElement}>
       {children}
     </Link>
   )
