@@ -79,7 +79,8 @@ export function LimitOrdersWidget() {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const widgetActions = useLimitOrdersWidgetActions()
 
-  const { showRecipient, expertMode: isExpertMode } = settingsState
+  const { showRecipient: showRecipientSetting, expertMode: isExpertMode } = settingsState
+  const showRecipient = showRecipientSetting || !!recipient
 
   const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
