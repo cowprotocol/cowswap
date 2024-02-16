@@ -139,21 +139,16 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
-  contentWindow.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: WidgetMethodsListen.UPDATE_PARAMS,
-      urlParams: {
-        pathname,
-        search,
-      },
-      appParams: {
-        ...params,
-        provider: undefined,
-      },
+  postMessageToIframe(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+    urlParams: {
+      pathname,
+      search,
     },
-    '*'
-  )
+    appParams: {
+      ...params,
+      provider: undefined,
+    },
+  })
 }
 
 /**
@@ -163,13 +158,7 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
  * @param contentWindow - Window object of the widget's iframe.
  */
 function connectToProvider(contentWindow: Window) {
-  contentWindow.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: WidgetMethodsListen.CONNECT_TO_PROVIDER,
-    },
-    '*'
-  )
+  postMessageToIframe(contentWindow, WidgetMethodsListen.CONNECT_TO_PROVIDER)
 }
 
 /**
@@ -184,14 +173,9 @@ function sendAppCode(contentWindow: Window, appCode: string | undefined) {
       return
     }
 
-    contentWindow.postMessage(
-      {
-        key: COW_SWAP_WIDGET_EVENT_KEY,
-        method: WidgetMethodsListen.UPDATE_APP_DATA,
-        metaData: appCode ? { appCode } : undefined,
-      },
-      '*'
-    )
+    postMessageToIframe(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
+      metaData: appCode ? { appCode } : undefined,
+    })
   })
 }
 
@@ -209,4 +193,16 @@ function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_H
 
     iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
+}
+
+function postMessageToIframe(contentWindow: Window, method: WidgetMethodsListen, payload?: unknown) {
+  const data = typeof payload === 'object' ? payload : {}
+  contentWindow.postMessage(
+    {
+      key: COW_SWAP_WIDGET_EVENT_KEY,
+      method,
+      ...data,
+    },
+    '*'
+  )
 }
