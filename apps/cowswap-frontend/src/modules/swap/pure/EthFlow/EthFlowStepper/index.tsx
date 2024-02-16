@@ -101,7 +101,7 @@ export const Progress = styled.div<ProgressProps>`
   border-radius: var(--height);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    --height: 50px;
+    --height: 30px;
     --width: 3px;
     border-radius: var(--width);
     margin: 24px auto;

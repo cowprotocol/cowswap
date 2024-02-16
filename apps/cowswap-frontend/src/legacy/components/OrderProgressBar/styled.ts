@@ -22,13 +22,11 @@ export const ProgressBarWrapper = animated(styled.div`
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 18px;
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    padding: 24px 10px 0;
   `};
 `)
 

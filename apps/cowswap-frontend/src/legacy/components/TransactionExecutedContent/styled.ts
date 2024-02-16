@@ -21,6 +21,7 @@ export const ExecutedWrapper = styled.div`
     > a {
       text-decoration: underline;
       display: block;
+      margin: 0;
     }
   }
 `
