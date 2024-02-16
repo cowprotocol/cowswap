@@ -37,10 +37,17 @@ export function useUpdateCurrencyAmount() {
         outputCurrency,
       })
 
+      const inputCurrencyAmount = FractionUtils.serializeFractionToJSON(
+        field === Field.INPUT ? amount : calculatedAmount
+      )
+      const outputCurrencyAmount = FractionUtils.serializeFractionToJSON(
+        field === Field.OUTPUT ? amount : calculatedAmount
+      )
+
       const update: Partial<Writeable<LimitOrdersRawState>> = {
         orderKind,
-        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.INPUT ? amount : calculatedAmount),
-        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.OUTPUT ? amount : calculatedAmount),
+        ...(inputCurrencyAmount ? { inputCurrencyAmount } : undefined),
+        ...(outputCurrencyAmount ? { outputCurrencyAmount } : undefined),
       }
 
       updateLimitOrdersState(update)
