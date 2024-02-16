@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/types'
 import { RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
@@ -130,7 +131,7 @@ const Settings = styled(SettingsMod)`
 `
 
 export interface SettingsButtonProps {
-  toggleSettings: () => void
+  toggleSettings: Command
   expertMode: boolean
 }
 

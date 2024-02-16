@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -21,8 +22,7 @@ import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveB
 
 import * as styledEl from './styled'
 
-export type HandleSwapCallback = () => void
-
+export type HandleSwapCallback = Command
 export interface SwapButtonsContext {
   swapButtonState: SwapButtonState
   chainId: number | undefined
@@ -30,9 +30,9 @@ export interface SwapButtonsContext {
   handleSwap: HandleSwapCallback
   inputAmount: CurrencyAmount<Currency> | undefined
   onWrapOrUnwrap: WrapUnwrapCallback | null
-  onEthFlow: () => void
-  openSwapConfirm: () => void
-  toggleWalletModal: (() => void) | null
+  onEthFlow: Command
+  openSwapConfirm: Command
+  toggleWalletModal: Command | null
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void

@@ -1,7 +1,6 @@
 import { TransactionReceipt } from 'web3-core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export type Command = () => void
 export type AnyFunction = (...args: unknown[]) => unknown
 export type Mutation<T> = (original: T) => T
 export type Unpromise<T> = T extends Promise<infer U> ? U : T

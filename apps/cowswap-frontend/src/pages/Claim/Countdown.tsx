@@ -1,6 +1,8 @@
 // Sort of a mod of but not quite from src/pages/Earn/Countdown.tsx
 import { useEffect, useState } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 const MINUTE = 60
 const HOUR = MINUTE * 60
 const DAY = HOUR * 24
@@ -9,7 +11,6 @@ export type Props = {
   start: number
   end: number
 }
-
 /**
  * Copied over from src/pages/Earn/Countdown.tsx and heavily modified it
  *
@@ -22,7 +23,7 @@ export function Countdown({ start, end }: Props) {
   // get current time, store as seconds because 🤷
   const [time, setTime] = useState(() => Math.floor(Date.now() / 1000))
 
-  useEffect((): (() => void) | void => {
+  useEffect((): Command | void => {
     // we only need to tick if not ended yet
     if (time <= end / 1000) {
       const timeout = setTimeout(() => setTime(Math.floor(Date.now() / 1000)), 1000)

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
@@ -21,7 +22,7 @@ export type RequestCancellationModalProps = {
   summary?: string
   shortId: string
   defaultType: CancellationType
-  onDismiss: () => void
+  onDismiss: Command
   triggerCancellation: (type: CancellationType) => void
   txCost: BigNumber | null
   nativeCurrency: TokenWithLogo

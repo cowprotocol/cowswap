@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
@@ -20,7 +21,7 @@ export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback
   wrap: WrapUnwrapCallback | null
   directSwap: HandleSwapCallback
-  dismiss: () => void
+  dismiss: Command
 }
 
 export interface EthFlowActions {

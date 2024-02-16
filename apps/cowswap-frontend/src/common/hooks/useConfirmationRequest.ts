@@ -2,6 +2,8 @@ import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { t } from '@lingui/macro'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
@@ -13,9 +15,8 @@ type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
   'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
 >
-
 interface ConfirmationModalContext {
-  onDismiss: () => void
+  onDismiss: Command
   activePromise?: Promise<boolean>
   title: string
   callToAction: string
@@ -23,7 +24,7 @@ interface ConfirmationModalContext {
   warning?: string
   confirmWord: string
   action: string
-  onEnable: () => void
+  onEnable: Command
   skipInput?: boolean
   triggerConfirmation: ({
     title,

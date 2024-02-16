@@ -3,6 +3,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 
 import { UI } from '@cowprotocol/ui'
+import { Command } from '@cowprotocol/types'
 
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
 
@@ -101,7 +102,7 @@ export interface ConnectWalletOptionProps {
   link?: string | null
   clickable?: boolean
   size?: number | null
-  onClick?: null | (() => void)
+  onClick?: Command | null
   color: string
   header: React.ReactNode
   subheader?: React.ReactNode

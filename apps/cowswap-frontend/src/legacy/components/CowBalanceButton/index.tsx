@@ -1,4 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { TokenAmount } from '@cowprotocol/ui'
 
@@ -72,11 +73,10 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     `};
   }
 `
-
 interface CowBalanceButtonProps {
   account?: string | null | undefined
   chainId: ChainId | undefined
-  onClick?: () => void
+  onClick?: Command
   isUpToSmall?: boolean
 }
 

@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +11,7 @@ import { StepsWrapper } from './styled'
 import { StepsIconWrapper } from './styled'
 
 interface ConfirmationPendingContentProps {
-  onDismiss: () => void
+  onDismiss: Command
   title: ReactNode
   description: ReactNode
   operationLabel: string

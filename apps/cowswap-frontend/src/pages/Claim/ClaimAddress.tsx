@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import Circle from '@cowprotocol/assets/images/blue-loader.svg'
 import { useENS } from '@cowprotocol/ens'
+import { Command } from '@cowprotocol/types'
 import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -14,7 +15,7 @@ import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
-  toggleWalletModal: (() => void) | null
+  toggleWalletModal: Command | null
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {

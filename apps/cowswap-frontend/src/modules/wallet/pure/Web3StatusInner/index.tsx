@@ -1,4 +1,5 @@
 import { shortenAddress } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 
@@ -16,7 +17,7 @@ export interface Web3StatusInnerProps {
   chainId?: number
   pendingCount: number
   error?: string
-  connectWallet: (() => void) | null
+  connectWallet: Command | null
   connectionType: ConnectionType
   ensName?: string | null
 }

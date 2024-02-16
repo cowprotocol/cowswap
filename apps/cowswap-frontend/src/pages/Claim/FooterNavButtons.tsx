@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'
@@ -22,8 +23,8 @@ type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
     isPaidClaimsOnly: boolean
     resolvedAddress: string | null
-    handleSubmitClaim: () => void
-    handleCheckClaim: () => void
+    handleSubmitClaim: Command
+    handleCheckClaim: Command
   }
 
 export default function FooterNavButtons({

@@ -8,6 +8,7 @@ import {
   getExplorerAddressLink,
   isMobile,
 } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
@@ -80,9 +81,9 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: (() => void) | null
-  toggleAccountSelectorModal: () => void
-  handleCloseOrdersPanel: () => void
+  toggleWalletModal: Command | null
+  toggleAccountSelectorModal: Command
+  handleCloseOrdersPanel: Command
 }
 
 export function AccountDetails({

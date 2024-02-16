@@ -22,6 +22,7 @@ import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/Explo
 
 import { FillsTableWithData } from './FillsTableWithData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { Command } from '@cowprotocol/types'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -84,7 +85,7 @@ const tabItems = (
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
   isPriceInverted: boolean,
-  invertPrice: () => void
+  invertPrice: Command
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
