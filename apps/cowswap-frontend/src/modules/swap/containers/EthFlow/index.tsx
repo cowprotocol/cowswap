@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -24,13 +25,12 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
   wrapCallback: WrapUnwrapCallback | null
   directSwapCallback: HandleSwapCallback
-  onDismiss: () => void
+  onDismiss: Command
 }
 
 export function EthFlowModal({

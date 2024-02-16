@@ -7,6 +7,7 @@ import { t } from '@lingui/macro'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -26,6 +27,8 @@ import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
+  const injectedWidgetParams = useInjectedWidgetParams()
+
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
@@ -87,7 +90,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-          {isInjectedWidgetMode && (
+          {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
           {!lockScreen && settingsWidget}

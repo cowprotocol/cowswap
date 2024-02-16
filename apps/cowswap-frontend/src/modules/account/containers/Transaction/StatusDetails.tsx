@@ -5,6 +5,7 @@ import OrderOpenImage from '@cowprotocol/assets/cow-swap/order-open.svg'
 import PresignaturePendingImage from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
+import { Command } from '@cowprotocol/types'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -50,7 +51,7 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
 export type StatusDetailsProps = {
   chainId: number
   activityDerivedState: ActivityDerivedState
-  showCancellationModal: (() => void) | null
+  showCancellationModal: Command | null
 }
 
 export function StatusDetails(props: StatusDetailsProps) {

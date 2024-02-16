@@ -1,4 +1,5 @@
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
@@ -14,7 +15,7 @@ export type BulletListItem = {
 type UnlockWidgetProps = {
   id: string
   items: BulletListItem[]
-  handleUnlock: () => void
+  handleUnlock: Command
   title: string
   subtitle: string
   buttonLink?: string

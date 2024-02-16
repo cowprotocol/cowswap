@@ -7,6 +7,7 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -30,14 +31,13 @@ export interface WrapDescription {
   operationMessage: string
   summary: string
 }
-
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
-  closeModals: () => void
-  openTransactionConfirmationModal: () => void
+  closeModals: Command
+  openTransactionConfirmationModal: Command
 }
 
 export async function wrapUnwrapCallback(

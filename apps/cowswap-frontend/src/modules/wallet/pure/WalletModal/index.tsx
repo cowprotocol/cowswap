@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/types'
 import { AutoRow } from '@cowprotocol/ui'
 import { Connector } from '@web3-react/types'
 
@@ -20,10 +21,10 @@ export type WalletModalView = 'options' | 'account' | 'pending'
 
 interface WalletModalProps {
   isOpen: boolean
-  toggleModal: () => void
+  toggleModal: Command
   view: WalletModalView
-  openOptions: () => void
-  tryConnection: () => void
+  openOptions: Command
+  tryConnection: Command
   pendingError: string | undefined
 
   // TODO: Remove dependency web3-react

@@ -9,10 +9,12 @@ import { TokenAmount } from 'components/token/TokenAmount'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { Command } from '@cowprotocol/types'
+
 export type Props = {
   order: Order
   isPriceInverted?: boolean
-  invertPrice?: () => void
+  invertPrice?: Command
   fullView?: boolean
   lineBreak?: boolean
 }

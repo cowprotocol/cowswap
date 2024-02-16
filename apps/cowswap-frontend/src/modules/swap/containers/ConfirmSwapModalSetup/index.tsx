@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
@@ -30,7 +31,6 @@ export interface ConfirmSwapModalSetupProps {
   refreshInterval: number
   doTrade(): void
 }
-
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
     props
@@ -45,7 +45,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
-  const submittedContent = (order: Order | undefined, onDismiss: () => void) => {
+  const submittedContent = (order: Order | undefined, onDismiss: Command) => {
     const activity = createActivityDescriptor(undefined, order)
     const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
 

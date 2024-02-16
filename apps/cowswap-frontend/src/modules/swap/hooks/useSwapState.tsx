@@ -8,6 +8,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -49,10 +50,9 @@ export function useSwapState(): AppState['swap'] {
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
-
 export interface SwapActions {
   onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: () => void
+  onSwitchTokens: Command
   onUserInput: (field: Field, typedValue: string) => void
   onChangeRecipient: (recipient: string | null) => void
 }

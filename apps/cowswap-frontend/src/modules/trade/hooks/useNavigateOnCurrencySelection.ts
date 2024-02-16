@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
@@ -14,7 +15,7 @@ import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
-  stateUpdateCallback?: () => void,
+  stateUpdateCallback?: Command,
   searchParams?: TradeSearchParams
 ) => void
 
@@ -43,7 +44,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
-    (field: Field, currency: Currency | null, stateUpdateCallback?: () => void, searchParams?: TradeSearchParams) => {
+    (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
       if (!state) return
 
       const { inputCurrencyId, outputCurrencyId } = state

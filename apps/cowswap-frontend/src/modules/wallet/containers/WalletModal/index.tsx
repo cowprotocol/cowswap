@@ -55,6 +55,7 @@ export function WalletModal() {
   useEffect(() => {
     if (
       walletModalOpen &&
+      toggleWalletModal &&
       ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))
     ) {
       setWalletView('account')
@@ -111,6 +112,10 @@ export function WalletModal() {
     },
     [chainId, dispatch, toggleAccountSelectorModal]
   )
+
+  if (!toggleWalletModal) {
+    return null
+  }
 
   return (
     <WalletModalPure
