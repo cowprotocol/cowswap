@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 export const TooltipContainer = styled.div`
   max-width: 320px;

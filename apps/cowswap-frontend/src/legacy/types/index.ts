@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 export interface WithClassName {
   className?: string

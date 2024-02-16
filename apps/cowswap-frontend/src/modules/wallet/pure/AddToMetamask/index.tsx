@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { MetaMaskLogo } from '@cowprotocol/wallet'

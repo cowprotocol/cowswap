@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'

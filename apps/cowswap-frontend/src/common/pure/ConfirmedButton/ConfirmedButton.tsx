@@ -1,6 +1,6 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { ButtonError } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 

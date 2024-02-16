@@ -27,7 +27,7 @@ import DecodeAppData from 'components/AppData/DecodeAppData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {

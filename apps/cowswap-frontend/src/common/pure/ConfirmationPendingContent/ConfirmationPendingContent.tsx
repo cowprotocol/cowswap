@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'

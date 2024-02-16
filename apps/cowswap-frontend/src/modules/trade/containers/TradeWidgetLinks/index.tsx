@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { BadgeType } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 

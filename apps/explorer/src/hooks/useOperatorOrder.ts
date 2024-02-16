@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Order, getOrder, GetOrderParams } from 'api/operator'
 
 import { getShortOrderId, transformOrder } from 'utils'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { useNetworkId } from 'state/network'
 

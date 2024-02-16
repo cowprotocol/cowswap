@@ -6,7 +6,7 @@ import { Network, Unpromise } from 'types'
 import { AssertionError } from 'assert'
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const toChecksumAddress = Web3.utils.toChecksumAddress
 

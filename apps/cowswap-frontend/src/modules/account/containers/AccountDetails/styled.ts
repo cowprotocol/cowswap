@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'

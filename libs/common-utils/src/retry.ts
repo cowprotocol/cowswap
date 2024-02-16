@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))

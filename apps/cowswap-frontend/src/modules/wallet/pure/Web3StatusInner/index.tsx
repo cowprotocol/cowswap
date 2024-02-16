@@ -1,5 +1,5 @@
-import { Command } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 

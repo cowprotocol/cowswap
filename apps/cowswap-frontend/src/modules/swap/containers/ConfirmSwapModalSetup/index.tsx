@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'

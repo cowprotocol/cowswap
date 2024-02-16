@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import {
   Checkbox,

@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowprotocol/ui'
 import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'

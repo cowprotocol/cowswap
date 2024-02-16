@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
 import { V_COW } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
 import { useVCowContract } from '@cowprotocol/common-hooks'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'

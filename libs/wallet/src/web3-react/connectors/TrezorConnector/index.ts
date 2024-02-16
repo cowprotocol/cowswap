@@ -9,7 +9,7 @@ import type transformTypedData from '@trezor/connect-plugin-ethereum'
 import type { TrezorConnect } from '@trezor/connect-web'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { RPC_URLS } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const defaultChainId = getCurrentChainIdFromUrl()
 

@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'

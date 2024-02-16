@@ -10,7 +10,7 @@ import { Web3ReactStore } from '@web3-react/types'
 import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
 
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 

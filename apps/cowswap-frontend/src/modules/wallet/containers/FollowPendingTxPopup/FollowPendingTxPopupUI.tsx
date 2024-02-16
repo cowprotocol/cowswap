@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { Tooltip, TooltipProps } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'

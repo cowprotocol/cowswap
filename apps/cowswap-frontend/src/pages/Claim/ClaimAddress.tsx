@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import Circle from '@cowprotocol/assets/images/blue-loader.svg'
-import { Command } from '@cowprotocol/common-const'
 import { useENS } from '@cowprotocol/ens'
+import { Command } from '@cowprotocol/types'
 import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'

@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
@@ -9,6 +8,7 @@ import {
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
 import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'

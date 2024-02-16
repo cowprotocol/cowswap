@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 

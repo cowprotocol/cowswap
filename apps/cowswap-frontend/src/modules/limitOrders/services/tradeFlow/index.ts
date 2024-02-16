@@ -1,8 +1,8 @@
-import { Command } from '@cowprotocol/common-const'
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { Command } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { EVENT_EMITTER } from 'eventEmitter'

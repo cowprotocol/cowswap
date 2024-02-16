@@ -27,7 +27,7 @@ import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {

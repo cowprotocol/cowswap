@@ -4,7 +4,7 @@ import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { PopoverContainerProps } from './index'
 

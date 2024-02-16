@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { totalSurplusAtom, totalSurplusRefetchAtom } from './atoms'
 import { TotalSurplusState } from './types'

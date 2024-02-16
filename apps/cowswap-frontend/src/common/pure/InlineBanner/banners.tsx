@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 

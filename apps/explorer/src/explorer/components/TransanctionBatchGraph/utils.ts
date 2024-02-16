@@ -3,7 +3,7 @@ import React from 'react'
 import { LAYOUTS } from './layouts'
 import { PopperInstance } from './types'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 /**
  * This allows to bind a tooltip (popper.js) around to a cytoscape elements (node, edge)

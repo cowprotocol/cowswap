@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { ArrowLeft, Trash, X } from 'react-feather'

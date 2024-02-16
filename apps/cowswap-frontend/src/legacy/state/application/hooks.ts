@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'

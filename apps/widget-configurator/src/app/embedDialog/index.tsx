@@ -4,7 +4,7 @@ import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
 import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
 import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
 import TSIcon from '@cowprotocol/assets/cow-swap/ts.svg'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
 import { Tab } from '@mui/material'

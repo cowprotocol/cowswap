@@ -1,11 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER, TokenWithLogo, Command } from '@cowprotocol/common-const'
+import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'

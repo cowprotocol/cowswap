@@ -8,7 +8,7 @@ import useFirstRender from 'hooks/useFirstRender'
 import CowLoading from 'components/common/CowLoading'
 import FillsTable from './FillsTable'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 type Props = {
   areTokensLoaded: boolean

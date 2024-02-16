@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

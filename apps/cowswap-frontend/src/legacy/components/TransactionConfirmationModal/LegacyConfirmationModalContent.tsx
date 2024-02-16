@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { Text } from 'rebass'
 

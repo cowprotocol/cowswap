@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 

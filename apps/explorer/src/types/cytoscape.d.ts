@@ -1,7 +1,7 @@
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 import { Core } from 'types/cytoscape'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 // Type declaration to module augmentation
 declare module 'cytoscape' {

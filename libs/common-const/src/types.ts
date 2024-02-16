@@ -18,5 +18,3 @@ export class TokenWithLogo extends Token {
     super(chainId, address, decimals, symbol, name, bypassChecksum)
   }
 }
-
-export type Command = () => void

@@ -8,7 +8,6 @@ import {
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import {
   formatDateWithTimezone,
@@ -17,6 +16,7 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'

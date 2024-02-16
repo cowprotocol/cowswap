@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 
 import { UI } from '@cowprotocol/ui'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
 

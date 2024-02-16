@@ -13,7 +13,7 @@ import {
 } from './styled'
 import useOnClickOutside from '../../../../hooks/useOnClickOutside'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 export enum DropdownPosition {
   center,

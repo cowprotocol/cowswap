@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'

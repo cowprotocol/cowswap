@@ -8,7 +8,7 @@ import {
   RequestArguments,
 } from '@web3-react/types'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { IFrameEthereumProvider } from './IFrameEthereumProvider'
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 

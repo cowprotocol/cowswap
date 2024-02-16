@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { BackButton, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'

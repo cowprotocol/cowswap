@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { AutoRow } from '@cowprotocol/ui'
 import { Connector } from '@web3-react/types'
 

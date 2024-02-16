@@ -1,6 +1,6 @@
-import { Command } from '@cowprotocol/common-const'
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { CowEvents } from '@cowprotocol/events'
+import { Command } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 

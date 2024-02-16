@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'

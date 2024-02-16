@@ -22,7 +22,7 @@ import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/Explo
 
 import { FillsTableWithData } from './FillsTableWithData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};

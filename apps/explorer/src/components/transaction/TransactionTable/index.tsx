@@ -3,7 +3,7 @@ import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { Order } from 'api/operator'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'

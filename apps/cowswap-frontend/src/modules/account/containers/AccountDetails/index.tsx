@@ -1,7 +1,6 @@
 import { Fragment, useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
 import {
   getEtherscanLink,
   getExplorerLabel,
@@ -9,6 +8,7 @@ import {
   getExplorerAddressLink,
   isMobile,
 } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'

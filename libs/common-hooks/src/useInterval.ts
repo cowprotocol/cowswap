@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 /**
  * Invokes callback repeatedly over an interval defined by the delay

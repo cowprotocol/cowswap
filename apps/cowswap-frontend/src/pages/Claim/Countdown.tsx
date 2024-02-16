@@ -1,7 +1,7 @@
 // Sort of a mod of but not quite from src/pages/Earn/Countdown.tsx
 import { useEffect, useState } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const MINUTE = 60
 const HOUR = MINUTE * 60

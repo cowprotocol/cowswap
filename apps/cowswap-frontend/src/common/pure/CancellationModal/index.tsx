@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { shortenOrderId } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 import { CowModal as Modal } from 'common/pure/Modal'

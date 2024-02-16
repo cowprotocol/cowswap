@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { getIsMetaMask, getWeb3ReactConnection, injectedConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import BigNumberJs from 'bignumber.js'
 import SVG from 'react-inlinesvg'

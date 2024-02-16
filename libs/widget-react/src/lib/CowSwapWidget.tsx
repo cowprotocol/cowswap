@@ -14,7 +14,7 @@ export interface CowSwapWidgetProps {
   listeners?: CowEventListeners
 }
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)

@@ -1,4 +1,4 @@
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 

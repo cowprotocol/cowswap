@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'

@@ -2,8 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { Command } from '@cowprotocol/common-const'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
