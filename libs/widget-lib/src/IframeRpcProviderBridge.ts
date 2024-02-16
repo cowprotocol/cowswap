@@ -38,25 +38,26 @@ export class IframeRpcProviderBridge {
 
   /**
    * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
-   * @param ethereumProvider - The Ethereum provider to connect.
+   * @param newProvider - The Ethereum provider to connect.
    */
-  onConnect(ethereumProvider: EthereumProvider) {
+  onConnect(newProvider: EthereumProvider) {
+    // Disconnect the previous provider
     if (this.ethereumProvider) {
       this.disconnect()
+    } else {
+      // Listen for messages coming to the main window (from the iFrame window)
+      window.addEventListener('message', this.processRpcCallFromWindow)
     }
 
     // Save the provider
-    this.ethereumProvider = ethereumProvider
-
-    // Listen for messages coming to the main window (from the iFrame window)
-    window.addEventListener('message', this.processRpcCallFromWindow)
+    this.ethereumProvider = newProvider
 
     // Process pending requests
     this.processPendingRequests()
 
     // Register in the provider, the events that needs to be forwarded to the iFrame window
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-      ethereumProvider.on(event, (e: unknown) => this.onRpcEventForwardToIframe(event, e))
+      newProvider.on(event, (e: unknown) => this.onRpcEventForwardToIframe(event, e))
     })
   }
 

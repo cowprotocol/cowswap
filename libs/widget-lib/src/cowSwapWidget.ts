@@ -1,6 +1,6 @@
 import { CowEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import { CowSwapWidgetParams, EthereumProvider } from './types'
+import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 
@@ -106,6 +106,9 @@ function updateProvider(
     providerBridge.onConnect(newProvider)
   }
 
+  // Tell app to connect to the provider
+  connectToProvider(iframe)
+
   return providerBridge
 }
 
@@ -139,7 +142,7 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
   contentWindow.postMessage(
     {
       key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: 'update',
+      method: WidgetMethodsListen.UPDATE_PARAMS,
       urlParams: {
         pathname,
         search,
@@ -154,6 +157,22 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
 }
 
 /**
+ * Instructs the widget, it should attempt a connection to the provider.
+ *
+ * @param params - New params for the widget.
+ * @param contentWindow - Window object of the widget's iframe.
+ */
+function connectToProvider(contentWindow: Window) {
+  contentWindow.postMessage(
+    {
+      key: COW_SWAP_WIDGET_EVENT_KEY,
+      method: WidgetMethodsListen.CONNECT_TO_PROVIDER,
+    },
+    '*'
+  )
+}
+
+/**
  * Sends appCode to the contentWindow of the widget.
  *
  * @param contentWindow - Window object of the widget's iframe.
@@ -161,14 +180,14 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
  */
 function sendAppCode(contentWindow: Window, appCode: string | undefined) {
   window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== WidgetMethodsEmit.ACTIVATE) {
       return
     }
 
     contentWindow.postMessage(
       {
         key: COW_SWAP_WIDGET_EVENT_KEY,
-        method: 'metaData',
+        method: WidgetMethodsListen.UPDATE_APP_DATA,
         metaData: appCode ? { appCode } : undefined,
       },
       '*'
@@ -177,13 +196,14 @@ function sendAppCode(contentWindow: Window, appCode: string | undefined) {
 }
 
 /**
- * Applies dynamic height adjustments to the widget's iframe.
+ * Listens for iframeHeight emitted by the widget, and applies dynamic height adjustments to the widget's iframe.
+ *
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
  */
 function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
   window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'iframeHeight') {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== WidgetMethodsEmit.UPDATE_HEIGHT) {
       return
     }
 

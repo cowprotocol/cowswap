@@ -206,3 +206,15 @@ interface CowSwapWidgetConfig {
 }
 
 export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
+
+export enum WidgetMethodsEmit {
+  ACTIVATE = 'activate',
+  UPDATE_HEIGHT = 'iframeHeight',
+  EMIT_EVENT = 'event',
+}
+
+export enum WidgetMethodsListen {
+  UPDATE_PARAMS = 'update',
+  CONNECT_TO_PROVIDER = 'connectToProvider',
+  UPDATE_APP_DATA = 'metaData',
+}
