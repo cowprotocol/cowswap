@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { deepEqual } from '@cowprotocol/common-utils'
-import { WidgetMethodsEmit, WidgetMethodsListen } from '@cowprotocol/widget-lib'
+import { WidgetMethodsEmit, WidgetMethodsListen, postMessageToWindow } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -35,13 +35,7 @@ const cacheMessages = (event: MessageEvent) => {
 
   window.addEventListener('message', cacheMessages)
 
-  window.top.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: WidgetMethodsEmit.ACTIVATE,
-    },
-    '*'
-  )
+  postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
 })()
 
 export function InjectedWidgetUpdater() {
@@ -59,6 +53,8 @@ export function InjectedWidgetUpdater() {
           prevData.current = data
           updateParams(data.appParams)
           navigate(data.urlParams)
+
+          console.log('[TEST] UPDATE_PARAMS', data)
           break
 
         case WidgetMethodsListen.UPDATE_APP_DATA:
