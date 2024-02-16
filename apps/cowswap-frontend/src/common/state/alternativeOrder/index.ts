@@ -16,7 +16,7 @@ export function useUpdateAlternativeOrderModalVisible() {
   return useSetAtom(isAlternativeOrderModalVisibleAtom)
 }
 
-export function useGetAlternativeOrder() {
+export function useAlternativeOrder() {
   return useAtomValue(alternativeOrderAtom)
 }
 
