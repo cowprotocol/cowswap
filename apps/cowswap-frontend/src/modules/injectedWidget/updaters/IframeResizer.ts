@@ -1,5 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 
+import { WidgetMethodsEmit } from '@cowprotocol/widget-lib'
+
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 
 const TARGET_ORIGIN = '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
@@ -13,7 +15,7 @@ export function IframeResizer() {
       const contentHeight = document.body.scrollHeight
       if (contentHeight !== previousHeightRef.current) {
         window.parent.postMessage(
-          { key: COW_SWAP_WIDGET_EVENT_KEY, method: 'iframeHeight', height: contentHeight },
+          { key: COW_SWAP_WIDGET_EVENT_KEY, method: WidgetMethodsEmit.UPDATE_HEIGHT, height: contentHeight },
           TARGET_ORIGIN
         )
         previousHeightRef.current = contentHeight

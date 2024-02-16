@@ -1,4 +1,5 @@
 import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { WidgetMethodsEmit } from './types'
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
 export class IframeCowEventEmitter {
@@ -26,7 +27,7 @@ export class IframeCowEventEmitter {
   }
 
   private forwardEvents = (event: MessageEvent): void => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== WidgetMethodsEmit.EMIT_EVENT) {
       return
     }
     this.eventEmitter.emit(event.data.eventName, event.data.payload)

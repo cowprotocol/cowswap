@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { EVENT_EMITTER } from 'eventEmitter'
 
@@ -38,7 +39,7 @@ function forwardEventToIframe(event: CowEvents, payload: any) {
   window.parent.postMessage(
     {
       key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: 'event',
+      method: WidgetMethodsEmit.EMIT_EVENT,
       eventName: event,
       payload,
     },
