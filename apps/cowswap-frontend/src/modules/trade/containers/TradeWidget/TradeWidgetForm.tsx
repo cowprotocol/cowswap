@@ -16,6 +16,7 @@ import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
+import { useIsAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
 
 import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
@@ -29,6 +30,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
+  const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
@@ -79,7 +81,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl) {
+    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
