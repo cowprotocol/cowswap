@@ -98,7 +98,7 @@ export function TransactionSubmittedContent({
                 </a>
               )}
 
-              {activityDerivedState?.status === ActivityStatus.CONFIRMED && (
+              {activityDerivedState?.status === ActivityStatus.PENDING && (
                 <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
               )}
             </styledEl.ButtonGroup>
