@@ -11,7 +11,7 @@ import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL }
 import { ListState } from '../../types'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
@@ -69,6 +69,8 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
 
   // Check if a user is from US and use Uniswap list, because of the SEC regulations
   useEffect(() => {
+    if (isInjectedWidget()) return
+
     fetch('https://api.country.is')
       .then((res) => res.json())
       .then(({ country }) => {
