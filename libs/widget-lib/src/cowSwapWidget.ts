@@ -1,6 +1,12 @@
 import { CowEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
+import {
+  CowSwapWidgetParams,
+  EthereumProvider,
+  WidgetMethodsEmit,
+  WidgetMethodsEmitPayloadMap,
+  WidgetMethodsListen,
+} from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 
@@ -58,7 +64,7 @@ export function createCowSwapWidget(
   // 3. Post some initial messages to the iframe
   //    - Send appCode
   //    - Apply dynamic height adjustments
-  sendAppCode(iframeWindow, params.appCode)
+  sendAppCodeOnActivation(iframeWindow, params.appCode)
   applyDynamicHeight(iframe, params.height)
 
   // 4. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
@@ -162,17 +168,13 @@ function connectToProvider(contentWindow: Window) {
 }
 
 /**
- * Sends appCode to the contentWindow of the widget.
+ * Sends appCode to the contentWindow of the widget once the widget is activated.
  *
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
-function sendAppCode(contentWindow: Window, appCode: string | undefined) {
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== WidgetMethodsEmit.ACTIVATE) {
-      return
-    }
-
+function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
+  listenToMessageFromIframe(WidgetMethodsEmit.ACTIVATE, () => {
     postMessageToIframe(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
@@ -186,12 +188,8 @@ function sendAppCode(contentWindow: Window, appCode: string | undefined) {
  * @param defaultHeight - Default height for the widget.
  */
 function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== WidgetMethodsEmit.UPDATE_HEIGHT) {
-      return
-    }
-
-    iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+  listenToMessageFromIframe(WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+    iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
 }
 
@@ -205,4 +203,18 @@ function postMessageToIframe(contentWindow: Window, method: WidgetMethodsListen,
     },
     '*'
   )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function listenToMessageFromIframe<T extends WidgetMethodsEmit>(
+  method: T,
+  callback: (payload: WidgetMethodsEmitPayloadMap[T]) => void
+) {
+  window.addEventListener('message', (event) => {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== method) {
+      return
+    }
+
+    callback(event.data)
+  })
 }

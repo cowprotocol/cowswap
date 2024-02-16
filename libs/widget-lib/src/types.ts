@@ -140,7 +140,7 @@ interface CowSwapWidgetConfig {
 
   /**
    * Disables showing the toast messages.
-   * Some UI might want to disable it and subscribe to CowEvents.ON_TOAST_MESSAGE event to handle the toast messages itself.
+   * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.
    */
   disableToastMessages?: boolean
@@ -218,3 +218,29 @@ export enum WidgetMethodsListen {
   CONNECT_TO_PROVIDER = 'connectToProvider',
   UPDATE_APP_DATA = 'metaData',
 }
+
+// Define types for event payloads
+export interface WidgetMethodsEmitPayloadMap {
+  [WidgetMethodsEmit.ACTIVATE]: void
+  [WidgetMethodsEmit.EMIT_EVENT]: void
+  [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
+}
+
+export interface WidgetMethodsListenPayloadMap {
+  [WidgetMethodsListen.CONNECT_TO_PROVIDER]: void
+  [WidgetMethodsListen.UPDATE_APP_DATA]: void
+  [WidgetMethodsListen.UPDATE_PARAMS]: void
+}
+
+export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
+export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
+
+export interface UpdateWidgetHeightPayload {
+  height?: number
+}
+
+export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
+  ? { event: T; handler: WidgetMethodHandler<T> }
+  : never
+
+export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetMethodsEmitPayloadMap[T]) => void
