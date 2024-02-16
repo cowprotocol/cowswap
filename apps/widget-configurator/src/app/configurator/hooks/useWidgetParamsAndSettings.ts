@@ -61,8 +61,10 @@ export function useWidgetParamsAndSettings(
         info: themeColors.info,
         success: themeColors.success,
       },
+
+      hideConnectButton: true,
     }
 
     return params
-  }, [provider, configuratorState])
+  }, [configuratorState])
 }

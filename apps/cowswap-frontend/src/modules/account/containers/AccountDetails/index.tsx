@@ -80,7 +80,7 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: () => void
+  toggleWalletModal: (() => void) | null
   toggleAccountSelectorModal: () => void
   handleCloseOrdersPanel: () => void
 }
@@ -114,6 +114,8 @@ export function AccountDetails({
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
+
+  if (!toggleWalletModal) return null
 
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())

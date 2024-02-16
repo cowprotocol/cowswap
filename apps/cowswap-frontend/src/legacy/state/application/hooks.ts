@@ -1,8 +1,11 @@
 import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
+
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { addPopup, ApplicationModal, PopupContent, removePopup } from './reducer'
 
@@ -27,8 +30,19 @@ export function useCloseModal(_modal: ApplicationModal): () => void {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-export function useToggleWalletModal(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
+export function useToggleWalletModal(): (() => void) | null {
+  const { active } = useWalletInfo()
+  const { hideConnectButton } = useInjectedWidgetParams()
+
+  const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
+
+  return useMemo(() => {
+    if (!active || hideConnectButton) {
+      return null
+    }
+
+    return toggleWalletModal
+  }, [hideConnectButton, active, toggleWalletModal])
 }
 
 export function useToggleSettingsMenu(): () => void {

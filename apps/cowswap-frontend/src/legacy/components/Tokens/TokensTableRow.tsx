@@ -42,7 +42,7 @@ type DataRowParams = {
   balance?: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
   closeApproveModal: () => void
-  toggleWalletModal: () => void
+  toggleWalletModal: (() => void) | null
 }
 
 export const TokensTableRow = ({
@@ -82,7 +82,7 @@ export const TokensTableRow = ({
   const handleApprove = useCallback(async () => {
     handleCloseError()
 
-    if (!account) {
+    if (!account && toggleWalletModal) {
       toggleWalletModal()
       return
     }

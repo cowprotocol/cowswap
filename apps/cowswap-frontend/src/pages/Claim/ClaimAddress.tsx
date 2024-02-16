@@ -14,7 +14,7 @@ import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
-  toggleWalletModal: () => void
+  toggleWalletModal: (() => void) | null
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {
@@ -35,9 +35,6 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
 
     setInputAddress(withoutSpaces)
   }
-
-  // const buttonLabel =
-  // error instanceof UnsupportedChainIdError ? 'or connect a wallet in a supported network' : 'or connect a wallet'
 
   if (activeClaimAccount || claimStatus === ClaimStatus.CONFIRMED) return null
 
@@ -64,7 +61,9 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
         </InputErrorText>
       )}
 
-      {!account && <ButtonSecondary onClick={toggleWalletModal}>{/* <Trans>{buttonLabel}</Trans> */}</ButtonSecondary>}
+      {!account && toggleWalletModal && (
+        <ButtonSecondary onClick={toggleWalletModal}>or connect a wallet</ButtonSecondary>
+      )}
     </CheckAddress>
   )
 }
