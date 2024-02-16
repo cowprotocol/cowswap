@@ -63,6 +63,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
+  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
@@ -75,6 +77,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     onUserInput,
     allowsOffchainSigning,
     openTokenSelectWidget,
+    tokenSelectorDisabled: alternativeOrderModalVisible,
   }
 
   /**
@@ -117,10 +120,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               <CurrencyArrowSeparator
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
-                border={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                 withRecipient={withRecipient}
                 isLoading={isTradePriceUpdating}
+                disabled={isAlternativeOrderModalVisible}
               />
             </styledEl.CurrencySeparatorBox>
             <div>
