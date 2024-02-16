@@ -1,19 +1,9 @@
 import { CowEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import {
-  CowSwapWidgetParams,
-  EthereumProvider,
-  WidgetMethodsEmit,
-  WidgetMethodsEmitPayloadMap,
-  WidgetMethodsListen,
-} from './types'
+import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-
-/**
- * Key for identifying the event associated with the CoW Swap Widget.
- */
-const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
+import { listenToMessageFromWindow, postMessageToWindow } from './messages'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -72,7 +62,7 @@ export function createCowSwapWidget(
 
   // 5. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
-  const iFrameCowEventEmitter = new IframeCowEventEmitter(listeners)
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(iframeWindow, listeners)
 
   // 6. Return the handler, so the widget, listeners, and provider can be updated
   return {
@@ -142,7 +132,7 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
-  postMessageToIframe(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+  postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
       pathname,
       search,
@@ -161,8 +151,12 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-  listenToMessageFromIframe(WidgetMethodsEmit.ACTIVATE, () => {
-    postMessageToIframe(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
+  listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+    console.log(
+      '[TEST:Widget] Received WidgetMethodsEmit.ACTIVATE. Sending appCode to widget (WidgetMethodsListen.UPDATE_APP_DATA)',
+      appCode
+    )
+    postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
   })
@@ -175,33 +169,8 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * @param defaultHeight - Default height for the widget.
  */
 function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
-  listenToMessageFromIframe(WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+  listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+    // console.debug('[TEST:Widget] applyDynamicHeight', data)
     iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
-  })
-}
-
-function postMessageToIframe(contentWindow: Window, method: WidgetMethodsListen, payload?: unknown) {
-  const data = typeof payload === 'object' ? payload : {}
-  contentWindow.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method,
-      ...data,
-    },
-    '*'
-  )
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function listenToMessageFromIframe<T extends WidgetMethodsEmit>(
-  method: T,
-  callback: (payload: WidgetMethodsEmitPayloadMap[T]) => void
-) {
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== method) {
-      return
-    }
-
-    callback(event.data)
   })
 }

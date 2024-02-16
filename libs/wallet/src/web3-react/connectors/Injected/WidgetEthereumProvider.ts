@@ -1,27 +1,35 @@
-import { EventEmitter } from 'eventemitter3'
-
 /**
+ * ===========================================================================
  * This is a modified version of the original iframe-provider library.
  *
+ * The original had some deprecated methods and events, and it was hard to debug for the format used in the messages.
+ * This modified version makes use of the Widget library typed subscriptions
+ *
  * https://github.com/ethvault/iframe-provider/blob/master/src/index.ts
+ *
+ *  ===========================================================================
  */
 
-// By default post to any origin
-const DEFAULT_TARGET_ORIGIN = '*'
+import { ProviderMessage } from '@walletconnect/ethereum-provider/dist/types/types'
+import { ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
+import { EventEmitter } from 'eventemitter3'
+
+import {
+  JsonRpcErrorResponseMessage,
+  JsonRpcRequestMessage,
+  JsonRpcSucessfulResponseMessage,
+  ProviderOnEventPayload,
+  ProviderRpcResponsePayload,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
+  listenToMessageFromWindow,
+  postMessageToWindow,
+} from '@cowprotocol/widget-lib'
+
 // By default timeout is 60 seconds
 const DEFAULT_TIMEOUT_MILLISECONDS = 60000
 
 const JSON_RPC_VERSION = '2.0'
-
-// The interface for the source of the events, typically the window.
-export interface MinimalEventSourceInterface {
-  addEventListener(eventType: 'message', handler: (message: MessageEvent) => void): void
-}
-
-// The interface for the target of our events, typically the parent window.
-export interface MinimalEventTargetInterface {
-  postMessage(message: any, targetOrigin?: string): void
-}
 
 /**
  * Options for constructing the iframe ethereum provider.
@@ -34,11 +42,11 @@ interface IFrameEthereumProviderOptions {
 
   // The event source. By default we use the window. This can be mocked for tests, or it can wrap
   // a different interface, e.g. workers.
-  eventSource?: MinimalEventSourceInterface
+  eventSource?: Window
 
   // The event target. By default we use the window parent. This can be mocked for tests, or it can wrap
   // a different interface, e.g. workers.
-  eventTarget?: MinimalEventTargetInterface
+  eventTarget?: Window
 }
 
 /**
@@ -52,38 +60,6 @@ interface PromiseCompleter<TResult, TErrorData> {
   reject(error: Error): void
 }
 
-type MessageId = number | string | null
-
-interface JsonRpcRequestMessage<TParams = any> {
-  jsonrpc: '2.0'
-  // Optional in the request.
-  id?: MessageId
-  method: string
-  params?: TParams
-}
-
-interface BaseJsonRpcResponseMessage {
-  // Required but null if not identified in request
-  id: MessageId
-  jsonrpc: '2.0'
-}
-
-interface JsonRpcSucessfulResponseMessage<TResult = any> extends BaseJsonRpcResponseMessage {
-  result: TResult
-}
-
-interface JsonRpcError<TData = any> {
-  code: number
-  message: string
-  data?: TData
-}
-
-interface JsonRpcErrorResponseMessage<TErrorData = any> extends BaseJsonRpcResponseMessage {
-  error: JsonRpcError<TErrorData>
-}
-
-type ReceivedMessageType = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
-
 /**
  * We return a random number between the 0 and the maximum safe integer so that we always generate a unique identifier,
  * across all communication channels.
@@ -93,18 +69,24 @@ function getUniqueId(): number {
 }
 
 export type IFrameEthereumProviderEventTypes =
+  | 'message'
   | 'connect'
-  | 'close'
-  | 'notification'
+  | 'disconnect'
   | 'chainChanged'
-  | 'networkChanged'
+  | 'close' // Deprecated, use 'disconnect' instead
+  | 'notification'
+  | 'networkChanged' // Deprecated, use 'chainChanged' instead
   | 'accountsChanged'
 
 /**
  * Export the type information about the different events that are emitted.
  */
 export interface IFrameEthereumProviderEvents {
-  on(event: 'connect', handler: () => void): this
+  on(event: 'message', handler: (message: ProviderMessage) => void): this
+
+  on(event: 'connect', handler: (connectInfo: ProviderConnectInfo) => void): this
+
+  on(event: 'disconnect', handler: (error: ProviderRpcError) => void): this
 
   on(event: 'close', handler: (code: number, reason: string) => void): this
 
@@ -138,10 +120,16 @@ export class RpcError extends Error {
 /**
  * This is the primary artifact of this library.
  */
-export class IFrameEthereumProvider
-  extends EventEmitter<IFrameEthereumProviderEventTypes>
-  implements IFrameEthereumProviderEvents
-{
+export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderEventTypes> {
+  request({ method, params }: { method: string; params: unknown[] }) {
+    // console.log('[TEST:IFrameEthereumProvider] IFrameEthereumProvider - rpc request', { method, params })
+    return this.send(method, params)
+  }
+
+  isConnected(): true {
+    return true
+  }
+
   /**
    * Differentiate this provider from other providers by providing an isIFrame property that always returns true.
    */
@@ -152,21 +140,19 @@ export class IFrameEthereumProvider
   /**
    * Always return this for currentProvider.
    */
-  public get currentProvider(): IFrameEthereumProvider {
+  public get currentProvider(): WidgetEthereumProvider {
     return this
   }
 
   private enabled: Promise<string[]> | null = null
-  private readonly targetOrigin: string
   private readonly timeoutMilliseconds: number
-  private readonly eventSource: MinimalEventSourceInterface
-  private readonly eventTarget: MinimalEventTargetInterface
+  private readonly eventSource: Window
+  private readonly eventTarget: Window
   private readonly completers: {
     [id: string]: PromiseCompleter<any, any>
   } = {}
 
   public constructor({
-    targetOrigin = DEFAULT_TARGET_ORIGIN,
     timeoutMilliseconds = DEFAULT_TIMEOUT_MILLISECONDS,
     eventSource = window,
     eventTarget = window.parent,
@@ -174,13 +160,19 @@ export class IFrameEthereumProvider
     // Call super for `this` to be defined
     super()
 
-    this.targetOrigin = targetOrigin
     this.timeoutMilliseconds = timeoutMilliseconds
     this.eventSource = eventSource
     this.eventTarget = eventTarget
 
-    // Listen for messages from the event source.
-    this.eventSource.addEventListener('message', this.handleEventSourceMessage)
+    listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, (message) => {
+      // console.debug('[TEST:WidgetEthereumProvider] handle PROVIDER_RPC_RESPONSE', message)
+      this.handleRpcRequests(message)
+    })
+
+    listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_ON_EVENT, (message) => {
+      console.debug('[TEST:WidgetEthereumProvider] handle PROVIDER_ON_EVENT', message)
+      this.handleOnEvent(message)
+    })
   }
 
   /**
@@ -188,16 +180,18 @@ export class IFrameEthereumProvider
    * @param method method to execute
    * @param params params to pass the method
    */
-  private async execute<TParams, TResult, TErrorData>(
+  private async execute<TResult, TErrorData>(
     method: string,
-    params?: TParams
+    params: unknown[]
   ): Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>> {
     const id = getUniqueId()
-    const payload: JsonRpcRequestMessage = {
+
+    const rpcRequest: JsonRpcRequestMessage = {
       jsonrpc: JSON_RPC_VERSION,
       id,
       method,
-      ...(typeof params === 'undefined' ? null : { params }),
+      params,
+      // ...(typeof params === 'undefined' ? null : { params }),
     }
 
     const promise = new Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>>(
@@ -205,7 +199,9 @@ export class IFrameEthereumProvider
     )
 
     // Send the JSON RPC to the event source.
-    this.eventTarget.postMessage(payload, this.targetOrigin)
+    postMessageToWindow(this.eventTarget, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, {
+      rpcRequest,
+    })
 
     // Delete the completer within the timeout and reject the promise.
     setTimeout(() => {
@@ -223,8 +219,8 @@ export class IFrameEthereumProvider
    * @param method method to send to the parent provider
    * @param params parameters to send
    */
-  public async send<TParams = any[], TResult = any>(method: string, params?: TParams): Promise<TResult> {
-    const response = await this.execute<TParams, TResult, any>(method, params)
+  public async send<TResult = any>(method: string, params: unknown[]): Promise<TResult> {
+    const response = await this.execute<TResult, any>(method, params)
 
     if ('error' in response) {
       throw new RpcError(response.error.code, response.error.message)
@@ -238,7 +234,7 @@ export class IFrameEthereumProvider
    */
   public async enable(): Promise<string[]> {
     if (this.enabled === null) {
-      const promise = (this.enabled = this.send('enable').catch((error) => {
+      const promise = (this.enabled = this.send('enable', []).catch((error) => {
         // Clear this.enabled if it's this promise so we try again next call.
         // this.enabled might be set from elsewhere if, e.g. the accounts changed event is emitted
         if (this.enabled === promise) {
@@ -258,7 +254,7 @@ export class IFrameEthereumProvider
    * @param callback callback to be called when the provider resolves
    */
   public async sendAsync(
-    payload: { method: string; params?: any[] },
+    payload: { method: string; params: unknown[] },
     callback: (error: string | null, result: { method: string; params?: any[]; result: any } | any) => void
   ): Promise<void> {
     try {
@@ -271,68 +267,70 @@ export class IFrameEthereumProvider
   }
 
   /**
-   * Handle a message on the event source.
-   * @param event message event that will be processed by the provider
+   * Handle a Rpc Request
    */
-  private handleEventSourceMessage = (event: MessageEvent) => {
-    const data = event.data
-
-    // No data to parse, skip.
-    if (!data) {
+  private handleRpcRequests = ({ rpcResponse }: ProviderRpcResponsePayload) => {
+    if (rpcResponse.id === undefined || rpcResponse.id === null) {
       return
     }
 
-    const message = data as ReceivedMessageType
+    const completer = this.completers['' + rpcResponse.id]
 
-    // Always expect jsonrpc to be set to '2.0'
-    if (message.jsonrpc !== JSON_RPC_VERSION) {
-      return
-    }
-
-    // If the message has an ID, it is possibly a response message
-    if (typeof message.id !== 'undefined' && message.id !== null) {
-      const completer = this.completers['' + message.id]
-
-      // True if we haven't timed out and this is a response to a message we sent.
-      if (completer) {
-        // Handle pending promise
-        if ('error' in message || 'result' in message) {
-          completer.resolve(message)
-        } else {
-          completer.reject(new Error('Response from provider did not have error or result key'))
-        }
-
-        delete this.completers[message.id]
+    // True if we haven't timed out and this is a response to a message we sent.
+    if (completer) {
+      // Handle pending promise
+      if ('error' in rpcResponse || 'result' in rpcResponse) {
+        completer.resolve(rpcResponse)
+      } else {
+        completer.reject(new Error('Response from provider did not have error or result key'))
       }
+
+      delete this.completers[rpcResponse.id]
     }
+  }
 
-    // If the method is a request from the parent window, it is likely a subscription.
-    if ('method' in message) {
-      switch (message.method) {
-        case 'notification':
-          this.emitNotification(message.params)
-          break
+  private handleOnEvent(message: ProviderOnEventPayload) {
+    console.log('[TEST:WidgetEthereumProvider] on', message)
+    const params = message.params as any
+    switch (message.event) {
+      case 'notification':
+        this.emitNotification(params)
+        break
 
-        case 'connect':
-          this.emitConnect()
-          break
+      case 'connect':
+        this.emitConnect(params)
+        break
 
-        case 'close':
-          this.emitClose(message.params[0], message.params[1])
-          break
+      case 'disconnect':
+        this.emitDisconnect(params)
+        break
 
-        case 'chainChanged':
-          this.emitChainChanged(message.params[0])
-          break
+      case 'chainChanged':
+        this.emitChainChanged(params)
+        break
 
-        case 'networkChanged':
-          this.emitNetworkChanged(message.params[0])
-          break
+      case 'accountsChanged':
+        this.emitAccountsChanged(params)
+        break
 
-        case 'accountsChanged':
-          this.emitAccountsChanged(message.params[0])
-          break
-      }
+      case 'message':
+        this.emitMessage(params)
+        break
+
+      // Deprecated events below 👇   --------------------------------------
+      case 'networkChanged':
+        this.emitNetworkChanged(params)
+        break
+
+      case 'close':
+        this.emitClose(params)
+        break
+
+      // END OF: Deprecated events   --------------------------------------
+
+      default:
+        console.warn(`[WidgetEthereumProvider] Unknown event type: ${message.event}`)
+        break
     }
   }
 
@@ -340,23 +338,37 @@ export class IFrameEthereumProvider
     this.emit('notification', result)
   }
 
-  private emitConnect() {
+  private emitConnect(connectInfo: ProviderConnectInfo) {
     // If the provider isn't enabled but it emits a connect event, assume that it's enabled and initialize
     // with an empty list of accounts.
     if (this.enabled === null) {
       this.enabled = Promise.resolve([])
     }
-    this.emit('connect')
+    this.emit('connect', connectInfo)
   }
 
-  private emitClose(code: number, reason: string) {
-    this.emit('close', code, reason)
+  /**
+   * @deprecated See https://eips.ethereum.org/EIPS/eip-1193
+   */
+  private emitClose(params: unknown) {
+    if (Array.isArray(params) && params.length === 2) {
+      this.emit('close', params[0], params[1])
+    } else {
+      this.emit('close')
+    }
+  }
+
+  private emitDisconnect(error: ProviderRpcError) {
+    this.emit('disconnect', error)
   }
 
   private emitChainChanged(chainId: string) {
     this.emit('chainChanged', chainId)
   }
 
+  /**
+   * @deprecated See https://eips.ethereum.org/EIPS/eip-1193
+   */
   private emitNetworkChanged(networkId: string) {
     this.emit('networkChanged', networkId)
   }
@@ -364,5 +376,9 @@ export class IFrameEthereumProvider
   private emitAccountsChanged(accounts: string[]) {
     this.enabled = Promise.resolve(accounts)
     this.emit('accountsChanged', accounts)
+  }
+
+  private emitMessage(message: ProviderMessage) {
+    this.emit('message', message)
   }
 }
