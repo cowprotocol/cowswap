@@ -8,20 +8,6 @@ In this Policy, “personal data” means any information relating to you as an 
 
 In this Policy, “processing” means any operation or set of operations which is performed on personal data (as defined in this Privacy Policy) or on sets of personal data, whether or not by automated means, such as collection, recording, organisation, structuring, storage, adaptation or alteration, retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or combination, restriction, erasure or destruction.
 
-## Navigating this Policy
-
-If you are viewing this policy online, you can click on the below links to jump to the relevant section:
-
-1. [Your information and the Blockchain](#1--your-information-and-the-blockchain)
-2. [How We Use Personal Data](#2--how-we-use-personal-data)
-3. [Use of Third Party Applications](#3--use-of-third-party-applications)
-4. [Sharing Your Personal Data](#4--sharing-your-personal-data)
-5. [Data Security](#5--data-security)
-6. [Your Rights as a Data Subject](#6--your-rights-as-a-data-subject)
-7. [Storing Personal Data](#7--storing-personal-data)
-8. [Changes to this Privacy Policy](#8--changes-to-this-privacy-policy)
-9. [Our details](#9--our-details)
-
 ## 1. Your information and the Blockchain
 
 Blockchain technology, also known as distributed ledger technology (or simply ‘DLT’), is at the core of the business of our clients. Blockchains are decentralised and made up of digitally recorded data in a chain of packages called ‘blocks’. The manner in which these blocks are linked is chronological, meaning that the data is very difficult to alter once recorded. Since the ledger may be distributed all over the world (across several ‘nodes’ which usually replicate the ledger), this means there is no single person making decisions or otherwise administering the system (such as an operator of a cloud computing system), and that there is no centralised place where it is located either.
