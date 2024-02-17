@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai'
 import { allListsSourcesAtom, listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
 import { ListState } from '../../types'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 export type ListSearchResponse =
   | {
@@ -34,7 +35,7 @@ export function useSearchList(input: string | null): ListSearchResponse {
 
       return fetchTokenList({ source: input })
     },
-    {}
+    SWR_NO_REFRESH_OPTIONS
   )
 
   return existingList ? { source: 'existing', response: existingList } : { source: 'external', response }

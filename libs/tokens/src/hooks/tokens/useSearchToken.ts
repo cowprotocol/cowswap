@@ -8,7 +8,7 @@ import ms from 'ms.macro'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import useSWR from 'swr'
 import { searchTokensInApi } from '../../services/searchTokensInApi'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { environmentAtom } from '../../state/environmentAtom'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
@@ -156,24 +156,32 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
 function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
 
-  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input) {
-      return null
-    }
+  return useSWR<TokenWithLogo[] | null>(
+    ['searchTokensInApi', input],
+    () => {
+      if (isTokenAlreadyFoundByAddress || !input) {
+        return null
+      }
 
-    return searchTokensInApi(input).then((result) => parseTokensFromApi(result, chainId))
-  })
+      return searchTokensInApi(input).then((result) => parseTokensFromApi(result, chainId))
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 }
 
 function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
   const { provider } = useWeb3React()
 
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
-      return null
-    }
+  return useSWR<TokenWithLogo | null>(
+    ['fetchTokenFromBlockchain', input],
+    () => {
+      if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
+        return null
+      }
 
-    return fetchTokenFromBlockchain(input, chainId, provider).then(TokenWithLogo.fromToken)
-  })
+      return fetchTokenFromBlockchain(input, chainId, provider).then(TokenWithLogo.fromToken)
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 }

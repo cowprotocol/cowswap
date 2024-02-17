@@ -11,6 +11,7 @@ import useSWR from 'swr'
 import { useENSResolver } from './useENSResolver'
 import { useWeb3React } from '@web3-react/core'
 import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 /**
  * Returns the ENS avatar URI, if available.
@@ -51,11 +52,15 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
     resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
   )
 
-  const { data: avatar, isLoading } = useSWR(['useAvatarFromNode', node], async () => {
-    if (!resolverContract || !node) return undefined
+  const { data: avatar, isLoading } = useSWR(
+    ['useAvatarFromNode', node],
+    async () => {
+      if (!resolverContract || !node) return undefined
 
-    return resolverContract.callStatic.text(node, 'avatar')
-  })
+      return resolverContract.callStatic.text(node, 'avatar')
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return useMemo(
     () => ({
@@ -116,13 +121,17 @@ function useERC721Uri(
 ): { uri?: string; loading: boolean } {
   const contract = useERC721Contract(contractAddress)
 
-  const { data, isLoading } = useSWR(['useERC721Uri', contract, id], async () => {
-    if (!contract || !account || !id) return undefined
+  const { data, isLoading } = useSWR(
+    ['useERC721Uri', contract, id],
+    async () => {
+      if (!contract || !account || !id) return undefined
 
-    const [owner, uri] = await Promise.all([contract.callStatic.ownerOf(id), contract.callStatic.tokenURI(id)])
+      const [owner, uri] = await Promise.all([contract.callStatic.ownerOf(id), contract.callStatic.tokenURI(id)])
 
-    return { owner, uri }
-  })
+      return { owner, uri }
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return useMemo(
     () => ({
@@ -141,13 +150,20 @@ function useERC1155Uri(
 ): { uri?: string; loading: boolean } {
   const contract = useERC1155Contract(contractAddress)
 
-  const { data, isLoading } = useSWR(['useERC1155Uri', contract, id, account], async () => {
-    if (!contract || !account || !id) return undefined
+  const { data, isLoading } = useSWR(
+    ['useERC1155Uri', contract, id, account],
+    async () => {
+      if (!contract || !account || !id) return undefined
 
-    const [balance, uri] = await Promise.all([contract.callStatic.balanceOf(account, id), contract.callStatic.uri(id)])
+      const [balance, uri] = await Promise.all([
+        contract.callStatic.balanceOf(account, id),
+        contract.callStatic.uri(id),
+      ])
 
-    return { balance, uri }
-  })
+      return { balance, uri }
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   // ERC-1155 allows a generic {id} in the URL, so prepare to replace if relevant,
   //   in lowercase hexadecimal (with no 0x prefix) and leading zero padded to 64 hex characters.
@@ -166,11 +182,15 @@ function useERC1155Uri(
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
   const { provider, chainId } = useWeb3React()
 
-  const { data } = useSWR(['useERC721Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
+  const { data } = useSWR(
+    ['useERC721Contract', provider, chainId, address],
+    () => {
+      if (!chainId || !provider || !address) return undefined
 
-    return getContract(address, Erc721Abi, provider) as Erc721
-  })
+      return getContract(address, Erc721Abi, provider) as Erc721
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }
@@ -178,11 +198,15 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
   const { provider, chainId } = useWeb3React()
 
-  const { data } = useSWR(['useERC1155Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
+  const { data } = useSWR(
+    ['useERC1155Contract', provider, chainId, address],
+    () => {
+      if (!chainId || !provider || !address) return undefined
 
-    return getContract(address, Erc1155Abi, provider) as Erc1155
-  })
+      return getContract(address, Erc1155Abi, provider) as Erc1155
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }

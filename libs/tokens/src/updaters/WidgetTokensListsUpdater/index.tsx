@@ -9,6 +9,7 @@ import { updateEnvironmentAtom } from '../../state/environmentAtom'
 import { useSetAtom } from 'jotai'
 import { useRemoveList } from '../../hooks/lists/useRemoveList'
 import { getFulfilledResults } from '../TokensListsUpdater/helpers'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 export interface CustomTokensListsUpdaterProps {
   tokenLists?: string[]
@@ -62,7 +63,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
         })
       ).then(getFulfilledResults)
     },
-    {}
+    SWR_NO_REFRESH_OPTIONS
   )
 
   /**

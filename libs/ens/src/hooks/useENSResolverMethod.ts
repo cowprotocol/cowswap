@@ -3,6 +3,7 @@ import { useENSResolver } from './useENSResolver'
 import { useENSResolverContract } from './useENSResolverContract'
 import { isZero } from '@cowprotocol/common-utils'
 import { useMemo } from 'react'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 export function useENSResolverMethod(
   method: 'addr' | 'name' | 'contenthash',
@@ -14,11 +15,15 @@ export function useENSResolverMethod(
     resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
   )
 
-  const { data, isLoading } = useSWR(['useENSResolverMethod' + method, resolverContract, ensNodeArgument], async () => {
-    if (!resolverContract || !ensNodeArgument) return undefined
+  const { data, isLoading } = useSWR(
+    ['useENSResolverMethod' + method, resolverContract, ensNodeArgument],
+    async () => {
+      if (!resolverContract || !ensNodeArgument) return undefined
 
-    return resolverContract.callStatic[method](ensNodeArgument)
-  })
+      return resolverContract.callStatic[method](ensNodeArgument)
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return useMemo(() => {
     return {

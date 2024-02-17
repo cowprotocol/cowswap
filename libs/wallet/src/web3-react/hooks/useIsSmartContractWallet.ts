@@ -9,26 +9,30 @@ import { useIsSafeWallet, useWalletMetaData } from './useWalletMetadata'
 import { getIsAmbireWallet } from '../../api/utils/connection'
 import { Contract } from '@ethersproject/contracts'
 import { getProviderOrSigner } from '@cowprotocol/common-utils'
-import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowprotocol/common-const'
+import { ARGENT_WALLET_DETECTOR_ADDRESS, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ArgentWalletDetectorAbi } from '@cowprotocol/abis'
 
 function useCheckIsSmartContract(): boolean | undefined {
   const { provider } = useWeb3React()
   const { account } = useWalletInfo()
 
-  const { data } = useSWR(['isSmartContract', account, provider], async () => {
-    if (!account || !provider) {
-      return false
-    }
+  const { data } = useSWR(
+    ['isSmartContract', account, provider],
+    async () => {
+      if (!account || !provider) {
+        return false
+      }
 
-    try {
-      const code = await provider.getCode(account)
-      return code !== '0x'
-    } catch (e: any) {
-      console.debug(`checkIsSmartContractWallet: failed to check address ${account}`, e.message)
-      return false
-    }
-  })
+      try {
+        const code = await provider.getCode(account)
+        return code !== '0x'
+      } catch (e: any) {
+        console.debug(`checkIsSmartContractWallet: failed to check address ${account}`, e.message)
+        return false
+      }
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }
