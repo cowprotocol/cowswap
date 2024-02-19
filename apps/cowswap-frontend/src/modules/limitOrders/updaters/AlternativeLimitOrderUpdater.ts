@@ -20,16 +20,23 @@ import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
 
 export function AlternativeLimitOrderUpdater(): null {
-  const { chainId, account } = useWalletInfo()
-  const prevChainId = usePrevious(chainId)
-  const prevAccount = usePrevious(account)
+  // Update raw state and related settings once on load
+  useUpdateAlternativeRawState()
+
+  // Set rate only once on load. If the user decides to change the values manually, the rate should then be allowed to be calculated
+  useSetAlternativeRate()
+
+  // Hide modal if chainId or account changes
+  useResetAlternativeOnChainOrAccountChange()
+
+  return null
+}
+
+function useUpdateAlternativeRawState(): null {
   const alternativeOrder = useAlternativeOrder()
-  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
-  const updateRate = useUpdateActiveRate()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const { receiver, owner } = alternativeOrder || {}
   // Use custom recipient address if set and != owner
@@ -37,9 +44,6 @@ export function AlternativeLimitOrderUpdater(): null {
   // Load used ens name, if any
   const { name: recipient } = useENS(recipientAddress)
 
-  const [hasSetRate, setHasSetRate] = useState(false)
-
-  // Update raw state and related settings once on load
   useEffect(() => {
     if (alternativeOrder) {
       const {
@@ -75,7 +79,15 @@ export function AlternativeLimitOrderUpdater(): null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipient, recipientAddress])
 
-  // Set rate only once on load. If the user decides to change the values manually, the rate should then be allowed to be calculated
+  return null
+}
+
+function useSetAlternativeRate(): null {
+  const updateRate = useUpdateActiveRate()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+
+  const [hasSetRate, setHasSetRate] = useState(false)
+
   useEffect(() => {
     if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
       setHasSetRate(true)
@@ -85,7 +97,15 @@ export function AlternativeLimitOrderUpdater(): null {
     }
   }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate])
 
-  // Hide modal if chainId or account changes
+  return null
+}
+
+function useResetAlternativeOnChainOrAccountChange(): null {
+  const { chainId, account } = useWalletInfo()
+  const prevChainId = usePrevious(chainId)
+  const prevAccount = usePrevious(account)
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+
   useEffect(() => {
     if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
       hideAlternativeOrderModal()
