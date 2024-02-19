@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
-import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
+import { FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const ContextMenuButton = styled(MenuButton)`
@@ -102,7 +102,7 @@ export function OrderContextMenu({
         )}
         {showRecreateModal && (
           <ContextMenuItem onSelect={showRecreateModal}>
-            <Trash2 size={16} />
+            <Repeat size={16} />
             <span>Recreate order</span>
           </ContextMenuItem>
         )}
