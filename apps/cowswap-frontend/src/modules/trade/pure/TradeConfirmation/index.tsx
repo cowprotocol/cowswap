@@ -133,7 +133,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <CustomRecipientBanner recipient={recipient} />
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          {hasPendingTrade ? <Loader /> : <Trans>{buttonText}</Trans>}
+          {hasPendingTrade ? (
+            <styledEl.LongLoadText fontSize={15} fontWeight={500}>
+              Confirm transaction in your wallet <styledEl.CenteredDots smaller />
+            </styledEl.LongLoadText>
+          ) : (
+            <Trans>{buttonText}</Trans>
+          )}
         </ButtonPrimary>
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

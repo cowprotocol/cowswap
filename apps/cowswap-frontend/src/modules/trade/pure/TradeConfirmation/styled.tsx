@@ -3,6 +3,8 @@ import { UI } from '@cowprotocol/ui'
 import { ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { Dots } from 'legacy/components/swap/styleds'
+
 export const WidgetWrapper = styled.div`
   width: 100%;
   padding: 0;
@@ -103,4 +105,27 @@ export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
       opacity: 0;
     }
   }
+`
+
+const fadeIn = `
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+`
+
+export const LongLoadText = styled.span<{ fontSize?: number; fontWeight?: number }>`
+  font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : 'inherit')};
+  font-weight: ${({ fontWeight }) => (fontWeight ? `${fontWeight}` : 'inherit')};
+  animation: fadeIn 0.42s ease-in;
+
+  ${fadeIn}
+`
+
+export const CenteredDots = styled(Dots)<{ smaller?: boolean }>`
+  vertical-align: ${({ smaller = false }) => (smaller ? 'normal' : 'super')};
 `
