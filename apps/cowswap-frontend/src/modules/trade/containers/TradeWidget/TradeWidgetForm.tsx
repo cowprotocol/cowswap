@@ -94,7 +94,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     <>
       <styledEl.ContainerBox>
         <styledEl.Header>
-          {!isAlternativeOrderModalVisible && <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />}
+          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />}
           {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
