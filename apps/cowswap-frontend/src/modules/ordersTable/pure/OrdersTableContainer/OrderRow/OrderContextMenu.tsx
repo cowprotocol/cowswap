@@ -39,7 +39,6 @@ export const ContextMenuList = styled(MenuList)`
   border-radius: 12px;
   overflow: hidden;
   position: relative;
-  z-index: 2;
   outline: none;
   min-width: 240px;
   margin: 10px 0;
