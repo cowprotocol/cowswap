@@ -1,7 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { useENS } from '@cowprotocol/ens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -10,11 +12,15 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 
-import { useAlternativeOrder } from 'common/state/alternativeOrder'
+import { useAlternativeOrder, useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export function AlternativeLimitOrderUpdater(): null {
+  const { chainId, account } = useWalletInfo()
+  const prevChainId = usePrevious(chainId)
+  const prevAccount = usePrevious(account)
   const alternativeOrder = useAlternativeOrder()
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
@@ -61,7 +67,11 @@ export function AlternativeLimitOrderUpdater(): null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipient, recipientAddress])
 
-  // TODO: reset modal status when account or chainid change
+  useEffect(() => {
+    if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
+      hideAlternativeOrderModal()
+    }
+  }, [chainId, account, prevChainId, prevAccount, hideAlternativeOrderModal])
 
   return null
 }
