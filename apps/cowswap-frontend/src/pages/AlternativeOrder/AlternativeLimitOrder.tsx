@@ -1,0 +1,149 @@
+import { useSetAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
+
+import { useENS } from '@cowprotocol/ens'
+
+import { Order } from 'legacy/state/orders/actions'
+
+import { AppDataUpdater } from 'modules/appData'
+import {
+  ExecutionPriceUpdater,
+  FillLimitOrdersDerivedStateUpdater,
+  InitialPriceUpdater,
+  LIMIT_ORDER_SLIPPAGE,
+  LimitOrdersSettingsState,
+  LimitOrdersWidget,
+  QuoteObserverUpdater,
+  updateLimitOrdersSettingsAtom,
+} from 'modules/limitOrders'
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
+import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+
+import { NewModal } from 'common/pure/NewModal'
+import { useAlternativeOrder, useUpdateAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
+export function AlternativeLimitOrder() {
+  const updateAlternativeOrderModalVisible = useUpdateAlternativeOrderModalVisible()
+
+  const onDismiss = useCallback(() => updateAlternativeOrderModalVisible(false), [updateAlternativeOrderModalVisible])
+
+  return (
+    <>
+      <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
+      <QuoteObserverUpdater />
+      <AlternativeLimitOrderUpdater />
+      <FillLimitOrdersDerivedStateUpdater />
+      <InitialPriceUpdater />
+      <ExecutionPriceUpdater />
+      <NewModal title={'Recreate order'} onDismiss={onDismiss} modalMode>
+        <LimitOrdersWidget />
+      </NewModal>
+    </>
+  )
+}
+
+// TODO: move to another file
+export function AlternativeLimitOrderUpdater(): null {
+  const alternativeOrder = useAlternativeOrder()
+  const updateRawState = useUpdateLimitOrdersRawState()
+  const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
+  const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
+
+  const { receiver, owner } = alternativeOrder || {}
+  // Use custom recipient address if set and != owner
+  const recipientAddress = receiver && receiver !== owner ? receiver : undefined
+  // Load used ens name, if any
+  const { name: recipient } = useENS(recipientAddress)
+
+  useEffect(() => {
+    if (alternativeOrder) {
+      const {
+        inputToken,
+        outputToken,
+        sellAmount,
+        feeAmount,
+        buyAmount: outputCurrencyAmount,
+        kind: orderKind,
+        partiallyFillable,
+      } = alternativeOrder
+
+      // To account for orders created before fee=0 went live
+      const inputCurrencyAmount = (BigInt(sellAmount) + BigInt(feeAmount)).toString()
+
+      console.log(`bug:AlternativeLimitOrderUpdater useEffect - updating with order`, alternativeOrder.id.slice(0, 8))
+      updateRawState({
+        inputCurrencyId: inputToken.address,
+        outputCurrencyId: outputToken.address,
+        inputCurrencyAmount,
+        outputCurrencyAmount,
+        orderKind,
+        // Use loaded ens name, otherwise use address, if any of them exist
+        recipient: recipient || recipientAddress,
+        recipientAddress,
+      })
+      // Sync partially fillable override based on the order flag
+      updatePartialFillOverride(partiallyFillable)
+
+      // Sync settings (custom recipient and deadline values)
+      updateSettingsState(getSettingsState(alternativeOrder, !!recipientAddress))
+    }
+    // Do it once on load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipient, recipientAddress])
+
+  // TODO: reset modal status when account or chainid change
+
+  return null
+}
+
+/**
+ * Get order creation and expiration times, as Date objs
+ */
+function getOrderTimes(order: Order | ParsedOrder): [Date, Date] {
+  if ('validTo' in order) {
+    // Order instance, creationTime is a ISO string, validTo is a UNIX timestamp
+    return [new Date(order.creationTime), new Date(+order.validTo * 1000)]
+  }
+  // ParsedOrder instance, both are Date objects
+  return [order.creationTime, order.expirationTime]
+}
+
+/**
+ * Get order duration in milliseconds
+ * @param order
+ */
+function getDuration(order: Order | ParsedOrder): number {
+  const [creationTime, expirationTime] = getOrderTimes(order)
+  const duration = expirationTime.getTime() - creationTime.getTime()
+  return Math.round(duration)
+}
+
+/**
+ * Get pre-defined deadline matching given duration, if any
+ */
+function getMatchingDeadline(duration: number) {
+  // Match duration with approximate time
+  return limitOrdersDeadlines.find(({ value }) => Math.round(value / duration) === 1)
+}
+
+/**
+ * Get setting state based on existing order
+ *
+ * Will set `showCustomRecipient` and either `deadlineMilliseconds` or `customDeadlineTimestamp`
+ */
+function getSettingsState(order: Order | ParsedOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
+  const state: Partial<LimitOrdersSettingsState> = { showRecipient: hasCustomRecipient }
+
+  const duration = getDuration(order)
+  const deadline = getMatchingDeadline(duration)
+
+  if (deadline) {
+    return { ...state, deadlineMilliseconds: deadline.value }
+  }
+
+  const customDeadlineTimestamp = Math.round((Date.now() + duration) / 1000)
+
+  return { ...state, customDeadlineTimestamp }
+}
