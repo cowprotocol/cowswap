@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/types'
 import { Token } from '@uniswap/sdk-core'
 
 import { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
