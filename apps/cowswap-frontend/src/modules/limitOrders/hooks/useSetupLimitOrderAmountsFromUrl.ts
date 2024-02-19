@@ -72,7 +72,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
 
       if (sellCurrencyAmount && buyCurrencyAmount) {
         const activeRate = new Price({ baseAmount: sellCurrencyAmount, quoteAmount: buyCurrencyAmount })
-        updateRate({ activeRate, isTypedValue: false, isRateFromUrl: true })
+        updateRate({ activeRate, isTypedValue: false, isRateFromUrl: true, isAlternativeOrderRate: false })
       }
     }
     // Trigger only when URL or assets are changed

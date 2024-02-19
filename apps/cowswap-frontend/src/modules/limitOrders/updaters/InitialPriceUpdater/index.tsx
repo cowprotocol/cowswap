@@ -40,7 +40,7 @@ export function InitialPriceUpdater() {
     if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price)) return
 
     setIsInitialPriceSet(true)
-    updateRate({ activeRate: price, isTypedValue: false, isRateFromUrl: false })
+    updateRate({ activeRate: price, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: false })
     updateLimitRateState({ isLoading })
   }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice])
 

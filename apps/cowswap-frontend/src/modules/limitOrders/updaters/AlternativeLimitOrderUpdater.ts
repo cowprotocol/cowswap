@@ -1,9 +1,10 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Price } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -15,6 +16,9 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
+import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
+
 export function AlternativeLimitOrderUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const prevChainId = usePrevious(chainId)
@@ -24,6 +28,8 @@ export function AlternativeLimitOrderUpdater(): null {
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
+  const updateRate = useUpdateActiveRate()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const { receiver, owner } = alternativeOrder || {}
   // Use custom recipient address if set and != owner
@@ -31,6 +37,9 @@ export function AlternativeLimitOrderUpdater(): null {
   // Load used ens name, if any
   const { name: recipient } = useENS(recipientAddress)
 
+  const [hasSetRate, setHasSetRate] = useState(false)
+
+  // Update raw state and related settings once on load
   useEffect(() => {
     if (alternativeOrder) {
       const {
@@ -46,7 +55,6 @@ export function AlternativeLimitOrderUpdater(): null {
       // To account for orders created before fee=0 went live
       const inputCurrencyAmount = (BigInt(sellAmount) + BigInt(feeAmount)).toString()
 
-      console.log(`bug:AlternativeLimitOrderUpdater useEffect - updating with order`, alternativeOrder.id.slice(0, 8))
       updateRawState({
         inputCurrencyId: inputToken.address,
         outputCurrencyId: outputToken.address,
@@ -67,6 +75,17 @@ export function AlternativeLimitOrderUpdater(): null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipient, recipientAddress])
 
+  // Set rate only once on load. If the user decides to change the values manually, the rate should then be allowed to be calculated
+  useEffect(() => {
+    if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
+      setHasSetRate(true)
+
+      const activeRate = new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+      updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
+    }
+  }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate])
+
+  // Hide modal if chainId or account changes
   useEffect(() => {
     if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
       hideAlternativeOrderModal()
