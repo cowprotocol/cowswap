@@ -176,15 +176,15 @@ You agree to respect the copyright and intellectual property rights of others. Y
 
 You agree to be respectful of other users of the Forum. You agree not to:
 
-- Harass or bully other users
+- Harass or bully other users;
 
-- Engage in personal attacks or insults
+- Engage in personal attacks or insults;
 
-- Spam or post irrelevant content
+- Spam or post irrelevant content;
 
-- Create multiple accounts for the purpose of disrupting or manipulating the forum
+- Create multiple accounts for the purpose of disrupting or manipulating the forum;
 
-- Violate the privacy of other users
+- Violate the privacy of other users;
 
 
 ### Content Ownership and Responsibility
@@ -208,9 +208,7 @@ None of the information available on the Website including the Interface and the
 
 Subject to the application of any miscellaneous open source license attaching to the software code of the Protocol and to the software code of the Products, we are the owner all contents, including but not limited to software, text, images, trademarks, service marks, copyrights, patents, and designs. This means we own all the legal rights to them. You are not allowed to copy, modify, adapt, rent, license, sell, publish, distribute, or share access to the Interface or its contents with anyone else, unless we explicitly give you permission in writing. Simply using the Interface doesn't give you any ownership rights to it or its contents.
 
-Subject to your compliance with these Terms, we grant you a limited, revocable, non-exclusive, non-transferable, non-sublicensable licence to access the Protocol and the Products. This licence does not include any resale, commercial or derivative use of the Protocol or the Products. We reserve and retain all rights not expressly granted to you in these Terms. The Interface may not be reproduced, sold, or otherwise exploited for any commercial purpose without our express prior written consent. You may not frame or utilise framing techniques to enclose any trademark, logo,
-
-or other proprietary information of us without our express prior written consent. You may not misuse the Interface and may only use it as permitted by law. If you breach our intellectual property rights in violation of these Terms, your licence to use the Interface will automatically be revoked and terminated immediately.
+Subject to your compliance with these Terms, we grant you a limited, revocable, non-exclusive, non-transferable, non-sublicensable licence to access the Protocol and the Products. This licence does not include any resale, commercial or derivative use of the Protocol or the Products. We reserve and retain all rights not expressly granted to you in these Terms. The Interface may not be reproduced, sold, or otherwise exploited for any commercial purpose without our express prior written consent. You may not frame or utilise framing techniques to enclose any trademark, logo, or other proprietary information of us without our express prior written consent. You may not misuse the Interface and may only use it as permitted by law. If you breach our intellectual property rights in violation of these Terms, your licence to use the Interface will automatically be revoked and terminated immediately.
 
 
 ## Bug and Default
@@ -219,13 +217,13 @@ or other proprietary information of us without our express prior written consent
 
 **Specific Disclaimers**: _WITHOUT LIMITING THE FOREGOING, COW DAO DOES NOT WARRANT THAT THE SOFTWARE:_
 
-- Will meet your specific requirements or expectations.
+- Will meet your specific requirements or expectations;
 
-- Will be uninterrupted, error-free, or completely secure.
+- Will be uninterrupted, error-free, or completely secure;
 
-- Will be compatible with all systems or devices.
+- Will be compatible with all systems or devices;
 
-- Will be accurate, complete, reliable, current, or virus-free.
+- Will be accurate, complete, reliable, current, or virus-free;
 
 
 ## User Responsibilities and Prohibited Actions
@@ -241,23 +239,23 @@ You agree to use the Products only for their intended purpose and in accordance 
 
 You are prohibited from misusing the Products by knowingly introducing any material that is:
 
-- Malicious, including viruses, worms, Trojan horses, and other harmful software.
+- Malicious, including viruses, worms, Trojan horses, and other harmful software;
 
-- Technologically harmful, including attempts to disrupt or damage the Interface or its infrastructure.
+- Technologically harmful, including attempts to disrupt or damage the Interface or its infrastructure;
 
 You are prohibited from attempting to gain unauthorized access to the:
 
-- Products.
+- Products;
 
-- Server(s) hosting the Products.
+- Server(s) hosting the Products;
 
-- Any computer or database connected to the Products.
+- Any computer or database connected to the Products;
 
 You are prohibited from attacking the Products through:
 
-- Denial-of-service attacks.
+- Denial-of-service attacks;
 
-- Distributed denial-of-service attacks.
+- Distributed denial-of-service attacks;
 
 You acknowledge that any breach of this clause may constitute a criminal offense.
 
@@ -318,7 +316,7 @@ By using our Products you hereby agree, represent and warrant that:
 
 - you are using the Interface at your own risk;
 
-- the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
+- the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith;
 
 
 ## Limitation of Liability
