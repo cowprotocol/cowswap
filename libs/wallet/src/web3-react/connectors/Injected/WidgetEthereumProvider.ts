@@ -290,8 +290,8 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   }
 
   private handleOnEvent(message: ProviderOnEventPayload) {
-    console.log('[TEST:WidgetEthereumProvider] on', message)
     const params = message.params as any
+    console.log('[TEST:WidgetEthereumProvider] on', message.event, params)
     switch (message.event) {
       case 'notification':
         this.emitNotification(params)
