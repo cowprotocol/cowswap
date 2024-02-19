@@ -18,6 +18,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
+import { useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
@@ -28,6 +29,7 @@ export function useHandleOrderPlacement(
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
@@ -97,6 +99,8 @@ export function useHandleOrderPlacement(
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
         setPartiallyFillableOverride(undefined)
+        // Reset alternative mode if any
+        hideAlternativeOrderModal()
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -107,7 +111,7 @@ export function useHandleOrderPlacement(
           tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
-  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
+  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride, hideAlternativeOrderModal])
 }
 
 function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
