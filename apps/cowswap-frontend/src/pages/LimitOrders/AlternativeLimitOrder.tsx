@@ -3,12 +3,12 @@ import { useCallback } from 'react'
 import { LimitOrdersWidget } from 'modules/limitOrders'
 
 import { NewModal } from 'common/pure/NewModal'
-import { useUpdateAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
+import { useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 
 export function AlternativeLimitOrder() {
-  const updateAlternativeOrderModalVisible = useUpdateAlternativeOrderModalVisible()
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
 
-  const onDismiss = useCallback(() => updateAlternativeOrderModalVisible(false), [updateAlternativeOrderModalVisible])
+  const onDismiss = useCallback(() => hideAlternativeOrderModal(), [hideAlternativeOrderModal])
 
   // TODO: update title according to order status: `pending ? edit : recreate`
   // TODO: pass down OR update the order placement callback directly to go back to regular mode

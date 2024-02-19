@@ -5,15 +5,25 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-export const isAlternativeOrderModalVisibleAtom = atom(false)
+/**
+ * Main atom to control the alternative order modal/form
+ * When it's set, the alternative flow should be displayed
+ */
 const alternativeOrderAtom = atom<Order | ParsedOrder | null>(null)
+
+/**
+ * Derived atom that controls the alternative modal visibility
+ */
+export const isAlternativeOrderModalVisibleAtom = atom((get) => !!get(alternativeOrderAtom))
 
 export function useIsAlternativeOrderModalVisible() {
   return useAtomValue(isAlternativeOrderModalVisibleAtom)
 }
 
-export function useUpdateAlternativeOrderModalVisible() {
-  return useSetAtom(isAlternativeOrderModalVisibleAtom)
+export function useHideAlternativeOrderModal() {
+  const setAlternativeOrderAtom = useSetAtom(alternativeOrderAtom)
+
+  return useCallback(() => setAlternativeOrderAtom(null), [setAlternativeOrderAtom])
 }
 
 export function useAlternativeOrder() {
@@ -22,16 +32,14 @@ export function useAlternativeOrder() {
 
 export function useSetAlternativeOrder() {
   const setAlternativeOrder = useSetAtom(alternativeOrderAtom)
-  const updateAlternativeOrderModalVisible = useUpdateAlternativeOrderModalVisible()
 
   return useCallback(
     (order: Order | ParsedOrder) => {
       // TODO: remove log
       console.log(`bug:useSetAlternativeOrder callback`, order)
       setAlternativeOrder(order)
-      updateAlternativeOrderModalVisible(true)
     },
-    [setAlternativeOrder, updateAlternativeOrderModalVisible]
+    [setAlternativeOrder]
   )
 }
 
