@@ -184,7 +184,7 @@ You agree to be respectful of other users of the Forum. You agree not to:
 
 - Create multiple accounts for the purpose of disrupting or manipulating the forum;
 
-- Violate the privacy of other users;
+- Violate the privacy of other users.
 
 
 ### Content Ownership and Responsibility
@@ -223,7 +223,7 @@ Subject to your compliance with these Terms, we grant you a limited, revocable, 
 
 - Will be compatible with all systems or devices;
 
-- Will be accurate, complete, reliable, current, or virus-free;
+- Will be accurate, complete, reliable, current, or virus-free.
 
 
 ## User Responsibilities and Prohibited Actions
@@ -241,7 +241,7 @@ You are prohibited from misusing the Products by knowingly introducing any mater
 
 - Malicious, including viruses, worms, Trojan horses, and other harmful software;
 
-- Technologically harmful, including attempts to disrupt or damage the Interface or its infrastructure;
+- Technologically harmful, including attempts to disrupt or damage the Interface or its infrastructure.
 
 You are prohibited from attempting to gain unauthorized access to the:
 
@@ -255,7 +255,7 @@ You are prohibited from attacking the Products through:
 
 - Denial-of-service attacks;
 
-- Distributed denial-of-service attacks;
+- Distributed denial-of-service attacks.
 
 You acknowledge that any breach of this clause may constitute a criminal offense.
 
@@ -316,7 +316,7 @@ By using our Products you hereby agree, represent and warrant that:
 
 - you are using the Interface at your own risk;
 
-- the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith;
+- the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
 
 
 ## Limitation of Liability
