@@ -23,6 +23,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
+import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
@@ -68,6 +69,7 @@ interface BaseFlowContextSetup {
     swapZeroFee: boolean | undefined
   }
   tradeConfirmActions: TradeConfirmActions
+  getCachedPermit: ReturnType<typeof useGetCachedPermit>
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -103,6 +105,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
+  const getCachedPermit = useGetCachedPermit()
 
   const { allowedSlippage } = useDerivedSwapInfo()
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
@@ -135,6 +138,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     allowedSlippage,
     featureFlags: { swapZeroFee },
     tradeConfirmActions,
+    getCachedPermit,
   }
 }
 
@@ -183,6 +187,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     featureFlags,
     allowedSlippage,
     tradeConfirmActions,
+    getCachedPermit,
   } = baseProps
 
   if (
@@ -263,6 +268,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
       closeModals,
       addOrderCallback,
       uploadAppData,
+      getCachedPermit,
     },
     dispatch,
     swapFlowAnalyticsContext,
