@@ -1,50 +1,18 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useENS } from '@cowprotocol/ens'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { AppDataUpdater } from 'modules/appData'
-import {
-  ExecutionPriceUpdater,
-  FillLimitOrdersDerivedStateUpdater,
-  InitialPriceUpdater,
-  LIMIT_ORDER_SLIPPAGE,
-  LimitOrdersSettingsState,
-  LimitOrdersWidget,
-  QuoteObserverUpdater,
-  updateLimitOrdersSettingsAtom,
-} from 'modules/limitOrders'
+import { LimitOrdersSettingsState, updateLimitOrdersSettingsAtom } from 'modules/limitOrders'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 
-import { NewModal } from 'common/pure/NewModal'
-import { useAlternativeOrder, useUpdateAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
+import { useAlternativeOrder } from 'common/state/alternativeOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-export function AlternativeLimitOrder() {
-  const updateAlternativeOrderModalVisible = useUpdateAlternativeOrderModalVisible()
-
-  const onDismiss = useCallback(() => updateAlternativeOrderModalVisible(false), [updateAlternativeOrderModalVisible])
-
-  return (
-    <>
-      <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
-      <QuoteObserverUpdater />
-      <AlternativeLimitOrderUpdater />
-      <FillLimitOrdersDerivedStateUpdater />
-      <InitialPriceUpdater />
-      <ExecutionPriceUpdater />
-      <NewModal title={'Recreate order'} onDismiss={onDismiss} modalMode>
-        <LimitOrdersWidget />
-      </NewModal>
-    </>
-  )
-}
-
-// TODO: move to another file
 export function AlternativeLimitOrderUpdater(): null {
   const alternativeOrder = useAlternativeOrder()
   const updateRawState = useUpdateLimitOrdersRawState()
