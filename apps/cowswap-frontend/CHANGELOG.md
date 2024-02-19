@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.59.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.1...cowswap-v1.59.2) (2024-02-14)
+
+
+### Bug Fixes
+
+* disable ab-testing for fee-zero. Enable flag for all users ([#3850](https://github.com/cowprotocol/cowswap/issues/3850)) ([eb589cf](https://github.com/cowprotocol/cowswap/commit/eb589cf836b60e8009e8333a56b3d6bb0420643a))
+
 ## [1.59.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.0...cowswap-v1.59.1) (2024-02-12)
 
 

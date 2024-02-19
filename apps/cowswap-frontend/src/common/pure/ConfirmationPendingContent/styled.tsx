@@ -73,10 +73,6 @@ export const UpperSection = styled.div`
   color: inherit;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    border-radius: 0;
-  `};
-
   > span {
     font-size: 18px;
     font-weight: 300;

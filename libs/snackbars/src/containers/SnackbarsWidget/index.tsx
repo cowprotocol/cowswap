@@ -6,7 +6,7 @@ import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { ReactElement, useCallback, useMemo } from 'react'
 import { useResetAtom } from 'jotai/utils'
-import { darken } from 'color2k'
+import { UI } from '@cowprotocol/ui'
 
 const Overlay = styled.div`
   display: none;
@@ -16,7 +16,7 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 4;
-  background: ${({ theme }) => darken(theme.bg1, 0.2)};
+  background: var(${UI.COLOR_PAPER_DARKEST});
 `
 
 const List = styled.div`
@@ -33,7 +33,11 @@ const Host = styled.div`
   max-width: 800px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
+    width: 90%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 20px;
 
     ${Overlay} {
       display: block;

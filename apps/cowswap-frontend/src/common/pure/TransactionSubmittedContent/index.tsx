@@ -6,7 +6,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
 import { Nullish } from 'types'
 
@@ -91,12 +90,16 @@ export function TransactionSubmittedContent({
               <AddToMetamask shortLabel currency={currencyToAdd} />
 
               {!isInjectedWidgetMode && (
-                <styledEl.ButtonCustom>
-                  <Link to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
+                <a href={`#${Routes.PLAY_COWRUNNER}`} target="_blank" rel="noreferrer noopener">
+                  <styledEl.ButtonCustom cowGame>
                     <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
                     Play the CoW Runner Game!
-                  </Link>
-                </styledEl.ButtonCustom>
+                  </styledEl.ButtonCustom>
+                </a>
+              )}
+
+              {activityDerivedState?.status === ActivityStatus.PENDING && (
+                <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
               )}
             </styledEl.ButtonGroup>
           </>
