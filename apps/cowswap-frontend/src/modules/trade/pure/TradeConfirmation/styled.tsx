@@ -74,13 +74,17 @@ export const Header = styled.div`
   margin: 0;
 `
 
+export const HeaderRightContent = styled.div`
+  margin: 0 0 0 auto;
+  line-height: 0;
+`
+
 export const ConfirmHeaderTitle = styled.h3`
   margin: 0;
   font-size: 16px;
 `
 
 export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
-  margin: 0 0 0 auto;
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   animation: ${({ blink }) => (blink ? `blinkOut 1s ease-out forwards` : 'none')};
