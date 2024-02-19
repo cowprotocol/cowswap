@@ -99,10 +99,16 @@ function getMatchingDeadline(duration: number) {
 /**
  * Get setting state based on existing order
  *
- * Will set `showCustomRecipient` and either `deadlineMilliseconds` or `customDeadlineTimestamp`
+ * Will set:
+ *  - `showCustomRecipient`
+ *  - `partialFillsEnabled`
+ *  - either `deadlineMilliseconds` or `customDeadlineTimestamp`
  */
 function getSettingsState(order: Order | ParsedOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
-  const state: Partial<LimitOrdersSettingsState> = { showRecipient: hasCustomRecipient }
+  const state: Partial<LimitOrdersSettingsState> = {
+    showRecipient: hasCustomRecipient,
+    partialFillsEnabled: order.partiallyFillable,
+  }
 
   const duration = getDuration(order)
   const deadline = getMatchingDeadline(duration)
