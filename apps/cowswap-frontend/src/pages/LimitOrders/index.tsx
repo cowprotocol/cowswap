@@ -17,9 +17,11 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
+import { useIsAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
+import { AlternativeLimitOrder } from 'pages/AlternativeOrder'
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-export default function LimitOrderPage() {
+function LimitOrderPage() {
   const { chainId, account } = useWalletInfo()
   const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
 
@@ -48,4 +50,10 @@ export default function LimitOrderPage() {
       </styledEl.PageWrapper>
     </>
   )
+}
+
+export default function Page() {
+  const isAlternative = useIsAlternativeOrderModalVisible()
+
+  return isAlternative ? <AlternativeLimitOrder /> : <LimitOrderPage />
 }
