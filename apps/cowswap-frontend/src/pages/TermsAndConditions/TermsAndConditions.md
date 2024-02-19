@@ -73,13 +73,13 @@ Please consult our [documentation](https://docs.cow.fi/cow-protocol) for more in
 
 ## The Interface
 
-[https//:swap.cow.fi](https://swap.cow.fi/) is a web-hosted user interface (the “Interface”) providing access to CoW Protocol. You may submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.
+[https://swap.cow.fi](https://swap.cow.fi/) is a web-hosted user interface (the “Interface”) providing access to CoW Protocol. You may submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.
 
 Please consult our [documentation](https://docs.cow.fi/cow-protocol/tutorials/cow-swap) for more information on our Interface.
 
 The features of the Interface can also be accessed through third parties’ websites integrating our widget (the “Widget”).
 
-Please consult our [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget) for more information on our Widget
+Please consult our [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget) for more information on our Widget.
 
 
 ### Restricted use of the Interface
@@ -217,7 +217,7 @@ or other proprietary information of us without our express prior written consent
 
 **No Warranties**: _THE PRODUCTS ARE PROVIDED "AS IS" AND WITHOUT ANY WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIMS ALL WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT._
 
-**Specific Disclaimers**: WITHOUT LIMITING THE FOREGOING, COW DAO DOES NOT WARRANT THAT THE SOFTWARE:
+**Specific Disclaimers**: _WITHOUT LIMITING THE FOREGOING, COW DAO DOES NOT WARRANT THAT THE SOFTWARE:_
 
 - Will meet your specific requirements or expectations.
 
@@ -321,15 +321,6 @@ By using our Products you hereby agree, represent and warrant that:
 - the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
 
 
-## Indemnification and liability
-
-You agree to release and indemnify, defend and hold us and any of our Affiliates harmless, as well as any members, participants, directors, officers, employees, contractors, shareholders and representatives of any of the foregoing, from and against any and all losses, liabilities, damages, costs claims or actions of any kind arising or resulting from your use of the Interface, your breach of these Terms, and any of your acts or omissions that infringe the rights of any person.
-
-We reserve the right, at our own expense, to assume exclusive defence and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with us in the defence of such matter.
-
-The indemnity set out here is in addition to, and not in lieu of, any other remedies that may be available to us under applicable law.
-
-
 ## Limitation of Liability
 
 We do not exclude or limit our liability to you where it would be unlawful to do so. This includes liability for death or personal injury caused by our negligence or fraud.
@@ -357,7 +348,7 @@ To the fullest extent permitted by law, you acknowledge and agree that we owe no
 
 If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us (a “Dispute”), you agree to seek to resolve the matter with us amicably by referring the matter to legal\@cow\.fi.
 
-For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at https\://forum.cow\.fi/ with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking
+For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at https\://forum.cow\.fi/ with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
 
 
 ### Mediation and Arbitration

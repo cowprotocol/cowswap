@@ -41,6 +41,8 @@ const Wrapper = styled.div<{ longList?: boolean }>`
   > div {
     height: 90vh;
     overflow-y: scroll;
+    margin-right: 5px;
+    ${({ theme }) => theme.colorScrollbar};
 
     ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
       height: auto;

@@ -8,16 +8,19 @@ export interface LinkRendererProps {
   href: string
   children: React.ReactNode
   smooth?: boolean
+  className?: string
   scroll?: ((element: HTMLElement) => void) | undefined
 }
 
 export function Link(props: LinkRendererProps) {
-  const { children, href = '#', smooth, scroll } = props
+  const { children, href = '#', smooth, scroll, className } = props
   const isExternalLink = /^(https?:)?\/\//.test(href)
   return isExternalLink ? (
-    <ExternalLink href={href}>{children}</ExternalLink>
+    <ExternalLink href={href} className={className}>
+      {children}
+    </ExternalLink>
   ) : (
-    <HashLink smooth={smooth} to={href} scroll={scroll}>
+    <HashLink smooth={smooth} to={href} scroll={scroll} className={className}>
       {children}
     </HashLink>
   )
