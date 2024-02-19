@@ -43,8 +43,16 @@ export const listsStatesMapAtom = atom((get) => {
   const { chainId, widgetAppCode, selectedLists, useUniswapListOnly } = get(environmentAtom)
   const allTokenListsInfo = get(listsStatesByChainAtom)
   const currentNetworkLists = allTokenListsInfo[chainId] || {}
+  const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const userAddedListSources = userAddedTokenLists[chainId].reduce<{ [key: string]: boolean }>((acc, list) => {
+    acc[list.source] = true
+    return acc
+  }, {})
 
-  const lists = useUniswapListOnly ? [UNISWAP_TOKENS_LIST] : Object.keys(currentNetworkLists)
+  const listsSources = Object.keys(currentNetworkLists).filter((source) => {
+    return useUniswapListOnly ? userAddedListSources[source] : true
+  })
+  const lists = useUniswapListOnly ? [UNISWAP_TOKENS_LIST, ...listsSources] : listsSources
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]
