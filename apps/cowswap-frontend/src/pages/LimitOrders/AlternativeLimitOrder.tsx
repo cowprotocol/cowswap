@@ -11,7 +11,6 @@ export function AlternativeLimitOrder() {
   const onDismiss = useCallback(() => hideAlternativeOrderModal(), [hideAlternativeOrderModal])
 
   // TODO: update title according to order status: `pending ? edit : recreate`
-  // TODO: pass down OR update the order placement callback directly to go back to regular mode
   return (
     <NewModal title={'Recreate order'} onDismiss={onDismiss} modalMode>
       <LimitOrdersWidget />
