@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/types'
+
 import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
@@ -48,6 +50,10 @@ const orderActions: OrderActions = {
   },
   approveOrderToken() {
     console.log('approveOrderToken ')
+  },
+  getShowRecreateModal: function (_: ParsedOrder): Command | null {
+    console.log(`getShowRecreateModal`)
+    return null
   },
 }
 

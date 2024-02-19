@@ -1,11 +1,11 @@
-import { atom, SetStateAction } from 'jotai'
+import { atom } from 'jotai'
 
 import { alternativeOrderReadWriteAtomFactory } from 'common/state/alternativeOrder'
 
 export type PartiallyFillableOverrideType = boolean | undefined
 export type PartiallyFillableOverrideDispatcherType = [
   PartiallyFillableOverrideType,
-  (update?: SetStateAction<PartiallyFillableOverrideType>) => void
+  (update: PartiallyFillableOverrideType) => void
 ]
 
 const regularPartiallyFillableOverrideAtom = atom<PartiallyFillableOverrideType>(undefined)
