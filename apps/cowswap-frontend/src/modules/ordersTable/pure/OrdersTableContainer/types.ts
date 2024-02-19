@@ -5,7 +5,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
-  getShowRecreateModal: (order: ParsedOrder) => () => void
+  getShowRecreateModal: (order: ParsedOrder) => Command
   selectReceiptOrder(order: ParsedOrder): void
   toggleOrderForCancellation(order: ParsedOrder): void
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
