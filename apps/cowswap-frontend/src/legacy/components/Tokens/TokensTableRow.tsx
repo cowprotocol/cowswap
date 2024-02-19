@@ -6,6 +6,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
@@ -41,8 +42,8 @@ type DataRowParams = {
   index: number
   balance?: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
-  closeApproveModal: () => void
-  toggleWalletModal: () => void
+  closeApproveModal: Command
+  toggleWalletModal: Command | null
 }
 
 export const TokensTableRow = ({
@@ -82,7 +83,7 @@ export const TokensTableRow = ({
   const handleApprove = useCallback(async () => {
     handleCloseError()
 
-    if (!account) {
+    if (!account && toggleWalletModal) {
       toggleWalletModal()
       return
     }

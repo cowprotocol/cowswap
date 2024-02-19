@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { MetaMaskLogo } from '@cowprotocol/wallet'
@@ -57,11 +58,10 @@ const CheckCircleCustom = styled(CheckCircle)`
 export type AddToMetamaskProps = {
   currency: Currency | undefined
   shortLabel?: boolean
-  addToken: () => void
+  addToken: Command
   success?: boolean
   className?: string
 }
-
 export function AddToMetamask(props: AddToMetamaskProps) {
   const { className, currency, shortLabel, addToken, success } = props
   const theme = useContext(ThemeContext)

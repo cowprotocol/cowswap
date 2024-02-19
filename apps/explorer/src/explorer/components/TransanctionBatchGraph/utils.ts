@@ -3,6 +3,8 @@ import React from 'react'
 import { LAYOUTS } from './layouts'
 import { PopperInstance } from './types'
 
+import { Command } from '@cowprotocol/types'
+
 /**
  * This allows to bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
  */
@@ -16,7 +18,7 @@ export function bindPopper(
 
   // Remove if already existing
   const existingTooltips: HTMLCollectionOf<Element> = document.getElementsByClassName(popperClassTarget)
-  Array.from(existingTooltips).forEach((ele: { remove: () => void }): void => ele && ele.remove())
+  Array.from(existingTooltips).forEach((ele: { remove: Command }): void => ele && ele.remove())
 
   if (!targetData.tooltip) {
     return

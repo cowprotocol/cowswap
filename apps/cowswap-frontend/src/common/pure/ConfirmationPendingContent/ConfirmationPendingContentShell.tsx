@@ -1,11 +1,13 @@
 import React, { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { Wrapper, CloseIcon, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
 
 import { useWalletStatusIcon } from '../../hooks/useWalletStatusIcon'
 
 interface ConfirmationPendingContentShellProps {
-  onDismiss: () => void
+  onDismiss: Command
   title: ReactNode
   description: ReactNode
   children: ReactNode

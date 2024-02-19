@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { Trans } from '@lingui/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
@@ -12,7 +14,7 @@ interface SettingsBoxProps {
   tooltip: ReactNode
   value: boolean
   disabled?: boolean
-  toggle: () => void
+  toggle: Command
 }
 
 export function SettingsBox({ title, tooltip, value, toggle, disabled = false }: SettingsBoxProps) {

@@ -1,4 +1,5 @@
 import { CoWSwapEthFlow, Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
+import { Command } from '@cowprotocol/types'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -16,7 +17,6 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
-
 export interface BaseFlowContext {
   context: {
     chainId: number
@@ -29,7 +29,7 @@ export interface BaseFlowContext {
     allowsOffchainSigning: boolean
   }
   callbacks: {
-    closeModals: () => void
+    closeModals: Command
     addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
   }

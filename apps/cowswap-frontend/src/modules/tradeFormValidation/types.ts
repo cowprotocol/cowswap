@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/types'
+
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -65,6 +67,6 @@ export interface TradeFormButtonContext {
 
   doTrade(): void
   confirmTrade(): void
-  connectWallet(): void
+  connectWallet: Command | null
   wrapNativeFlow(): void
 }

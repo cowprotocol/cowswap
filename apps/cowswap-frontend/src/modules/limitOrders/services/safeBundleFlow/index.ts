@@ -1,5 +1,6 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { CowEvents } from '@cowprotocol/events'
+import { Command } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -25,13 +26,12 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
-
 export async function safeBundleFlow(
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforeTrade?: () => void
+  beforeTrade?: Command
 ): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT

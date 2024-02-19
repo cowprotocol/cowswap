@@ -29,8 +29,8 @@ const Wrapper = styled.div`
   width: 100%;
 
   > div {
-    //TODO: check the UI
     height: calc(100vh - 200px);
+    min-height: 600px;
   }
 `
 

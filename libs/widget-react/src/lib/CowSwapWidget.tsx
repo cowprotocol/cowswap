@@ -14,6 +14,8 @@ export interface CowSwapWidgetProps {
   listeners?: CowEventListeners
 }
 
+import { Command } from '@cowprotocol/types'
+
 export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<Omit<CowSwapWidgetParams, 'provider'> | null>(null)
@@ -25,7 +27,7 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
 
   // Error handling
   const tryOrHandleError = useCallback(
-    (action: string, actionThatMightFail: () => void) => {
+    (action: string, actionThatMightFail: Command) => {
       try {
         console.log(`[WIDGET] ${action}`)
         actionThatMightFail()
@@ -69,6 +71,9 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
     ) {
       return
     }
+
+    // Update provider
+    providerRef.current = provider || null
 
     // TODO: Fix this https://github.com/cowprotocol/cowswap/issues/3810#issue-2127257473 (in meantime forcing full refresh as before)
     // const handler = widgetHandlerRef.current

@@ -56,7 +56,7 @@ export class IframeRpcProviderBridge {
 
     // Register in the provider, the events that needs to be forwarded to the iFrame window
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-      ethereumProvider.on(event, this.onRpcEventForwardToIframe)
+      ethereumProvider.on(event, (e: unknown) => this.onRpcEventForwardToIframe(event, e))
     })
   }
 
@@ -103,7 +103,7 @@ export class IframeRpcProviderBridge {
     this.processRequest(event.data)
   }
 
-  private onRpcEventForwardToIframe(params: unknown): void {
+  private onRpcEventForwardToIframe(event: string, params: unknown): void {
     this.forwardRpcCallToIframe({ method: event, params: [params] })
   }
 

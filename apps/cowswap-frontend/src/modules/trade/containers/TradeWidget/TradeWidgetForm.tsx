@@ -7,6 +7,7 @@ import { t } from '@lingui/macro'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -19,12 +20,15 @@ import { PoweredFooter } from 'common/pure/PoweredFooter'
 import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
 
+import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
+  const injectedWidgetParams = useInjectedWidgetParams()
+
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
@@ -47,12 +51,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
+  const tradeStateFromUrl = useTradeStateFromUrl()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
 
-  const canSellAllNative = isSafeWallet
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
+  const hasRecipientInUrl = !!tradeStateFromUrl.recipient
+  const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
   // Disable too frequent tokens switching
@@ -70,10 +76,12 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   }
 
   /**
-   * Reset recipient value only once at App start
+   * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    onChangeRecipient(null)
+    if (!hasRecipientInUrl) {
+      onChangeRecipient(null)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -82,7 +90,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-          {isInjectedWidgetMode && (
+          {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
           {!lockScreen && settingsWidget}
@@ -103,13 +111,13 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               />
             </div>
             {!isWrapOrUnwrap && middleContent}
-            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
+            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
               <CurrencyArrowSeparator
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
                 border={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                withRecipient={!isWrapOrUnwrap && showRecipient}
+                withRecipient={withRecipient}
                 isLoading={isTradePriceUpdating}
               />
             </styledEl.CurrencySeparatorBox>
@@ -130,7 +138,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 {...currencyInputCommonProps}
               />
             </div>
-            {!isWrapOrUnwrap && showRecipient && (
+            {withRecipient && (
               <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
             )}
 

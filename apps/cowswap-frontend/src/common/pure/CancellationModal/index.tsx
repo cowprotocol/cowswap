@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 import { CowModal as Modal } from 'common/pure/Modal'
@@ -12,7 +13,7 @@ import { ConfirmationPendingContent } from '../ConfirmationPendingContent'
 
 export type CancellationModalProps = {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
   context: CancellationModalContext
 }
 

@@ -10,6 +10,8 @@ export const PhishAlert = styled.div<{ isActive: any }>`
   justify-content: space-between;
   align-items: center;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
+  border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '8px' : '')};
+  margin-bottom: ${({ theme }) => (theme.isInjectedWidgetMode ? '10px' : '')};
 
   p {
     padding: 0;

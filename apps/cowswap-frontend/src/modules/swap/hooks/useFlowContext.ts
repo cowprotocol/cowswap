@@ -4,6 +4,7 @@ import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
+import { Command } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -41,7 +42,6 @@ export enum FlowType {
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
-
 interface BaseFlowContextSetup {
   chainId: SupportedChainId
   account: string | undefined
@@ -59,7 +59,7 @@ interface BaseFlowContextSetup {
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
   flowType: FlowType
-  closeModals: () => void
+  closeModals: Command
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch

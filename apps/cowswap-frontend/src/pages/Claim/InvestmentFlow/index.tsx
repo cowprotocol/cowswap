@@ -5,6 +5,7 @@ import ImportantIcon from '@cowprotocol/assets/cow-swap/important.svg'
 import RoundArrow from '@cowprotocol/assets/cow-swap/round-arrow.svg'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -72,7 +73,7 @@ const FAQ_DATA = (chainId: number | undefined) => [
 export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims' | 'claims' | 'isAirdropOnly'> & {
   modalCbs: {
     openModal: (message?: string) => void
-    closeModal: () => void
+    closeModal: Command
   }
 }
 
