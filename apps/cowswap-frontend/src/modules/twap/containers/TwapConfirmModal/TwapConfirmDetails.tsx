@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { shortenAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { RecipientRow } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 
@@ -57,7 +56,8 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
 
   const { account } = useWalletInfo()
-  const { recipient } = useAdvancedOrdersDerivedState()
+  const { recipient, recipientAddress } = useAdvancedOrdersDerivedState()
+  const recipientAddressOrName = recipient || recipientAddress
 
   return (
     <Wrapper>
@@ -112,17 +112,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       </ConfirmDetailsItem>
 
       {/* Recipient */}
-      {recipient && recipient !== account && (
-        <ConfirmDetailsItem
-          withArrow={false}
-          label="Recipient"
-          tooltip="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
-        >
-          <div>
-            <span title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
-          </div>
-        </ConfirmDetailsItem>
-      )}
+      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
     </Wrapper>
   )
 })
