@@ -34,6 +34,8 @@ const Host = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
+    right: 0;
+    top: 0;
 
     ${Overlay} {
       display: block;

@@ -5,6 +5,7 @@ import { addSnackbarAtom } from '@cowprotocol/snackbars'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { EVENT_EMITTER } from 'eventEmitter'
+import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import {
@@ -13,6 +14,8 @@ import {
   getPendingOrderNotificationToast,
 } from 'common/pure/PendingOrderNotification'
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+const PENDING_ORDER_DURATION = ms`10s`
 
 interface PendingOrderNotificationParams {
   chainId: SupportedChainId
@@ -62,6 +65,7 @@ export function showPendingOrderNotification(params: PendingOrderNotificationPar
       id: 'pending-order',
       icon: 'success',
       content,
+      duration: PENDING_ORDER_DURATION,
     })
 
     const toastMessage = getPendingOrderNotificationToast(pendingOrderNotificationMessage)
