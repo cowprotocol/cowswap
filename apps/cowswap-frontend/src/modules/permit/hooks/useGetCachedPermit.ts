@@ -20,15 +20,21 @@ export function useGetCachedPermit(): (tokenAddress: Nullish<string>) => Promise
         return
       }
 
-      const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
+      try {
+        const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
 
-      // Always get the nonce for the real account, to know whether the cache should be invalidated
-      // Static account should never need to pre-check the nonce as it'll never change once cached
-      const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
+        // Always get the nonce for the real account, to know whether the cache should be invalidated
+        // Static account should never need to pre-check the nonce as it'll never change once cached
+        const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
 
-      const permitParams = { chainId, tokenAddress: tokenAddress, account, nonce }
+        const permitParams = { chainId, tokenAddress: tokenAddress, account, nonce }
 
-      return getCachedPermit(permitParams)
+        return getCachedPermit(permitParams)
+      } catch (e) {
+        console.error('Error fetching cached permit', e)
+
+        return undefined
+      }
     },
     [getCachedPermit, chainId, account, provider]
   )
