@@ -20,7 +20,7 @@ import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/ut
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { isPending, useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useSetAlternativeOrder } from 'common/state/alternativeOrder'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -139,7 +139,12 @@ export function OrdersTableWidget({
 
   const setOrderToRecreate = useSetAlternativeOrder()
   const getShowRecreateModal = useCallback(
-    (order: ParsedOrder) => () => setOrderToRecreate(order),
+    (order: ParsedOrder) => {
+      if (isPending(order)) {
+        return null
+      }
+      return () => setOrderToRecreate(order)
+    },
     [setOrderToRecreate]
   )
 
