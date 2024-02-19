@@ -18,6 +18,7 @@ import styled from 'styled-components/macro'
 
 import { usePermitCompatibleTokens } from 'modules/permit'
 
+import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { ImportListModal } from '../../pure/ImportListModal'
@@ -51,6 +52,7 @@ export function SelectTokenWidget() {
   const balancesState = useTokensBalances()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
+  const onTokenListAddingError = useOnTokenListAddingError()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -80,9 +82,13 @@ export function SelectTokenWidget() {
   }
 
   const importListAndBack = (list: ListState) => {
-    addCustomTokenLists(list)
-    updateSelectTokenWidget({ listToImport: undefined })
-    addListAnalytics('Success', list.source)
+    try {
+      addCustomTokenLists(list)
+      updateSelectTokenWidget({ listToImport: undefined })
+      addListAnalytics('Success', list.source)
+    } catch (error) {
+      onTokenListAddingError(error)
+    }
   }
 
   if (!onSelectToken || !open) return null
