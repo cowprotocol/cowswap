@@ -2,12 +2,12 @@ import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 export type CancellationType = 'offChain' | 'onChain'
-
 export type CancellationModalContext = {
   chainId: number | null
   orderId: string | null
@@ -16,7 +16,7 @@ export type CancellationModalContext = {
   txCost: BigNumber | null
   nativeCurrency: TokenWithLogo
   isPendingSignature: boolean
-  onDismiss: (() => void) | null
+  onDismiss: Command | null
   triggerCancellation: ((type: CancellationType) => Promise<void>) | null
   defaultType: CancellationType
 }

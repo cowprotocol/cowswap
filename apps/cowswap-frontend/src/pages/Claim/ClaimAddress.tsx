@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import Circle from '@cowprotocol/assets/images/blue-loader.svg'
 import { useENS } from '@cowprotocol/ens'
+import { Command } from '@cowprotocol/types'
 import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -14,7 +15,7 @@ import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
-  toggleWalletModal: () => void
+  toggleWalletModal: Command | null
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {
@@ -35,9 +36,6 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
 
     setInputAddress(withoutSpaces)
   }
-
-  // const buttonLabel =
-  // error instanceof UnsupportedChainIdError ? 'or connect a wallet in a supported network' : 'or connect a wallet'
 
   if (activeClaimAccount || claimStatus === ClaimStatus.CONFIRMED) return null
 
@@ -64,7 +62,9 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
         </InputErrorText>
       )}
 
-      {!account && <ButtonSecondary onClick={toggleWalletModal}>{/* <Trans>{buttonLabel}</Trans> */}</ButtonSecondary>}
+      {!account && toggleWalletModal && (
+        <ButtonSecondary onClick={toggleWalletModal}>or connect a wallet</ButtonSecondary>
+      )}
     </CheckAddress>
   )
 }

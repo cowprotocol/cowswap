@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { X as CloseIcon } from 'react-feather'
@@ -35,10 +36,9 @@ const Close = styled(CloseIcon)`
     stroke: var(${UI.COLOR_TEXT});
   }
 `
-
 interface ConfirmationModalHeaderProps {
   children: ReactNode
-  onCloseClick: () => void
+  onCloseClick: Command
 }
 
 export function ConfirmationModalHeader({ children, onCloseClick }: ConfirmationModalHeaderProps) {

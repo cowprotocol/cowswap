@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -91,7 +92,7 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
   )
 }
 
-type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: () => void }
+type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: Command }
 
 export function CustomRecipientWarningBanner({
   bannerType,
@@ -126,8 +127,8 @@ export function CustomRecipientWarningBanner({
 }
 
 export type SellNativeWarningBannerProps = {
-  sellWrapped: () => void
-  wrapNative: () => void
+  sellWrapped: Command
+  wrapNative: Command
   nativeSymbol: string | undefined
   wrappedNativeSymbol: string | undefined
 }

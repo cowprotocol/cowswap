@@ -3,6 +3,8 @@ import { ElementDefinition, LayoutOptions } from 'cytoscape'
 import { Network } from '../../../types'
 import { SingleErc20State } from '../../../state/erc20'
 
+import { Command } from '@cowprotocol/types'
+
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',
   CowProtocol = 'cowProtocol',
@@ -107,6 +109,6 @@ export type GetTxBatchTradesResult = {
 }
 
 export interface PopperInstance {
-  scheduleUpdate: () => void
-  destroy: () => void
+  scheduleUpdate: Command
+  destroy: Command
 }

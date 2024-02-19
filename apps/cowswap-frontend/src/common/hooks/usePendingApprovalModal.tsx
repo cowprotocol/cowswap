@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { getIsMetaMask, getWeb3ReactConnection, injectedConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -12,7 +13,7 @@ import { MetamaskApproveBanner } from '../pure/MetamaskApproveBanner'
 
 interface PendingApprovalModalParams {
   currencySymbol?: string
-  onDismiss?: () => void
+  onDismiss?: Command
   modalMode?: boolean
 }
 

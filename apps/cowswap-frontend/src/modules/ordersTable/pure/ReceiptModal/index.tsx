@@ -1,5 +1,6 @@
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { ExternalLink, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
@@ -32,7 +33,6 @@ import { PriceField } from './PriceField'
 import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
-
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -40,7 +40,7 @@ interface ReceiptProps {
   twapOrder: TwapOrderItem | null
   isTwapPartOrder: boolean
   chainId: SupportedChainId
-  onDismiss: () => void
+  onDismiss: Command
   sellAmount: CurrencyAmount<Token>
   buyAmount: CurrencyAmount<Token>
   limitPrice: Fraction | null

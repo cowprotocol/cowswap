@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -23,8 +24,7 @@ const Container = styled.div`
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};
 `
-
-type CustomSubmittedContent = (order: Order | undefined, onDismiss: () => void) => JSX.Element
+type CustomSubmittedContent = (order: Order | undefined, onDismiss: Command) => JSX.Element
 
 export interface TradeConfirmModalProps {
   children: JSX.Element
@@ -79,13 +79,12 @@ type InnerComponentProps = {
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
-  onDismiss: () => void
+  onDismiss: Command
   permitSignatureState: string | undefined
   isSafeWallet: boolean
   submittedContent?: CustomSubmittedContent
   order?: Order
 }
-
 function InnerComponent(props: InnerComponentProps) {
   const {
     account,
