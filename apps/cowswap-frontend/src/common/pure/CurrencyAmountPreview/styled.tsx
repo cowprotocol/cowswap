@@ -13,6 +13,11 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+    letter-spacing: -0.1px;
+  `}
 `
 
 export const Amount = styled.div`
