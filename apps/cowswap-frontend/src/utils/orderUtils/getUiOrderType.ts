@@ -30,11 +30,15 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIMIT,
 }
 
-export function getUiOrderType({
-  fullAppData,
-  composableCowInfo,
-  class: orderClass,
-}: Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>): UiOrderType {
+export const ORDER_UI_TYPE_TITLES: Record<UiOrderType, string> = {
+  [UiOrderType.SWAP]: 'Swap',
+  [UiOrderType.LIMIT]: 'Limit order',
+  [UiOrderType.TWAP]: 'TWAP order',
+}
+
+export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>
+
+export function getUiOrderType({ fullAppData, composableCowInfo, class: orderClass }: UiOrderTypeParams): UiOrderType {
   const parsedAppData = decodeAppData(fullAppData)
 
   const appDataOrderClass = parsedAppData?.metadata?.orderClass as AppDataMetadataOrderClass | undefined

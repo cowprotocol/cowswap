@@ -10,7 +10,7 @@ import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLi
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { ORDER_UI_TYPE_TITLES, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;
@@ -21,12 +21,6 @@ const OrderLinkWrapper = styled.div`
     text-decoration: none !important;
   }
 `
-
-const ORDER_TYPE_TITLES: Record<UiOrderType, string> = {
-  [UiOrderType.SWAP]: 'Swap',
-  [UiOrderType.LIMIT]: 'Limit order',
-  [UiOrderType.TWAP]: 'TWAP order',
-}
 
 export interface PendingOrderNotificationProps {
   account: string
@@ -57,7 +51,7 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     tokenSymbol: outputAmount.currency,
   })
 
-  const messagePrefix = `${ORDER_TYPE_TITLES[orderType]} submitted: `
+  const messagePrefix = `${ORDER_UI_TYPE_TITLES[orderType]} submitted: `
 
   const baseMessage = (() => {
     const isSellOrder = kind === OrderKind.SELL
@@ -102,7 +96,7 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
 
   return (
     <>
-      <strong>{ORDER_TYPE_TITLES[orderType]} submitted</strong>
+      <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
       <br />
       {isSell ? (
         <>

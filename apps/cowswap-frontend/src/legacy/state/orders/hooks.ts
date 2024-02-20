@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -19,7 +18,6 @@ import {
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
-  OrderStatus,
   preSignOrders,
   requestOrderCancellation,
   SetIsOrderRefundedBatch,
@@ -34,19 +32,17 @@ import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
   getDefaultNetworkState,
   ORDER_LIST_KEYS,
-  OrderObject,
   ORDERS_LIST,
   OrdersState,
   OrdersStateNetwork,
   OrderTypeKeys,
   PartialOrdersMap,
-  V2OrderObject,
 } from './reducer'
-import { isOrderExpired, partialOrderUpdate } from './utils'
+import { partialOrderUpdate } from './utils'
+import { deserializeOrder } from './utils/deserializeOrder'
 
 import { AppDispatch, AppState } from '../index'
 import { serializeToken } from '../user/hooks'
-import { SerializedToken } from '../user/types'
 
 type OrderID = string
 
@@ -108,41 +104,6 @@ function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   }, Object.values(firstState))
 }
 
-function _isV3Order(orderObject: any): orderObject is OrderObject {
-  return orderObject?.order?.inputToken !== undefined || orderObject?.order?.outputToken !== undefined
-}
-
-function deserializeToken(serializedToken: SerializedToken): TokenWithLogo {
-  return TokenWithLogo.fromToken(serializedToken, serializedToken.logoURI)
-}
-
-function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {
-  let order: Order | undefined
-  // we need to make sure the incoming order is a valid
-  // V3 typed order as users can have stale data from V2
-  if (_isV3Order(orderObject)) {
-    const { order: serialisedOrder } = orderObject
-
-    const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
-    const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
-    order = {
-      ...serialisedOrder,
-      inputToken: deserialisedInputToken,
-      outputToken: deserialisedOutputToken,
-    }
-
-    // Fix for edge-case, where for some reason the order is still pending but its actually expired
-    if (order.status === OrderStatus.PENDING && isOrderExpired(order)) {
-      order.status = OrderStatus.EXPIRED
-    }
-  } else {
-    orderObject?.order &&
-      console.debug('[Order::hooks] - V2 Order detected, skipping serialisation.', orderObject.order)
-  }
-
-  return order
-}
-
 export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order | undefined => {
   return useSelector<AppState, Order | undefined>((state) => {
     if (!id || !chainId) return undefined
@@ -160,7 +121,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.scheduled[id] ||
       orders?.failed[id]
 
-    return _deserializeOrder(serialisedOrder)
+    return deserializeOrder(serialisedOrder)
   })
 }
 
@@ -200,7 +161,7 @@ export const useOrders = (
       const doesMatchClass = orderType === uiOrderType
 
       if (doesBelongToAccount && doesMatchClass) {
-        const mappedOrder = _deserializeOrder(order)
+        const mappedOrder = deserializeOrder(order)
 
         if (mappedOrder && !mappedOrder.isHidden) {
           acc.push(mappedOrder)
@@ -235,7 +196,7 @@ export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap 
     }
 
     return ids.reduce<OrdersMap>((acc, id) => {
-      const order = _deserializeOrder(allOrders[id])
+      const order = deserializeOrder(allOrders[id])
       if (order) {
         acc[id] = order
       }
@@ -278,7 +239,7 @@ export const useCombinedPendingOrders = ({
     const { pending, presignaturePending, creating } = state
     const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
 
-    return allPending.map(_deserializeOrder).filter((order) => {
+    return allPending.map(deserializeOrder).filter((order) => {
       return order?.owner.toLowerCase() === account.toLowerCase()
     }) as Order[]
   }, [state, account])
@@ -300,7 +261,7 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+    return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -312,7 +273,7 @@ export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+    return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -324,7 +285,7 @@ export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+    return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
