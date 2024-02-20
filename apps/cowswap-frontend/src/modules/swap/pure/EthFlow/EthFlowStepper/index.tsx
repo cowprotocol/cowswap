@@ -72,8 +72,8 @@ const Wrapper = styled.div`
   grid-template-rows: max-content;
   align-items: flex-start;
   width: 100%;
-  padding: 22px;
-  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  border-radius: 12px;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;
   line-height: 1;
@@ -101,7 +101,7 @@ export const Progress = styled.div<ProgressProps>`
   border-radius: var(--height);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    --height: 50px;
+    --height: 30px;
     --width: 3px;
     border-radius: var(--width);
     margin: 24px auto;

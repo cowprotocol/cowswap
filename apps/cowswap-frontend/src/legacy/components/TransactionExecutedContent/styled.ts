@@ -4,31 +4,25 @@ import styled from 'styled-components/macro'
 
 export const ExecutedWrapper = styled.div`
   display: flex;
+  gap: 20px;
   align-items: center;
-  padding-bottom: 1rem;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 0.8rem;
-  `};
-
-  img {
-    padding: 1rem;
-    margin-right: 10px;
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 0;
-      max-width: 60px;
-    `};
+  > img {
+    max-width: 100%;
   }
 
-  a {
-    margin: 0;
-    margin-top: 15px;
-    display: block;
-  }
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    gap: 16px;
+    font-size: 15px;
 
-  > div > div {
-    margin-bottom: 5px;
+    > a {
+      text-decoration: underline;
+      display: block;
+      margin: 0;
+    }
   }
 `
 

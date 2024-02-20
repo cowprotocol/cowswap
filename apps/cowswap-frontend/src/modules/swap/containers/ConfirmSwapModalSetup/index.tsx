@@ -11,6 +11,7 @@ import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { RecipientRow } from 'modules/trade'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -29,11 +30,20 @@ export interface ConfirmSwapModalSetupProps {
   priceImpact: PriceImpact
   tradeRatesProps: TradeRatesProps
   refreshInterval: number
+  recipientAddressOrName: string | null
   doTrade(): void
 }
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
-    props
+  const {
+    chainId,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    doTrade,
+    priceImpact,
+    tradeRatesProps,
+    refreshInterval,
+    recipientAddressOrName,
+  } = props
 
   const { account } = useWalletInfo()
   const { recipient } = useSwapState()
@@ -75,7 +85,9 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         recipient={recipient}
       >
         <>
-          <TradeRates {...tradeRatesProps} isReviewSwap={true} />
+          <TradeRates {...tradeRatesProps} isReviewSwap={true}>
+            <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
+          </TradeRates>
           <HighFeeWarning trade={tradeRatesProps.trade} />
           {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
         </>
