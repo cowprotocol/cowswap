@@ -27,6 +27,8 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
+const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
+
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
 }
@@ -71,6 +73,11 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
   useEffect(() => {
     if (isInjectedWidget()) return
 
+    if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
+      setEnvironment({ useCuratedListOnly: false })
+      return
+    }
+
     fetch('https://api.country.is')
       .then((res) => res.json())
       .then(({ country }) => {
@@ -82,7 +89,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
         }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [chainId])
 
   return null
 }
