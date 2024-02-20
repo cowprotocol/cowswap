@@ -1,6 +1,6 @@
 import { ExternalLink } from '@cowprotocol/ui'
 
-import HashLink from 'legacy/components/HashLink'
+import { HashLink } from 'react-router-hash-link'
 
 const SCROLL_OFFSET = 24
 
