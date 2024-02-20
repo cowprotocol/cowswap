@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom'
 
 import { LinkScrollable } from 'legacy/components/Link'
+import { PageWithToC } from 'legacy/components/PageWithToC'
 import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -19,7 +20,7 @@ import { Routes } from 'common/constants/routes'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
+import { ExternalLinkFaq, ButtonNav, FooterWrapper } from './styled'
 import ToC from './ToC'
 
 export interface TocSection {
@@ -56,7 +57,7 @@ export default function Faq() {
   const { toc, faqRef } = useToC()
   return (
     <>
-      <Wrapper ref={faqRef}>
+      <PageWithToC ref={faqRef}>
         <PageTitle title="General FAQ" />
         <FaqMenu />
         <Page>
@@ -223,7 +224,7 @@ export default function Faq() {
             <Footer />
           </Content>
         </Page>
-      </Wrapper>
+      </PageWithToC>
     </>
   )
 }

@@ -1,45 +1,87 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { useFetchFile } from '@cowprotocol/common-hooks'
+import { Loader } from '@cowprotocol/ui'
 
-import ReactMarkdown, { ReactMarkdownPropsBase } from 'react-markdown'
-import ReactMarkdownHtml from 'react-markdown/with-html'
-import styled from 'styled-components/macro'
+import ReactMarkdown, { Components } from 'react-markdown'
+import { useLocation } from 'react-router'
+import remarkGfm from 'remark-gfm'
 import { WithClassName } from 'types'
-
-import { LinkScrollable, Link } from 'legacy/components/Link'
 
 import { Page, Title, Content } from 'modules/application/pure/Page'
 
-import { HeadingRenderer } from './renderers'
+import { scrollToElement } from 'common/utils/scrollToElement'
+
+import { BackToTopButton } from './BackToTopButton'
+import { markdownComponents } from './components'
+import { ContentHeading, deriveHeading } from './utils'
+
+import { LinkScrollable } from '../Link'
+import { PageWithToC } from '../PageWithToC'
+import { SideMenu } from '../SideMenu'
 
 interface MarkdownParams extends WithClassName {
   contentFile: string
   title?: ReactNode
 }
 
-export const Wrapper = styled(Page)``
-
-export function Markdown(props: { children?: string }) {
-  const { children = '' } = props
-  return <ReactMarkdown renderers={{ link: Link }}>{children}</ReactMarkdown>
-}
-
-const MarkdownContent = (props: ReactMarkdownPropsBase & { children: string }) => (
-  <ReactMarkdownHtml {...props} renderers={{ heading: HeadingRenderer, link: LinkScrollable }} allowDangerousHtml />
-)
-
 export function MarkdownPage({ contentFile, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(contentFile)
+  const [contentHeadings, setContentHeadings] = useState<ContentHeading[] | null>(null)
+  const { hash } = useLocation()
+
+  const ref = useCallback(
+    (node: HTMLDivElement) => {
+      if (node !== null) {
+        setContentHeadings(deriveHeading(node, 'h2'))
+
+        // Scroll to anchor if hash is present
+        // Timeout is needed to wait for the content to be rendered
+        setTimeout(() => {
+          const anchor = document.getElementById(hash.slice(1))
+
+          if (anchor) {
+            scrollToElement(anchor)
+          }
+        }, 100)
+      } else {
+        setContentHeadings([])
+      }
+    },
+    [hash]
+  )
+
   return (
-    <>
-      <Wrapper className={className}>
+    <PageWithToC longList={true}>
+      {contentHeadings === null && <Loader />}
+      <SideMenu longList={true}>
+        <ul>
+          {contentHeadings?.map(({ id, title }) => {
+            return (
+              <li>
+                <LinkScrollable href={'#' + id}>{title}</LinkScrollable>
+              </li>
+            )
+          })}
+        </ul>
+      </SideMenu>
+
+      <Page className={className}>
         {title && <Title>{title}</Title>}
         <Content>
-          {file && <MarkdownContent>{file}</MarkdownContent>}
-          {error && <MarkdownContent>{error}</MarkdownContent>}
+          {file && <MarkdownContent contentRef={ref}>{file}</MarkdownContent>}
+          {error && <MarkdownContent contentRef={ref}>{error}</MarkdownContent>}
         </Content>
-      </Wrapper>
-    </>
+        <BackToTopButton />
+      </Page>
+    </PageWithToC>
+  )
+}
+
+const MarkdownContent = (props: { contentRef: (node: HTMLDivElement) => void; children: string }) => {
+  return (
+    <div ref={props.contentRef}>
+      <ReactMarkdown {...props} remarkPlugins={[remarkGfm]} components={markdownComponents as Components} />
+    </div>
   )
 }
