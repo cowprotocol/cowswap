@@ -27,6 +27,7 @@ export interface TradeRatesProps {
   rateInfoParams: RateInfoParams
   priceLabel?: string
   isReviewSwap?: boolean
+  children?: JSX.Element
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
@@ -41,6 +42,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     rateInfoParams,
     priceLabel = 'Rate',
     isReviewSwap = false,
+    children,
   } = props
   // const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
@@ -79,6 +81,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
         </div>
       </styledEl.Row>
       */}
+      {children}
     </styledEl.Box>
   )
 }, genericPropsChecker)

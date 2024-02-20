@@ -93,6 +93,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const handleSwap = useHandleSwap(priceImpactParams)
 
   const contextExists = ethFlowContext || swapFlowContext || safeBundleApprovalFlowContext || safeBundleEthFlowContext
+  const recipientAddressOrName = contextExists?.orderParams.recipientAddressOrName || null
+
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -159,6 +161,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     toggleWalletModal,
     swapInputError,
     onCurrencySelection,
+    recipientAddressOrName,
   }
 }
 

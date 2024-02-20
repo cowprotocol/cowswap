@@ -186,7 +186,7 @@ export const ProgressBarWrapper = styled.div`
   flex-flow: row nowrap;
   gap: 8px;
   flex-direction: row-reverse;
-  padding: 0 0;
+  padding: 0;
   font-size: 12px;
   font-weight: 500;
   height: 100%;

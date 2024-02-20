@@ -12,7 +12,7 @@ export const ExplorerLinkStyled = styled(ExplorerLink)``
 
 const StepWrapper = styled.div`
   height: auto;
-  width: auto;
+  width: max-content;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -37,6 +37,12 @@ const StepWrapper = styled.div`
     color: var(${UI.COLOR_TEXT});
     opacity: 1;
     font-size: 13px;
+    width: 100%;
+    max-width: 90px;
+    word-break: break-word;
+    white-space: pre-line;
+    line-height: 1.3;
+    margin: 4px auto 0;
   }
 `
 

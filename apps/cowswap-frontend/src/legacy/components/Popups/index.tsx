@@ -30,7 +30,7 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
   width: 100%;
   height: 100%;
   margin: 0;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: var(${UI.COLOR_PAPER_DARKEST});
   display: none;
 
   ${({ theme, show }) => theme.mediaWidth.upToSmall`
