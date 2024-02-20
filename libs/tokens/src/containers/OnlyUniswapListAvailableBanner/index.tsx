@@ -48,7 +48,7 @@ export function OnlyUniswapListAvailableBanner() {
 
   return (
     <Wrapper>
-      <p>The list of assets for trading is limited due to restrictions imposed by the SEC on users from the USA</p>
+      <p>The list of assets for trading is restricted due to your geographical location</p>
       <CloseIcon onClick={() => setBannerClosed(true)} />
     </Wrapper>
   )
