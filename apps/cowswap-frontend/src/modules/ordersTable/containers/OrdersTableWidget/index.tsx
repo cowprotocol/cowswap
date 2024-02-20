@@ -24,6 +24,7 @@ import { isPending, useCategorizeRecentActivity } from 'common/hooks/useCategori
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useSetAlternativeOrder } from 'common/state/alternativeOrder'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
+import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
@@ -140,7 +141,7 @@ export function OrdersTableWidget({
   const setOrderToRecreate = useSetAlternativeOrder()
   const getShowRecreateModal = useCallback(
     (order: ParsedOrder) => {
-      if (isPending(order)) {
+      if (isPending(order) || getUiOrderType(order) !== UiOrderType.LIMIT) {
         return null
       }
       return () => setOrderToRecreate(order)
