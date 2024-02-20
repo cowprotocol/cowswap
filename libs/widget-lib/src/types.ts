@@ -2,6 +2,22 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
+
+export enum WidgetMethodsEmit {
+  ACTIVATE = 'ACTIVATE',
+  UPDATE_HEIGHT = 'UPDATE_HEIGHT',
+  EMIT_COW_EVENT = 'EMIT_COW_EVENT',
+  PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
+}
+
+export enum WidgetMethodsListen {
+  UPDATE_PARAMS = 'UPDATE_PARAMS',
+  UPDATE_APP_DATA = 'UPDATE_APP_DATA',
+  PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
+  PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+}
+
 export interface JsonRpcRequest {
   id: number
   method: string
@@ -204,22 +220,6 @@ interface CowSwapWidgetConfig {
      */
     orderError?: string | null
   }
-}
-
-export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
-
-export enum WidgetMethodsEmit {
-  ACTIVATE = 'activate',
-  UPDATE_HEIGHT = 'iframeHeight',
-  EMIT_COW_EVENT = 'event',
-  PROVIDER_RPC_REQUEST = 'rpcRequest',
-}
-
-export enum WidgetMethodsListen {
-  UPDATE_PARAMS = 'UPDATE_PARAMS',
-  UPDATE_APP_DATA = 'UPDATE_APP_DATA',
-  PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
-  PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
 }
 
 // Define types for event payloads
