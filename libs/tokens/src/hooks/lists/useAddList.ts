@@ -3,6 +3,7 @@ import { addListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { useCallback } from 'react'
 import { ListState } from '../../types'
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { environmentAtom } from '../../state/environmentAtom'
 
 const TOKEN_LISTS_CONTENT_LIMIT = 5000
 
@@ -23,16 +24,13 @@ Tokens in update: ${updateCount}.
 }
 
 export function useAddList() {
+  const { chainId } = useAtomValue(environmentAtom)
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
   const addList = useSetAtom(addListAtom)
 
   return useCallback(
     (state: ListState) => {
-      const currentStateCount = getTokenListsStateCount(
-        Object.values(listsStatesByChain)
-          .map((item) => (item ? Object.values(item) : []))
-          .flat()
-      )
+      const currentStateCount = getTokenListsStateCount(Object.values(listsStatesByChain[chainId] || {}))
       const updateCount = getTokenListsStateCount([state])
       const totalCount = currentStateCount + updateCount
 
@@ -43,6 +41,6 @@ export function useAddList() {
 
       addList(state)
     },
-    [addList, listsStatesByChain]
+    [addList, listsStatesByChain, chainId]
   )
 }

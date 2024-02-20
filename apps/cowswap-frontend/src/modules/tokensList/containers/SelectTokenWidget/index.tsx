@@ -84,11 +84,12 @@ export function SelectTokenWidget() {
   const importListAndBack = (list: ListState) => {
     try {
       addCustomTokenLists(list)
-      updateSelectTokenWidget({ listToImport: undefined })
       addListAnalytics('Success', list.source)
     } catch (error) {
+      onDismiss()
       onTokenListAddingError(error)
     }
+    updateSelectTokenWidget({ listToImport: undefined })
   }
 
   if (!onSelectToken || !open) return null
