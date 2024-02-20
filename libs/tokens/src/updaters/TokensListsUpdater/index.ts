@@ -77,7 +77,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
         const isUsUser = country === 'US'
 
         if (isUsUser) {
-          setEnvironment({ useUniswapListOnly: true })
+          setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
       })

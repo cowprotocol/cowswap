@@ -20,10 +20,10 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
 )
 
 export const allListsSourcesAtom = atom((get) => {
-  const { chainId, useUniswapListOnly } = get(environmentAtom)
+  const { chainId, useCuratedListOnly } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
-  if (useUniswapListOnly) {
+  if (useCuratedListOnly) {
     return [UNISWAP_LIST_SOURCE, ...userAddedTokenLists[chainId]]
   }
 
@@ -40,7 +40,7 @@ export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
 export const tokenListsUpdatingAtom = atom<boolean>(false)
 
 export const listsStatesMapAtom = atom((get) => {
-  const { chainId, widgetAppCode, selectedLists, useUniswapListOnly } = get(environmentAtom)
+  const { chainId, widgetAppCode, selectedLists, useCuratedListOnly } = get(environmentAtom)
   const allTokenListsInfo = get(listsStatesByChainAtom)
   const currentNetworkLists = allTokenListsInfo[chainId] || {}
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
@@ -50,9 +50,9 @@ export const listsStatesMapAtom = atom((get) => {
   }, {})
 
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    return useUniswapListOnly ? userAddedListSources[source] : true
+    return useCuratedListOnly ? userAddedListSources[source] : true
   })
-  const lists = useUniswapListOnly ? [UNISWAP_TOKENS_LIST, ...listsSources] : listsSources
+  const lists = useCuratedListOnly ? [UNISWAP_TOKENS_LIST, ...listsSources] : listsSources
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]

@@ -1,4 +1,4 @@
-import { useIsOnlyUniswapListAvailable } from '../../hooks/lists/useIsOnlyUniswapListAvailable'
+import { useIsCuratedListAvailable } from '../../hooks/lists/useIsCuratedListAvailable'
 import styled from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
 import { atomWithStorage } from 'jotai/utils'
@@ -42,7 +42,7 @@ const bannerClosedAtom = atomWithStorage('OnlyUniswapListAvailableBanner', false
  */
 export function OnlyUniswapListAvailableBanner() {
   const [isBannerClose, setBannerClosed] = useAtom(bannerClosedAtom)
-  const isOnlyUniswapListAvailable = useIsOnlyUniswapListAvailable()
+  const isOnlyUniswapListAvailable = useIsCuratedListAvailable()
 
   if (!isOnlyUniswapListAvailable || isBannerClose) return null
 
