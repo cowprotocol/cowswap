@@ -6,7 +6,7 @@ import { SideMenu } from 'legacy/components/SideMenu'
 
 export function AccountMenu() {
   return (
-    <SideMenu isAccountPage={true}>
+    <SideMenu longList={true}>
       <ul>
         {ACCOUNT_MENU_LINKS.map(({ title, url }, i) => (
           <li key={i}>

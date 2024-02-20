@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary, Loader, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { ButtonSize, ButtonPrimary, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -16,7 +16,6 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
-import { CustomRecipientBanner } from '../CustomRecipientBanner'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -111,7 +110,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? <Loader /> : nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
+          {hasPendingTrade ? null : nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
@@ -129,7 +128,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {children}
         {/*Banners*/}
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-        <CustomRecipientBanner recipient={recipient} />
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           {hasPendingTrade ? (
