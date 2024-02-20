@@ -1,9 +1,11 @@
+import { CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { Command } from '@cowprotocol/types'
 import { RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'color2k'
+import { EVENT_EMITTER } from 'eventEmitter'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
@@ -140,9 +142,18 @@ export interface SettingsTabProp extends WithClassName {
   placeholderSlippage: Percent
 }
 
-function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
+function SettingsButton({ expertMode }: SettingsButtonProps) {
   return (
-    <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
+    <StyledMenuButton
+      onClick={() =>
+        EVENT_EMITTER.emit(CowEvents.ON_TOAST_MESSAGE, {
+          messageType: ToastMessageType.SWAP_POSTED_API,
+          message: 'Order freaking posted',
+          data: { orderUid: '0x00001' },
+        })
+      }
+      id="open-settings-dialog-button"
+    >
       <StyledMenuIcon />
       {expertMode ? (
         <EmojiWrapper>

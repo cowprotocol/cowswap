@@ -14,10 +14,7 @@ export function CowEventsUpdater() {
     const allHandlers: CowEventListeners = ALL_EVENTS.map((event) => {
       return {
         event,
-        handler: (payload: any) => {
-          console.debug('[CowEventsUpdater] Forward event to iFrame', event, payload)
-          forwardEventToIframe(event, payload)
-        },
+        handler: (payload: any) => forwardEventToIframe(event, payload),
       }
     })
     allHandlers.forEach((listener) => EVENT_EMITTER.on(listener as CowEventListener<CowEvents>))
