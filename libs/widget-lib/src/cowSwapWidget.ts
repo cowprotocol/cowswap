@@ -152,10 +152,6 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
  */
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
   listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
-    console.log(
-      '[TEST:Widget] Received WidgetMethodsEmit.ACTIVATE. Sending appCode to widget (WidgetMethodsListen.UPDATE_APP_DATA)',
-      appCode
-    )
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
@@ -170,7 +166,7 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  */
 function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
   listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-    // console.debug('[TEST:Widget] applyDynamicHeight', data)
+    // console.debug('[widget] applyDynamicHeight', data)
     iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
 }

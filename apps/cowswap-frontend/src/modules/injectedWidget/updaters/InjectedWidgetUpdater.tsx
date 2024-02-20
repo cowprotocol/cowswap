@@ -53,8 +53,6 @@ export function InjectedWidgetUpdater() {
           prevData.current = data
           updateParams(data.appParams)
           navigate(data.urlParams)
-
-          console.log('[TEST] UPDATE_PARAMS', data)
           break
 
         case WidgetMethodsListen.UPDATE_APP_DATA:

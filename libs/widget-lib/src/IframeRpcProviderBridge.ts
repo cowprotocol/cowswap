@@ -37,7 +37,6 @@ export class IframeRpcProviderBridge {
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
   disconnect() {
-    console.debug('[TEST:IframeRpcProviderBridge] disconnect provider')
     // Disconnect provider
     this.ethereumProvider = null
     stopListeningToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
@@ -48,8 +47,6 @@ export class IframeRpcProviderBridge {
    * @param newProvider - The Ethereum provider to connect.
    */
   onConnect(newProvider: EthereumProvider) {
-    console.debug('[TEST:IframeRpcProviderBridge] connect provider')
-
     // Disconnect the previous provider
     if (this.ethereumProvider) {
       this.disconnect()
@@ -89,8 +86,6 @@ export class IframeRpcProviderBridge {
     if (!this.ethereumProvider || !id) {
       return
     }
-
-    // console.debug('[TEST:IframeRpcProviderBridge] processRpcRequest', request.id, request)
     const requestPromise =
       method === 'enable' ? this.ethereumProvider.enable() : this.ethereumProvider.request({ ...request, id })
 
@@ -112,11 +107,6 @@ export class IframeRpcProviderBridge {
     // If disconnected, ignore the message. Also persist the request
     if (!this.ethereumProvider) {
       if (rpcRequest.id) {
-        console.debug(
-          // '[TEST:IframeRpcProviderBridge] processRpcCallFromWindow. No provider, scheduling for later',
-          rpcRequest.id,
-          rpcRequest
-        )
         this.requestWaitingForConnection[rpcRequest.id] = rpcRequest
       }
       return
@@ -126,7 +116,7 @@ export class IframeRpcProviderBridge {
   }
 
   private onProviderEvent(event: string, params: unknown): void {
-    console.debug('[TEST:IframeRpcProviderBridge] onProviderEvent', { event, params })
+    // console.debug('[IframeRpcProviderBridge] onProviderEvent', { event, params })
     postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
       event,
       params,
@@ -137,7 +127,7 @@ export class IframeRpcProviderBridge {
    * Forward a JSON-RPC message to the content window.
    */
   private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
-    // console.debug('[TEST:IframeRpcProviderBridge] forwardRpcResponseToIframe', params)
+    // console.debug('[IframeRpcProviderBridge] forwardRpcResponseToIframe', params)
     postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, params)
   }
 }

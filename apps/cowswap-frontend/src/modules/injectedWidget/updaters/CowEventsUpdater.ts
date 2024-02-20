@@ -32,7 +32,7 @@ export function CowEventsUpdater() {
 }
 
 function forwardEventToIframe<T extends CowEvents>(event: CowEvents, payload: CowEventPayloadMap[T]) {
-  console.log('[TEST] forwardEventToIframe', event, payload)
+  // console.debug('[injectedWidget:forwardEventToIframe] Forward event', event, payload)
   postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
     event,
     payload,
