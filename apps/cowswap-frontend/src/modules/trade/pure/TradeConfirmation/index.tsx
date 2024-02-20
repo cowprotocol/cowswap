@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary, Loader } from '@cowprotocol/ui'
-import { BackButton } from '@cowprotocol/ui'
+import { ButtonSize, ButtonPrimary, Loader, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -134,9 +133,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           {hasPendingTrade ? (
-            <styledEl.LongLoadText fontSize={15} fontWeight={500}>
-              Confirm transaction in your wallet <styledEl.CenteredDots smaller />
-            </styledEl.LongLoadText>
+            <LongLoadText fontSize={15} fontWeight={500}>
+              Confirm with your wallet <CenteredDots smaller />
+            </LongLoadText>
           ) : (
             <Trans>{buttonText}</Trans>
           )}

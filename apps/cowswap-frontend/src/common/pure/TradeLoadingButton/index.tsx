@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
+import { CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 
 import { ThemedText } from 'legacy/theme'
-
-import { CenteredDots, LongLoadText } from 'modules/trade/pure/TradeConfirmation/styled'
 
 export const TradeLoadingButton = () => {
   const [isLongLoad, setIsLongLoad] = useState<boolean>(false)

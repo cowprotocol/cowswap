@@ -1,4 +1,6 @@
 export * from './pure/Button'
+export * from './pure/CenteredDots'
+export * from './pure/LongLoadText'
 export * from './pure/Loader'
 export { loadingOpacityMixin, LoadingRows } from './pure/Loader/styled'
 export * from './pure/Row'
