@@ -1,3 +1,5 @@
+const JSX_ELEMENT_TYPE = '$$typeof'
+
 /**
  * This is a function for generic React.memo() usage
  * The function compares previous and next props by values using JSON.stringify. It returns true when props are equal and vice versa
@@ -28,6 +30,11 @@ export function genericPropsChecker(prev: any, next: any): boolean {
       And we do it until we met not object value (primitive, array, function)
       */
       if (typeof nextValue === 'object' && !Array.isArray(nextValue) && nextValue !== null) {
+        // JSX.Element
+        if (JSX_ELEMENT_TYPE in nextValue) {
+          return prevValue === nextValue
+        }
+
         return genericPropsChecker(prevValue, nextValue)
       }
 

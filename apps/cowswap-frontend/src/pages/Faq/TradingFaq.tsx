@@ -1,11 +1,12 @@
 import { LinkScrollable } from 'legacy/components/Link'
+import { PageWithToC } from 'legacy/components/PageWithToC'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { Wrapper, ExternalLinkFaq } from './styled'
+import { ExternalLinkFaq } from './styled'
 import ToC from './ToC'
 
 import { Footer } from '.'
@@ -15,7 +16,7 @@ export default function TokenFaq() {
 
   return (
     <>
-      <Wrapper ref={faqRef}>
+      <PageWithToC ref={faqRef}>
         <PageTitle title="Trading FAQ" />
         <FaqMenu />
         <Page>
@@ -228,7 +229,7 @@ export default function TokenFaq() {
             <Footer />
           </Content>
         </Page>
-      </Wrapper>
+      </PageWithToC>
     </>
   )
 }

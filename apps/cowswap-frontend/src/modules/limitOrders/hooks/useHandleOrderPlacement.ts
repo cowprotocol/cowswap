@@ -1,6 +1,8 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { getAddress } from '@cowprotocol/common-utils'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
@@ -31,8 +33,18 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
-  const beforePermit = useCallback(() => {
+  const beforePermit = useCallback(async () => {
     if (!tradeContext) return
+
+    const {
+      postOrderParams: { inputAmount },
+      getCachedPermit,
+    } = tradeContext
+    const inputCurrency = inputAmount.currency
+
+    const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
+
+    if (cachedPermit) return
 
     tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext))
   }, [tradeConfirmActions, tradeContext])
