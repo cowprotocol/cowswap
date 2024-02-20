@@ -11,7 +11,6 @@ export class IframeCowEventEmitter {
 
     // Forward messages to the event emitter
     listenToMessageFromWindow(contentWindow, WidgetMethodsEmit.EMIT_COW_EVENT, (cowEvent) => {
-      console.log('[TEST] IframeCowEventEmitter got it!', cowEvent)
       this.eventEmitter.emit(cowEvent.event, cowEvent.payload)
     })
   }
