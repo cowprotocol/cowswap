@@ -460,6 +460,8 @@ export const UniThemedGlobalStyle = css`
       theme.darkMode ? transparentize(theme.text, 0.6) : transparentize(theme.text, 0.5)};
 
     ${UI.COLOR_DARK_IMAGE_PAPER}: ${({ theme }) => getContrastText('#000000', theme.paper)};
+    ${UI.COLOR_DARK_IMAGE_PAPER_TEXT}: ${({ theme }) =>
+      getContrastText(getContrastText('#000000', theme.paper), theme.text)};
 
     ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>

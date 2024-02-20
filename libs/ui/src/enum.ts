@@ -43,6 +43,7 @@ export enum UI {
   COLOR_BUTTON_TEXT_DISABLED = '--cow-color-button-text-disabled',
 
   COLOR_DARK_IMAGE_PAPER = '--cow-color-dark-image-paper',
+  COLOR_DARK_IMAGE_PAPER_TEXT = '--cow-color-dark-image-paper-text',
 
   COLOR_WARNING = '--cow-color-warning',
   COLOR_WARNING_BG = '--cow-color-warning-bg',
