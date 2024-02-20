@@ -15,7 +15,7 @@ import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -46,6 +46,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     checkAllowanceAddress,
   })
   const generatePermitHook = useGeneratePermitHook()
+  const getCachedPermit = useGetCachedPermit()
 
   if (
     !chainId ||
@@ -80,6 +81,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     rateImpact,
     permitInfo: !enoughAllowance ? permitInfo : undefined,
     generatePermitHook,
+    getCachedPermit,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

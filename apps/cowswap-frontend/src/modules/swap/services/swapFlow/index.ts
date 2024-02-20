@@ -1,4 +1,9 @@
-import { getIsNativeToken, reportAppDataWithHooks, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import {
+  getAddress,
+  getIsNativeToken,
+  reportAppDataWithHooks,
+  reportPermitWithDefaultSigner,
+} from '@cowprotocol/common-utils'
 import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
@@ -27,7 +32,10 @@ export async function swapFlow(
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
 ): Promise<void | false> {
-  const { tradeConfirmActions } = input
+  const {
+    tradeConfirmActions,
+    callbacks: { getCachedPermit },
+  } = input
 
   const {
     context: {
@@ -41,20 +49,14 @@ export async function swapFlow(
     return false
   }
 
-  const {
-    orderParams,
-    context,
-    permitInfo,
-    generatePermitHook,
-    swapFlowAnalyticsContext,
-    callbacks,
-    dispatch,
-  } = input
+  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks, dispatch } = input
   const { chainId, trade } = context
+  const inputCurrency = trade.inputAmount.currency
+  const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(permitInfo)) {
+    if (isSupportedPermitInfo(permitInfo) && !cachedPermit) {
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
@@ -62,7 +64,7 @@ export async function swapFlow(
     orderParams.appData = await handlePermit({
       appData,
       account,
-      inputToken: trade.inputAmount.currency,
+      inputToken: inputCurrency,
       permitInfo,
       generatePermitHook,
     })
@@ -74,7 +76,7 @@ export async function swapFlow(
       // Last resort in case of a race condition
       // It should not have a permit in the first place if it's selling native
       // But there are several cases where it has
-      getIsNativeToken(trade.inputAmount.currency) &&
+      getIsNativeToken(inputCurrency) &&
       appDataContainsHooks(orderParams.appData.fullAppData)
     ) {
       reportAppDataWithHooks(orderParams)
