@@ -21,12 +21,20 @@ export default function LimitOrderPage() {
     <>
       <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
       <QuoteObserverUpdater />
-      {isAlternative && <AlternativeLimitOrderUpdater />}
       <FillLimitOrdersDerivedStateUpdater />
-      {!isAlternative && <SetupLimitOrderAmountsFromUrlUpdater />}
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
-      {isAlternative ? <AlternativeLimitOrder /> : <RegularLimitOrders />}
+      {isAlternative ? (
+        <>
+          <AlternativeLimitOrderUpdater />
+          <AlternativeLimitOrder />
+        </>
+      ) : (
+        <>
+          <SetupLimitOrderAmountsFromUrlUpdater />
+          <RegularLimitOrders />
+        </>
+      )}
     </>
   )
 }
