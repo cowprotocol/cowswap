@@ -51,20 +51,22 @@ export function createCowSwapWidget(
     throw new Error('Iframe does not contain a window!')
   }
 
-  // 3. Post some initial messages to the iframe
-  //    - Send appCode
-  //    - Apply dynamic height adjustments
+  // 3. Send appCode (once the widget posts the ACTIVATE message)
   sendAppCodeOnActivation(iframeWindow, params.appCode)
-  applyDynamicHeight(iframe, params.height)
 
-  // 4. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  // 4. Handle widget height changes
+  listenToHeightChanges(iframe, params.height)
+
+  // 5. Handle and forward widget events to the listeners
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
+
+  // 6. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
-  // 5. Schedule the uploading of the params, once the iframe is loaded
+  // 7. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
-  const iFrameCowEventEmitter = new IframeCowEventEmitter(iframeWindow, listeners)
 
-  // 6. Return the handler, so the widget, listeners, and provider can be updated
+  // 8. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
@@ -164,7 +166,7 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
  */
-function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
+function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
   listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
     // console.debug('[widget] applyDynamicHeight', data)
     iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
