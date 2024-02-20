@@ -15,16 +15,6 @@ import SVG from 'react-inlinesvg'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/EstimatedExecutionPrice'
-import { OrderContextMenu } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/OrderContextMenu'
-import {
-  CheckboxCheckmark,
-  TableRow,
-  TableRowCheckbox,
-  TableRowCheckboxWrapper,
-} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
-import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -39,9 +29,14 @@ import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
+import { OrderContextMenu } from './OrderContextMenu'
 import * as styledEl from './styled'
 
-import { OrderParams } from '../utils/getOrderParams'
+import { OrderParams } from '../../../utils/getOrderParams'
+import { OrderStatusBox } from '../../OrderStatusBox'
+import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
+import { OrderActions } from '../types'
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
 

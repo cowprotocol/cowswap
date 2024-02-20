@@ -8,21 +8,12 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
-import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable/const/tabs'
-import {
-  CheckboxCheckmark,
-  TableHeader,
-  TableRowCheckbox,
-  TableRowCheckboxWrapper,
-} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
@@ -34,10 +25,13 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 
 import { OrderRow } from './OrderRow'
 import { OrdersTablePagination } from './OrdersTablePagination'
+import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
-import { getOrderParams } from './utils/getOrderParams'
+import { OrderActions } from './types'
 
-import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
+import { getOrderParams } from '../../utils/getOrderParams'
 import {
   getParsedOrderFromTableItem,
   isParsedOrder,
@@ -224,7 +218,7 @@ export function OrdersTable({
   currentPageNumber,
   ordersPermitStatus,
 }: OrdersTableProps) {
-  const location = useLocation()
+  const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const [isRateInverted, setIsRateInverted] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
@@ -275,7 +269,7 @@ export function OrdersTable({
     return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromTableItem(item).id])
   }, [cancellableOrders, selectedOrdersMap])
 
-  const getPageUrl = useCallback((index: number) => buildOrdersTableUrl(location, { pageNumber: index }), [location])
+  const getPageUrl = useCallback((index: number) => buildOrdersTableUrl({ pageNumber: index }), [buildOrdersTableUrl])
 
   // React doesn't support indeterminate attribute
   // Because of it, we have to use element reference

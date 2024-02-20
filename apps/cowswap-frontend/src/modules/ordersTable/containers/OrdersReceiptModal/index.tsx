@@ -5,14 +5,15 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
-import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
+import { useTwapOrderByChildId, useTwapOrderById } from 'modules/twap'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 
-export type OrdersReceiptModalProps = {
+import { ReceiptModal } from '../../pure/ReceiptModal'
+
+type OrdersReceiptModalProps = {
   pendingOrdersPrices: PendingOrdersPrices
 }
 

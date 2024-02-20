@@ -1,10 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { BalancesAndAllowances } from 'modules/tokens'
-
 import { getOrderParams } from './getOrderParams'
 
-import { ordersMock } from '../orders.mock'
+import { BalancesAndAllowances } from '../../tokens'
+import { ordersMock } from '../pure/OrdersTableContainer/orders.mock'
 
 describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]

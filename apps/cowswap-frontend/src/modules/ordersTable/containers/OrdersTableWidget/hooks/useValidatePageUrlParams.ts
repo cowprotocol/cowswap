@@ -3,7 +3,8 @@ import { useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../const/tabs'
-import { buildOrdersTableUrl, parseOrdersTableUrl } from '../../../utils/buildOrdersTableUrl'
+import { buildOrdersTableUrl } from '../../../utils/buildOrdersTableUrl'
+import { parseOrdersTableUrl } from '../../../utils/parseOrdersTableUrl'
 
 // Reset page params if they are invalid
 export function useValidatePageUrlParams(ordersLength: number, currentTabId: string, currentPageNumber: number) {

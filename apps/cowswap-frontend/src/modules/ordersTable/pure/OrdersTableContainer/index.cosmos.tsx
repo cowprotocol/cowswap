@@ -1,15 +1,16 @@
 import { Command } from '@cowprotocol/types'
 
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
+import { OrderActions } from './types'
 
 import { OrderTab } from '../../const/tabs'
+import { TabOrderTypes } from '../../types'
 
-import { OrdersTableContainer, TabOrderTypes } from './index'
+import { OrdersTableContainer } from './index'
 
 const tabs: OrderTab[] = [
   {
