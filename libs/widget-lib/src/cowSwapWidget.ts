@@ -77,7 +77,6 @@ export function createCowSwapWidget(
     },
 
     destroy: () => {
-      console.log('[TEST:widget] destroy widget')
       // Stop listening for cow events
       iFrameCowEventEmitter.stopListeningIframe()
 
