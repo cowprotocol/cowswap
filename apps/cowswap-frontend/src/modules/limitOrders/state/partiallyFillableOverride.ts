@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { alternativeOrderReadWriteAtomFactory } from 'common/state/alternativeOrder'
+import { alternativeOrderReadWriteAtomFactory } from 'modules/trade/state/alternativeOrder'
 
 export type PartiallyFillableOverrideType = boolean | undefined
 export type PartiallyFillableOverrideDispatcherType = [

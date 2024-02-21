@@ -16,8 +16,8 @@ import {
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
-import { useAlternativeOrder, useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'

@@ -7,9 +7,8 @@ import { switchChain, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-
-import { useIsAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'

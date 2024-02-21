@@ -5,10 +5,12 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import {
+  alternativeOrderAtomSetterFactory,
+  alternativeOrderReadWriteAtomFactory,
+} from 'modules/trade/state/alternativeOrder'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-
-import { alternativeOrderAtomSetterFactory, alternativeOrderReadWriteAtomFactory } from 'common/state/alternativeOrder'
 
 export interface LimitOrdersDerivedState extends TradeDerivedState {
   readonly isUnlocked: boolean

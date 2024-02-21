@@ -8,8 +8,7 @@ import {
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
 } from 'modules/limitOrders'
-
-import { useIsAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { AlternativeLimitOrder } from './AlternativeLimitOrder'
 import { RegularLimitOrders } from './RegularLimitOrders'
