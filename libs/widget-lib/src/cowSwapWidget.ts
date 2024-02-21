@@ -3,7 +3,7 @@ import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
 import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { listenToMessageFromWindow, postMessageToWindow } from './messages'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -23,6 +23,7 @@ export interface CowSwapWidgetHandler {
   updateWidget: (params: CowSwapWidgetParams, listeners?: CowEventListeners) => void
   updateListeners: (newListeners?: CowEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  destroy: () => void
 }
 
 /**
@@ -52,10 +53,11 @@ export function createCowSwapWidget(
   }
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
-  sendAppCodeOnActivation(iframeWindow, params.appCode)
+  const windowListeners: WindowListener[] = []
+  windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
   // 4. Handle widget height changes
-  listenToHeightChanges(iframe, params.height)
+  windowListeners.push(listenToHeightChanges(iframe, params.height))
 
   // 5. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
@@ -72,6 +74,18 @@ export function createCowSwapWidget(
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
+    },
+
+    destroy: () => {
+      console.log('[TEST:widget] destroy widget')
+      // Stop listening for cow events
+      iFrameCowEventEmitter.stopListeningIframe()
+
+      // Disconnect all listeners
+      windowListeners.forEach((listener) => window.removeEventListener('message', listener))
+
+      // Destroy the iframe
+      container.removeChild(iframe)
     },
   }
 }
@@ -153,11 +167,17 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-  listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+  const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+    // Stop listening for the ACTIVATE (once is enough)
+    stopListeningWindowListener(window, listener)
+
+    // Update the appData
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
   })
+
+  return listener
 }
 
 /**
@@ -166,8 +186,8 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
  */
-function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
-  listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener {
+  return listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
     // console.debug('[widget] applyDynamicHeight', data)
     iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })

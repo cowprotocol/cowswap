@@ -35,25 +35,50 @@ export function postMessageToWindow(contentWindow: Window, method: string, paylo
   )
 }
 
+export type WindowListener = (event: MessageEvent<unknown>) => void
+
 export function listenToMessageFromWindow<T extends WidgetMethodsListen>(
   contentWindow: Window,
   method: T,
   callback: (payload: WidgetMethodsListenPayloadMap[T]) => void
-): void
+): WindowListener
 export function listenToMessageFromWindow<T extends WidgetMethodsEmit>(
   contentWindow: Window,
   method: T,
   callback: (payload: WidgetMethodsEmitPayloadMap[T]) => void
-): void
+): WindowListener
 
-export function listenToMessageFromWindow(contentWindow: Window, method: string, callback: (payload: unknown) => void) {
-  contentWindow.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== method) {
+export function listenToMessageFromWindow<T = unknown>(
+  contentWindow: Window,
+  method: string,
+  callback: (payload: T) => void
+): (payload: MessageEvent<unknown>) => void {
+  const listener = (event: MessageEvent<unknown>) => {
+    if (!isEventData(event.data) || event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== method) {
       return
     }
 
-    callback(event.data)
-  })
+    callback(event.data as T)
+  }
+  contentWindow.addEventListener('message', listener)
+
+  return listener
+}
+
+interface EventData {
+  key: string
+  method: string
+}
+
+function isEventData(obj: unknown): obj is EventData {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'key' in obj &&
+    'method' in obj &&
+    typeof obj.key === 'string' &&
+    typeof obj.method === 'string'
+  )
 }
 
 export function stopListeningToMessageFromWindow<T extends WidgetMethodsListen>(
@@ -72,5 +97,9 @@ export function stopListeningToMessageFromWindow(
   _method: string,
   callback: (payload: unknown) => void
 ) {
+  contentWindow.removeEventListener('message', callback)
+}
+
+export function stopListeningWindowListener(contentWindow: Window, callback: WindowListener) {
   contentWindow.removeEventListener('message', callback)
 }
