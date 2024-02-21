@@ -1,11 +1,10 @@
 import { useAtomValue } from 'jotai'
 
 import { advancedOrdersAtom, AdvancedOrdersWidget, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
-import { OrdersTableWidget } from 'modules/ordersTable'
-import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
+import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { TwapFormWidget, TwapUpdaters, useAllEmulatedOrders, TwapConfirmModal } from 'modules/twap'
+import { TwapConfirmModal, TwapFormWidget, TwapUpdaters, useAllEmulatedOrders } from 'modules/twap'
 import { useTwapFormState } from 'modules/twap/hooks/useTwapFormState'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 

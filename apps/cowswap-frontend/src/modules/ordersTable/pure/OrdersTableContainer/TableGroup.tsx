@@ -15,9 +15,9 @@ import { OrderRow } from './OrderRow'
 import * as styledEl from './OrderRow/styled'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderActions } from './types'
-import { getOrderParams } from './utils/getOrderParams'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { getOrderParams } from '../../utils/getOrderParams'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 
 const GroupBox = styled.div``

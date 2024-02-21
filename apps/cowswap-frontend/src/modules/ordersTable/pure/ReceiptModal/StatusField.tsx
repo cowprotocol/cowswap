@@ -1,8 +1,8 @@
-import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
-
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
+
+import { OrderStatusBox } from '../OrderStatusBox'
 
 export type Props = {
   order: ParsedOrder

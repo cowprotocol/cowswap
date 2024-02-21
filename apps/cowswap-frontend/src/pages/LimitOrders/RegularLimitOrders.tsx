@@ -3,8 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
-import { OrdersTableWidget } from 'modules/ordersTable'
-import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
+import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'

@@ -11,12 +11,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { OPEN_TAB, ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
-import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
-import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
-import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
-import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -33,8 +27,16 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { BalancesAndAllowances } from '../../../tokens'
-import { OrdersTableContainer, TabOrderTypes } from '../../pure/OrdersTableContainer'
+import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
+import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { OrderActions } from '../../pure/OrdersTableContainer/types'
+import { TabOrderTypes } from '../../types'
+import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
 import { OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
+import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
+import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
+import { OrdersReceiptModal } from '../OrdersReceiptModal'
+import { useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -54,7 +56,7 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export interface OrdersTableWidgetProps {
+interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
