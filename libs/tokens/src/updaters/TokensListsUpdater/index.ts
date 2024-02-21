@@ -11,7 +11,7 @@ import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL }
 import { ListState } from '../../types'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
@@ -26,6 +26,8 @@ const swrOptions: SWRConfiguration = {
   refreshInterval: TOKENS_LISTS_UPDATER_INTERVAL,
   revalidateOnFocus: false,
 }
+
+const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
@@ -66,6 +68,28 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
 
     upsertLists(chainId, listsStates)
   }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating, updateLastUpdateTime])
+
+  // Check if a user is from US and use Uniswap list, because of the SEC regulations
+  useEffect(() => {
+    if (isInjectedWidget()) return
+
+    if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
+      setEnvironment({ useCuratedListOnly: false })
+      return
+    }
+
+    fetch('https://api.country.is')
+      .then((res) => res.json())
+      .then(({ country }) => {
+        const isUsUser = country === 'US'
+
+        if (isUsUser) {
+          setEnvironment({ useCuratedListOnly: true })
+          updateLastUpdateTime({ [chainId]: 0 })
+        }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId])
 
   return null
 }
