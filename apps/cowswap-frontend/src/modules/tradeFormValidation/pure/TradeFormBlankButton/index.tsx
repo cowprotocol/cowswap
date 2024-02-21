@@ -92,7 +92,7 @@ export function TradeFormBlankButton({ onClick, children, disabled, loading, id 
     <ActionButton ref={ref} id={id} onClick={handleClick} disabled={showLoader || disabled} hasLongText$={hasLongText}>
       {showLoader ? (
         <>
-          <LongLoadText>Sign with your wallet </LongLoadText> <CenteredDots smaller />
+          <LongLoadText>Confirm with your wallet </LongLoadText> <CenteredDots smaller />
         </>
       ) : (
         <Trans>{children}</Trans>
