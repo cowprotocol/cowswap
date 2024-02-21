@@ -9,6 +9,7 @@ import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
 
@@ -49,36 +50,36 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showRowDeadline = !!trade
 
   return (
-    <styledEl.Box>
-      {showPrice && <styledEl.StyledRateInfo label={priceLabel} stylized={true} rateInfoParams={rateInfoParams} />}
-      {/* SLIPPAGE & FEE */}
-      {showTradeBasicDetails && (
-        <TradeBasicDetails
-          allowedSlippage={userAllowedSlippage}
-          allowsOffchainSigning={allowsOffchainSigning}
-          trade={trade}
-          fee={fee}
-          isReviewSwap={isReviewSwap}
-        />
-      )}
+    <TradeDetailsAccordion
+      rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+      feeSummary={
+        showTradeBasicDetails && (
+          <TradeBasicDetails
+            allowedSlippage={userAllowedSlippage}
+            allowsOffchainSigning={allowsOffchainSigning}
+            trade={trade}
+            fee={fee}
+            fiatFeeOnly={true}
+          />
+        )
+      }
+    >
+      <styledEl.Box>
+        {showPrice && <styledEl.StyledRateInfo label={priceLabel} stylized={true} rateInfoParams={rateInfoParams} />}
 
-      {/* TRANSACTION DEADLINE */}
-      {showRowDeadline && <RowDeadline />}
+        {showTradeBasicDetails && (
+          <TradeBasicDetails
+            allowedSlippage={userAllowedSlippage}
+            allowsOffchainSigning={allowsOffchainSigning}
+            trade={trade}
+            fee={fee}
+            isReviewSwap={isReviewSwap}
+          />
+        )}
 
-      {/* DISCOUNTS */}
-      {/* TODO: Re-enable modal once subsidy is back */}
-      {/*
-      <styledEl.Row>
-        <div>
-          <span>Fees discount</span>
-          <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
-        </div>
-        <div>
-          <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
-        </div>
-      </styledEl.Row>
-      */}
-      {children}
-    </styledEl.Box>
+        {showRowDeadline && <RowDeadline />}
+        {children}
+      </styledEl.Box>
+    </TradeDetailsAccordion>
   )
 }, genericPropsChecker)

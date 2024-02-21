@@ -15,26 +15,44 @@ export interface RowFeeContentProps extends RowWithShowHelpersProps {
   fullDisplayFee: string
   feeCurrencySymbol: string
   styleProps?: RowStyleProps
+  noLabel?: boolean
+  showFiatOnly?: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
   const swapZeroFee = useSwapZeroFee()
-  const { showHelpers, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, styleProps = {} } = props
+  const {
+    showHelpers,
+    tooltip,
+    feeToken,
+    feeUsd,
+    fullDisplayFee,
+    feeCurrencySymbol,
+    noLabel,
+    showFiatOnly,
+    styleProps = {},
+  } = props
 
   return (
-    <StyledRowBetween {...styleProps}>
-      <RowFixed>
-        <TextWrapper>{swapZeroFee ? 'Est. fees' : 'Fees'}</TextWrapper>
-        {showHelpers && (
-          <MouseoverTooltipContent content={tooltip} wrap>
-            <StyledInfoIcon size={16} />
-          </MouseoverTooltipContent>
-        )}
-      </RowFixed>
+    <StyledRowBetween {...styleProps} alignContentRight={showFiatOnly}>
+      {!noLabel && (
+        <RowFixed>
+          <TextWrapper>{swapZeroFee ? 'Est. fees' : 'Fees'}</TextWrapper>
+          {showHelpers && (
+            <MouseoverTooltipContent content={tooltip} wrap>
+              <StyledInfoIcon size={16} />
+            </MouseoverTooltipContent>
+          )}
+        </RowFixed>
+      )}
 
-      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
-      </TextWrapper>
+      {showFiatOnly ? (
+        <TextWrapper title={feeToken}>{feeUsd ? feeUsd : feeToken}</TextWrapper>
+      ) : (
+        <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+          {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
+        </TextWrapper>
+      )}
     </StyledRowBetween>
   )
 }

@@ -8,6 +8,9 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Box = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
   margin: 6px 8px;
 `
 
